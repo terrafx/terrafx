@@ -1,0 +1,27 @@
+# Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
+
+###############################################################################
+# Set default behavior to:
+#   automatically normalize line endings on check-in
+###############################################################################
+*           text=auto
+
+###############################################################################
+# Set file behavior to:
+#   treat as text
+###############################################################################
+*.config    text
+*.cs        text
+*.csproj    text
+*.json      text
+*.md        text
+*.props     text
+*.resx      text
+*.sln       text
+*.targets   text
+
+###############################################################################
+# Set file behavior to:
+#   treat as binary
+###############################################################################
+*.snk       binary
