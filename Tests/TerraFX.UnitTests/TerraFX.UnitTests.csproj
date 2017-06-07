@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TerraFX.Graphics\TerraFX.Graphics.csproj" />
+    <ProjectReference Include="..\..\Sources\TerraFX\TerraFX.csproj" />
   </ItemGroup>
 
   <ItemGroup>
