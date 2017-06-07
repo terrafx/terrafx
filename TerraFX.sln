@@ -43,6 +43,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Graphics", "Sources
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Graphics.UnitTests", "Sources\TerraFX.Graphics.UnitTests\TerraFX.Graphics.UnitTests.csproj", "{61A3950C-1EE7-4DBE-AD43-73C3C7E4D264}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Interop.Direct3D", "Sources\TerraFX.Interop.Direct3D\TerraFX.Interop.Direct3D.csproj", "{A089E280-9583-4E64-8061-DE8EB053A98A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Interop.Direct3D.UnitTests", "Sources\TerraFX.Interop.Direct3D.UnitTests\TerraFX.Interop.Direct3D.UnitTests.csproj", "{69E16952-A8F0-4281-A249-3426B58CE3CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +69,14 @@ Global
 		{61A3950C-1EE7-4DBE-AD43-73C3C7E4D264}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61A3950C-1EE7-4DBE-AD43-73C3C7E4D264}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61A3950C-1EE7-4DBE-AD43-73C3C7E4D264}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A089E280-9583-4E64-8061-DE8EB053A98A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A089E280-9583-4E64-8061-DE8EB053A98A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A089E280-9583-4E64-8061-DE8EB053A98A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A089E280-9583-4E64-8061-DE8EB053A98A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69E16952-A8F0-4281-A249-3426B58CE3CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69E16952-A8F0-4281-A249-3426B58CE3CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69E16952-A8F0-4281-A249-3426B58CE3CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69E16952-A8F0-4281-A249-3426B58CE3CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,5 +89,7 @@ Global
 		{5A03B70A-0743-4DB0-A24F-32BB48A604BF} = {0B821858-8E47-4485-AC06-D2E971A53EB2}
 		{D84A8664-A419-4CCC-9E8C-88739090F7EC} = {0B821858-8E47-4485-AC06-D2E971A53EB2}
 		{61A3950C-1EE7-4DBE-AD43-73C3C7E4D264} = {0B821858-8E47-4485-AC06-D2E971A53EB2}
+		{A089E280-9583-4E64-8061-DE8EB053A98A} = {0B821858-8E47-4485-AC06-D2E971A53EB2}
+		{69E16952-A8F0-4281-A249-3426B58CE3CD} = {0B821858-8E47-4485-AC06-D2E971A53EB2}
 	EndGlobalSection
 EndGlobal
