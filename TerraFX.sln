@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26510.0
+VisualStudioVersion = 15.0.26430.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2F337CB6-0B9E-4765-A277-487E429DE9F1}"
 	ProjectSection(SolutionItems) = preProject
@@ -39,6 +39,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX", "Sources\TerraFX\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.UnitTests", "Sources\TerraFX.UnitTests\TerraFX.UnitTests.csproj", "{5A03B70A-0743-4DB0-A24F-32BB48A604BF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Graphics", "Sources\TerraFX.Graphics\TerraFX.Graphics.csproj", "{D84A8664-A419-4CCC-9E8C-88739090F7EC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Graphics.UnitTests", "Sources\TerraFX.Graphics.UnitTests\TerraFX.Graphics.UnitTests.csproj", "{61A3950C-1EE7-4DBE-AD43-73C3C7E4D264}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +57,14 @@ Global
 		{5A03B70A-0743-4DB0-A24F-32BB48A604BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A03B70A-0743-4DB0-A24F-32BB48A604BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A03B70A-0743-4DB0-A24F-32BB48A604BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D84A8664-A419-4CCC-9E8C-88739090F7EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D84A8664-A419-4CCC-9E8C-88739090F7EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D84A8664-A419-4CCC-9E8C-88739090F7EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D84A8664-A419-4CCC-9E8C-88739090F7EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61A3950C-1EE7-4DBE-AD43-73C3C7E4D264}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61A3950C-1EE7-4DBE-AD43-73C3C7E4D264}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61A3950C-1EE7-4DBE-AD43-73C3C7E4D264}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61A3950C-1EE7-4DBE-AD43-73C3C7E4D264}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -63,5 +75,7 @@ Global
 		{109DEA83-38C3-4931-AFDE-AE81BAA44A04} = {BB2E0585-68EF-44B1-9CBB-F23A99292018}
 		{4CCA69DD-034D-4CD1-80FA-1D3006AA8A71} = {0B821858-8E47-4485-AC06-D2E971A53EB2}
 		{5A03B70A-0743-4DB0-A24F-32BB48A604BF} = {0B821858-8E47-4485-AC06-D2E971A53EB2}
+		{D84A8664-A419-4CCC-9E8C-88739090F7EC} = {0B821858-8E47-4485-AC06-D2E971A53EB2}
+		{61A3950C-1EE7-4DBE-AD43-73C3C7E4D264} = {0B821858-8E47-4485-AC06-D2E971A53EB2}
 	EndGlobalSection
 EndGlobal
