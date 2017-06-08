@@ -7,12 +7,17 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 16)]
     public struct RECT
     {
+        #region Fields
         public int left;
+
         public int top;
+
         public int right;
+
         public int bottom;
+        #endregion
     }
 }

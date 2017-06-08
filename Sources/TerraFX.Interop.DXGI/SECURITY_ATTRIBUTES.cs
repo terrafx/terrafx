@@ -8,11 +8,15 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    [StructLayout(LayoutKind.Sequential, Pack = 4)] // Size = 12 or 20
     public struct SECURITY_ATTRIBUTES
     {
+        #region Fields
         public uint nLength;
+
         public IntPtr lpSecurityDescriptor;
-        public int bInheritHandle;
+
+        public int /* BOOL */ bInheritHandle;
+        #endregion
     }
 }

@@ -7,19 +7,31 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 48)]
     public struct DXGI_SWAP_CHAIN_DESC1
     {
+        #region Fields
         public uint Width;
+
         public uint Height;
+
         public DXGI_FORMAT Format;
-        public int Stereo;
+
+        public int /* BOOL */ Stereo;
+
         public DXGI_SAMPLE_DESC SampleDesc;
-        public uint BufferUsage;
+
+        public DXGI_USAGE BufferUsage;
+
         public uint BufferCount;
+
         public DXGI_SCALING Scaling;
+
         public DXGI_SWAP_EFFECT SwapEffect;
+
         public DXGI_ALPHA_MODE AlphaMode;
-        public uint Flags;
+
+        public DXGI_SWAP_CHAIN_FLAG Flags;
+        #endregion
     }
 }

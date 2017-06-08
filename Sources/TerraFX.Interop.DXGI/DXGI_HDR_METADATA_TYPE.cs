@@ -7,7 +7,8 @@ namespace TerraFX.Interop.DXGI
 {
     public enum DXGI_HDR_METADATA_TYPE
     {
-        DXGI_HDR_METADATA_TYPE_NONE,
-        DXGI_HDR_METADATA_TYPE_HDR10,
+        NONE = 0,
+
+        HDR10 = 1
     }
 }

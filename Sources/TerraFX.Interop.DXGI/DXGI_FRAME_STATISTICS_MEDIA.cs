@@ -7,15 +7,23 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 8)]
+    [StructLayout(LayoutKind.Sequential, Pack = 8, Size = 40)]
     public struct DXGI_FRAME_STATISTICS_MEDIA
     {
+        #region Fields
         public uint PresentCount;
+
         public uint PresentRefreshCount;
+
         public uint SyncRefreshCount;
+
         public long SyncQPCTime;
+
         public long SyncGPUTime;
+
         public DXGI_FRAME_PRESENTATION_MODE CompositionMode;
+
         public uint ApprovedPresentDuration;
+        #endregion
     }
 }

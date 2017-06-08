@@ -7,7 +7,8 @@ namespace TerraFX.Interop.DXGI
 {
     public enum DXGI_MEMORY_SEGMENT_GROUP
     {
-        DXGI_MEMORY_SEGMENT_GROUP_LOCAL,
-        DXGI_MEMORY_SEGMENT_GROUP_NON_LOCAL,
+        LOCAL = 0,
+
+        NON_LOCAL = 1
     }
 }

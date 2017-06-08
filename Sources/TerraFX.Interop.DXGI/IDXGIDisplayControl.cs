@@ -13,10 +13,12 @@ namespace TerraFX.Interop.DXGI
     [SuppressUnmanagedCodeSecurity]
     public interface IDXGIDisplayControl
     {
+        #region Methods
         [PreserveSig]
         int IsStereoEnabled();
 
         [PreserveSig]
         void SetStereoEnabled(int enabled);
+        #endregion
     }
 }

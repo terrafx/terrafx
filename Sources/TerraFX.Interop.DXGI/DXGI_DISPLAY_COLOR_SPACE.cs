@@ -7,12 +7,13 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
-    public struct DXGI_DISPLAY_COLOR_SPACE
+    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 48)]
+    unsafe public struct DXGI_DISPLAY_COLOR_SPACE
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-        public float[] PrimaryCoordinates;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
-        public float[] WhitePoints;
+        #region Fields
+        public fixed float PrimaryCoordinates[8 * 2];
+
+        public fixed float WhitePoints[16 * 2];
+        #endregion
     }
 }

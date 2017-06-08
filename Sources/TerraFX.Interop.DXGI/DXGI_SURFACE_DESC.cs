@@ -7,12 +7,17 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 20)]
     public struct DXGI_SURFACE_DESC
     {
+        #region Fields
         public uint Width;
+
         public uint Height;
+
         public DXGI_FORMAT Format;
+
         public DXGI_SAMPLE_DESC SampleDesc;
+        #endregion
     }
 }

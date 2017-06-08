@@ -7,16 +7,25 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 8)]
+    [StructLayout(LayoutKind.Sequential, Pack = 8, Size = 48)]
     public struct DXGI_OUTDUPL_FRAME_INFO
     {
+        #region Fields
         public long LastPresentTime;
+
         public long LastMouseUpdateTime;
+
         public uint AccumulatedFrames;
+
         public int RectsCoalesced;
+
         public int ProtectedContentMaskedOut;
+
         public DXGI_OUTDUPL_POINTER_POSITION PointerPosition;
+
         public uint TotalMetadataBufferSize;
+
         public uint PointerShapeBufferSize;
+        #endregion
     }
 }

@@ -7,10 +7,13 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 8)]
     public struct POINT
     {
+        #region Fields
         public int x;
+
         public int y;
+        #endregion
     }
 }

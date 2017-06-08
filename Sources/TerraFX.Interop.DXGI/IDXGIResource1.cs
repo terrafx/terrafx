@@ -14,6 +14,7 @@ namespace TerraFX.Interop.DXGI
     [SuppressUnmanagedCodeSecurity]
     public interface IDXGIResource1 : IDXGIResource
     {
+        #region IDXGIObject
         new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
 
         new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
@@ -21,19 +22,26 @@ namespace TerraFX.Interop.DXGI
         new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
 
         new IntPtr GetParent([In] ref Guid riid);
+        #endregion
 
+        #region IDXGIDeviceSubObject
         new IntPtr GetDevice([In] ref Guid riid);
+        #endregion
 
+        #region IDXGIResource
         new void GetSharedHandle(out IntPtr pSharedHandle);
 
         new void GetUsage(out uint pUsage);
 
-        new void SetEvictionPriority([In] uint EvictionPriority);
+        new void SetEvictionPriority([In] DXGI_RESOURCE_PRIORITY EvictionPriority);
 
-        new uint GetEvictionPriority();
+        new DXGI_RESOURCE_PRIORITY GetEvictionPriority();
+        #endregion
 
+        #region Methods
         void CreateSubresourceSurface(uint index, [MarshalAs(UnmanagedType.Interface)] out IDXGISurface2 ppSurface);
 
         void CreateSharedHandle([In] ref SECURITY_ATTRIBUTES pAttributes, [In] uint dwAccess, [MarshalAs(UnmanagedType.LPWStr), In] string lpName, out IntPtr pHandle);
+        #endregion
     }
 }

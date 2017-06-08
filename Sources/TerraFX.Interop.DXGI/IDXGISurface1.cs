@@ -14,6 +14,7 @@ namespace TerraFX.Interop.DXGI
     [SuppressUnmanagedCodeSecurity]
     public interface IDXGISurface1 : IDXGISurface
     {
+        #region IDXGIObject
         new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
 
         new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
@@ -21,17 +22,24 @@ namespace TerraFX.Interop.DXGI
         new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
 
         new IntPtr GetParent([In] ref Guid riid);
+        #endregion
 
+        #region IDXGIDeviceSubObject
         new IntPtr GetDevice([In] ref Guid riid);
+        #endregion
 
+        #region IDXGISurface
         new void GetDesc(out DXGI_SURFACE_DESC pDesc);
 
-        new void Map(out DXGI_MAPPED_RECT pLockedRect, [In] uint MapFlags);
+        new void Map(out DXGI_MAPPED_RECT pLockedRect, [In] DXGI_MAP_FLAG MapFlags);
 
         new void Unmap();
+        #endregion
 
+        #region Methods
         void GetDC([In] int Discard, [Out] IntPtr phdc);
 
         void ReleaseDC([In] ref RECT pDirtyRect);
+        #endregion
     }
 }

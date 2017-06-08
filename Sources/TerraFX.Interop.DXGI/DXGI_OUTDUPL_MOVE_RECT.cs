@@ -7,10 +7,13 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 24)]
     public struct DXGI_OUTDUPL_MOVE_RECT
     {
+        #region Fields
         public POINT SourcePoint;
+
         public RECT DestinationRect;
+        #endregion
     }
 }

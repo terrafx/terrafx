@@ -13,10 +13,12 @@ namespace TerraFX.Interop.DXGI
     [SuppressUnmanagedCodeSecurity]
     public interface IDXGISwapChainMedia
     {
+        #region Methods
         void GetFrameStatisticsMedia(out DXGI_FRAME_STATISTICS_MEDIA pStats);
 
         void SetPresentDuration(uint Duration);
 
         void CheckPresentDurationSupport(uint DesiredPresentDuration, out uint pClosestSmallerPresentDuration, out uint pClosestLargerPresentDuration);
+        #endregion
     }
 }

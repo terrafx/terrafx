@@ -8,12 +8,17 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
-    public struct DXGI_PRESENT_PARAMETERS
+    [StructLayout(LayoutKind.Sequential, Pack = 4)] // Size = 16 or 32
+    unsafe public struct DXGI_PRESENT_PARAMETERS
     {
+        #region Fields
         public uint DirtyRectsCount;
-        public IntPtr pDirtyRects;
-        public IntPtr pScrollRect;
-        public IntPtr pScrollOffset;
+
+        public RECT* pDirtyRects;
+
+        public RECT* pScrollRect;
+
+        public POINT* pScrollOffset;
+        #endregion
     }
 }

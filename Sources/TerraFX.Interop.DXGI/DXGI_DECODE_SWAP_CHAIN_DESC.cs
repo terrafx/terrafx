@@ -7,9 +7,11 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 4)]
     public struct DXGI_DECODE_SWAP_CHAIN_DESC
     {
+        #region Fields
         public uint Flags;
+        #endregion
     }
 }

@@ -7,8 +7,12 @@ namespace TerraFX.Interop.DXGI
 {
     public enum DXGI_OUTDUPL_POINTER_SHAPE_TYPE
     {
-        DXGI_OUTDUPL_POINTER_SHAPE_TYPE_MONOCHROME = 1,
-        DXGI_OUTDUPL_POINTER_SHAPE_TYPE_COLOR = 2,
-        DXGI_OUTDUPL_POINTER_SHAPE_TYPE_MASKED_COLOR = 4,
+        UNKNOWN = 0,
+
+        MONOCHROME = 1,
+
+        COLOR = 2,
+
+        MASKED_COLOR = 4
     }
 }

@@ -8,16 +8,29 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    [StructLayout(LayoutKind.Sequential, Pack = 4)] // Size = 60 or 68
     public struct DXGI_SWAP_CHAIN_DESC
     {
+        #region Constants
+        public const uint MAX_SWAP_CHAIN_BUFFERS = 16;
+        #endregion
+
+        #region Fields
         public DXGI_MODE_DESC BufferDesc;
+
         public DXGI_SAMPLE_DESC SampleDesc;
-        public uint BufferUsage;
+
+        public DXGI_USAGE BufferUsage;
+
         public uint BufferCount;
-        public IntPtr OutputWindow;
-        public int Windowed;
+
+        public IntPtr /* HWND */ OutputWindow;
+
+        public int /* BOOL */ Windowed;
+
         public DXGI_SWAP_EFFECT SwapEffect;
-        public uint Flags;
+
+        public DXGI_SWAP_CHAIN_FLAG Flags;
+        #endregion
     }
 }

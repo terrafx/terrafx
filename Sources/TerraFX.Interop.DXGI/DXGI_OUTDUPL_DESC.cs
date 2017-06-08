@@ -7,11 +7,15 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 36)]
     public struct DXGI_OUTDUPL_DESC
     {
+        #region Fields
         public DXGI_MODE_DESC ModeDesc;
+
         public DXGI_MODE_ROTATION Rotation;
-        public int DesktopImageInSystemMemory;
+
+        public int /* BOOL */ DesktopImageInSystemMemory;
+        #endregion
     }
 }

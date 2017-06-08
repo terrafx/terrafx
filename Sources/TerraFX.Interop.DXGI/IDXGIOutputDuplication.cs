@@ -14,6 +14,7 @@ namespace TerraFX.Interop.DXGI
     [SuppressUnmanagedCodeSecurity]
     public interface IDXGIOutputDuplication : IDXGIObject
     {
+        #region IDXGIObject
         new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
 
         new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
@@ -21,7 +22,9 @@ namespace TerraFX.Interop.DXGI
         new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
 
         new IntPtr GetParent([In] ref Guid riid);
+        #endregion
 
+        #region Methods
         [PreserveSig]
         void GetDesc(out DXGI_OUTDUPL_DESC pDesc);
 
@@ -38,5 +41,6 @@ namespace TerraFX.Interop.DXGI
         void UnMapDesktopSurface();
 
         void ReleaseFrame();
+        #endregion
     }
 }

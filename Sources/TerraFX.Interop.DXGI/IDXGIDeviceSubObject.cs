@@ -9,11 +9,12 @@ using System.Security;
 
 namespace TerraFX.Interop.DXGI
 {
-    [SuppressUnmanagedCodeSecurity]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     [Guid("3D3E0379-F9DE-4D58-BB6C-18D62992F1A6")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    [SuppressUnmanagedCodeSecurity]
     public interface IDXGIDeviceSubObject : IDXGIObject
     {
+        #region IDXGIObject
         new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
 
         new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
@@ -21,7 +22,10 @@ namespace TerraFX.Interop.DXGI
         new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
 
         new IntPtr GetParent([In] ref Guid riid);
+        #endregion
 
+        #region Methods
         IntPtr GetDevice([In] ref Guid riid);
+        #endregion
     }
 }

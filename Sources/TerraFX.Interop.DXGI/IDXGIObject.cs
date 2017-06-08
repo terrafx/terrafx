@@ -14,6 +14,7 @@ namespace TerraFX.Interop.DXGI
     [SuppressUnmanagedCodeSecurity]
     public interface IDXGIObject
     {
+        #region Methods
         void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
 
         void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
@@ -21,5 +22,6 @@ namespace TerraFX.Interop.DXGI
         void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
 
         IntPtr GetParent([In] ref Guid riid);
+        #endregion
     }
 }

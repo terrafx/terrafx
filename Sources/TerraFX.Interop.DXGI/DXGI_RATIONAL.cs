@@ -7,10 +7,13 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 8)]
     public struct DXGI_RATIONAL
     {
+        #region Fields
         public uint Numerator;
+
         public uint Denominator;
+        #endregion
     }
 }

@@ -7,15 +7,23 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 32)]
     public struct DXGI_MODE_DESC1
     {
+        #region Fields
         public uint Width;
+
         public uint Height;
+
         public DXGI_RATIONAL RefreshRate;
+
         public DXGI_FORMAT Format;
+
         public DXGI_MODE_SCANLINE_ORDER ScanlineOrdering;
+
         public DXGI_MODE_SCALING Scaling;
-        public int Stereo;
+
+        public int /* BOOL */ Stereo;
+        #endregion
     }
 }

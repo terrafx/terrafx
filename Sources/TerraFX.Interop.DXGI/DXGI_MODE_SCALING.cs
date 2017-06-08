@@ -7,8 +7,10 @@ namespace TerraFX.Interop.DXGI
 {
     public enum DXGI_MODE_SCALING
     {
-        DXGI_MODE_SCALING_UNSPECIFIED,
-        DXGI_MODE_SCALING_CENTERED,
-        DXGI_MODE_SCALING_STRETCHED,
+        UNSPECIFIED = 0,
+
+        CENTERED = 1,
+
+        STRETCHED = 2
     }
 }

@@ -9,11 +9,12 @@ using System.Security;
 
 namespace TerraFX.Interop.DXGI
 {
-    [SuppressUnmanagedCodeSecurity]
     [Guid("54EC77FA-1377-44E6-8C32-88FD5F44C84C")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    [SuppressUnmanagedCodeSecurity]
     public interface IDXGIDevice : IDXGIObject
     {
+        #region IDXGIObject
         new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
 
         new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
@@ -21,7 +22,9 @@ namespace TerraFX.Interop.DXGI
         new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
 
         new IntPtr GetParent([In] ref Guid riid);
+        #endregion
 
+        #region Methods
         void GetAdapter([MarshalAs(UnmanagedType.Interface)] out IDXGIAdapter pAdapter);
 
         void CreateSurface([In] ref DXGI_SURFACE_DESC pDesc, [In] uint NumSurfaces, [In] uint Usage, [In] ref DXGI_SHARED_RESOURCE pSharedResource, [MarshalAs(UnmanagedType.Interface)] out IDXGISurface ppSurface);
@@ -31,5 +34,6 @@ namespace TerraFX.Interop.DXGI
         void SetGPUThreadPriority([In] int Priority);
 
         int GetGPUThreadPriority();
+        #endregion
     }
 }

@@ -14,6 +14,7 @@ namespace TerraFX.Interop.DXGI
     [SuppressUnmanagedCodeSecurity]
     public interface IDXGISwapChain1 : IDXGISwapChain
     {
+        #region IDXGIObject
         new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
 
         new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
@@ -21,10 +22,14 @@ namespace TerraFX.Interop.DXGI
         new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
 
         new IntPtr GetParent([In] ref Guid riid);
+        #endregion
 
+        #region IDXGIDeviceSubObject
         new IntPtr GetDevice([In] ref Guid riid);
+        #endregion
 
-        new void Present([In] uint SyncInterval, [In] uint Flags);
+        #region IDXGISwapChain
+        new void Present([In] uint SyncInterval, [In] DXGI_PRESENT_FLAG Flags);
 
         new void GetBuffer([In] uint Buffer, [In] ref Guid riid, [In, Out] ref IntPtr ppSurface);
 
@@ -34,7 +39,7 @@ namespace TerraFX.Interop.DXGI
 
         new void GetDesc(out DXGI_SWAP_CHAIN_DESC pDesc);
 
-        new void ResizeBuffers([In] uint BufferCount, [In] uint Width, [In] uint Height, [In] DXGI_FORMAT NewFormat, [In] uint SwapChainFlags);
+        new void ResizeBuffers([In] uint BufferCount, [In] uint Width, [In] uint Height, [In] DXGI_FORMAT NewFormat, [In] DXGI_SWAP_CHAIN_FLAG SwapChainFlags);
 
         new void ResizeTarget([In] ref DXGI_MODE_DESC pNewTargetParameters);
 
@@ -43,7 +48,9 @@ namespace TerraFX.Interop.DXGI
         new void GetFrameStatistics(out DXGI_FRAME_STATISTICS pStats);
 
         new void GetLastPresentCount(out uint pLastPresentCount);
+        #endregion
 
+        #region Methods
         void GetDesc1(out DXGI_SWAP_CHAIN_DESC1 pDesc);
 
         void GetFullscreenDesc(out DXGI_SWAP_CHAIN_FULLSCREEN_DESC pDesc);
@@ -52,7 +59,7 @@ namespace TerraFX.Interop.DXGI
 
         void GetCoreWindow([In] ref Guid refiid, out IntPtr ppUnk);
 
-        void Present1([In] uint SyncInterval, [In] uint PresentFlags, [In] ref DXGI_PRESENT_PARAMETERS pPresentParameters);
+        void Present1([In] uint SyncInterval, [In] DXGI_PRESENT_FLAG PresentFlags, [In] ref DXGI_PRESENT_PARAMETERS pPresentParameters);
 
         [PreserveSig]
         int IsTemporaryMonoSupported();
@@ -66,5 +73,6 @@ namespace TerraFX.Interop.DXGI
         void SetRotation([In] DXGI_MODE_ROTATION Rotation);
 
         void GetRotation(out DXGI_MODE_ROTATION pRotation);
+        #endregion
     }
 }

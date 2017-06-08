@@ -9,11 +9,12 @@ using System.Security;
 
 namespace TerraFX.Interop.DXGI
 {
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     [Guid("CAFCB56C-6AC3-4889-BF47-9E23BBD260EC")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     [SuppressUnmanagedCodeSecurity]
     public interface IDXGISurface : IDXGIDeviceSubObject
     {
+        #region IDXGIObject
         new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
 
         new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
@@ -21,13 +22,18 @@ namespace TerraFX.Interop.DXGI
         new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
 
         new IntPtr GetParent([In] ref Guid riid);
+        #endregion
 
+        #region IDXGIDeviceSubObject
         new IntPtr GetDevice([In] ref Guid riid);
+        #endregion
 
+        #region Methods
         void GetDesc(out DXGI_SURFACE_DESC pDesc);
 
-        void Map(out DXGI_MAPPED_RECT pLockedRect, [In] uint MapFlags);
+        void Map(out DXGI_MAPPED_RECT pLockedRect, [In] DXGI_MAP_FLAG MapFlags);
 
         void Unmap();
+        #endregion
     }
 }

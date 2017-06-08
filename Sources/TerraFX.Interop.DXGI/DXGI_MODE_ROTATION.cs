@@ -7,10 +7,14 @@ namespace TerraFX.Interop.DXGI
 {
     public enum DXGI_MODE_ROTATION
     {
-        DXGI_MODE_ROTATION_UNSPECIFIED,
-        DXGI_MODE_ROTATION_IDENTITY,
-        DXGI_MODE_ROTATION_ROTATE90,
-        DXGI_MODE_ROTATION_ROTATE180,
-        DXGI_MODE_ROTATION_ROTATE270,
+        UNSPECIFIED = 0,
+
+        IDENTITY = 1,
+
+        ROTATE90 = 2,
+
+        ROTATE180 = 3,
+
+        ROTATE270 = 4
     }
 }

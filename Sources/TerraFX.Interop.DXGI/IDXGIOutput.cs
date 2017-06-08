@@ -9,11 +9,12 @@ using System.Security;
 
 namespace TerraFX.Interop.DXGI
 {
-    [SuppressUnmanagedCodeSecurity]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     [Guid("AE02EEDB-C735-4690-8D52-5A8DC20213AA")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    [SuppressUnmanagedCodeSecurity]
     public interface IDXGIOutput : IDXGIObject
     {
+        #region IDXGIObject
         new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
 
         new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
@@ -21,10 +22,12 @@ namespace TerraFX.Interop.DXGI
         new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
 
         new IntPtr GetParent([In] ref Guid riid);
+        #endregion
 
+        #region Methods
         void GetDesc(out DXGI_OUTPUT_DESC pDesc);
 
-        void GetDisplayModeList([In] DXGI_FORMAT EnumFormat, [In] uint Flags, [In, Out] ref uint pNumModes, out DXGI_MODE_DESC pDesc);
+        void GetDisplayModeList([In] DXGI_FORMAT EnumFormat, [In] DXGI_ENUM_MODES Flags, [In, Out] ref uint pNumModes, out DXGI_MODE_DESC pDesc);
 
         void FindClosestMatchingMode([In] ref DXGI_MODE_DESC pModeToMatch, out DXGI_MODE_DESC pClosestMatch, [MarshalAs(UnmanagedType.IUnknown), In] object pConcernedDevice);
 
@@ -46,5 +49,6 @@ namespace TerraFX.Interop.DXGI
         void GetDisplaySurfaceData([MarshalAs(UnmanagedType.Interface), In] IDXGISurface pDestination);
 
         void GetFrameStatistics(out DXGI_FRAME_STATISTICS pStats);
+        #endregion
     }
 }

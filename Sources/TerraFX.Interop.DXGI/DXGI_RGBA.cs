@@ -7,12 +7,17 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 16)]
     public struct DXGI_RGBA
     {
+        #region Fields
         public float r;
+
         public float g;
+
         public float b;
+
         public float a;
+        #endregion
     }
 }

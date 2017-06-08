@@ -7,8 +7,12 @@ namespace TerraFX.Interop.DXGI
 {
     public enum DXGI_OFFER_RESOURCE_PRIORITY
     {
-        DXGI_OFFER_RESOURCE_PRIORITY_LOW = 1,
-        DXGI_OFFER_RESOURCE_PRIORITY_NORMAL = 2,
-        DXGI_OFFER_RESOURCE_PRIORITY_HIGH = 3,
+        UNKNOWN = 0,
+
+        LOW = 1,
+
+        NORMAL = 2,
+
+        HIGH = 3
     }
 }

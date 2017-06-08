@@ -7,14 +7,19 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
-    public struct DXGI_GAMMA_CONTROL_CAPABILITIES
+    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 4116)]
+    unsafe public struct DXGI_GAMMA_CONTROL_CAPABILITIES
     {
-        public int ScaleAndOffsetSupported;
+        #region Fields
+        public int /* BOOL */ ScaleAndOffsetSupported;
+
         public float MaxConvertedValue;
+
         public float MinConvertedValue;
+
         public uint NumGammaControlPoints;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1025)]
-        public float[] ControlPointPositions;
+
+        public fixed float ControlPointPositions[1025];
+        #endregion
     }
 }

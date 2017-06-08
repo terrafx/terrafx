@@ -8,14 +8,21 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
-    public struct DXGI_INFO_QUEUE_FILTER_DESC
+    [StructLayout(LayoutKind.Sequential, Pack = 4)] // Size = 24 or 48
+    unsafe public struct DXGI_INFO_QUEUE_FILTER_DESC
     {
+        #region Fields
         public uint NumCategories;
-        public IntPtr pCategoryList;
+
+        public DXGI_INFO_QUEUE_MESSAGE_CATEGORY* pCategoryList;
+
         public uint NumSeverities;
-        public IntPtr pSeverityList;
+
+        public DXGI_INFO_QUEUE_MESSAGE_SEVERITY* pSeverityList;
+
         public uint NumIDs;
-        public IntPtr pIDList;
+
+        public DXGI_INFO_QUEUE_MESSAGE_ID* pIDList;
+        #endregion
     }
 }

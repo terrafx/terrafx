@@ -3,23 +3,34 @@
 // Ported from shared\dxgi.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 8)]
-    public struct DXGI_ADAPTER_DESC1
+    [StructLayout(LayoutKind.Sequential, Pack = 8)] // Size = 300 or 308
+    unsafe public struct DXGI_ADAPTER_DESC1
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 128)]
-        public ushort[] Description;
+        #region Fields
+        public fixed ushort Description[128];
+
         public uint VendorId;
+
         public uint DeviceId;
+
         public uint SubSysId;
+
         public uint Revision;
-        public ulong DedicatedVideoMemory;
-        public ulong DedicatedSystemMemory;
-        public ulong SharedSystemMemory;
-        public long AdapterLuid;
-        public uint Flags;
+
+        public UIntPtr DedicatedVideoMemory;
+
+        public UIntPtr DedicatedSystemMemory;
+
+        public UIntPtr SharedSystemMemory;
+
+        public long /* LUID */ AdapterLuid;
+
+        public DXGI_ADAPTER_FLAG Flags;
+        #endregion
     }
 }

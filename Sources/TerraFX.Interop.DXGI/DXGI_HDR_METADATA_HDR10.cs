@@ -7,20 +7,25 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
-    public struct DXGI_HDR_METADATA_HDR10
+    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 20)]
+    unsafe public struct DXGI_HDR_METADATA_HDR10
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
-        public ushort[] RedPrimary;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
-        public ushort[] GreenPrimary;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
-        public ushort[] BluePrimary;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
-        public ushort[] WhitePoint;
+        #region Fields
+        public fixed ushort RedPrimary[2];
+
+        public fixed ushort GreenPrimary[2];
+
+        public fixed ushort BluePrimary[2];
+
+        public fixed ushort WhitePoint[2];
+
         public uint MaxMasteringLuminance;
+
         public uint MinMasteringLuminance;
+
         public ushort MaxContentLightLevel;
+
         public ushort MaxFrameAverageLightLevel;
+        #endregion
     }
 }

@@ -14,6 +14,7 @@ namespace TerraFX.Interop.DXGI
     [SuppressUnmanagedCodeSecurity]
     public interface IDXGISwapChain : IDXGIDeviceSubObject
     {
+        #region IDXGIObject
         new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
 
         new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
@@ -21,10 +22,14 @@ namespace TerraFX.Interop.DXGI
         new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
 
         new IntPtr GetParent([In] ref Guid riid);
+        #endregion
 
+        #region IDXGIDeviceSubObject
         new IntPtr GetDevice([In] ref Guid riid);
+        #endregion
 
-        void Present([In] uint SyncInterval, [In] uint Flags);
+        #region Methods
+        void Present([In] uint SyncInterval, [In] DXGI_PRESENT_FLAG Flags);
 
         void GetBuffer([In] uint Buffer, [In] ref Guid riid, [In, Out] ref IntPtr ppSurface);
 
@@ -34,7 +39,7 @@ namespace TerraFX.Interop.DXGI
 
         void GetDesc(out DXGI_SWAP_CHAIN_DESC pDesc);
 
-        void ResizeBuffers([In] uint BufferCount, [In] uint Width, [In] uint Height, [In] DXGI_FORMAT NewFormat, [In] uint SwapChainFlags);
+        void ResizeBuffers([In] uint BufferCount, [In] uint Width, [In] uint Height, [In] DXGI_FORMAT NewFormat, [In] DXGI_SWAP_CHAIN_FLAG SwapChainFlags);
 
         void ResizeTarget([In] ref DXGI_MODE_DESC pNewTargetParameters);
 
@@ -43,5 +48,6 @@ namespace TerraFX.Interop.DXGI
         void GetFrameStatistics(out DXGI_FRAME_STATISTICS pStats);
 
         void GetLastPresentCount(out uint pLastPresentCount);
+        #endregion
     }
 }

@@ -9,11 +9,12 @@ using System.Security;
 
 namespace TerraFX.Interop.DXGI
 {
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     [Guid("035F3AB4-482E-4E50-B41F-8A7F8BD8960B")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     [SuppressUnmanagedCodeSecurity]
     public interface IDXGIResource : IDXGIDeviceSubObject
     {
+        #region IDXGIObject
         new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
 
         new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
@@ -21,15 +22,20 @@ namespace TerraFX.Interop.DXGI
         new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
 
         new IntPtr GetParent([In] ref Guid riid);
+        #endregion
 
+        #region IDXGIDeviceSubObject
         new IntPtr GetDevice([In] ref Guid riid);
+        #endregion
 
+        #region Methods
         void GetSharedHandle(out IntPtr pSharedHandle);
 
         void GetUsage(out uint pUsage);
 
-        void SetEvictionPriority([In] uint EvictionPriority);
+        void SetEvictionPriority([In] DXGI_RESOURCE_PRIORITY EvictionPriority);
 
-        uint GetEvictionPriority();
+        DXGI_RESOURCE_PRIORITY GetEvictionPriority();
+        #endregion
     }
 }

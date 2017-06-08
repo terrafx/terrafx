@@ -3,14 +3,21 @@
 // Ported from shared\dxgi1_6.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
+
 namespace TerraFX.Interop.DXGI
 {
-    public enum DXGI_ADAPTER_FLAG3
+    [Flags]
+    public enum DXGI_ADAPTER_FLAG3 : uint
     {
-        DXGI_ADAPTER_FLAG3_FORCE_DWORD = -1,
-        DXGI_ADAPTER_FLAG3_NONE = 0,
-        DXGI_ADAPTER_FLAG3_REMOTE = 1,
-        DXGI_ADAPTER_FLAG3_SOFTWARE = 2,
-        DXGI_ADAPTER_FLAG3_ACG_COMPATIBLE = 4,
+        NONE = 0,
+
+        REMOTE = 1,
+
+        SOFTWARE = 2,
+
+        ACG_COMPATIBLE = 4,
+
+        FORCE_DWORD = 0xFFFFFFFF
     }
 }

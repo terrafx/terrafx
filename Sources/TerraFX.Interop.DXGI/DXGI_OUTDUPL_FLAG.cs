@@ -3,10 +3,15 @@
 // Ported from shared\dxgi1_5.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
+
 namespace TerraFX.Interop.DXGI
 {
+    [Flags]
     public enum DXGI_OUTDUPL_FLAG
     {
-        DXGI_OUTDUPL_COMPOSITED_UI_CAPTURE_ONLY = 1,
+        NONE = 0,
+
+        COMPOSITED_UI_CAPTURE_ONLY = 1
     }
 }

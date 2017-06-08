@@ -3,15 +3,17 @@
 // Ported from shared\dxgi.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System;
 using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
-    public struct DXGI_MAPPED_RECT
+    [StructLayout(LayoutKind.Sequential, Pack = 4)] // Size = 8 or 16
+    unsafe public struct DXGI_MAPPED_RECT
     {
+        #region Fields
         public int Pitch;
-        public IntPtr pBits;
+
+        public byte* pBits;
+        #endregion
     }
 }

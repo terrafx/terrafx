@@ -9,13 +9,16 @@ using System.Security;
 
 namespace TerraFX.Interop.DXGI
 {
+    [Guid("C5A05F0C-16F2-4ADF-9F4D-A8C4D58AC550")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     [SuppressUnmanagedCodeSecurity]
-    [Guid("C5A05F0C-16F2-4ADF-9F4D-A8C4D58AC550")]
     public interface IDXGIDebug1 : IDXGIDebug
     {
+        #region IDXGIDebug
         new void ReportLiveObjects(Guid apiid, DXGI_DEBUG_RLO_FLAGS flags);
+        #endregion
 
+        #region Methods
         [PreserveSig]
         void EnableLeakTrackingForThread();
 
@@ -24,5 +27,6 @@ namespace TerraFX.Interop.DXGI
 
         [PreserveSig]
         int IsLeakTrackingEnabledForThread();
+        #endregion
     }
 }

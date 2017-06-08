@@ -10,11 +10,18 @@ namespace TerraFX.Interop.DXGI
     [StructLayout(LayoutKind.Sequential, Pack = 4)]
     public struct DXGI_MATRIX_3X2_F
     {
+        #region Fields
         public float _11;
+
         public float _12;
+
         public float _21;
+
         public float _22;
+
         public float _31;
+
         public float _32;
+        #endregion
     }
 }

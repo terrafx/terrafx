@@ -9,11 +9,13 @@ using System.Security;
 
 namespace TerraFX.Interop.DXGI
 {
-    [SuppressUnmanagedCodeSecurity]
     [Guid("119E7452-DE9E-40FE-8806-88F90C12B441")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    [SuppressUnmanagedCodeSecurity]
     public interface IDXGIDebug
     {
+        #region Methods
         void ReportLiveObjects(Guid apiid, DXGI_DEBUG_RLO_FLAGS flags);
+        #endregion
     }
 }

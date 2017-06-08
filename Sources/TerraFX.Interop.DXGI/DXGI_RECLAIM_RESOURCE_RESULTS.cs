@@ -7,8 +7,10 @@ namespace TerraFX.Interop.DXGI
 {
     public enum DXGI_RECLAIM_RESOURCE_RESULTS
     {
-        DXGI_RECLAIM_RESOURCE_RESULT_OK,
-        DXGI_RECLAIM_RESOURCE_RESULT_DISCARDED,
-        DXGI_RECLAIM_RESOURCE_RESULT_NOT_COMMITTED,
+        OK = 0,
+
+        DISCARDED = 1,
+
+        NOT_COMMITTED = 2
     }
 }

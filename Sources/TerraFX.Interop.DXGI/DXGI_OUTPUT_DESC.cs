@@ -8,14 +8,19 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
-    public struct DXGI_OUTPUT_DESC
+    [StructLayout(LayoutKind.Sequential, Pack = 4)] // Size = 92 or 96
+    unsafe public struct DXGI_OUTPUT_DESC
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
-        public ushort[] DeviceName;
+        #region Fields
+        public fixed ushort DeviceName[32];
+
         public RECT DesktopCoordinates;
-        public int AttachedToDesktop;
+
+        public int /* BOOL */ AttachedToDesktop;
+
         public DXGI_MODE_ROTATION Rotation;
-        public IntPtr Monitor;
+
+        public IntPtr /* HMONITOR */ Monitor;
+        #endregion
     }
 }

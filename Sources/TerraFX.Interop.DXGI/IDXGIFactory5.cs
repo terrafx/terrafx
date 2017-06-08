@@ -14,6 +14,7 @@ namespace TerraFX.Interop.DXGI
     [SuppressUnmanagedCodeSecurity]
     public interface IDXGIFactory5 : IDXGIFactory4
     {
+        #region IDXGIObject
         new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
 
         new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
@@ -21,22 +22,28 @@ namespace TerraFX.Interop.DXGI
         new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
 
         new IntPtr GetParent([In] ref Guid riid);
+        #endregion
 
+        #region IDXGIFactory
         new void EnumAdapters([In] uint Adapter, [MarshalAs(UnmanagedType.Interface)] out IDXGIAdapter ppAdapter);
 
-        new void MakeWindowAssociation(IntPtr WindowHandle, uint Flags);
+        new void MakeWindowAssociation(IntPtr WindowHandle, DXGI_MWA_FLAG Flags);
 
         new void GetWindowAssociation([Out] IntPtr pWindowHandle);
 
         new void CreateSwapChain([MarshalAs(UnmanagedType.IUnknown), In] object pDevice, [In] ref DXGI_SWAP_CHAIN_DESC pDesc, [MarshalAs(UnmanagedType.Interface)] out IDXGISwapChain ppSwapChain);
 
         new void CreateSoftwareAdapter([In] IntPtr Module, [MarshalAs(UnmanagedType.Interface)] out IDXGIAdapter ppAdapter);
+        #endregion
 
+        #region IDXGIFactory1
         new void EnumAdapters1([In] uint Adapter, [MarshalAs(UnmanagedType.Interface)] out IDXGIAdapter1 ppAdapter);
 
         [PreserveSig]
         new int IsCurrent();
+        #endregion
 
+        #region IDXGIFactory2
         [PreserveSig]
         new int IsWindowedStereoEnabled();
 
@@ -61,14 +68,21 @@ namespace TerraFX.Interop.DXGI
         new void UnregisterOcclusionStatus([In] uint dwCookie);
 
         new void CreateSwapChainForComposition([MarshalAs(UnmanagedType.IUnknown), In] object pDevice, [In] ref DXGI_SWAP_CHAIN_DESC1 pDesc, [MarshalAs(UnmanagedType.Interface), In] IDXGIOutput pRestrictToOutput, [MarshalAs(UnmanagedType.Interface)] out IDXGISwapChain1 ppSwapChain);
+        #endregion
 
+        #region IDXGIFactory3
         [PreserveSig]
-        new uint GetCreationFlags();
+        new DXGI_CREATE_FACTORY_FLAG GetCreationFlags();
+        #endregion
 
-        new void EnumAdapterBylong(long AdapterLuid, ref Guid riid, ref IntPtr ppvAdapter);
+        #region IDXGIFactory4
+        new void EnumAdapterByLuid(long AdapterLuid, ref Guid riid, ref IntPtr ppvAdapter);
 
         new void EnumWarpAdapter(ref Guid riid, ref IntPtr ppvAdapter);
+        #endregion
 
+        #region Methods
         void CheckFeatureSupport(DXGI_FEATURE Feature, IntPtr pFeatureSupportData, uint FeatureSupportDataSize);
+        #endregion
     }
 }

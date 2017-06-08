@@ -9,11 +9,12 @@ using System.Security;
 
 namespace TerraFX.Interop.DXGI
 {
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     [Guid("D67441C7-672A-476F-9E82-CD55B44949CE")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     [SuppressUnmanagedCodeSecurity]
     public interface IDXGIInfoQueue
     {
+        #region Methods
         void SetMessageCountLimit(Guid Producer, ulong MessageCountLimit);
 
         [PreserveSig]
@@ -105,5 +106,6 @@ namespace TerraFX.Interop.DXGI
 
         [PreserveSig]
         int GetMuteDebugOutput(Guid Producer);
+        #endregion
     }
 }

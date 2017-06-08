@@ -7,12 +7,17 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 8)]
+    [StructLayout(LayoutKind.Sequential, Pack = 8, Size = 32)]
     public struct DXGI_QUERY_VIDEO_MEMORY_INFO
     {
+        #region Fields
         public ulong Budget;
+
         public ulong CurrentUsage;
+
         public ulong AvailableForReservation;
+
         public ulong CurrentReservation;
+        #endregion
     }
 }

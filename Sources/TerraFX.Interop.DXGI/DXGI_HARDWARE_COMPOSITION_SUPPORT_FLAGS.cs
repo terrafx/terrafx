@@ -3,12 +3,19 @@
 // Ported from shared\dxgi1_6.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
+
 namespace TerraFX.Interop.DXGI
 {
+    [Flags]
     public enum DXGI_HARDWARE_COMPOSITION_SUPPORT_FLAGS
     {
-        DXGI_HARDWARE_COMPOSITION_SUPPORT_FLAG_FULLSCREEN = 1,
-        DXGI_HARDWARE_COMPOSITION_SUPPORT_FLAG_WINDOWED = 2,
-        DXGI_HARDWARE_COMPOSITION_SUPPORT_FLAG_CURSOR_STRETCHED = 4,
+        NONE = 0,
+
+        FULLSCREEN = 1,
+
+        WINDOWED = 2,
+
+        CURSOR_STRETCHED = 4
     }
 }

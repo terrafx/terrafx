@@ -13,7 +13,8 @@ namespace TerraFX.Interop.DXGI
     [SuppressUnmanagedCodeSecurity]
     public interface IDXGIDecodeSwapChain
     {
-        void PresentBuffer(uint BufferToPresent, uint SyncInterval, uint Flags);
+        #region Methods
+        void PresentBuffer(uint BufferToPresent, uint SyncInterval, DXGI_PRESENT_FLAG Flags);
 
         void SetSourceRect(ref RECT pRect);
 
@@ -31,5 +32,6 @@ namespace TerraFX.Interop.DXGI
 
         [PreserveSig]
         DXGI_MULTIPLANE_OVERLAY_YCbCr_FLAGS GetColorSpace();
+        #endregion
     }
 }

@@ -7,12 +7,13 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct DXGI_JPEG_AC_HUFFMAN_TABLE
+    [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 178)]
+    unsafe public struct DXGI_JPEG_AC_HUFFMAN_TABLE
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-        public byte[] CodeCounts;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 162)]
-        public byte[] CodeValues;
+        #region Fields
+        public fixed byte CodeCounts[16];
+
+        public fixed byte CodeValues[162];
+        #endregion
     }
 }

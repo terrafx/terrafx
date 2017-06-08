@@ -9,11 +9,12 @@ using System.Security;
 
 namespace TerraFX.Interop.DXGI
 {
-    [SuppressUnmanagedCodeSecurity]
     [Guid("77DB970F-6276-48BA-BA28-070143B4392C")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    [SuppressUnmanagedCodeSecurity]
     public interface IDXGIDevice1 : IDXGIDevice
     {
+        #region IDXGIObject
         new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
 
         new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
@@ -21,7 +22,9 @@ namespace TerraFX.Interop.DXGI
         new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
 
         new IntPtr GetParent([In] ref Guid riid);
+        #endregion
 
+        #region IDXGIDevice
         new void GetAdapter([MarshalAs(UnmanagedType.Interface)] out IDXGIAdapter pAdapter);
 
         new void CreateSurface([In] ref DXGI_SURFACE_DESC pDesc, [In] uint NumSurfaces, [In] uint Usage, [In] ref DXGI_SHARED_RESOURCE pSharedResource, [MarshalAs(UnmanagedType.Interface)] out IDXGISurface ppSurface);
@@ -31,9 +34,12 @@ namespace TerraFX.Interop.DXGI
         new void SetGPUThreadPriority([In] int Priority);
 
         new int GetGPUThreadPriority();
+        #endregion
 
+        #region Methods
         void SetMaximumFrameLatency([In] uint MaxLatency);
 
         void GetMaximumFrameLatency(out uint pMaxLatency);
+        #endregion
     }
 }

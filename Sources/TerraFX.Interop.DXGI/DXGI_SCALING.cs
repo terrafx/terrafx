@@ -7,8 +7,10 @@ namespace TerraFX.Interop.DXGI
 {
     public enum DXGI_SCALING
     {
-        DXGI_SCALING_STRETCH,
-        DXGI_SCALING_NONE,
-        DXGI_SCALING_ASPECT_RATIO_STRETCH,
+        STRETCH = 0,
+
+        NONE = 1,
+
+        ASPECT_RATIO_STRETCH = 2
     }
 }

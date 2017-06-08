@@ -9,13 +9,15 @@ using System.Security;
 
 namespace TerraFX.Interop.DXGI
 {
-    [SuppressUnmanagedCodeSecurity]
     [Guid("41E7D1F2-A591-4F7B-A2E5-FA9C843E1C12")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    [SuppressUnmanagedCodeSecurity]
     public interface IDXGIFactoryMedia
     {
+        #region Methods
         void CreateSwapChainForCompositionSurfaceHandle([MarshalAs(UnmanagedType.IUnknown), In] object pDevice, [In] IntPtr hSurface, [In] ref DXGI_SWAP_CHAIN_DESC1 pDesc, [MarshalAs(UnmanagedType.Interface), In] IDXGIOutput pRestrictToOutput, [MarshalAs(UnmanagedType.Interface)] out IDXGISwapChain1 ppSwapChain);
 
         void CreateDecodeSwapChainForCompositionSurfaceHandle([MarshalAs(UnmanagedType.IUnknown), In] object pDevice, [In] IntPtr hSurface, [In] ref DXGI_DECODE_SWAP_CHAIN_DESC pDesc, [MarshalAs(UnmanagedType.Interface), In] IDXGIResource pYuvDecodeBuffers, [MarshalAs(UnmanagedType.Interface), In] IDXGIOutput pRestrictToOutput, [MarshalAs(UnmanagedType.Interface)] out IDXGIDecodeSwapChain ppSwapChain);
+        #endregion
     }
 }

@@ -7,10 +7,13 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 12)]
     public struct DXGI_OUTDUPL_POINTER_POSITION
     {
+        #region Fields
         public POINT Position;
-        public int Visible;
+
+        public int /* BOOL */ Visible;
+        #endregion
     }
 }

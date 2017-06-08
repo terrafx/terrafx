@@ -7,10 +7,19 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 8)]
     public struct DXGI_SAMPLE_DESC
     {
+        #region Constants
+        public const uint STANDARD_MULTISAMPLE_QUALITY_PATTERN = 0xFFFFFFFF;
+
+        public const uint CENTER_MULTISAMPLE_QUALITY_PATTERN = 0xFFFFFFFE;
+        #endregion
+
+        #region Fields
         public uint Count;
+
         public uint Quality;
+        #endregion
     }
 }

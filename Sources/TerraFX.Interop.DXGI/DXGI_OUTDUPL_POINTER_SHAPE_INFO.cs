@@ -7,13 +7,19 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 24)]
     public struct DXGI_OUTDUPL_POINTER_SHAPE_INFO
     {
+        #region Fields
         public uint Type;
+
         public uint Width;
+
         public uint Height;
+
         public uint Pitch;
+
         public POINT HotSpot;
+        #endregion
     }
 }

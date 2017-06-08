@@ -9,11 +9,12 @@ using System.Security;
 
 namespace TerraFX.Interop.DXGI
 {
-    [SuppressUnmanagedCodeSecurity]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     [Guid("50C83A1C-E072-4C48-87B0-3630FA36A6D0")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    [SuppressUnmanagedCodeSecurity]
     public interface IDXGIFactory2 : IDXGIFactory1
     {
+        #region IDXGIObject
         new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
 
         new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
@@ -21,22 +22,28 @@ namespace TerraFX.Interop.DXGI
         new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
 
         new IntPtr GetParent([In] ref Guid riid);
+        #endregion
 
+        #region IDXGIFactory
         new void EnumAdapters([In] uint Adapter, [MarshalAs(UnmanagedType.Interface)] out IDXGIAdapter ppAdapter);
 
-        new void MakeWindowAssociation(IntPtr WindowHandle, uint Flags);
+        new void MakeWindowAssociation(IntPtr WindowHandle, DXGI_MWA_FLAG Flags);
 
         new void GetWindowAssociation([Out] IntPtr pWindowHandle);
 
         new void CreateSwapChain([MarshalAs(UnmanagedType.IUnknown), In] object pDevice, [In] ref DXGI_SWAP_CHAIN_DESC pDesc, [MarshalAs(UnmanagedType.Interface)] out IDXGISwapChain ppSwapChain);
 
         new void CreateSoftwareAdapter([In] IntPtr Module, [MarshalAs(UnmanagedType.Interface)] out IDXGIAdapter ppAdapter);
+        #endregion
 
+        #region IDXGIFactory1
         new void EnumAdapters1([In] uint Adapter, [MarshalAs(UnmanagedType.Interface)] out IDXGIAdapter1 ppAdapter);
 
         [PreserveSig]
         new int IsCurrent();
+        #endregion
 
+        #region Methods
         [PreserveSig]
         int IsWindowedStereoEnabled();
 
@@ -61,5 +68,6 @@ namespace TerraFX.Interop.DXGI
         void UnregisterOcclusionStatus([In] uint dwCookie);
 
         void CreateSwapChainForComposition([MarshalAs(UnmanagedType.IUnknown), In] object pDevice, [In] ref DXGI_SWAP_CHAIN_DESC1 pDesc, [MarshalAs(UnmanagedType.Interface), In] IDXGIOutput pRestrictToOutput, [MarshalAs(UnmanagedType.Interface)] out IDXGISwapChain1 ppSwapChain);
+        #endregion
     }
 }
