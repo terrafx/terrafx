@@ -1,0 +1,22 @@
+// Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
+
+// Ported from um\dxgidebug.h in the Windows SDK for Windows 10.0.15063.0
+// Original source is Copyright © Microsoft. All rights reserved.
+
+namespace TerraFX.Interop.DXGI
+{
+    public enum DXGI_INFO_QUEUE_MESSAGE_CATEGORY
+    {
+        DXGI_INFO_QUEUE_MESSAGE_CATEGORY_UNKNOWN,
+        DXGI_INFO_QUEUE_MESSAGE_CATEGORY_MISCELLANEOUS,
+        DXGI_INFO_QUEUE_MESSAGE_CATEGORY_INITIALIZATION,
+        DXGI_INFO_QUEUE_MESSAGE_CATEGORY_CLEANUP,
+        DXGI_INFO_QUEUE_MESSAGE_CATEGORY_COMPILATION,
+        DXGI_INFO_QUEUE_MESSAGE_CATEGORY_STATE_CREATION,
+        DXGI_INFO_QUEUE_MESSAGE_CATEGORY_STATE_SETTING,
+        DXGI_INFO_QUEUE_MESSAGE_CATEGORY_STATE_GETTING,
+        DXGI_INFO_QUEUE_MESSAGE_CATEGORY_RESOURCE_MANIPULATION,
+        DXGI_INFO_QUEUE_MESSAGE_CATEGORY_EXECUTION,
+        DXGI_INFO_QUEUE_MESSAGE_CATEGORY_SHADER,
+    }
+}
