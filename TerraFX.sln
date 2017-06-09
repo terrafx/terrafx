@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26510.0
+VisualStudioVersion = 15.0.26606.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2F337CB6-0B9E-4765-A277-487E429DE9F1}"
 	ProjectSection(SolutionItems) = preProject
@@ -53,6 +53,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Interop.DXGI", "Sou
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Interop.DXGI.UnitTests", "Tests\TerraFX.Interop.DXGI.UnitTests\TerraFX.Interop.DXGI.UnitTests.csproj", "{F616E070-71F8-49CA-ACCD-CB8EA5F6C500}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Interop.Unknown", "Sources\TerraFX.Interop.Unknown\TerraFX.Interop.Unknown.csproj", "{28A8727D-771F-4089-BFD9-FD32D71B8B66}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Interop.Unknown.UnitTests", "Tests\TerraFX.Interop.Unknown.UnitTests\TerraFX.Interop.Unknown.UnitTests.csproj", "{B0002319-DB5A-4E0D-86BA-DC9F5DEE1D81}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +95,14 @@ Global
 		{F616E070-71F8-49CA-ACCD-CB8EA5F6C500}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F616E070-71F8-49CA-ACCD-CB8EA5F6C500}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F616E070-71F8-49CA-ACCD-CB8EA5F6C500}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28A8727D-771F-4089-BFD9-FD32D71B8B66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28A8727D-771F-4089-BFD9-FD32D71B8B66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28A8727D-771F-4089-BFD9-FD32D71B8B66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28A8727D-771F-4089-BFD9-FD32D71B8B66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0002319-DB5A-4E0D-86BA-DC9F5DEE1D81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0002319-DB5A-4E0D-86BA-DC9F5DEE1D81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0002319-DB5A-4E0D-86BA-DC9F5DEE1D81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0002319-DB5A-4E0D-86BA-DC9F5DEE1D81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -107,5 +119,7 @@ Global
 		{61FCEE25-6A00-409E-A1D2-448357CC91A3} = {EFB05081-EC44-49D3-B6D1-52AE42085B5B}
 		{A3933D84-01F6-42DF-B925-BE38C6316DF0} = {0B821858-8E47-4485-AC06-D2E971A53EB2}
 		{F616E070-71F8-49CA-ACCD-CB8EA5F6C500} = {EFB05081-EC44-49D3-B6D1-52AE42085B5B}
+		{28A8727D-771F-4089-BFD9-FD32D71B8B66} = {0B821858-8E47-4485-AC06-D2E971A53EB2}
+		{B0002319-DB5A-4E0D-86BA-DC9F5DEE1D81} = {EFB05081-EC44-49D3-B6D1-52AE42085B5B}
 	EndGlobalSection
 EndGlobal

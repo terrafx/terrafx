@@ -1,23 +1,22 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-// Ported from shared\windef.h in the Windows SDK for Windows 10.0.15063.0
+// Ported from um\wtypesbase.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 16)]
-    public struct RECT
+    [StructLayout(LayoutKind.Sequential, Pack = 4)] // Size = 12 or 20
+    public struct SECURITY_ATTRIBUTES
     {
         #region Fields
-        public int left;
+        public uint nLength;
 
-        public int top;
+        public IntPtr lpSecurityDescriptor;
 
-        public int right;
-
-        public int bottom;
+        public int /* BOOL */ bInheritHandle;
         #endregion
     }
 }

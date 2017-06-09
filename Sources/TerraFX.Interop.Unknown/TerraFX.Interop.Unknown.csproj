@@ -5,6 +5,8 @@
   <Import Project="$(MSBuildThisFileDirectory)..\..\Imports\TerraFX.Common.props" />
 
   <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>CS1591;$(NoWarn)</NoWarn>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
