@@ -26,51 +26,7 @@ namespace TerraFX.Interop.DXGI
         public struct Vtbl
         {
             #region Fields
-            public IUnknown.QueryInterface QueryInterface;
-
-            public IUnknown.AddRef AddRef;
-
-            public IUnknown.Release Release;
-
-            public IDXGIObject.SetPrivateData SetPrivateData;
-
-            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
-
-            public IDXGIObject.GetPrivateData GetPrivateData;
-
-            public IDXGIObject.GetParent GetParent;
-
-            public IDXGIOutput.GetDesc GetDesc;
-
-            public IDXGIOutput.GetDisplayModeList GetDisplayModeList;
-
-            public IDXGIOutput.FindClosestMatchingMode FindClosestMatchingMode;
-
-            public IDXGIOutput.WaitForVBlank WaitForVBlank;
-
-            public IDXGIOutput.TakeOwnership TakeOwnership;
-
-            public IDXGIOutput.ReleaseOwnership ReleaseOwnership;
-
-            public IDXGIOutput.GetGammaControlCapabilities GetGammaControlCapabilities;
-
-            public IDXGIOutput.SetGammaControl SetGammaControl;
-
-            public IDXGIOutput.GetGammaControl GetGammaControl;
-
-            public IDXGIOutput.SetDisplaySurface SetDisplaySurface;
-
-            public IDXGIOutput.GetDisplaySurfaceData GetDisplaySurfaceData;
-
-            public IDXGIOutput.GetFrameStatistics GetFrameStatistics;
-
-            public IDXGIOutput1.GetDisplayModeList1 GetDisplayModeList1;
-
-            public IDXGIOutput1.FindClosestMatchingMode1 FindClosestMatchingMode1;
-
-            public IDXGIOutput1.GetDisplaySurfaceData1 GetDisplaySurfaceData1;
-
-            public IDXGIOutput1.DuplicateOutput DuplicateOutput;
+            public IDXGIOutput1.Vtbl BaseVtbl;
 
             public SupportsOverlays SupportsOverlays;
             #endregion

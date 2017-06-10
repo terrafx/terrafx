@@ -21,7 +21,7 @@ namespace TerraFX.Interop.DXGI
             [In] IDXGISwapChain4* This,
             [In] DXGI_HDR_METADATA_TYPE Type,
             [In] uint Size,
-            [In] void* pMetaData
+            [In, Optional] void* pMetaData
         );
         #endregion
 
@@ -29,85 +29,7 @@ namespace TerraFX.Interop.DXGI
         public struct Vtbl
         {
             #region Fields
-            public IUnknown.QueryInterface QueryInterface;
-
-            public IUnknown.AddRef AddRef;
-
-            public IUnknown.Release Release;
-
-            public IDXGIObject.SetPrivateData SetPrivateData;
-
-            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
-
-            public IDXGIObject.GetPrivateData GetPrivateData;
-
-            public IDXGIObject.GetParent GetParent;
-
-            public IDXGIDeviceSubObject.GetDevice GetDevice;
-
-            public IDXGISwapChain.Present Present;
-
-            public IDXGISwapChain.GetBuffer GetBuffer;
-
-            public IDXGISwapChain.SetFullscreenState SetFullscreenState;
-
-            public IDXGISwapChain.GetFullscreenState GetFullscreenState;
-
-            public IDXGISwapChain.GetDesc GetDesc;
-
-            public IDXGISwapChain.ResizeBuffers ResizeBuffers;
-
-            public IDXGISwapChain.ResizeTarget ResizeTarget;
-
-            public IDXGISwapChain.GetContainingOutput GetContainingOutput;
-
-            public IDXGISwapChain.GetFrameStatistics GetFrameStatistics;
-
-            public IDXGISwapChain.GetLastPresentCount GetLastPresentCount;
-
-            public IDXGISwapChain1.GetDesc1 GetDesc1;
-
-            public IDXGISwapChain1.GetFullscreenDesc GetFullscreenDesc;
-
-            public IDXGISwapChain1.GetHwnd GetHwnd;
-
-            public IDXGISwapChain1.GetCoreWindow GetCoreWindow;
-
-            public IDXGISwapChain1.Present1 Present1;
-
-            public IDXGISwapChain1.IsTemporaryMonoSupported IsTemporaryMonoSupported;
-
-            public IDXGISwapChain1.GetRestrictToOutput GetRestrictToOutput;
-
-            public IDXGISwapChain1.SetBackgroundColor SetBackgroundColor;
-
-            public IDXGISwapChain1.GetBackgroundColor GetBackgroundColor;
-
-            public IDXGISwapChain1.SetRotation SetRotation;
-
-            public IDXGISwapChain1.GetRotation GetRotation;
-
-            public IDXGISwapChain2.SetSourceSize SetSourceSize;
-
-            public IDXGISwapChain2.GetSourceSize GetSourceSize;
-
-            public IDXGISwapChain2.SetMaximumFrameLatency SetMaximumFrameLatency;
-
-            public IDXGISwapChain2.GetMaximumFrameLatency GetMaximumFrameLatency;
-
-            public IDXGISwapChain2.GetFrameLatencyWaitableObject GetFrameLatencyWaitableObject;
-
-            public IDXGISwapChain2.SetMatrixTransform SetMatrixTransform;
-
-            public IDXGISwapChain2.GetMatrixTransform GetMatrixTransform;
-
-            public IDXGISwapChain3.GetCurrentBackBufferIndex GetCurrentBackBufferIndex;
-
-            public IDXGISwapChain3.CheckColorSpaceSupport CheckColorSpaceSupport;
-
-            public IDXGISwapChain3.SetColorSpace1 SetColorSpace1;
-
-            public IDXGISwapChain3.ResizeBuffers1 ResizeBuffers1;
+            public IDXGISwapChain3.Vtbl BaseVtbl;
 
             public SetHDRMetaData SetHDRMetaData;
             #endregion

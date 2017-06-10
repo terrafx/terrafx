@@ -33,7 +33,7 @@ namespace TerraFX.Interop.DXGI
 
         public /* static */ delegate HRESULT GetCoreWindow(
             [In] IDXGISwapChain1* This,
-            [In] Guid* refiid,
+            [In] /* readonly */ Guid* refiid,
             [Out] void** ppUnk
         );
 
@@ -41,7 +41,7 @@ namespace TerraFX.Interop.DXGI
             [In] IDXGISwapChain1* This,
             [In] uint SyncInterval,
             [In] DXGI_PRESENT_FLAG PresentFlags,
-            [In] DXGI_PRESENT_PARAMETERS* pPresentParameters
+            [In] /* readonly */ DXGI_PRESENT_PARAMETERS* pPresentParameters
         );
 
         public /* static */ delegate BOOL IsTemporaryMonoSupported(
@@ -55,7 +55,7 @@ namespace TerraFX.Interop.DXGI
 
         public /* static */ delegate HRESULT SetBackgroundColor(
             [In] IDXGISwapChain1* This,
-            [In] DXGI_RGBA* pColor
+            [In] /* readonly */ DXGI_RGBA* pColor
         );
 
         public /* static */ delegate HRESULT GetBackgroundColor(
@@ -78,41 +78,7 @@ namespace TerraFX.Interop.DXGI
         public struct Vtbl
         {
             #region Fields
-            public IUnknown.QueryInterface QueryInterface;
-
-            public IUnknown.AddRef AddRef;
-
-            public IUnknown.Release Release;
-
-            public IDXGIObject.SetPrivateData SetPrivateData;
-
-            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
-
-            public IDXGIObject.GetPrivateData GetPrivateData;
-
-            public IDXGIObject.GetParent GetParent;
-
-            public IDXGIDeviceSubObject.GetDevice GetDevice;
-
-            public IDXGISwapChain.Present Present;
-
-            public IDXGISwapChain.GetBuffer GetBuffer;
-
-            public IDXGISwapChain.SetFullscreenState SetFullscreenState;
-
-            public IDXGISwapChain.GetFullscreenState GetFullscreenState;
-
-            public IDXGISwapChain.GetDesc GetDesc;
-
-            public IDXGISwapChain.ResizeBuffers ResizeBuffers;
-
-            public IDXGISwapChain.ResizeTarget ResizeTarget;
-
-            public IDXGISwapChain.GetContainingOutput GetContainingOutput;
-
-            public IDXGISwapChain.GetFrameStatistics GetFrameStatistics;
-
-            public IDXGISwapChain.GetLastPresentCount GetLastPresentCount;
+            public IDXGISwapChain.Vtbl BaseVtbl;
 
             public GetDesc1 GetDesc1;
 

@@ -21,7 +21,7 @@ namespace TerraFX.Interop.DXGI
             [In] IDXGIFactoryMedia* This,
             [In] IUnknown* pDevice,
             [In, Optional] HANDLE hSurface,
-            [In] DXGI_SWAP_CHAIN_DESC1* pDesc,
+            [In] /* readonly */ DXGI_SWAP_CHAIN_DESC1* pDesc,
             [In, Optional] IDXGIOutput* pRestrictToOutput,
             [Out] IDXGISwapChain1** ppSwapChain
         );
@@ -41,11 +41,7 @@ namespace TerraFX.Interop.DXGI
         public struct Vtbl
         {
             #region Fields
-            public IUnknown.QueryInterface QueryInterface;
-
-            public IUnknown.AddRef AddRef;
-
-            public IUnknown.Release Release;
+            public IUnknown.Vtbl BaseVtbl;
 
             public CreateSwapChainForCompositionSurfaceHandle CreateSwapChainForCompositionSurfaceHandle;
 

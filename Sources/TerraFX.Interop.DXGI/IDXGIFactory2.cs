@@ -25,8 +25,8 @@ namespace TerraFX.Interop.DXGI
             [In] IDXGIFactory2* This,
             [In] IUnknown* pDevice,
             [In] HWND hWnd,
-            [In] DXGI_SWAP_CHAIN_DESC1* pDesc,
-            [In, Optional] DXGI_SWAP_CHAIN_FULLSCREEN_DESC* pFullscreenDesc,
+            [In] /* readonly */ DXGI_SWAP_CHAIN_DESC1* pDesc,
+            [In, Optional] /* readonly */ DXGI_SWAP_CHAIN_FULLSCREEN_DESC* pFullscreenDesc,
             [In, Optional] IDXGIOutput* pRestrictToOutput,
             [Out] IDXGISwapChain1** ppSwapChain
         );
@@ -35,7 +35,7 @@ namespace TerraFX.Interop.DXGI
             [In] IDXGIFactory2* This,
             [In] IUnknown* pDevice,
             [In] IUnknown* pWindow,
-            [In] DXGI_SWAP_CHAIN_DESC1* pDesc,
+            [In] /* readonly */ DXGI_SWAP_CHAIN_DESC1* pDesc,
             [In, Optional] IDXGIOutput* pRestrictToOutput,
             [Out] IDXGISwapChain1** ppSwapChain
         );
@@ -85,7 +85,7 @@ namespace TerraFX.Interop.DXGI
         public /* static */ delegate HRESULT CreateSwapChainForComposition(
             [In] IDXGIFactory2* This,
             [In] IUnknown* pDevice,
-            [In] DXGI_SWAP_CHAIN_DESC1* pDesc,
+            [In] /* readonly */ DXGI_SWAP_CHAIN_DESC1* pDesc,
             [In, Optional] IDXGIOutput* pRestrictToOutput,
             [Out] IDXGISwapChain1** ppSwapChain
         );
@@ -95,33 +95,7 @@ namespace TerraFX.Interop.DXGI
         public struct Vtbl
         {
             #region Fields
-            public IUnknown.QueryInterface QueryInterface;
-
-            public IUnknown.AddRef AddRef;
-
-            public IUnknown.Release Release;
-
-            public IDXGIObject.SetPrivateData SetPrivateData;
-
-            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
-
-            public IDXGIObject.GetPrivateData GetPrivateData;
-
-            public IDXGIObject.GetParent GetParent;
-
-            public IDXGIFactory.EnumAdapters EnumAdapters;
-
-            public IDXGIFactory.MakeWindowAssociation MakeWindowAssociation;
-
-            public IDXGIFactory.GetWindowAssociation GetWindowAssociation;
-
-            public IDXGIFactory.CreateSwapChain CreateSwapChain;
-
-            public IDXGIFactory.CreateSoftwareAdapter CreateSoftwareAdapter;
-
-            public IDXGIFactory1.EnumAdapters1 EnumAdapters1;
-
-            public IDXGIFactory1.IsCurrent IsCurrent;
+            public IDXGIFactory1.Vtbl BaseVtbl;
 
             public IsWindowedStereoEnabled IsWindowedStereoEnabled;
 

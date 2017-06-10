@@ -26,7 +26,7 @@ namespace TerraFX.Interop.DXGI
         public /* static */ delegate HRESULT GetBuffer(
             [In] IDXGISwapChain* This,
             [In] uint Buffer,
-            [In] Guid* riid,
+            [In] /* readonly */ Guid* riid,
             [In, Out] void** ppSurface
         );
 
@@ -58,7 +58,7 @@ namespace TerraFX.Interop.DXGI
 
         public /* static */ delegate HRESULT ResizeTarget(
             [In] IDXGISwapChain* This,
-            [In] DXGI_MODE_DESC* pNewTargetParameters
+            [In] /* readonly */ DXGI_MODE_DESC* pNewTargetParameters
         );
 
         public /* static */ delegate HRESULT GetContainingOutput(
@@ -81,21 +81,7 @@ namespace TerraFX.Interop.DXGI
         public struct Vtbl
         {
             #region Fields
-            public IUnknown.QueryInterface QueryInterface;
-
-            public IUnknown.AddRef AddRef;
-
-            public IUnknown.Release Release;
-
-            public IDXGIObject.SetPrivateData SetPrivateData;
-
-            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
-
-            public IDXGIObject.GetPrivateData GetPrivateData;
-
-            public IDXGIObject.GetParent GetParent;
-
-            public IDXGIDeviceSubObject.GetDevice GetDevice;
+            public IDXGIDeviceSubObject.Vtbl BaseVtbl;
 
             public Present Present;
 

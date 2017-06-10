@@ -20,14 +20,14 @@ namespace TerraFX.Interop.DXGI
         public /* static */ delegate HRESULT OfferResources(
             [In] IDXGIDevice2* This,
             [In] uint NumResources,
-            [In] IDXGIResource** ppResources,
+            [In] /* readonly */ IDXGIResource** ppResources,
             [In] DXGI_OFFER_RESOURCE_PRIORITY Priority
         );
 
         public /* static */ delegate HRESULT ReclaimResources(
             [In] IDXGIDevice2* This,
             [In] uint NumResources,
-            [In] IDXGIResource** ppResources,
+            [In] /* readonly */ IDXGIResource** ppResources,
             [Out, Optional] BOOL* pDiscarded
         );
 
@@ -41,33 +41,7 @@ namespace TerraFX.Interop.DXGI
         public struct Vtbl
         {
             #region Fields
-            public IUnknown.QueryInterface QueryInterface;
-
-            public IUnknown.AddRef AddRef;
-
-            public IUnknown.Release Release;
-
-            public IDXGIObject.SetPrivateData SetPrivateData;
-
-            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
-
-            public IDXGIObject.GetPrivateData GetPrivateData;
-
-            public IDXGIObject.GetParent GetParent;
-
-            public IDXGIDevice.GetAdapter GetAdapter;
-
-            public IDXGIDevice.CreateSurface CreateSurface;
-
-            public IDXGIDevice.QueryResourceResidency QueryResourceResidency;
-
-            public IDXGIDevice.SetGPUThreadPriority SetGPUThreadPriority;
-
-            public IDXGIDevice.GetGPUThreadPriority GetGPUThreadPriority;
-
-            public IDXGIDevice1.SetMaximumFrameLatency SetMaximumFrameLatency;
-
-            public IDXGIDevice1.GetMaximumFrameLatency GetMaximumFrameLatency;
+            public IDXGIDevice1.Vtbl BaseVtbl;
 
             public OfferResources OfferResources;
 

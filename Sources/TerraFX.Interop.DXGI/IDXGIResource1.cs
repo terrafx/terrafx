@@ -25,9 +25,9 @@ namespace TerraFX.Interop.DXGI
 
         public /* static */ delegate HRESULT CreateSharedHandle(
             [In] IDXGIResource1* This,
-            [In, Optional] SECURITY_ATTRIBUTES* pAttributes,
+            [In, Optional] /* readonly */ SECURITY_ATTRIBUTES* pAttributes,
             [In] uint dwAccess,
-            [In, Optional] ushort* lpName,
+            [In, Optional] LPWSTR lpName,
             [Out] HANDLE pHandle
         );
         #endregion
@@ -36,29 +36,7 @@ namespace TerraFX.Interop.DXGI
         public struct Vtbl
         {
             #region Fields
-            public IUnknown.QueryInterface QueryInterface;
-
-            public IUnknown.AddRef AddRef;
-
-            public IUnknown.Release Release;
-
-            public IDXGIObject.SetPrivateData SetPrivateData;
-
-            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
-
-            public IDXGIObject.GetPrivateData GetPrivateData;
-
-            public IDXGIObject.GetParent GetParent;
-
-            public IDXGIDeviceSubObject.GetDevice GetDevice;
-
-            public IDXGIResource.GetSharedHandle GetSharedHandle;
-
-            public IDXGIResource.GetUsage GetUsage;
-
-            public IDXGIResource.SetEvictionPriority SetEvictionPriority;
-
-            public IDXGIResource.GetEvictionPriority GetEvictionPriority;
+            public IDXGIResource.Vtbl BaseVtbl;
 
             public CreateSubresourceSurface CreateSubresourceSurface;
 

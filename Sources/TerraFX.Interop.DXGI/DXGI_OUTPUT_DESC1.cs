@@ -10,15 +10,7 @@ namespace TerraFX.Interop.DXGI
     unsafe public struct DXGI_OUTPUT_DESC1
     {
         #region Fields
-        public fixed ushort DeviceName[32];
-
-        public RECT DesktopCoordinates;
-
-        public BOOL AttachedToDesktop;
-
-        public DXGI_MODE_ROTATION Rotation;
-
-        public HMONITOR Monitor;
+        public DXGI_OUTPUT_DESC BaseValue;
 
         public uint BitsPerColor;
 

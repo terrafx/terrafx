@@ -24,16 +24,16 @@ namespace TerraFX.Interop.DXGI
 
         public /* static */ delegate HRESULT CreateSurface(
             [In] IDXGIDevice* This,
-            [In] DXGI_SURFACE_DESC* pDesc,
+            [In] /* readonly */ DXGI_SURFACE_DESC* pDesc,
             [In] uint NumSurfaces,
             [In] DXGI_USAGE Usage,
-            [In, Optional] DXGI_SHARED_RESOURCE* pSharedResource,
+            [In, Optional] /* readonly */ DXGI_SHARED_RESOURCE* pSharedResource,
             [Out] IDXGISurface** ppSurface
         );
 
         public /* static */ delegate HRESULT QueryResourceResidency(
             [In] IDXGIDevice* This,
-            [In] IUnknown** ppResources,
+            [In] /* readonly */ IUnknown** ppResources,
             [Out] DXGI_RESIDENCY* pResidencyStatus,
             [In] uint NumResources
         );
@@ -53,19 +53,7 @@ namespace TerraFX.Interop.DXGI
         public struct Vtbl
         {
             #region Fields
-            public IUnknown.QueryInterface QueryInterface;
-
-            public IUnknown.AddRef AddRef;
-
-            public IUnknown.Release Release;
-
-            public IDXGIObject.SetPrivateData SetPrivateData;
-
-            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
-
-            public IDXGIObject.GetPrivateData GetPrivateData;
-
-            public IDXGIObject.GetParent GetParent;
+            public IDXGIObject.Vtbl BaseVtbl;
 
             public GetAdapter GetAdapter;
 

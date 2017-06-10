@@ -32,29 +32,7 @@ namespace TerraFX.Interop.DXGI
         public struct Vtbl
         {
             #region Fields
-            public IUnknown.QueryInterface QueryInterface;
-
-            public IUnknown.AddRef AddRef;
-
-            public IUnknown.Release Release;
-
-            public IDXGIObject.SetPrivateData SetPrivateData;
-
-            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
-
-            public IDXGIObject.GetPrivateData GetPrivateData;
-
-            public IDXGIObject.GetParent GetParent;
-
-            public IDXGIDevice.GetAdapter GetAdapter;
-
-            public IDXGIDevice.CreateSurface CreateSurface;
-
-            public IDXGIDevice.QueryResourceResidency QueryResourceResidency;
-
-            public IDXGIDevice.SetGPUThreadPriority SetGPUThreadPriority;
-
-            public IDXGIDevice.GetGPUThreadPriority GetGPUThreadPriority;
+            public IDXGIDevice.Vtbl BaseVtbl;
 
             public SetMaximumFrameLatency SetMaximumFrameLatency;
 

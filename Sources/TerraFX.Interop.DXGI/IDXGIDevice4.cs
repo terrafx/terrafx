@@ -20,7 +20,7 @@ namespace TerraFX.Interop.DXGI
         public /* static */ delegate HRESULT OfferResources1(
             [In] IDXGIDevice4* This,
             [In] uint NumResources,
-            [In] IDXGIResource** ppResources,
+            [In] /* readonly */ IDXGIResource** ppResources,
             [In] DXGI_OFFER_RESOURCE_PRIORITY Priority,
             [In] DXGI_OFFER_RESOURCE_FLAGS Flags
         );
@@ -28,7 +28,7 @@ namespace TerraFX.Interop.DXGI
         public /* static */ delegate HRESULT ReclaimResources1(
             [In] IDXGIDevice4* This,
             [In] uint NumResources,
-            [In] IDXGIResource** ppResources,
+            [In] /* readonly */ IDXGIResource** ppResources,
             [Out] DXGI_RECLAIM_RESOURCE_RESULTS* pResults
         );
         #endregion
@@ -37,41 +37,7 @@ namespace TerraFX.Interop.DXGI
         public struct Vtbl
         {
             #region Fields
-            public IUnknown.QueryInterface QueryInterface;
-
-            public IUnknown.AddRef AddRef;
-
-            public IUnknown.Release Release;
-
-            public IDXGIObject.SetPrivateData SetPrivateData;
-
-            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
-
-            public IDXGIObject.GetPrivateData GetPrivateData;
-
-            public IDXGIObject.GetParent GetParent;
-
-            public IDXGIDevice.GetAdapter GetAdapter;
-
-            public IDXGIDevice.CreateSurface CreateSurface;
-
-            public IDXGIDevice.QueryResourceResidency QueryResourceResidency;
-
-            public IDXGIDevice.SetGPUThreadPriority SetGPUThreadPriority;
-
-            public IDXGIDevice.GetGPUThreadPriority GetGPUThreadPriority;
-
-            public IDXGIDevice1.SetMaximumFrameLatency SetMaximumFrameLatency;
-
-            public IDXGIDevice1.GetMaximumFrameLatency GetMaximumFrameLatency;
-
-            public IDXGIDevice2.OfferResources OfferResources;
-
-            public IDXGIDevice2.ReclaimResources ReclaimResources;
-
-            public IDXGIDevice2.EnqueueSetEvent EnqueueSetEvent;
-
-            public IDXGIDevice3.Trim Trim;
+            public IDXGIDevice3.Vtbl BaseVtbl;
 
             public OfferResources1 OfferResources1;
 

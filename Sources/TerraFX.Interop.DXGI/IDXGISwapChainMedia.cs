@@ -38,11 +38,7 @@ namespace TerraFX.Interop.DXGI
         public struct Vtbl
         {
             #region Fields
-            public IUnknown.QueryInterface QueryInterface;
-
-            public IUnknown.AddRef AddRef;
-
-            public IUnknown.Release Release;
+            public IUnknown.Vtbl BaseVtbl;
 
             public GetFrameStatisticsMedia GetFrameStatisticsMedia;
 

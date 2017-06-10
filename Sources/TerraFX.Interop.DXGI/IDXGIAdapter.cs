@@ -30,7 +30,7 @@ namespace TerraFX.Interop.DXGI
 
         public /* static */ delegate HRESULT CheckInterfaceSupport(
             [In] IDXGIAdapter* This,
-            [In] Guid* InterfaceName,
+            [In] /* readonly */ Guid* InterfaceName,
             [Out] long pUMDVersion
         );
         #endregion
@@ -39,19 +39,7 @@ namespace TerraFX.Interop.DXGI
         public struct Vtbl
         {
             #region Fields
-            public IUnknown.QueryInterface QueryInterface;
-
-            public IUnknown.AddRef AddRef;
-
-            public IUnknown.Release Release;
-
-            public IDXGIObject.SetPrivateData SetPrivateData;
-
-            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
-
-            public IDXGIObject.GetPrivateData GetPrivateData;
-
-            public IDXGIObject.GetParent GetParent;
+            public IDXGIObject.Vtbl BaseVtbl;
 
             public EnumOutputs EnumOutputs;
 

@@ -25,12 +25,12 @@ namespace TerraFX.Interop.DXGI
 
         public /* static */ delegate HRESULT SetSourceRect(
             [In] IDXGIDecodeSwapChain* This,
-            [In] RECT* pRect
+            [In] /* readonly */ RECT* pRect
         );
 
         public /* static */ delegate HRESULT SetTargetRect(
             [In] IDXGIDecodeSwapChain* This,
-            [In] RECT* pRect
+            [In] /* readonly */ RECT* pRect
         );
 
         public /* static */ delegate HRESULT SetDestSize(
@@ -69,11 +69,7 @@ namespace TerraFX.Interop.DXGI
         public struct Vtbl
         {
             #region Fields
-            public IUnknown.QueryInterface QueryInterface;
-
-            public IUnknown.AddRef AddRef;
-
-            public IUnknown.Release Release;
+            public IUnknown.Vtbl BaseVtbl;
 
             public PresentBuffer PresentBuffer;
 

@@ -27,7 +27,7 @@ namespace TerraFX.Interop.DXGI
 
         public /* static */ delegate HRESULT FindClosestMatchingMode1(
             [In] IDXGIOutput1* This,
-            [In] DXGI_MODE_DESC1* pModeToMatch,
+            [In] /* readonly */ DXGI_MODE_DESC1* pModeToMatch,
             [Out] DXGI_MODE_DESC1* pClosestMatch,
             [In, Optional] IUnknown* pConcernedDevice
         );
@@ -48,43 +48,7 @@ namespace TerraFX.Interop.DXGI
         public struct Vtbl
         {
             #region Fields
-            public IUnknown.QueryInterface QueryInterface;
-
-            public IUnknown.AddRef AddRef;
-
-            public IUnknown.Release Release;
-
-            public IDXGIObject.SetPrivateData SetPrivateData;
-
-            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
-
-            public IDXGIObject.GetPrivateData GetPrivateData;
-
-            public IDXGIObject.GetParent GetParent;
-
-            public IDXGIOutput.GetDesc GetDesc;
-
-            public IDXGIOutput.GetDisplayModeList GetDisplayModeList;
-
-            public IDXGIOutput.FindClosestMatchingMode FindClosestMatchingMode;
-
-            public IDXGIOutput.WaitForVBlank WaitForVBlank;
-
-            public IDXGIOutput.TakeOwnership TakeOwnership;
-
-            public IDXGIOutput.ReleaseOwnership ReleaseOwnership;
-
-            public IDXGIOutput.GetGammaControlCapabilities GetGammaControlCapabilities;
-
-            public IDXGIOutput.SetGammaControl SetGammaControl;
-
-            public IDXGIOutput.GetGammaControl GetGammaControl;
-
-            public IDXGIOutput.SetDisplaySurface SetDisplaySurface;
-
-            public IDXGIOutput.GetDisplaySurfaceData GetDisplaySurfaceData;
-
-            public IDXGIOutput.GetFrameStatistics GetFrameStatistics;
+            public IDXGIOutput.Vtbl BaseVtbl;
 
             public GetDisplayModeList1 GetDisplayModeList1;
 

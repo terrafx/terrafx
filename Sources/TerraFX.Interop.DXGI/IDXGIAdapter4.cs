@@ -26,41 +26,7 @@ namespace TerraFX.Interop.DXGI
         public struct Vtbl
         {
             #region Fields
-            public IUnknown.QueryInterface QueryInterface;
-
-            public IUnknown.AddRef AddRef;
-
-            public IUnknown.Release Release;
-
-            public IDXGIObject.SetPrivateData SetPrivateData;
-
-            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
-
-            public IDXGIObject.GetPrivateData GetPrivateData;
-
-            public IDXGIObject.GetParent GetParent;
-
-            public IDXGIAdapter.EnumOutputs EnumOutputs;
-
-            public IDXGIAdapter.GetDesc GetDesc;
-
-            public IDXGIAdapter.CheckInterfaceSupport CheckInterfaceSupport;
-
-            public IDXGIAdapter1.GetDesc1 GetDesc1;
-
-            public IDXGIAdapter2.GetDesc2 GetDesc2;
-
-            public IDXGIAdapter3.RegisterHardwareContentProtectionTeardownStatusEvent RegisterHardwareContentProtectionTeardownStatusEvent;
-
-            public IDXGIAdapter3.UnregisterHardwareContentProtectionTeardownStatus UnregisterHardwareContentProtectionTeardownStatus;
-
-            public IDXGIAdapter3.QueryVideoMemoryInfo QueryVideoMemoryInfo;
-
-            public IDXGIAdapter3.SetVideoMemoryReservation SetVideoMemoryReservation;
-
-            public IDXGIAdapter3.RegisterVideoMemoryBudgetChangeNotificationEvent RegisterVideoMemoryBudgetChangeNotificationEvent;
-
-            public IDXGIAdapter3.UnregisterVideoMemoryBudgetChangeNotification UnregisterVideoMemoryBudgetChangeNotification;
+            public IDXGIAdapter3.Vtbl BaseVtbl;
 
             public GetDesc3 GetDesc3;
             #endregion

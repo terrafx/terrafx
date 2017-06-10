@@ -19,27 +19,27 @@ namespace TerraFX.Interop.DXGI
         #region Delegates
         public /* static */ delegate HRESULT SetPrivateData(
             [In] IDXGIObject* This,
-            [In] Guid* Name,
+            [In] /* readonly */ Guid* Name,
             [In] uint DataSize,
-            [In] void* pData
+            [In] /* readonly */ void* pData
         );
 
         public /* static */ delegate HRESULT SetPrivateDataInterface(
             [In] IDXGIObject* This,
-            [In] Guid* Name,
-            [In, Optional] IUnknown* pUnknown
+            [In] /* readonly */ Guid* Name,
+            [In, Optional] /* readonly */ IUnknown* pUnknown
         );
 
         public /* static */ delegate HRESULT GetPrivateData(
             [In] IDXGIObject* This,
-            [In] Guid* Name,
+            [In] /* readonly */ Guid* Name,
             [In, Out] uint* pDataSize,
             [Out] void* pData
         );
 
         public /* static */ delegate HRESULT GetParent(
             [In] IDXGIObject* This,
-            [In] Guid* riid,
+            [In] /* readonly */ Guid* riid,
             [Out] void** ppParent
         );
         #endregion
@@ -48,11 +48,7 @@ namespace TerraFX.Interop.DXGI
         public struct Vtbl
         {
             #region Fields
-            public IUnknown.QueryInterface QueryInterface;
-
-            public IUnknown.AddRef AddRef;
-
-            public IUnknown.Release Release;
+            public IUnknown.Vtbl BaseVtbl;
 
             public SetPrivateData SetPrivateData;
 

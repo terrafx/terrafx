@@ -4,29 +4,14 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     unsafe public struct DXGI_ADAPTER_DESC3
     {
         #region Fields
-        public fixed ushort Description[128];
-
-        public uint VendorId;
-
-        public uint DeviceId;
-
-        public uint SubSysId;
-
-        public uint Revision;
-
-        public UIntPtr DedicatedVideoMemory;
-
-        public UIntPtr DedicatedSystemMemory;
-
-        public UIntPtr SharedSystemMemory;
-
-        public LUID AdapterLuid;
+        public DXGI_ADAPTER_DESC BaseValue;
 
         public DXGI_ADAPTER_FLAG3 Flags;
 

@@ -32,7 +32,7 @@ namespace TerraFX.Interop.DXGI
 
         public /* static */ delegate HRESULT FindClosestMatchingMode(
             [In] IDXGIOutput* This,
-            [In] DXGI_MODE_DESC* pModeToMatch,
+            [In] /* readonly */ DXGI_MODE_DESC* pModeToMatch,
             [Out] DXGI_MODE_DESC* pClosestMatch,
             [In, Optional] IUnknown* pConcernedDevice
         );
@@ -58,7 +58,7 @@ namespace TerraFX.Interop.DXGI
 
         public /* static */ delegate HRESULT SetGammaControl(
             [In] IDXGIOutput* This,
-            [In] DXGI_GAMMA_CONTROL* pArray
+            [In] /* readonly */ DXGI_GAMMA_CONTROL* pArray
         );
 
         public /* static */ delegate HRESULT GetGammaControl(
@@ -86,19 +86,7 @@ namespace TerraFX.Interop.DXGI
         public struct Vtbl
         {
             #region Fields
-            public IUnknown.QueryInterface QueryInterface;
-
-            public IUnknown.AddRef AddRef;
-
-            public IUnknown.Release Release;
-
-            public IDXGIObject.SetPrivateData SetPrivateData;
-
-            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
-
-            public IDXGIObject.GetPrivateData GetPrivateData;
-
-            public IDXGIObject.GetParent GetParent;
+            public IDXGIObject.Vtbl BaseVtbl;
 
             public GetDesc GetDesc;
 

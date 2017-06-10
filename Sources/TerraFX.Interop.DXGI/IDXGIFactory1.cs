@@ -32,29 +32,7 @@ namespace TerraFX.Interop.DXGI
         public struct Vtbl
         {
             #region Fields
-            public IUnknown.QueryInterface QueryInterface;
-
-            public IUnknown.AddRef AddRef;
-
-            public IUnknown.Release Release;
-
-            public IDXGIObject.SetPrivateData SetPrivateData;
-
-            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
-
-            public IDXGIObject.GetPrivateData GetPrivateData;
-
-            public IDXGIObject.GetParent GetParent;
-
-            public IDXGIFactory.EnumAdapters EnumAdapters;
-
-            public IDXGIFactory.MakeWindowAssociation MakeWindowAssociation;
-
-            public IDXGIFactory.GetWindowAssociation GetWindowAssociation;
-
-            public IDXGIFactory.CreateSwapChain CreateSwapChain;
-
-            public IDXGIFactory.CreateSoftwareAdapter CreateSoftwareAdapter;
+            public IDXGIFactory.Vtbl BaseVtbl;
 
             public EnumAdapters1 EnumAdapters1;
 

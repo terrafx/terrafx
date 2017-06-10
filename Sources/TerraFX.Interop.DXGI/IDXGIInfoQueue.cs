@@ -19,18 +19,18 @@ namespace TerraFX.Interop.DXGI
         #region Delegates
         public /* static */ delegate HRESULT SetMessageCountLimit(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer,
+            [In] DXGI_DEBUG_ID Producer,
             [In] ulong MessageCountLimit
         );
 
         public /* static */ delegate void ClearStoredMessages(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer
+            [In] DXGI_DEBUG_ID Producer
         );
 
         public /* static */ delegate HRESULT GetMessage(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer,
+            [In] DXGI_DEBUG_ID Producer,
             [In] ulong MessageIndex,
             [Out, Optional] DXGI_INFO_QUEUE_MESSAGE* pMessage,
             [In, Out] UIntPtr* pMessageByteLength
@@ -38,195 +38,195 @@ namespace TerraFX.Interop.DXGI
 
         public /* static */ delegate ulong GetNumStoredMessagesAllowedByRetrievalFilters(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer
+            [In] DXGI_DEBUG_ID Producer
         );
 
         public /* static */ delegate ulong GetNumStoredMessages(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer
+            [In] DXGI_DEBUG_ID Producer
         );
 
         public /* static */ delegate ulong GetNumMessagesDiscardedByMessageCountLimit(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer
+            [In] DXGI_DEBUG_ID Producer
         );
 
         public /* static */ delegate ulong GetMessageCountLimit(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer
+            [In] DXGI_DEBUG_ID Producer
         );
 
         public /* static */ delegate ulong GetNumMessagesAllowedByStorageFilter(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer
+            [In] DXGI_DEBUG_ID Producer
         );
 
         public /* static */ delegate ulong GetNumMessagesDeniedByStorageFilter(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer
+            [In] DXGI_DEBUG_ID Producer
         );
 
         public /* static */ delegate HRESULT AddStorageFilterEntries(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer,
+            [In] DXGI_DEBUG_ID Producer,
             [In] DXGI_INFO_QUEUE_FILTER* pFilter
         );
 
         public /* static */ delegate HRESULT GetStorageFilter(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer,
+            [In] DXGI_DEBUG_ID Producer,
             [Out, Optional] DXGI_INFO_QUEUE_FILTER* pFilter,
             [In, Out] UIntPtr* pFilterByteLength
         );
 
         public /* static */ delegate HRESULT ClearStorageFilter(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer
+            [In] DXGI_DEBUG_ID Producer
         );
 
         public /* static */ delegate HRESULT PushEmptyStorageFilter(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer
+            [In] DXGI_DEBUG_ID Producer
         );
 
         public /* static */ delegate HRESULT PushDenyAllStorageFilter(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer
+            [In] DXGI_DEBUG_ID Producer
         );
 
         public /* static */ delegate HRESULT PushCopyOfStorageFilter(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer
+            [In] DXGI_DEBUG_ID Producer
         );
 
         public /* static */ delegate HRESULT PushStorageFilter(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer,
+            [In] DXGI_DEBUG_ID Producer,
             [In] DXGI_INFO_QUEUE_FILTER* pFilter
         );
 
         public /* static */ delegate void PopStorageFilter(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer
+            [In] DXGI_DEBUG_ID Producer
         );
 
         public /* static */ delegate uint GetStorageFilterStackSize(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer
+            [In] DXGI_DEBUG_ID Producer
         );
 
         public /* static */ delegate HRESULT AddRetrievalFilterEntries(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer,
+            [In] DXGI_DEBUG_ID Producer,
             [In] DXGI_INFO_QUEUE_FILTER* pFilter
         );
 
         public /* static */ delegate HRESULT GetRetrievalFilter(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer,
+            [In] DXGI_DEBUG_ID Producer,
             [Out, Optional] DXGI_INFO_QUEUE_FILTER* pFilter,
             [In, Out] UIntPtr* pFilterByteLength
         );
 
         public /* static */ delegate void ClearRetrievalFilter(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer
+            [In] DXGI_DEBUG_ID Producer
         );
 
         public /* static */ delegate HRESULT PushEmptyRetrievalFilter(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer
+            [In] DXGI_DEBUG_ID Producer
         );
 
         public /* static */ delegate HRESULT PushDenyAllRetrievalFilter(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer
+            [In] DXGI_DEBUG_ID Producer
         );
 
         public /* static */ delegate HRESULT PushCopyOfRetrievalFilter(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer
+            [In] DXGI_DEBUG_ID Producer
         );
 
         public /* static */ delegate HRESULT PushRetrievalFilter(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer,
+            [In] DXGI_DEBUG_ID Producer,
             [In] DXGI_INFO_QUEUE_FILTER* pFilter
         );
 
         public /* static */ delegate void PopRetrievalFilter(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer
+            [In] DXGI_DEBUG_ID Producer
         );
 
         public /* static */ delegate uint GetRetrievalFilterStackSize(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer
+            [In] DXGI_DEBUG_ID Producer
         );
 
         public /* static */ delegate HRESULT AddMessage(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer,
+            [In] DXGI_DEBUG_ID Producer,
             [In] DXGI_INFO_QUEUE_MESSAGE_CATEGORY Category,
             [In] DXGI_INFO_QUEUE_MESSAGE_SEVERITY Severity,
             [In] DXGI_INFO_QUEUE_MESSAGE_ID ID,
-            [In] byte* pDescription
+            [In] LPSTR pDescription
         );
 
         public /* static */ delegate HRESULT AddApplicationMessage(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_INFO_QUEUE_MESSAGE_SEVERITY Severity,
-            [In] byte* pDescription
+            [In] LPSTR pDescription
         );
 
         public /* static */ delegate HRESULT SetBreakOnCategory(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer,
+            [In] DXGI_DEBUG_ID Producer,
             [In] DXGI_INFO_QUEUE_MESSAGE_CATEGORY Category,
             [In] BOOL bEnable
         );
 
         public /* static */ delegate HRESULT SetBreakOnSeverity(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer,
+            [In] DXGI_DEBUG_ID Producer,
             [In] DXGI_INFO_QUEUE_MESSAGE_SEVERITY Severity,
             [In] BOOL bEnable
         );
 
         public /* static */ delegate HRESULT SetBreakOnID(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer,
+            [In] DXGI_DEBUG_ID Producer,
             [In] DXGI_INFO_QUEUE_MESSAGE_ID ID,
             [In] BOOL bEnable
         );
 
         public /* static */ delegate BOOL GetBreakOnCategory(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer,
+            [In] DXGI_DEBUG_ID Producer,
             [In] DXGI_INFO_QUEUE_MESSAGE_CATEGORY Category
         );
 
         public /* static */ delegate BOOL GetBreakOnSeverity(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer,
+            [In] DXGI_DEBUG_ID Producer,
             [In] DXGI_INFO_QUEUE_MESSAGE_SEVERITY Severity
         );
 
         public /* static */ delegate BOOL GetBreakOnID(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer,
+            [In] DXGI_DEBUG_ID Producer,
             [In] DXGI_INFO_QUEUE_MESSAGE_ID ID
         );
 
         public /* static */ delegate void SetMuteDebugOutput(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer,
+            [In] DXGI_DEBUG_ID Producer,
             [In] BOOL bMute
         );
 
         public /* static */ delegate BOOL GetMuteDebugOutput(
             [In] IDXGIInfoQueue* This,
-            [In] Guid Producer
+            [In] DXGI_DEBUG_ID Producer
         );
         #endregion
 
@@ -234,11 +234,7 @@ namespace TerraFX.Interop.DXGI
         public struct Vtbl
         {
             #region Fields
-            public IUnknown.QueryInterface QueryInterface;
-
-            public IUnknown.AddRef AddRef;
-
-            public IUnknown.Release Release;
+            public IUnknown.Vtbl BaseVtbl;
 
             public SetMessageCountLimit SetMessageCountLimit;
 

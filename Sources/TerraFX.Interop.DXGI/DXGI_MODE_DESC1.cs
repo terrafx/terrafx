@@ -10,17 +10,7 @@ namespace TerraFX.Interop.DXGI
     public struct DXGI_MODE_DESC1
     {
         #region Fields
-        public uint Width;
-
-        public uint Height;
-
-        public DXGI_RATIONAL RefreshRate;
-
-        public DXGI_FORMAT Format;
-
-        public DXGI_MODE_SCANLINE_ORDER ScanlineOrdering;
-
-        public DXGI_MODE_SCALING Scaling;
+        public DXGI_MODE_DESC BaseValue;
 
         public BOOL Stereo;
         #endregion

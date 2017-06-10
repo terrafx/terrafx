@@ -20,13 +20,13 @@ namespace TerraFX.Interop.DXGI
         public /* static */ delegate HRESULT EnumAdapterByLuid(
             [In] IDXGIFactory4* This,
             [In] LUID AdapterLuid,
-            [In] Guid* riid,
+            [In] /* readonly */ Guid* riid,
             [Out] void** ppvAdapter
         );
 
         public /* static */ delegate HRESULT EnumWarpAdapter(
             [In] IDXGIFactory4* This,
-            [In] Guid* riid,
+            [In] /* readonly */ Guid* riid,
             [Out] void** ppvAdapter
         );
         #endregion
@@ -35,57 +35,7 @@ namespace TerraFX.Interop.DXGI
         public struct Vtbl
         {
             #region Fields
-            public IUnknown.QueryInterface QueryInterface;
-
-            public IUnknown.AddRef AddRef;
-
-            public IUnknown.Release Release;
-
-            public IDXGIObject.SetPrivateData SetPrivateData;
-
-            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
-
-            public IDXGIObject.GetPrivateData GetPrivateData;
-
-            public IDXGIObject.GetParent GetParent;
-
-            public IDXGIFactory.EnumAdapters EnumAdapters;
-
-            public IDXGIFactory.MakeWindowAssociation MakeWindowAssociation;
-
-            public IDXGIFactory.GetWindowAssociation GetWindowAssociation;
-
-            public IDXGIFactory.CreateSwapChain CreateSwapChain;
-
-            public IDXGIFactory.CreateSoftwareAdapter CreateSoftwareAdapter;
-
-            public IDXGIFactory1.EnumAdapters1 EnumAdapters1;
-
-            public IDXGIFactory1.IsCurrent IsCurrent;
-
-            public IDXGIFactory2.IsWindowedStereoEnabled IsWindowedStereoEnabled;
-
-            public IDXGIFactory2.CreateSwapChainForHwnd CreateSwapChainForHwnd;
-
-            public IDXGIFactory2.CreateSwapChainForCoreWindow CreateSwapChainForCoreWindow;
-
-            public IDXGIFactory2.GetSharedResourceAdapterLuid GetSharedResourceAdapterLuid;
-
-            public IDXGIFactory2.RegisterStereoStatusWindow RegisterStereoStatusWindow;
-
-            public IDXGIFactory2.RegisterStereoStatusEvent RegisterStereoStatusEvent;
-
-            public IDXGIFactory2.UnregisterStereoStatus UnregisterStereoStatus;
-
-            public IDXGIFactory2.RegisterOcclusionStatusWindow RegisterOcclusionStatusWindow;
-
-            public IDXGIFactory2.RegisterOcclusionStatusEvent RegisterOcclusionStatusEvent;
-
-            public IDXGIFactory2.UnregisterOcclusionStatus UnregisterOcclusionStatus;
-
-            public IDXGIFactory2.CreateSwapChainForComposition CreateSwapChainForComposition;
-
-            public IDXGIFactory3.GetCreationFlags GetCreationFlags;
+            public IDXGIFactory3.Vtbl BaseVtbl;
 
             public EnumAdapterByLuid EnumAdapterByLuid;
 

@@ -34,13 +34,7 @@ namespace TerraFX.Interop.DXGI
         public struct Vtbl
         {
             #region Fields
-            public IUnknown.QueryInterface QueryInterface;
-
-            public IUnknown.AddRef AddRef;
-
-            public IUnknown.Release Release;
-
-            public IDXGIDebug.ReportLiveObjects ReportLiveObjects;
+            public IDXGIDebug.Vtbl BaseVtbl;
 
             public EnableLeakTrackingForThread EnableLeakTrackingForThread;
 
