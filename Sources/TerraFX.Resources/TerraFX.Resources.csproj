@@ -5,8 +5,15 @@
   <Import Project="$(MSBuildThisFileDirectory)..\..\Imports\TerraFX.Common.props" />
 
   <PropertyGroup>
+    <RootNamespace>TerraFX</RootNamespace>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources.cs">
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
 
   <ItemGroup>
     <InternalsVisibleTo Include="$(MSBuildProjectName).UnitTests" />
