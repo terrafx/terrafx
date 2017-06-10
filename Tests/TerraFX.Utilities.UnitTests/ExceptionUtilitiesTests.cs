@@ -10,6 +10,45 @@ namespace TerraFX.Utilities.UnitTests
     public static class ExceptionUtilitiesTests
     {
         #region Static Method Tests
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.NewArgumentExceptionForInvalidType(string, Type)" /> static method.</summary>
+        [Test]
+        public static void NewArgumentExceptionForInvalidType(
+            [Values(null, "", "param")] string paramName,
+            [Values(typeof(object), typeof(string), typeof(int))] Type paramType
+        )
+        {
+            Assert.That(ExceptionUtilities.NewArgumentExceptionForInvalidType(paramName, paramType),
+                Is.InstanceOf<ArgumentException>()
+                  .With.Property("ParamName").EqualTo(paramName)
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.NewArgumentNullException(string)" /> static method.</summary>
+        [Test]
+        public static void NewArgumentNullExceptionStringTest(
+            [Values(null, "", "param")] string paramName
+        )
+        {
+            Assert.That(ExceptionUtilities.NewArgumentNullException(paramName),
+                Is.InstanceOf<ArgumentNullException>()
+                  .With.Property("ParamName").EqualTo(paramName)
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.NewArgumentOutOfRangeException(string, object)" /> static method.</summary>
+        [Test]
+        public static void NewArgumentOutOfRangeExceptionStringObjectTest(
+            [Values(null, "", "param")] string paramName,
+            [Values(null, "", "value")] object value
+        )
+        {
+            Assert.That(ExceptionUtilities.NewArgumentOutOfRangeException(paramName, value),
+                Is.InstanceOf<ArgumentOutOfRangeException>()
+                  .With.Property("ParamName").EqualTo(paramName)
+                  .And.With.Property("ActualValue").EqualTo(value)
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowArgumentExceptionForInvalidType(string, Type)" /> static method.</summary>
         [Test]
         public static void ThrowArgumentExceptionForInvalidType(

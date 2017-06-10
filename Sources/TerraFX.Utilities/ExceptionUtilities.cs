@@ -8,21 +8,48 @@ namespace TerraFX.Utilities
     public static class ExceptionUtilities
     {
         #region Static Methods
+        /// <summary>Creates a new instance of the <see cref="ArgumentException" /> class.</summary>
+        /// <param name="paramName">The name of the parameter that caused the exception.</param>
+        /// <param name="paramType">The type of the parameter that caused the exception.</param>
+        /// <returns>A new instance of the <see cref="ArgumentException" /> class.</returns>
+        public static ArgumentException NewArgumentExceptionForInvalidType(string paramName, Type paramType)
+        {
+            var message = string.Format(Resources.ArgumentExceptionForInvalidTypeMessage, paramName, paramType);
+            return new ArgumentException(message, paramName);
+        }
+
+        /// <summary>Creates a new instance of the <see cref="ArgumentNullException" /> class.</summary>
+        /// <param name="paramName">The name of the parameter that caused the exception.</param>
+        /// <returns>A new instance of the <see cref="ArgumentNullException" /> class.</returns>
+        public static ArgumentNullException NewArgumentNullException(string paramName)
+        {
+            var message = string.Format(Resources.ArgumentNullExceptionMessage, paramName);
+            return new ArgumentNullException(paramName, message);
+        }
+
+        /// <summary>Creates a new instance of the <see cref="ArgumentOutOfRangeException" /> class.</summary>
+        /// <param name="paramName">The name of the parameter that caused the exception.</param>
+        /// <param name="value">The value of the parameter that caused the exception.</param>
+        /// <returns>A new instance of the <see cref="ArgumentOutOfRangeException" /> class.</returns>
+        public static ArgumentOutOfRangeException NewArgumentOutOfRangeException(string paramName, object value)
+        {
+            var message = string.Format(Resources.ArgumentOutOfRangeExceptionMessage, paramName, value);
+            return new ArgumentOutOfRangeException(paramName, value, message);
+        }
+
         /// <summary>Throws a new instance of the <see cref="ArgumentException" /> class.</summary>
         /// <param name="paramName">The name of the parameter that caused the exception.</param>
         /// <param name="paramType">The type of the parameter that caused the exception.</param>
         public static void ThrowArgumentExceptionForInvalidType(string paramName, Type paramType)
         {
-            var message = string.Format(Resources.ArgumentExceptionForInvalidTypeMessage, paramName, paramType);
-            throw new ArgumentException(message, paramName);
+            throw NewArgumentExceptionForInvalidType(paramName, paramType);
         }
 
         /// <summary>Throws a new instance of the <see cref="ArgumentNullException" /> class.</summary>
         /// <param name="paramName">The name of the parameter that caused the exception.</param>
         public static void ThrowArgumentNullException(string paramName)
         {
-            var message = string.Format(Resources.ArgumentNullExceptionMessage, paramName);
-            throw new ArgumentNullException(paramName, message);
+            throw NewArgumentNullException(paramName);
         }
 
         /// <summary>Throws a new instance of the <see cref="ArgumentOutOfRangeException" /> class.</summary>
@@ -30,8 +57,7 @@ namespace TerraFX.Utilities
         /// <param name="value">The value of the parameter that caused the exception.</param>
         public static void ThrowArgumentOutOfRangeException(string paramName, object value)
         {
-            var message = string.Format(Resources.ArgumentOutOfRangeExceptionMessage, paramName, value);
-            throw new ArgumentOutOfRangeException(paramName, value, message);
+            throw NewArgumentOutOfRangeException(paramName, value);
         }
         #endregion
     }
