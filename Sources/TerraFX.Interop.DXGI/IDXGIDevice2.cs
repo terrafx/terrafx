@@ -5,49 +5,77 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("05008617-FBFD-4051-A790-144884B4F6A9")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGIDevice2 : IDXGIDevice1
+    unsafe public struct IDXGIDevice2
     {
-        #region IDXGIObject
-        new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
-
-        new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
-
-        new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
-
-        new IntPtr GetParent([In] ref Guid riid);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
         #endregion
 
-        #region IDXGIDevice
-        new void GetAdapter([MarshalAs(UnmanagedType.Interface)] out IDXGIAdapter pAdapter);
+        #region Delegates
+        public /* static */ delegate HRESULT OfferResources(
+            [In] IDXGIDevice2* This,
+            [In] uint NumResources,
+            [In] IDXGIResource** ppResources,
+            [In] DXGI_OFFER_RESOURCE_PRIORITY Priority
+        );
 
-        new void CreateSurface([In] ref DXGI_SURFACE_DESC pDesc, [In] uint NumSurfaces, [In] uint Usage, [In] ref DXGI_SHARED_RESOURCE pSharedResource, [MarshalAs(UnmanagedType.Interface)] out IDXGISurface ppSurface);
+        public /* static */ delegate HRESULT ReclaimResources(
+            [In] IDXGIDevice2* This,
+            [In] uint NumResources,
+            [In] IDXGIResource** ppResources,
+            [Out, Optional] BOOL* pDiscarded
+        );
 
-        new void QueryResourceResidency([MarshalAs(UnmanagedType.IUnknown), In] ref object ppResources, out DXGI_RESIDENCY pResidencyStatus, [In] uint NumResources);
-
-        new void SetGPUThreadPriority([In] int Priority);
-
-        new int GetGPUThreadPriority();
+        public /* static */ delegate HRESULT EnqueueSetEvent(
+            [In] IDXGIDevice2* This,
+            [In] HANDLE hEvent
+        );
         #endregion
 
-        #region IDXGIDevice1
-        new void SetMaximumFrameLatency([In] uint MaxLatency);
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
 
-        new void GetMaximumFrameLatency(out uint pMaxLatency);
-        #endregion
+            public IUnknown.AddRef AddRef;
 
-        #region Methods
-        void OfferResources([In] uint NumResources, [MarshalAs(UnmanagedType.Interface), In] ref IDXGIResource ppResources, [In] DXGI_OFFER_RESOURCE_PRIORITY Priority);
+            public IUnknown.Release Release;
 
-        void ReclaimResources([In] uint NumResources, [MarshalAs(UnmanagedType.Interface), In] ref IDXGIResource ppResources, out int pDiscarded);
+            public IDXGIObject.SetPrivateData SetPrivateData;
 
-        void EnqueueSetEvent([In] IntPtr hEvent);
+            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
+
+            public IDXGIObject.GetPrivateData GetPrivateData;
+
+            public IDXGIObject.GetParent GetParent;
+
+            public IDXGIDevice.GetAdapter GetAdapter;
+
+            public IDXGIDevice.CreateSurface CreateSurface;
+
+            public IDXGIDevice.QueryResourceResidency QueryResourceResidency;
+
+            public IDXGIDevice.SetGPUThreadPriority SetGPUThreadPriority;
+
+            public IDXGIDevice.GetGPUThreadPriority GetGPUThreadPriority;
+
+            public IDXGIDevice1.SetMaximumFrameLatency SetMaximumFrameLatency;
+
+            public IDXGIDevice1.GetMaximumFrameLatency GetMaximumFrameLatency;
+
+            public OfferResources OfferResources;
+
+            public ReclaimResources ReclaimResources;
+
+            public EnqueueSetEvent EnqueueSetEvent;
+            #endregion
+        }
         #endregion
     }
 }

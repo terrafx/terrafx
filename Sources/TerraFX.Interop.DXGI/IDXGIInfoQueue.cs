@@ -5,107 +5,316 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("D67441C7-672A-476F-9E82-CD55B44949CE")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGIInfoQueue
+    unsafe public struct IDXGIInfoQueue
     {
-        #region Methods
-        void SetMessageCountLimit(Guid Producer, ulong MessageCountLimit);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
+        #endregion
 
-        [PreserveSig]
-        void ClearStoredMessages(Guid Producer);
+        #region Delegates
+        public /* static */ delegate HRESULT SetMessageCountLimit(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer,
+            [In] ulong MessageCountLimit
+        );
 
-        void GetMessage(Guid Producer, ulong MessageIndex, ref DXGI_INFO_QUEUE_MESSAGE pMessage, ref ulong pMessageByteLength);
+        public /* static */ delegate void ClearStoredMessages(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer
+        );
 
-        [PreserveSig]
-        ulong GetNumStoredMessagesAllowedByRetrievalFilters(Guid Producer);
+        public /* static */ delegate HRESULT GetMessage(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer,
+            [In] ulong MessageIndex,
+            [Out, Optional] DXGI_INFO_QUEUE_MESSAGE* pMessage,
+            [In, Out] UIntPtr* pMessageByteLength
+        );
 
-        [PreserveSig]
-        ulong GetNumStoredMessages(Guid Producer);
+        public /* static */ delegate ulong GetNumStoredMessagesAllowedByRetrievalFilters(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer
+        );
 
-        [PreserveSig]
-        ulong GetNumMessagesDiscardedByMessageCountLimit(Guid Producer);
+        public /* static */ delegate ulong GetNumStoredMessages(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer
+        );
 
-        [PreserveSig]
-        ulong GetMessageCountLimit(Guid Producer);
+        public /* static */ delegate ulong GetNumMessagesDiscardedByMessageCountLimit(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer
+        );
 
-        [PreserveSig]
-        ulong GetNumMessagesAllowedByStorageFilter(Guid Producer);
+        public /* static */ delegate ulong GetMessageCountLimit(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer
+        );
 
-        [PreserveSig]
-        ulong GetNumMessagesDeniedByStorageFilter(Guid Producer);
+        public /* static */ delegate ulong GetNumMessagesAllowedByStorageFilter(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer
+        );
 
-        void AddStorageFilterEntries(Guid Producer, ref DXGI_INFO_QUEUE_FILTER pFilter);
+        public /* static */ delegate ulong GetNumMessagesDeniedByStorageFilter(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer
+        );
 
-        void GetStorageFilter(Guid Producer, ref DXGI_INFO_QUEUE_FILTER pFilter, ref ulong pFilterByteLength);
+        public /* static */ delegate HRESULT AddStorageFilterEntries(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer,
+            [In] DXGI_INFO_QUEUE_FILTER* pFilter
+        );
 
-        [PreserveSig]
-        void ClearStorageFilter(Guid Producer);
+        public /* static */ delegate HRESULT GetStorageFilter(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer,
+            [Out, Optional] DXGI_INFO_QUEUE_FILTER* pFilter,
+            [In, Out] UIntPtr* pFilterByteLength
+        );
 
-        void PushEmptyStorageFilter(Guid Producer);
+        public /* static */ delegate HRESULT ClearStorageFilter(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer
+        );
 
-        void PushDenyAllStorageFilter(Guid Producer);
+        public /* static */ delegate HRESULT PushEmptyStorageFilter(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer
+        );
 
-        void PushCopyOfStorageFilter(Guid Producer);
+        public /* static */ delegate HRESULT PushDenyAllStorageFilter(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer
+        );
 
-        void PushStorageFilter(Guid Producer, ref DXGI_INFO_QUEUE_FILTER pFilter);
+        public /* static */ delegate HRESULT PushCopyOfStorageFilter(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer
+        );
 
-        [PreserveSig]
-        void PopStorageFilter(Guid Producer);
+        public /* static */ delegate HRESULT PushStorageFilter(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer,
+            [In] DXGI_INFO_QUEUE_FILTER* pFilter
+        );
 
-        [PreserveSig]
-        uint GetStorageFilterStackSize(Guid Producer);
+        public /* static */ delegate void PopStorageFilter(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer
+        );
 
-        void AddRetrievalFilterEntries(Guid Producer, ref DXGI_INFO_QUEUE_FILTER pFilter);
+        public /* static */ delegate uint GetStorageFilterStackSize(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer
+        );
 
-        void GetRetrievalFilter(Guid Producer, ref DXGI_INFO_QUEUE_FILTER pFilter, ref ulong pFilterByteLength);
+        public /* static */ delegate HRESULT AddRetrievalFilterEntries(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer,
+            [In] DXGI_INFO_QUEUE_FILTER* pFilter
+        );
 
-        [PreserveSig]
-        void ClearRetrievalFilter(Guid Producer);
+        public /* static */ delegate HRESULT GetRetrievalFilter(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer,
+            [Out, Optional] DXGI_INFO_QUEUE_FILTER* pFilter,
+            [In, Out] UIntPtr* pFilterByteLength
+        );
 
-        void PushEmptyRetrievalFilter(Guid Producer);
+        public /* static */ delegate void ClearRetrievalFilter(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer
+        );
 
-        void PushDenyAllRetrievalFilter(Guid Producer);
+        public /* static */ delegate HRESULT PushEmptyRetrievalFilter(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer
+        );
 
-        void PushCopyOfRetrievalFilter(Guid Producer);
+        public /* static */ delegate HRESULT PushDenyAllRetrievalFilter(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer
+        );
 
-        void PushRetrievalFilter(Guid Producer, ref DXGI_INFO_QUEUE_FILTER pFilter);
+        public /* static */ delegate HRESULT PushCopyOfRetrievalFilter(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer
+        );
 
-        [PreserveSig]
-        void PopRetrievalFilter(Guid Producer);
+        public /* static */ delegate HRESULT PushRetrievalFilter(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer,
+            [In] DXGI_INFO_QUEUE_FILTER* pFilter
+        );
 
-        [PreserveSig]
-        uint GetRetrievalFilterStackSize(Guid Producer);
+        public /* static */ delegate void PopRetrievalFilter(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer
+        );
 
-        void AddMessage(Guid Producer, DXGI_INFO_QUEUE_MESSAGE_CATEGORY Category, DXGI_INFO_QUEUE_MESSAGE_SEVERITY Severity, int ID, [MarshalAs(UnmanagedType.LPStr)] string pDescription);
+        public /* static */ delegate uint GetRetrievalFilterStackSize(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer
+        );
 
-        void AddApplicationMessage(DXGI_INFO_QUEUE_MESSAGE_SEVERITY Severity, [MarshalAs(UnmanagedType.LPStr)] string pDescription);
+        public /* static */ delegate HRESULT AddMessage(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer,
+            [In] DXGI_INFO_QUEUE_MESSAGE_CATEGORY Category,
+            [In] DXGI_INFO_QUEUE_MESSAGE_SEVERITY Severity,
+            [In] DXGI_INFO_QUEUE_MESSAGE_ID ID,
+            [In] byte* pDescription
+        );
 
-        void SetBreakOnCategory(Guid Producer, DXGI_INFO_QUEUE_MESSAGE_CATEGORY Category, int bEnable);
+        public /* static */ delegate HRESULT AddApplicationMessage(
+            [In] IDXGIInfoQueue* This,
+            [In] DXGI_INFO_QUEUE_MESSAGE_SEVERITY Severity,
+            [In] byte* pDescription
+        );
 
-        void SetBreakOnSeverity(Guid Producer, DXGI_INFO_QUEUE_MESSAGE_SEVERITY Severity, int bEnable);
+        public /* static */ delegate HRESULT SetBreakOnCategory(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer,
+            [In] DXGI_INFO_QUEUE_MESSAGE_CATEGORY Category,
+            [In] BOOL bEnable
+        );
 
-        void SetBreakOnID(Guid Producer, int ID, int bEnable);
+        public /* static */ delegate HRESULT SetBreakOnSeverity(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer,
+            [In] DXGI_INFO_QUEUE_MESSAGE_SEVERITY Severity,
+            [In] BOOL bEnable
+        );
 
-        [PreserveSig]
-        int GetBreakOnCategory(Guid Producer, DXGI_INFO_QUEUE_MESSAGE_CATEGORY Category);
+        public /* static */ delegate HRESULT SetBreakOnID(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer,
+            [In] DXGI_INFO_QUEUE_MESSAGE_ID ID,
+            [In] BOOL bEnable
+        );
 
-        [PreserveSig]
-        int GetBreakOnSeverity(Guid Producer, DXGI_INFO_QUEUE_MESSAGE_SEVERITY Severity);
+        public /* static */ delegate BOOL GetBreakOnCategory(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer,
+            [In] DXGI_INFO_QUEUE_MESSAGE_CATEGORY Category
+        );
 
-        [PreserveSig]
-        int GetBreakOnID(Guid Producer, int ID);
+        public /* static */ delegate BOOL GetBreakOnSeverity(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer,
+            [In] DXGI_INFO_QUEUE_MESSAGE_SEVERITY Severity
+        );
 
-        [PreserveSig]
-        void SetMuteDebugOutput(Guid Producer, int bMute);
+        public /* static */ delegate BOOL GetBreakOnID(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer,
+            [In] DXGI_INFO_QUEUE_MESSAGE_ID ID
+        );
 
-        [PreserveSig]
-        int GetMuteDebugOutput(Guid Producer);
+        public /* static */ delegate void SetMuteDebugOutput(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer,
+            [In] BOOL bMute
+        );
+
+        public /* static */ delegate BOOL GetMuteDebugOutput(
+            [In] IDXGIInfoQueue* This,
+            [In] Guid Producer
+        );
+        #endregion
+
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
+
+            public IUnknown.AddRef AddRef;
+
+            public IUnknown.Release Release;
+
+            public SetMessageCountLimit SetMessageCountLimit;
+
+            public ClearStoredMessages ClearStoredMessages;
+
+            public GetMessage GetMessage;
+
+            public GetNumStoredMessagesAllowedByRetrievalFilters GetNumStoredMessagesAllowedByRetrievalFilters;
+
+            public GetNumStoredMessages GetNumStoredMessages;
+
+            public GetNumMessagesDiscardedByMessageCountLimit GetNumMessagesDiscardedByMessageCountLimit;
+
+            public GetMessageCountLimit GetMessageCountLimit;
+
+            public GetNumMessagesAllowedByStorageFilter GetNumMessagesAllowedByStorageFilter;
+
+            public GetNumMessagesDeniedByStorageFilter GetNumMessagesDeniedByStorageFilter;
+
+            public AddStorageFilterEntries AddStorageFilterEntries;
+
+            public GetStorageFilter GetStorageFilter;
+
+            public ClearStorageFilter ClearStorageFilter;
+
+            public PushEmptyStorageFilter PushEmptyStorageFilter;
+
+            public PushDenyAllStorageFilter PushDenyAllStorageFilter;
+
+            public PushCopyOfStorageFilter PushCopyOfStorageFilter;
+
+            public PushStorageFilter PushStorageFilter;
+
+            public PopStorageFilter PopStorageFilter;
+
+            public GetStorageFilterStackSize GetStorageFilterStackSize;
+
+            public AddRetrievalFilterEntries AddRetrievalFilterEntries;
+
+            public GetRetrievalFilter GetRetrievalFilter;
+
+            public ClearRetrievalFilter ClearRetrievalFilter;
+
+            public PushEmptyRetrievalFilter PushEmptyRetrievalFilter;
+
+            public PushDenyAllRetrievalFilter PushDenyAllRetrievalFilter;
+
+            public PushCopyOfRetrievalFilter PushCopyOfRetrievalFilter;
+
+            public PushRetrievalFilter PushRetrievalFilter;
+
+            public PopRetrievalFilter PopRetrievalFilter;
+
+            public GetRetrievalFilterStackSize GetRetrievalFilterStackSize;
+
+            public AddMessage AddMessage;
+
+            public AddApplicationMessage AddApplicationMessage;
+
+            public SetBreakOnCategory SetBreakOnCategory;
+
+            public SetBreakOnSeverity SetBreakOnSeverity;
+
+            public SetBreakOnID SetBreakOnID;
+
+            public GetBreakOnCategory GetBreakOnCategory;
+
+            public GetBreakOnSeverity GetBreakOnSeverity;
+
+            public GetBreakOnID GetBreakOnID;
+
+            public SetMuteDebugOutput SetMuteDebugOutput;
+
+            public GetMuteDebugOutput GetMuteDebugOutput;
+            #endregion
+        }
         #endregion
     }
 }

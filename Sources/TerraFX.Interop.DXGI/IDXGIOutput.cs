@@ -5,50 +5,126 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("AE02EEDB-C735-4690-8D52-5A8DC20213AA")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGIOutput : IDXGIObject
+    unsafe public struct IDXGIOutput
     {
-        #region IDXGIObject
-        new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
-
-        new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
-
-        new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
-
-        new IntPtr GetParent([In] ref Guid riid);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
         #endregion
 
-        #region Methods
-        void GetDesc(out DXGI_OUTPUT_DESC pDesc);
+        #region Delegates
+        public /* static */ delegate HRESULT GetDesc(
+            [In] IDXGIOutput* This,
+            [Out] DXGI_OUTPUT_DESC* pDesc
+        );
 
-        void GetDisplayModeList([In] DXGI_FORMAT EnumFormat, [In] DXGI_ENUM_MODES Flags, [In, Out] ref uint pNumModes, out DXGI_MODE_DESC pDesc);
+        public /* static */ delegate HRESULT GetDisplayModeList(
+            [In] IDXGIOutput* This,
+            [In] DXGI_FORMAT EnumFormat,
+            [In] DXGI_ENUM_MODES Flags,
+            [In, Out] uint* pNumModes,
+            [Out, Optional] DXGI_MODE_DESC* pDesc
+        );
 
-        void FindClosestMatchingMode([In] ref DXGI_MODE_DESC pModeToMatch, out DXGI_MODE_DESC pClosestMatch, [MarshalAs(UnmanagedType.IUnknown), In] object pConcernedDevice);
+        public /* static */ delegate HRESULT FindClosestMatchingMode(
+            [In] IDXGIOutput* This,
+            [In] DXGI_MODE_DESC* pModeToMatch,
+            [Out] DXGI_MODE_DESC* pClosestMatch,
+            [In, Optional] IUnknown* pConcernedDevice
+        );
 
-        void WaitForVBlank();
+        public /* static */ delegate HRESULT WaitForVBlank(
+            [In] IDXGIOutput* This
+        );
 
-        void TakeOwnership([MarshalAs(UnmanagedType.IUnknown), In] object pDevice, int Exclusive);
+        public /* static */ delegate HRESULT TakeOwnership(
+            [In] IDXGIOutput* This,
+            [In] IUnknown* pDevice,
+            [In] BOOL Exclusive
+        );
 
-        [PreserveSig]
-        void ReleaseOwnership();
+        public /* static */ delegate void ReleaseOwnership(
+            [In] IDXGIOutput* This
+        );
 
-        void GetGammaControlCapabilities(out DXGI_GAMMA_CONTROL_CAPABILITIES pGammaCaps);
+        public /* static */ delegate HRESULT GetGammaControlCapabilities(
+            [In] IDXGIOutput* This,
+            [Out] DXGI_GAMMA_CONTROL_CAPABILITIES* pGammaCaps
+        );
 
-        void SetGammaControl([In] ref DXGI_GAMMA_CONTROL pArray);
+        public /* static */ delegate HRESULT SetGammaControl(
+            [In] IDXGIOutput* This,
+            [In] DXGI_GAMMA_CONTROL* pArray
+        );
 
-        void GetGammaControl(out DXGI_GAMMA_CONTROL pArray);
+        public /* static */ delegate HRESULT GetGammaControl(
+            [In] IDXGIOutput* This,
+            [Out] DXGI_GAMMA_CONTROL* pArray
+        );
 
-        void SetDisplaySurface([MarshalAs(UnmanagedType.Interface), In] IDXGISurface pScanoutSurface);
+        public /* static */ delegate HRESULT SetDisplaySurface(
+            [In] IDXGIOutput* This,
+            [In] IDXGISurface* pScanoutSurface
+        );
 
-        void GetDisplaySurfaceData([MarshalAs(UnmanagedType.Interface), In] IDXGISurface pDestination);
+        public /* static */ delegate HRESULT GetDisplaySurfaceData(
+            [In] IDXGIOutput* This,
+            [In] IDXGISurface* pDestination
+        );
 
-        void GetFrameStatistics(out DXGI_FRAME_STATISTICS pStats);
+        public /* static */ delegate HRESULT GetFrameStatistics(
+            [In] IDXGIOutput* This,
+            [Out] DXGI_FRAME_STATISTICS* pStats
+        );
+        #endregion
+
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
+
+            public IUnknown.AddRef AddRef;
+
+            public IUnknown.Release Release;
+
+            public IDXGIObject.SetPrivateData SetPrivateData;
+
+            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
+
+            public IDXGIObject.GetPrivateData GetPrivateData;
+
+            public IDXGIObject.GetParent GetParent;
+
+            public GetDesc GetDesc;
+
+            public GetDisplayModeList GetDisplayModeList;
+
+            public FindClosestMatchingMode FindClosestMatchingMode;
+
+            public WaitForVBlank WaitForVBlank;
+
+            public TakeOwnership TakeOwnership;
+
+            public ReleaseOwnership ReleaseOwnership;
+
+            public GetGammaControlCapabilities GetGammaControlCapabilities;
+
+            public SetGammaControl SetGammaControl;
+
+            public GetGammaControl GetGammaControl;
+
+            public SetDisplaySurface SetDisplaySurface;
+
+            public GetDisplaySurfaceData GetDisplaySurfaceData;
+
+            public GetFrameStatistics GetFrameStatistics;
+            #endregion
+        }
         #endregion
     }
 }

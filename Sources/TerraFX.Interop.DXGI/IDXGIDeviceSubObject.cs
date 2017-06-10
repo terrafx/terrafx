@@ -5,27 +5,46 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("3D3E0379-F9DE-4D58-BB6C-18D62992F1A6")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGIDeviceSubObject : IDXGIObject
+    unsafe public struct IDXGIDeviceSubObject
     {
-        #region IDXGIObject
-        new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
-
-        new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
-
-        new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
-
-        new IntPtr GetParent([In] ref Guid riid);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
         #endregion
 
-        #region Methods
-        IntPtr GetDevice([In] ref Guid riid);
+        #region Delegates
+        public /* static */ delegate HRESULT GetDevice(
+            [In] IDXGIDeviceSubObject* This,
+            [In] Guid* riid,
+            [Out] void** ppDevice
+        );
+        #endregion
+
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
+
+            public IUnknown.AddRef AddRef;
+
+            public IUnknown.Release Release;
+
+            public IDXGIObject.SetPrivateData SetPrivateData;
+
+            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
+
+            public IDXGIObject.GetPrivateData GetPrivateData;
+
+            public IDXGIObject.GetParent GetParent;
+
+            public GetDevice GetDevice;
+            #endregion
+        }
         #endregion
     }
 }

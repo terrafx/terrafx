@@ -5,33 +5,55 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("9D8E1289-D7B3-465F-8126-250E349AF85D")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGIKeyedMutex : IDXGIDeviceSubObject
+    unsafe public struct IDXGIKeyedMutex
     {
-        #region IDXGIObject
-        new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
-
-        new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
-
-        new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
-
-        new IntPtr GetParent([In] ref Guid riid);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
         #endregion
 
-        #region IDXGIDeviceSubObject
-        new IntPtr GetDevice([In] ref Guid riid);
+        #region Delegates
+        public /* static */ delegate HRESULT AcquireSync(
+            [In] IDXGIKeyedMutex* This,
+            [In] ulong Key,
+            [In] uint dwMilliseconds
+        );
+
+        public /* static */ delegate HRESULT ReleaseSync(
+            [In] IDXGIKeyedMutex* This,
+            [In] ulong Key
+        );
         #endregion
 
-        #region Methods
-        void AcquireSync([In] ulong Key, [In] uint dwMilliseconds);
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
 
-        void ReleaseSync([In] ulong Key);
+            public IUnknown.AddRef AddRef;
+
+            public IUnknown.Release Release;
+
+            public IDXGIObject.SetPrivateData SetPrivateData;
+
+            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
+
+            public IDXGIObject.GetPrivateData GetPrivateData;
+
+            public IDXGIObject.GetParent GetParent;
+
+            public IDXGIDeviceSubObject.GetDevice GetDevice;
+
+            public AcquireSync AcquireSync;
+
+            public ReleaseSync ReleaseSync;
+            #endregion
+        }
         #endregion
     }
 }

@@ -5,35 +5,61 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("CAFCB56C-6AC3-4889-BF47-9E23BBD260EC")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGISurface : IDXGIDeviceSubObject
+    unsafe public struct IDXGISurface
     {
-        #region IDXGIObject
-        new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
-
-        new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
-
-        new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
-
-        new IntPtr GetParent([In] ref Guid riid);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
         #endregion
 
-        #region IDXGIDeviceSubObject
-        new IntPtr GetDevice([In] ref Guid riid);
+        #region Delegates
+        public /* static */ delegate HRESULT GetDesc(
+            [In] IDXGISurface* This,
+            [Out] DXGI_SURFACE_DESC* pDesc
+        );
+
+        public /* static */ delegate HRESULT Map(
+            [In] IDXGISurface* This,
+            [Out] DXGI_MAPPED_RECT* pLockedRect,
+            [In] DXGI_MAP_FLAG MapFlags
+        );
+
+        public /* static */ delegate HRESULT Unmap(
+            [In] IDXGISurface* This
+        );
         #endregion
 
-        #region Methods
-        void GetDesc(out DXGI_SURFACE_DESC pDesc);
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
 
-        void Map(out DXGI_MAPPED_RECT pLockedRect, [In] DXGI_MAP_FLAG MapFlags);
+            public IUnknown.AddRef AddRef;
 
-        void Unmap();
+            public IUnknown.Release Release;
+
+            public IDXGIObject.SetPrivateData SetPrivateData;
+
+            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
+
+            public IDXGIObject.GetPrivateData GetPrivateData;
+
+            public IDXGIObject.GetParent GetParent;
+
+            public IDXGIDeviceSubObject.GetDevice GetDevice;
+
+            public GetDesc GetDesc;
+
+            public Map Map;
+
+            public Unmap Unmap;
+            #endregion
+        }
         #endregion
     }
 }

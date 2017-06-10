@@ -3,11 +3,10 @@
 // Ported from shared\dxgi1_2.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 36)]
     public struct DXGI_OUTDUPL_DESC
     {
         #region Fields
@@ -15,7 +14,7 @@ namespace TerraFX.Interop.DXGI
 
         public DXGI_MODE_ROTATION Rotation;
 
-        public int /* BOOL */ DesktopImageInSystemMemory;
+        public BOOL DesktopImageInSystemMemory;
         #endregion
     }
 }

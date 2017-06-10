@@ -5,10 +5,11 @@
 
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
-    public static class DXGI
+    unsafe public static class DXGI
     {
         #region Constants
         public const uint DEBUG_BINARY_VERSION = 1;
@@ -25,20 +26,37 @@ namespace TerraFX.Interop.DXGI
         #endregion
 
         #region Methods
-        [DllImport("DXGI", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CreateDXGIFactory", ExactSpelling = true, PreserveSig = false, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public static extern void CreateFactory([In] ref Guid riid, [MarshalAs(UnmanagedType.IUnknown), Out] out object ppFactory);
+        [DllImport("DXGI", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CreateDXGIFactory", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public static extern HRESULT CreateFactory(
+            [In] Guid* riid,
+            [Out] void** ppFactory
+        );
 
-        [DllImport("DXGI", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CreateDXGIFactory1", ExactSpelling = true, PreserveSig = false, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public static extern void CreateFactory1([In] ref Guid riid, [MarshalAs(UnmanagedType.IUnknown), Out] out object ppFactory);
+        [DllImport("DXGI", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CreateDXGIFactory1", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public static extern HRESULT CreateFactory1(
+            [In] Guid* riid,
+            [Out] void** ppFactory
+        );
 
-        [DllImport("DXGI", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CreateDXGIFactory2", ExactSpelling = true, PreserveSig = false, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public static extern void CreateFactory2([In] DXGI_CREATE_FACTORY_FLAG Flags, [In] ref Guid riid, [MarshalAs(UnmanagedType.IUnknown), Out] out object ppFactory);
+        [DllImport("DXGI", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CreateDXGIFactory2", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public static extern void CreateFactory2(
+            [In] DXGI_CREATE_FACTORY_FLAG Flags,
+            [In] Guid* riid,
+            [Out] void** ppFactory
+        );
 
-        [DllImport("DXGIDebug", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "DXGIGetDebugInterface", ExactSpelling = true, PreserveSig = false, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public static extern void GetDebugInterface([In] ref Guid riid, [MarshalAs(UnmanagedType.IUnknown), Out] out object pDebug);
+        [DllImport("DXGIDebug", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "DXGIGetDebugInterface", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public static extern void GetDebugInterface(
+            [In] Guid* riid,
+            [Out] void** pDebug
+        );
 
-        [DllImport("DXGI", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "DXGIGetDebugInterface1", ExactSpelling = true, PreserveSig = false, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public static extern void GetDebugInterface1([In] uint Flags, [In] ref Guid riid, [MarshalAs(UnmanagedType.IUnknown), Out] out object pDebug);
+        [DllImport("DXGI", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "DXGIGetDebugInterface1", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public static extern void GetDebugInterface1(
+            [In] uint Flags,
+            [In] Guid* riid,
+            [Out] void** pDebug
+        );
         #endregion
     }
 }

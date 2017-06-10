@@ -5,91 +5,132 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("A8BE2AC4-199F-4946-B331-79599FB98DE7")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGISwapChain2 : IDXGISwapChain1
+    unsafe public struct IDXGISwapChain2
     {
-        #region IDXGIObject
-        new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
-
-        new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
-
-        new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
-
-        new IntPtr GetParent([In] ref Guid riid);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
         #endregion
 
-        #region IDXGIDeviceSubObject
-        new IntPtr GetDevice([In] ref Guid riid);
+        #region Delegates
+        public /* static */ delegate HRESULT SetSourceSize(
+            [In] IDXGISwapChain2* This,
+            [In] uint Width,
+            [In] uint Height
+        );
+
+        public /* static */ delegate HRESULT GetSourceSize(
+            [In] IDXGISwapChain2* This,
+            [Out] uint* pWidth,
+            [Out] uint* pHeight
+        );
+
+        public /* static */ delegate HRESULT SetMaximumFrameLatency(
+            [In] IDXGISwapChain2* This,
+            [In] uint MaxLatency
+        );
+
+        public /* static */ delegate HRESULT GetMaximumFrameLatency(
+            [In] IDXGISwapChain2* This,
+            [Out] uint* pMaxLatency
+        );
+
+        public /* static */ delegate HANDLE GetFrameLatencyWaitableObject(
+            [In] IDXGISwapChain2* This
+        );
+
+        public /* static */ delegate HRESULT SetMatrixTransform(
+            [In] IDXGISwapChain2* This,
+            [In] DXGI_MATRIX_3X2_F* pMatrix
+        );
+
+        public /* static */ delegate HRESULT GetMatrixTransform(
+            [In] IDXGISwapChain2* This,
+            [Out] DXGI_MATRIX_3X2_F* pMatrix
+        );
         #endregion
 
-        #region IDXGISwapChain
-        new void Present([In] uint SyncInterval, [In] DXGI_PRESENT_FLAG Flags);
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
 
-        new void GetBuffer([In] uint Buffer, [In] ref Guid riid, [In, Out] ref IntPtr ppSurface);
+            public IUnknown.AddRef AddRef;
 
-        new void SetFullscreenState([In] int Fullscreen, [MarshalAs(UnmanagedType.Interface), In] IDXGIOutput pTarget);
+            public IUnknown.Release Release;
 
-        new void GetFullscreenState(out int pFullscreen, [MarshalAs(UnmanagedType.Interface)] out IDXGIOutput ppTarget);
+            public IDXGIObject.SetPrivateData SetPrivateData;
 
-        new void GetDesc(out DXGI_SWAP_CHAIN_DESC pDesc);
+            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
 
-        new void ResizeBuffers([In] uint BufferCount, [In] uint Width, [In] uint Height, [In] DXGI_FORMAT NewFormat, [In] DXGI_SWAP_CHAIN_FLAG SwapChainFlags);
+            public IDXGIObject.GetPrivateData GetPrivateData;
 
-        new void ResizeTarget([In] ref DXGI_MODE_DESC pNewTargetParameters);
+            public IDXGIObject.GetParent GetParent;
 
-        new void GetContainingOutput([MarshalAs(UnmanagedType.Interface)] out IDXGIOutput ppOutput);
+            public IDXGIDeviceSubObject.GetDevice GetDevice;
 
-        new void GetFrameStatistics(out DXGI_FRAME_STATISTICS pStats);
+            public IDXGISwapChain.Present Present;
 
-        new void GetLastPresentCount(out uint pLastPresentCount);
-        #endregion
+            public IDXGISwapChain.GetBuffer GetBuffer;
 
-        #region IDXGISwapChain1
-        new void GetDesc1(out DXGI_SWAP_CHAIN_DESC1 pDesc);
+            public IDXGISwapChain.SetFullscreenState SetFullscreenState;
 
-        new void GetFullscreenDesc(out DXGI_SWAP_CHAIN_FULLSCREEN_DESC pDesc);
+            public IDXGISwapChain.GetFullscreenState GetFullscreenState;
 
-        new void GetHwnd([Out] IntPtr pHwnd);
+            public IDXGISwapChain.GetDesc GetDesc;
 
-        new void GetCoreWindow([In] ref Guid refiid, out IntPtr ppUnk);
+            public IDXGISwapChain.ResizeBuffers ResizeBuffers;
 
-        new void Present1([In] uint SyncInterval, [In] DXGI_PRESENT_FLAG PresentFlags, [In] ref DXGI_PRESENT_PARAMETERS pPresentParameters);
+            public IDXGISwapChain.ResizeTarget ResizeTarget;
 
-        [PreserveSig]
-        new int IsTemporaryMonoSupported();
+            public IDXGISwapChain.GetContainingOutput GetContainingOutput;
 
-        new void GetRestrictToOutput([MarshalAs(UnmanagedType.Interface)] out IDXGIOutput ppRestrictToOutput);
+            public IDXGISwapChain.GetFrameStatistics GetFrameStatistics;
 
-        new void SetBackgroundColor([In] ref DXGI_RGBA pColor);
+            public IDXGISwapChain.GetLastPresentCount GetLastPresentCount;
 
-        new void GetBackgroundColor(out DXGI_RGBA pColor);
+            public IDXGISwapChain1.GetDesc1 GetDesc1;
 
-        new void SetRotation([In] DXGI_MODE_ROTATION Rotation);
+            public IDXGISwapChain1.GetFullscreenDesc GetFullscreenDesc;
 
-        new void GetRotation(out DXGI_MODE_ROTATION pRotation);
-        #endregion
+            public IDXGISwapChain1.GetHwnd GetHwnd;
 
-        #region Methods
-        void SetSourceSize(uint Width, uint Height);
+            public IDXGISwapChain1.GetCoreWindow GetCoreWindow;
 
-        void GetSourceSize(out uint pWidth, out uint pHeight);
+            public IDXGISwapChain1.Present1 Present1;
 
-        void SetMaximumFrameLatency(uint MaxLatency);
+            public IDXGISwapChain1.IsTemporaryMonoSupported IsTemporaryMonoSupported;
 
-        void GetMaximumFrameLatency(out uint pMaxLatency);
+            public IDXGISwapChain1.GetRestrictToOutput GetRestrictToOutput;
 
-        [PreserveSig]
-        IntPtr GetFrameLatencyWaitableObject();
+            public IDXGISwapChain1.SetBackgroundColor SetBackgroundColor;
 
-        void SetMatrixTransform(ref DXGI_MATRIX_3X2_F pMatrix);
+            public IDXGISwapChain1.GetBackgroundColor GetBackgroundColor;
 
-        void GetMatrixTransform(out DXGI_MATRIX_3X2_F pMatrix);
+            public IDXGISwapChain1.SetRotation SetRotation;
+
+            public IDXGISwapChain1.GetRotation GetRotation;
+
+            public SetSourceSize SetSourceSize;
+
+            public GetSourceSize GetSourceSize;
+
+            public SetMaximumFrameLatency SetMaximumFrameLatency;
+
+            public GetMaximumFrameLatency GetMaximumFrameLatency;
+
+            public GetFrameLatencyWaitableObject GetFrameLatencyWaitableObject;
+
+            public SetMatrixTransform SetMatrixTransform;
+
+            public GetMatrixTransform GetMatrixTransform;
+            #endregion
+        }
         #endregion
     }
 }

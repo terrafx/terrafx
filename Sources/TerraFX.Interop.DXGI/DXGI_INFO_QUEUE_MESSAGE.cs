@@ -4,11 +4,9 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System;
-using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 8)] // Size = 40 or 48
     unsafe public struct DXGI_INFO_QUEUE_MESSAGE
     {
         #region Fields
@@ -22,7 +20,7 @@ namespace TerraFX.Interop.DXGI
 
         public byte* pDescription;
 
-        public ulong DescriptionByteLength;
+        public UIntPtr DescriptionByteLength;
         #endregion
     }
 }

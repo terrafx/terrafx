@@ -5,42 +5,62 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("770AAE78-F26F-4DBA-A829-253C83D1B387")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGIFactory1 : IDXGIFactory
+    unsafe public struct IDXGIFactory1
     {
-        #region IDXGIObject
-        new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
-
-        new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
-
-        new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
-
-        new IntPtr GetParent([In] ref Guid riid);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
         #endregion
 
-        #region IDXGIFactory
-        new void EnumAdapters([In] uint Adapter, [MarshalAs(UnmanagedType.Interface)] out IDXGIAdapter ppAdapter);
+        #region Delegates
+        public /* static */ delegate HRESULT EnumAdapters1(
+            [In] IDXGIFactory1* This,
+            [In] uint Adapter,
+            [Out] IDXGIAdapter1** ppAdapter
+        );
 
-        new void MakeWindowAssociation(IntPtr WindowHandle, DXGI_MWA_FLAG Flags);
-
-        new void GetWindowAssociation([Out] IntPtr pWindowHandle);
-
-        new void CreateSwapChain([MarshalAs(UnmanagedType.IUnknown), In] object pDevice, [In] ref DXGI_SWAP_CHAIN_DESC pDesc, [MarshalAs(UnmanagedType.Interface)] out IDXGISwapChain ppSwapChain);
-
-        new void CreateSoftwareAdapter([In] IntPtr Module, [MarshalAs(UnmanagedType.Interface)] out IDXGIAdapter ppAdapter);
+        public /* static */ delegate BOOL IsCurrent(
+            [In] IDXGIFactory1* This
+        );
         #endregion
 
-        #region Methods
-        void EnumAdapters1([In] uint Adapter, [MarshalAs(UnmanagedType.Interface)] out IDXGIAdapter1 ppAdapter);
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
 
-        [PreserveSig]
-        int IsCurrent();
+            public IUnknown.AddRef AddRef;
+
+            public IUnknown.Release Release;
+
+            public IDXGIObject.SetPrivateData SetPrivateData;
+
+            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
+
+            public IDXGIObject.GetPrivateData GetPrivateData;
+
+            public IDXGIObject.GetParent GetParent;
+
+            public IDXGIFactory.EnumAdapters EnumAdapters;
+
+            public IDXGIFactory.MakeWindowAssociation MakeWindowAssociation;
+
+            public IDXGIFactory.GetWindowAssociation GetWindowAssociation;
+
+            public IDXGIFactory.CreateSwapChain CreateSwapChain;
+
+            public IDXGIFactory.CreateSoftwareAdapter CreateSoftwareAdapter;
+
+            public EnumAdapters1 EnumAdapters1;
+
+            public IsCurrent IsCurrent;
+            #endregion
+        }
         #endregion
     }
 }

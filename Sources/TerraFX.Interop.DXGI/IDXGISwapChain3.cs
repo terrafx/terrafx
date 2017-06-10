@@ -5,102 +5,130 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("94D99BDB-F1F8-4AB0-B236-7DA0170EDAB1")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGISwapChain3 : IDXGISwapChain2
+    unsafe public struct IDXGISwapChain3
     {
-        #region IDXGIObject
-        new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
-
-        new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
-
-        new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
-
-        new IntPtr GetParent([In] ref Guid riid);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
         #endregion
 
-        #region IDXGIDeviceSubObject
-        new IntPtr GetDevice([In] ref Guid riid);
+        #region Delegates
+        public /* static */ delegate uint GetCurrentBackBufferIndex(
+            [In] IDXGISwapChain3* This
+        );
+
+        public /* static */ delegate HRESULT CheckColorSpaceSupport(
+            [In] IDXGISwapChain3* This,
+            [In] DXGI_COLOR_SPACE_TYPE ColorSpace,
+            [Out] uint* pColorSpaceSupport
+        );
+
+        public /* static */ delegate HRESULT SetColorSpace1(
+            [In] IDXGISwapChain3* This,
+            [In] DXGI_COLOR_SPACE_TYPE ColorSpace
+        );
+
+        public /* static */ delegate HRESULT ResizeBuffers1(
+            [In] IDXGISwapChain3* This,
+            [In] uint BufferCount,
+            [In] uint Width,
+            [In] uint Height,
+            [In] DXGI_FORMAT Format,
+            [In] DXGI_SWAP_CHAIN_FLAG SwapChainFlags,
+            [In] uint* pCreationNodeMask,
+            [In] IUnknown** ppPresentQueue
+        );
         #endregion
 
-        #region IDXGISwapChain
-        new void Present([In] uint SyncInterval, [In] DXGI_PRESENT_FLAG Flags);
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
 
-        new void GetBuffer([In] uint Buffer, [In] ref Guid riid, [In, Out] ref IntPtr ppSurface);
+            public IUnknown.AddRef AddRef;
 
-        new void SetFullscreenState([In] int Fullscreen, [MarshalAs(UnmanagedType.Interface), In] IDXGIOutput pTarget);
+            public IUnknown.Release Release;
 
-        new void GetFullscreenState(out int pFullscreen, [MarshalAs(UnmanagedType.Interface)] out IDXGIOutput ppTarget);
+            public IDXGIObject.SetPrivateData SetPrivateData;
 
-        new void GetDesc(out DXGI_SWAP_CHAIN_DESC pDesc);
+            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
 
-        new void ResizeBuffers([In] uint BufferCount, [In] uint Width, [In] uint Height, [In] DXGI_FORMAT NewFormat, [In] DXGI_SWAP_CHAIN_FLAG SwapChainFlags);
+            public IDXGIObject.GetPrivateData GetPrivateData;
 
-        new void ResizeTarget([In] ref DXGI_MODE_DESC pNewTargetParameters);
+            public IDXGIObject.GetParent GetParent;
 
-        new void GetContainingOutput([MarshalAs(UnmanagedType.Interface)] out IDXGIOutput ppOutput);
+            public IDXGIDeviceSubObject.GetDevice GetDevice;
 
-        new void GetFrameStatistics(out DXGI_FRAME_STATISTICS pStats);
+            public IDXGISwapChain.Present Present;
 
-        new void GetLastPresentCount(out uint pLastPresentCount);
-        #endregion
+            public IDXGISwapChain.GetBuffer GetBuffer;
 
-        #region IDXGISwapChain1
-        new void GetDesc1(out DXGI_SWAP_CHAIN_DESC1 pDesc);
+            public IDXGISwapChain.SetFullscreenState SetFullscreenState;
 
-        new void GetFullscreenDesc(out DXGI_SWAP_CHAIN_FULLSCREEN_DESC pDesc);
+            public IDXGISwapChain.GetFullscreenState GetFullscreenState;
 
-        new void GetHwnd([Out] IntPtr pHwnd);
+            public IDXGISwapChain.GetDesc GetDesc;
 
-        new void GetCoreWindow([In] ref Guid refiid, out IntPtr ppUnk);
+            public IDXGISwapChain.ResizeBuffers ResizeBuffers;
 
-        new void Present1([In] uint SyncInterval, [In] DXGI_PRESENT_FLAG PresentFlags, [In] ref DXGI_PRESENT_PARAMETERS pPresentParameters);
+            public IDXGISwapChain.ResizeTarget ResizeTarget;
 
-        [PreserveSig]
-        new int IsTemporaryMonoSupported();
+            public IDXGISwapChain.GetContainingOutput GetContainingOutput;
 
-        new void GetRestrictToOutput([MarshalAs(UnmanagedType.Interface)] out IDXGIOutput ppRestrictToOutput);
+            public IDXGISwapChain.GetFrameStatistics GetFrameStatistics;
 
-        new void SetBackgroundColor([In] ref DXGI_RGBA pColor);
+            public IDXGISwapChain.GetLastPresentCount GetLastPresentCount;
 
-        new void GetBackgroundColor(out DXGI_RGBA pColor);
+            public IDXGISwapChain1.GetDesc1 GetDesc1;
 
-        new void SetRotation([In] DXGI_MODE_ROTATION Rotation);
+            public IDXGISwapChain1.GetFullscreenDesc GetFullscreenDesc;
 
-        new void GetRotation(out DXGI_MODE_ROTATION pRotation);
-        #endregion
+            public IDXGISwapChain1.GetHwnd GetHwnd;
 
-        #region IDXGISwapChain2
-        new void SetSourceSize(uint Width, uint Height);
+            public IDXGISwapChain1.GetCoreWindow GetCoreWindow;
 
-        new void GetSourceSize(out uint pWidth, out uint pHeight);
+            public IDXGISwapChain1.Present1 Present1;
 
-        new void SetMaximumFrameLatency(uint MaxLatency);
+            public IDXGISwapChain1.IsTemporaryMonoSupported IsTemporaryMonoSupported;
 
-        new void GetMaximumFrameLatency(out uint pMaxLatency);
+            public IDXGISwapChain1.GetRestrictToOutput GetRestrictToOutput;
 
-        [PreserveSig]
-        new IntPtr GetFrameLatencyWaitableObject();
+            public IDXGISwapChain1.SetBackgroundColor SetBackgroundColor;
 
-        new void SetMatrixTransform(ref DXGI_MATRIX_3X2_F pMatrix);
+            public IDXGISwapChain1.GetBackgroundColor GetBackgroundColor;
 
-        new void GetMatrixTransform(out DXGI_MATRIX_3X2_F pMatrix);
-        #endregion
+            public IDXGISwapChain1.SetRotation SetRotation;
 
-        #region Methods
-        [PreserveSig]
-        uint GetCurrentBackBufferIndex();
+            public IDXGISwapChain1.GetRotation GetRotation;
 
-        void CheckColorSpaceSupport([In] DXGI_COLOR_SPACE_TYPE ColorSpace, out uint pColorSpaceSupport);
+            public IDXGISwapChain2.SetSourceSize SetSourceSize;
 
-        void SetColorSpace1([In] DXGI_COLOR_SPACE_TYPE ColorSpace);
+            public IDXGISwapChain2.GetSourceSize GetSourceSize;
 
-        void ResizeBuffers1([In] uint BufferCount, [In] uint Width, [In] uint Height, [In] DXGI_FORMAT Format, [In] DXGI_SWAP_CHAIN_FLAG SwapChainFlags, [In] ref uint pCreationNodeMask, [MarshalAs(UnmanagedType.IUnknown), In] ref object ppPresentQueue);
+            public IDXGISwapChain2.SetMaximumFrameLatency SetMaximumFrameLatency;
+
+            public IDXGISwapChain2.GetMaximumFrameLatency GetMaximumFrameLatency;
+
+            public IDXGISwapChain2.GetFrameLatencyWaitableObject GetFrameLatencyWaitableObject;
+
+            public IDXGISwapChain2.SetMatrixTransform SetMatrixTransform;
+
+            public IDXGISwapChain2.GetMatrixTransform GetMatrixTransform;
+
+            public GetCurrentBackBufferIndex GetCurrentBackBufferIndex;
+
+            public CheckColorSpaceSupport CheckColorSpaceSupport;
+
+            public SetColorSpace1 SetColorSpace1;
+
+            public ResizeBuffers1 ResizeBuffers1;
+            #endregion
+        }
         #endregion
     }
 }

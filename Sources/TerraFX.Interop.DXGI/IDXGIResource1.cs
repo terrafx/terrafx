@@ -5,43 +5,66 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("30961379-4609-4A41-998E-54FE567EE0C1")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGIResource1 : IDXGIResource
+    unsafe public struct IDXGIResource1
     {
-        #region IDXGIObject
-        new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
-
-        new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
-
-        new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
-
-        new IntPtr GetParent([In] ref Guid riid);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
         #endregion
 
-        #region IDXGIDeviceSubObject
-        new IntPtr GetDevice([In] ref Guid riid);
+        #region Delegates
+        public /* static */ delegate HRESULT CreateSubresourceSurface(
+            [In] IDXGIResource1* This,
+            [In] uint index,
+            [Out] IDXGISurface2** ppSurface
+        );
+
+        public /* static */ delegate HRESULT CreateSharedHandle(
+            [In] IDXGIResource1* This,
+            [In, Optional] SECURITY_ATTRIBUTES* pAttributes,
+            [In] uint dwAccess,
+            [In, Optional] ushort* lpName,
+            [Out] HANDLE pHandle
+        );
         #endregion
 
-        #region IDXGIResource
-        new void GetSharedHandle(out IntPtr pSharedHandle);
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
 
-        new void GetUsage(out uint pUsage);
+            public IUnknown.AddRef AddRef;
 
-        new void SetEvictionPriority([In] DXGI_RESOURCE_PRIORITY EvictionPriority);
+            public IUnknown.Release Release;
 
-        new DXGI_RESOURCE_PRIORITY GetEvictionPriority();
-        #endregion
+            public IDXGIObject.SetPrivateData SetPrivateData;
 
-        #region Methods
-        void CreateSubresourceSurface(uint index, [MarshalAs(UnmanagedType.Interface)] out IDXGISurface2 ppSurface);
+            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
 
-        void CreateSharedHandle([In] ref SECURITY_ATTRIBUTES pAttributes, [In] uint dwAccess, [MarshalAs(UnmanagedType.LPWStr), In] string lpName, out IntPtr pHandle);
+            public IDXGIObject.GetPrivateData GetPrivateData;
+
+            public IDXGIObject.GetParent GetParent;
+
+            public IDXGIDeviceSubObject.GetDevice GetDevice;
+
+            public IDXGIResource.GetSharedHandle GetSharedHandle;
+
+            public IDXGIResource.GetUsage GetUsage;
+
+            public IDXGIResource.SetEvictionPriority SetEvictionPriority;
+
+            public IDXGIResource.GetEvictionPriority GetEvictionPriority;
+
+            public CreateSubresourceSurface CreateSubresourceSurface;
+
+            public CreateSharedHandle CreateSharedHandle;
+            #endregion
+        }
         #endregion
     }
 }

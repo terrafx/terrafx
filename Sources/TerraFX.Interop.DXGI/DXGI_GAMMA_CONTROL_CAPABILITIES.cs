@@ -3,15 +3,14 @@
 // Ported from shared\dxgitype.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 4116)]
     unsafe public struct DXGI_GAMMA_CONTROL_CAPABILITIES
     {
         #region Fields
-        public int /* BOOL */ ScaleAndOffsetSupported;
+        public BOOL ScaleAndOffsetSupported;
 
         public float MaxConvertedValue;
 

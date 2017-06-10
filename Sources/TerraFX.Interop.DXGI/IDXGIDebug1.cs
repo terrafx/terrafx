@@ -5,28 +5,50 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("C5A05F0C-16F2-4ADF-9F4D-A8C4D58AC550")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGIDebug1 : IDXGIDebug
+    unsafe public struct IDXGIDebug1
     {
-        #region IDXGIDebug
-        new void ReportLiveObjects(Guid apiid, DXGI_DEBUG_RLO_FLAGS flags);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
         #endregion
 
-        #region Methods
-        [PreserveSig]
-        void EnableLeakTrackingForThread();
+        #region Delegates
+        public /* static */ delegate void EnableLeakTrackingForThread(
+            [In] IDXGIDebug1* This
+        );
 
-        [PreserveSig]
-        void DisableLeakTrackingForThread();
+        public /* static */ delegate void DisableLeakTrackingForThread(
+            [In] IDXGIDebug1* This
+        );
 
-        [PreserveSig]
-        int IsLeakTrackingEnabledForThread();
+        public /* static */ delegate BOOL IsLeakTrackingEnabledForThread(
+            [In] IDXGIDebug1* This
+        );
+        #endregion
+
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
+
+            public IUnknown.AddRef AddRef;
+
+            public IUnknown.Release Release;
+
+            public IDXGIDebug.ReportLiveObjects ReportLiveObjects;
+
+            public EnableLeakTrackingForThread EnableLeakTrackingForThread;
+
+            public DisableLeakTrackingForThread DisableLeakTrackingForThread;
+
+            public IsLeakTrackingEnabledForThread IsLeakTrackingEnabledForThread;
+            #endregion
+        }
         #endregion
     }
 }

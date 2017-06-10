@@ -3,12 +3,10 @@
 // Ported from shared\dxgi1_2.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System;
-using System.Runtime.InteropServices;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)] // Size = 16 or 32
     unsafe public struct DXGI_PRESENT_PARAMETERS
     {
         #region Fields

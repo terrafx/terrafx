@@ -5,69 +5,147 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("50C83A1C-E072-4C48-87B0-3630FA36A6D0")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGIFactory2 : IDXGIFactory1
+    unsafe public struct IDXGIFactory2
     {
-        #region IDXGIObject
-        new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
-
-        new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
-
-        new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
-
-        new IntPtr GetParent([In] ref Guid riid);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
         #endregion
 
-        #region IDXGIFactory
-        new void EnumAdapters([In] uint Adapter, [MarshalAs(UnmanagedType.Interface)] out IDXGIAdapter ppAdapter);
+        #region Delegates
+        public /* static */ delegate BOOL IsWindowedStereoEnabled(
+            [In] IDXGIFactory2* This
+        );
 
-        new void MakeWindowAssociation(IntPtr WindowHandle, DXGI_MWA_FLAG Flags);
+        public /* static */ delegate HRESULT CreateSwapChainForHwnd(
+            [In] IDXGIFactory2* This,
+            [In] IUnknown* pDevice,
+            [In] HWND hWnd,
+            [In] DXGI_SWAP_CHAIN_DESC1* pDesc,
+            [In, Optional] DXGI_SWAP_CHAIN_FULLSCREEN_DESC* pFullscreenDesc,
+            [In, Optional] IDXGIOutput* pRestrictToOutput,
+            [Out] IDXGISwapChain1** ppSwapChain
+        );
 
-        new void GetWindowAssociation([Out] IntPtr pWindowHandle);
+        public /* static */ delegate HRESULT CreateSwapChainForCoreWindow(
+            [In] IDXGIFactory2* This,
+            [In] IUnknown* pDevice,
+            [In] IUnknown* pWindow,
+            [In] DXGI_SWAP_CHAIN_DESC1* pDesc,
+            [In, Optional] IDXGIOutput* pRestrictToOutput,
+            [Out] IDXGISwapChain1** ppSwapChain
+        );
 
-        new void CreateSwapChain([MarshalAs(UnmanagedType.IUnknown), In] object pDevice, [In] ref DXGI_SWAP_CHAIN_DESC pDesc, [MarshalAs(UnmanagedType.Interface)] out IDXGISwapChain ppSwapChain);
+        public /* static */ delegate HRESULT GetSharedResourceAdapterLuid(
+            [In] IDXGIFactory2* This,
+            [In] HANDLE hResource,
+            [Out] LUID* plong
+        );
 
-        new void CreateSoftwareAdapter([In] IntPtr Module, [MarshalAs(UnmanagedType.Interface)] out IDXGIAdapter ppAdapter);
+        public /* static */ delegate HRESULT RegisterStereoStatusWindow(
+            [In] IDXGIFactory2* This,
+            [In] HWND WindowHandle,
+            [In] uint wMsg,
+            [Out] uint* pdwCookie
+        );
+
+        public /* static */ delegate HRESULT RegisterStereoStatusEvent(
+            [In] IDXGIFactory2* This,
+            [In] HANDLE hEvent,
+            [Out] uint* pdwCookie
+        );
+
+        public /* static */ delegate void UnregisterStereoStatus(
+            [In] IDXGIFactory2* This,
+            [In] uint dwCookie
+        );
+
+        public /* static */ delegate HRESULT RegisterOcclusionStatusWindow(
+            [In] IDXGIFactory2* This,
+            [In] HWND WindowHandle,
+            [In] uint wMsg,
+            [Out] uint* pdwCookie
+        );
+
+        public /* static */ delegate HRESULT RegisterOcclusionStatusEvent(
+            [In] IDXGIFactory2* This,
+            [In] HANDLE hEvent,
+            [Out] uint* pdwCookie
+        );
+
+        public /* static */ delegate void UnregisterOcclusionStatus(
+            [In] IDXGIFactory2* This,
+            [In] uint dwCookie
+        );
+
+        public /* static */ delegate HRESULT CreateSwapChainForComposition(
+            [In] IDXGIFactory2* This,
+            [In] IUnknown* pDevice,
+            [In] DXGI_SWAP_CHAIN_DESC1* pDesc,
+            [In, Optional] IDXGIOutput* pRestrictToOutput,
+            [Out] IDXGISwapChain1** ppSwapChain
+        );
         #endregion
 
-        #region IDXGIFactory1
-        new void EnumAdapters1([In] uint Adapter, [MarshalAs(UnmanagedType.Interface)] out IDXGIAdapter1 ppAdapter);
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
 
-        [PreserveSig]
-        new int IsCurrent();
-        #endregion
+            public IUnknown.AddRef AddRef;
 
-        #region Methods
-        [PreserveSig]
-        int IsWindowedStereoEnabled();
+            public IUnknown.Release Release;
 
-        void CreateSwapChainForHwnd([MarshalAs(UnmanagedType.IUnknown), In] object pDevice, [In] IntPtr hWnd, [In] ref DXGI_SWAP_CHAIN_DESC1 pDesc, [In] ref DXGI_SWAP_CHAIN_FULLSCREEN_DESC pFullscreenDesc, [MarshalAs(UnmanagedType.Interface), In] IDXGIOutput pRestrictToOutput, [MarshalAs(UnmanagedType.Interface)] out IDXGISwapChain1 ppSwapChain);
+            public IDXGIObject.SetPrivateData SetPrivateData;
 
-        void CreateSwapChainForCoreWindow([MarshalAs(UnmanagedType.IUnknown), In] object pDevice, [MarshalAs(UnmanagedType.IUnknown), In] object pWindow, [In] ref DXGI_SWAP_CHAIN_DESC1 pDesc, [MarshalAs(UnmanagedType.Interface), In] IDXGIOutput pRestrictToOutput, [MarshalAs(UnmanagedType.Interface)] out IDXGISwapChain1 ppSwapChain);
+            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
 
-        void GetSharedResourceAdapterLuid(IntPtr hResource, ref long plong);
+            public IDXGIObject.GetPrivateData GetPrivateData;
 
-        void RegisterStereoStatusWindow([In] IntPtr WindowHandle, [In] uint wMsg, out uint pdwCookie);
+            public IDXGIObject.GetParent GetParent;
 
-        void RegisterStereoStatusEvent([In] IntPtr hEvent, out uint pdwCookie);
+            public IDXGIFactory.EnumAdapters EnumAdapters;
 
-        [PreserveSig]
-        void UnregisterStereoStatus([In] uint dwCookie);
+            public IDXGIFactory.MakeWindowAssociation MakeWindowAssociation;
 
-        void RegisterOcclusionStatusWindow([In] IntPtr WindowHandle, [In] uint wMsg, out uint pdwCookie);
+            public IDXGIFactory.GetWindowAssociation GetWindowAssociation;
 
-        void RegisterOcclusionStatusEvent([In] IntPtr hEvent, out uint pdwCookie);
+            public IDXGIFactory.CreateSwapChain CreateSwapChain;
 
-        [PreserveSig]
-        void UnregisterOcclusionStatus([In] uint dwCookie);
+            public IDXGIFactory.CreateSoftwareAdapter CreateSoftwareAdapter;
 
-        void CreateSwapChainForComposition([MarshalAs(UnmanagedType.IUnknown), In] object pDevice, [In] ref DXGI_SWAP_CHAIN_DESC1 pDesc, [MarshalAs(UnmanagedType.Interface), In] IDXGIOutput pRestrictToOutput, [MarshalAs(UnmanagedType.Interface)] out IDXGISwapChain1 ppSwapChain);
+            public IDXGIFactory1.EnumAdapters1 EnumAdapters1;
+
+            public IDXGIFactory1.IsCurrent IsCurrent;
+
+            public IsWindowedStereoEnabled IsWindowedStereoEnabled;
+
+            public CreateSwapChainForHwnd CreateSwapChainForHwnd;
+
+            public CreateSwapChainForCoreWindow CreateSwapChainForCoreWindow;
+
+            public GetSharedResourceAdapterLuid GetSharedResourceAdapterLuid;
+
+            public RegisterStereoStatusWindow RegisterStereoStatusWindow;
+
+            public RegisterStereoStatusEvent RegisterStereoStatusEvent;
+
+            public UnregisterStereoStatus UnregisterStereoStatus;
+
+            public RegisterOcclusionStatusWindow RegisterOcclusionStatusWindow;
+
+            public RegisterOcclusionStatusEvent RegisterOcclusionStatusEvent;
+
+            public UnregisterOcclusionStatus UnregisterOcclusionStatus;
+
+            public CreateSwapChainForComposition CreateSwapChainForComposition;
+            #endregion
+        }
         #endregion
     }
 }

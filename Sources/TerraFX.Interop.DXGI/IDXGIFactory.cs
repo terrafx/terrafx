@@ -5,35 +5,78 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("7B7166EC-21C7-44AE-B21A-C9AE321AE369")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGIFactory : IDXGIObject
+    unsafe public struct IDXGIFactory
     {
-        #region IDXGIObject
-        new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
-
-        new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
-
-        new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
-
-        new IntPtr GetParent([In] ref Guid riid);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
         #endregion
 
-        #region Methods
-        void EnumAdapters([In] uint Adapter, [MarshalAs(UnmanagedType.Interface)] out IDXGIAdapter ppAdapter);
+        #region Delegates
+        public /* static */ delegate HRESULT EnumAdapters(
+            [In] IDXGIFactory* This,
+            [In] uint Adapter,
+            [Out] IDXGIAdapter** ppAdapter
+        );
 
-        void MakeWindowAssociation(IntPtr WindowHandle, DXGI_MWA_FLAG Flags);
+        public /* static */ delegate HRESULT MakeWindowAssociation(
+            [In] IDXGIFactory* This,
+            [In] HWND WindowHandle,
+            [In] DXGI_MWA_FLAG Flags
+        );
 
-        void GetWindowAssociation([Out] IntPtr pWindowHandle);
+        public /* static */ delegate HRESULT GetWindowAssociation(
+            [In] IDXGIFactory* This,
+            [Out] HWND* pWindowHandle
+        );
 
-        void CreateSwapChain([MarshalAs(UnmanagedType.IUnknown), In] object pDevice, [In] ref DXGI_SWAP_CHAIN_DESC pDesc, [MarshalAs(UnmanagedType.Interface)] out IDXGISwapChain ppSwapChain);
+        public /* static */ delegate HRESULT CreateSwapChain(
+            [In] IDXGIFactory* This,
+            [In] IUnknown* pDevice,
+            [In] DXGI_SWAP_CHAIN_DESC* pDesc,
+            [Out] IDXGISwapChain** ppSwapChain
+        );
 
-        void CreateSoftwareAdapter([In] IntPtr Module, [MarshalAs(UnmanagedType.Interface)] out IDXGIAdapter ppAdapter);
+        public /* static */ delegate HRESULT CreateSoftwareAdapter(
+            [In] IDXGIFactory* This,
+            [In] HMODULE Module,
+            [Out] IDXGIAdapter** ppAdapter
+        );
+        #endregion
+
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
+
+            public IUnknown.AddRef AddRef;
+
+            public IUnknown.Release Release;
+
+            public IDXGIObject.SetPrivateData SetPrivateData;
+
+            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
+
+            public IDXGIObject.GetPrivateData GetPrivateData;
+
+            public IDXGIObject.GetParent GetParent;
+
+            public EnumAdapters EnumAdapters;
+
+            public MakeWindowAssociation MakeWindowAssociation;
+
+            public GetWindowAssociation GetWindowAssociation;
+
+            public CreateSwapChain CreateSwapChain;
+
+            public CreateSoftwareAdapter CreateSoftwareAdapter;
+            #endregion
+        }
         #endregion
     }
 }

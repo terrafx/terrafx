@@ -5,35 +5,79 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("54EC77FA-1377-44E6-8C32-88FD5F44C84C")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGIDevice : IDXGIObject
+    unsafe public struct IDXGIDevice
     {
-        #region IDXGIObject
-        new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
-
-        new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
-
-        new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
-
-        new IntPtr GetParent([In] ref Guid riid);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
         #endregion
 
-        #region Methods
-        void GetAdapter([MarshalAs(UnmanagedType.Interface)] out IDXGIAdapter pAdapter);
+        #region Delegates
+        public /* static */ delegate HRESULT GetAdapter(
+            [In] IDXGIDevice* This,
+            [Out] IDXGIAdapter** pAdapter
+        );
 
-        void CreateSurface([In] ref DXGI_SURFACE_DESC pDesc, [In] uint NumSurfaces, [In] uint Usage, [In] ref DXGI_SHARED_RESOURCE pSharedResource, [MarshalAs(UnmanagedType.Interface)] out IDXGISurface ppSurface);
+        public /* static */ delegate HRESULT CreateSurface(
+            [In] IDXGIDevice* This,
+            [In] DXGI_SURFACE_DESC* pDesc,
+            [In] uint NumSurfaces,
+            [In] DXGI_USAGE Usage,
+            [In, Optional] DXGI_SHARED_RESOURCE* pSharedResource,
+            [Out] IDXGISurface** ppSurface
+        );
 
-        void QueryResourceResidency([MarshalAs(UnmanagedType.IUnknown), In] ref object ppResources, out DXGI_RESIDENCY pResidencyStatus, [In] uint NumResources);
+        public /* static */ delegate HRESULT QueryResourceResidency(
+            [In] IDXGIDevice* This,
+            [In] IUnknown** ppResources,
+            [Out] DXGI_RESIDENCY* pResidencyStatus,
+            [In] uint NumResources
+        );
 
-        void SetGPUThreadPriority([In] int Priority);
+        public /* static */ delegate HRESULT SetGPUThreadPriority(
+            [In] IDXGIDevice* This,
+            [In] int Priority
+        );
 
-        int GetGPUThreadPriority();
+        public /* static */ delegate HRESULT GetGPUThreadPriority(
+            [In] IDXGIDevice* This,
+            [Out] int* pPriority
+        );
+        #endregion
+
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
+
+            public IUnknown.AddRef AddRef;
+
+            public IUnknown.Release Release;
+
+            public IDXGIObject.SetPrivateData SetPrivateData;
+
+            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
+
+            public IDXGIObject.GetPrivateData GetPrivateData;
+
+            public IDXGIObject.GetParent GetParent;
+
+            public GetAdapter GetAdapter;
+
+            public CreateSurface CreateSurface;
+
+            public QueryResourceResidency QueryResourceResidency;
+
+            public SetGPUThreadPriority SetGPUThreadPriority;
+
+            public GetGPUThreadPriority GetGPUThreadPriority;
+            #endregion
+        }
         #endregion
     }
 }

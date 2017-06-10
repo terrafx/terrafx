@@ -5,60 +5,79 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("95B4F95F-D8DA-4CA4-9EE6-3B76D5968A10")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGIDevice4 : IDXGIDevice3
+    unsafe public struct IDXGIDevice4
     {
-        #region IDXGIObject
-        new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
-
-        new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
-
-        new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
-
-        new IntPtr GetParent([In] ref Guid riid);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
         #endregion
 
-        #region IDXGIDevice
-        new void GetAdapter([MarshalAs(UnmanagedType.Interface)] out IDXGIAdapter pAdapter);
+        #region Delegates
+        public /* static */ delegate HRESULT OfferResources1(
+            [In] IDXGIDevice4* This,
+            [In] uint NumResources,
+            [In] IDXGIResource** ppResources,
+            [In] DXGI_OFFER_RESOURCE_PRIORITY Priority,
+            [In] DXGI_OFFER_RESOURCE_FLAGS Flags
+        );
 
-        new void CreateSurface([In] ref DXGI_SURFACE_DESC pDesc, [In] uint NumSurfaces, [In] uint Usage, [In] ref DXGI_SHARED_RESOURCE pSharedResource, [MarshalAs(UnmanagedType.Interface)] out IDXGISurface ppSurface);
-
-        new void QueryResourceResidency([MarshalAs(UnmanagedType.IUnknown), In] ref object ppResources, out DXGI_RESIDENCY pResidencyStatus, [In] uint NumResources);
-
-        new void SetGPUThreadPriority([In] int Priority);
-
-        new int GetGPUThreadPriority();
+        public /* static */ delegate HRESULT ReclaimResources1(
+            [In] IDXGIDevice4* This,
+            [In] uint NumResources,
+            [In] IDXGIResource** ppResources,
+            [Out] DXGI_RECLAIM_RESOURCE_RESULTS* pResults
+        );
         #endregion
 
-        #region IDXGIDevice1
-        new void SetMaximumFrameLatency([In] uint MaxLatency);
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
 
-        new void GetMaximumFrameLatency(out uint pMaxLatency);
-        #endregion
+            public IUnknown.AddRef AddRef;
 
-        #region IDXGIDevice2
-        new void OfferResources([In] uint NumResources, [MarshalAs(UnmanagedType.Interface), In] ref IDXGIResource ppResources, [In] DXGI_OFFER_RESOURCE_PRIORITY Priority);
+            public IUnknown.Release Release;
 
-        new void ReclaimResources([In] uint NumResources, [MarshalAs(UnmanagedType.Interface), In] ref IDXGIResource ppResources, out int pDiscarded);
+            public IDXGIObject.SetPrivateData SetPrivateData;
 
-        new void EnqueueSetEvent([In] IntPtr hEvent);
-        #endregion
+            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
 
-        #region IDXGIDevice3
-        [PreserveSig]
-        new void Trim();
-        #endregion
+            public IDXGIObject.GetPrivateData GetPrivateData;
 
-        #region Methods
-        void OfferResources1([In] uint NumResources, [MarshalAs(UnmanagedType.Interface), In] ref IDXGIResource ppResources, [In] DXGI_OFFER_RESOURCE_PRIORITY Priority, [In] DXGI_OFFER_RESOURCE_FLAGS Flags);
+            public IDXGIObject.GetParent GetParent;
 
-        void ReclaimResources1([In] uint NumResources, [MarshalAs(UnmanagedType.Interface), In] ref IDXGIResource ppResources, out DXGI_RECLAIM_RESOURCE_RESULTS pResults);
+            public IDXGIDevice.GetAdapter GetAdapter;
+
+            public IDXGIDevice.CreateSurface CreateSurface;
+
+            public IDXGIDevice.QueryResourceResidency QueryResourceResidency;
+
+            public IDXGIDevice.SetGPUThreadPriority SetGPUThreadPriority;
+
+            public IDXGIDevice.GetGPUThreadPriority GetGPUThreadPriority;
+
+            public IDXGIDevice1.SetMaximumFrameLatency SetMaximumFrameLatency;
+
+            public IDXGIDevice1.GetMaximumFrameLatency GetMaximumFrameLatency;
+
+            public IDXGIDevice2.OfferResources OfferResources;
+
+            public IDXGIDevice2.ReclaimResources ReclaimResources;
+
+            public IDXGIDevice2.EnqueueSetEvent EnqueueSetEvent;
+
+            public IDXGIDevice3.Trim Trim;
+
+            public OfferResources1 OfferResources1;
+
+            public ReclaimResources1 ReclaimResources1;
+            #endregion
+        }
         #endregion
     }
 }

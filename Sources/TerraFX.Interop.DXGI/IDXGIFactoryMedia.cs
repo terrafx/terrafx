@@ -5,19 +5,53 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("41E7D1F2-A591-4F7B-A2E5-FA9C843E1C12")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGIFactoryMedia
+    unsafe public struct IDXGIFactoryMedia
     {
-        #region Methods
-        void CreateSwapChainForCompositionSurfaceHandle([MarshalAs(UnmanagedType.IUnknown), In] object pDevice, [In] IntPtr hSurface, [In] ref DXGI_SWAP_CHAIN_DESC1 pDesc, [MarshalAs(UnmanagedType.Interface), In] IDXGIOutput pRestrictToOutput, [MarshalAs(UnmanagedType.Interface)] out IDXGISwapChain1 ppSwapChain);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
+        #endregion
 
-        void CreateDecodeSwapChainForCompositionSurfaceHandle([MarshalAs(UnmanagedType.IUnknown), In] object pDevice, [In] IntPtr hSurface, [In] ref DXGI_DECODE_SWAP_CHAIN_DESC pDesc, [MarshalAs(UnmanagedType.Interface), In] IDXGIResource pYuvDecodeBuffers, [MarshalAs(UnmanagedType.Interface), In] IDXGIOutput pRestrictToOutput, [MarshalAs(UnmanagedType.Interface)] out IDXGIDecodeSwapChain ppSwapChain);
+        #region Delegates
+        public /* static */ delegate HRESULT CreateSwapChainForCompositionSurfaceHandle(
+            [In] IDXGIFactoryMedia* This,
+            [In] IUnknown* pDevice,
+            [In, Optional] HANDLE hSurface,
+            [In] DXGI_SWAP_CHAIN_DESC1* pDesc,
+            [In, Optional] IDXGIOutput* pRestrictToOutput,
+            [Out] IDXGISwapChain1** ppSwapChain
+        );
+
+        public /* static */ delegate HRESULT CreateDecodeSwapChainForCompositionSurfaceHandle(
+            [In] IDXGIFactoryMedia* This,
+            [In] IUnknown* pDevice,
+            [In, Optional] HANDLE hSurface,
+            [In] DXGI_DECODE_SWAP_CHAIN_DESC* pDesc,
+            [In] IDXGIResource* pYuvDecodeBuffers,
+            [In, Optional] IDXGIOutput* pRestrictToOutput,
+            [Out] IDXGIDecodeSwapChain** ppSwapChain
+        );
+        #endregion
+
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
+
+            public IUnknown.AddRef AddRef;
+
+            public IUnknown.Release Release;
+
+            public CreateSwapChainForCompositionSurfaceHandle CreateSwapChainForCompositionSurfaceHandle;
+
+            public CreateDecodeSwapChainForCompositionSurfaceHandle CreateDecodeSwapChainForCompositionSurfaceHandle;
+            #endregion
+        }
         #endregion
     }
 }

@@ -3,12 +3,10 @@
 // Ported from shared\dxgi.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System;
-using System.Runtime.InteropServices;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)] // Size = 92 or 96
     unsafe public struct DXGI_OUTPUT_DESC
     {
         #region Fields
@@ -16,11 +14,11 @@ namespace TerraFX.Interop.DXGI
 
         public RECT DesktopCoordinates;
 
-        public int /* BOOL */ AttachedToDesktop;
+        public BOOL AttachedToDesktop;
 
         public DXGI_MODE_ROTATION Rotation;
 
-        public IntPtr /* HMONITOR */ Monitor;
+        public HMONITOR Monitor;
         #endregion
     }
 }

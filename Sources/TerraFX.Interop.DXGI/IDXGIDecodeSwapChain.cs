@@ -4,34 +4,96 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("2633066B-4514-4C7A-8FD8-12EA98059D18")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGIDecodeSwapChain
+    unsafe public struct IDXGIDecodeSwapChain
     {
-        #region Methods
-        void PresentBuffer(uint BufferToPresent, uint SyncInterval, DXGI_PRESENT_FLAG Flags);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
+        #endregion
 
-        void SetSourceRect(ref RECT pRect);
+        #region Delegates
+        public /* static */ delegate HRESULT PresentBuffer(
+            [In] IDXGIDecodeSwapChain* This,
+            [In] uint BufferToPresent,
+            [In] uint SyncInterval,
+            [In] DXGI_PRESENT_FLAG Flags
+        );
 
-        void SetTargetRect(ref RECT pRect);
+        public /* static */ delegate HRESULT SetSourceRect(
+            [In] IDXGIDecodeSwapChain* This,
+            [In] RECT* pRect
+        );
 
-        void SetDestSize(uint Width, uint Height);
+        public /* static */ delegate HRESULT SetTargetRect(
+            [In] IDXGIDecodeSwapChain* This,
+            [In] RECT* pRect
+        );
 
-        void GetSourceRect(out RECT pRect);
+        public /* static */ delegate HRESULT SetDestSize(
+            [In] IDXGIDecodeSwapChain* This,
+            [In] uint Width,
+            [In] uint Height
+        );
 
-        void GetTargetRect(out RECT pRect);
+        public /* static */ delegate HRESULT GetSourceRect(
+            [In] IDXGIDecodeSwapChain* This,
+            [Out] RECT* pRect
+        );
 
-        void GetDestSize(out uint pWidth, out uint pHeight);
+        public /* static */ delegate HRESULT GetTargetRect(
+            [In] IDXGIDecodeSwapChain* This,
+            [Out] RECT* pRect
+        );
 
-        void SetColorSpace(DXGI_MULTIPLANE_OVERLAY_YCbCr_FLAGS ColorSpace);
+        public /* static */ delegate HRESULT GetDestSize(
+            [In] IDXGIDecodeSwapChain* This,
+            [Out] uint* pWidth,
+            [Out] uint* pHeight
+        );
 
-        [PreserveSig]
-        DXGI_MULTIPLANE_OVERLAY_YCbCr_FLAGS GetColorSpace();
+        public /* static */ delegate HRESULT SetColorSpace(
+            [In] IDXGIDecodeSwapChain* This,
+            [In] DXGI_MULTIPLANE_OVERLAY_YCbCr_FLAGS ColorSpace
+        );
+
+        public /* static */ delegate DXGI_MULTIPLANE_OVERLAY_YCbCr_FLAGS GetColorSpace(
+            [In] IDXGIDecodeSwapChain* This
+        );
+        #endregion
+
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
+
+            public IUnknown.AddRef AddRef;
+
+            public IUnknown.Release Release;
+
+            public PresentBuffer PresentBuffer;
+
+            public SetSourceRect SetSourceRect;
+
+            public SetTargetRect SetTargetRect;
+
+            public SetDestSize SetDestSize;
+
+            public GetSourceRect GetSourceRect;
+
+            public GetTargetRect GetTargetRect;
+
+            public GetDestSize GetDestSize;
+
+            public SetColorSpace SetColorSpace;
+
+            public GetColorSpace GetColorSpace;
+            #endregion
+        }
         #endregion
     }
 }

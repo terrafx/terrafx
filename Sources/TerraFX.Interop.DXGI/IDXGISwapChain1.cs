@@ -5,74 +5,138 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("790A45F7-0D42-4876-983A-0A55CFE6F4AA")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGISwapChain1 : IDXGISwapChain
+    unsafe public struct IDXGISwapChain1
     {
-        #region IDXGIObject
-        new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
-
-        new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
-
-        new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
-
-        new IntPtr GetParent([In] ref Guid riid);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
         #endregion
 
-        #region IDXGIDeviceSubObject
-        new IntPtr GetDevice([In] ref Guid riid);
+        #region Delegates
+        public /* static */ delegate HRESULT GetDesc1(
+            [In] IDXGISwapChain1* This,
+            [Out] DXGI_SWAP_CHAIN_DESC1* pDesc
+        );
+
+        public /* static */ delegate HRESULT GetFullscreenDesc(
+            [In] IDXGISwapChain1* This,
+            [Out] DXGI_SWAP_CHAIN_FULLSCREEN_DESC* pDesc);
+
+        public /* static */ delegate HRESULT GetHwnd(
+            [In] IDXGISwapChain1* This,
+            [Out] HWND* pHwnd
+        );
+
+        public /* static */ delegate HRESULT GetCoreWindow(
+            [In] IDXGISwapChain1* This,
+            [In] Guid* refiid,
+            [Out] void** ppUnk
+        );
+
+        public /* static */ delegate HRESULT Present1(
+            [In] IDXGISwapChain1* This,
+            [In] uint SyncInterval,
+            [In] DXGI_PRESENT_FLAG PresentFlags,
+            [In] DXGI_PRESENT_PARAMETERS* pPresentParameters
+        );
+
+        public /* static */ delegate BOOL IsTemporaryMonoSupported(
+            [In] IDXGISwapChain1* This
+        );
+
+        public /* static */ delegate HRESULT GetRestrictToOutput(
+            [In] IDXGISwapChain1* This,
+            [Out] IDXGIOutput** ppRestrictToOutput
+        );
+
+        public /* static */ delegate HRESULT SetBackgroundColor(
+            [In] IDXGISwapChain1* This,
+            [In] DXGI_RGBA* pColor
+        );
+
+        public /* static */ delegate HRESULT GetBackgroundColor(
+            [In] IDXGISwapChain1* This,
+            [Out] DXGI_RGBA* pColor
+        );
+
+        public /* static */ delegate HRESULT SetRotation(
+            [In] IDXGISwapChain1* This,
+            [In] DXGI_MODE_ROTATION Rotation
+        );
+
+        public /* static */ delegate HRESULT GetRotation(
+            [In] IDXGISwapChain1* This,
+            [Out] DXGI_MODE_ROTATION* pRotation
+        );
         #endregion
 
-        #region IDXGISwapChain
-        new void Present([In] uint SyncInterval, [In] DXGI_PRESENT_FLAG Flags);
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
 
-        new void GetBuffer([In] uint Buffer, [In] ref Guid riid, [In, Out] ref IntPtr ppSurface);
+            public IUnknown.AddRef AddRef;
 
-        new void SetFullscreenState([In] int Fullscreen, [MarshalAs(UnmanagedType.Interface), In] IDXGIOutput pTarget);
+            public IUnknown.Release Release;
 
-        new void GetFullscreenState(out int pFullscreen, [MarshalAs(UnmanagedType.Interface)] out IDXGIOutput ppTarget);
+            public IDXGIObject.SetPrivateData SetPrivateData;
 
-        new void GetDesc(out DXGI_SWAP_CHAIN_DESC pDesc);
+            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
 
-        new void ResizeBuffers([In] uint BufferCount, [In] uint Width, [In] uint Height, [In] DXGI_FORMAT NewFormat, [In] DXGI_SWAP_CHAIN_FLAG SwapChainFlags);
+            public IDXGIObject.GetPrivateData GetPrivateData;
 
-        new void ResizeTarget([In] ref DXGI_MODE_DESC pNewTargetParameters);
+            public IDXGIObject.GetParent GetParent;
 
-        new void GetContainingOutput([MarshalAs(UnmanagedType.Interface)] out IDXGIOutput ppOutput);
+            public IDXGIDeviceSubObject.GetDevice GetDevice;
 
-        new void GetFrameStatistics(out DXGI_FRAME_STATISTICS pStats);
+            public IDXGISwapChain.Present Present;
 
-        new void GetLastPresentCount(out uint pLastPresentCount);
-        #endregion
+            public IDXGISwapChain.GetBuffer GetBuffer;
 
-        #region Methods
-        void GetDesc1(out DXGI_SWAP_CHAIN_DESC1 pDesc);
+            public IDXGISwapChain.SetFullscreenState SetFullscreenState;
 
-        void GetFullscreenDesc(out DXGI_SWAP_CHAIN_FULLSCREEN_DESC pDesc);
+            public IDXGISwapChain.GetFullscreenState GetFullscreenState;
 
-        void GetHwnd([Out] IntPtr pHwnd);
+            public IDXGISwapChain.GetDesc GetDesc;
 
-        void GetCoreWindow([In] ref Guid refiid, out IntPtr ppUnk);
+            public IDXGISwapChain.ResizeBuffers ResizeBuffers;
 
-        void Present1([In] uint SyncInterval, [In] DXGI_PRESENT_FLAG PresentFlags, [In] ref DXGI_PRESENT_PARAMETERS pPresentParameters);
+            public IDXGISwapChain.ResizeTarget ResizeTarget;
 
-        [PreserveSig]
-        int IsTemporaryMonoSupported();
+            public IDXGISwapChain.GetContainingOutput GetContainingOutput;
 
-        void GetRestrictToOutput([MarshalAs(UnmanagedType.Interface)] out IDXGIOutput ppRestrictToOutput);
+            public IDXGISwapChain.GetFrameStatistics GetFrameStatistics;
 
-        void SetBackgroundColor([In] ref DXGI_RGBA pColor);
+            public IDXGISwapChain.GetLastPresentCount GetLastPresentCount;
 
-        void GetBackgroundColor(out DXGI_RGBA pColor);
+            public GetDesc1 GetDesc1;
 
-        void SetRotation([In] DXGI_MODE_ROTATION Rotation);
+            public GetFullscreenDesc GetFullscreenDesc;
 
-        void GetRotation(out DXGI_MODE_ROTATION pRotation);
+            public GetHwnd GetHwnd;
+
+            public GetCoreWindow GetCoreWindow;
+
+            public Present1 Present1;
+
+            public IsTemporaryMonoSupported IsTemporaryMonoSupported;
+
+            public GetRestrictToOutput GetRestrictToOutput;
+
+            public SetBackgroundColor SetBackgroundColor;
+
+            public GetBackgroundColor GetBackgroundColor;
+
+            public SetRotation SetRotation;
+
+            public GetRotation GetRotation;
+            #endregion
+        }
         #endregion
     }
 }

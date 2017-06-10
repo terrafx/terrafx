@@ -5,60 +5,96 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("00CDDEA8-939B-4B83-A340-A685226666CC")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGIOutput1 : IDXGIOutput
+    unsafe public struct IDXGIOutput1
     {
-        #region IDXGIObject
-        new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
-
-        new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
-
-        new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
-
-        new IntPtr GetParent([In] ref Guid riid);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
         #endregion
 
-        #region IDXGIOutput
-        new void GetDesc(out DXGI_OUTPUT_DESC pDesc);
+        #region Delegates
+        public /* static */ delegate HRESULT GetDisplayModeList1(
+            [In] IDXGIOutput1* This,
+            [In] DXGI_FORMAT EnumFormat,
+            [In] DXGI_ENUM_MODES Flags,
+            [In, Out] uint* pNumModes,
+            [Out, Optional] DXGI_MODE_DESC1* pDesc
+        );
 
-        new void GetDisplayModeList([In] DXGI_FORMAT EnumFormat, [In] DXGI_ENUM_MODES Flags, [In, Out] ref uint pNumModes, out DXGI_MODE_DESC pDesc);
+        public /* static */ delegate HRESULT FindClosestMatchingMode1(
+            [In] IDXGIOutput1* This,
+            [In] DXGI_MODE_DESC1* pModeToMatch,
+            [Out] DXGI_MODE_DESC1* pClosestMatch,
+            [In, Optional] IUnknown* pConcernedDevice
+        );
 
-        new void FindClosestMatchingMode([In] ref DXGI_MODE_DESC pModeToMatch, out DXGI_MODE_DESC pClosestMatch, [MarshalAs(UnmanagedType.IUnknown), In] object pConcernedDevice);
+        public /* static */ delegate HRESULT GetDisplaySurfaceData1(
+            [In] IDXGIOutput1* This,
+            [In] IDXGIResource* pDestination
+        );
 
-        new void WaitForVBlank();
-
-        new void TakeOwnership([MarshalAs(UnmanagedType.IUnknown), In] object pDevice, int Exclusive);
-
-        [PreserveSig]
-        new void ReleaseOwnership();
-
-        new void GetGammaControlCapabilities(out DXGI_GAMMA_CONTROL_CAPABILITIES pGammaCaps);
-
-        new void SetGammaControl([In] ref DXGI_GAMMA_CONTROL pArray);
-
-        new void GetGammaControl(out DXGI_GAMMA_CONTROL pArray);
-
-        new void SetDisplaySurface([MarshalAs(UnmanagedType.Interface), In] IDXGISurface pScanoutSurface);
-
-        new void GetDisplaySurfaceData([MarshalAs(UnmanagedType.Interface), In] IDXGISurface pDestination);
-
-        new void GetFrameStatistics(out DXGI_FRAME_STATISTICS pStats);
+        public /* static */ delegate HRESULT DuplicateOutput(
+            [In] IDXGIOutput1* This,
+            [In] IUnknown* pDevice,
+            [Out] IDXGIOutputDuplication** ppOutputDuplication
+        );
         #endregion
 
-        #region Methods
-        void GetDisplayModeList1([In] DXGI_FORMAT EnumFormat, [In] DXGI_ENUM_MODES Flags, [In, Out] ref uint pNumModes, out DXGI_MODE_DESC1 pDesc);
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
 
-        void FindClosestMatchingMode1([In] ref DXGI_MODE_DESC1 pModeToMatch, out DXGI_MODE_DESC1 pClosestMatch, [MarshalAs(UnmanagedType.IUnknown), In] object pConcernedDevice);
+            public IUnknown.AddRef AddRef;
 
-        void GetDisplaySurfaceData1([MarshalAs(UnmanagedType.Interface), In] IDXGIResource pDestination);
+            public IUnknown.Release Release;
 
-        void DuplicateOutput([MarshalAs(UnmanagedType.IUnknown), In] object pDevice, [MarshalAs(UnmanagedType.Interface)] out IDXGIOutputDuplication ppOutputDuplication);
+            public IDXGIObject.SetPrivateData SetPrivateData;
+
+            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
+
+            public IDXGIObject.GetPrivateData GetPrivateData;
+
+            public IDXGIObject.GetParent GetParent;
+
+            public IDXGIOutput.GetDesc GetDesc;
+
+            public IDXGIOutput.GetDisplayModeList GetDisplayModeList;
+
+            public IDXGIOutput.FindClosestMatchingMode FindClosestMatchingMode;
+
+            public IDXGIOutput.WaitForVBlank WaitForVBlank;
+
+            public IDXGIOutput.TakeOwnership TakeOwnership;
+
+            public IDXGIOutput.ReleaseOwnership ReleaseOwnership;
+
+            public IDXGIOutput.GetGammaControlCapabilities GetGammaControlCapabilities;
+
+            public IDXGIOutput.SetGammaControl SetGammaControl;
+
+            public IDXGIOutput.GetGammaControl GetGammaControl;
+
+            public IDXGIOutput.SetDisplaySurface SetDisplaySurface;
+
+            public IDXGIOutput.GetDisplaySurfaceData GetDisplaySurfaceData;
+
+            public IDXGIOutput.GetFrameStatistics GetFrameStatistics;
+
+            public GetDisplayModeList1 GetDisplayModeList1;
+
+            public FindClosestMatchingMode1 FindClosestMatchingMode1;
+
+            public GetDisplaySurfaceData1 GetDisplaySurfaceData1;
+
+            public DuplicateOutput DuplicateOutput;
+            #endregion
+        }
         #endregion
     }
 }

@@ -3,11 +3,10 @@
 // Ported from shared\dxgi1_2.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 8, Size = 48)]
     public struct DXGI_OUTDUPL_FRAME_INFO
     {
         #region Fields
@@ -17,9 +16,9 @@ namespace TerraFX.Interop.DXGI
 
         public uint AccumulatedFrames;
 
-        public int RectsCoalesced;
+        public BOOL RectsCoalesced;
 
-        public int ProtectedContentMaskedOut;
+        public BOOL ProtectedContentMaskedOut;
 
         public DXGI_OUTDUPL_POINTER_POSITION PointerPosition;
 

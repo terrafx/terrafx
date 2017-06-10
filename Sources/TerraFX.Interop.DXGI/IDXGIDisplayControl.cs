@@ -4,21 +4,43 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("EA9DBF1A-C88E-4486-854A-98AA0138F30C")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGIDisplayControl
+    unsafe public struct IDXGIDisplayControl
     {
-        #region Methods
-        [PreserveSig]
-        int IsStereoEnabled();
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
+        #endregion
 
-        [PreserveSig]
-        void SetStereoEnabled(int enabled);
+        #region Delegates
+        public /* static */ delegate BOOL IsStereoEnabled(
+            IDXGIDisplayControl* This
+        );
+
+        public /* static */ delegate void SetStereoEnabled(
+            IDXGIDisplayControl* This,
+            BOOL enabled
+        );
+        #endregion
+
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
+
+            public IUnknown.AddRef AddRef;
+
+            public IUnknown.Release Release;
+
+            public IsStereoEnabled IsStereoEnabled;
+
+            public SetStereoEnabled SetStereoEnabled;
+            #endregion
+        }
         #endregion
     }
 }

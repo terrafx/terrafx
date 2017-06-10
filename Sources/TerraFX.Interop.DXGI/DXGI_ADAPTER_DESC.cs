@@ -4,11 +4,9 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System;
-using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 8)] // Size = 296 or 304
     unsafe public struct DXGI_ADAPTER_DESC
     {
         #region Fields
@@ -28,7 +26,7 @@ namespace TerraFX.Interop.DXGI
 
         public UIntPtr SharedSystemMemory;
 
-        public long /* LUID */ AdapterLuid;
+        public LUID AdapterLuid;
         #endregion
     }
 }

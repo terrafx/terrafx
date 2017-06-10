@@ -3,12 +3,10 @@
 // Ported from shared\dxgi.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System;
-using System.Runtime.InteropServices;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)] // Size = 60 or 68
     public struct DXGI_SWAP_CHAIN_DESC
     {
         #region Constants
@@ -24,9 +22,9 @@ namespace TerraFX.Interop.DXGI
 
         public uint BufferCount;
 
-        public IntPtr /* HWND */ OutputWindow;
+        public HWND OutputWindow;
 
-        public int /* BOOL */ Windowed;
+        public BOOL Windowed;
 
         public DXGI_SWAP_EFFECT SwapEffect;
 

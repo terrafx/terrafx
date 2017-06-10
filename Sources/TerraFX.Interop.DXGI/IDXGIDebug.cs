@@ -5,17 +5,38 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("119E7452-DE9E-40FE-8806-88F90C12B441")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGIDebug
+    unsafe public struct IDXGIDebug
     {
-        #region Methods
-        void ReportLiveObjects(Guid apiid, DXGI_DEBUG_RLO_FLAGS flags);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
+        #endregion
+
+        #region Delegates
+        public /* static */ delegate HRESULT ReportLiveObjects(
+            [In] IDXGIDebug* This,
+            [In] Guid apiid,
+            [In] DXGI_DEBUG_RLO_FLAGS flags
+        );
+        #endregion
+
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
+
+            public IUnknown.AddRef AddRef;
+
+            public IUnknown.Release Release;
+
+            public ReportLiveObjects ReportLiveObjects;
+            #endregion
+        }
         #endregion
     }
 }

@@ -5,41 +5,61 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("4AE63092-6327-4C1B-80AE-BFE12EA32B86")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGISurface1 : IDXGISurface
+    unsafe public struct IDXGISurface1
     {
-        #region IDXGIObject
-        new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
-
-        new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
-
-        new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
-
-        new IntPtr GetParent([In] ref Guid riid);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
         #endregion
 
-        #region IDXGIDeviceSubObject
-        new IntPtr GetDevice([In] ref Guid riid);
+        #region Delegates
+        public /* static */ delegate HRESULT GetDC(
+            [In] IDXGISurface1* This,
+            [In] BOOL Discard,
+            [Out] HDC* phdc
+        );
+
+        public /* static */ delegate HRESULT ReleaseDC(
+            [In] IDXGISurface1* This,
+            [In, Optional] RECT* pDirtyRect
+        );
         #endregion
 
-        #region IDXGISurface
-        new void GetDesc(out DXGI_SURFACE_DESC pDesc);
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
 
-        new void Map(out DXGI_MAPPED_RECT pLockedRect, [In] DXGI_MAP_FLAG MapFlags);
+            public IUnknown.AddRef AddRef;
 
-        new void Unmap();
-        #endregion
+            public IUnknown.Release Release;
 
-        #region Methods
-        void GetDC([In] int Discard, [Out] IntPtr phdc);
+            public IDXGIObject.SetPrivateData SetPrivateData;
 
-        void ReleaseDC([In] ref RECT pDirtyRect);
+            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
+
+            public IDXGIObject.GetPrivateData GetPrivateData;
+
+            public IDXGIObject.GetParent GetParent;
+
+            public IDXGIDeviceSubObject.GetDevice GetDevice;
+
+            public IDXGISurface.GetDesc GetDesc;
+
+            public IDXGISurface.Map Map;
+
+            public IDXGISurface.Unmap Unmap;
+
+            public GetDC GetDC;
+
+            public ReleaseDC ReleaseDC;
+            #endregion
+        }
         #endregion
     }
 }

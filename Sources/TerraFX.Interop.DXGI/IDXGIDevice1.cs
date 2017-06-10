@@ -5,41 +5,62 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("77DB970F-6276-48BA-BA28-070143B4392C")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGIDevice1 : IDXGIDevice
+    unsafe public struct IDXGIDevice1
     {
-        #region IDXGIObject
-        new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
-
-        new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
-
-        new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
-
-        new IntPtr GetParent([In] ref Guid riid);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
         #endregion
 
-        #region IDXGIDevice
-        new void GetAdapter([MarshalAs(UnmanagedType.Interface)] out IDXGIAdapter pAdapter);
+        #region Delegates
+        public /* static */ delegate HRESULT SetMaximumFrameLatency(
+            [In] IDXGIDevice1* This,
+            [In] uint MaxLatency
+        );
 
-        new void CreateSurface([In] ref DXGI_SURFACE_DESC pDesc, [In] uint NumSurfaces, [In] uint Usage, [In] ref DXGI_SHARED_RESOURCE pSharedResource, [MarshalAs(UnmanagedType.Interface)] out IDXGISurface ppSurface);
-
-        new void QueryResourceResidency([MarshalAs(UnmanagedType.IUnknown), In] ref object ppResources, out DXGI_RESIDENCY pResidencyStatus, [In] uint NumResources);
-
-        new void SetGPUThreadPriority([In] int Priority);
-
-        new int GetGPUThreadPriority();
+        public /* static */ delegate HRESULT GetMaximumFrameLatency(
+            [In] IDXGIDevice1* This,
+            [Out] uint* pMaxLatency
+        );
         #endregion
 
-        #region Methods
-        void SetMaximumFrameLatency([In] uint MaxLatency);
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
 
-        void GetMaximumFrameLatency(out uint pMaxLatency);
+            public IUnknown.AddRef AddRef;
+
+            public IUnknown.Release Release;
+
+            public IDXGIObject.SetPrivateData SetPrivateData;
+
+            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
+
+            public IDXGIObject.GetPrivateData GetPrivateData;
+
+            public IDXGIObject.GetParent GetParent;
+
+            public IDXGIDevice.GetAdapter GetAdapter;
+
+            public IDXGIDevice.CreateSurface CreateSurface;
+
+            public IDXGIDevice.QueryResourceResidency QueryResourceResidency;
+
+            public IDXGIDevice.SetGPUThreadPriority SetGPUThreadPriority;
+
+            public IDXGIDevice.GetGPUThreadPriority GetGPUThreadPriority;
+
+            public SetMaximumFrameLatency SetMaximumFrameLatency;
+
+            public GetMaximumFrameLatency GetMaximumFrameLatency;
+            #endregion
+        }
         #endregion
     }
 }

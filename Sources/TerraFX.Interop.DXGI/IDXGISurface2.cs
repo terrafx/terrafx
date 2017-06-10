@@ -5,45 +5,59 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("ABA496DD-B617-4CB8-A866-BC44D7EB1FA2")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGISurface2 : IDXGISurface1
+    unsafe public struct IDXGISurface2
     {
-        #region IDXGIObject
-        new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
-
-        new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
-
-        new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
-
-        new IntPtr GetParent([In] ref Guid riid);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
         #endregion
 
-        #region IDXGIDeviceSubObject
-        new IntPtr GetDevice([In] ref Guid riid);
+        #region Delegates
+        public /* static */ delegate HRESULT GetResource(
+            [In] IDXGISurface2* This,
+            [In] Guid* riid,
+            [Out] void** ppParentResource,
+            [Out] uint* pSubresourceIndex
+        );
         #endregion
 
-        #region IDXGISurface
-        new void GetDesc(out DXGI_SURFACE_DESC pDesc);
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
 
-        new void Map(out DXGI_MAPPED_RECT pLockedRect, [In] DXGI_MAP_FLAG MapFlags);
+            public IUnknown.AddRef AddRef;
 
-        new void Unmap();
-        #endregion
+            public IUnknown.Release Release;
 
-        #region IDXGISurface1
-        new void GetDC([In] int Discard, [Out] IntPtr phdc);
+            public IDXGIObject.SetPrivateData SetPrivateData;
 
-        new void ReleaseDC([In] ref RECT pDirtyRect);
-        #endregion
+            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
 
-        #region Methods
-        void GetResource([In] ref Guid riid, out IntPtr ppParentResource, out uint pSubresourceIndex);
+            public IDXGIObject.GetPrivateData GetPrivateData;
+
+            public IDXGIObject.GetParent GetParent;
+
+            public IDXGIDeviceSubObject.GetDevice GetDevice;
+
+            public IDXGISurface.GetDesc GetDesc;
+
+            public IDXGISurface.Map Map;
+
+            public IDXGISurface.Unmap Unmap;
+
+            public IDXGISurface1.GetDC GetDC;
+
+            public IDXGISurface1.ReleaseDC ReleaseDC;
+
+            public GetResource GetResource;
+            #endregion
+        }
         #endregion
     }
 }

@@ -5,31 +5,61 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("2411E7E1-12AC-4CCF-BD14-9798E8534DC0")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGIAdapter : IDXGIObject
+    unsafe public struct IDXGIAdapter
     {
-        #region IDXGIObject
-        new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
-
-        new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
-
-        new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
-
-        new IntPtr GetParent([In] ref Guid riid);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
         #endregion
 
-        #region Methods
-        void EnumOutputs([In] uint Output, [MarshalAs(UnmanagedType.Interface), In, Out] ref IDXGIOutput ppOutput);
+        #region Delegates
+        public /* static */ delegate HRESULT EnumOutputs(
+            [In] IDXGIAdapter* This,
+            [In] uint Output,
+            [In, Out] IDXGIOutput** ppOutput
+        );
 
-        void GetDesc(out DXGI_ADAPTER_DESC pDesc);
+        public /* static */ delegate HRESULT GetDesc(
+            [In] IDXGIAdapter* This,
+            [Out] DXGI_ADAPTER_DESC* pDesc
+        );
 
-        void CheckInterfaceSupport([In] ref Guid InterfaceName, out long pUMDVersion);
+        public /* static */ delegate HRESULT CheckInterfaceSupport(
+            [In] IDXGIAdapter* This,
+            [In] Guid* InterfaceName,
+            [Out] long pUMDVersion
+        );
+        #endregion
+
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
+
+            public IUnknown.AddRef AddRef;
+
+            public IUnknown.Release Release;
+
+            public IDXGIObject.SetPrivateData SetPrivateData;
+
+            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
+
+            public IDXGIObject.GetPrivateData GetPrivateData;
+
+            public IDXGIObject.GetParent GetParent;
+
+            public EnumOutputs EnumOutputs;
+
+            public GetDesc GetDesc;
+
+            public CheckInterfaceSupport CheckInterfaceSupport;
+            #endregion
+        }
         #endregion
     }
 }

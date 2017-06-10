@@ -4,21 +4,53 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("DD95B90B-F05F-4F6A-BD65-25BFB264BD84")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGISwapChainMedia
+    unsafe public struct IDXGISwapChainMedia
     {
-        #region Methods
-        void GetFrameStatisticsMedia(out DXGI_FRAME_STATISTICS_MEDIA pStats);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
+        #endregion
 
-        void SetPresentDuration(uint Duration);
+        #region Delegates
+        public /* static */ delegate HRESULT GetFrameStatisticsMedia(
+            [In] IDXGISwapChainMedia* This,
+            [Out] DXGI_FRAME_STATISTICS_MEDIA* pStats
+        );
 
-        void CheckPresentDurationSupport(uint DesiredPresentDuration, out uint pClosestSmallerPresentDuration, out uint pClosestLargerPresentDuration);
+        public /* static */ delegate HRESULT SetPresentDuration(
+            [In] IDXGISwapChainMedia* This,
+            [In] uint Duration
+        );
+
+        public /* static */ delegate HRESULT CheckPresentDurationSupport(
+            [In] IDXGISwapChainMedia* This,
+            [In] uint DesiredPresentDuration,
+            [Out] uint* pClosestSmallerPresentDuration,
+            [Out] uint* pClosestLargerPresentDuration
+        );
+        #endregion
+
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
+
+            public IUnknown.AddRef AddRef;
+
+            public IUnknown.Release Release;
+
+            public GetFrameStatisticsMedia GetFrameStatisticsMedia;
+
+            public SetPresentDuration SetPresentDuration;
+
+            public CheckPresentDurationSupport CheckPresentDurationSupport;
+            #endregion
+        }
         #endregion
     }
 }

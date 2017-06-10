@@ -5,49 +5,119 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("310D36A0-D2E7-4C0A-AA04-6A9D23B8886A")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGISwapChain : IDXGIDeviceSubObject
+    unsafe public struct IDXGISwapChain
     {
-        #region IDXGIObject
-        new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
-
-        new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
-
-        new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
-
-        new IntPtr GetParent([In] ref Guid riid);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
         #endregion
 
-        #region IDXGIDeviceSubObject
-        new IntPtr GetDevice([In] ref Guid riid);
+        #region Delegates
+        public /* static */ delegate HRESULT Present(
+            [In] IDXGISwapChain* This,
+            [In] uint SyncInterval,
+            [In] DXGI_PRESENT_FLAG Flags
+        );
+
+        public /* static */ delegate HRESULT GetBuffer(
+            [In] IDXGISwapChain* This,
+            [In] uint Buffer,
+            [In] Guid* riid,
+            [In, Out] void** ppSurface
+        );
+
+        public /* static */ delegate HRESULT SetFullscreenState(
+            [In] IDXGISwapChain* This,
+            [In] BOOL Fullscreen,
+            [In, Optional] IDXGIOutput* pTarget
+        );
+
+        public /* static */ delegate HRESULT GetFullscreenState(
+            [In] IDXGISwapChain* This,
+            [Out, Optional] BOOL* pFullscreen,
+            [Out, Optional] IDXGIOutput** ppTarget
+        );
+
+        public /* static */ delegate HRESULT GetDesc(
+            [In] IDXGISwapChain* This,
+            [Out] DXGI_SWAP_CHAIN_DESC* pDesc
+        );
+
+        public /* static */ delegate HRESULT ResizeBuffers(
+            [In] IDXGISwapChain* This,
+            [In] uint BufferCount,
+            [In] uint Width,
+            [In] uint Height,
+            [In] DXGI_FORMAT NewFormat,
+            [In] DXGI_SWAP_CHAIN_FLAG SwapChainFlags
+        );
+
+        public /* static */ delegate HRESULT ResizeTarget(
+            [In] IDXGISwapChain* This,
+            [In] DXGI_MODE_DESC* pNewTargetParameters
+        );
+
+        public /* static */ delegate HRESULT GetContainingOutput(
+            [In] IDXGISwapChain* This,
+            [Out] IDXGIOutput** ppOutput
+        );
+
+        public /* static */ delegate HRESULT GetFrameStatistics(
+            [In] IDXGISwapChain* This,
+            [Out] DXGI_FRAME_STATISTICS* pStats
+        );
+
+        public /* static */ delegate HRESULT GetLastPresentCount(
+            [In] IDXGISwapChain* This,
+            [Out] uint* pLastPresentCount
+        );
         #endregion
 
-        #region Methods
-        void Present([In] uint SyncInterval, [In] DXGI_PRESENT_FLAG Flags);
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
 
-        void GetBuffer([In] uint Buffer, [In] ref Guid riid, [In, Out] ref IntPtr ppSurface);
+            public IUnknown.AddRef AddRef;
 
-        void SetFullscreenState([In] int Fullscreen, [MarshalAs(UnmanagedType.Interface), In] IDXGIOutput pTarget);
+            public IUnknown.Release Release;
 
-        void GetFullscreenState(out int pFullscreen, [MarshalAs(UnmanagedType.Interface)] out IDXGIOutput ppTarget);
+            public IDXGIObject.SetPrivateData SetPrivateData;
 
-        void GetDesc(out DXGI_SWAP_CHAIN_DESC pDesc);
+            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
 
-        void ResizeBuffers([In] uint BufferCount, [In] uint Width, [In] uint Height, [In] DXGI_FORMAT NewFormat, [In] DXGI_SWAP_CHAIN_FLAG SwapChainFlags);
+            public IDXGIObject.GetPrivateData GetPrivateData;
 
-        void ResizeTarget([In] ref DXGI_MODE_DESC pNewTargetParameters);
+            public IDXGIObject.GetParent GetParent;
 
-        void GetContainingOutput([MarshalAs(UnmanagedType.Interface)] out IDXGIOutput ppOutput);
+            public IDXGIDeviceSubObject.GetDevice GetDevice;
 
-        void GetFrameStatistics(out DXGI_FRAME_STATISTICS pStats);
+            public Present Present;
 
-        void GetLastPresentCount(out uint pLastPresentCount);
+            public GetBuffer GetBuffer;
+
+            public SetFullscreenState SetFullscreenState;
+
+            public GetFullscreenState GetFullscreenState;
+
+            public GetDesc GetDesc;
+
+            public ResizeBuffers ResizeBuffers;
+
+            public ResizeTarget ResizeTarget;
+
+            public GetContainingOutput GetContainingOutput;
+
+            public GetFrameStatistics GetFrameStatistics;
+
+            public GetLastPresentCount GetLastPresentCount;
+            #endregion
+        }
         #endregion
     }
 }

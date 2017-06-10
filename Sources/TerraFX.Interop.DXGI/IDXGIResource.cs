@@ -5,37 +5,68 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("035F3AB4-482E-4E50-B41F-8A7F8BD8960B")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGIResource : IDXGIDeviceSubObject
+    unsafe public struct IDXGIResource
     {
-        #region IDXGIObject
-        new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
-
-        new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
-
-        new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
-
-        new IntPtr GetParent([In] ref Guid riid);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
         #endregion
 
-        #region IDXGIDeviceSubObject
-        new IntPtr GetDevice([In] ref Guid riid);
+        #region Delegates
+        public /* static */ delegate HRESULT GetSharedHandle(
+            [In] IDXGIResource* This,
+            [Out] HANDLE* pSharedHandle
+        );
+
+        public /* static */ delegate HRESULT GetUsage(
+            [In] IDXGIResource* This,
+            [Out] DXGI_USAGE* pUsage
+        );
+
+        public /* static */ delegate HRESULT SetEvictionPriority(
+            [In] IDXGIResource* This,
+            [In] DXGI_RESOURCE_PRIORITY EvictionPriority
+        );
+
+        public /* static */ delegate HRESULT GetEvictionPriority(
+            [In] IDXGIResource* This,
+            [Out] DXGI_RESOURCE_PRIORITY* pEvictionPriority
+        );
         #endregion
 
-        #region Methods
-        void GetSharedHandle(out IntPtr pSharedHandle);
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
 
-        void GetUsage(out uint pUsage);
+            public IUnknown.AddRef AddRef;
 
-        void SetEvictionPriority([In] DXGI_RESOURCE_PRIORITY EvictionPriority);
+            public IUnknown.Release Release;
 
-        DXGI_RESOURCE_PRIORITY GetEvictionPriority();
+            public IDXGIObject.SetPrivateData SetPrivateData;
+
+            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
+
+            public IDXGIObject.GetPrivateData GetPrivateData;
+
+            public IDXGIObject.GetParent GetParent;
+
+            public IDXGIDeviceSubObject.GetDevice GetDevice;
+
+            public GetSharedHandle GetSharedHandle;
+
+            public GetUsage GetUsage;
+
+            public SetEvictionPriority SetEvictionPriority;
+
+            public GetEvictionPriority GetEvictionPriority;
+            #endregion
+        }
         #endregion
     }
 }

@@ -5,23 +5,64 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("AEC22FB8-76F3-4639-9BE0-28EB43A67A2E")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGIObject
+    unsafe public struct IDXGIObject
     {
-        #region Methods
-        void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
+        #endregion
 
-        void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
+        #region Delegates
+        public /* static */ delegate HRESULT SetPrivateData(
+            [In] IDXGIObject* This,
+            [In] Guid* Name,
+            [In] uint DataSize,
+            [In] void* pData
+        );
 
-        void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
+        public /* static */ delegate HRESULT SetPrivateDataInterface(
+            [In] IDXGIObject* This,
+            [In] Guid* Name,
+            [In, Optional] IUnknown* pUnknown
+        );
 
-        IntPtr GetParent([In] ref Guid riid);
+        public /* static */ delegate HRESULT GetPrivateData(
+            [In] IDXGIObject* This,
+            [In] Guid* Name,
+            [In, Out] uint* pDataSize,
+            [Out] void* pData
+        );
+
+        public /* static */ delegate HRESULT GetParent(
+            [In] IDXGIObject* This,
+            [In] Guid* riid,
+            [Out] void** ppParent
+        );
+        #endregion
+
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
+
+            public IUnknown.AddRef AddRef;
+
+            public IUnknown.Release Release;
+
+            public SetPrivateData SetPrivateData;
+
+            public SetPrivateDataInterface SetPrivateDataInterface;
+
+            public GetPrivateData GetPrivateData;
+
+            public GetParent GetParent;
+            #endregion
+        }
         #endregion
     }
 }

@@ -5,59 +5,66 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
     [Guid("3C8D99D1-4FBF-4181-A82C-AF66BF7BD24E")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [SuppressUnmanagedCodeSecurity]
-    public interface IDXGIAdapter4 : IDXGIAdapter3
+    unsafe public struct IDXGIAdapter4
     {
-        #region IDXGIObject
-        new void SetPrivateData([In] ref Guid Name, [In] uint DataSize, [In] IntPtr pData);
-
-        new void SetPrivateDataInterface([In] ref Guid Name, [MarshalAs(UnmanagedType.IUnknown), In] object pUnknown);
-
-        new void GetPrivateData([In] ref Guid Name, [In, Out] ref uint pDataSize, [Out] IntPtr pData);
-
-        new IntPtr GetParent([In] ref Guid riid);
+        #region Fields
+        public void* /* Vtbl* */ lpVtbl;
         #endregion
 
-        #region IDXGIAdapter
-        new void EnumOutputs([In] uint Output, [MarshalAs(UnmanagedType.Interface), In, Out] ref IDXGIOutput ppOutput);
-
-        new void GetDesc(out DXGI_ADAPTER_DESC pDesc);
-
-        new void CheckInterfaceSupport([In] ref Guid InterfaceName, out long pUMDVersion);
+        #region Delegates
+        public /* static */ delegate HRESULT GetDesc3(
+            [Out] DXGI_ADAPTER_DESC3* pDesc
+        );
         #endregion
 
-        #region IDXGIAdapter1
-        new void GetDesc1(out DXGI_ADAPTER_DESC1 pDesc);
-        #endregion
+        #region Structs
+        public struct Vtbl
+        {
+            #region Fields
+            public IUnknown.QueryInterface QueryInterface;
 
-        #region IDXGIAdapter2
-        new void GetDesc2(out DXGI_ADAPTER_DESC2 pDesc);
-        #endregion
+            public IUnknown.AddRef AddRef;
 
-        #region IDXGIAdapter3
-        new void RegisterHardwareContentProtectionTeardownStatusEvent([In] IntPtr hEvent, out uint pdwCookie);
+            public IUnknown.Release Release;
 
-        [PreserveSig]
-        new void UnregisterHardwareContentProtectionTeardownStatus([In] uint dwCookie);
+            public IDXGIObject.SetPrivateData SetPrivateData;
 
-        new void QueryVideoMemoryInfo([In] uint NodeIndex, [In] DXGI_MEMORY_SEGMENT_GROUP MemorySegmentGroup, out DXGI_QUERY_VIDEO_MEMORY_INFO pVideoMemoryInfo);
+            public IDXGIObject.SetPrivateDataInterface SetPrivateDataInterface;
 
-        new void SetVideoMemoryReservation([In] uint NodeIndex, [In] DXGI_MEMORY_SEGMENT_GROUP MemorySegmentGroup, [In] ulong Reservation);
+            public IDXGIObject.GetPrivateData GetPrivateData;
 
-        new void RegisterVideoMemoryBudgetChangeNotificationEvent([In] IntPtr hEvent, out uint pdwCookie);
-        #endregion
+            public IDXGIObject.GetParent GetParent;
 
-        #region Methods
-        [PreserveSig]
-        new void UnregisterVideoMemoryBudgetChangeNotification([In] uint dwCookie);
+            public IDXGIAdapter.EnumOutputs EnumOutputs;
 
-        void GetDesc3(out DXGI_ADAPTER_DESC3 pDesc);
+            public IDXGIAdapter.GetDesc GetDesc;
+
+            public IDXGIAdapter.CheckInterfaceSupport CheckInterfaceSupport;
+
+            public IDXGIAdapter1.GetDesc1 GetDesc1;
+
+            public IDXGIAdapter2.GetDesc2 GetDesc2;
+
+            public IDXGIAdapter3.RegisterHardwareContentProtectionTeardownStatusEvent RegisterHardwareContentProtectionTeardownStatusEvent;
+
+            public IDXGIAdapter3.UnregisterHardwareContentProtectionTeardownStatus UnregisterHardwareContentProtectionTeardownStatus;
+
+            public IDXGIAdapter3.QueryVideoMemoryInfo QueryVideoMemoryInfo;
+
+            public IDXGIAdapter3.SetVideoMemoryReservation SetVideoMemoryReservation;
+
+            public IDXGIAdapter3.RegisterVideoMemoryBudgetChangeNotificationEvent RegisterVideoMemoryBudgetChangeNotificationEvent;
+
+            public IDXGIAdapter3.UnregisterVideoMemoryBudgetChangeNotification UnregisterVideoMemoryBudgetChangeNotification;
+
+            public GetDesc3 GetDesc3;
+            #endregion
+        }
         #endregion
     }
 }

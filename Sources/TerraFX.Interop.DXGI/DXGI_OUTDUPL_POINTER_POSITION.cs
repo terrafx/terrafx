@@ -3,17 +3,16 @@
 // Ported from shared\dxgi1_2.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
+using TerraFX.Interop.Unknown;
 
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 12)]
     public struct DXGI_OUTDUPL_POINTER_POSITION
     {
         #region Fields
         public POINT Position;
 
-        public int /* BOOL */ Visible;
+        public BOOL Visible;
         #endregion
     }
 }

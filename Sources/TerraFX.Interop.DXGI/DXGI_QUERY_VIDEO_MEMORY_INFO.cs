@@ -3,11 +3,8 @@
 // Ported from shared\dxgi1_4.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
-
 namespace TerraFX.Interop.DXGI
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 8, Size = 32)]
     public struct DXGI_QUERY_VIDEO_MEMORY_INFO
     {
         #region Fields
