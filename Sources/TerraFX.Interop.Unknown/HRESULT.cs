@@ -3,11 +3,8 @@
 // Ported from shared\wtypesbase.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
-
 namespace TerraFX.Interop.Unknown
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 4)]
     public struct HRESULT
     {
         #region Fields

@@ -1,18 +1,16 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-// Ported from um\wtypesbase.h in the Windows SDK for Windows 10.0.15063.0
+// Ported from shared\wtypes.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
+
+using System;
 
 namespace TerraFX.Interop.Unknown
 {
-    unsafe public struct SECURITY_ATTRIBUTES
+    public struct HANDLE
     {
         #region Fields
-        public uint nLength;
-
-        public void* lpSecurityDescriptor;
-
-        public BOOL bInheritHandle;
+        public IntPtr Value;
         #endregion
     }
 }

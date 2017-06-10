@@ -9,17 +9,16 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop.Unknown
 {
     [Guid("00000000-0000-0000-C000-000000000046")]
-    [StructLayout(LayoutKind.Sequential, Pack = 4)] // Size = 4 or 8
     unsafe public struct IUnknown
     {
         #region Fields
-        public void* lpVtbl;
+        public void* /* Vtbl* */ lpVtbl;
         #endregion
 
         #region Delegates
         public /* static */ delegate HRESULT QueryInterface(
             [In] IUnknown* This,
-            [In] Guid* riid,
+            [In] /* readonly */ Guid* riid,
             [Out] void** ppvObject
         );
 
@@ -33,7 +32,6 @@ namespace TerraFX.Interop.Unknown
         #endregion
 
         #region Structs
-        [StructLayout(LayoutKind.Sequential, Pack = 4)] // Size = 12 or 24
         public struct Vtbl
         {
             #region Fields
