@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Sources\TerraFX.Interop.Direct3D\TerraFX.Interop.Direct3D.csproj" />
+    <ProjectReference Include="..\..\Sources\TerraFX.Interop.D3D\TerraFX.Interop.D3D.csproj" />
   </ItemGroup>
 
   <ItemGroup>
