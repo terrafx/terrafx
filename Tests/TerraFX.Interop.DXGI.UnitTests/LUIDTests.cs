@@ -4,7 +4,7 @@ using System;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
 
-namespace TerraFX.Interop.DXGI.UnitTests
+namespace TerraFX.Interop.Unknown.UnitTests
 {
     /// <summary>Provides validation of the <see cref="LUID" /> struct.</summary>
     public static class LUIDTests

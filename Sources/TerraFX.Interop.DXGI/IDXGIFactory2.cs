@@ -43,7 +43,7 @@ namespace TerraFX.Interop.DXGI
         public /* static */ delegate HRESULT GetSharedResourceAdapterLuid(
             [In] IDXGIFactory2* This,
             [In] HANDLE hResource,
-            [Out] LUID* plong
+            [Out] LUID* pLuid
         );
 
         public /* static */ delegate HRESULT RegisterStereoStatusWindow(
