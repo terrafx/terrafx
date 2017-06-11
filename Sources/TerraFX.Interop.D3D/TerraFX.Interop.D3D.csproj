@@ -5,11 +5,17 @@
   <Import Project="$(MSBuildThisFileDirectory)..\..\Imports\TerraFX.Common.props" />
 
   <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>CS1591;$(NoWarn)</NoWarn>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <InternalsVisibleTo Include="$(MSBuildProjectName).UnitTests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TerraFX.Interop.Unknown\TerraFX.Interop.Unknown.csproj" />
   </ItemGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)..\..\Imports\TerraFX.Common.targets" />
