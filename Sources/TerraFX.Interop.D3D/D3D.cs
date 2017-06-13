@@ -40,6 +40,8 @@ namespace TerraFX.Interop.D3D
 
         public const int FL9_3_MAX_TEXTURE_REPEAT = 8192;
 
+        public const int RETURN_PARAMETER_INDEX = -1;
+
         public static readonly Guid WKPDID_D3DDebugObjectName = new Guid(0x429B8C22, 0x9188, 0x4B0C, 0x87, 0x42, 0xAC, 0xB0, 0xBF, 0x85, 0xC2, 0x00);
 
         public static readonly Guid WKPDID_D3DDebugObjectNameW = new Guid(0x4CCA5FD8, 0x921F, 0x42C8, 0x85, 0x66, 0x70, 0xCA, 0xF2, 0xA9, 0xB7, 0x41);

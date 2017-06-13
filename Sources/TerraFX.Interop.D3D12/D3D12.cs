@@ -825,9 +825,9 @@ namespace TerraFX.Interop.D3D12
 
         public static readonly D3D12_SHADER_COMPONENT_MAPPING DEFAULT_SHADER_4_COMPONENT_MAPPING = ENCODE_SHADER_4_COMPONENT_MAPPING(D3D12_SHADER_COMPONENT_MAPPING.FROM_MEMORY_COMPONENT_0, D3D12_SHADER_COMPONENT_MAPPING.FROM_MEMORY_COMPONENT_1, D3D12_SHADER_COMPONENT_MAPPING.FROM_MEMORY_COMPONENT_2, D3D12_SHADER_COMPONENT_MAPPING.FROM_MEMORY_COMPONENT_3);
 
-        public static readonly Guid ExperimentalShaderModels = new Guid("76F5573E-F13A-40F5-B297-81CE9E18933F");
+        public static readonly Guid ExperimentalShaderModels = new Guid(0x76F5573E, 0xF13A, 0x40F5, 0xB2, 0x97, 0x81, 0xCE, 0x9E, 0x18, 0x93, 0x3F);
 
-        public static readonly Guid DXGI_DEBUG_D3D12 = new Guid(0XCF59A98C, 0XA950, 0X4326, 0X91, 0XEF, 0X9B, 0XBA, 0XA1, 0X7B, 0XFD, 0X95);
+        public static readonly Guid DXGI_DEBUG_D3D12 = new Guid(0xCF59A98C, 0xA950, 0x4326, 0x91, 0xEF, 0x9B, 0xBA, 0xA1, 0x7B, 0xFD, 0x95);
         #endregion
 
         #region Methods
@@ -891,6 +891,15 @@ namespace TerraFX.Interop.D3D12
                 && (D3D12_FILTER_TYPE.LINEAR == DECODE_MAG_FILTER(D3D12Filter))
                 && (D3D12_FILTER_TYPE.LINEAR == DECODE_MIP_FILTER(D3D12Filter));
         }
+
+        // SHVER_GET_TYPE(_Version)
+        //      (((_Version) >> 16) & 0xffff)
+
+        // SHVER_GET_MAJOR(_Version)
+        //      (((_Version) >> 4) & 0xf)
+
+        // SHVER_GET_MINOR(_Version)
+        //      (((_Version) >> 0) & 0xf)
 
         [DllImport("D3D12", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D3D12SerializeRootSignature", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         public static extern HRESULT SerializeRootSignature(
