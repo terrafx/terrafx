@@ -7,7 +7,6 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
     public struct D3D12_VERSIONED_ROOT_SIGNATURE_DESC
     {
         #region Fields

@@ -7,7 +7,6 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
     public struct D3D12_FEATURE_DATA_D3D12_OPTIONS1
     {
         #region Fields

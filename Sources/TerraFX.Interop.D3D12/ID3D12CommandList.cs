@@ -29,6 +29,8 @@ namespace TerraFX.Interop
         public struct Vtbl
         {
             #region Fields
+            public ID3D12DeviceChild.Vtbl BaseVtbl;
+
             public _GetType _GetType;
             #endregion
         }
