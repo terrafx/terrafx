@@ -33,8 +33,6 @@ namespace TerraFX.Interop
         public struct Vtbl
         {
             #region Fields
-            public IUnknown.Vtbl BaseVtbl;
-
             public Open Open;
 
             public Close Close;
