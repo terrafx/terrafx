@@ -1,10 +1,9 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using System;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
 
-namespace TerraFX.Interop.DXGI.UnitTests
+namespace TerraFX.Interop.UnitTests
 {
     /// <summary>Provides validation of the <see cref="DXGI_MATRIX_3X2_F" /> struct.</summary>
     public static class DXGI_MATRIX_3X2_FTests

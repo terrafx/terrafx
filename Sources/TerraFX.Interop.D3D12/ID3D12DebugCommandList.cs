@@ -5,9 +5,8 @@
 
 using System;
 using System.Runtime.InteropServices;
-using TerraFX.Interop.Unknown;
 
-namespace TerraFX.Interop.D3D12
+namespace TerraFX.Interop
 {
     [Guid("09E0BF36-54AC-484F-8847-4BAEEAB6053F")]
     unsafe public struct ID3D12DebugCommandList

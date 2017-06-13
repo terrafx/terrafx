@@ -4,9 +4,8 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
-using TerraFX.Interop.Unknown;
 
-namespace TerraFX.Interop.DXGI
+namespace TerraFX.Interop
 {
     [Guid("EA9DBF1A-C88E-4486-854A-98AA0138F30C")]
     unsafe public struct IDXGIDisplayControl

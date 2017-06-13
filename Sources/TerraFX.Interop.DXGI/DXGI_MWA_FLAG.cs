@@ -5,7 +5,7 @@
 
 using System;
 
-namespace TerraFX.Interop.DXGI
+namespace TerraFX.Interop
 {
     [Flags]
     public enum DXGI_MWA_FLAG : uint

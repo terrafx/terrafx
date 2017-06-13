@@ -5,7 +5,7 @@
 
 using System;
 
-namespace TerraFX.Interop.DXGI
+namespace TerraFX.Interop
 {
     unsafe public struct DXGI_INFO_QUEUE_MESSAGE
     {

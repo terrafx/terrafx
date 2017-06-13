@@ -5,7 +5,7 @@
 
 using System;
 
-namespace TerraFX.Interop.DXGI
+namespace TerraFX.Interop
 {
     [Flags]
     public enum DXGI_USAGE_FLAG : uint

@@ -5,6 +5,7 @@
   <Import Project="$(MSBuildThisFileDirectory)..\..\Imports\TerraFX.UnitTests.props" />
 
   <PropertyGroup>
+    <RootNamespace>TerraFX.Interop.UnitTests</RootNamespace>
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 

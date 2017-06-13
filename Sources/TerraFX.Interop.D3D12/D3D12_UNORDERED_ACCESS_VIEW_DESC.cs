@@ -4,9 +4,8 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
-using TerraFX.Interop.DXGI;
 
-namespace TerraFX.Interop.D3D12
+namespace TerraFX.Interop
 {
     public struct D3D12_UNORDERED_ACCESS_VIEW_DESC
     {

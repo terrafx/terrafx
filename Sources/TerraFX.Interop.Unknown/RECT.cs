@@ -3,7 +3,7 @@
 // Ported from shared\wtypes.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-namespace TerraFX.Interop.Unknown
+namespace TerraFX.Interop
 {
     public struct RECT
     {

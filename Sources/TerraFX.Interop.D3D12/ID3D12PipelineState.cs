@@ -5,10 +5,8 @@
 
 using System;
 using System.Runtime.InteropServices;
-using TerraFX.Interop.D3D;
-using TerraFX.Interop.Unknown;
 
-namespace TerraFX.Interop.D3D12
+namespace TerraFX.Interop
 {
     [Guid("765A30F3-F624-4C6F-A828-ACE948622445")]
     unsafe public struct ID3D12PipelineState

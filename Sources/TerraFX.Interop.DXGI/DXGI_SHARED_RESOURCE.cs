@@ -5,7 +5,7 @@
 
 using System;
 
-namespace TerraFX.Interop.DXGI
+namespace TerraFX.Interop
 {
     public struct DXGI_SHARED_RESOURCE
     {

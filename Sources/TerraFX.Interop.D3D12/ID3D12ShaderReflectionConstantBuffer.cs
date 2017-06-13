@@ -5,9 +5,8 @@
 
 using System;
 using System.Runtime.InteropServices;
-using TerraFX.Interop.Unknown;
 
-namespace TerraFX.Interop.D3D12
+namespace TerraFX.Interop
 {
     [Guid("C59598B4-48B3-4869-B9B1-B1618B14A8B7")]
     unsafe public struct ID3D12ShaderReflectionConstantBuffer

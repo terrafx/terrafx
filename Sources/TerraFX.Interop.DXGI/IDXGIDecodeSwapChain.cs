@@ -4,9 +4,8 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
-using TerraFX.Interop.Unknown;
 
-namespace TerraFX.Interop.DXGI
+namespace TerraFX.Interop
 {
     [Guid("2633066B-4514-4C7A-8FD8-12EA98059D18")]
     unsafe public struct IDXGIDecodeSwapChain

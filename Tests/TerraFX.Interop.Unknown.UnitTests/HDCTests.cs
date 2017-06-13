@@ -4,7 +4,7 @@ using System;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
 
-namespace TerraFX.Interop.Unknown.UnitTests
+namespace TerraFX.Interop.UnitTests
 {
     /// <summary>Provides validation of the <see cref="HDC" /> struct.</summary>
     public static class HDCTests

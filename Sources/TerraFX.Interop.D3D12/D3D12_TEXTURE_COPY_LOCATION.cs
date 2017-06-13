@@ -5,7 +5,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace TerraFX.Interop.D3D12
+namespace TerraFX.Interop
 {
     unsafe public struct D3D12_TEXTURE_COPY_LOCATION
     {

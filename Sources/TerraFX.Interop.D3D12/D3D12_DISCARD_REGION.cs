@@ -3,9 +3,7 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using TerraFX.Interop.Unknown;
-
-namespace TerraFX.Interop.D3D12
+namespace TerraFX.Interop
 {
     unsafe public struct D3D12_DISCARD_REGION
     {

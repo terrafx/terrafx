@@ -5,7 +5,7 @@
 
 using System;
 
-namespace TerraFX.Interop.Unknown
+namespace TerraFX.Interop
 {
     public struct HDC
     {

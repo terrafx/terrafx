@@ -5,7 +5,7 @@
 
 using System;
 
-namespace TerraFX.Interop.D3D
+namespace TerraFX.Interop
 {
     [Flags]
     public enum D3D_SHADER_INPUT_FLAGS

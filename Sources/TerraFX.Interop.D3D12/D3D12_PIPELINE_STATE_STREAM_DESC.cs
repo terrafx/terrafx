@@ -5,7 +5,7 @@
 
 using System;
 
-namespace TerraFX.Interop.D3D12
+namespace TerraFX.Interop
 {
     unsafe public struct D3D12_PIPELINE_STATE_STREAM_DESC
     {

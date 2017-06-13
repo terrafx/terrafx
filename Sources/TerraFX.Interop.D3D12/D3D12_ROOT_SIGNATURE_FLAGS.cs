@@ -5,7 +5,7 @@
 
 using System;
 
-namespace TerraFX.Interop.D3D12
+namespace TerraFX.Interop
 {
     [Flags]
     public enum D3D12_ROOT_SIGNATURE_FLAGS

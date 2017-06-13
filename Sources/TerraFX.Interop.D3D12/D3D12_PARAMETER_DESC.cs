@@ -3,10 +3,7 @@
 // Ported from um\d3d12shader.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using TerraFX.Interop.D3D;
-using TerraFX.Interop.Unknown;
-
-namespace TerraFX.Interop.D3D12
+namespace TerraFX.Interop
 {
     public struct D3D12_PARAMETER_DESC
     {

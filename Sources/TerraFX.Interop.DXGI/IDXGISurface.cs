@@ -5,9 +5,8 @@
 
 using System;
 using System.Runtime.InteropServices;
-using TerraFX.Interop.Unknown;
 
-namespace TerraFX.Interop.DXGI
+namespace TerraFX.Interop
 {
     [Guid("CAFCB56C-6AC3-4889-BF47-9E23BBD260EC")]
     unsafe public struct IDXGISurface

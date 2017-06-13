@@ -3,7 +3,7 @@
 using System.Runtime.InteropServices;
 using NUnit.Framework;
 
-namespace TerraFX.Interop.Unknown.UnitTests
+namespace TerraFX.Interop.UnitTests
 {
     /// <summary>Provides validation of the <see cref="BOOL" /> struct.</summary>
     public static class BOOLTests

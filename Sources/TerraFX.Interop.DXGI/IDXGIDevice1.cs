@@ -5,9 +5,8 @@
 
 using System;
 using System.Runtime.InteropServices;
-using TerraFX.Interop.Unknown;
 
-namespace TerraFX.Interop.DXGI
+namespace TerraFX.Interop
 {
     [Guid("77DB970F-6276-48BA-BA28-070143B4392C")]
     unsafe public struct IDXGIDevice1

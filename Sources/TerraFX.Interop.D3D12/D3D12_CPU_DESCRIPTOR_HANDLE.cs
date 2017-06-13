@@ -5,7 +5,7 @@
 
 using System;
 
-namespace TerraFX.Interop.D3D12
+namespace TerraFX.Interop
 {
     public struct D3D12_CPU_DESCRIPTOR_HANDLE
     {

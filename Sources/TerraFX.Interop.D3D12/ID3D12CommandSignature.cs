@@ -6,7 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace TerraFX.Interop.D3D12
+namespace TerraFX.Interop
 {
     [Guid("C36A797C-EC80-4F0A-8985-A7B2475082D1")]
     unsafe public struct ID3D12CommandSignature

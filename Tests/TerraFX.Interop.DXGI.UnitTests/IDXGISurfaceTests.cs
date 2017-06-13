@@ -4,7 +4,7 @@ using System;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
 
-namespace TerraFX.Interop.DXGI.UnitTests
+namespace TerraFX.Interop.UnitTests
 {
     /// <summary>Provides validation of the <see cref="IDXGISurface" /> struct.</summary>
     public static class IDXGISurfaceTests

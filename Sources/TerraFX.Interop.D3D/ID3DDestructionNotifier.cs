@@ -5,9 +5,8 @@
 
 using System;
 using System.Runtime.InteropServices;
-using TerraFX.Interop.Unknown;
 
-namespace TerraFX.Interop.D3D
+namespace TerraFX.Interop
 {
     [Guid("A06EB39A-50DA-425B-8C31-4EECD6C270F3")]
     unsafe public struct ID3DDestructionNotifier

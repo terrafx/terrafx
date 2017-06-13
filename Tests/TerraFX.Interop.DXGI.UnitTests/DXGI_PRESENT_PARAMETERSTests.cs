@@ -4,7 +4,7 @@ using System;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
 
-namespace TerraFX.Interop.DXGI.UnitTests
+namespace TerraFX.Interop.UnitTests
 {
     /// <summary>Provides validation of the <see cref="DXGI_PRESENT_PARAMETERS" /> struct.</summary>
     public static class DXGI_PRESENT_PARAMETERSTests

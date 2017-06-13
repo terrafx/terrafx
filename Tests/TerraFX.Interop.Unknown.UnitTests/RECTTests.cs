@@ -3,7 +3,7 @@
 using System.Runtime.InteropServices;
 using NUnit.Framework;
 
-namespace TerraFX.Interop.Unknown.UnitTests
+namespace TerraFX.Interop.UnitTests
 {
     /// <summary>Provides validation of the <see cref="RECT" /> struct.</summary>
     public static class RECTTests

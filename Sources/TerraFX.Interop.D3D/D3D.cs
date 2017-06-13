@@ -5,7 +5,7 @@
 
 using System;
 
-namespace TerraFX.Interop.D3D
+namespace TerraFX.Interop
 {
     unsafe public static class D3D
     {

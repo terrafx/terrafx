@@ -5,7 +5,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace TerraFX.Interop.D3D12
+namespace TerraFX.Interop
 {
     public struct D3D12_ROOT_PARAMETER1
     {

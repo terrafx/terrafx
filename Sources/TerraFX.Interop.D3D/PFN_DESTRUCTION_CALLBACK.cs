@@ -5,7 +5,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace TerraFX.Interop.D3D
+namespace TerraFX.Interop
 {
     unsafe public /* static */ delegate void PFN_DESTRUCTION_CALLBACK(
         [In] void* pData

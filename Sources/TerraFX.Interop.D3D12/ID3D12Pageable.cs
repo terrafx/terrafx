@@ -6,7 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace TerraFX.Interop.D3D12
+namespace TerraFX.Interop
 {
     [Guid("63EE58FB-1268-4835-86DA-F008CE62F0D6")]
     unsafe public struct ID3D12Pageable
