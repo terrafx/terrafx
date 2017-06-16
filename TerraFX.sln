@@ -73,6 +73,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Interop.Vulkan", "S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Interop.Vulkan.UnitTests", "Tests\TerraFX.Interop.Vulkan.UnitTests\TerraFX.Interop.Vulkan.UnitTests.csproj", "{5FB8B205-3F76-467E-8A1F-C27109162A77}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Interop.Win32", "Sources\TerraFX.Interop.Win32\TerraFX.Interop.Win32.csproj", "{77B78ECA-E64F-40D7-B54C-BDE3636564B2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Interop.Win32.UnitTests", "Tests\TerraFX.Interop.Win32.UnitTests\TerraFX.Interop.Win32.UnitTests.csproj", "{A2E06128-6447-4CE3-A89F-DBA8009B13C0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -151,6 +155,14 @@ Global
 		{5FB8B205-3F76-467E-8A1F-C27109162A77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5FB8B205-3F76-467E-8A1F-C27109162A77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5FB8B205-3F76-467E-8A1F-C27109162A77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77B78ECA-E64F-40D7-B54C-BDE3636564B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77B78ECA-E64F-40D7-B54C-BDE3636564B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77B78ECA-E64F-40D7-B54C-BDE3636564B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77B78ECA-E64F-40D7-B54C-BDE3636564B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2E06128-6447-4CE3-A89F-DBA8009B13C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2E06128-6447-4CE3-A89F-DBA8009B13C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2E06128-6447-4CE3-A89F-DBA8009B13C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2E06128-6447-4CE3-A89F-DBA8009B13C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -177,5 +189,7 @@ Global
 		{15F5FA88-4EA5-4556-820F-C29F0F873532} = {EFB05081-EC44-49D3-B6D1-52AE42085B5B}
 		{4F618438-5A34-40CD-A976-55FEF22A55E1} = {0B821858-8E47-4485-AC06-D2E971A53EB2}
 		{5FB8B205-3F76-467E-8A1F-C27109162A77} = {EFB05081-EC44-49D3-B6D1-52AE42085B5B}
+		{77B78ECA-E64F-40D7-B54C-BDE3636564B2} = {0B821858-8E47-4485-AC06-D2E971A53EB2}
+		{A2E06128-6447-4CE3-A89F-DBA8009B13C0} = {EFB05081-EC44-49D3-B6D1-52AE42085B5B}
 	EndGlobalSection
 EndGlobal
