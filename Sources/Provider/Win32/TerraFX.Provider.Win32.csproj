@@ -12,6 +12,15 @@
     <InternalsVisibleTo Include="$(MSBuildProjectName).UnitTests" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.Composition" Version="1.0.31" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Interop\Win32\WinUser\TerraFX.Interop.Win32.WinUser.csproj" />
+    <ProjectReference Include="..\..\Threading\TerraFX.Threading.csproj" />
+  </ItemGroup>
+
   <Import Project="$(MSBuildThisFileDirectory)..\..\..\Imports\TerraFX.Common.targets" />
 
 </Project>

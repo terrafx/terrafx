@@ -5,7 +5,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace TerraFX.Interop.Win32
+namespace TerraFX.Interop.Desktop
 {
     unsafe public static partial class User32
     {
