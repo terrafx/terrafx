@@ -37,7 +37,7 @@ namespace TerraFX.Provider.Win32.Threading
         /// <remarks>This method does not wait for a new event to be raised if the queue is empty.</remarks>
         public void DispatchPending()
         {
-            while (User32.PeekMessage(out var lpMsg, wMsgFilterMin: WM.NULL, wMsgFilterMax: WM.NULL, wRemoveMsg: PM.REMOVE).Value != 0)
+            while (User32.PeekMessage(out var lpMsg, wMsgFilterMin: WM.NULL, wMsgFilterMax: WM.NULL, wRemoveMsg: PM.REMOVE))
             {
                 User32.TranslateMessage(ref lpMsg);
                 User32.DispatchMessage(ref lpMsg);
