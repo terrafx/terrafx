@@ -11,6 +11,52 @@ namespace TerraFX.Interop
     unsafe public static partial class User32
     {
         #region Methods
+        public static HWND CreateWindow(
+            [In, Optional] LPWSTR lpClassName,
+            [In, Optional] LPWSTR lpWindowName,
+            [In] WS dwStyle,
+            [In] int X,
+            [In] int Y,
+            [In] int nWidth,
+            [In] int nHeight,
+            [In, Optional] HWND hWndParent,
+            [In, Optional] HMENU hMenu,
+            [In, Optional] HINSTANCE hInstance,
+            [In] void* lpParam
+        )
+        {
+            return CreateWindowEx(
+                (WS_EX.LEFT | WS_EX.LTRREADING | WS_EX.LEFTSCROLLBAR),
+                lpClassName,
+                lpWindowName,
+                dwStyle,
+                X,
+                Y,
+                nWidth,
+                nHeight,
+                hWndParent,
+                hMenu,
+                hInstance,
+                lpParam
+            );
+        }
+
+        [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CreateWindowExW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        public static extern HWND CreateWindowEx(
+            [In] WS_EX dwExStyle,
+            [In, Optional] LPWSTR lpClassName,
+            [In, Optional] LPWSTR lpWindowName,
+            [In] WS dwStyle,
+            [In] int X,
+            [In] int Y,
+            [In] int nWidth,
+            [In] int nHeight,
+            [In, Optional] HWND hWndParent,
+            [In, Optional] HMENU hMenu,
+            [In, Optional] HINSTANCE hInstance,
+            [In] void* lpParam
+        );
+
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "DispatchMessageW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         public static extern LRESULT DispatchMessage(
             [In] ref /* readonly */ MSG lpMsg
