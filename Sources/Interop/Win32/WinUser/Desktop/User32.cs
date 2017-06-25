@@ -11,6 +11,11 @@ namespace TerraFX.Interop
     unsafe public static partial class User32
     {
         #region Methods
+        [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CloseWindow", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        public static extern BOOL CloseWindow(
+            [In] HWND hWnd
+        );
+
         public static HWND CreateWindow(
             [In, Optional] LPWSTR lpClassName,
             [In, Optional] LPWSTR lpWindowName,
@@ -75,6 +80,21 @@ namespace TerraFX.Interop
             [In] ref /* readonly */ MSG lpMsg
         );
 
+        [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "GetActiveWindow", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        public static extern HWND GetActiveWindow(
+        );
+
+        [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "GetWindowRect", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        public static extern BOOL GetWindowRect(
+            [In] HWND hWnd,
+            [Out] out RECT lpRect
+        );
+
+        [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "IsWindowVisible", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        public static extern BOOL IsWindowVisible(
+            [In] HWND hWnd
+        );
+
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "PeekMessageW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         public static extern BOOL PeekMessage(
             [Out] out MSG lpMsg,
@@ -97,6 +117,17 @@ namespace TerraFX.Interop
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "RegisterClassExW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         public static extern ATOM RegisterClassEx(
             [In] ref /* readonly */ WNDCLASSEX lpWndClassEx
+        );
+
+        [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "SetActiveWindow", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        public static extern HWND SetActiveWindow(
+            [In] HWND hWnd
+        );
+
+        [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "ShowWindow", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        public static extern BOOL ShowWindow(
+            [In] HWND hWnd,
+            [In] SW nCmdShow
         );
 
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "TranslateMessage", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]

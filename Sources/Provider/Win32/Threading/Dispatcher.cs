@@ -2,7 +2,6 @@
 
 using System.Threading;
 using TerraFX.Interop;
-using TerraFX.Interop.Desktop;
 using TerraFX.Threading;
 
 namespace TerraFX.Provider.Win32.Threading
