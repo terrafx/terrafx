@@ -72,8 +72,12 @@ namespace TerraFX.Interop
         /// <returns>A hash code for the current instance.</returns>
         public override int GetHashCode()
         {
-            var combinedValue = HashUtilities.CombineValue(((UIntPtr)(lpSecurityDescriptor)).GetHashCode(), nLength.GetHashCode());
-            combinedValue = HashUtilities.CombineValue(bInheritHandle.GetHashCode(), combinedValue);
+            var combinedValue = 0;
+            {
+                combinedValue = HashUtilities.CombineValue(nLength.GetHashCode(), combinedValue);
+                combinedValue = HashUtilities.CombineValue(((UIntPtr)(lpSecurityDescriptor)).GetHashCode(), combinedValue);
+                combinedValue = HashUtilities.CombineValue(bInheritHandle.GetHashCode(), combinedValue);
+            }
             return HashUtilities.FinalizeValue(combinedValue, (sizeof(int) * 4));
         }
 
