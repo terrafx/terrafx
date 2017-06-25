@@ -4,6 +4,7 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Interop.Desktop;
 
 namespace TerraFX.Interop
 {
@@ -24,9 +25,25 @@ namespace TerraFX.Interop
             [In] PM wRemoveMsg
         );
 
+        [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "RegisterClassW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        public static extern ATOM RegisterClass(
+            [In] ref /* readonly */ WNDCLASS lpWndClass
+        );
+
+        [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "RegisterClassExW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        public static extern ATOM RegisterClassEx(
+            [In] ref /* readonly */ WNDCLASSEX lpWndClassEx
+        );
+
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "TranslateMessage", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         public static extern BOOL TranslateMessage(
             [In] ref /* readonly */ MSG lpMsg
+        );
+
+        [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "UnregisterClassW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        public static extern BOOL UnregisterClass(
+            [In] LPWSTR lpClassName,
+            [In, Optional] HINSTANCE hInstance
         );
         #endregion
     }
