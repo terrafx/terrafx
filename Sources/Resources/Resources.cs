@@ -50,6 +50,15 @@ namespace TerraFX
             }
         }
 
+        /// <summary>Gets a localized <see cref="string" /> similar to <c>{0} is disposed</c>.</summary>
+        public static string ObjectDisposedExceptionMessage
+        {
+            get
+            {
+                return ResourceManager.GetString(nameof(ObjectDisposedExceptionMessage), Culture);
+            }
+        }
+
         /// <summary>Gets or sets the <see cref="CultureInfo" /> used during resource lookup.</summary>
         /// <remarks>When this property has a value of <c>null</c>, <see cref="CultureInfo.CurrentUICulture" /> is used instead.</remarks>
         public static CultureInfo Culture

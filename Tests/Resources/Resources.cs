@@ -54,6 +54,17 @@ namespace TerraFX.UnitTests
             );
         }
 
+        /// <summary>Provides validation of the <see cref="Resources.ObjectDisposedExceptionMessage" /> static property.</summary>
+        [TestCase("en", "{0} is disposed")]
+        public static void ObjectDisposedExceptionMessageTest(string cultureName, string expectedMessage)
+        {
+            Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
+
+            Assert.That(Resources.ObjectDisposedExceptionMessage,
+                Is.EqualTo(expectedMessage)
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="Resources.Culture" /> static property.</summary>
         [TestCase("en")]
         public static void CultureTest(string cultureName)

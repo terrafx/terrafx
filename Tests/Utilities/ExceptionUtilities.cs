@@ -61,6 +61,18 @@ namespace TerraFX.Utilities.UnitTests
             );
         }
 
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.NewObjectDisposedException(string)" /> static method.</summary>
+        [Test]
+        public static void NewObjectDisposedExceptionStringObjectTest(
+            [Values(null, "", "object")] string objectName
+        )
+        {
+            Assert.That(ExceptionUtilities.NewObjectDisposedException(objectName),
+                Is.InstanceOf<ObjectDisposedException>()
+                  .With.Property("ObjectName").EqualTo(objectName)
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowArgumentExceptionForInvalidType(string, Type)" /> static method.</summary>
         [Test]
         public static void ThrowArgumentExceptionForInvalidType(
@@ -109,6 +121,18 @@ namespace TerraFX.Utilities.UnitTests
         {
             Assert.That(() => ExceptionUtilities.ThrowInvalidOperationException(paramName, value),
                 Throws.InstanceOf<InvalidOperationException>()
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowObjectDisposedException(string)" /> static method.</summary>
+        [Test]
+        public static void ThrowObjectDisposedExceptionStringObjectTest(
+            [Values(null, "", "object")] string objectName
+        )
+        {
+            Assert.That(() => ExceptionUtilities.ThrowObjectDisposedException(objectName),
+                Throws.InstanceOf<ObjectDisposedException>()
+                      .With.Property("ObjectName").EqualTo(objectName)
             );
         }
         #endregion

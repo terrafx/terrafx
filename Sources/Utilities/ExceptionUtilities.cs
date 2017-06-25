@@ -47,6 +47,15 @@ namespace TerraFX.Utilities
             return new InvalidOperationException(message);
         }
 
+        /// <summary>Creates a new instance of the <see cref="ObjectDisposedException" /> class.</summary>
+        /// <param name="objectName">The name of the object that caused the exception.</param>
+        /// <returns>A new instance of the <see cref="ObjectDisposedException" /> class.</returns>
+        public static ObjectDisposedException NewObjectDisposedException(string objectName)
+        {
+            var message = string.Format(Resources.ObjectDisposedExceptionMessage, objectName);
+            return new ObjectDisposedException(objectName, message);
+        }
+
         /// <summary>Throws a new instance of the <see cref="ArgumentException" /> class.</summary>
         /// <param name="paramName">The name of the parameter that caused the exception.</param>
         /// <param name="paramType">The type of the parameter that caused the exception.</param>
@@ -76,6 +85,13 @@ namespace TerraFX.Utilities
         public static void ThrowInvalidOperationException(string paramName, object value)
         {
             throw NewInvalidOperationException(paramName, value);
+        }
+
+        /// <summary>Throws a new instance of the <see cref="ObjectDisposedException" /> class.</summary>
+        /// <param name="objectName">The name of the object that caused the exception.</param>
+        public static void ThrowObjectDisposedException(string objectName)
+        {
+            throw NewObjectDisposedException(objectName);
         }
         #endregion
     }
