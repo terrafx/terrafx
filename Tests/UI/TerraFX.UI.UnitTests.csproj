@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Sources\Windows\TerraFX.Windows.csproj" />
+    <ProjectReference Include="..\..\Sources\UI\TerraFX.UI.csproj" />
   </ItemGroup>
 
   <ItemGroup>
