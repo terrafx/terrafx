@@ -19,13 +19,13 @@ namespace TerraFX.Interop
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="WPARAM" /> struct.</summary>
         /// <param name="value">The value of the instance.</param>
-        public WPARAM(int value) : this((UIntPtr)(value))
+        public WPARAM(uint value) : this((UIntPtr)(value))
         {
         }
 
         /// <summary>Initializes a new instance of the <see cref="WPARAM" /> struct.</summary>
         /// <param name="value">The value of the instance.</param>
-        public WPARAM(long value) : this((UIntPtr)(value))
+        public WPARAM(ulong value) : this((UIntPtr)(value))
         {
         }
 
@@ -92,18 +92,18 @@ namespace TerraFX.Interop
             return ((void*)(left._value) <= (void*)(right._value));
         }
 
-        /// <summary>Converts a <see cref="WPARAM" /> to an equivalent <see cref="int" /> value.</summary>
+        /// <summary>Converts a <see cref="WPARAM" /> to an equivalent <see cref="uint" /> value.</summary>
         /// <param name="value">The <see cref="WPARAM" /> to convert.</param>
-        public static explicit operator int(WPARAM value)
+        public static explicit operator uint(WPARAM value)
         {
-            return (int)(value._value);
+            return (uint)(value._value);
         }
 
-        /// <summary>Converts a <see cref="WPARAM" /> to an equivalent <see cref="long" /> value.</summary>
+        /// <summary>Converts a <see cref="WPARAM" /> to an equivalent <see cref="ulong" /> value.</summary>
         /// <param name="value">The <see cref="WPARAM" /> to convert.</param>
-        public static implicit operator long(WPARAM value)
+        public static implicit operator ulong(WPARAM value)
         {
-            return (long)(value._value);
+            return (ulong)(value._value);
         }
 
         /// <summary>Converts a <see cref="WPARAM" /> to an equivalent <see cref="UIntPtr" /> value.</summary>
@@ -113,16 +113,16 @@ namespace TerraFX.Interop
             return value._value;
         }
 
-        /// <summary>Converts a <see cref="long" /> to an equivalent <see cref="WPARAM" /> value.</summary>
-        /// <param name="value">The <see cref="long" /> to convert.</param>
-        public static explicit operator WPARAM(long value)
+        /// <summary>Converts a <see cref="ulong" /> to an equivalent <see cref="WPARAM" /> value.</summary>
+        /// <param name="value">The <see cref="ulong" /> to convert.</param>
+        public static explicit operator WPARAM(ulong value)
         {
             return new WPARAM(value);
         }
 
-        /// <summary>Converts a <see cref="int" /> to an equivalent <see cref="WPARAM" /> value.</summary>
-        /// <param name="value">The <see cref="int" /> to convert.</param>
-        public static implicit operator WPARAM(int value)
+        /// <summary>Converts a <see cref="uint" /> to an equivalent <see cref="WPARAM" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> to convert.</param>
+        public static implicit operator WPARAM(uint value)
         {
             return new WPARAM(value);
         }
