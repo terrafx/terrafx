@@ -1,11 +1,14 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Diagnostics;
 using TerraFX.Utilities;
 
 namespace TerraFX.Collections
 {
     /// <summary>Provides data for the <see cref="INotifyDictionaryChanged{TKey, TValue}.DictionaryChanged" /> event.</summary>
+    /// <typeparam name="TKey">The type of the keys in the dictionary.</typeparam>
+    /// <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
     public sealed class NotifyDictionaryChangedEventArgs<TKey, TValue> : EventArgs
     {
         #region Constants
@@ -35,6 +38,7 @@ namespace TerraFX.Collections
         {
             get
             {
+                Debug.Assert(Enum.IsDefined(typeof(NotifyDictionaryChangedAction), _action));
                 return _action;
             }
         }
@@ -45,9 +49,9 @@ namespace TerraFX.Collections
         {
             get
             {
-                if (_action == NotifyDictionaryChangedAction.Reset)
+                if (Action == NotifyDictionaryChangedAction.Reset)
                 {
-                    ExceptionUtilities.ThrowInvalidOperationException(nameof(Action), _action);
+                    ExceptionUtilities.ThrowInvalidOperationException(nameof(Action), Action);
                 }
 
                 return _key;
@@ -60,9 +64,9 @@ namespace TerraFX.Collections
         {
             get
             {
-                if (_action != NotifyDictionaryChangedAction.ValueChanged)
+                if (Action != NotifyDictionaryChangedAction.ValueChanged)
                 {
-                    ExceptionUtilities.ThrowInvalidOperationException(nameof(Action), _action);
+                    ExceptionUtilities.ThrowInvalidOperationException(nameof(Action), Action);
                 }
 
                 return _oldValue;
@@ -75,9 +79,9 @@ namespace TerraFX.Collections
         {
             get
             {
-                if (_action != NotifyDictionaryChangedAction.ValueChanged)
+                if (Action != NotifyDictionaryChangedAction.ValueChanged)
                 {
-                    ExceptionUtilities.ThrowInvalidOperationException(nameof(Action), _action);
+                    ExceptionUtilities.ThrowInvalidOperationException(nameof(Action), Action);
                 }
 
                 return _newValue;

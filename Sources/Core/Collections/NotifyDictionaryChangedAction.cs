@@ -5,16 +5,16 @@ namespace TerraFX.Collections
     /// <summary>Defines the action that caused a <see cref="INotifyDictionaryChanged{TKey, TValue}.DictionaryChanged" /> event.</summary>
     public enum NotifyDictionaryChangedAction
     {
-        /// <summary>An item was added to the instance.</summary>
+        /// <summary>An item was added to the dictionary.</summary>
         Add,
 
-        /// <summary>An item was removed from the instance.</summary>
+        /// <summary>An item was removed from the dictionary.</summary>
         Remove,
 
-        /// <summary>An item in the collection had its value changed.</summary>
+        /// <summary>An item in the dictionary had its value changed.</summary>
         ValueChanged,
 
-        /// <summary>The instance had its items cleared.</summary>
+        /// <summary>The dictionary had its contents reset.</summary>
         Reset
     }
 }
