@@ -8,7 +8,13 @@ namespace TerraFX.Interop
     public struct D3D12_FEATURE_DATA_ARCHITECTURE1
     {
         #region Fields
-        public D3D12_FEATURE_DATA_ARCHITECTURE BaseValue;
+        public uint NodeIndex;
+
+        public BOOL TileBasedRenderer;
+
+        public BOOL UMA;
+
+        public BOOL CacheCoherentUMA;
 
         public BOOL IsolatedMMU;
         #endregion

@@ -10,7 +10,25 @@ namespace TerraFX.Interop.Desktop
         #region Fields
         public uint cbSize;
 
-        public WNDCLASS BaseValue;
+        public CS style;
+
+        public WNDPROC lpfnWndProc;
+
+        public int cbClsExtra;
+
+        public int cbWndExtra;
+
+        public HINSTANCE hInstance;
+
+        public HICON hIcon;
+
+        public HCURSOR hCursor;
+
+        public HBRUSH hbrBackground;
+
+        public LPWSTR lpszMenuName;
+
+        public LPWSTR lpszClassName;
 
         public HICON hIconSm;
         #endregion
