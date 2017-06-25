@@ -57,6 +57,14 @@ namespace TerraFX.Interop
             [In] void* lpParam
         );
 
+        [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "DefWindowProcW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        public static extern LRESULT DefWindowProc(
+            [In] HWND hWnd,
+            [In] WM Msg,
+            [In] WPARAM wParam,
+            [In] LPARAM lParam
+        );
+
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "DispatchMessageW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         public static extern LRESULT DispatchMessage(
             [In] ref /* readonly */ MSG lpMsg
@@ -69,6 +77,11 @@ namespace TerraFX.Interop
             [In] WM wMsgFilterMin,
             [In] WM wMsgFilterMax,
             [In] PM wRemoveMsg
+        );
+
+        [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "PostQuitMessage", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        public static extern void PostQuitMessage(
+            [In] int nExitCode
         );
 
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "RegisterClassW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
