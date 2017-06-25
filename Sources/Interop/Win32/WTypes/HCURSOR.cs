@@ -53,6 +53,13 @@ namespace TerraFX.Interop
             return (left._value == right._value);
         }
 
+        /// <summary>Converts a <see cref="HCURSOR" /> to an equivalent <see cref="HICON" /> value.</summary>
+        /// <param name="value">The <see cref="HCURSOR" /> to convert.</param>
+        public static implicit operator HICON(HCURSOR value)
+        {
+            return new HICON(value._value);
+        }
+
         /// <summary>Converts a <see cref="HCURSOR" /> to an equivalent <see cref="UIntPtr" /> value.</summary>
         /// <param name="value">The <see cref="HCURSOR" /> to convert.</param>
         public static implicit operator UIntPtr(HCURSOR value)

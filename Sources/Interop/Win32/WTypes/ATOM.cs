@@ -9,7 +9,7 @@ using TerraFX.Utilities;
 namespace TerraFX.Interop
 {
     /// <summary>An atom.</summary>
-    public struct ATOM : IComparable, IComparable<ATOM>, IEquatable<ATOM>, IFormattable
+    unsafe public struct ATOM : IComparable, IComparable<ATOM>, IEquatable<ATOM>, IFormattable
     {
         #region Fields
         private ushort Value;
@@ -77,6 +77,13 @@ namespace TerraFX.Interop
         public static bool operator <=(ATOM left, ATOM right)
         {
             return (left.Value <= right.Value);
+        }
+
+        /// <summary>Converts a <see cref="ATOM" /> to an equivalent <see cref="LPWSTR" /> value.</summary>
+        /// <param name="value">The <see cref="ATOM" /> to convert.</param>
+        public static explicit operator LPWSTR(ATOM value)
+        {
+            return new LPWSTR((WCHAR*)(value.Value));
         }
 
         /// <summary>Converts a <see cref="ATOM" /> to an equivalent <see cref="ushort" /> value.</summary>

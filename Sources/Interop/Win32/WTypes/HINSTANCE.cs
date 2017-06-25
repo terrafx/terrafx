@@ -53,6 +53,13 @@ namespace TerraFX.Interop
             return (left._value == right._value);
         }
 
+        /// <summary>Converts a <see cref="HINSTANCE" /> to an equivalent <see cref="HMODULE" /> value.</summary>
+        /// <param name="value">The <see cref="HINSTANCE" /> to convert.</param>
+        public static implicit operator HMODULE(HINSTANCE value)
+        {
+            return new HMODULE(value._value);
+        }
+
         /// <summary>Converts a <see cref="HINSTANCE" /> to an equivalent <see cref="UIntPtr" /> value.</summary>
         /// <param name="value">The <see cref="HINSTANCE" /> to convert.</param>
         public static implicit operator UIntPtr(HINSTANCE value)
