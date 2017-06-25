@@ -135,6 +135,68 @@ namespace TerraFX.Interop
         }
         #endregion
 
+        #region Methods
+        /// <summary>Gets the high-order byte for the instance.</summary>
+        /// <returns>The high-order byte for the instance.</returns>
+        public ushort HIBYTE()
+        {
+            if (UIntPtr.Size == sizeof(int))
+            {
+                return unchecked((byte)(((uint)(_value)) >> 8));
+            }
+            else
+            {
+                Debug.Assert(UIntPtr.Size == sizeof(long));
+                return unchecked((byte)(((ulong)(_value)) >> 8));
+            }
+        }
+
+        /// <summary>Gets the high-order word for the instance.</summary>
+        /// <returns>The high-order word for the instance.</returns>
+        public ushort HIWORD()
+        {
+            if (UIntPtr.Size == sizeof(int))
+            {
+                return unchecked((ushort)(((uint)(_value)) >> 16));
+            }
+            else
+            {
+                Debug.Assert(UIntPtr.Size == sizeof(long));
+                return unchecked((ushort)(((ulong)(_value)) >> 16));
+            }
+        }
+
+        /// <summary>Gets the low-order byte for the instance.</summary>
+        /// <returns>The low-order byte for the instance.</returns>
+        public ushort LOBYTE()
+        {
+            if (UIntPtr.Size == sizeof(int))
+            {
+                return unchecked((byte)((uint)(_value)));
+            }
+            else
+            {
+                Debug.Assert(UIntPtr.Size == sizeof(long));
+                return unchecked((byte)((ulong)(_value)));
+            }
+        }
+
+        /// <summary>Gets the low-order word for the instance.</summary>
+        /// <returns>The low-order word for the instance.</returns>
+        public ushort LOWORD()
+        {
+            if (UIntPtr.Size == sizeof(int))
+            {
+                return unchecked((ushort)((uint)(_value)));
+            }
+            else
+            {
+                Debug.Assert(UIntPtr.Size == sizeof(long));
+                return unchecked((ushort)((ulong)(_value)));
+            }
+        }
+        #endregion
+
         #region System.IComparable
         /// <summary>Compares a <see cref="object" /> with the current instance to determine relative sort-order.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
