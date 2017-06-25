@@ -49,6 +49,18 @@ namespace TerraFX.Utilities.UnitTests
             );
         }
 
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.NewInvalidOperationException(string, object)" /> static method.</summary>
+        [Test]
+        public static void NewInvalidOperationExceptionStringObjectTest(
+            [Values(null, "", "param")] string paramName,
+            [Values(null, "", "value")] object value
+        )
+        {
+            Assert.That(ExceptionUtilities.NewInvalidOperationException(paramName, value),
+                Is.InstanceOf<InvalidOperationException>()
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowArgumentExceptionForInvalidType(string, Type)" /> static method.</summary>
         [Test]
         public static void ThrowArgumentExceptionForInvalidType(
@@ -85,6 +97,18 @@ namespace TerraFX.Utilities.UnitTests
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
                       .With.Property("ParamName").EqualTo(paramName)
                       .And.With.Property("ActualValue").EqualTo(value)
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowInvalidOperationException(string, object)" /> static method.</summary>
+        [Test]
+        public static void ThrowInvalidOperationExceptionStringObjectTest(
+            [Values(null, "", "param")] string paramName,
+            [Values(null, "", "value")] object value
+        )
+        {
+            Assert.That(() => ExceptionUtilities.ThrowInvalidOperationException(paramName, value),
+                Throws.InstanceOf<InvalidOperationException>()
             );
         }
         #endregion

@@ -41,6 +41,15 @@ namespace TerraFX
             }
         }
 
+        /// <summary>Gets a localized <see cref="string" /> similar to <c>{0} has a value of {1}</c>.</summary>
+        public static string InvalidOperationExceptionMessage
+        {
+            get
+            {
+                return ResourceManager.GetString(nameof(InvalidOperationExceptionMessage), Culture);
+            }
+        }
+
         /// <summary>Gets or sets the <see cref="CultureInfo" /> used during resource lookup.</summary>
         /// <remarks>When this property has a value of <c>null</c>, <see cref="CultureInfo.CurrentUICulture" /> is used instead.</remarks>
         public static CultureInfo Culture

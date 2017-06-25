@@ -67,4 +67,7 @@
   <data name="ArgumentOutOfRangeExceptionMessage" xml:space="preserve">
     <value>{0} has a value of {1}</value>
   </data>
+  <data name="InvalidOperationExceptionMessage" xml:space="preserve">
+    <value>{0} has a value of {1}</value>
+  </data>
 </root>

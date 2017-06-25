@@ -37,6 +37,16 @@ namespace TerraFX.Utilities
             return new ArgumentOutOfRangeException(paramName, value, message);
         }
 
+        /// <summary>Creates a new instance of the <see cref="InvalidOperationException" /> class.</summary>
+        /// <param name="paramName">The name of the parameter that caused the exception.</param>
+        /// <param name="value">The value of the parameter that caused the exception.</param>
+        /// <returns>A new instance of the <see cref="InvalidOperationException" /> class.</returns>
+        public static InvalidOperationException NewInvalidOperationException(string paramName, object value)
+        {
+            var message = string.Format(Resources.InvalidOperationExceptionMessage, paramName, value);
+            return new InvalidOperationException(message);
+        }
+
         /// <summary>Throws a new instance of the <see cref="ArgumentException" /> class.</summary>
         /// <param name="paramName">The name of the parameter that caused the exception.</param>
         /// <param name="paramType">The type of the parameter that caused the exception.</param>
@@ -58,6 +68,14 @@ namespace TerraFX.Utilities
         public static void ThrowArgumentOutOfRangeException(string paramName, object value)
         {
             throw NewArgumentOutOfRangeException(paramName, value);
+        }
+
+        /// <summary>Throws a new instance of the <see cref="InvalidOperationException" /> class.</summary>
+        /// <param name="paramName">The name of the parameter that caused the exception.</param>
+        /// <param name="value">The value of the parameter that caused the exception.</param>
+        public static void ThrowInvalidOperationException(string paramName, object value)
+        {
+            throw NewInvalidOperationException(paramName, value);
         }
         #endregion
     }
