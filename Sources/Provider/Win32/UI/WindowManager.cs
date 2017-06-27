@@ -7,8 +7,10 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using TerraFX.Interop;
 using TerraFX.Interop.Desktop;
+using TerraFX.Threading;
 using TerraFX.UI;
 using TerraFX.Utilities;
+using static TerraFX.Interop.User32;
 
 namespace TerraFX.Provider.Win32.UI
 {
@@ -24,19 +26,25 @@ namespace TerraFX.Provider.Win32.UI
 
         internal static readonly WNDPROC WndProc = WindowProc;
 
-        private ATOM _classAtom;
-
         private WCHAR* _lpClassName;
 
         private WCHAR* _lpWindowName;
+
+        private Lazy<IDispatchManager> _dispatchManager;
+
+        private ATOM _classAtom;
         #endregion
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="WindowManager" /> class.</summary>
-        public WindowManager()
+        [ImportingConstructor]
+        public WindowManager(
+            [Import] Lazy<IDispatchManager> dispatchManager
+        )
         {
             _lpClassName = (WCHAR*)(Marshal.StringToHGlobalUni($"TerraFX.Interop.Provider.Win32.UI.Window.{EntryModuleHandle}"));
             _lpWindowName = (WCHAR*)(Marshal.StringToHGlobalUni($"TerraFX Win32 Window"));
+            _dispatchManager = dispatchManager;
 
             var wndClassEx = new WNDCLASSEX() {
                 cbSize = unchecked((uint)(Marshal.SizeOf<WNDCLASSEX>())),
@@ -53,12 +61,12 @@ namespace TerraFX.Provider.Win32.UI
                 hIconSm = HICON.NULL
             };
 
-            var classAtom = User32.RegisterClassEx(ref wndClassEx);
+            var classAtom = RegisterClassEx(ref wndClassEx);
 
             if (classAtom == 0)
             {
                 var hresult = Marshal.GetHRForLastWin32Error();
-                Marshal.ThrowExceptionForHR(hresult);
+                ExceptionUtilities.ThrowExternalException(nameof(RegisterClassEx), hresult);
             }
 
             _classAtom = classAtom;
@@ -81,7 +89,7 @@ namespace TerraFX.Provider.Win32.UI
                 return window.WindowProc(Msg, wParam, lParam);
             }
 
-            return User32.DefWindowProc(hWnd, Msg, wParam, lParam);
+            return DefWindowProc(hWnd, Msg, wParam, lParam);
         }
 
         private void Dispose(bool isDisposing)
@@ -97,7 +105,7 @@ namespace TerraFX.Provider.Win32.UI
             if (_classAtom != 0)
             {
                 var lpClassName = (LPWSTR)(_classAtom);
-                User32.UnregisterClass(lpClassName, EntryModuleHandle);
+                UnregisterClass(lpClassName, EntryModuleHandle);
                 _classAtom = 0;
             }
 
@@ -135,7 +143,7 @@ namespace TerraFX.Provider.Win32.UI
             }
 
             var lpClassName = (LPWSTR)(_classAtom);
-            var window = new Window(lpClassName, _lpWindowName, EntryModuleHandle);
+            var window = new Window(_dispatchManager.Value, lpClassName, _lpWindowName, EntryModuleHandle);
 
             var succeeded = CreatedWindows.TryAdd(window.Handle, window);
             Debug.Assert(succeeded);

@@ -3,9 +3,11 @@
 using System;
 using System.Collections.Concurrent;
 using System.Composition;
+using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.Threading;
 using TerraFX.Utilities;
+using static TerraFX.Interop.Kernel32;
 
 namespace TerraFX.Provider.Win32.Threading
 {
@@ -15,13 +17,14 @@ namespace TerraFX.Provider.Win32.Threading
     public sealed class DispatchManager : IDispatchManager
     {
         #region Fields
-        private static readonly ConcurrentDictionary<Thread, Dispatcher> _dispatchers = new ConcurrentDictionary<Thread, Dispatcher>();
+        private readonly ConcurrentDictionary<Thread, Dispatcher> _dispatchers;
         #endregion
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="DispatchManager" /> class.</summary>
         public DispatchManager()
         {
+            _dispatchers = new ConcurrentDictionary<Thread, Dispatcher>();
         }
         #endregion
 
@@ -29,7 +32,7 @@ namespace TerraFX.Provider.Win32.Threading
         /// <summary>Gets the <see cref="IDispatcher" /> instance associated with <see cref="Thread.CurrentThread" />.</summary>
         /// <returns>The <see cref="IDispatcher" /> instance associated with <see cref="Thread.CurrentThread" />.</returns>
         /// <remarks>This will create a new <see cref="IDispatcher" /> instance if one does not already exist.</remarks>
-        public static IDispatcher DispatcherForCurrentThread
+        public IDispatcher DispatcherForCurrentThread
         {
             get
             {
@@ -43,7 +46,7 @@ namespace TerraFX.Provider.Win32.Threading
         /// <param name="thread">The <see cref="Thread" /> for which the <see cref="IDispatcher" /> instance should be retrieved.</param>
         /// <returns>The <see cref="IDispatcher" /> instance associated with <paramref name="thread" /> or <c>null</c> if an instance does not exist.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="thread" /> is <c>null</c>.</exception>
-        public static IDispatcher GetDispatcherForThread(Thread thread)
+        public IDispatcher GetDispatcherForThread(Thread thread)
         {
             if (thread is null)
             {
@@ -52,28 +55,6 @@ namespace TerraFX.Provider.Win32.Threading
 
             _dispatchers.TryGetValue(thread, out var dispatcher);
             return dispatcher;
-        }
-        #endregion
-
-        #region TerraFX.Threading.IDispatchManager
-        /// <summary>Gets the <see cref="IDispatcher" /> instance associated with <see cref="Thread.CurrentThread" />.</summary>
-        /// <returns>The <see cref="IDispatcher" /> instance associated with <see cref="Thread.CurrentThread" />.</returns>
-        /// <remarks>This will create a new <see cref="IDispatcher" /> instance if one does not already exist.</remarks>
-        IDispatcher IDispatchManager.DispatcherForCurrentThread
-        {
-            get
-            {
-                return DispatcherForCurrentThread;
-            }
-        }
-
-        /// <summary>Gets the <see cref="IDispatcher" /> instance associated with a <see cref="Thread" />.</summary>
-        /// <param name="thread">The <see cref="Thread" /> for which the <see cref="IDispatcher" /> instance should be retrieved.</param>
-        /// <returns>The <see cref="IDispatcher" /> instance associated with <paramref name="thread" /> or <c>null</c> if an instance does not exist.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="thread" /> is <c>null</c>.</exception>
-        IDispatcher IDispatchManager.GetDispatcherForThread(Thread thread)
-        {
-            return GetDispatcherForThread(thread);
         }
         #endregion
     }

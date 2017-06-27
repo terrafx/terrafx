@@ -8,6 +8,8 @@ using TerraFX.Interop;
 using TerraFX.Provider.Win32.Threading;
 using TerraFX.Threading;
 using TerraFX.UI;
+using TerraFX.Utilities;
+using static TerraFX.Interop.User32;
 
 namespace TerraFX.Provider.Win32.UI
 {
@@ -25,9 +27,9 @@ namespace TerraFX.Provider.Win32.UI
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Window" /> class.</summary>
-        internal Window(LPWSTR lpClassName, LPWSTR lpWindowName, HINSTANCE hInstance)
+        internal Window(IDispatchManager dispatchManager, LPWSTR lpClassName, LPWSTR lpWindowName, HINSTANCE hInstance)
         {
-            var hWnd = User32.CreateWindowEx(
+            var hWnd = CreateWindowEx(
                 WS_EX.OVERLAPPEDWINDOW,
                 lpClassName,
                 lpWindowName,
@@ -45,27 +47,27 @@ namespace TerraFX.Provider.Win32.UI
             if (hWnd == HWND.NULL)
             {
                 var hresult = Marshal.GetHRForLastWin32Error();
-                Marshal.ThrowExceptionForHR(hresult);
+                ExceptionUtilities.ThrowExternalException(nameof(CreateWindowEx), hresult);
             }
 
             _hWnd = hWnd;
-            _dispatcher = DispatchManager.DispatcherForCurrentThread;
+            _dispatcher = dispatchManager.DispatcherForCurrentThread;
             _properties = new PropertySet();
 
-            var succeeded = User32.GetWindowRect(_hWnd, out var lpRect);
+            var succeeded = GetWindowRect(_hWnd, out var lpRect);
 
             if (!succeeded)
             {
                 var hresult = Marshal.GetHRForLastWin32Error();
-                Marshal.ThrowExceptionForHR(hresult);
+                ExceptionUtilities.ThrowExternalException(nameof(GetWindowRect), hresult);
             }
 
             _bounds = new Rectangle(lpRect.left, lpRect.top, (lpRect.right - lpRect.left), (lpRect.bottom - lpRect.top));
 
-            var activeWindow = User32.GetActiveWindow();
+            var activeWindow = GetActiveWindow();
             _isActive = (activeWindow == _hWnd);
 
-            _isVisible = User32.IsWindowVisible(hWnd);
+            _isVisible = IsWindowVisible(hWnd);
         }
         #endregion
 
@@ -123,7 +125,7 @@ namespace TerraFX.Provider.Win32.UI
 
                 default:
                 {
-                    return User32.DefWindowProc(_hWnd, Msg, wParam, lParam);
+                    return DefWindowProc(_hWnd, Msg, wParam, lParam);
                 }
             }
         }
@@ -132,12 +134,12 @@ namespace TerraFX.Provider.Win32.UI
         {
             if (_hWnd != HWND.NULL)
             {
-                var succeeded = User32.DestroyWindow(_hWnd);
+                var succeeded = DestroyWindow(_hWnd);
 
                 if (!succeeded)
                 {
                     var hresult = Marshal.GetHRForLastWin32Error();
-                    Marshal.ThrowExceptionForHR(hresult);
+                    ExceptionUtilities.ThrowExternalException(nameof(DestroyWindow), hresult);
                 }
 
                 _hWnd = null;
@@ -212,24 +214,24 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Activates the instance.</summary>
         public void Activate()
         {
-            var previousActiveWindow = User32.SetActiveWindow(_hWnd);
+            var previousActiveWindow = SetActiveWindow(_hWnd);
 
             if (previousActiveWindow == HWND.NULL)
             {
                 var hresult = Marshal.GetHRForLastWin32Error();
-                Marshal.ThrowExceptionForHR(hresult);
+                ExceptionUtilities.ThrowExternalException(nameof(SetActiveWindow), hresult);
             }
         }
 
         /// <summary>Closes the instance.</summary>
         public void Close()
         {
-            var succeeded = User32.CloseWindow(_hWnd);
+            var succeeded = CloseWindow(_hWnd);
 
             if (!succeeded)
             {
                 var hresult = Marshal.GetHRForLastWin32Error();
-                Marshal.ThrowExceptionForHR(hresult);
+                ExceptionUtilities.ThrowExternalException(nameof(CloseWindow), hresult);
             }
         }
 
@@ -238,12 +240,12 @@ namespace TerraFX.Provider.Win32.UI
         {
             if (_isVisible)
             {
-                var succeeded = User32.ShowWindow(_hWnd, SW.HIDE);
+                var succeeded = ShowWindow(_hWnd, SW.HIDE);
 
                 if (!succeeded)
                 {
                     var hresult = Marshal.GetHRForLastWin32Error();
-                    Marshal.ThrowExceptionForHR(hresult);
+                    ExceptionUtilities.ThrowExternalException(nameof(ShowWindow), hresult);
                 }
             }
         }
@@ -253,12 +255,12 @@ namespace TerraFX.Provider.Win32.UI
         {
             if (!_isVisible)
             {
-                var succeeded = User32.ShowWindow(_hWnd, SW.SHOW);
+                var succeeded = ShowWindow(_hWnd, SW.SHOW);
 
                 if (!succeeded)
                 {
                     var hresult = Marshal.GetHRForLastWin32Error();
-                    Marshal.ThrowExceptionForHR(hresult);
+                    ExceptionUtilities.ThrowExternalException(nameof(ShowWindow), hresult);
                 }
             }
         }
