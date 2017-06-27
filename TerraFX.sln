@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26608.5
+VisualStudioVersion = 15.0.26621.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2F337CB6-0B9E-4765-A277-487E429DE9F1}"
 	ProjectSection(SolutionItems) = preProject
@@ -217,6 +217,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libX11", "libX11", "{DD60CE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Provider.libX11.UnitTests", "Tests\Provider\libX11\TerraFX.Provider.libX11.UnitTests.csproj", "{90666EBB-0650-4511-9538-1B60DCB9A685}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libc", "libc", "{1CE21089-474A-40CB-AD1B-4E231418814A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Interop.libc", "Sources\Interop\libc\TerraFX.Interop.libc.csproj", "{23EA4B82-5D73-4586-B480-5F61FDE1CFA7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libc", "libc", "{AB49774C-4FC6-4726-9677-42C2F4080FEE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Interop.libc.UnitTests", "Tests\Interop\libc\TerraFX.Interop.libc.UnitTests.csproj", "{8E947243-7E4E-451D-8C60-86E15229B566}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -391,6 +399,14 @@ Global
 		{90666EBB-0650-4511-9538-1B60DCB9A685}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90666EBB-0650-4511-9538-1B60DCB9A685}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90666EBB-0650-4511-9538-1B60DCB9A685}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23EA4B82-5D73-4586-B480-5F61FDE1CFA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23EA4B82-5D73-4586-B480-5F61FDE1CFA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23EA4B82-5D73-4586-B480-5F61FDE1CFA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23EA4B82-5D73-4586-B480-5F61FDE1CFA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E947243-7E4E-451D-8C60-86E15229B566}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E947243-7E4E-451D-8C60-86E15229B566}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E947243-7E4E-451D-8C60-86E15229B566}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E947243-7E4E-451D-8C60-86E15229B566}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -489,5 +505,12 @@ Global
 		{BFB0F414-2C9C-4CCE-94F8-0E62A52E7B7C} = {702ACB0F-E063-4B6C-931D-18E282E46498}
 		{DD60CE99-7659-40F3-B3E1-12F842E7CD7F} = {041652D1-304F-4FB9-881A-F0A370D5472B}
 		{90666EBB-0650-4511-9538-1B60DCB9A685} = {DD60CE99-7659-40F3-B3E1-12F842E7CD7F}
+		{1CE21089-474A-40CB-AD1B-4E231418814A} = {70FBCFD9-B96E-4E72-B35C-681D9B2DA3D6}
+		{23EA4B82-5D73-4586-B480-5F61FDE1CFA7} = {1CE21089-474A-40CB-AD1B-4E231418814A}
+		{AB49774C-4FC6-4726-9677-42C2F4080FEE} = {7E31C739-2787-44ED-8304-7EFCEE1A2B2C}
+		{8E947243-7E4E-451D-8C60-86E15229B566} = {AB49774C-4FC6-4726-9677-42C2F4080FEE}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2FE36DF8-2D9C-4F20-8787-45DC74B57461}
 	EndGlobalSection
 EndGlobal
