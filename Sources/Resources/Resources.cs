@@ -41,6 +41,15 @@ namespace TerraFX
             }
         }
 
+        /// <summary>Gets a localized <see cref="string" /> similar to <c>{0} failed with an error code of {1}</c>.</summary>
+        public static string ExternalExceptionMessage
+        {
+            get
+            {
+                return ResourceManager.GetString(nameof(ExternalExceptionMessage), Culture);
+            }
+        }
+
         /// <summary>Gets a localized <see cref="string" /> similar to <c>{0} has a value of {1}</c>.</summary>
         public static string InvalidOperationExceptionMessage
         {

@@ -43,6 +43,17 @@ namespace TerraFX.UnitTests
             );
         }
 
+        /// <summary>Provides validation of the <see cref="Resources.ExternalExceptionMessage" /> static property.</summary>
+        [TestCase("en", "{0} failed with an error code of {1}")]
+        public static void ExternalExceptionMessageTest(string cultureName, string expectedMessage)
+        {
+            Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
+
+            Assert.That(Resources.ExternalExceptionMessage,
+                Is.EqualTo(expectedMessage)
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="Resources.InvalidOperationExceptionMessage" /> static property.</summary>
         [TestCase("en", "{0} has a value of {1}")]
         public static void InvalidOperationExceptionMessageTest(string cultureName, string expectedMessage)

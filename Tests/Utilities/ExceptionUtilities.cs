@@ -1,6 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Runtime.InteropServices;
 using NUnit.Framework;
 
 namespace TerraFX.Utilities.UnitTests
@@ -46,6 +47,19 @@ namespace TerraFX.Utilities.UnitTests
                 Is.InstanceOf<ArgumentOutOfRangeException>()
                   .With.Property("ParamName").EqualTo(paramName)
                   .And.With.Property("ActualValue").EqualTo(value)
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.NewExternalException(string, int)" /> static method.</summary>
+        [Test]
+        public static void NewExternalExceptionStringInt32Test(
+            [Values(null, "", "methodName")] string methodName,
+            [Values(0, 1, unchecked((int)(0x80000000)))] int errorCode
+        )
+        {
+            Assert.That(ExceptionUtilities.NewExternalException(methodName, errorCode),
+                Is.InstanceOf<ExternalException>()
+                  .With.Property("ErrorCode").EqualTo(errorCode)
             );
         }
 
@@ -109,6 +123,19 @@ namespace TerraFX.Utilities.UnitTests
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
                       .With.Property("ParamName").EqualTo(paramName)
                       .And.With.Property("ActualValue").EqualTo(value)
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowExternalException(string, int)" /> static method.</summary>
+        [Test]
+        public static void ThrowExternalExceptionStringInt32Test(
+            [Values(null, "", "methodName")] string methodName,
+            [Values(0, 1, unchecked((int)(0x80000000)))] int errorCode
+        )
+        {
+            Assert.That(() => ExceptionUtilities.ThrowExternalException(methodName, errorCode),
+                Throws.InstanceOf<ExternalException>()
+                      .With.Property("ErrorCode").EqualTo(errorCode)
             );
         }
 
