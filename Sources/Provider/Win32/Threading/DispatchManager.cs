@@ -17,6 +17,7 @@ namespace TerraFX.Provider.Win32.Threading
     public sealed class DispatchManager : IDispatchManager
     {
         #region Fields
+        private readonly double _tickFrequency;
         private readonly ConcurrentDictionary<Thread, Dispatcher> _dispatchers;
         #endregion
 
@@ -24,11 +25,40 @@ namespace TerraFX.Provider.Win32.Threading
         /// <summary>Initializes a new instance of the <see cref="DispatchManager" /> class.</summary>
         public DispatchManager()
         {
+            var succeeded = QueryPerformanceFrequency(out var lpFrequency);
+
+            if (!succeeded)
+            {
+                int hresult = Marshal.GetHRForLastWin32Error();
+                ExceptionUtilities.ThrowExternalException(nameof(QueryPerformanceFrequency), hresult);
+            }
+
+            const double ticksPerSecond = Timestamp.TicksPerSecond;
+            _tickFrequency = (ticksPerSecond / unchecked((ulong)(lpFrequency)));
+
             _dispatchers = new ConcurrentDictionary<Thread, Dispatcher>();
         }
         #endregion
 
         #region Properties
+        /// <summary>Gets the current <see cref="Timestamp" /> for the instance.</summary>
+        public Timestamp CurrentTimestamp
+        {
+            get
+            {
+                var succeeded = QueryPerformanceCounter(out var lpPerformanceCount);
+
+                if (!succeeded)
+                {
+                    int hresult = Marshal.GetHRForLastWin32Error();
+                    ExceptionUtilities.ThrowExternalException(nameof(QueryPerformanceCounter), hresult);
+                }
+
+                var ticks = unchecked((ulong)(lpPerformanceCount * _tickFrequency));
+                return new Timestamp(ticks);
+            }
+        }
+
         /// <summary>Gets the <see cref="IDispatcher" /> instance associated with <see cref="Thread.CurrentThread" />.</summary>
         /// <returns>The <see cref="IDispatcher" /> instance associated with <see cref="Thread.CurrentThread" />.</returns>
         /// <remarks>This will create a new <see cref="IDispatcher" /> instance if one does not already exist.</remarks>

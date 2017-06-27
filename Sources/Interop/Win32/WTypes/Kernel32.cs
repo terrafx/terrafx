@@ -34,7 +34,7 @@ namespace TerraFX.Interop
         /// </returns>
         [DllImport("Kernel32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "QueryPerformanceCounter", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         public static extern BOOL QueryPerformanceCounter(
-            [Out] long* lpPerformanceCount
+            [Out] out long lpPerformanceCount
         );
 
         /// <summary>Retrieves the frequency of the performance counter. The frequency of the performance counter is fixed at system boot and is consistent across all processors. Therefore, the frequency need only be queried upon application initialization, and the result can be cached.</summary>
@@ -45,7 +45,7 @@ namespace TerraFX.Interop
         /// </returns>
         [DllImport("Kernel32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "QueryPerformanceFrequency", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         public static extern BOOL QueryPerformanceFrequency(
-            [Out] long* lpFrequency
+            [Out] out long lpFrequency
         );
         #endregion
     }

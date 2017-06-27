@@ -8,6 +8,9 @@ namespace TerraFX.Threading
     public interface IDispatchManager
     {
         #region Properties
+        /// <summary>Gets the current <see cref="Timestamp" /> for the instance.</summary>
+        Timestamp CurrentTimestamp { get; }
+
         /// <summary>Gets the <see cref="IDispatcher" /> instance associated with <see cref="Thread.CurrentThread" />.</summary>
         /// <returns>The <see cref="IDispatcher" /> instance associated with <see cref="Thread.CurrentThread" />.</returns>
         /// <remarks>This will create a new <see cref="IDispatcher" /> instance if one does not already exist.</remarks>
