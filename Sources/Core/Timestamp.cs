@@ -8,13 +8,30 @@ namespace TerraFX
     /// <summary>Defines a timestamp.</summary>
     public /* blittable */ struct Timestamp : IComparable, IComparable<Timestamp>, IEquatable<Timestamp>, IFormattable
     {
+        #region Constants
+        /// <summary>The number of ticks that occur per day.</summary>
+        public const ulong TicksPerDay = TimeSpan.TicksPerDay;
+
+        /// <summary>The number of ticks that occur per hour.</summary>
+        public const ulong TicksPerHour = TimeSpan.TicksPerHour;
+
+        /// <summary>The number of ticks that occur per millisecond.</summary>
+        public const ulong TicksPerMillisecond = TimeSpan.TicksPerMillisecond;
+
+        /// <summary>The number of ticks that occur per minute.</summary>
+        public const ulong TicksPerMinute = TimeSpan.TicksPerMinute;
+
+        /// <summary>The number of ticks that occur per second.</summary>
+        public const ulong TicksPerSecond = TimeSpan.TicksPerSecond;
+        #endregion
+
         #region Fields
         private readonly ulong _ticks;
         #endregion
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Timestamp" /> struct.</summary>
-        /// <param name="ticks">The number of 100-millisecond ticks that will be represented by the instance.</param>
+        /// <param name="ticks">The number of 100-nanosecond ticks that will be represented by the instance.</param>
         public Timestamp(ulong ticks)
         {
             _ticks = ticks;
@@ -22,7 +39,7 @@ namespace TerraFX
         #endregion
 
         #region Properties
-        /// <summary>Gets the number of 100-millisecond ticks represented by the current instance.</summary>
+        /// <summary>Gets the number of 100-nanosecond ticks represented by the current instance.</summary>
         public ulong Ticks
         {
             get
