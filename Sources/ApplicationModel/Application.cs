@@ -53,6 +53,11 @@ namespace TerraFX.ApplicationModel
         }
         #endregion
 
+        #region Events
+        /// <summary>Occurs when the event loop for the current instance becomes idle.</summary>
+        public event EventHandler<IdleEventArgs> Idle;
+        #endregion
+
         #region Properties
         /// <summary>Gets the <see cref="CompositionHost" /> for the current instance.</summary>
         public CompositionHost CompositionHost
@@ -119,11 +124,20 @@ namespace TerraFX.ApplicationModel
                 ExceptionUtilities.ThrowInvalidOperationException(nameof(currentApartmentState), currentApartmentState);
             }
 
-            var currentDispatcher = DispatchManager.DispatcherForCurrentThread;
+            var dispatchManager = DispatchManager;
+            var currentDispatcher = dispatchManager.DispatcherForCurrentThread;
+            var previousTimestamp = dispatchManager.CurrentTimestamp;
 
             while (_exitRequested == false)
             {
                 currentDispatcher.DispatchPending();
+                var currentTimestamp = dispatchManager.CurrentTimestamp;
+
+                var delta = currentTimestamp - previousTimestamp;
+                var eventArgs = new IdleEventArgs(delta);
+
+                OnIdle(eventArgs);
+                previousTimestamp = currentTimestamp;
             }
 
             _exitRequested = false;
@@ -136,6 +150,11 @@ namespace TerraFX.ApplicationModel
             {
                 _compositionHost?.Dispose();
             }
+        }
+
+        private void OnIdle(IdleEventArgs eventArgs)
+        {
+            Idle?.Invoke(this, eventArgs);
         }
         #endregion
 
