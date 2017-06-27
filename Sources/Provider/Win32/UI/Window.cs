@@ -46,8 +46,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (hWnd == HWND.NULL)
             {
-                var hresult = Marshal.GetHRForLastWin32Error();
-                ExceptionUtilities.ThrowExternalException(nameof(CreateWindowEx), hresult);
+                ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(CreateWindowEx));
             }
 
             _hWnd = hWnd;
@@ -58,8 +57,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (!succeeded)
             {
-                var hresult = Marshal.GetHRForLastWin32Error();
-                ExceptionUtilities.ThrowExternalException(nameof(GetWindowRect), hresult);
+                ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(GetWindowRect));
             }
 
             _bounds = new Rectangle(lpRect.left, lpRect.top, (lpRect.right - lpRect.left), (lpRect.bottom - lpRect.top));
@@ -138,8 +136,7 @@ namespace TerraFX.Provider.Win32.UI
 
                 if (!succeeded)
                 {
-                    var hresult = Marshal.GetHRForLastWin32Error();
-                    ExceptionUtilities.ThrowExternalException(nameof(DestroyWindow), hresult);
+                    ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(DestroyWindow));
                 }
 
                 _hWnd = null;
@@ -218,8 +215,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (previousActiveWindow == HWND.NULL)
             {
-                var hresult = Marshal.GetHRForLastWin32Error();
-                ExceptionUtilities.ThrowExternalException(nameof(SetActiveWindow), hresult);
+                ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(SetActiveWindow));
             }
         }
 
@@ -230,8 +226,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (!succeeded)
             {
-                var hresult = Marshal.GetHRForLastWin32Error();
-                ExceptionUtilities.ThrowExternalException(nameof(CloseWindow), hresult);
+                ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(CloseWindow));
             }
         }
 
@@ -244,8 +239,7 @@ namespace TerraFX.Provider.Win32.UI
 
                 if (!succeeded)
                 {
-                    var hresult = Marshal.GetHRForLastWin32Error();
-                    ExceptionUtilities.ThrowExternalException(nameof(ShowWindow), hresult);
+                    ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(ShowWindow));
                 }
             }
         }
@@ -259,8 +253,7 @@ namespace TerraFX.Provider.Win32.UI
 
                 if (!succeeded)
                 {
-                    var hresult = Marshal.GetHRForLastWin32Error();
-                    ExceptionUtilities.ThrowExternalException(nameof(ShowWindow), hresult);
+                    ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(ShowWindow));
                 }
             }
         }

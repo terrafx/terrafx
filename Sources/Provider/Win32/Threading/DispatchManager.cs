@@ -29,8 +29,7 @@ namespace TerraFX.Provider.Win32.Threading
 
             if (!succeeded)
             {
-                int hresult = Marshal.GetHRForLastWin32Error();
-                ExceptionUtilities.ThrowExternalException(nameof(QueryPerformanceFrequency), hresult);
+                ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(QueryPerformanceFrequency));
             }
 
             const double ticksPerSecond = Timestamp.TicksPerSecond;
@@ -50,8 +49,7 @@ namespace TerraFX.Provider.Win32.Threading
 
                 if (!succeeded)
                 {
-                    int hresult = Marshal.GetHRForLastWin32Error();
-                    ExceptionUtilities.ThrowExternalException(nameof(QueryPerformanceCounter), hresult);
+                    ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(QueryPerformanceCounter));
                 }
 
                 var ticks = unchecked((ulong)(lpPerformanceCount * _tickFrequency));

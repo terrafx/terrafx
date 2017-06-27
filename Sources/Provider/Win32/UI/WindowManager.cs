@@ -65,8 +65,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (classAtom == 0)
             {
-                var hresult = Marshal.GetHRForLastWin32Error();
-                ExceptionUtilities.ThrowExternalException(nameof(RegisterClassEx), hresult);
+                ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(RegisterClassEx));
             }
 
             _classAtom = classAtom;

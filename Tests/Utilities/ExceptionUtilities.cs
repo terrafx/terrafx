@@ -63,6 +63,34 @@ namespace TerraFX.Utilities.UnitTests
             );
         }
 
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.NewExternalExceptionForLastError(string)" /> static method.</summary>
+        [Test]
+        public static void NewExternalExceptionForLastErrorStringTest(
+            [Values(null, "", "methodName")] string methodName
+        )
+        {
+            var errorCode = Marshal.GetLastWin32Error();
+
+            Assert.That(ExceptionUtilities.NewExternalExceptionForLastError(methodName),
+                Is.InstanceOf<ExternalException>()
+                  .With.Property("ErrorCode").EqualTo(errorCode)
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.NewExternalExceptionForLastHRESULT(string)" /> static method.</summary>
+        [Test]
+        public static void NewExternalExceptionForLastHRESULTStringTest(
+            [Values(null, "", "methodName")] string methodName
+        )
+        {
+            var hresult = Marshal.GetHRForLastWin32Error();
+
+            Assert.That(ExceptionUtilities.NewExternalExceptionForLastHRESULT(methodName),
+                Is.InstanceOf<ExternalException>()
+                  .With.Property("ErrorCode").EqualTo(hresult)
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="ExceptionUtilities.NewInvalidOperationException(string, object)" /> static method.</summary>
         [Test]
         public static void NewInvalidOperationExceptionStringObjectTest(
@@ -136,6 +164,34 @@ namespace TerraFX.Utilities.UnitTests
             Assert.That(() => ExceptionUtilities.ThrowExternalException(methodName, errorCode),
                 Throws.InstanceOf<ExternalException>()
                       .With.Property("ErrorCode").EqualTo(errorCode)
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowExternalExceptionForLastError(string)" /> static method.</summary>
+        [Test]
+        public static void ThrowExternalExceptionForLastErrorStringTest(
+            [Values(null, "", "methodName")] string methodName
+        )
+        {
+            var errorCode = Marshal.GetLastWin32Error();
+
+            Assert.That(() => ExceptionUtilities.ThrowExternalExceptionForLastError(methodName),
+                Throws.InstanceOf<ExternalException>()
+                      .With.Property("ErrorCode").EqualTo(errorCode)
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowExternalExceptionForLastHRESULT(string)" /> static method.</summary>
+        [Test]
+        public static void ThrowExternalExceptionForLastHRESULTStringTest(
+            [Values(null, "", "methodName")] string methodName
+        )
+        {
+            var hresult = Marshal.GetHRForLastWin32Error();
+
+            Assert.That(() => ExceptionUtilities.ThrowExternalExceptionForLastHRESULT(methodName),
+                Throws.InstanceOf<ExternalException>()
+                      .With.Property("ErrorCode").EqualTo(hresult)
             );
         }
 

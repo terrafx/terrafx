@@ -48,6 +48,24 @@ namespace TerraFX.Utilities
             return new ExternalException(message, errorCode);
         }
 
+        /// <summary>Creates a new instance of the <see cref="ExternalException" /> class.</summary>
+        /// <param name="methodName">The name of the method that caused the exception.</param>
+        /// <returns>A new instance of the <see cref="ExternalException" /> class.</returns>
+        public static ExternalException NewExternalExceptionForLastError(string methodName)
+        {
+            var errorCode = Marshal.GetLastWin32Error();
+            return NewExternalException(methodName, errorCode);
+        }
+
+        /// <summary>Creates a new instance of the <see cref="ExternalException" /> class.</summary>
+        /// <param name="methodName">The name of the method that caused the exception.</param>
+        /// <returns>A new instance of the <see cref="ExternalException" /> class.</returns>
+        public static ExternalException NewExternalExceptionForLastHRESULT(string methodName)
+        {
+            var hresult = Marshal.GetHRForLastWin32Error();
+            return NewExternalException(methodName, hresult);
+        }
+
         /// <summary>Creates a new instance of the <see cref="InvalidOperationException" /> class.</summary>
         /// <param name="paramName">The name of the parameter that caused the exception.</param>
         /// <param name="value">The value of the parameter that caused the exception.</param>
@@ -96,6 +114,20 @@ namespace TerraFX.Utilities
         public static void ThrowExternalException(string methodName, int errorCode)
         {
             throw NewExternalException(methodName, errorCode);
+        }
+
+        /// <summary>Throws a new instance of the <see cref="ExternalException" /> class.</summary>
+        /// <param name="methodName">The name of the method that caused the exception.</param>
+        public static void ThrowExternalExceptionForLastError(string methodName)
+        {
+            throw NewExternalExceptionForLastError(methodName);
+        }
+
+        /// <summary>Throws a new instance of the <see cref="ExternalException" /> class.</summary>
+        /// <param name="methodName">The name of the method that caused the exception.</param>
+        public static void ThrowExternalExceptionForLastHRESULT(string methodName)
+        {
+            throw NewExternalExceptionForLastHRESULT(methodName);
         }
 
         /// <summary>Throws a new instance of the <see cref="InvalidOperationException" /> class.</summary>
