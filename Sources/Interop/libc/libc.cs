@@ -12,13 +12,13 @@ namespace TerraFX.Interop
         [DllImport("libc", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "clock_getres", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         public static extern int clock_getres(
             [In] clockid_t clock_id,
-            [Out] timespec* res
+            [Out] out timespec res
         );
 
         [DllImport("libc", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "clock_gettime", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         public static extern int clock_gettime(
             [In] clockid_t clock_id,
-            [Out] timespec* tp
+            [Out] out timespec tp
         );
     }
 }

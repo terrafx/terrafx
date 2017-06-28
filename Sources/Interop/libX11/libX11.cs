@@ -339,7 +339,7 @@ namespace TerraFX.Interop
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XCloseDisplay", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public static extern void XCloseDisplay(
+        public static extern int XCloseDisplay(
             [In] Display* display
         );
 
@@ -649,7 +649,7 @@ namespace TerraFX.Interop
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XNextEvent", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         public static extern int XNextEvent(
             [In] Display* display,
-            [Out] XEvent* event_return
+            [Out] out XEvent event_return
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XNextRequest", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]

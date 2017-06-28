@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="HDC" /> struct.</summary>
         /// <param name="value">The value of the instance.</param>
-        public HDC(UIntPtr value) : this(value.ToPointer())
+        public HDC(IntPtr value) : this(value.ToPointer())
         {
         }
 
@@ -53,11 +53,11 @@ namespace TerraFX.Interop
             return (left._value == right._value);
         }
 
-        /// <summary>Converts a <see cref="HDC" /> to an equivalent <see cref="UIntPtr" /> value.</summary>
+        /// <summary>Converts a <see cref="HDC" /> to an equivalent <see cref="IntPtr" /> value.</summary>
         /// <param name="value">The <see cref="HDC" /> to convert.</param>
-        public static implicit operator UIntPtr(HDC value)
+        public static implicit operator IntPtr(HDC value)
         {
-            return (UIntPtr)(value._value);
+            return (IntPtr)(value._value);
         }
 
         /// <summary>Converts a <see cref="HDC" /> to an equivalent <see cref="void" />* value.</summary>
@@ -67,9 +67,9 @@ namespace TerraFX.Interop
             return value._value;
         }
 
-        /// <summary>Converts a <see cref="UIntPtr" /> to an equivalent <see cref="HDC" /> value.</summary>
-        /// <param name="value">The <see cref="UIntPtr" /> to convert.</param>
-        public static implicit operator HDC(UIntPtr value)
+        /// <summary>Converts a <see cref="IntPtr" /> to an equivalent <see cref="HDC" /> value.</summary>
+        /// <param name="value">The <see cref="IntPtr" /> to convert.</param>
+        public static implicit operator HDC(IntPtr value)
         {
             return new HDC(value);
         }
@@ -106,14 +106,14 @@ namespace TerraFX.Interop
         /// <returns>A hash code for the current instance.</returns>
         public override int GetHashCode()
         {
-            return ((UIntPtr)(_value)).GetHashCode();
+            return ((IntPtr)(_value)).GetHashCode();
         }
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
         public override string ToString()
         {
-            return ((UIntPtr)(_value)).ToString();
+            return ((IntPtr)(_value)).ToString();
         }
         #endregion
     }

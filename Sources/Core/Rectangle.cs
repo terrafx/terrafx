@@ -12,6 +12,7 @@ namespace TerraFX
     {
         #region Fields
         private Point2D _location;
+
         private Size2D _size;
         #endregion
 

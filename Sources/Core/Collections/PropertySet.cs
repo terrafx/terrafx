@@ -48,7 +48,16 @@ namespace TerraFX.Collections
         }
         #endregion
 
-        #region ICollection<KeyValuePair<string, object>>
+        #region System.Collections.IEnumerable
+        /// <summary>Gets an <see cref="IEnumerator" /> that can iterate through the items contained by the instance.</summary>
+        /// <returns>An <see cref="IEnumerator" /> that can iterate through the items contained by the instance.</returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+        #endregion
+
+        #region System.Collections.Generic.ICollection<KeyValuePair<string, object>>
         /// <summary>Gets the number of items contained by the instance.</summary>
         public int Count
         {
@@ -125,7 +134,7 @@ namespace TerraFX.Collections
         }
         #endregion
 
-        #region IDictionary<string, object>
+        #region System.Collections.Generic.IDictionary<string, object>
         /// <summary>Gets a <see cref="ICollection{TKey}" /> that contains the keys contained by the instance.</summary>
         public ICollection<string> Keys
         {
@@ -221,16 +230,7 @@ namespace TerraFX.Collections
         }
         #endregion
 
-        #region IEnumerable
-        /// <summary>Gets an <see cref="IEnumerator" /> that can iterate through the items contained by the instance.</summary>
-        /// <returns>An <see cref="IEnumerator" /> that can iterate through the items contained by the instance.</returns>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-        #endregion
-
-        #region IEnumerable<KeyValuePair<string, object>>
+        #region System.Collections.Generic.IEnumerable<KeyValuePair<string, object>>
         /// <summary>Gets an <see cref="IEnumerator{T}" /> that can iterate through the items contained by the instance.</summary>
         /// <returns>An <see cref="IEnumerator{T}" /> that can iterate through the items contained by the instance.</returns>
         public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
@@ -239,7 +239,7 @@ namespace TerraFX.Collections
         }
         #endregion
 
-        #region INotifyDictionaryChanged<string, object>
+        #region TerraFX.Collections.INotifyDictionaryChanged<string, object>
         /// <summary>Occurs when underlying dictionary changes.</summary>
         public event NotifyDictionaryChangedEventHandler<string, object> DictionaryChanged;
         #endregion

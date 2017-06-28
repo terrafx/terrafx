@@ -17,7 +17,7 @@ namespace TerraFX.UI
         IDispatcher Dispatcher { get; }
 
         /// <summary>Gets the handle for the instance.</summary>
-        UIntPtr Handle { get; }
+        IntPtr Handle { get; }
 
         /// <summary>Gets a value that indicates whether the flow-direction of the instance is left-to-right.</summary>
         bool IsLeftToRight { get; }

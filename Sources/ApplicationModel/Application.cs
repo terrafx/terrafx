@@ -16,10 +16,13 @@ namespace TerraFX.ApplicationModel
     {
         #region Fields
         private readonly CompositionHost _compositionHost;
+
         private readonly Lazy<IDispatchManager> _dispatchManager;
+
         private readonly Lazy<IWindowManager> _windowManager;
 
         private volatile int _isRunning;
+
         private bool _exitRequested;
         #endregion
 

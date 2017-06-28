@@ -18,6 +18,7 @@ namespace TerraFX.Provider.Win32.Threading
     {
         #region Fields
         private readonly double _tickFrequency;
+
         private readonly ConcurrentDictionary<Thread, Dispatcher> _dispatchers;
         #endregion
 
@@ -39,7 +40,7 @@ namespace TerraFX.Provider.Win32.Threading
         }
         #endregion
 
-        #region Properties
+        #region TerraFX.Threading.IDispatchManager
         /// <summary>Gets the current <see cref="Timestamp" /> for the instance.</summary>
         public Timestamp CurrentTimestamp
         {
@@ -52,7 +53,7 @@ namespace TerraFX.Provider.Win32.Threading
                     ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(QueryPerformanceCounter));
                 }
 
-                var ticks = unchecked((ulong)(lpPerformanceCount * _tickFrequency));
+                var ticks = (long)(lpPerformanceCount * _tickFrequency);
                 return new Timestamp(ticks);
             }
         }
@@ -67,9 +68,7 @@ namespace TerraFX.Provider.Win32.Threading
                 return _dispatchers.GetOrAdd(Thread.CurrentThread, (thread) => new Dispatcher(thread));
             }
         }
-        #endregion
 
-        #region Methods
         /// <summary>Gets the <see cref="IDispatcher" /> instance associated with a <see cref="Thread" />.</summary>
         /// <param name="thread">The <see cref="Thread" /> for which the <see cref="IDispatcher" /> instance should be retrieved.</param>
         /// <returns>The <see cref="IDispatcher" /> instance associated with <paramref name="thread" /> or <c>null</c> if an instance does not exist.</returns>

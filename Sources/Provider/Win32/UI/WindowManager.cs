@@ -55,7 +55,7 @@ namespace TerraFX.Provider.Win32.UI
                 hInstance = EntryModuleHandle,
                 hIcon = HICON.NULL,
                 hCursor = HCURSOR.NULL,
-                hbrBackground = (UIntPtr)(COLOR.WINDOW + 1),
+                hbrBackground = (IntPtr)(COLOR.WINDOW + 1),
                 lpszMenuName = LPWSTR.NULL,
                 lpszClassName = _lpClassName,
                 hIconSm = HICON.NULL

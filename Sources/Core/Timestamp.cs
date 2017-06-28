@@ -1,6 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Diagnostics;
 using TerraFX.Utilities;
 
 namespace TerraFX
@@ -10,29 +11,29 @@ namespace TerraFX
     {
         #region Constants
         /// <summary>The number of ticks that occur per day.</summary>
-        public const ulong TicksPerDay = TimeSpan.TicksPerDay;
+        public const long TicksPerDay = TimeSpan.TicksPerDay;
 
         /// <summary>The number of ticks that occur per hour.</summary>
-        public const ulong TicksPerHour = TimeSpan.TicksPerHour;
+        public const long TicksPerHour = TimeSpan.TicksPerHour;
 
         /// <summary>The number of ticks that occur per millisecond.</summary>
-        public const ulong TicksPerMillisecond = TimeSpan.TicksPerMillisecond;
+        public const long TicksPerMillisecond = TimeSpan.TicksPerMillisecond;
 
         /// <summary>The number of ticks that occur per minute.</summary>
-        public const ulong TicksPerMinute = TimeSpan.TicksPerMinute;
+        public const long TicksPerMinute = TimeSpan.TicksPerMinute;
 
         /// <summary>The number of ticks that occur per second.</summary>
-        public const ulong TicksPerSecond = TimeSpan.TicksPerSecond;
+        public const long TicksPerSecond = TimeSpan.TicksPerSecond;
         #endregion
 
         #region Fields
-        private readonly ulong _ticks;
+        private readonly long _ticks;
         #endregion
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Timestamp" /> struct.</summary>
         /// <param name="ticks">The number of 100-nanosecond ticks that will be represented by the instance.</param>
-        public Timestamp(ulong ticks)
+        public Timestamp(long ticks)
         {
             _ticks = ticks;
         }
@@ -40,7 +41,7 @@ namespace TerraFX
 
         #region Properties
         /// <summary>Gets the number of 100-nanosecond ticks represented by the current instance.</summary>
-        public ulong Ticks
+        public long Ticks
         {
             get
             {
@@ -110,7 +111,8 @@ namespace TerraFX
         /// <returns>The delta of <paramref name="right" /> subtracted from <paramref name="left" />.</returns>
         public static TimeSpan operator -(Timestamp left, Timestamp right)
         {
-            var deltaTicks = unchecked((long)(left._ticks - right._ticks));
+            Debug.Assert(left > right);
+            var deltaTicks = unchecked(left._ticks - right._ticks);
             return new TimeSpan(deltaTicks);
         }
         #endregion

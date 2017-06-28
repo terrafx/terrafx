@@ -17,8 +17,11 @@ namespace TerraFX.Collections
 
         #region Fields
         private NotifyDictionaryChangedAction _action;
+
         private TKey _key;
+
         private TValue _oldValue;
+
         private TValue _newValue;
         #endregion
 

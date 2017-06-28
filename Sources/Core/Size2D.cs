@@ -12,6 +12,7 @@ namespace TerraFX
     {
         #region Fields
         private float _width;
+
         private float _height;
         #endregion
 

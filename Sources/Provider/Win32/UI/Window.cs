@@ -18,10 +18,15 @@ namespace TerraFX.Provider.Win32.UI
     {
         #region Fields
         private HWND _hWnd;
+
         private IDispatcher _dispatcher;
+
         private PropertySet _properties;
+
         private Rectangle _bounds;
+
         private bool _isActive;
+
         private bool _isVisible;
         #endregion
 
@@ -173,7 +178,7 @@ namespace TerraFX.Provider.Win32.UI
         }
 
         /// <summary>Gets the handle for the instance.</summary>
-        public UIntPtr Handle
+        public IntPtr Handle
         {
             get
             {
