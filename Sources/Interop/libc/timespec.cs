@@ -3,16 +3,19 @@
 // Ported from time.h in the Open Group Base Specifications: Issue 7
 // Original source is Copyright © The IEEE and The Open Group.
 
-using System;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    unsafe public struct timespec
+    /// <summary>A time specification.</summary>
+    public /* blittable */ struct timespec
     {
         #region Fields
+        /// <summary>Seconds.</summary>
         public time_t tv_sec;
 
-        public IntPtr tv_nsec;
+        /// <summary>Nanoseconds.</summary>
+        public nint tv_nsec;
         #endregion
     }
 }
