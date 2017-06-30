@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectCapability Include="TestContainer" />
+    <ProjectCapability Include="UnitTestContainer" />
   </ItemGroup>
 
 </Project>
