@@ -5,7 +5,6 @@
 
 using System;
 using System.Diagnostics;
-using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {

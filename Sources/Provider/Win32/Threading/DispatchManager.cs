@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Composition;
-using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.Threading;
 using TerraFX.Utilities;

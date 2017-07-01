@@ -2,10 +2,8 @@
 
 using System;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using TerraFX.Collections;
 using TerraFX.Interop;
-using TerraFX.Provider.Win32.Threading;
 using TerraFX.Threading;
 using TerraFX.UI;
 using TerraFX.Utilities;
