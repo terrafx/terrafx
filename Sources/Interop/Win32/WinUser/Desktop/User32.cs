@@ -119,8 +119,21 @@ namespace TerraFX.Interop
             [In] ref /* readonly */ WNDCLASSEX lpWndClassEx
         );
 
+        [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "SendMessageW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        public static extern LRESULT SendMessage(
+            [In] HWND hWnd,
+            [In] WM Msg,
+            [In] WPARAM wParam,
+            [In] LPARAM lParam
+        );
+
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "SetActiveWindow", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         public static extern HWND SetActiveWindow(
+            [In] HWND hWnd
+        );
+
+        [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "SetForegroundWindow", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        public static extern BOOL SetForegroundWindow(
             [In] HWND hWnd
         );
 

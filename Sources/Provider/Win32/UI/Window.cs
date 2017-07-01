@@ -214,23 +214,21 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Activates the instance.</summary>
         public void Activate()
         {
-            var previousActiveWindow = SetActiveWindow(_hWnd);
-
-            if (previousActiveWindow == HWND.NULL)
+            if (IsVisible)
             {
-                ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(SetActiveWindow));
+                var succeeded = SetForegroundWindow(_hWnd);
+
+                if (!succeeded)
+                {
+                    ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(SetForegroundWindow));
+                }
             }
         }
 
         /// <summary>Closes the instance.</summary>
         public void Close()
         {
-            var succeeded = CloseWindow(_hWnd);
-
-            if (!succeeded)
-            {
-                ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(CloseWindow));
-            }
+            SendMessage(_hWnd, WM.CLOSE, 0, 0);
         }
 
         /// <summary>Hides the instance.</summary>
