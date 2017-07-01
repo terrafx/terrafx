@@ -439,6 +439,11 @@ namespace TerraFX.Interop
             [In] int screen_number
         );
 
+        [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDefaultVisualOfScreen", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public static extern Visual* XDefaultVisualOfScreen(
+            [In] Screen* screen
+        );
+
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDestroySubwindows", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         public static extern int XDestroySubwindows(
             [In] Display* display,
@@ -449,11 +454,6 @@ namespace TerraFX.Interop
         public static extern int XDestroyWindow(
             [In] Display* display,
             [In] Window w
-        );
-
-        [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDefaultVisualOfScreen", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public static extern Visual* XDefaultVisualOfScreen(
-            [In] Screen* screen
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDisplayCells", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -581,6 +581,12 @@ namespace TerraFX.Interop
         public static extern int* XListDepths(
             [In] Display* display,
             [In] int screen_number,
+            [Out] int* count_return
+        );
+
+        [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XLockDisplay", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public static extern XPixmapFormatValues* XListPixmapFormats(
+            [In] Display* display,
             [Out] int* count_return
         );
 
@@ -754,6 +760,11 @@ namespace TerraFX.Interop
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XScreenCount", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         public static extern int XScreenCount(
             [In] Display* display
+        );
+
+        [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XScreenNumberOfScreen", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public static extern int XScreenNumberOfScreen(
+            [In] Screen* screen
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XScreenOfDisplay", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]

@@ -4,34 +4,26 @@
 // Original source is Copyright © The Open Group.
 
 using System;
-using System.Diagnostics;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    /// <summary>A gcontext resource ID.</summary>
-    unsafe public struct GContext : IComparable, IComparable<GContext>, IEquatable<GContext>, IFormattable
+    /// <summary>A graphics-context resource ID.</summary>
+    unsafe public struct GContext : IEquatable<GContext>, IFormattable
     {
+        #region Constants
+        /// <summary>A null graphics-context resource ID.</summary>
+        public static readonly GContext None = new GContext(0);
+        #endregion
+
         #region Fields
-        private UIntPtr _value;
+        internal nint _value;
         #endregion
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="GContext" /> struct.</summary>
         /// <param name="value">The value of the instance.</param>
-        public GContext(uint value) : this((UIntPtr)(value))
-        {
-        }
-
-        /// <summary>Initializes a new instance of the <see cref="GContext" /> struct.</summary>
-        /// <param name="value">The value of the instance.</param>
-        public GContext(ulong value) : this((UIntPtr)(value))
-        {
-        }
-
-        /// <summary>Initializes a new instance of the <see cref="GContext" /> struct.</summary>
-        /// <param name="value">The value of the instance.</param>
-        public GContext(UIntPtr value)
+        public GContext(nint value)
         {
             _value = value;
         }
@@ -56,190 +48,18 @@ namespace TerraFX.Interop
             return (left._value == right._value);
         }
 
-        /// <summary>Compares two <see cref="GContext" /> instances to determine relative sort-order.</summary>
-        /// <param name="left">The <see cref="GContext" /> to compare with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="GContext" /> to compare with <paramref name="left" />.</param>
-        /// <returns><c>true</c> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise, <c>false</c>.</returns>
-        public static bool operator >(GContext left, GContext right)
-        {
-            return ((void*)(left._value) > (void*)(right._value));
-        }
-
-        /// <summary>Compares two <see cref="GContext" /> instances to determine relative sort-order.</summary>
-        /// <param name="left">The <see cref="GContext" /> to compare with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="GContext" /> to compare with <paramref name="left" />.</param>
-        /// <returns><c>true</c> if <paramref name="left" /> is greater than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
-        public static bool operator >=(GContext left, GContext right)
-        {
-            return ((void*)(left._value) >= (void*)(right._value));
-        }
-
-        /// <summary>Compares two <see cref="GContext" /> instances to determine relative sort-order.</summary>
-        /// <param name="left">The <see cref="GContext" /> to compare with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="GContext" /> to compare with <paramref name="left" />.</param>
-        /// <returns><c>true</c> if <paramref name="left" /> is less than <paramref name="right" />; otherwise, <c>false</c>.</returns>
-        public static bool operator <(GContext left, GContext right)
-        {
-            return ((void*)(left._value) < (void*)(right._value));
-        }
-
-        /// <summary>Compares two <see cref="GContext" /> instances to determine relative sort-order.</summary>
-        /// <param name="left">The <see cref="GContext" /> to compare with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="GContext" /> to compare with <paramref name="left" />.</param>
-        /// <returns><c>true</c> if <paramref name="left" /> is less than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
-        public static bool operator <=(GContext left, GContext right)
-        {
-            return ((void*)(left._value) <= (void*)(right._value));
-        }
-
-        /// <summary>Converts a <see cref="GContext" /> to an equivalent <see cref="uint" /> value.</summary>
+        /// <summary>Converts a <see cref="GContext" /> to a <see cref="nint" /> value.</summary>
         /// <param name="value">The <see cref="GContext" /> to convert.</param>
-        public static explicit operator uint(GContext value)
-        {
-            return (uint)(value._value);
-        }
-
-        /// <summary>Converts a <see cref="GContext" /> to an equivalent <see cref="ulong" /> value.</summary>
-        /// <param name="value">The <see cref="GContext" /> to convert.</param>
-        public static implicit operator ulong(GContext value)
-        {
-            return (ulong)(value._value);
-        }
-
-        /// <summary>Converts a <see cref="GContext" /> to an equivalent <see cref="UIntPtr" /> value.</summary>
-        /// <param name="value">The <see cref="GContext" /> to convert.</param>
-        public static implicit operator UIntPtr(GContext value)
+        public static implicit operator nint(GContext value)
         {
             return value._value;
         }
 
-        /// <summary>Converts a <see cref="ulong" /> to an equivalent <see cref="GContext" /> value.</summary>
-        /// <param name="value">The <see cref="ulong" /> to convert.</param>
-        public static explicit operator GContext(ulong value)
+        /// <summary>Converts a <see cref="nint" /> to a <see cref="GContext" /> value.</summary>
+        /// <param name="value">The <see cref="nint" /> to convert.</param>
+        public static implicit operator GContext(nint value)
         {
             return new GContext(value);
-        }
-
-        /// <summary>Converts a <see cref="uint" /> to an equivalent <see cref="GContext" /> value.</summary>
-        /// <param name="value">The <see cref="uint" /> to convert.</param>
-        public static implicit operator GContext(uint value)
-        {
-            return new GContext(value);
-        }
-
-        /// <summary>Converts a <see cref="UIntPtr" /> to an equivalent <see cref="GContext" /> value.</summary>
-        /// <param name="value">The <see cref="UIntPtr" /> to convert.</param>
-        public static implicit operator GContext(UIntPtr value)
-        {
-            return new GContext(value);
-        }
-        #endregion
-
-        #region Methods
-        /// <summary>Gets the high-order byte for the instance.</summary>
-        /// <returns>The high-order byte for the instance.</returns>
-        public ushort HIBYTE()
-        {
-            if (UIntPtr.Size == sizeof(int))
-            {
-                return unchecked((byte)(((uint)(_value)) >> 8));
-            }
-            else
-            {
-                Debug.Assert(UIntPtr.Size == sizeof(long));
-                return unchecked((byte)(((ulong)(_value)) >> 8));
-            }
-        }
-
-        /// <summary>Gets the high-order word for the instance.</summary>
-        /// <returns>The high-order word for the instance.</returns>
-        public ushort HIWORD()
-        {
-            if (UIntPtr.Size == sizeof(int))
-            {
-                return unchecked((ushort)(((uint)(_value)) >> 16));
-            }
-            else
-            {
-                Debug.Assert(UIntPtr.Size == sizeof(long));
-                return unchecked((ushort)(((ulong)(_value)) >> 16));
-            }
-        }
-
-        /// <summary>Gets the low-order byte for the instance.</summary>
-        /// <returns>The low-order byte for the instance.</returns>
-        public ushort LOBYTE()
-        {
-            if (UIntPtr.Size == sizeof(int))
-            {
-                return unchecked((byte)((uint)(_value)));
-            }
-            else
-            {
-                Debug.Assert(UIntPtr.Size == sizeof(long));
-                return unchecked((byte)((ulong)(_value)));
-            }
-        }
-
-        /// <summary>Gets the low-order word for the instance.</summary>
-        /// <returns>The low-order word for the instance.</returns>
-        public ushort LOWORD()
-        {
-            if (UIntPtr.Size == sizeof(int))
-            {
-                return unchecked((ushort)((uint)(_value)));
-            }
-            else
-            {
-                Debug.Assert(UIntPtr.Size == sizeof(long));
-                return unchecked((ushort)((ulong)(_value)));
-            }
-        }
-        #endregion
-
-        #region System.IComparable
-        /// <summary>Compares a <see cref="object" /> with the current instance to determine relative sort-order.</summary>
-        /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
-        /// <returns>A value <c>less than zero</c> if <paramref name="obj" /> is greater than the current instance, <c>zero</c> if <paramref name="obj"/> is equal to the current instance; and <c>greater than zero</c> if <paramref name="obj" /> is <c>null</c> or greater than the current instance.</returns>
-        /// <exception cref="ArgumentException"><paramref name="obj" /> is not <c>null</c> and is not an instance of <see cref="GContext" />.</exception>
-        public int CompareTo(object obj)
-        {
-            if (obj is null)
-            {
-                return 1;
-            }
-            else if (obj is GContext other)
-            {
-                return CompareTo(other);
-            }
-            else
-            {
-                throw ExceptionUtilities.NewArgumentExceptionForInvalidType(nameof(obj), obj.GetType());
-            }
-        }
-        #endregion
-
-        #region System.IComparable<GContext>
-        /// <summary>Compares a <see cref="GContext" /> with the current instance to determine relative sort-order.</summary>
-        /// <param name="other">The <see cref="GContext" /> to compare with the current instance.</param>
-        /// <returns>A value <c>less than zero</c> if <paramref name="other" /> is greater than the current instance, <c>zero</c> if <paramref name="other"/> is equal to the current instance; and <c>greater than zero</c> if <paramref name="other" /> is greater than the current instance.</returns>
-        public int CompareTo(GContext other)
-        {
-            // We have to actually compare because subtraction
-            // causes wrapping for very large negative numbers.
-
-            if (this < other)
-            {
-                return -1;
-            }
-            else if (this > other)
-            {
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
         }
         #endregion
 
@@ -260,15 +80,7 @@ namespace TerraFX.Interop
         /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            if (UIntPtr.Size == sizeof(int))
-            {
-                return ((int)(_value)).ToString(format, formatProvider);
-            }
-            else
-            {
-                Debug.Assert(UIntPtr.Size == sizeof(long));
-                return ((long)(_value)).ToString(format, formatProvider);
-            }
+            return _value.ToString(format, formatProvider);
         }
         #endregion
 

@@ -4,16 +4,15 @@
 // Original source is Copyright © The Open Group.
 
 using System;
-using System.Text;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    /// <summary>A status code.</summary>
+    /// <summary>An integer error indication.</summary>
     public struct Status : IComparable, IComparable<Status>, IEquatable<Status>, IFormattable
     {
         #region Fields
-        private int Value;
+        internal int _value;
         #endregion
 
         #region Constructors
@@ -21,7 +20,7 @@ namespace TerraFX.Interop
         /// <param name="value">The value of the instance.</param>
         public Status(int value)
         {
-            Value = value;
+            _value = value;
         }
         #endregion
 
@@ -32,7 +31,7 @@ namespace TerraFX.Interop
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
         public static bool operator ==(Status left, Status right)
         {
-            return (left.Value == right.Value);
+            return (left._value == right._value);
         }
 
         /// <summary>Compares two <see cref="Status" /> instances to determine inequality.</summary>
@@ -41,7 +40,7 @@ namespace TerraFX.Interop
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
         public static bool operator !=(Status left, Status right)
         {
-            return (left.Value == right.Value);
+            return (left._value == right._value);
         }
 
         /// <summary>Compares two <see cref="Status" /> instances to determine relative sort-order.</summary>
@@ -50,7 +49,7 @@ namespace TerraFX.Interop
         /// <returns><c>true</c> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise, <c>false</c>.</returns>
         public static bool operator >(Status left, Status right)
         {
-            return (left.Value > right.Value);
+            return (left._value > right._value);
         }
 
         /// <summary>Compares two <see cref="Status" /> instances to determine relative sort-order.</summary>
@@ -59,7 +58,7 @@ namespace TerraFX.Interop
         /// <returns><c>true</c> if <paramref name="left" /> is greater than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
         public static bool operator >=(Status left, Status right)
         {
-            return (left.Value >= right.Value);
+            return (left._value >= right._value);
         }
 
         /// <summary>Compares two <see cref="Status" /> instances to determine relative sort-order.</summary>
@@ -68,7 +67,7 @@ namespace TerraFX.Interop
         /// <returns><c>true</c> if <paramref name="left" /> is less than <paramref name="right" />; otherwise, <c>false</c>.</returns>
         public static bool operator <(Status left, Status right)
         {
-            return (left.Value < right.Value);
+            return (left._value < right._value);
         }
 
         /// <summary>Compares two <see cref="Status" /> instances to determine relative sort-order.</summary>
@@ -77,14 +76,14 @@ namespace TerraFX.Interop
         /// <returns><c>true</c> if <paramref name="left" /> is less than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
         public static bool operator <=(Status left, Status right)
         {
-            return (left.Value <= right.Value);
+            return (left._value <= right._value);
         }
 
         /// <summary>Converts a <see cref="Status" /> to an equivalent <see cref="int" /> value.</summary>
         /// <param name="value">The <see cref="Status" /> to convert.</param>
         public static implicit operator int(Status value)
         {
-            return value.Value;
+            return value._value;
         }
 
         /// <summary>Converts a <see cref="int" /> to an equivalent <see cref="Status" /> value.</summary>
@@ -158,7 +157,7 @@ namespace TerraFX.Interop
         /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            return Value.ToString(format, formatProvider);
+            return _value.ToString(format, formatProvider);
         }
         #endregion
 
@@ -176,7 +175,7 @@ namespace TerraFX.Interop
         /// <returns>A hash code for the current instance.</returns>
         public override int GetHashCode()
         {
-            return Value.GetHashCode();
+            return _value.GetHashCode();
         }
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>

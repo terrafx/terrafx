@@ -4,20 +4,22 @@
 // Original source is Copyright © The Open Group.
 
 using System;
+using System.Diagnostics;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>A generic opaque pointer to data.</summary>
-    unsafe public struct XPointer : IEquatable<XPointer>
+    unsafe public struct XPointer : IEquatable<XPointer>, IFormattable
     {
         #region Fields
-        private byte* _value;
+        internal byte* _value;
         #endregion
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="XPointer" /> struct.</summary>
         /// <param name="value">The value of the instance.</param>
-        public XPointer(UIntPtr value) : this((byte*)(value.ToPointer()))
+        public XPointer(IntPtr value) : this((byte*)(value.ToPointer()))
         {
         }
 
@@ -48,23 +50,23 @@ namespace TerraFX.Interop
             return (left._value == right._value);
         }
 
-        /// <summary>Converts a <see cref="XPointer" /> to an equivalent <see cref="UIntPtr" /> value.</summary>
+        /// <summary>Converts a <see cref="XPointer" /> to an equivalent <see cref="IntPtr" /> value.</summary>
         /// <param name="value">The <see cref="XPointer" /> to convert.</param>
-        public static implicit operator UIntPtr(XPointer value)
+        public static implicit operator IntPtr(XPointer value)
         {
-            return (UIntPtr)(value._value);
+            return (IntPtr)(value._value);
         }
 
         /// <summary>Converts a <see cref="XPointer" /> to an equivalent <see cref="void" />* value.</summary>
         /// <param name="value">The <see cref="XPointer" /> to convert.</param>
-        public static implicit operator byte* (XPointer value)
+        public static implicit operator byte*(XPointer value)
         {
             return value._value;
         }
 
-        /// <summary>Converts a <see cref="UIntPtr" /> to an equivalent <see cref="XPointer" /> value.</summary>
-        /// <param name="value">The <see cref="UIntPtr" /> to convert.</param>
-        public static implicit operator XPointer(UIntPtr value)
+        /// <summary>Converts a <see cref="IntPtr" /> to an equivalent <see cref="XPointer" /> value.</summary>
+        /// <param name="value">The <see cref="IntPtr" /> to convert.</param>
+        public static implicit operator XPointer(IntPtr value)
         {
             return new XPointer(value);
         }
@@ -87,6 +89,26 @@ namespace TerraFX.Interop
         }
         #endregion
 
+        #region System.IFormattable
+        /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
+        /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
+        /// <param name="formatProvider">The provider to use when formatting the current instance or <c>null</c> to use the default provider.</param>
+        /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            if (IntPtr.Size == sizeof(int))
+            {
+                return ((int)(_value)).ToString(format, formatProvider);
+            }
+            else
+            {
+                Debug.Assert(IntPtr.Size == sizeof(long));
+                return ((long)(_value)).ToString(format, formatProvider);
+            }
+        }
+        #endregion
+
+
         #region System.Object
         /// <summary>Compares a <see cref="object" /> with the current instance to determine equality.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
@@ -101,14 +123,14 @@ namespace TerraFX.Interop
         /// <returns>A hash code for the current instance.</returns>
         public override int GetHashCode()
         {
-            return ((UIntPtr)(_value)).GetHashCode();
+            return ((IntPtr)(_value)).GetHashCode();
         }
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
         public override string ToString()
         {
-            return ((UIntPtr)(_value)).ToString();
+            return ((IntPtr)(_value)).ToString();
         }
         #endregion
     }

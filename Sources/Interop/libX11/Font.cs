@@ -8,12 +8,12 @@ using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    /// <summary>A cursor resource ID.</summary>
-    unsafe public struct Cursor : IEquatable<Cursor>, IFormattable
+    /// <summary>A font resource ID.</summary>
+    unsafe public struct Font : IEquatable<Font>, IFormattable
     {
         #region Constants
-        /// <summary>A null cursor resource ID.</summary>
-        public static readonly Cursor None = new Cursor(0);
+        /// <summary>A null font resource ID.</summary>
+        public static readonly Font None = new Font(0);
         #endregion
 
         #region Fields
@@ -21,53 +21,53 @@ namespace TerraFX.Interop
         #endregion
 
         #region Constructors
-        /// <summary>Initializes a new instance of the <see cref="Cursor" /> struct.</summary>
+        /// <summary>Initializes a new instance of the <see cref="Font" /> struct.</summary>
         /// <param name="value">The value of the instance.</param>
-        public Cursor(nint value)
+        public Font(nint value)
         {
             _value = value;
         }
         #endregion
 
         #region Operators
-        /// <summary>Compares two <see cref="Cursor" /> instances to determine equality.</summary>
-        /// <param name="left">The <see cref="Cursor" /> to compare with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="Cursor" /> to compare with <paramref name="left" />.</param>
+        /// <summary>Compares two <see cref="Font" /> instances to determine equality.</summary>
+        /// <param name="left">The <see cref="Font" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="Font" /> to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
-        public static bool operator ==(Cursor left, Cursor right)
+        public static bool operator ==(Font left, Font right)
         {
             return (left._value == right._value);
         }
 
-        /// <summary>Compares two <see cref="Cursor" /> instances to determine inequality.</summary>
-        /// <param name="left">The <see cref="Cursor" /> to compare with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="Cursor" /> to compare with <paramref name="left" />.</param>
+        /// <summary>Compares two <see cref="Font" /> instances to determine inequality.</summary>
+        /// <param name="left">The <see cref="Font" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="Font" /> to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
-        public static bool operator !=(Cursor left, Cursor right)
+        public static bool operator !=(Font left, Font right)
         {
             return (left._value == right._value);
         }
 
-        /// <summary>Converts a <see cref="Cursor" /> to a <see cref="nint" /> value.</summary>
-        /// <param name="value">The <see cref="Cursor" /> to convert.</param>
-        public static implicit operator nint(Cursor value)
+        /// <summary>Converts a <see cref="Font" /> to a <see cref="nint" /> value.</summary>
+        /// <param name="value">The <see cref="Font" /> to convert.</param>
+        public static implicit operator nint(Font value)
         {
             return value._value;
         }
 
-        /// <summary>Converts a <see cref="nint" /> to a <see cref="Cursor" /> value.</summary>
+        /// <summary>Converts a <see cref="nint" /> to a <see cref="Font" /> value.</summary>
         /// <param name="value">The <see cref="nint" /> to convert.</param>
-        public static implicit operator Cursor(nint value)
+        public static implicit operator Font(nint value)
         {
-            return new Cursor(value);
+            return new Font(value);
         }
         #endregion
 
-        #region System.IEquatable<Cursor>
-        /// <summary>Compares a <see cref="Cursor" /> with the current instance to determine equality.</summary>
-        /// <param name="other">The <see cref="Cursor" /> to compare with the current instance.</param>
+        #region System.IEquatable<Font>
+        /// <summary>Compares a <see cref="Font" /> with the current instance to determine equality.</summary>
+        /// <param name="other">The <see cref="Font" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
-        public bool Equals(Cursor other)
+        public bool Equals(Font other)
         {
             return (this == other);
         }
@@ -87,10 +87,10 @@ namespace TerraFX.Interop
         #region System.Object
         /// <summary>Compares a <see cref="object" /> with the current instance to determine equality.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
-        /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="Cursor" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>
+        /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="Font" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>
         public override bool Equals(object obj)
         {
-            return (obj is Cursor other)
+            return (obj is Font other)
                 && Equals(other);
         }
 

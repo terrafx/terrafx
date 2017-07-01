@@ -21,7 +21,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Fields
-        private int Value;
+        internal int _value;
         #endregion
 
         #region Constructors
@@ -35,7 +35,7 @@ namespace TerraFX.Interop
         /// <param name="value">The value of the instance.</param>
         public Bool(int value)
         {
-            Value = value;
+            _value = value;
         }
         #endregion
 
@@ -46,7 +46,7 @@ namespace TerraFX.Interop
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
         public static bool operator ==(Bool left, Bool right)
         {
-            return (left.Value == right.Value);
+            return (left._value == right._value);
         }
 
         /// <summary>Compares two <see cref="Bool" /> instances to determine inequality.</summary>
@@ -55,7 +55,7 @@ namespace TerraFX.Interop
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
         public static bool operator !=(Bool left, Bool right)
         {
-            return (left.Value == right.Value);
+            return (left._value == right._value);
         }
 
         /// <summary>Compares two <see cref="Bool" /> instances to determine relative sort-order.</summary>
@@ -64,7 +64,7 @@ namespace TerraFX.Interop
         /// <returns><c>true</c> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise, <c>false</c>.</returns>
         public static bool operator >(Bool left, Bool right)
         {
-            return (left.Value > right.Value);
+            return (left._value > right._value);
         }
 
         /// <summary>Compares two <see cref="Bool" /> instances to determine relative sort-order.</summary>
@@ -73,7 +73,7 @@ namespace TerraFX.Interop
         /// <returns><c>true</c> if <paramref name="left" /> is greater than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
         public static bool operator >=(Bool left, Bool right)
         {
-            return (left.Value >= right.Value);
+            return (left._value >= right._value);
         }
 
         /// <summary>Compares two <see cref="Bool" /> instances to determine relative sort-order.</summary>
@@ -82,7 +82,7 @@ namespace TerraFX.Interop
         /// <returns><c>true</c> if <paramref name="left" /> is less than <paramref name="right" />; otherwise, <c>false</c>.</returns>
         public static bool operator <(Bool left, Bool right)
         {
-            return (left.Value < right.Value);
+            return (left._value < right._value);
         }
 
         /// <summary>Compares two <see cref="Bool" /> instances to determine relative sort-order.</summary>
@@ -91,21 +91,21 @@ namespace TerraFX.Interop
         /// <returns><c>true</c> if <paramref name="left" /> is less than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
         public static bool operator <=(Bool left, Bool right)
         {
-            return (left.Value <= right.Value);
+            return (left._value <= right._value);
         }
 
         /// <summary>Converts a <see cref="Bool" /> to an equivalent <see cref="bool" /> value.</summary>
         /// <param name="value">The <see cref="Bool" /> to convert.</param>
         public static implicit operator bool(Bool value)
         {
-            return (value.Value != 0);
+            return (value._value != 0);
         }
 
         /// <summary>Converts a <see cref="Bool" /> to an equivalent <see cref="int" /> value.</summary>
         /// <param name="value">The <see cref="Bool" /> to convert.</param>
         public static implicit operator int(Bool value)
         {
-            return value.Value;
+            return value._value;
         }
 
         /// <summary>Converts a <see cref="bool" /> to an equivalent <see cref="Bool" /> value.</summary>
@@ -191,7 +191,7 @@ namespace TerraFX.Interop
                 stringBuilder.Append((bool)(this));
                 stringBuilder.Append(' ');
                 stringBuilder.Append('(');
-                stringBuilder.Append((int)(this));
+                stringBuilder.Append(_value.ToString(format, formatProvider));
                 stringBuilder.Append(')');
             }
             return stringBuilder.ToString();
@@ -212,7 +212,7 @@ namespace TerraFX.Interop
         /// <returns>A hash code for the current instance.</returns>
         public override int GetHashCode()
         {
-            return Value.GetHashCode();
+            return _value.GetHashCode();
         }
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
