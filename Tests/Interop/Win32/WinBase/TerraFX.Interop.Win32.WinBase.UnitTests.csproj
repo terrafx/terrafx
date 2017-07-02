@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information. -->
+<Project>
+
+  <Import Project="$(MSBuildThisFileDirectory)..\..\..\..\Imports\TerraFX.UnitTests.props" />
+
+  <PropertyGroup>
+    <RootNamespace>TerraFX.Interop.UnitTests</RootNamespace>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Sources\Interop\Win32\WinBase\TerraFX.Interop.Win32.WinBase.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)..\..\..\..\Imports\TerraFX.UnitTests.targets" />
+
+</Project>
