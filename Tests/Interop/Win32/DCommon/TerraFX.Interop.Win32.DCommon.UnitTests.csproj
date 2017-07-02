@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Sources\Interop\Win32\D3D12\TerraFX.Interop.Win32.DCommon.csproj" />
+    <ProjectReference Include="..\..\..\..\Sources\Interop\Win32\DCommon\TerraFX.Interop.Win32.DCommon.csproj" />
   </ItemGroup>
 
   <ItemGroup>
