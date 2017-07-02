@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Sources\Interop\Win32\WinCodec\TerraFX.Interop.Win32.WinCodec.csproj" />
+    <ProjectReference Include="..\..\..\..\Sources\Interop\Win32\WinCodecSDK\TerraFX.Interop.Win32.WinCodecSDK.csproj" />
   </ItemGroup>
 
   <ItemGroup>
