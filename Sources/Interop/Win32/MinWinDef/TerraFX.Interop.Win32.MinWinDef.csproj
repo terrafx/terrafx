@@ -15,6 +15,10 @@
     <InternalsVisibleTo Include="$(MSBuildProjectName).UnitTests" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\WinNT\TerraFX.Interop.Win32.WinNT.csproj" />
+  </ItemGroup>
+
   <Import Project="$(MSBuildThisFileDirectory)..\..\..\..\Imports\TerraFX.Common.targets" />
 
 </Project>

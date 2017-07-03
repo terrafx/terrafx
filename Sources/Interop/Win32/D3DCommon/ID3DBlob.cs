@@ -5,6 +5,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
@@ -27,7 +28,7 @@ namespace TerraFX.Interop
         );
 
         // Returns the size of the buffer, in bytes.
-        public /* static */ delegate SIZE_T GetBufferSize(
+        public /* static */ delegate nuint GetBufferSize(
             [In] ID3DBlob* This
         );
         #endregion

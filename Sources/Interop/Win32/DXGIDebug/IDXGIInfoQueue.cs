@@ -5,6 +5,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
@@ -41,7 +42,7 @@ namespace TerraFX.Interop
             [In] DXGI_DEBUG_ID Producer,
             [In] ulong MessageIndex,
             [Out, Optional] DXGI_INFO_QUEUE_MESSAGE* pMessage,
-            [In, Out] SIZE_T* pMessageByteLength
+            [In, Out] nuint* pMessageByteLength
         );
 
         public /* static */ delegate ulong GetNumStoredMessagesAllowedByRetrievalFilters(
@@ -84,7 +85,7 @@ namespace TerraFX.Interop
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer,
             [Out, Optional] DXGI_INFO_QUEUE_FILTER* pFilter,
-            [In, Out] SIZE_T* pFilterByteLength
+            [In, Out] nuint* pFilterByteLength
         );
 
         public /* static */ delegate HRESULT ClearStorageFilter(
@@ -133,7 +134,7 @@ namespace TerraFX.Interop
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer,
             [Out, Optional] DXGI_INFO_QUEUE_FILTER* pFilter,
-            [In, Out] SIZE_T* pFilterByteLength
+            [In, Out] nuint* pFilterByteLength
         );
 
         public /* static */ delegate void ClearRetrievalFilter(

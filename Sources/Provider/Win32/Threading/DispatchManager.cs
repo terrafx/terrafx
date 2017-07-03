@@ -6,7 +6,7 @@ using System.Composition;
 using System.Threading;
 using TerraFX.Threading;
 using TerraFX.Utilities;
-using static TerraFX.Interop.Kernel32;
+using static TerraFX.Interop.ProfileApi;
 
 namespace TerraFX.Provider.Win32.Threading
 {

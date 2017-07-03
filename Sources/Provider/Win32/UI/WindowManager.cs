@@ -10,7 +10,8 @@ using TerraFX.Interop.Desktop;
 using TerraFX.Threading;
 using TerraFX.UI;
 using TerraFX.Utilities;
-using static TerraFX.Interop.User32;
+using static TerraFX.Interop.LibLoaderApi;
+using static TerraFX.Interop.WinUser;
 
 namespace TerraFX.Provider.Win32.UI
 {
@@ -22,7 +23,7 @@ namespace TerraFX.Provider.Win32.UI
         #region Fields
         internal static readonly ConcurrentDictionary<HWND, Window> CreatedWindows = new ConcurrentDictionary<HWND, Window>();
 
-        internal static readonly HINSTANCE EntryModuleHandle = Kernel32.GetModuleHandle(); 
+        internal static readonly HINSTANCE EntryModuleHandle = GetModuleHandle(); 
 
         internal static readonly WNDPROC WndProc = WindowProc;
 

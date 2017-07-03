@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WTypes\TerraFX.Interop.Win32.WTypes.csproj" />
+    <ProjectReference Include="..\Windows\TerraFX.Interop.Win32.Windows.csproj" />
   </ItemGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)..\..\..\..\Imports\TerraFX.Common.targets" />

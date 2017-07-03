@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Windows\TerraFX.Interop.Win32.Windows.csproj" />
     <ProjectReference Include="..\WTypes\TerraFX.Interop.Win32.WTypes.csproj" />
   </ItemGroup>
 

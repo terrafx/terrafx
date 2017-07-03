@@ -8,7 +8,7 @@ using TerraFX.Interop.Desktop;
 
 namespace TerraFX.Interop
 {
-    unsafe public static partial class User32
+    unsafe public static partial class WinUser
     {
         #region Methods
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CloseWindow", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]

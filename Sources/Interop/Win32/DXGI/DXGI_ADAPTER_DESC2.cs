@@ -3,6 +3,8 @@
 // Ported from shared\dxgi1_2.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using TerraFX.Utilities;
+
 namespace TerraFX.Interop
 {
     unsafe public struct DXGI_ADAPTER_DESC2
@@ -18,11 +20,11 @@ namespace TerraFX.Interop
 
         public uint Revision;
 
-        public SIZE_T DedicatedVideoMemory;
+        public nuint DedicatedVideoMemory;
 
-        public SIZE_T DedicatedSystemMemory;
+        public nuint DedicatedSystemMemory;
 
-        public SIZE_T SharedSystemMemory;
+        public nuint SharedSystemMemory;
 
         public LUID AdapterLuid;
 

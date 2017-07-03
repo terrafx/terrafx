@@ -7,7 +7,7 @@ using TerraFX.Interop;
 using TerraFX.Threading;
 using TerraFX.UI;
 using TerraFX.Utilities;
-using static TerraFX.Interop.User32;
+using static TerraFX.Interop.WinUser;
 
 namespace TerraFX.Provider.Win32.UI
 {

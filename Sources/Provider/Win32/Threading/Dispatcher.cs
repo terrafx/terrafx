@@ -3,6 +3,7 @@
 using System.Threading;
 using TerraFX.Interop;
 using TerraFX.Threading;
+using static TerraFX.Interop.WinUser;
 
 namespace TerraFX.Provider.Win32.Threading
 {
@@ -36,10 +37,10 @@ namespace TerraFX.Provider.Win32.Threading
         /// <remarks>This method does not wait for a new event to be raised if the queue is empty.</remarks>
         public void DispatchPending()
         {
-            while (User32.PeekMessage(out var lpMsg, wMsgFilterMin: WM.NULL, wMsgFilterMax: WM.NULL, wRemoveMsg: PM.REMOVE))
+            while (PeekMessage(out var lpMsg, wMsgFilterMin: WM.NULL, wMsgFilterMax: WM.NULL, wRemoveMsg: PM.REMOVE))
             {
-                User32.TranslateMessage(ref lpMsg);
-                User32.DispatchMessage(ref lpMsg);
+                TranslateMessage(ref lpMsg);
+                DispatchMessage(ref lpMsg);
             }
         }
         #endregion
