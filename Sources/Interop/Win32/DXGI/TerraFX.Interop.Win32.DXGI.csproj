@@ -17,8 +17,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DXGIType\TerraFX.Interop.Win32.DXGIType.csproj" />
-    <ProjectReference Include="..\OAIdl\TerraFX.Interop.Win32.OAIdl.csproj" />
-    <ProjectReference Include="..\Windows\TerraFX.Interop.Win32.Windows.csproj" />
   </ItemGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)..\..\..\..\Imports\TerraFX.Common.targets" />

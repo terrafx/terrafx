@@ -10,7 +10,7 @@ using TerraFX.Interop.Desktop;
 using TerraFX.Threading;
 using TerraFX.UI;
 using TerraFX.Utilities;
-using static TerraFX.Interop.LibLoaderApi;
+using static TerraFX.Interop.Kernel32;
 using static TerraFX.Interop.WinUser;
 
 namespace TerraFX.Provider.Win32.UI
@@ -54,12 +54,12 @@ namespace TerraFX.Provider.Win32.UI
                 cbClsExtra = 0,
                 cbWndExtra = 0,
                 hInstance = EntryModuleHandle,
-                hIcon = HICON.NULL,
-                hCursor = HCURSOR.NULL,
-                hbrBackground = (IntPtr)(COLOR.WINDOW + 1),
-                lpszMenuName = LPWSTR.NULL,
+                hIcon = null,
+                hCursor = null,
+                hbrBackground = (void*)((int)(COLOR.WINDOW + 1)),
+                lpszMenuName = null,
                 lpszClassName = _lpClassName,
-                hIconSm = HICON.NULL
+                hIconSm = null
             };
 
             var classAtom = RegisterClassEx(ref wndClassEx);
@@ -104,7 +104,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (_classAtom != 0)
             {
-                var lpClassName = (LPWSTR)(_classAtom);
+                var lpClassName = (LPWSTR)((void*)((ushort)(_classAtom)));
                 UnregisterClass(lpClassName, EntryModuleHandle);
                 _classAtom = 0;
             }
@@ -142,10 +142,10 @@ namespace TerraFX.Provider.Win32.UI
                 ExceptionUtilities.ThrowObjectDisposedException(nameof(IWindowManager));
             }
 
-            var lpClassName = (LPWSTR)(_classAtom);
+            var lpClassName = (LPWSTR)((void*)((ushort)(_classAtom)));
             var window = new Window(_dispatchManager.Value, lpClassName, _lpWindowName, EntryModuleHandle);
 
-            var succeeded = CreatedWindows.TryAdd(window.Handle, window);
+            var succeeded = CreatedWindows.TryAdd((void*)(window.Handle), window);
             Debug.Assert(succeeded);
 
             return window;

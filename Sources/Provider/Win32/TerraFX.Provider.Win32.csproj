@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Interop\Win32\Windows\TerraFX.Interop.Win32.Windows.csproj" />
+    <ProjectReference Include="..\..\Interop\Win32\WinUser\TerraFX.Interop.Win32.WinUser.csproj" />
     <ProjectReference Include="..\..\Threading\TerraFX.Threading.csproj" />
     <ProjectReference Include="..\..\UI\TerraFX.UI.csproj" />
   </ItemGroup>

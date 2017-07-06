@@ -4,16 +4,17 @@ using System;
 using System.Collections.Concurrent;
 using System.Composition;
 using System.Threading;
+using TerraFX.Interop;
 using TerraFX.Threading;
 using TerraFX.Utilities;
-using static TerraFX.Interop.ProfileApi;
+using static TerraFX.Interop.Kernel32;
 
 namespace TerraFX.Provider.Win32.Threading
 {
     /// <summary>Provides a means of managing the message dispatch objects for an application.</summary>
     [Export(typeof(IDispatchManager))]
     [Shared]
-    public sealed class DispatchManager : IDispatchManager
+    unsafe public sealed class DispatchManager : IDispatchManager
     {
         #region Fields
         private readonly double _tickFrequency;
@@ -25,15 +26,17 @@ namespace TerraFX.Provider.Win32.Threading
         /// <summary>Initializes a new instance of the <see cref="DispatchManager" /> class.</summary>
         public DispatchManager()
         {
-            var succeeded = QueryPerformanceFrequency(out var lpFrequency);
+            LARGE_INTEGER frequency;
 
-            if (!succeeded)
+            var succeeded = QueryPerformanceFrequency(&frequency);
+
+            if (succeeded == 0)
             {
                 ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(QueryPerformanceFrequency));
             }
 
             const double ticksPerSecond = Timestamp.TicksPerSecond;
-            _tickFrequency = (ticksPerSecond / unchecked((ulong)(lpFrequency)));
+            _tickFrequency = (ticksPerSecond / frequency.QuadPart);
 
             _dispatchers = new ConcurrentDictionary<Thread, Dispatcher>();
         }
@@ -45,14 +48,15 @@ namespace TerraFX.Provider.Win32.Threading
         {
             get
             {
-                var succeeded = QueryPerformanceCounter(out var lpPerformanceCount);
+                LARGE_INTEGER performanceCount;
+                var succeeded = QueryPerformanceCounter(&performanceCount);
 
-                if (!succeeded)
+                if (succeeded == 0)
                 {
                     ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(QueryPerformanceCounter));
                 }
 
-                var ticks = (long)(lpPerformanceCount * _tickFrequency);
+                var ticks = (long)(performanceCount.QuadPart * _tickFrequency);
                 return new Timestamp(ticks);
             }
         }

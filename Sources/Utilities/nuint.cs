@@ -27,6 +27,13 @@ namespace TerraFX.Utilities
             Debug.Assert(IntPtr.Size == sizeof(ulong));
             _value = (void*)(value);
         }
+
+        /// <summary>Initializes a new instance of the <see cref="nuint" /> struct.</summary>
+        /// <param name="value">The <see cref="UIntPtr" /> used to initialize the instance.</param>
+        public nuint(UIntPtr value)
+        {
+            _value = (void*)(value);
+        }
         #endregion
 
         #region Operators
@@ -384,9 +391,23 @@ namespace TerraFX.Utilities
             return (ulong)(value._value);
         }
 
+        /// <summary>Implicitly converts a <see cref="nuint" /> value to a <see cref="UIntPtr" /> value.</summary>
+        /// <param name="value">The <see cref="nuint" /> value to convert.</param>
+        public static implicit operator UIntPtr(nuint value)
+        {
+            return (UIntPtr)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="uint" /> value to a <see cref="nuint" /> value.</summary>
         /// <param name="value">The <see cref="uint" /> value to convert.</param>
         public static implicit operator nuint(uint value)
+        {
+            return new nuint(value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="UIntPtr" /> value to a <see cref="nuint" /> value.</summary>
+        /// <param name="value">The <see cref="UIntPtr" /> value to convert.</param>
+        public static implicit operator nuint(UIntPtr value)
         {
             return new nuint(value);
         }

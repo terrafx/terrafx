@@ -41,13 +41,13 @@ namespace TerraFX.Provider.Win32.UI
                 unchecked((int)(CW.USEDEFAULT)),
                 unchecked((int)(CW.USEDEFAULT)),
                 unchecked((int)(CW.USEDEFAULT)),
-                HWND.NULL,
-                HMENU.NULL,
+                null,
+                null,
                 hInstance,
                 null
             );
 
-            if (hWnd == HWND.NULL)
+            if (hWnd == null)
             {
                 ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(CreateWindowEx));
             }
@@ -58,7 +58,7 @@ namespace TerraFX.Provider.Win32.UI
 
             var succeeded = GetWindowRect(_hWnd, out var lpRect);
 
-            if (!succeeded)
+            if (succeeded == 0)
             {
                 ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(GetWindowRect));
             }
@@ -68,7 +68,7 @@ namespace TerraFX.Provider.Win32.UI
             var activeWindow = GetActiveWindow();
             _isActive = (activeWindow == _hWnd);
 
-            _isVisible = IsWindowVisible(hWnd);
+            _isVisible = (IsWindowVisible(hWnd) != 0);
         }
         #endregion
 
@@ -92,8 +92,8 @@ namespace TerraFX.Provider.Win32.UI
             {
                 case WM.MOVE:
                 {
-                    var x = lParam.LOWORD();
-                    var y = lParam.HIWORD();
+                    var x = (ushort)(lParam);
+                    var y = (ushort)(lParam >> 16);
 
                     _bounds.Location = new Point2D(x, y);
                     return 0;
@@ -101,8 +101,8 @@ namespace TerraFX.Provider.Win32.UI
 
                 case WM.SIZE:
                 {
-                    var width = lParam.LOWORD();
-                    var height = lParam.HIWORD();
+                    var width = (ushort)(lParam);
+                    var height = (ushort)(lParam >> 16);
 
                     _bounds.Size = new Size2D(width, height);
                     return 0;
@@ -110,7 +110,7 @@ namespace TerraFX.Provider.Win32.UI
 
                 case WM.ACTIVATE:
                 {
-                    var activateCmd = (WA)(wParam.LOWORD());
+                    var activateCmd = (WA)((ushort)(wParam));
                     Debug.Assert(Enum.IsDefined(typeof(WA), activateCmd));
 
                     _isActive = (activateCmd != WA.INACTIVE);
@@ -120,7 +120,7 @@ namespace TerraFX.Provider.Win32.UI
                 case WM.SHOWWINDOW:
                 {
                     var shown = (BOOL)(unchecked((int)((uint)(wParam))));
-                    _isVisible = shown;
+                    _isVisible = (shown != 0);
                     return 0;
                 }
 
@@ -133,11 +133,11 @@ namespace TerraFX.Provider.Win32.UI
 
         private void Dispose(bool isDisposing)
         {
-            if (_hWnd != HWND.NULL)
+            if (_hWnd != null)
             {
                 var succeeded = DestroyWindow(_hWnd);
 
-                if (!succeeded)
+                if (succeeded == 0)
                 {
                     ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(DestroyWindow));
                 }
@@ -180,7 +180,7 @@ namespace TerraFX.Provider.Win32.UI
         {
             get
             {
-                return _hWnd;
+                return (IntPtr)((void*)(_hWnd));
             }
         }
 
@@ -218,7 +218,7 @@ namespace TerraFX.Provider.Win32.UI
             {
                 var succeeded = SetForegroundWindow(_hWnd);
 
-                if (!succeeded)
+                if (succeeded == 0)
                 {
                     ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(SetForegroundWindow));
                 }
@@ -238,7 +238,7 @@ namespace TerraFX.Provider.Win32.UI
             {
                 var succeeded = ShowWindow(_hWnd, SW.HIDE);
 
-                if (!succeeded)
+                if (succeeded == 0)
                 {
                     ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(ShowWindow));
                 }
@@ -252,7 +252,7 @@ namespace TerraFX.Provider.Win32.UI
             {
                 var succeeded = ShowWindow(_hWnd, SW.SHOW);
 
-                if (!succeeded)
+                if (succeeded == 0)
                 {
                     ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(ShowWindow));
                 }

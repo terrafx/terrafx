@@ -27,6 +27,13 @@ namespace TerraFX.Utilities
             Debug.Assert(IntPtr.Size == sizeof(long));
             _value = (void*)(value);
         }
+
+        /// <summary>Initializes a new instance of the <see cref="nint" /> struct.</summary>
+        /// <param name="value">The <see cref="IntPtr" /> used to initialize the instance.</param>
+        public nint(IntPtr value)
+        {
+            _value = (void*)(value);
+        }
         #endregion
 
         #region Operators
@@ -401,9 +408,23 @@ namespace TerraFX.Utilities
             return (long)(value._value);
         }
 
+        /// <summary>Implicitly converts a <see cref="nint" /> value to a <see cref="IntPtr" /> value.</summary>
+        /// <param name="value">The <see cref="nint" /> value to convert.</param>
+        public static implicit operator IntPtr(nint value)
+        {
+            return (IntPtr)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="int" /> value to a <see cref="nint" /> value.</summary>
         /// <param name="value">The <see cref="int" /> value to convert.</param>
         public static implicit operator nint(int value)
+        {
+            return new nint(value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="IntPtr" /> value to a <see cref="nint" /> value.</summary>
+        /// <param name="value">The <see cref="IntPtr" /> value to convert.</param>
+        public static implicit operator nint(IntPtr value)
         {
             return new nint(value);
         }
