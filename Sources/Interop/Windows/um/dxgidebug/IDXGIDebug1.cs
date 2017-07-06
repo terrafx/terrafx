@@ -5,36 +5,39 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Security;
 
 namespace TerraFX.Interop
 {
     [Guid("C5A05F0C-16F2-4ADF-9F4D-A8C4D58AC550")]
-    unsafe public struct IDXGIDebug1
+    unsafe public /* blittable */ struct IDXGIDebug1
     {
-        #region Constants
-        public static readonly Guid IID = typeof(IDXGIDebug1).GUID;
-        #endregion
-
         #region Fields
-        public void* /* Vtbl* */ lpVtbl;
+        public readonly void* /* Vtbl* */ lpVtbl;
         #endregion
 
         #region Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void EnableLeakTrackingForThread(
             [In] IDXGIDebug1* This
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void DisableLeakTrackingForThread(
             [In] IDXGIDebug1* This
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate BOOL IsLeakTrackingEnabledForThread(
             [In] IDXGIDebug1* This
         );
         #endregion
 
         #region Structs
-        public struct Vtbl
+        public /* blittable */ struct Vtbl
         {
             #region Fields
             public IDXGIDebug.Vtbl BaseVtbl;

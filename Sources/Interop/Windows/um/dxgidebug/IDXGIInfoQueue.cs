@@ -5,189 +5,241 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Security;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    // Logs DX Messages.
-    // This interface is a singleton per process. Debug DX devices will log messages
-    // to this object which can be retrieved through its APIs.
     [Guid("D67441C7-672A-476F-9E82-CD55B44949CE")]
-    unsafe public struct IDXGIInfoQueue
+    unsafe public /* blittable */ struct IDXGIInfoQueue
     {
-        #region Constants
-        public const ulong DEFAULT_MESSAGE_COUNT_LIMIT = 1024;
-
-        public static readonly Guid IID = typeof(IDXGIInfoQueue).GUID;
-        #endregion
-
         #region Fields
-        public void* /* Vtbl* */ lpVtbl;
+        public readonly void* /* Vtbl* */ lpVtbl;
         #endregion
 
         #region Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT SetMessageCountLimit(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer,
-            [In] ulong MessageCountLimit
+            [In] UINT64 MessageCountLimit
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void ClearStoredMessages(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT GetMessage(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer,
-            [In] ulong MessageIndex,
+            [In] UINT64 MessageIndex,
             [Out, Optional] DXGI_INFO_QUEUE_MESSAGE* pMessage,
-            [In, Out] nuint* pMessageByteLength
+            [In, Out] SIZE_T* pMessageByteLength
         );
 
-        public /* static */ delegate ulong GetNumStoredMessagesAllowedByRetrievalFilters(
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate UINT64 GetNumStoredMessagesAllowedByRetrievalFilters(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer
         );
 
-        public /* static */ delegate ulong GetNumStoredMessages(
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate UINT64 GetNumStoredMessages(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer
         );
 
-        public /* static */ delegate ulong GetNumMessagesDiscardedByMessageCountLimit(
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate UINT64 GetNumMessagesDiscardedByMessageCountLimit(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer
         );
 
-        public /* static */ delegate ulong GetMessageCountLimit(
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate UINT64 GetMessageCountLimit(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer
         );
 
-        public /* static */ delegate ulong GetNumMessagesAllowedByStorageFilter(
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate UINT64 GetNumMessagesAllowedByStorageFilter(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer
         );
 
-        public /* static */ delegate ulong GetNumMessagesDeniedByStorageFilter(
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate UINT64 GetNumMessagesDeniedByStorageFilter(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT AddStorageFilterEntries(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer,
             [In] DXGI_INFO_QUEUE_FILTER* pFilter
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT GetStorageFilter(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer,
             [Out, Optional] DXGI_INFO_QUEUE_FILTER* pFilter,
-            [In, Out] nuint* pFilterByteLength
+            [In, Out] SIZE_T* pFilterByteLength
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT ClearStorageFilter(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT PushEmptyStorageFilter(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT PushDenyAllStorageFilter(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT PushCopyOfStorageFilter(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT PushStorageFilter(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer,
             [In] DXGI_INFO_QUEUE_FILTER* pFilter
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void PopStorageFilter(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer
         );
 
-        public /* static */ delegate uint GetStorageFilterStackSize(
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate UINT GetStorageFilterStackSize(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT AddRetrievalFilterEntries(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer,
             [In] DXGI_INFO_QUEUE_FILTER* pFilter
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT GetRetrievalFilter(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer,
             [Out, Optional] DXGI_INFO_QUEUE_FILTER* pFilter,
-            [In, Out] nuint* pFilterByteLength
+            [In, Out] SIZE_T* pFilterByteLength
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void ClearRetrievalFilter(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT PushEmptyRetrievalFilter(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT PushDenyAllRetrievalFilter(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT PushCopyOfRetrievalFilter(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT PushRetrievalFilter(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer,
             [In] DXGI_INFO_QUEUE_FILTER* pFilter
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void PopRetrievalFilter(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer
         );
 
-        public /* static */ delegate uint GetRetrievalFilterStackSize(
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate UINT GetRetrievalFilterStackSize(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT AddMessage(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer,
             [In] DXGI_INFO_QUEUE_MESSAGE_CATEGORY Category,
             [In] DXGI_INFO_QUEUE_MESSAGE_SEVERITY Severity,
             [In] DXGI_INFO_QUEUE_MESSAGE_ID ID,
-            [In] /* const */ LPSTR pDescription
+            [In] LPCSTR pDescription
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT AddApplicationMessage(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_INFO_QUEUE_MESSAGE_SEVERITY Severity,
-            [In] /* const */ LPSTR pDescription
+            [In] LPCSTR pDescription
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT SetBreakOnCategory(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer,
@@ -195,6 +247,8 @@ namespace TerraFX.Interop
             [In] BOOL bEnable
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT SetBreakOnSeverity(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer,
@@ -202,6 +256,8 @@ namespace TerraFX.Interop
             [In] BOOL bEnable
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT SetBreakOnID(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer,
@@ -209,30 +265,40 @@ namespace TerraFX.Interop
             [In] BOOL bEnable
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate BOOL GetBreakOnCategory(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer,
             [In] DXGI_INFO_QUEUE_MESSAGE_CATEGORY Category
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate BOOL GetBreakOnSeverity(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer,
             [In] DXGI_INFO_QUEUE_MESSAGE_SEVERITY Severity
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate BOOL GetBreakOnID(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer,
             [In] DXGI_INFO_QUEUE_MESSAGE_ID ID
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetMuteDebugOutput(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer,
             [In] BOOL bMute
         );
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate BOOL GetMuteDebugOutput(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_DEBUG_ID Producer
@@ -240,7 +306,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public struct Vtbl
+        public /* blittable */ struct Vtbl
         {
             #region Fields
             public IUnknown.Vtbl BaseVtbl;

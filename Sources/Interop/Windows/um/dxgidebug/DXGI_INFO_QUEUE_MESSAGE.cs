@@ -5,13 +5,20 @@
 
 namespace TerraFX.Interop
 {
-    // To use, memset to 0, then fill in what you need.
-    public struct DXGI_INFO_QUEUE_FILTER
+    unsafe public /* blittable */ struct DXGI_INFO_QUEUE_MESSAGE
     {
         #region Fields
-        public DXGI_INFO_QUEUE_FILTER_DESC AllowList;
+        public DXGI_DEBUG_ID Producer;
 
-        public DXGI_INFO_QUEUE_FILTER_DESC DenyList;
+        public DXGI_INFO_QUEUE_MESSAGE_CATEGORY Category;
+
+        public DXGI_INFO_QUEUE_MESSAGE_SEVERITY Severity;
+
+        public DXGI_INFO_QUEUE_MESSAGE_ID ID;
+
+        public /* const */ sbyte* pDescription;
+
+        public SIZE_T DescriptionByteLength;
         #endregion
     }
 }

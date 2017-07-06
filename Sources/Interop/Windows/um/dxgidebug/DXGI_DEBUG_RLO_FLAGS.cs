@@ -3,18 +3,19 @@
 // Ported from um\dxgidebug.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
+
 namespace TerraFX.Interop
 {
-    public enum DXGI_INFO_QUEUE_MESSAGE_SEVERITY
+    [Flags]
+    public enum DXGI_DEBUG_RLO_FLAGS : uint
     {
-        CORRUPTION = 0,
+        DXGI_DEBUG_RLO_SUMMARY = 0x1,
 
-        ERROR = 1,
+        DXGI_DEBUG_RLO_DETAIL = 0x2,
 
-        WARNING = 2,
+        DXGI_DEBUG_RLO_IGNORE_INTERNAL = 0x4,
 
-        INFO = 3,
-
-        MESSAGE = 4
+        DXGI_DEBUG_RLO_ALL = 0x7
     }
 }

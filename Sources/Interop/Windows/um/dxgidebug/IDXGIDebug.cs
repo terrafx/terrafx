@@ -5,30 +5,29 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Security;
 
 namespace TerraFX.Interop
 {
     [Guid("119E7452-DE9E-40FE-8806-88F90C12B441")]
-    unsafe public struct IDXGIDebug
+    unsafe public /* blittable */ struct IDXGIDebug
     {
-        #region Constants
-        public static readonly Guid IID = typeof(IDXGIDebug).GUID;
-        #endregion
-
         #region Fields
-        public void* /* Vtbl* */ lpVtbl;
+        public readonly void* /* Vtbl* */ lpVtbl;
         #endregion
 
         #region Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT ReportLiveObjects(
             [In] IDXGIDebug* This,
-            [In] Guid apiid,
+            [In] GUID apiid,
             [In] DXGI_DEBUG_RLO_FLAGS flags
         );
         #endregion
 
         #region Structs
-        public struct Vtbl
+        public /* blittable */ struct Vtbl
         {
             #region Fields
             public IUnknown.Vtbl BaseVtbl;

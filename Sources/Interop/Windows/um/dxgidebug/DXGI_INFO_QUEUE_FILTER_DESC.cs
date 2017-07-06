@@ -3,24 +3,22 @@
 // Ported from um\dxgidebug.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using TerraFX.Utilities;
-
 namespace TerraFX.Interop
 {
-    unsafe public struct DXGI_INFO_QUEUE_MESSAGE
+    unsafe public /* blittable */ struct DXGI_INFO_QUEUE_FILTER_DESC
     {
         #region Fields
-        public DXGI_DEBUG_ID Producer;
+        public UINT NumCategories;
 
-        public DXGI_INFO_QUEUE_MESSAGE_CATEGORY Category;
+        public DXGI_INFO_QUEUE_MESSAGE_CATEGORY* pCategoryList;
 
-        public DXGI_INFO_QUEUE_MESSAGE_SEVERITY Severity;
+        public UINT NumSeverities;
 
-        public DXGI_INFO_QUEUE_MESSAGE_ID ID;
+        public DXGI_INFO_QUEUE_MESSAGE_SEVERITY* pSeverityList;
 
-        public /* const */ CHAR* pDescription;
+        public UINT NumIDs;
 
-        public nuint DescriptionByteLength;
+        public DXGI_INFO_QUEUE_MESSAGE_ID* pIDList;
         #endregion
     }
 }

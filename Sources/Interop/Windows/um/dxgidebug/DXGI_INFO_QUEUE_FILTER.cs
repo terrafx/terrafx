@@ -3,21 +3,14 @@
 // Ported from um\dxgidebug.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System;
-
 namespace TerraFX.Interop
 {
-    [Flags]
-    public enum DXGI_DEBUG_RLO_FLAGS : uint
+    public /* blittable */ struct DXGI_INFO_QUEUE_FILTER
     {
-        NONE = 0x00000000,
+        #region Fields
+        public DXGI_INFO_QUEUE_FILTER_DESC AllowList;
 
-        SUMMARY = 0x00000001,
-
-        DETAIL = 0x00000002,
-
-        IGNORE_INTERNAL = 0x00000004,
-
-        ALL = (SUMMARY | DETAIL | IGNORE_INTERNAL)
+        public DXGI_INFO_QUEUE_FILTER_DESC DenyList;
+        #endregion
     }
 }
