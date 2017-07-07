@@ -107,7 +107,7 @@ namespace TerraFX.Interop
             #endregion
         }
 
-        public struct _RedPrimary_e__FixedBuffer
+        public /* blittable */ struct _RedPrimary_e__FixedBuffer
         {
             #region Fields
             public FLOAT _0;
@@ -116,7 +116,7 @@ namespace TerraFX.Interop
             #endregion
         }
 
-        public struct _GreenPrimary_e__FixedBuffer
+        public /* blittable */ struct _GreenPrimary_e__FixedBuffer
         {
             #region Fields
             public FLOAT _0;
@@ -125,7 +125,7 @@ namespace TerraFX.Interop
             #endregion
         }
 
-        public struct _BluePrimary_e__FixedBuffer
+        public /* blittable */ struct _BluePrimary_e__FixedBuffer
         {
             #region Fields
             public FLOAT _0;
@@ -134,7 +134,7 @@ namespace TerraFX.Interop
             #endregion
         }
 
-        public struct _WhitePoint_e__FixedBuffer
+        public /* blittable */ struct _WhitePoint_e__FixedBuffer
         {
             #region Fields
             public FLOAT _0;
