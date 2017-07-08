@@ -24,7 +24,21 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="VARTYPE" /> value to a <see cref="ushort" /> value.</summary>
+        /// <summary>Explicitly converts a <see cref="VARTYPE" /> value to a <see cref="short" /> value.</summary>
+        /// <param name="value">The <see cref="VARTYPE" /> value to convert.</param>
+        public static explicit operator short(VARTYPE value)
+        {
+            return (short)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="short" /> value to a <see cref="VARTYPE" /> value.</summary>
+        /// <param name="value">The <see cref="short" /> value to convert.</param>
+        public static explicit operator VARTYPE(short value)
+        {
+            return new VARTYPE((ushort)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="VARTYPE" /> value to a <see cref="ushort" /> value.</summary>
         /// <param name="value">The <see cref="VARTYPE" /> value to convert.</param>
         public static implicit operator ushort(VARTYPE value)
         {

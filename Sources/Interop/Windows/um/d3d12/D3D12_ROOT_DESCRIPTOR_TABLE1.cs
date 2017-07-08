@@ -10,7 +10,7 @@ namespace TerraFX.Interop
         #region Fields
         public UINT NumDescriptorRanges;
 
-        public D3D12_DESCRIPTOR_RANGE1* pDescriptorRanges;
+        public /* readonly */ D3D12_DESCRIPTOR_RANGE1* pDescriptorRanges;
         #endregion
     }
 }

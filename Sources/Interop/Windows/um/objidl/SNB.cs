@@ -42,7 +42,7 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="SNB" /> value to a <see cref="LPOLESTR" />* value.</summary>
+        /// <summary>Implicitly converts a <see cref="SNB" /> value to a <see cref="LPOLESTR" />* value.</summary>
         /// <param name="value">The <see cref="SNB" /> value to convert.</param>
         public static implicit operator LPOLESTR*(SNB value)
         {

@@ -21,7 +21,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="D2D1_SIZE_U" /> value to a <see cref="D2D_SIZE_U" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="D2D1_SIZE_U" /> value to a <see cref="D2D_SIZE_U" /> value.</summary>
         /// <param name="value">The <see cref="D2D1_SIZE_U" /> value to convert.</param>
         public static implicit operator D2D_SIZE_U(D2D1_SIZE_U value)
         {

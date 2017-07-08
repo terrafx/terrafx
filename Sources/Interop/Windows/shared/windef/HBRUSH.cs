@@ -41,16 +41,37 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="HBRUSH" /> value to a <see cref="void" />* value.</summary>
+        /// <summary>Explicitly converts a <see cref="HBRUSH" /> value to a <see cref="IntPtr" />* value.</summary>
         /// <param name="value">The <see cref="HBRUSH" /> value to convert.</param>
-        public static implicit operator void* (HBRUSH value)
+        public static explicit operator IntPtr(HBRUSH value)
+        {
+            return (IntPtr)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="IntPtr" /> value to a <see cref="HBRUSH" />* value.</summary>
+        /// <param name="value">The <see cref="IntPtr" /> value to convert.</param>
+        public static explicit operator HBRUSH(IntPtr value)
+        {
+            return new HBRUSH((HANDLE)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="HBRUSH" /> value to a <see cref="UIntPtr" />* value.</summary>
+        /// <param name="value">The <see cref="HBRUSH" /> value to convert.</param>
+        public static implicit operator UIntPtr(HBRUSH value)
         {
             return value._value;
         }
 
-        /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HBRUSH" /> value.</summary>
-        /// <param name="value">The <see cref="void" />* value to convert.</param>
-        public static implicit operator HBRUSH(void* value)
+        /// <summary>Implicitly converts a <see cref="HBRUSH" /> value to a <see cref="HANDLE" /> value.</summary>
+        /// <param name="value">The <see cref="HBRUSH" /> value to convert.</param>
+        public static implicit operator HANDLE(HBRUSH value)
+        {
+            return value._value;
+        }
+
+        /// <summary>Implicitly converts a <see cref="UIntPtr" /> value to a <see cref="HBRUSH" /> value.</summary>
+        /// <param name="value">The <see cref="UIntPtr" /> value to convert.</param>
+        public static implicit operator HBRUSH(UIntPtr value)
         {
             return new HBRUSH(value);
         }
@@ -62,9 +83,16 @@ namespace TerraFX.Interop
             return new HBRUSH(value);
         }
 
-        /// <summary>Explicitly converts a <see cref="HBRUSH" /> value to a <see cref="HANDLE" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HBRUSH" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static implicit operator HBRUSH(void* value)
+        {
+            return new HBRUSH(value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="HBRUSH" /> value to a <see cref="void" />* value.</summary>
         /// <param name="value">The <see cref="HBRUSH" /> value to convert.</param>
-        public static implicit operator HANDLE(HBRUSH value)
+        public static implicit operator void* (HBRUSH value)
         {
             return value._value;
         }

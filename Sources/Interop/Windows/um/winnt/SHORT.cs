@@ -24,7 +24,21 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="SHORT" /> value to a <see cref="short" /> value.</summary>
+        /// <summary>Explicitly converts a <see cref="SHORT" /> value to a <see cref="ushort" /> value.</summary>
+        /// <param name="value">The <see cref="SHORT" /> value to convert.</param>
+        public static explicit operator ushort(SHORT value)
+        {
+            return (ushort)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="ushort" /> value to a <see cref="SHORT" /> value.</summary>
+        /// <param name="value">The <see cref="ushort" /> value to convert.</param>
+        public static explicit operator SHORT(ushort value)
+        {
+            return new SHORT((short)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="SHORT" /> value to a <see cref="short" /> value.</summary>
         /// <param name="value">The <see cref="SHORT" /> value to convert.</param>
         public static implicit operator short(SHORT value)
         {

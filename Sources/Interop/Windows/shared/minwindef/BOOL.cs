@@ -5,6 +5,7 @@
 
 using System;
 using TerraFX.Utilities;
+using static TerraFX.Interop.Windows;
 
 namespace TerraFX.Interop
 {
@@ -24,11 +25,39 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="BOOL" /> value to a <see cref="int" /> value.</summary>
+        /// <summary>Explicitly converts a <see cref="BOOL" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="BOOL" /> value to convert.</param>
+        public static explicit operator uint(BOOL value)
+        {
+            return (uint)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="BOOL" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator BOOL(uint value)
+        {
+            return new BOOL((int)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="BOOL" /> value to a <see cref="bool" /> value.</summary>
+        /// <param name="value">The <see cref="BOOL" /> value to convert.</param>
+        public static implicit operator bool(BOOL value)
+        {
+            return (value._value != FALSE);
+        }
+
+        /// <summary>Implicitly converts a <see cref="BOOL" /> value to a <see cref="int" /> value.</summary>
         /// <param name="value">The <see cref="BOOL" /> value to convert.</param>
         public static implicit operator int(BOOL value)
         {
             return value._value;
+        }
+
+        /// <summary>Implicitly converts a <see cref="bool" /> value to a <see cref="BOOL" /> value.</summary>
+        /// <param name="value">The <see cref="bool" /> value to convert.</param>
+        public static implicit operator BOOL(bool value)
+        {
+            return new BOOL(value ? TRUE : FALSE);
         }
 
         /// <summary>Implicitly converts a <see cref="int" /> value to a <see cref="BOOL" /> value.</summary>

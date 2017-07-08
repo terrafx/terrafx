@@ -42,7 +42,7 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="LPSTR" /> value to a <see cref="CHAR" />* value.</summary>
+        /// <summary>Implicitly converts a <see cref="LPSTR" /> value to a <see cref="CHAR" />* value.</summary>
         /// <param name="value">The <see cref="LPSTR" /> value to convert.</param>
         public static implicit operator CHAR*(LPSTR value)
         {

@@ -34,6 +34,13 @@ namespace TerraFX.Utilities
         {
             _value = (void*)(value);
         }
+
+        /// <summary>Initializes a new instance of the <see cref="nuint" /> struct.</summary>
+        /// <param name="value">The <see cref="void" />* used to initialize the instance.</param>
+        public nuint(void* value)
+        {
+            _value = value;
+        }
         #endregion
 
         #region Operators
@@ -377,11 +384,32 @@ namespace TerraFX.Utilities
             return (uint)(value._value);
         }
 
+        /// <summary>Explicitly converts a <see cref="nuint" /> value to a <see cref="nint" /> value.</summary>
+        /// <param name="value">The <see cref="nuint" /> value to convert.</param>
+        public static explicit operator nint(nuint value)
+        {
+            return (nint)(value._value);
+        }
+
         /// <summary>Explicitly converts a <see cref="ulong" /> value to a <see cref="nuint" /> value.</summary>
         /// <param name="value">The <see cref="ulong" /> value to convert.</param>
         public static explicit operator nuint(ulong value)
         {
             return new nuint(value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="void" />* value to a <see cref="nuint" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static explicit operator nuint(void* value)
+        {
+            return new nuint(value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="nuint" /> value to a <see cref="void" />* value.</summary>
+        /// <param name="value">The <see cref="nuint" /> value to convert.</param>
+        public static explicit operator void*(nuint value)
+        {
+            return value._value;
         }
 
         /// <summary>Implicitly converts a <see cref="nuint" /> value to a <see cref="ulong" /> value.</summary>
@@ -391,23 +419,9 @@ namespace TerraFX.Utilities
             return (ulong)(value._value);
         }
 
-        /// <summary>Implicitly converts a <see cref="nuint" /> value to a <see cref="UIntPtr" /> value.</summary>
-        /// <param name="value">The <see cref="nuint" /> value to convert.</param>
-        public static implicit operator UIntPtr(nuint value)
-        {
-            return (UIntPtr)(value._value);
-        }
-
         /// <summary>Implicitly converts a <see cref="uint" /> value to a <see cref="nuint" /> value.</summary>
         /// <param name="value">The <see cref="uint" /> value to convert.</param>
         public static implicit operator nuint(uint value)
-        {
-            return new nuint(value);
-        }
-
-        /// <summary>Implicitly converts a <see cref="UIntPtr" /> value to a <see cref="nuint" /> value.</summary>
-        /// <param name="value">The <see cref="UIntPtr" /> value to convert.</param>
-        public static implicit operator nuint(UIntPtr value)
         {
             return new nuint(value);
         }

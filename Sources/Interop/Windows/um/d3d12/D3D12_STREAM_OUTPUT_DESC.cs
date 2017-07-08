@@ -8,11 +8,11 @@ namespace TerraFX.Interop
     unsafe public /* blittable */ struct D3D12_STREAM_OUTPUT_DESC
     {
         #region Fields
-        public D3D12_SO_DECLARATION_ENTRY* pSODeclaration;
+        public /* readonly */ D3D12_SO_DECLARATION_ENTRY* pSODeclaration;
 
         public UINT NumEntries;
 
-        public UINT* pBufferStrides;
+        public /* readonly */ UINT* pBufferStrides;
 
         public UINT NumStrides;
 

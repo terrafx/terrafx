@@ -24,7 +24,21 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="INT8" /> value to a <see cref="sbyte" /> value.</summary>
+        /// <summary>Explicitly converts a <see cref="INT8" /> value to a <see cref="byte" /> value.</summary>
+        /// <param name="value">The <see cref="INT8" /> value to convert.</param>
+        public static explicit operator byte(INT8 value)
+        {
+            return (byte)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="INT8" /> value to a <see cref="byte" /> value.</summary>
+        /// <param name="value">The <see cref="INT8" /> value to convert.</param>
+        public static explicit operator INT8(byte value)
+        {
+            return new INT8((sbyte)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="INT8" /> value to a <see cref="sbyte" /> value.</summary>
         /// <param name="value">The <see cref="INT8" /> value to convert.</param>
         public static implicit operator sbyte(INT8 value)
         {

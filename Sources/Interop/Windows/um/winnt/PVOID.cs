@@ -42,11 +42,32 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="PVOID" /> value to a <see cref="void" />* value.</summary>
+        /// <summary>Explicitly converts a <see cref="PVOID" /> value to a <see cref="IntPtr" />* value.</summary>
         /// <param name="value">The <see cref="PVOID" /> value to convert.</param>
-        public static implicit operator void* (PVOID value)
+        public static explicit operator IntPtr(PVOID value)
         {
-            return value._value;
+            return (IntPtr)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="IntPtr" /> value to a <see cref="PVOID" />* value.</summary>
+        /// <param name="value">The <see cref="IntPtr" /> value to convert.</param>
+        public static explicit operator PVOID(IntPtr value)
+        {
+            return new PVOID((void*)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="PVOID" /> value to a <see cref="UIntPtr" />* value.</summary>
+        /// <param name="value">The <see cref="PVOID" /> value to convert.</param>
+        public static implicit operator UIntPtr(PVOID value)
+        {
+            return (UIntPtr)(value._value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="UIntPtr" /> value to a <see cref="PVOID" /> value.</summary>
+        /// <param name="value">The <see cref="UIntPtr" /> value to convert.</param>
+        public static implicit operator PVOID(UIntPtr value)
+        {
+            return new PVOID((void*)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="PVOID" /> value.</summary>
@@ -54,6 +75,13 @@ namespace TerraFX.Interop
         public static implicit operator PVOID(void* value)
         {
             return new PVOID(value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="PVOID" /> value to a <see cref="void" />* value.</summary>
+        /// <param name="value">The <see cref="PVOID" /> value to convert.</param>
+        public static implicit operator void* (PVOID value)
+        {
+            return value._value;
         }
         #endregion
 

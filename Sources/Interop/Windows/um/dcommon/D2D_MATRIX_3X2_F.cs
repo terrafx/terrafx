@@ -4,12 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Represents a 3-by-2 matrix.</summary>
     [StructLayout(LayoutKind.Explicit)]
-    unsafe public /* blittable */ struct D2D_MATRIX_3X2_F
+    public /* blittable */ struct D2D_MATRIX_3X2_F
     {
         #region Fields
         #region struct
@@ -63,26 +64,49 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct _m_e__FixedBuffer
+        unsafe public /* blittable */ struct _m_e__FixedBuffer
         {
             #region Fields
-            #region 0
-            public FLOAT _0_0;
+            #region e0_*
+            public FLOAT e0_0;
 
-            public FLOAT _0_1;
+            public FLOAT e0_1;
             #endregion
 
-            #region 1
-            public FLOAT _1_0;
+            #region e1_*
+            public FLOAT e1_0;
 
-            public FLOAT _1_1;
+            public FLOAT e1_1;
             #endregion
 
-            #region 2
-            public FLOAT _2_0;
+            #region e2_*
+            public FLOAT e2_0;
 
-            public FLOAT _2_1;
+            public FLOAT e2_1;
             #endregion
+            #endregion
+
+            #region Properties
+            public FLOAT this[int index1, int index2]
+            {
+                get
+                {
+                    if ((uint)(index1) > 2) // (index1 < 0) || (index1 > 2)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index1), index1);
+                    }
+
+                    if ((uint)(index2) > 1) // (index2 < 0) || (index2 > 1)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index2), index2);
+                    }
+
+                    fixed (FLOAT* e = &e0_0)
+                    {
+                        return e[(index1 * 2) + index2];
+                    }
+                }
+            }
             #endregion
         }
         #endregion

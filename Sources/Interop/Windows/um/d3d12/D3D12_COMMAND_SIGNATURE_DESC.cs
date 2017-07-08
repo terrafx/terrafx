@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 
         public UINT NumArgumentDescs;
 
-        public D3D12_INDIRECT_ARGUMENT_DESC* pArgumentDescs;
+        public /* readonly */ D3D12_INDIRECT_ARGUMENT_DESC* pArgumentDescs;
 
         public UINT NodeMask;
         #endregion

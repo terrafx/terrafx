@@ -24,14 +24,28 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="D3D12_GPU_VIRTUAL_ADDRESS" /> value to a <see cref="ulong" /> value.</summary>
+        /// <summary>Explicitly converts a <see cref="D3D12_GPU_VIRTUAL_ADDRESS" /> value to a <see cref="long" /> value.</summary>
+        /// <param name="value">The <see cref="D3D12_GPU_VIRTUAL_ADDRESS" /> value to convert.</param>
+        public static explicit operator long(D3D12_GPU_VIRTUAL_ADDRESS value)
+        {
+            return (long)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="D3D12_GPU_VIRTUAL_ADDRESS" /> value to a <see cref="long" /> value.</summary>
+        /// <param name="value">The <see cref="D3D12_GPU_VIRTUAL_ADDRESS" /> value to convert.</param>
+        public static explicit operator D3D12_GPU_VIRTUAL_ADDRESS(long value)
+        {
+            return new D3D12_GPU_VIRTUAL_ADDRESS((ulong)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="D3D12_GPU_VIRTUAL_ADDRESS" /> value to a <see cref="ulong" /> value.</summary>
         /// <param name="value">The <see cref="D3D12_GPU_VIRTUAL_ADDRESS" /> value to convert.</param>
         public static implicit operator ulong(D3D12_GPU_VIRTUAL_ADDRESS value)
         {
             return value._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="D3D12_GPU_VIRTUAL_ADDRESS" /> value to a <see cref="UINT64" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="D3D12_GPU_VIRTUAL_ADDRESS" /> value to a <see cref="UINT64" /> value.</summary>
         /// <param name="value">The <see cref="D3D12_GPU_VIRTUAL_ADDRESS" /> value to convert.</param>
         public static implicit operator UINT64(D3D12_GPU_VIRTUAL_ADDRESS value)
         {

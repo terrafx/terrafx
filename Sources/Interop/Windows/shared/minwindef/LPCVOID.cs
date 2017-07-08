@@ -11,7 +11,7 @@ namespace TerraFX.Interop
     unsafe public /* blittable */ struct LPCVOID : IEquatable<LPCVOID>, IFormattable
     {
         #region Fields
-        internal readonly void* _value;
+        internal /* readonly */ void* _value;
         #endregion
 
         #region Constructors
@@ -42,11 +42,32 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="LPCVOID" /> value to a <see cref="void" />* value.</summary>
+        /// <summary>Explicitly converts a <see cref="LPCVOID" /> value to a <see cref="IntPtr" />* value.</summary>
         /// <param name="value">The <see cref="LPCVOID" /> value to convert.</param>
-        public static implicit operator void* (LPCVOID value)
+        public static explicit operator IntPtr(LPCVOID value)
         {
-            return value._value;
+            return (IntPtr)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="IntPtr" /> value to a <see cref="LPCVOID" />* value.</summary>
+        /// <param name="value">The <see cref="IntPtr" /> value to convert.</param>
+        public static explicit operator LPCVOID(IntPtr value)
+        {
+            return new LPCVOID((void*)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="LPCVOID" /> value to a <see cref="UIntPtr" />* value.</summary>
+        /// <param name="value">The <see cref="LPCVOID" /> value to convert.</param>
+        public static implicit operator UIntPtr(LPCVOID value)
+        {
+            return (UIntPtr)(value._value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="UIntPtr" /> value to a <see cref="LPCVOID" /> value.</summary>
+        /// <param name="value">The <see cref="UIntPtr" /> value to convert.</param>
+        public static implicit operator LPCVOID(UIntPtr value)
+        {
+            return new LPCVOID((void*)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="LPCVOID" /> value.</summary>
@@ -54,6 +75,13 @@ namespace TerraFX.Interop
         public static implicit operator LPCVOID(void* value)
         {
             return new LPCVOID(value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="LPCVOID" /> value to a <see cref="void" />* value.</summary>
+        /// <param name="value">The <see cref="LPCVOID" /> value to convert.</param>
+        public static implicit operator void* (LPCVOID value)
+        {
+            return value._value;
         }
         #endregion
 

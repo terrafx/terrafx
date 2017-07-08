@@ -21,7 +21,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="D3D12_TESSELLATOR_DOMAIN" /> value to a <see cref="D3D_TESSELLATOR_DOMAIN" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="D3D12_TESSELLATOR_DOMAIN" /> value to a <see cref="D3D_TESSELLATOR_DOMAIN" /> value.</summary>
         /// <param name="value">The <see cref="D3D12_TESSELLATOR_DOMAIN" /> value to convert.</param>
         public static implicit operator D3D_TESSELLATOR_DOMAIN(D3D12_TESSELLATOR_DOMAIN value)
         {

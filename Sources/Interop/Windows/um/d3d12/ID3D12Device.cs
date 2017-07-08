@@ -27,7 +27,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT CreateCommandQueue(
             [In] ID3D12Device* This,
-            [In] D3D12_COMMAND_QUEUE_DESC* pDesc,
+            [In] /* readonly */ D3D12_COMMAND_QUEUE_DESC* pDesc,
             [In] REFIID riid,
             [Out] void** ppCommandQueue
         );
@@ -45,7 +45,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT CreateGraphicsPipelineState(
             [In] ID3D12Device* This,
-            [In] D3D12_GRAPHICS_PIPELINE_STATE_DESC* pDesc,
+            [In] /* readonly */ D3D12_GRAPHICS_PIPELINE_STATE_DESC* pDesc,
             [In] REFIID riid,
             [Out] void** ppPipelineState
         );
@@ -54,7 +54,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT CreateComputePipelineState(
             [In] ID3D12Device* This,
-            [In] D3D12_COMPUTE_PIPELINE_STATE_DESC* pDesc,
+            [In] /* readonly */ D3D12_COMPUTE_PIPELINE_STATE_DESC* pDesc,
             [In] REFIID riid,
             [Out] void** ppPipelineState
         );
@@ -84,7 +84,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT CreateDescriptorHeap(
             [In] ID3D12Device* This,
-            [In] D3D12_DESCRIPTOR_HEAP_DESC* pDescriptorHeapDesc,
+            [In] /* readonly */ D3D12_DESCRIPTOR_HEAP_DESC* pDescriptorHeapDesc,
             [In] REFIID riid,
             [Out] void** ppvHeap
         );

@@ -31,7 +31,7 @@ namespace TerraFX.Interop
             [In] IDXGIResource1* This,
             [In, Optional] /* readonly */ SECURITY_ATTRIBUTES* pAttributes,
             [In] DWORD dwAccess,
-            [In, Optional] /* const */ LPCWSTR lpName,
+            [In, Optional] LPCWSTR lpName,
             [Out] HANDLE pHandle
         );
         #endregion

@@ -24,14 +24,28 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="HREFTYPE" /> value to a <see cref="uint" /> value.</summary>
+        /// <summary>Explicitly converts a <see cref="HREFTYPE" /> value to a <see cref="int" /> value.</summary>
+        /// <param name="value">The <see cref="HREFTYPE" /> value to convert.</param>
+        public static explicit operator int(HREFTYPE value)
+        {
+            return (int)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="int" /> value to a <see cref="HREFTYPE" /> value.</summary>
+        /// <param name="value">The <see cref="int" /> value to convert.</param>
+        public static explicit operator HREFTYPE(int value)
+        {
+            return new HREFTYPE((DWORD)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="HREFTYPE" /> value to a <see cref="uint" /> value.</summary>
         /// <param name="value">The <see cref="HREFTYPE" /> value to convert.</param>
         public static implicit operator uint(HREFTYPE value)
         {
             return value._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="HREFTYPE" /> value to a <see cref="DWORD" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="HREFTYPE" /> value to a <see cref="DWORD" /> value.</summary>
         /// <param name="value">The <see cref="HREFTYPE" /> value to convert.</param>
         public static implicit operator DWORD(HREFTYPE value)
         {

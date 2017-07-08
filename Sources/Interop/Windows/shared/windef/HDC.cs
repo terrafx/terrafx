@@ -41,16 +41,37 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="HDC" /> value to a <see cref="void" />* value.</summary>
+        /// <summary>Explicitly converts a <see cref="HDC" /> value to a <see cref="IntPtr" />* value.</summary>
         /// <param name="value">The <see cref="HDC" /> value to convert.</param>
-        public static implicit operator void* (HDC value)
+        public static explicit operator IntPtr(HDC value)
+        {
+            return (IntPtr)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="IntPtr" /> value to a <see cref="HDC" />* value.</summary>
+        /// <param name="value">The <see cref="IntPtr" /> value to convert.</param>
+        public static explicit operator HDC(IntPtr value)
+        {
+            return new HDC((HANDLE)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="HDC" /> value to a <see cref="UIntPtr" />* value.</summary>
+        /// <param name="value">The <see cref="HDC" /> value to convert.</param>
+        public static implicit operator UIntPtr(HDC value)
         {
             return value._value;
         }
 
-        /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HDC" /> value.</summary>
-        /// <param name="value">The <see cref="void" />* value to convert.</param>
-        public static implicit operator HDC(void* value)
+        /// <summary>Implicitly converts a <see cref="HDC" /> value to a <see cref="HANDLE" /> value.</summary>
+        /// <param name="value">The <see cref="HDC" /> value to convert.</param>
+        public static implicit operator HANDLE(HDC value)
+        {
+            return value._value;
+        }
+
+        /// <summary>Implicitly converts a <see cref="UIntPtr" /> value to a <see cref="HDC" /> value.</summary>
+        /// <param name="value">The <see cref="UIntPtr" /> value to convert.</param>
+        public static implicit operator HDC(UIntPtr value)
         {
             return new HDC(value);
         }
@@ -62,9 +83,16 @@ namespace TerraFX.Interop
             return new HDC(value);
         }
 
-        /// <summary>Explicitly converts a <see cref="HDC" /> value to a <see cref="HANDLE" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HDC" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static implicit operator HDC(void* value)
+        {
+            return new HDC(value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="HDC" /> value to a <see cref="void" />* value.</summary>
         /// <param name="value">The <see cref="HDC" /> value to convert.</param>
-        public static implicit operator HANDLE(HDC value)
+        public static implicit operator void* (HDC value)
         {
             return value._value;
         }

@@ -24,7 +24,21 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="ATOM" /> value to a <see cref="ushort" /> value.</summary>
+        /// <summary>Explicitly converts a <see cref="ATOM" /> value to a <see cref="short" /> value.</summary>
+        /// <param name="value">The <see cref="ATOM" /> value to convert.</param>
+        public static explicit operator short(ATOM value)
+        {
+            return (short)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="short" /> value to a <see cref="ATOM" /> value.</summary>
+        /// <param name="value">The <see cref="short" /> value to convert.</param>
+        public static explicit operator ATOM(short value)
+        {
+            return new ATOM((ushort)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="ATOM" /> value to a <see cref="ushort" /> value.</summary>
         /// <param name="value">The <see cref="ATOM" /> value to convert.</param>
         public static implicit operator ushort(ATOM value)
         {
@@ -45,7 +59,7 @@ namespace TerraFX.Interop
             return new ATOM(value);
         }
 
-        /// <summary>Explicitly converts a <see cref="ATOM" /> value to a <see cref="WORD" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="ATOM" /> value to a <see cref="WORD" /> value.</summary>
         /// <param name="value">The <see cref="ATOM" /> value to convert.</param>
         public static implicit operator WORD(ATOM value)
         {

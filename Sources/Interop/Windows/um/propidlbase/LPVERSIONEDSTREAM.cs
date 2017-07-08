@@ -42,7 +42,7 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="LPVERSIONEDSTREAM" /> value to a <see cref="VERSIONEDSTREAM" />* value.</summary>
+        /// <summary>Implicitly converts a <see cref="LPVERSIONEDSTREAM" /> value to a <see cref="VERSIONEDSTREAM" />* value.</summary>
         /// <param name="value">The <see cref="LPVERSIONEDSTREAM" /> value to convert.</param>
         public static implicit operator VERSIONEDSTREAM* (LPVERSIONEDSTREAM value)
         {

@@ -41,16 +41,37 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="HMONITOR" /> value to a <see cref="void" />* value.</summary>
+        /// <summary>Explicitly converts a <see cref="HMONITOR" /> value to a <see cref="IntPtr" />* value.</summary>
         /// <param name="value">The <see cref="HMONITOR" /> value to convert.</param>
-        public static implicit operator void* (HMONITOR value)
+        public static explicit operator IntPtr(HMONITOR value)
+        {
+            return (IntPtr)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="IntPtr" /> value to a <see cref="HMONITOR" />* value.</summary>
+        /// <param name="value">The <see cref="IntPtr" /> value to convert.</param>
+        public static explicit operator HMONITOR(IntPtr value)
+        {
+            return new HMONITOR((HANDLE)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="HMONITOR" /> value to a <see cref="UIntPtr" />* value.</summary>
+        /// <param name="value">The <see cref="HMONITOR" /> value to convert.</param>
+        public static implicit operator UIntPtr(HMONITOR value)
         {
             return value._value;
         }
 
-        /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HMONITOR" /> value.</summary>
-        /// <param name="value">The <see cref="void" />* value to convert.</param>
-        public static implicit operator HMONITOR(void* value)
+        /// <summary>Implicitly converts a <see cref="HMONITOR" /> value to a <see cref="HANDLE" /> value.</summary>
+        /// <param name="value">The <see cref="HMONITOR" /> value to convert.</param>
+        public static implicit operator HANDLE(HMONITOR value)
+        {
+            return value._value;
+        }
+
+        /// <summary>Implicitly converts a <see cref="UIntPtr" /> value to a <see cref="HMONITOR" /> value.</summary>
+        /// <param name="value">The <see cref="UIntPtr" /> value to convert.</param>
+        public static implicit operator HMONITOR(UIntPtr value)
         {
             return new HMONITOR(value);
         }
@@ -62,9 +83,16 @@ namespace TerraFX.Interop
             return new HMONITOR(value);
         }
 
-        /// <summary>Explicitly converts a <see cref="HMONITOR" /> value to a <see cref="HANDLE" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HMONITOR" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static implicit operator HMONITOR(void* value)
+        {
+            return new HMONITOR(value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="HMONITOR" /> value to a <see cref="void" />* value.</summary>
         /// <param name="value">The <see cref="HMONITOR" /> value to convert.</param>
-        public static implicit operator HANDLE(HMONITOR value)
+        public static implicit operator void* (HMONITOR value)
         {
             return value._value;
         }

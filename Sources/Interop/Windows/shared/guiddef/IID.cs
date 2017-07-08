@@ -23,14 +23,14 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="IID" /> value to a <see cref="Guid" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="IID" /> value to a <see cref="Guid" /> value.</summary>
         /// <param name="value">The <see cref="IID" /> value to convert.</param>
         public static implicit operator Guid(IID value)
         {
             return value._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="IID" /> value to a <see cref="GUID" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="IID" /> value to a <see cref="GUID" /> value.</summary>
         /// <param name="value">The <see cref="IID" /> value to convert.</param>
         public static implicit operator GUID(IID value)
         {

@@ -21,7 +21,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="D3D12_RECT" /> value to a <see cref="RECT" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="D3D12_RECT" /> value to a <see cref="RECT" /> value.</summary>
         /// <param name="value">The <see cref="D3D12_RECT" /> value to convert.</param>
         public static implicit operator RECT(D3D12_RECT value)
         {

@@ -42,11 +42,32 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="HANDLE" /> value to a <see cref="void" />* value.</summary>
+        /// <summary>Explicitly converts a <see cref="HANDLE" /> value to a <see cref="IntPtr" />* value.</summary>
         /// <param name="value">The <see cref="HANDLE" /> value to convert.</param>
-        public static implicit operator void* (HANDLE value)
+        public static explicit operator IntPtr(HANDLE value)
         {
-            return value._value;
+            return (IntPtr)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="IntPtr" /> value to a <see cref="HANDLE" />* value.</summary>
+        /// <param name="value">The <see cref="IntPtr" /> value to convert.</param>
+        public static explicit operator HANDLE(IntPtr value)
+        {
+            return new HANDLE((HANDLE)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="HANDLE" /> value to a <see cref="UIntPtr" />* value.</summary>
+        /// <param name="value">The <see cref="HANDLE" /> value to convert.</param>
+        public static implicit operator UIntPtr(HANDLE value)
+        {
+            return (UIntPtr)(value._value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="UIntPtr" /> value to a <see cref="HANDLE" /> value.</summary>
+        /// <param name="value">The <see cref="UIntPtr" /> value to convert.</param>
+        public static implicit operator HANDLE(UIntPtr value)
+        {
+            return new HANDLE((void*)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HANDLE" /> value.</summary>
@@ -54,6 +75,13 @@ namespace TerraFX.Interop
         public static implicit operator HANDLE(void* value)
         {
             return new HANDLE(value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="HANDLE" /> value to a <see cref="void" />* value.</summary>
+        /// <param name="value">The <see cref="HANDLE" /> value to convert.</param>
+        public static implicit operator void* (HANDLE value)
+        {
+            return value._value;
         }
         #endregion
 

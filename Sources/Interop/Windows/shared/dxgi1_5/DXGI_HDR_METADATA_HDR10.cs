@@ -3,6 +3,8 @@
 // Ported from shared\dxgi1_5.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using TerraFX.Utilities;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct DXGI_HDR_METADATA_HDR10
@@ -26,39 +28,111 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct _RedPrimary_e__FixedBuffer
+        unsafe public /* blittable */ struct _RedPrimary_e__FixedBuffer
         {
             #region Fields
-            public UINT16 _0;
+            public UINT16 e0;
 
-            public UINT16 _1;
+            public UINT16 e1;
+            #endregion
+
+            #region Properties
+            public UINT16 this[int index]
+            {
+                get
+                {
+                    if ((uint)(index) > 1) // (index < 0) || (index > 1)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                    }
+
+                    fixed (UINT16* e = &e0)
+                    {
+                        return e[index];
+                    }
+                }
+            }
             #endregion
         }
 
-        public /* blittable */ struct _GreenPrimary_e__FixedBuffer
+        unsafe public /* blittable */ struct _GreenPrimary_e__FixedBuffer
         {
             #region Fields
-            public UINT16 _0;
+            public UINT16 e0;
 
-            public UINT16 _1;
+            public UINT16 e1;
+            #endregion
+
+            #region Properties
+            public UINT16 this[int index]
+            {
+                get
+                {
+                    if ((uint)(index) > 1) // (index < 0) || (index > 1)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                    }
+
+                    fixed (UINT16* e = &e0)
+                    {
+                        return e[index];
+                    }
+                }
+            }
             #endregion
         }
 
-        public /* blittable */ struct _BluePrimary_e__FixedBuffer
+        unsafe public /* blittable */ struct _BluePrimary_e__FixedBuffer
         {
             #region Fields
-            public UINT16 _0;
+            public UINT16 e0;
 
-            public UINT16 _1;
+            public UINT16 e1;
+            #endregion
+
+            #region Properties
+            public UINT16 this[int index]
+            {
+                get
+                {
+                    if ((uint)(index) > 1) // (index < 0) || (index > 1)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                    }
+
+                    fixed (UINT16* e = &e0)
+                    {
+                        return e[index];
+                    }
+                }
+            }
             #endregion
         }
 
-        public /* blittable */ struct _WhitePoint_e__FixedBuffer
+        unsafe public /* blittable */ struct _WhitePoint_e__FixedBuffer
         {
             #region Fields
-            public UINT16 _0;
+            public UINT16 e0;
 
-            public UINT16 _1;
+            public UINT16 e1;
+            #endregion
+
+            #region Properties
+            public UINT16 this[int index]
+            {
+                get
+                {
+                    if ((uint)(index) > 1) // (index < 0) || (index > 1)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                    }
+
+                    fixed (UINT16* e = &e0)
+                    {
+                        return e[index];
+                    }
+                }
+            }
             #endregion
         }
         #endregion

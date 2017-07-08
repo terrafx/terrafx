@@ -42,7 +42,7 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="REFGUID" /> value to a <see cref="GUID" />* value.</summary>
+        /// <summary>Implicitly converts a <see cref="REFGUID" /> value to a <see cref="GUID" />* value.</summary>
         /// <param name="value">The <see cref="REFGUID" /> value to convert.</param>
         public static implicit operator GUID* (REFGUID value)
         {

@@ -41,16 +41,37 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="HWND" /> value to a <see cref="void" />* value.</summary>
+        /// <summary>Explicitly converts a <see cref="HWND" /> value to a <see cref="IntPtr" />* value.</summary>
         /// <param name="value">The <see cref="HWND" /> value to convert.</param>
-        public static implicit operator void* (HWND value)
+        public static explicit operator IntPtr(HWND value)
+        {
+            return (IntPtr)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="IntPtr" /> value to a <see cref="HWND" />* value.</summary>
+        /// <param name="value">The <see cref="IntPtr" /> value to convert.</param>
+        public static explicit operator HWND(IntPtr value)
+        {
+            return new HWND((HANDLE)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="HWND" /> value to a <see cref="UIntPtr" />* value.</summary>
+        /// <param name="value">The <see cref="HWND" /> value to convert.</param>
+        public static implicit operator UIntPtr(HWND value)
         {
             return value._value;
         }
 
-        /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HWND" /> value.</summary>
-        /// <param name="value">The <see cref="void" />* value to convert.</param>
-        public static implicit operator HWND(void* value)
+        /// <summary>Implicitly converts a <see cref="HWND" /> value to a <see cref="HANDLE" /> value.</summary>
+        /// <param name="value">The <see cref="HWND" /> value to convert.</param>
+        public static implicit operator HANDLE(HWND value)
+        {
+            return value._value;
+        }
+
+        /// <summary>Implicitly converts a <see cref="UIntPtr" /> value to a <see cref="HWND" /> value.</summary>
+        /// <param name="value">The <see cref="UIntPtr" /> value to convert.</param>
+        public static implicit operator HWND(UIntPtr value)
         {
             return new HWND(value);
         }
@@ -62,9 +83,16 @@ namespace TerraFX.Interop
             return new HWND(value);
         }
 
-        /// <summary>Explicitly converts a <see cref="HWND" /> value to a <see cref="HANDLE" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HWND" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static implicit operator HWND(void* value)
+        {
+            return new HWND(value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="HWND" /> value to a <see cref="void" />* value.</summary>
         /// <param name="value">The <see cref="HWND" /> value to convert.</param>
-        public static implicit operator HANDLE(HWND value)
+        public static implicit operator void* (HWND value)
         {
             return value._value;
         }

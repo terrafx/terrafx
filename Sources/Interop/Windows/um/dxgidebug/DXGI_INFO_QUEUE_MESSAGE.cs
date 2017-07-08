@@ -16,7 +16,7 @@ namespace TerraFX.Interop
 
         public DXGI_INFO_QUEUE_MESSAGE_ID ID;
 
-        public /* const */ sbyte* pDescription;
+        public /* readonly */ CHAR* pDescription;
 
         public SIZE_T DescriptionByteLength;
         #endregion

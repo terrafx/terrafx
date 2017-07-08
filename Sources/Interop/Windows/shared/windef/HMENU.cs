@@ -41,16 +41,37 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="HMENU" /> value to a <see cref="void" />* value.</summary>
+        /// <summary>Explicitly converts a <see cref="HMENU" /> value to a <see cref="IntPtr" />* value.</summary>
         /// <param name="value">The <see cref="HMENU" /> value to convert.</param>
-        public static implicit operator void* (HMENU value)
+        public static explicit operator IntPtr(HMENU value)
+        {
+            return (IntPtr)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="IntPtr" /> value to a <see cref="HMENU" />* value.</summary>
+        /// <param name="value">The <see cref="IntPtr" /> value to convert.</param>
+        public static explicit operator HMENU(IntPtr value)
+        {
+            return new HMENU((HANDLE)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="HMENU" /> value to a <see cref="UIntPtr" />* value.</summary>
+        /// <param name="value">The <see cref="HMENU" /> value to convert.</param>
+        public static implicit operator UIntPtr(HMENU value)
         {
             return value._value;
         }
 
-        /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HMENU" /> value.</summary>
-        /// <param name="value">The <see cref="void" />* value to convert.</param>
-        public static implicit operator HMENU(void* value)
+        /// <summary>Implicitly converts a <see cref="HMENU" /> value to a <see cref="HANDLE" /> value.</summary>
+        /// <param name="value">The <see cref="HMENU" /> value to convert.</param>
+        public static implicit operator HANDLE(HMENU value)
+        {
+            return value._value;
+        }
+
+        /// <summary>Implicitly converts a <see cref="UIntPtr" /> value to a <see cref="HMENU" /> value.</summary>
+        /// <param name="value">The <see cref="UIntPtr" /> value to convert.</param>
+        public static implicit operator HMENU(UIntPtr value)
         {
             return new HMENU(value);
         }
@@ -62,9 +83,16 @@ namespace TerraFX.Interop
             return new HMENU(value);
         }
 
-        /// <summary>Explicitly converts a <see cref="HMENU" /> value to a <see cref="HANDLE" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HMENU" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static implicit operator HMENU(void* value)
+        {
+            return new HMENU(value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="HMENU" /> value to a <see cref="void" />* value.</summary>
         /// <param name="value">The <see cref="HMENU" /> value to convert.</param>
-        public static implicit operator HANDLE(HMENU value)
+        public static implicit operator void* (HMENU value)
         {
             return value._value;
         }

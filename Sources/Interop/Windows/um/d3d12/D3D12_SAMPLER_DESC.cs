@@ -3,9 +3,11 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using TerraFX.Utilities;
+
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct D3D12_SAMPLER_DESC
+    public /* blittable */ struct D3D12_SAMPLER_DESC
     {
         #region Fields
         public D3D12_FILTER Filter;
@@ -30,16 +32,34 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct _BorderColor_e__FixedBuffer
+        unsafe public /* blittable */ struct _BorderColor_e__FixedBuffer
         {
             #region Fields
-            public FLOAT _0;
+            public FLOAT e0;
 
-            public FLOAT _1;
+            public FLOAT e1;
 
-            public FLOAT _2;
+            public FLOAT e2;
 
-            public FLOAT _3;
+            public FLOAT e3;
+            #endregion
+
+            #region Properties
+            public FLOAT this[int index]
+            {
+                get
+                {
+                    if ((uint)(index) > 3) // (index < 0) || (index > 3)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                    }
+
+                    fixed (FLOAT* e = &e0)
+                    {
+                        return e[index];
+                    }
+                }
+            }
             #endregion
         }
         #endregion

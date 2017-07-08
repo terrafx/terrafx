@@ -24,7 +24,21 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="HRESULT" /> value to a <see cref="int" /> value.</summary>
+        /// <summary>Explicitly converts a <see cref="HRESULT" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="HRESULT" /> value to convert.</param>
+        public static explicit operator uint(HRESULT value)
+        {
+            return (uint)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="HRESULT" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator HRESULT(uint value)
+        {
+            return new HRESULT((int)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="HRESULT" /> value to a <see cref="int" /> value.</summary>
         /// <param name="value">The <see cref="HRESULT" /> value to convert.</param>
         public static implicit operator int(HRESULT value)
         {

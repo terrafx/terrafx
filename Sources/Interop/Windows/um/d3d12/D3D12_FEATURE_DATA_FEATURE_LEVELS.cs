@@ -10,7 +10,7 @@ namespace TerraFX.Interop
         #region Fields
         public UINT NumFeatureLevels;
 
-        public D3D_FEATURE_LEVEL* pFeatureLevelsRequested;
+        public /* readonly */ D3D_FEATURE_LEVEL* pFeatureLevelsRequested;
 
         public D3D_FEATURE_LEVEL MaxSupportedFeatureLevel;
         #endregion

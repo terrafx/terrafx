@@ -8,7 +8,7 @@ using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct SIZE_T : IComparable, IComparable<SIZE_T>, IEquatable<SIZE_T>, IFormattable
+    unsafe public /* blittable */ struct SIZE_T : IComparable, IComparable<SIZE_T>, IEquatable<SIZE_T>, IFormattable
     {
         #region Fields
         internal ULONG_PTR _value;
@@ -201,21 +201,35 @@ namespace TerraFX.Interop
 
         /// <summary>Explicitly converts a <see cref="ulong" /> value to a <see cref="SIZE_T" /> value.</summary>
         /// <param name="value">The <see cref="ulong" /> value to convert.</param>
+        public static explicit operator nint(SIZE_T value)
+        {
+            return (nint)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="ulong" /> value to a <see cref="SIZE_T" /> value.</summary>
+        /// <param name="value">The <see cref="ulong" /> value to convert.</param>
         public static explicit operator SIZE_T(ulong value)
         {
             return new SIZE_T((ULONG_PTR)(value));
         }
 
+        /// <summary>Explicitly converts a <see cref="void" />* value to a <see cref="SIZE_T" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static explicit operator SIZE_T(void* value)
+        {
+            return new SIZE_T((ULONG_PTR)(value));
+        }
+
+        /// <summary>Explicitly converts a <see cref="SIZE_T" /> value to a <see cref="void" />* value.</summary>
+        /// <param name="value">The <see cref="SIZE_T" /> value to convert.</param>
+        public static explicit operator void* (SIZE_T value)
+        {
+            return (void*)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="SIZE_T" /> value to a <see cref="ulong" /> value.</summary>
         /// <param name="value">The <see cref="SIZE_T" /> value to convert.</param>
         public static implicit operator ulong(SIZE_T value)
-        {
-            return value._value;
-        }
-
-        /// <summary>Implicitly converts a <see cref="SIZE_T" /> value to a <see cref="UIntPtr" /> value.</summary>
-        /// <param name="value">The <see cref="SIZE_T" /> value to convert.</param>
-        public static implicit operator UIntPtr(SIZE_T value)
         {
             return value._value;
         }
@@ -230,13 +244,6 @@ namespace TerraFX.Interop
         /// <summary>Implicitly converts a <see cref="uint" /> value to a <see cref="SIZE_T" /> value.</summary>
         /// <param name="value">The <see cref="uint" /> value to convert.</param>
         public static implicit operator SIZE_T(uint value)
-        {
-            return new SIZE_T(value);
-        }
-
-        /// <summary>Implicitly converts a <see cref="UIntPtr" /> value to a <see cref="SIZE_T" /> value.</summary>
-        /// <param name="value">The <see cref="UIntPtr" /> value to convert.</param>
-        public static implicit operator SIZE_T(UIntPtr value)
         {
             return new SIZE_T(value);
         }

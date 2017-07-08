@@ -4,6 +4,7 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
@@ -27,13 +28,31 @@ namespace TerraFX.Interop
         public /* blittable */ struct _Color_e__FixedBuffer
         {
             #region Fields
-            public FLOAT _0;
+            public FLOAT e0;
 
-            public FLOAT _1;
+            public FLOAT e1;
 
-            public FLOAT _2;
+            public FLOAT e2;
 
-            public FLOAT _3;
+            public FLOAT e3;
+            #endregion
+
+            #region Properties
+            public FLOAT this[int index]
+            {
+                get
+                {
+                    if ((uint)(index) > 3) // (index < 0) || (index > 3)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                    }
+
+                    fixed (FLOAT* e = &e0)
+                    {
+                        return e[index];
+                    }
+                }
+            }
             #endregion
         }
         #endregion

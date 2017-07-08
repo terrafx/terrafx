@@ -24,14 +24,28 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="DISPID" /> value to a <see cref="int" /> value.</summary>
+        /// <summary>Explicitly converts a <see cref="DISPID" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="DISPID" /> value to convert.</param>
+        public static explicit operator uint(DISPID value)
+        {
+            return (uint)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="DISPID" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator DISPID(uint value)
+        {
+            return new DISPID((LONG)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="DISPID" /> value to a <see cref="int" /> value.</summary>
         /// <param name="value">The <see cref="DISPID" /> value to convert.</param>
         public static implicit operator int(DISPID value)
         {
             return value._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="DISPID" /> value to a <see cref="LONG" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="DISPID" /> value to a <see cref="LONG" /> value.</summary>
         /// <param name="value">The <see cref="DISPID" /> value to convert.</param>
         public static implicit operator LONG(DISPID value)
         {

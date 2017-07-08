@@ -21,7 +21,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="VARIANTARG" /> value to a <see cref="VARIANT" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="VARIANTARG" /> value to a <see cref="VARIANT" /> value.</summary>
         /// <param name="value">The <see cref="VARIANTARG" /> value to convert.</param>
         public static implicit operator VARIANT(VARIANTARG value)
         {

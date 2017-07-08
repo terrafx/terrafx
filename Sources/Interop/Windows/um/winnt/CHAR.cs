@@ -24,7 +24,21 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="CHAR" /> value to a <see cref="sbyte" /> value.</summary>
+        /// <summary>Explicitly converts a <see cref="CHAR" /> value to a <see cref="byte" /> value.</summary>
+        /// <param name="value">The <see cref="CHAR" /> value to convert.</param>
+        public static explicit operator byte(CHAR value)
+        {
+            return (byte)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="byte" /> value to a <see cref="CHAR" /> value.</summary>
+        /// <param name="value">The <see cref="byte" /> value to convert.</param>
+        public static explicit operator CHAR(byte value)
+        {
+            return new CHAR((sbyte)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="CHAR" /> value to a <see cref="sbyte" /> value.</summary>
         /// <param name="value">The <see cref="CHAR" /> value to convert.</param>
         public static implicit operator sbyte(CHAR value)
         {

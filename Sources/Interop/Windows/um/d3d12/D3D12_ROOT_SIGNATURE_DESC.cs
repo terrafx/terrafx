@@ -10,11 +10,11 @@ namespace TerraFX.Interop
         #region Fields
         public UINT NumParameters;
 
-        public D3D12_ROOT_PARAMETER* pParameters;
+        public /* readonly */ D3D12_ROOT_PARAMETER* pParameters;
 
         public UINT NumStaticSamplers;
 
-        public D3D12_STATIC_SAMPLER_DESC* pStaticSamplers;
+        public /* readonly */ D3D12_STATIC_SAMPLER_DESC* pStaticSamplers;
 
         public D3D12_ROOT_SIGNATURE_FLAGS Flags;
         #endregion

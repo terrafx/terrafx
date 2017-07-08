@@ -41,30 +41,44 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="HMODULE" /> value to a <see cref="void" />* value.</summary>
+        /// <summary>Explicitly converts a <see cref="HMODULE" /> value to a <see cref="IntPtr" />* value.</summary>
         /// <param name="value">The <see cref="HMODULE" /> value to convert.</param>
-        public static implicit operator void* (HMODULE value)
+        public static explicit operator IntPtr(HMODULE value)
+        {
+            return (IntPtr)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="IntPtr" /> value to a <see cref="HMODULE" />* value.</summary>
+        /// <param name="value">The <see cref="IntPtr" /> value to convert.</param>
+        public static explicit operator HMODULE(IntPtr value)
+        {
+            return new HMODULE((HINSTANCE)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="HMODULE" /> value to a <see cref="UIntPtr" />* value.</summary>
+        /// <param name="value">The <see cref="HMODULE" /> value to convert.</param>
+        public static implicit operator UIntPtr(HMODULE value)
         {
             return value._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="HMODULE" /> value to a <see cref="HANDLE" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="HMODULE" /> value to a <see cref="HANDLE" /> value.</summary>
         /// <param name="value">The <see cref="HMODULE" /> value to convert.</param>
         public static implicit operator HANDLE(HMODULE value)
         {
             return value._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="HMODULE" /> value to a <see cref="HINSTANCE" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="HMODULE" /> value to a <see cref="HINSTANCE" /> value.</summary>
         /// <param name="value">The <see cref="HMODULE" /> value to convert.</param>
         public static implicit operator HINSTANCE(HMODULE value)
         {
             return value._value;
         }
 
-        /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HMODULE" /> value.</summary>
-        /// <param name="value">The <see cref="void" />* value to convert.</param>
-        public static implicit operator HMODULE(void* value)
+        /// <summary>Implicitly converts a <see cref="UIntPtr" /> value to a <see cref="HMODULE" /> value.</summary>
+        /// <param name="value">The <see cref="UIntPtr" /> value to convert.</param>
+        public static implicit operator HMODULE(UIntPtr value)
         {
             return new HMODULE(value);
         }
@@ -81,6 +95,20 @@ namespace TerraFX.Interop
         public static implicit operator HMODULE(HINSTANCE value)
         {
             return new HMODULE(value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HMODULE" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static implicit operator HMODULE(void* value)
+        {
+            return new HMODULE(value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="HMODULE" /> value to a <see cref="void" />* value.</summary>
+        /// <param name="value">The <see cref="HMODULE" /> value to convert.</param>
+        public static implicit operator void* (HMODULE value)
+        {
+            return value._value;
         }
         #endregion
 

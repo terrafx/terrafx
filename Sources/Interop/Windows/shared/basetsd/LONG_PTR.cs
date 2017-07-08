@@ -8,7 +8,7 @@ using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct LONG_PTR : IComparable, IComparable<LONG_PTR>, IEquatable<LONG_PTR>, IFormattable
+    unsafe public /* blittable */ struct LONG_PTR : IComparable, IComparable<LONG_PTR>, IEquatable<LONG_PTR>, IFormattable
     {
         #region Fields
         internal nint _value;
@@ -207,6 +207,13 @@ namespace TerraFX.Interop
             return (int)(value._value);
         }
 
+        /// <summary>Explicitly converts a <see cref="LONG_PTR" /> value to a <see cref="nuint" /> value.</summary>
+        /// <param name="value">The <see cref="LONG_PTR" /> value to convert.</param>
+        public static explicit operator nuint(LONG_PTR value)
+        {
+            return (nuint)(value._value);
+        }
+
         /// <summary>Explicitly converts a <see cref="long" /> value to a <see cref="LONG_PTR" /> value.</summary>
         /// <param name="value">The <see cref="long" /> value to convert.</param>
         public static explicit operator LONG_PTR(long value)
@@ -214,16 +221,23 @@ namespace TerraFX.Interop
             return new LONG_PTR((nint)(value));
         }
 
+        /// <summary>Explicitly converts a <see cref="void" />* value to a <see cref="LONG_PTR" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static explicit operator LONG_PTR(void* value)
+        {
+            return new LONG_PTR((nint)(value));
+        }
+
+        /// <summary>Explicitly converts a <see cref="LONG_PTR" /> value to a <see cref="void" />* value.</summary>
+        /// <param name="value">The <see cref="LONG_PTR" /> value to convert.</param>
+        public static explicit operator void*(LONG_PTR value)
+        {
+            return (void*)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="LONG_PTR" /> value to a <see cref="long" /> value.</summary>
         /// <param name="value">The <see cref="LONG_PTR" /> value to convert.</param>
         public static implicit operator long(LONG_PTR value)
-        {
-            return value._value;
-        }
-
-        /// <summary>Implicitly converts a <see cref="LONG_PTR" /> value to a <see cref="IntPtr" /> value.</summary>
-        /// <param name="value">The <see cref="LONG_PTR" /> value to convert.</param>
-        public static implicit operator IntPtr(LONG_PTR value)
         {
             return value._value;
         }
@@ -238,13 +252,6 @@ namespace TerraFX.Interop
         /// <summary>Implicitly converts a <see cref="int" /> value to a <see cref="LONG_PTR" /> value.</summary>
         /// <param name="value">The <see cref="int" /> value to convert.</param>
         public static implicit operator LONG_PTR(int value)
-        {
-            return new LONG_PTR(value);
-        }
-
-        /// <summary>Implicitly converts a <see cref="IntPtr" /> value to a <see cref="LONG_PTR" /> value.</summary>
-        /// <param name="value">The <see cref="IntPtr" /> value to convert.</param>
-        public static implicit operator LONG_PTR(IntPtr value)
         {
             return new LONG_PTR(value);
         }

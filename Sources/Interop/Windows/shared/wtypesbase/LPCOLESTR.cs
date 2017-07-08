@@ -11,7 +11,7 @@ namespace TerraFX.Interop
     unsafe public /* blittable */ struct LPCOLESTR : IEquatable<LPCOLESTR>, IFormattable
     {
         #region Fields
-        internal readonly OLECHAR* _value;
+        internal /* readonly */ OLECHAR* _value;
         #endregion
 
         #region Constructors
@@ -42,7 +42,7 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="LPCOLESTR" /> value to a <see cref="OLECHAR" />* value.</summary>
+        /// <summary>Implicitly converts a <see cref="LPCOLESTR" /> value to a <see cref="OLECHAR" />* value.</summary>
         /// <param name="value">The <see cref="LPCOLESTR" /> value to convert.</param>
         public static implicit operator OLECHAR*(LPCOLESTR value)
         {

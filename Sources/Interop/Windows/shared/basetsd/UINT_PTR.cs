@@ -8,7 +8,7 @@ using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct UINT_PTR : IComparable, IComparable<UINT_PTR>, IEquatable<UINT_PTR>, IFormattable
+    unsafe public /* blittable */ struct UINT_PTR : IComparable, IComparable<UINT_PTR>, IEquatable<UINT_PTR>, IFormattable
     {
         #region Fields
         internal nuint _value;
@@ -201,21 +201,35 @@ namespace TerraFX.Interop
 
         /// <summary>Explicitly converts a <see cref="ulong" /> value to a <see cref="UINT_PTR" /> value.</summary>
         /// <param name="value">The <see cref="ulong" /> value to convert.</param>
+        public static explicit operator nint(UINT_PTR value)
+        {
+            return (nint)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="ulong" /> value to a <see cref="UINT_PTR" /> value.</summary>
+        /// <param name="value">The <see cref="ulong" /> value to convert.</param>
         public static explicit operator UINT_PTR(ulong value)
         {
             return new UINT_PTR((nuint)(value));
         }
 
+        /// <summary>Explicitly converts a <see cref="void" />* value to a <see cref="UINT_PTR" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static explicit operator UINT_PTR(void* value)
+        {
+            return new UINT_PTR((nuint)(value));
+        }
+
+        /// <summary>Explicitly converts a <see cref="UINT_PTR" /> value to a <see cref="void" />* value.</summary>
+        /// <param name="value">The <see cref="UINT_PTR" /> value to convert.</param>
+        public static explicit operator void* (UINT_PTR value)
+        {
+            return (void*)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="UINT_PTR" /> value to a <see cref="ulong" /> value.</summary>
         /// <param name="value">The <see cref="UINT_PTR" /> value to convert.</param>
         public static implicit operator ulong(UINT_PTR value)
-        {
-            return value._value;
-        }
-
-        /// <summary>Implicitly converts a <see cref="UINT_PTR" /> value to a <see cref="UIntPtr" /> value.</summary>
-        /// <param name="value">The <see cref="UINT_PTR" /> value to convert.</param>
-        public static implicit operator UIntPtr(UINT_PTR value)
         {
             return value._value;
         }
@@ -230,13 +244,6 @@ namespace TerraFX.Interop
         /// <summary>Implicitly converts a <see cref="uint" /> value to a <see cref="UINT_PTR" /> value.</summary>
         /// <param name="value">The <see cref="uint" /> value to convert.</param>
         public static implicit operator UINT_PTR(uint value)
-        {
-            return new UINT_PTR(value);
-        }
-
-        /// <summary>Implicitly converts a <see cref="UIntPtr" /> value to a <see cref="UINT_PTR" /> value.</summary>
-        /// <param name="value">The <see cref="UIntPtr" /> value to convert.</param>
-        public static implicit operator UINT_PTR(UIntPtr value)
         {
             return new UINT_PTR(value);
         }

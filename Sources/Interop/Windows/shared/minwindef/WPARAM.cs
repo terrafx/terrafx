@@ -8,7 +8,7 @@ using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct WPARAM : IComparable, IComparable<WPARAM>, IEquatable<WPARAM>, IFormattable
+    unsafe public /* blittable */ struct WPARAM : IComparable, IComparable<WPARAM>, IEquatable<WPARAM>, IFormattable
     {
         #region Fields
         internal UINT_PTR _value;
@@ -201,21 +201,35 @@ namespace TerraFX.Interop
 
         /// <summary>Explicitly converts a <see cref="ulong" /> value to a <see cref="WPARAM" /> value.</summary>
         /// <param name="value">The <see cref="ulong" /> value to convert.</param>
+        public static explicit operator nint(WPARAM value)
+        {
+            return (nint)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="ulong" /> value to a <see cref="WPARAM" /> value.</summary>
+        /// <param name="value">The <see cref="ulong" /> value to convert.</param>
         public static explicit operator WPARAM(ulong value)
         {
-            return new WPARAM((UINT_PTR)(value));
+            return new WPARAM((nuint)(value));
+        }
+
+        /// <summary>Explicitly converts a <see cref="void" />* value to a <see cref="WPARAM" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static explicit operator WPARAM(void* value)
+        {
+            return new WPARAM((nuint)(value));
+        }
+
+        /// <summary>Explicitly converts a <see cref="WPARAM" /> value to a <see cref="void" />* value.</summary>
+        /// <param name="value">The <see cref="WPARAM" /> value to convert.</param>
+        public static explicit operator void* (WPARAM value)
+        {
+            return (void*)(value._value);
         }
 
         /// <summary>Implicitly converts a <see cref="WPARAM" /> value to a <see cref="ulong" /> value.</summary>
         /// <param name="value">The <see cref="WPARAM" /> value to convert.</param>
         public static implicit operator ulong(WPARAM value)
-        {
-            return value._value;
-        }
-
-        /// <summary>Implicitly converts a <see cref="WPARAM" /> value to a <see cref="UIntPtr" /> value.</summary>
-        /// <param name="value">The <see cref="WPARAM" /> value to convert.</param>
-        public static implicit operator UIntPtr(WPARAM value)
         {
             return value._value;
         }
@@ -227,16 +241,16 @@ namespace TerraFX.Interop
             return value._value;
         }
 
+        /// <summary>Implicitly converts a <see cref="WPARAM" /> value to a <see cref="UINT_PTR" /> value.</summary>
+        /// <param name="value">The <see cref="WPARAM" /> value to convert.</param>
+        public static implicit operator UINT_PTR(WPARAM value)
+        {
+            return value._value;
+        }
+
         /// <summary>Implicitly converts a <see cref="uint" /> value to a <see cref="WPARAM" /> value.</summary>
         /// <param name="value">The <see cref="uint" /> value to convert.</param>
         public static implicit operator WPARAM(uint value)
-        {
-            return new WPARAM(value);
-        }
-
-        /// <summary>Implicitly converts a <see cref="UIntPtr" /> value to a <see cref="WPARAM" /> value.</summary>
-        /// <param name="value">The <see cref="UIntPtr" /> value to convert.</param>
-        public static implicit operator WPARAM(UIntPtr value)
         {
             return new WPARAM(value);
         }
@@ -253,13 +267,6 @@ namespace TerraFX.Interop
         public static implicit operator WPARAM(UINT_PTR value)
         {
             return new WPARAM(value);
-        }
-
-        /// <summary>Implicitly converts a <see cref="WPARAM" /> value to a <see cref="UINT_PTR" /> value.</summary>
-        /// <param name="value">The <see cref="WPARAM" /> value to convert.</param>
-        public static implicit operator UINT_PTR(WPARAM value)
-        {
-            return value._value;
         }
         #endregion
 

@@ -24,21 +24,35 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="MEMBERID" /> value to a <see cref="int" /> value.</summary>
+        // <summary>Explicitly converts a <see cref="MEMBERID" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="MEMBERID" /> value to convert.</param>
+        public static explicit operator uint(MEMBERID value)
+        {
+            return (uint)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="MEMBERID" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator MEMBERID(uint value)
+        {
+            return new MEMBERID((DISPID)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="MEMBERID" /> value to a <see cref="int" /> value.</summary>
         /// <param name="value">The <see cref="MEMBERID" /> value to convert.</param>
         public static implicit operator int(MEMBERID value)
         {
             return value._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="MEMBERID" /> value to a <see cref="DISPID" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="MEMBERID" /> value to a <see cref="DISPID" /> value.</summary>
         /// <param name="value">The <see cref="MEMBERID" /> value to convert.</param>
         public static implicit operator DISPID(MEMBERID value)
         {
             return value._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="MEMBERID" /> value to a <see cref="LONG" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="MEMBERID" /> value to a <see cref="LONG" /> value.</summary>
         /// <param name="value">The <see cref="MEMBERID" /> value to convert.</param>
         public static implicit operator LONG(MEMBERID value)
         {

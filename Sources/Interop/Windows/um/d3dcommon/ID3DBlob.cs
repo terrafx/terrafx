@@ -21,7 +21,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="ID3DBlob" /> value to a <see cref="ID3D10Blob" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="ID3DBlob" /> value to a <see cref="ID3D10Blob" /> value.</summary>
         /// <param name="value">The <see cref="ID3DBlob" /> value to convert.</param>
         public static implicit operator ID3D10Blob(ID3DBlob value)
         {

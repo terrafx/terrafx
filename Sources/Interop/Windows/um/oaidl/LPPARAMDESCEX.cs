@@ -42,7 +42,7 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="LPPARAMDESCEX" /> value to a <see cref="PARAMDESCEX" />* value.</summary>
+        /// <summary>Implicitly converts a <see cref="LPPARAMDESCEX" /> value to a <see cref="PARAMDESCEX" />* value.</summary>
         /// <param name="value">The <see cref="LPPARAMDESCEX" /> value to convert.</param>
         public static implicit operator PARAMDESCEX* (LPPARAMDESCEX value)
         {

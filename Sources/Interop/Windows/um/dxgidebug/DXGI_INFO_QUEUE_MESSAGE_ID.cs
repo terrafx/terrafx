@@ -24,7 +24,21 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="DXGI_INFO_QUEUE_MESSAGE_ID" /> value to a <see cref="int" /> value.</summary>
+        /// <summary>Explicitly converts a <see cref="DXGI_INFO_QUEUE_MESSAGE_ID" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="DXGI_INFO_QUEUE_MESSAGE_ID" /> value to convert.</param>
+        public static explicit operator uint(DXGI_INFO_QUEUE_MESSAGE_ID value)
+        {
+            return (uint)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="DXGI_INFO_QUEUE_MESSAGE_ID" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator DXGI_INFO_QUEUE_MESSAGE_ID(uint value)
+        {
+            return new DXGI_INFO_QUEUE_MESSAGE_ID((int)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="DXGI_INFO_QUEUE_MESSAGE_ID" /> value to a <see cref="int" /> value.</summary>
         /// <param name="value">The <see cref="DXGI_INFO_QUEUE_MESSAGE_ID" /> value to convert.</param>
         public static implicit operator int(DXGI_INFO_QUEUE_MESSAGE_ID value)
         {

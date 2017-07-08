@@ -24,7 +24,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="FLOAT" /> value to a <see cref="float" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="FLOAT" /> value to a <see cref="float" /> value.</summary>
         /// <param name="value">The <see cref="FLOAT" /> value to convert.</param>
         public static implicit operator float(FLOAT value)
         {

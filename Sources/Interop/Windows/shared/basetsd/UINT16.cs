@@ -24,7 +24,21 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="UINT16" /> value to a <see cref="ushort" /> value.</summary>
+        /// <summary>Explicitly converts a <see cref="UINT16" /> value to a <see cref="short" /> value.</summary>
+        /// <param name="value">The <see cref="UINT16" /> value to convert.</param>
+        public static explicit operator short(UINT16 value)
+        {
+            return (short)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="UINT16" /> value to a <see cref="short" /> value.</summary>
+        /// <param name="value">The <see cref="UINT16" /> value to convert.</param>
+        public static explicit operator UINT16(short value)
+        {
+            return new UINT16((ushort)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="UINT16" /> value to a <see cref="ushort" /> value.</summary>
         /// <param name="value">The <see cref="UINT16" /> value to convert.</param>
         public static implicit operator ushort(UINT16 value)
         {

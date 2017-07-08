@@ -24,14 +24,28 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="LCID" /> value to a <see cref="uint" /> value.</summary>
+        /// <summary>Explicitly converts a <see cref="LCID" /> value to a <see cref="int" /> value.</summary>
+        /// <param name="value">The <see cref="LCID" /> value to convert.</param>
+        public static explicit operator int(LCID value)
+        {
+            return (int)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="int" /> value to a <see cref="LCID" /> value.</summary>
+        /// <param name="value">The <see cref="int" /> value to convert.</param>
+        public static explicit operator LCID(int value)
+        {
+            return new LCID((uint)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="LCID" /> value to a <see cref="uint" /> value.</summary>
         /// <param name="value">The <see cref="LCID" /> value to convert.</param>
         public static implicit operator uint(LCID value)
         {
             return value._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="LCID" /> value to a <see cref="DWORD" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="LCID" /> value to a <see cref="DWORD" /> value.</summary>
         /// <param name="value">The <see cref="LCID" /> value to convert.</param>
         public static implicit operator DWORD(LCID value)
         {

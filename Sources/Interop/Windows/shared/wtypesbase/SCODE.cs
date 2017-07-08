@@ -24,14 +24,28 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="SCODE" /> value to a <see cref="int" /> value.</summary>
+        /// <summary>Explicitly converts a <see cref="SCODE" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="SCODE" /> value to convert.</param>
+        public static explicit operator uint(SCODE value)
+        {
+            return (uint)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="SCODE" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator SCODE(uint value)
+        {
+            return new SCODE((LONG)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="SCODE" /> value to a <see cref="int" /> value.</summary>
         /// <param name="value">The <see cref="SCODE" /> value to convert.</param>
         public static implicit operator int(SCODE value)
         {
             return value._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="SCODE" /> value to a <see cref="LONG" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="SCODE" /> value to a <see cref="LONG" /> value.</summary>
         /// <param name="value">The <see cref="SCODE" /> value to convert.</param>
         public static implicit operator LONG(SCODE value)
         {

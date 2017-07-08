@@ -24,7 +24,21 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="UINT64" /> value to a <see cref="ulong" /> value.</summary>
+        /// <summary>Explicitly converts a <see cref="UINT64" /> value to a <see cref="long" /> value.</summary>
+        /// <param name="value">The <see cref="UINT64" /> value to convert.</param>
+        public static explicit operator long(UINT64 value)
+        {
+            return (long)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="UINT64" /> value to a <see cref="long" /> value.</summary>
+        /// <param name="value">The <see cref="UINT64" /> value to convert.</param>
+        public static explicit operator UINT64(long value)
+        {
+            return new UINT64((ulong)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="UINT64" /> value to a <see cref="ulong" /> value.</summary>
         /// <param name="value">The <see cref="UINT64" /> value to convert.</param>
         public static implicit operator ulong(UINT64 value)
         {

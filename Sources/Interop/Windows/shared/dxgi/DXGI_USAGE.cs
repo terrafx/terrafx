@@ -24,14 +24,28 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="DXGI_USAGE" /> value to a <see cref="uint" /> value.</summary>
+        /// <summary>Explicitly converts a <see cref="DXGI_USAGE" /> value to a <see cref="int" /> value.</summary>
+        /// <param name="value">The <see cref="DXGI_USAGE" /> value to convert.</param>
+        public static explicit operator int(DXGI_USAGE value)
+        {
+            return (int)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="int" /> value to a <see cref="DXGI_USAGE" /> value.</summary>
+        /// <param name="value">The <see cref="int" /> value to convert.</param>
+        public static explicit operator DXGI_USAGE(int value)
+        {
+            return new DXGI_USAGE((uint)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="DXGI_USAGE" /> value to a <see cref="uint" /> value.</summary>
         /// <param name="value">The <see cref="DXGI_USAGE" /> value to convert.</param>
         public static implicit operator uint(DXGI_USAGE value)
         {
             return value._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="DXGI_USAGE" /> value to a <see cref="DWORD" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="DXGI_USAGE" /> value to a <see cref="DWORD" /> value.</summary>
         /// <param name="value">The <see cref="DXGI_USAGE" /> value to convert.</param>
         public static implicit operator DWORD(DXGI_USAGE value)
         {

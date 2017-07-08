@@ -42,7 +42,7 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="LPOLESTR" /> value to a <see cref="OLECHAR" />* value.</summary>
+        /// <summary>Implicitly converts a <see cref="LPOLESTR" /> value to a <see cref="OLECHAR" />* value.</summary>
         /// <param name="value">The <see cref="LPOLESTR" /> value to convert.</param>
         public static implicit operator OLECHAR*(LPOLESTR value)
         {

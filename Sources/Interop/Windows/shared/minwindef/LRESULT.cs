@@ -8,7 +8,7 @@ using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct LRESULT : IComparable, IComparable<LRESULT>, IEquatable<LRESULT>, IFormattable
+    unsafe public /* blittable */ struct LRESULT : IComparable, IComparable<LRESULT>, IEquatable<LRESULT>, IFormattable
     {
         #region Fields
         internal LONG_PTR _value;
@@ -207,23 +207,37 @@ namespace TerraFX.Interop
             return (int)(value._value);
         }
 
+        /// <summary>Explicitly converts a <see cref="LRESULT" /> value to a <see cref="nuint" /> value.</summary>
+        /// <param name="value">The <see cref="LRESULT" /> value to convert.</param>
+        public static explicit operator nuint(LRESULT value)
+        {
+            return (nuint)(value._value);
+        }
+
         /// <summary>Explicitly converts a <see cref="long" /> value to a <see cref="LRESULT" /> value.</summary>
         /// <param name="value">The <see cref="long" /> value to convert.</param>
         public static explicit operator LRESULT(long value)
         {
-            return new LRESULT((LONG_PTR)(value));
+            return new LRESULT((nint)(value));
+        }
+
+        /// <summary>Explicitly converts a <see cref="void" />* value to a <see cref="LRESULT" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static explicit operator LRESULT(void* value)
+        {
+            return new LRESULT((nint)(value));
+        }
+
+        /// <summary>Explicitly converts a <see cref="LRESULT" /> value to a <see cref="void" />* value.</summary>
+        /// <param name="value">The <see cref="LRESULT" /> value to convert.</param>
+        public static explicit operator void* (LRESULT value)
+        {
+            return (void*)(value._value);
         }
 
         /// <summary>Implicitly converts a <see cref="LRESULT" /> value to a <see cref="long" /> value.</summary>
         /// <param name="value">The <see cref="LRESULT" /> value to convert.</param>
         public static implicit operator long(LRESULT value)
-        {
-            return value._value;
-        }
-
-        /// <summary>Implicitly converts a <see cref="LRESULT" /> value to a <see cref="IntPtr" /> value.</summary>
-        /// <param name="value">The <see cref="LRESULT" /> value to convert.</param>
-        public static implicit operator IntPtr(LRESULT value)
         {
             return value._value;
         }
@@ -235,16 +249,16 @@ namespace TerraFX.Interop
             return value._value;
         }
 
+        /// <summary>Implicitly converts a <see cref="LRESULT" /> value to a <see cref="LONG_PTR" /> value.</summary>
+        /// <param name="value">The <see cref="LRESULT" /> value to convert.</param>
+        public static implicit operator LONG_PTR(LRESULT value)
+        {
+            return value._value;
+        }
+
         /// <summary>Implicitly converts a <see cref="int" /> value to a <see cref="LRESULT" /> value.</summary>
         /// <param name="value">The <see cref="int" /> value to convert.</param>
         public static implicit operator LRESULT(int value)
-        {
-            return new LRESULT(value);
-        }
-
-        /// <summary>Implicitly converts a <see cref="IntPtr" /> value to a <see cref="LRESULT" /> value.</summary>
-        /// <param name="value">The <see cref="IntPtr" /> value to convert.</param>
-        public static implicit operator LRESULT(IntPtr value)
         {
             return new LRESULT(value);
         }
@@ -261,13 +275,6 @@ namespace TerraFX.Interop
         public static implicit operator LRESULT(LONG_PTR value)
         {
             return new LRESULT(value);
-        }
-
-        /// <summary>Implicitly converts a <see cref="LRESULT" /> value to a <see cref="LONG_PTR" /> value.</summary>
-        /// <param name="value">The <see cref="LRESULT" /> value to convert.</param>
-        public static implicit operator LONG_PTR(LRESULT value)
-        {
-            return value._value;
         }
         #endregion
 

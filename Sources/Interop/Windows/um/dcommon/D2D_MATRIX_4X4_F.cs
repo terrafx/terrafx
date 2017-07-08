@@ -4,12 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Represents a 4-by-4 matrix.</summary>
     [StructLayout(LayoutKind.Explicit)]
-    unsafe public /* blittable */ struct D2D_MATRIX_4X4_F
+    public /* blittable */ struct D2D_MATRIX_4X4_F
     {
         #region Fields
         #region struct
@@ -67,48 +68,71 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct _m_e__FixedBuffer
+        unsafe public /* blittable */ struct _m_e__FixedBuffer
         {
             #region Fields
-            #region 0
-            public FLOAT _0_0;
+            #region e0_*
+            public FLOAT e0_0;
 
-            public FLOAT _0_1;
+            public FLOAT e0_1;
 
-            public FLOAT _0_2;
+            public FLOAT e0_2;
 
-            public FLOAT _0_3;
+            public FLOAT e0_3;
             #endregion
 
-            #region 1
-            public FLOAT _1_0;
+            #region e1_*
+            public FLOAT e1_0;
 
-            public FLOAT _1_1;
+            public FLOAT e1_1;
 
-            public FLOAT _1_2;
+            public FLOAT e1_2;
 
-            public FLOAT _1_3;
+            public FLOAT e1_3;
             #endregion
 
-            #region 2
-            public FLOAT _2_0;
+            #region e2_*
+            public FLOAT e2_0;
 
-            public FLOAT _2_1;
+            public FLOAT e2_1;
 
-            public FLOAT _2_2;
+            public FLOAT e2_2;
 
-            public FLOAT _2_3;
+            public FLOAT e2_3;
             #endregion
 
-            #region 3
-            public FLOAT _3_0;
+            #region e3_*
+            public FLOAT e3_0;
 
-            public FLOAT _3_1;
+            public FLOAT e3_1;
 
-            public FLOAT _3_2;
+            public FLOAT e3_2;
 
-            public FLOAT _3_3;
+            public FLOAT e3_3;
             #endregion
+            #endregion
+
+            #region Properties
+            public FLOAT this[int index1, int index2]
+            {
+                get
+                {
+                    if ((uint)(index1) > 3) // (index1 < 0) || (index1 > 3)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index1), index1);
+                    }
+
+                    if ((uint)(index2) > 3) // (index2 < 0) || (index2 > 3)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index2), index2);
+                    }
+
+                    fixed (FLOAT* e = &e0_0)
+                    {
+                        return e[(index1 * 2) + index2];
+                    }
+                }
+            }
             #endregion
         }
         #endregion

@@ -21,7 +21,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="D2D1_MATRIX_3X2_F" /> value to a <see cref="D2D_MATRIX_3X2_F" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="D2D1_MATRIX_3X2_F" /> value to a <see cref="D2D_MATRIX_3X2_F" /> value.</summary>
         /// <param name="value">The <see cref="D2D1_MATRIX_3X2_F" /> value to convert.</param>
         public static implicit operator D2D_MATRIX_3X2_F(D2D1_MATRIX_3X2_F value)
         {

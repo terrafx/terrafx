@@ -24,20 +24,33 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="OLECHAR" /> value to a <see cref="ushort" /> value.</summary>
+        /// <summary>Explicitly converts a <see cref="OLECHAR" /> value to a <see cref="short" /> value.</summary>
+        /// <param name="value">The <see cref="OLECHAR" /> value to convert.</param>
+        public static explicit operator short(OLECHAR value)
+        {
+            return (short)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="short" /> value to a <see cref="OLECHAR" /> value.</summary>
+        /// <param name="value">The <see cref="short" /> value to convert.</param>
+        public static implicit operator OLECHAR(short value)
+        {
+            return new OLECHAR((WCHAR)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="OLECHAR" /> value to a <see cref="ushort" /> value.</summary>
         /// <param name="value">The <see cref="OLECHAR" /> value to convert.</param>
         public static implicit operator ushort(OLECHAR value)
         {
             return value._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="OLECHAR" /> value to a <see cref="WCHAR" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="OLECHAR" /> value to a <see cref="WCHAR" /> value.</summary>
         /// <param name="value">The <see cref="OLECHAR" /> value to convert.</param>
         public static implicit operator WCHAR(OLECHAR value)
         {
             return value._value;
         }
-
 
         /// <summary>Implicitly converts a <see cref="ushort" /> value to a <see cref="OLECHAR" /> value.</summary>
         /// <param name="value">The <see cref="ushort" /> value to convert.</param>

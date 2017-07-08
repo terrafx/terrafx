@@ -41,16 +41,37 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="HICON" /> value to a <see cref="void" />* value.</summary>
+        /// <summary>Explicitly converts a <see cref="HICON" /> value to a <see cref="IntPtr" />* value.</summary>
         /// <param name="value">The <see cref="HICON" /> value to convert.</param>
-        public static implicit operator void* (HICON value)
+        public static explicit operator IntPtr(HICON value)
+        {
+            return (IntPtr)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="IntPtr" /> value to a <see cref="HICON" />* value.</summary>
+        /// <param name="value">The <see cref="IntPtr" /> value to convert.</param>
+        public static explicit operator HICON(IntPtr value)
+        {
+            return new HICON((HANDLE)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="HICON" /> value to a <see cref="UIntPtr" />* value.</summary>
+        /// <param name="value">The <see cref="HICON" /> value to convert.</param>
+        public static implicit operator UIntPtr(HICON value)
         {
             return value._value;
         }
 
-        /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HICON" /> value.</summary>
-        /// <param name="value">The <see cref="void" />* value to convert.</param>
-        public static implicit operator HICON(void* value)
+        /// <summary>Implicitly converts a <see cref="HICON" /> value to a <see cref="HANDLE" /> value.</summary>
+        /// <param name="value">The <see cref="HICON" /> value to convert.</param>
+        public static implicit operator HANDLE(HICON value)
+        {
+            return value._value;
+        }
+
+        /// <summary>Implicitly converts a <see cref="UIntPtr" /> value to a <see cref="HICON" /> value.</summary>
+        /// <param name="value">The <see cref="UIntPtr" /> value to convert.</param>
+        public static implicit operator HICON(UIntPtr value)
         {
             return new HICON(value);
         }
@@ -62,9 +83,16 @@ namespace TerraFX.Interop
             return new HICON(value);
         }
 
-        /// <summary>Explicitly converts a <see cref="HICON" /> value to a <see cref="HANDLE" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HICON" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static implicit operator HICON(void* value)
+        {
+            return new HICON(value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="HICON" /> value to a <see cref="void" />* value.</summary>
         /// <param name="value">The <see cref="HICON" /> value to convert.</param>
-        public static implicit operator HANDLE(HICON value)
+        public static implicit operator void* (HICON value)
         {
             return value._value;
         }

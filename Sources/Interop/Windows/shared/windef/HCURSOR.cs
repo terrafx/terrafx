@@ -41,16 +41,44 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="HCURSOR" /> value to a <see cref="void" />* value.</summary>
+        /// <summary>Explicitly converts a <see cref="HCURSOR" /> value to a <see cref="IntPtr" />* value.</summary>
         /// <param name="value">The <see cref="HCURSOR" /> value to convert.</param>
-        public static implicit operator void* (HCURSOR value)
+        public static explicit operator IntPtr(HCURSOR value)
+        {
+            return (IntPtr)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="IntPtr" /> value to a <see cref="HCURSOR" />* value.</summary>
+        /// <param name="value">The <see cref="IntPtr" /> value to convert.</param>
+        public static explicit operator HCURSOR(IntPtr value)
+        {
+            return new HCURSOR((HICON)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="HCURSOR" /> value to a <see cref="UIntPtr" />* value.</summary>
+        /// <param name="value">The <see cref="HCURSOR" /> value to convert.</param>
+        public static implicit operator UIntPtr(HCURSOR value)
         {
             return value._value;
         }
 
-        /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HCURSOR" /> value.</summary>
-        /// <param name="value">The <see cref="void" />* value to convert.</param>
-        public static implicit operator HCURSOR(void* value)
+        /// <summary>Implicitly converts a <see cref="HCURSOR" /> value to a <see cref="HANDLE" /> value.</summary>
+        /// <param name="value">The <see cref="HCURSOR" /> value to convert.</param>
+        public static implicit operator HANDLE(HCURSOR value)
+        {
+            return value._value;
+        }
+
+        /// <summary>Implicitly converts a <see cref="HCURSOR" /> value to a <see cref="HICON" /> value.</summary>
+        /// <param name="value">The <see cref="HCURSOR" /> value to convert.</param>
+        public static implicit operator HICON(HCURSOR value)
+        {
+            return value._value;
+        }
+
+        /// <summary>Implicitly converts a <see cref="UIntPtr" /> value to a <see cref="HCURSOR" /> value.</summary>
+        /// <param name="value">The <see cref="UIntPtr" /> value to convert.</param>
+        public static implicit operator HCURSOR(UIntPtr value)
         {
             return new HCURSOR(value);
         }
@@ -69,16 +97,16 @@ namespace TerraFX.Interop
             return new HCURSOR(value);
         }
 
-        /// <summary>Explicitly converts a <see cref="HCURSOR" /> value to a <see cref="HANDLE" /> value.</summary>
-        /// <param name="value">The <see cref="HCURSOR" /> value to convert.</param>
-        public static implicit operator HANDLE(HCURSOR value)
+        /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HCURSOR" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static implicit operator HCURSOR(void* value)
         {
-            return value._value;
+            return new HCURSOR(value);
         }
 
-        /// <summary>Explicitly converts a <see cref="HCURSOR" /> value to a <see cref="HICON" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="HCURSOR" /> value to a <see cref="void" />* value.</summary>
         /// <param name="value">The <see cref="HCURSOR" /> value to convert.</param>
-        public static implicit operator HICON(HCURSOR value)
+        public static implicit operator void* (HCURSOR value)
         {
             return value._value;
         }

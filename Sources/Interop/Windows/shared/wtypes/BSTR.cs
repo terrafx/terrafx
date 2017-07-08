@@ -42,7 +42,7 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="BSTR" /> value to a <see cref="OLECHAR" />* value.</summary>
+        /// <summary>Implicitly converts a <see cref="BSTR" /> value to a <see cref="OLECHAR" />* value.</summary>
         /// <param name="value">The <see cref="BSTR" /> value to convert.</param>
         public static implicit operator OLECHAR*(BSTR value)
         {

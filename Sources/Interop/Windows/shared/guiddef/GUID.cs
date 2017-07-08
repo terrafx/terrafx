@@ -12,6 +12,7 @@ namespace TerraFX.Interop
     unsafe public /* blittable */ struct GUID : IEquatable<GUID>, IFormattable
     {
         #region Fields
+        #region struct
         [FieldOffset(0)]
         public uint Data1;
 
@@ -23,6 +24,7 @@ namespace TerraFX.Interop
 
         [FieldOffset(8)]
         public fixed byte Data4[8];
+        #endregion
 
         [FieldOffset(0)]
         internal Guid _value;
@@ -38,7 +40,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="GUID" /> value to a <see cref="Guid" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="GUID" /> value to a <see cref="Guid" /> value.</summary>
         /// <param name="value">The <see cref="GUID" /> value to convert.</param>
         public static implicit operator Guid(GUID value)
         {

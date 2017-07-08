@@ -24,7 +24,21 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="WCHAR" /> value to a <see cref="ushort" /> value.</summary>
+        /// <summary>Explicitly converts a <see cref="WCHAR" /> value to a <see cref="short" /> value.</summary>
+        /// <param name="value">The <see cref="WCHAR" /> value to convert.</param>
+        public static explicit operator short(WCHAR value)
+        {
+            return (short)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="short" /> value to a <see cref="WCHAR" /> value.</summary>
+        /// <param name="value">The <see cref="short" /> value to convert.</param>
+        public static explicit operator WCHAR(short value)
+        {
+            return new WCHAR((ushort)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="WCHAR" /> value to a <see cref="ushort" /> value.</summary>
         /// <param name="value">The <see cref="WCHAR" /> value to convert.</param>
         public static implicit operator ushort(WCHAR value)
         {

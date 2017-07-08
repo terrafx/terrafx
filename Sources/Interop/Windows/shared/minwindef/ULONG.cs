@@ -24,7 +24,21 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="ULONG" /> value to a <see cref="uint" /> value.</summary>
+        /// <summary>Explicitly converts a <see cref="ULONG" /> value to a <see cref="int" /> value.</summary>
+        /// <param name="value">The <see cref="ULONG" /> value to convert.</param>
+        public static explicit operator int(ULONG value)
+        {
+            return (int)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="int" /> value to a <see cref="ULONG" /> value.</summary>
+        /// <param name="value">The <see cref="int" /> value to convert.</param>
+        public static explicit operator ULONG(int value)
+        {
+            return new ULONG((uint)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="ULONG" /> value to a <see cref="uint" /> value.</summary>
         /// <param name="value">The <see cref="ULONG" /> value to convert.</param>
         public static implicit operator uint(ULONG value)
         {

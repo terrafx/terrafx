@@ -8,10 +8,10 @@ using System.Diagnostics;
 
 namespace TerraFX.Interop
 {
-    unsafe public /* readonly */ /* blittable */ struct LPCWSTR : IEquatable<LPCWSTR>, IFormattable
+    unsafe public /* blittable */ struct LPCWSTR : IEquatable<LPCWSTR>, IFormattable
     {
         #region Fields
-        internal readonly WCHAR* _value;
+        internal /* readonly */ WCHAR* _value;
         #endregion
 
         #region Constructors
@@ -42,7 +42,7 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="LPCWSTR" /> value to a <see cref="WCHAR" />* value.</summary>
+        /// <summary>Implicitly converts a <see cref="LPCWSTR" /> value to a <see cref="WCHAR" />* value.</summary>
         /// <param name="value">The <see cref="LPCWSTR" /> value to convert.</param>
         public static implicit operator WCHAR*(LPCWSTR value)
         {

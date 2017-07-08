@@ -3,6 +3,8 @@
 // Ported from um\oaidl.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using TerraFX.Utilities;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct ARRAYDESC
@@ -16,10 +18,28 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct _rgbounds_e__FixedBuffer
+        unsafe public /* blittable */ struct _rgbounds_e__FixedBuffer
         {
             #region Fields
-            public SAFEARRAYBOUND _0;
+            public SAFEARRAYBOUND e0;
+            #endregion
+
+            #region Properties
+            public SAFEARRAYBOUND this[int index]
+            {
+                get
+                {
+                    if ((uint)(index) > 0) // (index1 < 0) || (index1 > 0)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                    }
+
+                    fixed (SAFEARRAYBOUND* e = &e0)
+                    {
+                        return e[index];
+                    }
+                }
+            }
             #endregion
         }
         #endregion

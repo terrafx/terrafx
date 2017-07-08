@@ -6,7 +6,6 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
-using TerraFX.Interop.Desktop;
 
 namespace TerraFX.Interop
 {

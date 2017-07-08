@@ -24,7 +24,21 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="VARIANT_BOOL" /> value to a <see cref="short" /> value.</summary>
+        /// <summary>Explicitly converts a <see cref="VARIANT_BOOL" /> value to a <see cref="ushort" /> value.</summary>
+        /// <param name="value">The <see cref="VARIANT_BOOL" /> value to convert.</param>
+        public static explicit operator ushort(VARIANT_BOOL value)
+        {
+            return (ushort)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="ushort" /> value to a <see cref="VARIANT_BOOL" /> value.</summary>
+        /// <param name="value">The <see cref="ushort" /> value to convert.</param>
+        public static explicit operator VARIANT_BOOL(ushort value)
+        {
+            return new VARIANT_BOOL((short)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="VARIANT_BOOL" /> value to a <see cref="short" /> value.</summary>
         /// <param name="value">The <see cref="VARIANT_BOOL" /> value to convert.</param>
         public static implicit operator short(VARIANT_BOOL value)
         {

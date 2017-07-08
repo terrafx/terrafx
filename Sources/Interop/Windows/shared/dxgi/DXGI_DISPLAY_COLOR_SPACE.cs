@@ -3,6 +3,8 @@
 // Ported from shared\dxgi.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using TerraFX.Utilities;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct DXGI_DISPLAY_COLOR_SPACE
@@ -14,133 +16,202 @@ namespace TerraFX.Interop
         #endregion
 
         #region Struct
-        public /* blittable */ struct _PrimaryCoordinates_e__FixedBuffer
+        unsafe public /* blittable */ struct _PrimaryCoordinates_e__FixedBuffer
         {
             #region Fields
-            #region 0
-            public FLOAT _0_0;
-            public FLOAT _0_1;
+            #region e0_*
+            public FLOAT e0_0;
+
+            public FLOAT e0_1;
             #endregion
 
-            #region 1
-            public FLOAT _1_0;
-            public FLOAT _1_1;
+            #region e1_*
+            public FLOAT e1_0;
+
+            public FLOAT e1_1;
             #endregion
 
-            #region 2
-            public FLOAT _2_0;
-            public FLOAT _2_1;
+            #region e2_*
+            public FLOAT e2_0;
+
+            public FLOAT e2_1;
             #endregion
 
-            #region 3
-            public FLOAT _3_0;
-            public FLOAT _3_1;
+            #region e3_*
+            public FLOAT e3_0;
+
+            public FLOAT e3_1;
             #endregion
 
-            #region 4
-            public FLOAT _4_0;
-            public FLOAT _4_1;
+            #region e4_*
+            public FLOAT e4_0;
+
+            public FLOAT e4_1;
             #endregion
 
-            #region 5
-            public FLOAT _5_0;
-            public FLOAT _5_1;
+            #region e5_*
+            public FLOAT e5_0;
+
+            public FLOAT e5_1;
             #endregion
 
-            #region 6
-            public FLOAT _6_0;
-            public FLOAT _6_1;
+            #region e6_*
+            public FLOAT e6_0;
+
+            public FLOAT e6_1;
             #endregion
 
-            #region 7
-            public FLOAT _7_0;
-            public FLOAT _7_1;
+            #region e7_*
+            public FLOAT e7_0;
+
+            public FLOAT e7_1;
             #endregion
+            #endregion
+
+            #region Properties
+            public FLOAT this[int index1, int index2]
+            {
+                get
+                {
+                    if ((uint)(index1) > 7) // (index1 < 0) || (index1 > 7)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index1), index1);
+                    }
+
+                    if ((uint)(index2) > 1) // (index2 < 0) || (index2 > 1)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index2), index2);
+                    }
+
+                    fixed (FLOAT* e = &e0_0)
+                    {
+                        return e[(index1 * 2) + index2];
+                    }
+                }
+            }
             #endregion
         }
 
-        public /* blittable */ struct _WhitePoints_e__FixedBuffer
+        unsafe public /* blittable */ struct _WhitePoints_e__FixedBuffer
         {
             #region Fields
-            #region 0
-            public FLOAT _0_0;
-            public FLOAT _0_1;
+            #region e0_*
+            public FLOAT e0_0;
+
+            public FLOAT e0_1;
             #endregion
 
-            #region 1
-            public FLOAT _1_0;
-            public FLOAT _1_1;
+            #region e1_*
+            public FLOAT e1_0;
+
+            public FLOAT e1_1;
             #endregion
 
-            #region 2
-            public FLOAT _2_0;
-            public FLOAT _2_1;
+            #region e2_*
+            public FLOAT e2_0;
+
+            public FLOAT e2_1;
             #endregion
 
-            #region 3
-            public FLOAT _3_0;
-            public FLOAT _3_1;
+            #region e3_*
+            public FLOAT e3_0;
+
+            public FLOAT e3_1;
             #endregion
 
-            #region 4
-            public FLOAT _4_0;
-            public FLOAT _4_1;
+            #region e4_*
+            public FLOAT e4_0;
+
+            public FLOAT e4_1;
             #endregion
 
-            #region 5
-            public FLOAT _5_0;
-            public FLOAT _5_1;
+            #region e5_*
+            public FLOAT e5_0;
+
+            public FLOAT e5_1;
             #endregion
 
-            #region 6
-            public FLOAT _6_0;
-            public FLOAT _6_1;
+            #region e6_*
+            public FLOAT e6_0;
+
+            public FLOAT e6_1;
             #endregion
 
-            #region 7
-            public FLOAT _7_0;
-            public FLOAT _7_1;
+            #region e7_*
+            public FLOAT e7_0;
+
+            public FLOAT e7_1;
             #endregion
 
-            #region 8
-            public FLOAT _8_0;
-            public FLOAT _8_1;
+            #region e8_*
+            public FLOAT e8_0;
+
+            public FLOAT e8_1;
             #endregion
 
-            #region 9
-            public FLOAT _9_0;
-            public FLOAT _9_1;
+            #region e9_*
+            public FLOAT e9_0;
+
+            public FLOAT e9_1;
             #endregion
 
-            #region 10
-            public FLOAT _10_0;
-            public FLOAT _10_1;
+            #region e10_*
+            public FLOAT e10_0;
+
+            public FLOAT e10_1;
             #endregion
 
-            #region 11
-            public FLOAT _11_0;
-            public FLOAT _11_1;
+            #region e11_*
+            public FLOAT e11_0;
+
+            public FLOAT e11_1;
             #endregion
 
-            #region 12
-            public FLOAT _12_0;
-            public FLOAT _12_1;
+            #region e12_*
+            public FLOAT e12_0;
+
+            public FLOAT e12_1;
             #endregion
 
-            #region 13
-            public FLOAT _13_0;
-            public FLOAT _13_1;
+            #region e13_*
+            public FLOAT e13_0;
+
+            public FLOAT e13_1;
             #endregion
 
-            #region 14
-            public FLOAT _14_0;
-            public FLOAT _14_1;
+            #region e14_*
+            public FLOAT e14_0;
+            public FLOAT e14_1;
             #endregion
 
-            #region 15
-            public FLOAT _15_0;
-            public FLOAT _15_1;
+            #region e15_*
+            public FLOAT e15_0;
+
+            public FLOAT e15_1;
             #endregion
+            #endregion
+
+            #region Properties
+            public FLOAT this[int index1, int index2]
+            {
+                get
+                {
+                    if ((uint)(index1) > 15) // (index1 < 0) || (index1 > 15)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index1), index1);
+                    }
+
+                    if ((uint)(index2) > 1) // (index2 < 0) || (index2 > 1)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index2), index2);
+                    }
+
+                    fixed (FLOAT* e = &e0_0)
+                    {
+                        return e[(index1 * 2) + index2];
+                    }
+                }
+            }
             #endregion
         }
         #endregion

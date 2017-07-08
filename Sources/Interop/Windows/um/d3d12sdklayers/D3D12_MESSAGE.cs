@@ -14,7 +14,7 @@ namespace TerraFX.Interop
 
         public D3D12_MESSAGE_ID ID;
 
-        public sbyte* pDescription;
+        public /* readonly */ CHAR* pDescription;
 
         public SIZE_T DescriptionByteLength;
         #endregion

@@ -10,7 +10,7 @@ namespace TerraFX.Interop
         #region Fields
         public UINT NumRects;
 
-        public D3D12_RECT* pRects;
+        public /* readonly */ D3D12_RECT* pRects;
 
         public UINT FirstSubresource;
 

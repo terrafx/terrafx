@@ -42,7 +42,7 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="LPMSG" /> value to a <see cref="MSG" />* value.</summary>
+        /// <summary>Implicitly converts a <see cref="LPMSG" /> value to a <see cref="MSG" />* value.</summary>
         /// <param name="value">The <see cref="LPMSG" /> value to convert.</param>
         public static implicit operator MSG* (LPMSG value)
         {

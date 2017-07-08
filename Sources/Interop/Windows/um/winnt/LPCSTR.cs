@@ -11,7 +11,7 @@ namespace TerraFX.Interop
     unsafe public /* blittable */ struct LPCSTR : IEquatable<LPCSTR>, IFormattable
     {
         #region Fields
-        internal readonly CHAR* _value;
+        internal /* readonly */ CHAR* _value;
         #endregion
 
         #region Constructors
@@ -42,7 +42,7 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="LPCSTR" /> value to a <see cref="CHAR" />* value.</summary>
+        /// <summary>Implicitly converts a <see cref="LPCSTR" /> value to a <see cref="CHAR" />* value.</summary>
         /// <param name="value">The <see cref="LPCSTR" /> value to convert.</param>
         public static implicit operator CHAR*(LPCSTR value)
         {

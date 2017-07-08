@@ -42,11 +42,32 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="LPVOID" /> value to a <see cref="void" />* value.</summary>
+        /// <summary>Explicitly converts a <see cref="LPVOID" /> value to a <see cref="IntPtr" />* value.</summary>
         /// <param name="value">The <see cref="LPVOID" /> value to convert.</param>
-        public static implicit operator void* (LPVOID value)
+        public static explicit operator IntPtr(LPVOID value)
         {
-            return value._value;
+            return (IntPtr)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="IntPtr" /> value to a <see cref="LPVOID" />* value.</summary>
+        /// <param name="value">The <see cref="IntPtr" /> value to convert.</param>
+        public static explicit operator LPVOID(IntPtr value)
+        {
+            return new LPVOID((void*)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="LPVOID" /> value to a <see cref="UIntPtr" />* value.</summary>
+        /// <param name="value">The <see cref="LPVOID" /> value to convert.</param>
+        public static implicit operator UIntPtr(LPVOID value)
+        {
+            return (UIntPtr)(value._value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="UIntPtr" /> value to a <see cref="LPVOID" /> value.</summary>
+        /// <param name="value">The <see cref="UIntPtr" /> value to convert.</param>
+        public static implicit operator LPVOID(UIntPtr value)
+        {
+            return new LPVOID((void*)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="LPVOID" /> value.</summary>
@@ -54,6 +75,13 @@ namespace TerraFX.Interop
         public static implicit operator LPVOID(void* value)
         {
             return new LPVOID(value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="LPVOID" /> value to a <see cref="void" />* value.</summary>
+        /// <param name="value">The <see cref="LPVOID" /> value to convert.</param>
+        public static implicit operator void* (LPVOID value)
+        {
+            return value._value;
         }
         #endregion
 

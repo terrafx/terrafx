@@ -41,16 +41,37 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="HINSTANCE" /> value to a <see cref="void" />* value.</summary>
+        /// <summary>Explicitly converts a <see cref="HINSTANCE" /> value to a <see cref="IntPtr" />* value.</summary>
         /// <param name="value">The <see cref="HINSTANCE" /> value to convert.</param>
-        public static implicit operator void* (HINSTANCE value)
+        public static explicit operator IntPtr(HINSTANCE value)
+        {
+            return (IntPtr)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="IntPtr" /> value to a <see cref="HINSTANCE" />* value.</summary>
+        /// <param name="value">The <see cref="IntPtr" /> value to convert.</param>
+        public static explicit operator HINSTANCE(IntPtr value)
+        {
+            return new HINSTANCE((HANDLE)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="HINSTANCE" /> value to a <see cref="UIntPtr" />* value.</summary>
+        /// <param name="value">The <see cref="HINSTANCE" /> value to convert.</param>
+        public static implicit operator UIntPtr(HINSTANCE value)
         {
             return value._value;
         }
 
-        /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HINSTANCE" /> value.</summary>
-        /// <param name="value">The <see cref="void" />* value to convert.</param>
-        public static implicit operator HINSTANCE(void* value)
+        /// <summary>Implicitly converts a <see cref="HINSTANCE" /> value to a <see cref="HANDLE" /> value.</summary>
+        /// <param name="value">The <see cref="HINSTANCE" /> value to convert.</param>
+        public static implicit operator HANDLE(HINSTANCE value)
+        {
+            return value._value;
+        }
+
+        /// <summary>Implicitly converts a <see cref="UIntPtr" /> value to a <see cref="HINSTANCE" /> value.</summary>
+        /// <param name="value">The <see cref="UIntPtr" /> value to convert.</param>
+        public static implicit operator HINSTANCE(UIntPtr value)
         {
             return new HINSTANCE(value);
         }
@@ -62,9 +83,16 @@ namespace TerraFX.Interop
             return new HINSTANCE(value);
         }
 
-        /// <summary>Explicitly converts a <see cref="HINSTANCE" /> value to a <see cref="HANDLE" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HINSTANCE" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static implicit operator HINSTANCE(void* value)
+        {
+            return new HINSTANCE(value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="HINSTANCE" /> value to a <see cref="void" />* value.</summary>
         /// <param name="value">The <see cref="HINSTANCE" /> value to convert.</param>
-        public static implicit operator HANDLE(HINSTANCE value)
+        public static implicit operator void* (HINSTANCE value)
         {
             return value._value;
         }

@@ -19,7 +19,7 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D3D12_ROOT_SIGNATURE_DESC* GetRootSignatureDesc(
+        public /* static */ delegate /* readonly */ D3D12_ROOT_SIGNATURE_DESC* GetRootSignatureDesc(
             [In] ID3D12RootSignatureDeserializer* This
         );
         #endregion

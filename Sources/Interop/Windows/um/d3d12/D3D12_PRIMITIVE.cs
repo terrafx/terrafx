@@ -21,7 +21,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="D3D12_PRIMITIVE" /> value to a <see cref="D3D_PRIMITIVE" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="D3D12_PRIMITIVE" /> value to a <see cref="D3D_PRIMITIVE" /> value.</summary>
         /// <param name="value">The <see cref="D3D12_PRIMITIVE" /> value to convert.</param>
         public static implicit operator D3D_PRIMITIVE(D3D12_PRIMITIVE value)
         {

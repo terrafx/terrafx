@@ -21,7 +21,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="D2D_POINT_2L" /> value to a <see cref="POINT" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="D2D_POINT_2L" /> value to a <see cref="POINT" /> value.</summary>
         /// <param name="value">The <see cref="D2D_POINT_2L" /> value to convert.</param>
         public static implicit operator POINT(D2D_POINT_2L value)
         {

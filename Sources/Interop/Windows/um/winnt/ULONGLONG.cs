@@ -24,7 +24,21 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="ULONGLONG" /> value to a <see cref="ulong" /> value.</summary>
+        /// <summary>Explicitly converts a <see cref="ULONGLONG" /> value to a <see cref="long" /> value.</summary>
+        /// <param name="value">The <see cref="ULONGLONG" /> value to convert.</param>
+        public static explicit operator long(ULONGLONG value)
+        {
+            return (long)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="long" /> value to a <see cref="ULONGLONG" /> value.</summary>
+        /// <param name="value">The <see cref="long" /> value to convert.</param>
+        public static explicit operator ULONGLONG(long value)
+        {
+            return new ULONGLONG((ulong)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="ULONGLONG" /> value to a <see cref="ulong" /> value.</summary>
         /// <param name="value">The <see cref="ULONGLONG" /> value to convert.</param>
         public static implicit operator ulong(ULONGLONG value)
         {

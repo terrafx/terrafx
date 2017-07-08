@@ -24,7 +24,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="DOUBLE" /> value to a <see cref="double" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="DOUBLE" /> value to a <see cref="double" /> value.</summary>
         /// <param name="value">The <see cref="DOUBLE" /> value to convert.</param>
         public static implicit operator double(DOUBLE value)
         {

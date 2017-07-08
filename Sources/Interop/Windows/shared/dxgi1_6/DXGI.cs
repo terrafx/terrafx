@@ -7,7 +7,7 @@ using System;
 
 namespace TerraFX.Interop
 {
-    unsafe public static partial class DXGI
+    public static partial class DXGI
     {
         #region Constants
         #region IID_*

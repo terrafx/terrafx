@@ -42,7 +42,7 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="LPSAFEARRAY" /> value to a <see cref="SAFEARRAY" />* value.</summary>
+        /// <summary>Implicitly converts a <see cref="LPSAFEARRAY" /> value to a <see cref="SAFEARRAY" />* value.</summary>
         /// <param name="value">The <see cref="LPSAFEARRAY" /> value to convert.</param>
         public static implicit operator SAFEARRAY* (LPSAFEARRAY value)
         {

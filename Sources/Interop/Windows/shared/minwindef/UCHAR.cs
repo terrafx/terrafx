@@ -24,7 +24,21 @@ namespace TerraFX.Interop
         #endregion
 
         #region Operators
-        /// <summary>Explicitly converts a <see cref="UCHAR" /> value to a <see cref="byte" /> value.</summary>
+        /// <summary>Explicitly converts a <see cref="UCHAR" /> value to a <see cref="sbyte" /> value.</summary>
+        /// <param name="value">The <see cref="UCHAR" /> value to convert.</param>
+        public static explicit operator sbyte(UCHAR value)
+        {
+            return (sbyte)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="sbyte" /> value to a <see cref="UCHAR" /> value.</summary>
+        /// <param name="value">The <see cref="sbyte" /> value to convert.</param>
+        public static explicit operator UCHAR(sbyte value)
+        {
+            return new UCHAR((byte)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="UCHAR" /> value to a <see cref="byte" /> value.</summary>
         /// <param name="value">The <see cref="UCHAR" /> value to convert.</param>
         public static implicit operator byte(UCHAR value)
         {

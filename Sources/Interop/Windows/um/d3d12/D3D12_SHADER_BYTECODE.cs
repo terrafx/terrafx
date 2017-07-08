@@ -3,14 +3,12 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System;
-
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct D3D12_SHADER_BYTECODE
     {
         #region Fields
-        public void* pShaderBytecode;
+        public /* readonly */ void* pShaderBytecode;
 
         public SIZE_T BytecodeLength;
         #endregion

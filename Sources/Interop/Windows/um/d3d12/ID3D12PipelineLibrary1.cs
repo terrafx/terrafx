@@ -12,10 +12,6 @@ namespace TerraFX.Interop
     [Guid("80EABF42-2568-4E5E-BD82-C37F86961DC3")]
     unsafe public /* blittable */ struct ID3D12PipelineLibrary1
     {
-        #region Constants
-        public static readonly Guid IID = typeof(ID3D12PipelineLibrary1).GUID;
-        #endregion
-
         #region Fields
         public readonly void* /* Vtbl* */ lpVtbl;
         #endregion

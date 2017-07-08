@@ -42,7 +42,7 @@ namespace TerraFX.Interop
             return left._value != right._value;
         }
 
-        /// <summary>Explicitly converts a <see cref="REFCLSID" /> value to a <see cref="IID" />* value.</summary>
+        /// <summary>Implicitly converts a <see cref="REFCLSID" /> value to a <see cref="IID" />* value.</summary>
         /// <param name="value">The <see cref="REFCLSID" /> value to convert.</param>
         public static implicit operator IID* (REFCLSID value)
         {

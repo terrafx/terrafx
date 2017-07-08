@@ -3,6 +3,8 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using TerraFX.Utilities;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct D3D12_GRAPHICS_PIPELINE_STATE_DESC
@@ -55,21 +57,39 @@ namespace TerraFX.Interop
         public /* blittable */ struct _RTVFormats_e__FixedBuffer
         {
             #region Fields
-            public DXGI_FORMAT _0;
+            public DXGI_FORMAT e0;
 
-            public DXGI_FORMAT _1;
+            public DXGI_FORMAT e1;
 
-            public DXGI_FORMAT _2;
+            public DXGI_FORMAT e2;
 
-            public DXGI_FORMAT _3;
+            public DXGI_FORMAT e3;
 
-            public DXGI_FORMAT _4;
+            public DXGI_FORMAT e4;
 
-            public DXGI_FORMAT _5;
+            public DXGI_FORMAT e5;
 
-            public DXGI_FORMAT _6;
+            public DXGI_FORMAT e6;
 
-            public DXGI_FORMAT _7;
+            public DXGI_FORMAT e7;
+            #endregion
+
+            #region Properties
+            public DXGI_FORMAT this[int index]
+            {
+                get
+                {
+                    if ((uint)(index) > 7) // (index < 0) || (index > 7)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                    }
+
+                    fixed (DXGI_FORMAT* e = &e0)
+                    {
+                        return e[index];
+                    }
+                }
+            }
             #endregion
         }
         #endregion

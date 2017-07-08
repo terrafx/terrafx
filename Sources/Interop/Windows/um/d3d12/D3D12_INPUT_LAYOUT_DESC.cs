@@ -8,7 +8,7 @@ namespace TerraFX.Interop
     unsafe public /* blittable */ struct D3D12_INPUT_LAYOUT_DESC
     {
         #region Fields
-        public D3D12_INPUT_ELEMENT_DESC* pInputElementDescs;
+        public /* readonly */ D3D12_INPUT_ELEMENT_DESC* pInputElementDescs;
 
         public UINT NumElements;
         #endregion

@@ -3,9 +3,11 @@
 // Ported from shared\dxgi1_6.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using TerraFX.Utilities;
+
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct DXGI_OUTPUT_DESC1
+    public /* blittable */ struct DXGI_OUTPUT_DESC1
     {
         #region Fields
         public _DeviceName_e__FixedBuffer DeviceName;
@@ -38,108 +40,198 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct _DeviceName_e__FixedBuffer
+        unsafe public /* blittable */ struct _DeviceName_e__FixedBuffer
         {
             #region Fields
-            public WCHAR _0;
+            public WCHAR e0;
 
-            public WCHAR _1;
+            public WCHAR e1;
 
-            public WCHAR _2;
+            public WCHAR e2;
 
-            public WCHAR _3;
+            public WCHAR e3;
 
-            public WCHAR _4;
+            public WCHAR e4;
 
-            public WCHAR _5;
+            public WCHAR e5;
 
-            public WCHAR _6;
+            public WCHAR e6;
 
-            public WCHAR _7;
+            public WCHAR e7;
 
-            public WCHAR _8;
+            public WCHAR e8;
 
-            public WCHAR _9;
+            public WCHAR e9;
 
-            public WCHAR _10;
+            public WCHAR e10;
 
-            public WCHAR _11;
+            public WCHAR e11;
 
-            public WCHAR _12;
+            public WCHAR e12;
 
-            public WCHAR _13;
+            public WCHAR e13;
 
-            public WCHAR _14;
+            public WCHAR e14;
 
-            public WCHAR _15;
+            public WCHAR e15;
 
-            public WCHAR _16;
+            public WCHAR e16;
 
-            public WCHAR _17;
+            public WCHAR e17;
 
-            public WCHAR _18;
+            public WCHAR e18;
 
-            public WCHAR _19;
+            public WCHAR e19;
 
-            public WCHAR _20;
+            public WCHAR e20;
 
-            public WCHAR _21;
+            public WCHAR e21;
 
-            public WCHAR _22;
+            public WCHAR e22;
 
-            public WCHAR _23;
+            public WCHAR e23;
 
-            public WCHAR _24;
+            public WCHAR e24;
 
-            public WCHAR _25;
+            public WCHAR e25;
 
-            public WCHAR _26;
+            public WCHAR e26;
 
-            public WCHAR _27;
+            public WCHAR e27;
 
-            public WCHAR _28;
+            public WCHAR e28;
 
-            public WCHAR _29;
+            public WCHAR e29;
 
-            public WCHAR _30;
+            public WCHAR e30;
 
-            public WCHAR _31;
+            public WCHAR e31;
+            #endregion
+
+            #region Properties
+            public WCHAR this[int index]
+            {
+                get
+                {
+                    if ((uint)(index) > 31) // (index < 0) || (index > 31)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                    }
+
+                    fixed (WCHAR* e = &e0)
+                    {
+                        return e[index];
+                    }
+                }
+            }
             #endregion
         }
 
-        public /* blittable */ struct _RedPrimary_e__FixedBuffer
+        unsafe public /* blittable */ struct _RedPrimary_e__FixedBuffer
         {
             #region Fields
-            public FLOAT _0;
+            public FLOAT e0;
 
-            public FLOAT _1;
+            public FLOAT e1;
+            #endregion
+
+            #region Properties
+            public FLOAT this[int index]
+            {
+                get
+                {
+                    if ((uint)(index) > 1) // (index < 0) || (index > 1)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                    }
+
+                    fixed (FLOAT* e = &e0)
+                    {
+                        return e[index];
+                    }
+                }
+            }
             #endregion
         }
 
-        public /* blittable */ struct _GreenPrimary_e__FixedBuffer
+        unsafe public /* blittable */ struct _GreenPrimary_e__FixedBuffer
         {
             #region Fields
-            public FLOAT _0;
+            public FLOAT e0;
 
-            public FLOAT _1;
+            public FLOAT e1;
+            #endregion
+
+            #region Properties
+            public FLOAT this[int index]
+            {
+                get
+                {
+                    if ((uint)(index) > 1) // (index < 0) || (index > 1)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                    }
+
+                    fixed (FLOAT* e = &e0)
+                    {
+                        return e[index];
+                    }
+                }
+            }
             #endregion
         }
 
-        public /* blittable */ struct _BluePrimary_e__FixedBuffer
+        unsafe public /* blittable */ struct _BluePrimary_e__FixedBuffer
         {
             #region Fields
-            public FLOAT _0;
+            public FLOAT e0;
 
-            public FLOAT _1;
+            public FLOAT e1;
+            #endregion
+
+            #region Properties
+            public FLOAT this[int index]
+            {
+                get
+                {
+                    if ((uint)(index) > 1) // (index < 0) || (index > 1)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                    }
+
+                    fixed (FLOAT* e = &e0)
+                    {
+                        return e[index];
+                    }
+                }
+            }
             #endregion
         }
 
-        public /* blittable */ struct _WhitePoint_e__FixedBuffer
+        unsafe public /* blittable */ struct _WhitePoint_e__FixedBuffer
         {
             #region Fields
-            public FLOAT _0;
+            public FLOAT e0;
 
-            public FLOAT _1;
+            public FLOAT e1;
+            #endregion
+
+            #region Properties
+            public FLOAT this[int index]
+            {
+                get
+                {
+                    if ((uint)(index) > 1) // (index < 0) || (index > 1)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                    }
+
+                    fixed (FLOAT* e = &e0)
+                    {
+                        return e[index];
+                    }
+                }
+            }
             #endregion
         }
         #endregion
