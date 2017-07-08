@@ -13,7 +13,7 @@ namespace TerraFX.Interop
     unsafe public /* blittable */ struct ID3DDestructionNotifier
     {
         #region Fields
-        public void* /* Vtbl* */ lpVtbl;
+        public readonly void* /* Vtbl* */ lpVtbl;
         #endregion
 
         #region Delegates
