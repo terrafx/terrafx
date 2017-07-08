@@ -3,12 +3,13 @@
 using System.Threading;
 using TerraFX.Interop;
 using TerraFX.Threading;
-using static TerraFX.Interop.WinUser;
+using static TerraFX.Interop.User32;
+using static TerraFX.Interop.Desktop.User32;
 
 namespace TerraFX.Provider.Win32.Threading
 {
     /// <summary>Provides a means of dispatching messages for a thread.</summary>
-    public sealed class Dispatcher : IDispatcher
+    unsafe public sealed class Dispatcher : IDispatcher
     {
         #region Fields
         private Thread _parentThread;
@@ -37,10 +38,12 @@ namespace TerraFX.Provider.Win32.Threading
         /// <remarks>This method does not wait for a new event to be raised if the queue is empty.</remarks>
         public void DispatchPending()
         {
-            while (PeekMessage(out var lpMsg, wMsgFilterMin: WM.NULL, wMsgFilterMax: WM.NULL, wRemoveMsg: PM.REMOVE) != 0)
+            MSG msg;
+
+            while (PeekMessage(&msg, wMsgFilterMin: WM_NULL, wMsgFilterMax: WM_NULL, wRemoveMsg: PM_REMOVE) != 0)
             {
-                TranslateMessage(ref lpMsg);
-                DispatchMessage(ref lpMsg);
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
             }
         }
         #endregion

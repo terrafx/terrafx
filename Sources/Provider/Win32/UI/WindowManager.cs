@@ -11,7 +11,8 @@ using TerraFX.Threading;
 using TerraFX.UI;
 using TerraFX.Utilities;
 using static TerraFX.Interop.Kernel32;
-using static TerraFX.Interop.WinUser;
+using static TerraFX.Interop.User32;
+using static TerraFX.Interop.Desktop.User32;
 
 namespace TerraFX.Provider.Win32.UI
 {
@@ -49,20 +50,20 @@ namespace TerraFX.Provider.Win32.UI
 
             var wndClassEx = new WNDCLASSEX() {
                 cbSize = unchecked((uint)(Marshal.SizeOf<WNDCLASSEX>())),
-                style = CS.VREDRAW | CS.HREDRAW,
-                lpfnWndProc = WndProc,
+                style = CS_VREDRAW | CS_HREDRAW,
+                lpfnWndProc = Marshal.GetFunctionPointerForDelegate(WndProc),
                 cbClsExtra = 0,
                 cbWndExtra = 0,
                 hInstance = EntryModuleHandle,
                 hIcon = null,
                 hCursor = null,
-                hbrBackground = (void*)((int)(COLOR.WINDOW + 1)),
+                hbrBackground = (void*)((int)(COLOR_WINDOW + 1)),
                 lpszMenuName = null,
                 lpszClassName = _lpClassName,
                 hIconSm = null
             };
 
-            var classAtom = RegisterClassEx(ref wndClassEx);
+            var classAtom = RegisterClassEx(&wndClassEx);
 
             if (classAtom == 0)
             {
@@ -82,7 +83,7 @@ namespace TerraFX.Provider.Win32.UI
         #endregion
 
         #region Methods
-        private static LRESULT WindowProc(HWND hWnd, WM Msg, WPARAM wParam, LPARAM lParam)
+        private static LRESULT WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
         {
             if (CreatedWindows.TryGetValue(hWnd, out var window))
             {
@@ -105,7 +106,7 @@ namespace TerraFX.Provider.Win32.UI
             if (_classAtom != 0)
             {
                 var lpClassName = (LPWSTR)((void*)((ushort)(_classAtom)));
-                UnregisterClass(lpClassName, EntryModuleHandle);
+                UnregisterClass((WCHAR*)(lpClassName), EntryModuleHandle);
                 _classAtom = 0;
             }
 

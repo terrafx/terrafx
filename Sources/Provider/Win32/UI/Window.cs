@@ -7,7 +7,8 @@ using TerraFX.Interop;
 using TerraFX.Threading;
 using TerraFX.UI;
 using TerraFX.Utilities;
-using static TerraFX.Interop.WinUser;
+using static TerraFX.Interop.User32;
+using static TerraFX.Interop.Desktop.User32;
 
 namespace TerraFX.Provider.Win32.UI
 {
@@ -33,14 +34,14 @@ namespace TerraFX.Provider.Win32.UI
         internal Window(IDispatchManager dispatchManager, LPWSTR lpClassName, LPWSTR lpWindowName, HINSTANCE hInstance)
         {
             var hWnd = CreateWindowEx(
-                WS_EX.OVERLAPPEDWINDOW,
-                lpClassName,
-                lpWindowName,
-                WS.OVERLAPPEDWINDOW,
-                unchecked((int)(CW.USEDEFAULT)),
-                unchecked((int)(CW.USEDEFAULT)),
-                unchecked((int)(CW.USEDEFAULT)),
-                unchecked((int)(CW.USEDEFAULT)),
+                WS_EX_OVERLAPPEDWINDOW,
+                (WCHAR*)(lpClassName),
+                (WCHAR*)(lpWindowName),
+                WS_OVERLAPPEDWINDOW,
+                unchecked((int)(CW_USEDEFAULT)),
+                unchecked((int)(CW_USEDEFAULT)),
+                unchecked((int)(CW_USEDEFAULT)),
+                unchecked((int)(CW_USEDEFAULT)),
                 null,
                 null,
                 hInstance,
@@ -56,14 +57,16 @@ namespace TerraFX.Provider.Win32.UI
             _dispatcher = dispatchManager.DispatcherForCurrentThread;
             _properties = new PropertySet();
 
-            var succeeded = GetWindowRect(_hWnd, out var lpRect);
+            RECT rect;
+
+            var succeeded = GetWindowRect(_hWnd, &rect);
 
             if (succeeded == 0)
             {
                 ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(GetWindowRect));
             }
 
-            _bounds = new Rectangle(lpRect.left, lpRect.top, (lpRect.right - lpRect.left), (lpRect.bottom - lpRect.top));
+            _bounds = new Rectangle(rect.left, rect.top, (rect.right - rect.left), (rect.bottom - rect.top));
 
             var activeWindow = GetActiveWindow();
             _isActive = (activeWindow == _hWnd);
@@ -86,11 +89,11 @@ namespace TerraFX.Provider.Win32.UI
         /// <param name="wParam">Additional message information.</param>
         /// <param name="lParam">Additional message information.</param>
         /// <returns>The result of processing <paramref name="Msg" />.</returns>
-        public LRESULT WindowProc(WM Msg, WPARAM wParam, LPARAM lParam)
+        public LRESULT WindowProc(UINT Msg, WPARAM wParam, LPARAM lParam)
         {
             switch (Msg)
             {
-                case WM.MOVE:
+                case WM_MOVE:
                 {
                     var x = (ushort)(lParam);
                     var y = (ushort)(lParam >> 16);
@@ -99,7 +102,7 @@ namespace TerraFX.Provider.Win32.UI
                     return 0;
                 }
 
-                case WM.SIZE:
+                case WM_SIZE:
                 {
                     var width = (ushort)(lParam);
                     var height = (ushort)(lParam >> 16);
@@ -108,16 +111,14 @@ namespace TerraFX.Provider.Win32.UI
                     return 0;
                 }
 
-                case WM.ACTIVATE:
+                case WM_ACTIVATE:
                 {
-                    var activateCmd = (WA)((ushort)(wParam));
-                    Debug.Assert(Enum.IsDefined(typeof(WA), activateCmd));
-
-                    _isActive = (activateCmd != WA.INACTIVE);
+                    var activateCmd = ((ushort)(wParam));
+                    _isActive = (activateCmd != WA_INACTIVE);
                     return 0;
                 }
 
-                case WM.SHOWWINDOW:
+                case WM_SHOWWINDOW:
                 {
                     var shown = (BOOL)(unchecked((int)((uint)(wParam))));
                     _isVisible = (shown != 0);
@@ -228,7 +229,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Closes the instance.</summary>
         public void Close()
         {
-            SendMessage(_hWnd, WM.CLOSE, 0, 0);
+            SendMessage(_hWnd, WM_CLOSE, 0, 0);
         }
 
         /// <summary>Hides the instance.</summary>
@@ -236,7 +237,7 @@ namespace TerraFX.Provider.Win32.UI
         {
             if (_isVisible)
             {
-                var succeeded = ShowWindow(_hWnd, SW.HIDE);
+                var succeeded = ShowWindow(_hWnd, SW_HIDE);
 
                 if (succeeded == 0)
                 {
@@ -250,7 +251,7 @@ namespace TerraFX.Provider.Win32.UI
         {
             if (!_isVisible)
             {
-                var succeeded = ShowWindow(_hWnd, SW.SHOW);
+                var succeeded = ShowWindow(_hWnd, SW_SHOW);
 
                 if (succeeded == 0)
                 {

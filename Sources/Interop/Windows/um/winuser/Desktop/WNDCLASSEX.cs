@@ -1,18 +1,20 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-// Ported from um\WinUser.h in the Windows SDK for Windows 10.0.15063.0
+// Ported from um\winuser.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
+
+using System;
 
 namespace TerraFX.Interop.Desktop
 {
     public struct WNDCLASSEX
     {
         #region Fields
-        public uint cbSize;
+        public UINT cbSize;
 
-        public CS style;
+        public UINT style;
 
-        public WNDPROC lpfnWndProc;
+        public IntPtr /* WNDPROC */ lpfnWndProc;
 
         public int cbClsExtra;
 
@@ -26,9 +28,9 @@ namespace TerraFX.Interop.Desktop
 
         public HBRUSH hbrBackground;
 
-        public LPWSTR lpszMenuName;
+        public LPCWSTR lpszMenuName;
 
-        public LPWSTR lpszClassName;
+        public LPCWSTR lpszClassName;
 
         public HICON hIconSm;
         #endregion
