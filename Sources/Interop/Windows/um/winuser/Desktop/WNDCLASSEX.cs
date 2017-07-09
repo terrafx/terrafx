@@ -7,7 +7,7 @@ using System;
 
 namespace TerraFX.Interop.Desktop
 {
-    public struct WNDCLASSEX
+    public /* blittable */ struct WNDCLASSEX
     {
         #region Fields
         public UINT cbSize;

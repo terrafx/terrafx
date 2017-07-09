@@ -7,7 +7,7 @@ using System;
 
 namespace TerraFX.Interop.Desktop
 {
-    public struct WNDCLASS
+    public /* blittable */ struct WNDCLASS
     {
         #region Fields
         public UINT style;

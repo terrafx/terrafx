@@ -5,6 +5,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Security;
 
 namespace TerraFX.Interop
 {
@@ -36,6 +37,7 @@ namespace TerraFX.Interop
 
         #region Methods
         [DllImport("DXGIDebug", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "DXGIGetDebugInterface", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [SuppressUnmanagedCodeSecurity]
         public static extern HRESULT DXGIGetDebugInterface(
             [In] REFIID riid,
             [Out] void** pDebug

@@ -21,7 +21,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT GetDesc(
             [In] ID3D12ShaderReflectionVariable* This,
-            [Out] D3D12_SHADER_VARIABLE_DESC *pDesc
+            [Out] D3D12_SHADER_VARIABLE_DESC* pDesc
         );
 
         [SuppressUnmanagedCodeSecurity]

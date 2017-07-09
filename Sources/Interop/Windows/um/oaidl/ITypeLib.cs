@@ -66,10 +66,10 @@ namespace TerraFX.Interop
         public /* static */ delegate HRESULT GetDocumentation(
             [In] ITypeLib* This,
             [In] INT index,
-            [Out, Optional] BSTR *pBstrName,
-            [Out, Optional] BSTR *pBstrDocString,
-            [Out] DWORD *pdwHelpContext,
-            [Out, Optional] BSTR *pBstrHelpFile
+            [Out, Optional] BSTR* pBstrName,
+            [Out, Optional] BSTR* pBstrDocString,
+            [Out] DWORD* pdwHelpContext,
+            [Out, Optional] BSTR* pBstrHelpFile
         );
 
         [SuppressUnmanagedCodeSecurity]

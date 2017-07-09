@@ -77,10 +77,10 @@ namespace TerraFX.Interop
         public FILETIME filetime;
 
         [FieldOffset(8)]
-        public CLSID *puuid;
+        public CLSID* puuid;
 
         [FieldOffset(8)]
-        public CLIPDATA *pclipdata;
+        public CLIPDATA* pclipdata;
 
         [FieldOffset(8)]
         public BSTR bstrVal;
@@ -98,16 +98,16 @@ namespace TerraFX.Interop
         public LPWSTR pwszVal;
 
         [FieldOffset(8)]
-        public IUnknown *punkVal;
+        public IUnknown* punkVal;
 
         [FieldOffset(8)]
-        public IDispatch *pdispVal;
+        public IDispatch* pdispVal;
 
         [FieldOffset(8)]
-        public IStream *pStream;
+        public IStream* pStream;
 
         [FieldOffset(8)]
-        public IStorage *pStorage;
+        public IStorage* pStorage;
 
         [FieldOffset(8)]
         public LPVERSIONEDSTREAM pVersionedStream;
@@ -182,64 +182,64 @@ namespace TerraFX.Interop
         public CAPROPVARIANT capropvar;
 
         [FieldOffset(8)]
-        public CHAR *pcVal;
+        public CHAR* pcVal;
 
         [FieldOffset(8)]
-        public UCHAR *pbVal;
+        public UCHAR* pbVal;
 
         [FieldOffset(8)]
-        public SHORT *piVal;
+        public SHORT* piVal;
 
         [FieldOffset(8)]
-        public USHORT *puiVal;
+        public USHORT* puiVal;
 
         [FieldOffset(8)]
-        public LONG *plVal;
+        public LONG* plVal;
 
         [FieldOffset(8)]
-        public ULONG *pulVal;
+        public ULONG* pulVal;
 
         [FieldOffset(8)]
-        public INT *pintVal;
+        public INT* pintVal;
 
         [FieldOffset(8)]
-        public UINT *puintVal;
+        public UINT* puintVal;
 
         [FieldOffset(8)]
-        public FLOAT *pfltVal;
+        public FLOAT* pfltVal;
 
         [FieldOffset(8)]
-        public DOUBLE *pdblVal;
+        public DOUBLE* pdblVal;
 
         [FieldOffset(8)]
-        public VARIANT_BOOL *pboolVal;
+        public VARIANT_BOOL* pboolVal;
 
         [FieldOffset(8)]
-        public DECIMAL *pdecVal;
+        public DECIMAL* pdecVal;
 
         [FieldOffset(8)]
-        public SCODE *pscode;
+        public SCODE* pscode;
 
         [FieldOffset(8)]
-        public CY *pcyVal;
+        public CY* pcyVal;
 
         [FieldOffset(8)]
-        public DATE *pdate;
+        public DATE* pdate;
 
         [FieldOffset(8)]
-        public BSTR *pbstrVal;
+        public BSTR* pbstrVal;
 
         [FieldOffset(8)]
-        public IUnknown **ppunkVal;
+        public IUnknown** ppunkVal;
 
         [FieldOffset(8)]
-        public IDispatch **ppdispVal;
+        public IDispatch** ppdispVal;
 
         [FieldOffset(8)]
-        public LPSAFEARRAY *pparray;
+        public LPSAFEARRAY* pparray;
 
         [FieldOffset(8)]
-        public PROPVARIANT *pvarVal;
+        public PROPVARIANT* pvarVal;
         #endregion
         #endregion
 

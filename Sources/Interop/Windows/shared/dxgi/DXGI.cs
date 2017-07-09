@@ -5,6 +5,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Security;
 
 namespace TerraFX.Interop
 {
@@ -118,6 +119,7 @@ namespace TerraFX.Interop
 
         #region Methods
         [DllImport("DXGI", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CreateDXGIFactory1", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [SuppressUnmanagedCodeSecurity]
         public static extern HRESULT CreateDXGIFactory1(
             [In] REFIID riid,
             [Out] void** ppFactory

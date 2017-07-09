@@ -6,7 +6,7 @@
 
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <NoWarn>CS1591;$(NoWarn)</NoWarn>
+    <NoWarn>CS1573;CS1591;$(NoWarn)</NoWarn>
     <RootNamespace>TerraFX.Interop</RootNamespace>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
