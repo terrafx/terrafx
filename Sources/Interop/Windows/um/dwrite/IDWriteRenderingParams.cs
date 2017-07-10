@@ -1,0 +1,76 @@
+// Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
+
+// Ported from um\dwrite.h in the Windows SDK for Windows 10.0.15063.0
+// Original source is Copyright © Microsoft. All rights reserved.
+
+using System;
+using System.Runtime.InteropServices;
+using System.Security;
+
+namespace TerraFX.Interop
+{
+    /// <summary>The interface that represents text rendering settings for glyph rasterization and filtering.</summary>
+    [Guid("2F0DA53A-2ADD-47CD-82EE-D9EC34688E75")]
+    unsafe public /* blittable */ struct IDWriteRenderingParams
+    {
+        #region Fields
+        public readonly void* /* Vtbl* */ lpVtbl;
+        #endregion
+
+        #region Delegates
+        /// <summary>Gets the gamma value used for gamma correction. Valid values must be greater than zero and cannot exceed 256.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate FLOAT GetGamma(
+            [In] IDWriteRenderingParams* This
+        );
+
+        /// <summary>Gets the amount of contrast enhancement. Valid values are greater than or equal to zero.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate FLOAT GetEnhancedContrast(
+            [In] IDWriteRenderingParams* This
+        );
+
+        /// <summary>Gets the ClearType level. Valid values range from 0.0f (no ClearType) to 1.0f (full ClearType).</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate FLOAT GetClearTypeLevel(
+            [In] IDWriteRenderingParams* This
+        );
+
+        /// <summary>Gets the pixel geometry.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate DWRITE_PIXEL_GEOMETRY GetPixelGeometry(
+            [In] IDWriteRenderingParams* This
+        );
+
+        /// <summary>Gets the rendering mode.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate DWRITE_RENDERING_MODE GetRenderingMode(
+            [In] IDWriteRenderingParams* This
+        );
+        #endregion
+
+        #region Structs
+        public /* blittable */ struct Vtbl
+        {
+            #region Fields
+            public IUnknown.Vtbl BaseVtbl;
+
+            public GetGamma GetGamma;
+
+            public GetEnhancedContrast GetEnhancedContrast;
+
+            public GetClearTypeLevel GetClearTypeLevel;
+
+            public GetPixelGeometry GetPixelGeometry;
+
+            public GetRenderingMode GetRenderingMode;
+            #endregion
+        }
+        #endregion
+    }
+}
