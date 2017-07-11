@@ -3,11 +3,11 @@
 // Ported from X11\xlib.h in the Xlib - C Language X Interface: X Version 11, Release 7.7
 // Original source is Copyright © The Open Group.
 
-using System;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    unsafe public struct XErrorEvent
+    unsafe public /* blittable */ struct XErrorEvent
     {
         #region Fields
         public int type;
@@ -16,7 +16,7 @@ namespace TerraFX.Interop
 
         public XID resourceid;
 
-        public UIntPtr serial;
+        public nuint serial;
 
         public byte error_code;
 

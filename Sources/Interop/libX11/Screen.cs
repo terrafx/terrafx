@@ -3,11 +3,11 @@
 // Ported from X11\xlib.h in the Xlib - C Language X Interface: X Version 11, Release 7.7
 // Original source is Copyright © The Open Group.
 
-using System;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    unsafe public struct Screen
+    unsafe public /* blittable */ struct Screen
     {
         #region Fields
         public XExtData* ext_data;
@@ -32,9 +32,9 @@ namespace TerraFX.Interop
 
         public Colormap cmap;
 
-        public UIntPtr white_pixel;
+        public nuint white_pixel;
 
-        public UIntPtr black_pixel;
+        public nuint black_pixel;
 
         public int max_maps, min_maps;
 
@@ -42,7 +42,7 @@ namespace TerraFX.Interop
 
         public Bool save_unders;
 
-        public IntPtr root_input_mask;
+        public nint root_input_mask;
         #endregion
     }
 }

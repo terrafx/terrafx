@@ -9,7 +9,7 @@ using TerraFX.Utilities;
 namespace TerraFX.Interop
 {
     /// <summary>An integer error indication.</summary>
-    public struct Status : IComparable, IComparable<Status>, IEquatable<Status>, IFormattable
+    public /* blittable */ struct Status : IComparable, IComparable<Status>, IEquatable<Status>, IFormattable
     {
         #region Fields
         internal int _value;
@@ -17,14 +17,14 @@ namespace TerraFX.Interop
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Status" /> struct.</summary>
-        /// <param name="value">The value of the instance.</param>
+        /// <param name="value">The <see cref="int" /> used to initialize the instance.</param>
         public Status(int value)
         {
             _value = value;
         }
         #endregion
 
-        #region Operators
+        #region Comparison Operators
         /// <summary>Compares two <see cref="Status" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="Status" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="Status" /> to compare with <paramref name="left" />.</param>
@@ -40,25 +40,7 @@ namespace TerraFX.Interop
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
         public static bool operator !=(Status left, Status right)
         {
-            return (left._value == right._value);
-        }
-
-        /// <summary>Compares two <see cref="Status" /> instances to determine relative sort-order.</summary>
-        /// <param name="left">The <see cref="Status" /> to compare with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="Status" /> to compare with <paramref name="left" />.</param>
-        /// <returns><c>true</c> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise, <c>false</c>.</returns>
-        public static bool operator >(Status left, Status right)
-        {
-            return (left._value > right._value);
-        }
-
-        /// <summary>Compares two <see cref="Status" /> instances to determine relative sort-order.</summary>
-        /// <param name="left">The <see cref="Status" /> to compare with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="Status" /> to compare with <paramref name="left" />.</param>
-        /// <returns><c>true</c> if <paramref name="left" /> is greater than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
-        public static bool operator >=(Status left, Status right)
-        {
-            return (left._value >= right._value);
+            return (left._value != right._value);
         }
 
         /// <summary>Compares two <see cref="Status" /> instances to determine relative sort-order.</summary>
@@ -73,28 +55,48 @@ namespace TerraFX.Interop
         /// <summary>Compares two <see cref="Status" /> instances to determine relative sort-order.</summary>
         /// <param name="left">The <see cref="Status" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="Status" /> to compare with <paramref name="left" />.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise, <c>false</c>.</returns>
+        public static bool operator >(Status left, Status right)
+        {
+            return (left._value > right._value);
+        }
+
+        /// <summary>Compares two <see cref="Status" /> instances to determine relative sort-order.</summary>
+        /// <param name="left">The <see cref="Status" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="Status" /> to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> is less than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
         public static bool operator <=(Status left, Status right)
         {
             return (left._value <= right._value);
         }
 
-        /// <summary>Converts a <see cref="Status" /> to an equivalent <see cref="int" /> value.</summary>
-        /// <param name="value">The <see cref="Status" /> to convert.</param>
+        /// <summary>Compares two <see cref="Status" /> instances to determine relative sort-order.</summary>
+        /// <param name="left">The <see cref="Status" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="Status" /> to compare with <paramref name="left" />.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> is greater than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
+        public static bool operator >=(Status left, Status right)
+        {
+            return (left._value >= right._value);
+        }
+        #endregion
+
+        #region Cast Operators
+        /// <summary>Implicitly converts a <see cref="Status" /> value to a <see cref="int" /> value.</summary>
+        /// <param name="value">The <see cref="Status" /> value to convert.</param>
         public static implicit operator int(Status value)
         {
             return value._value;
         }
 
-        /// <summary>Converts a <see cref="int" /> to an equivalent <see cref="Status" /> value.</summary>
-        /// <param name="value">The <see cref="int" /> to convert.</param>
+        /// <summary>Implicitly converts a <see cref="int" /> value to a <see cref="Status" /> value.</summary>
+        /// <param name="value">The <see cref="int" /> value to convert.</param>
         public static implicit operator Status(int value)
         {
             return new Status(value);
         }
         #endregion
 
-        #region System.IComparable
+        #region System.IComparable Methods
         /// <summary>Compares a <see cref="object" /> with the current instance to determine relative sort-order.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns>A value <c>less than zero</c> if <paramref name="obj" /> is greater than the current instance, <c>zero</c> if <paramref name="obj"/> is equal to the current instance; and <c>greater than zero</c> if <paramref name="obj" /> is <c>null</c> or greater than the current instance.</returns>
@@ -116,41 +118,29 @@ namespace TerraFX.Interop
         }
         #endregion
 
-        #region System.IComparable<Status>
+        #region System.IComparable<Status> Methods
         /// <summary>Compares a <see cref="Status" /> with the current instance to determine relative sort-order.</summary>
         /// <param name="other">The <see cref="Status" /> to compare with the current instance.</param>
         /// <returns>A value <c>less than zero</c> if <paramref name="other" /> is greater than the current instance, <c>zero</c> if <paramref name="other"/> is equal to the current instance; and <c>greater than zero</c> if <paramref name="other" /> is greater than the current instance.</returns>
         public int CompareTo(Status other)
         {
-            // We have to actually compare because subtraction
-            // causes wrapping for very large negative numbers.
-
-            if (this < other)
-            {
-                return -1;
-            }
-            else if (this > other)
-            {
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
+            var otherValue = other._value;
+            return _value.CompareTo(otherValue);
         }
         #endregion
 
-        #region System.IEquatable<Status>
+        #region System.IEquatable<Status> Methods
         /// <summary>Compares a <see cref="Status" /> with the current instance to determine equality.</summary>
         /// <param name="other">The <see cref="Status" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
         public bool Equals(Status other)
         {
-            return (this == other);
+            var otherValue = other._value;
+            return _value.Equals(otherValue);
         }
         #endregion
 
-        #region System.IFormattable
+        #region System.IFormattable Methods
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
         /// <param name="formatProvider">The provider to use when formatting the current instance or <c>null</c> to use the default provider.</param>
@@ -161,7 +151,7 @@ namespace TerraFX.Interop
         }
         #endregion
 
-        #region System.Object
+        #region System.Object Methods
         /// <summary>Compares a <see cref="object" /> with the current instance to determine equality.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="Status" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>
@@ -182,7 +172,7 @@ namespace TerraFX.Interop
         /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
         public override string ToString()
         {
-            return ToString(format: null, formatProvider: null);
+            return _value.ToString();
         }
         #endregion
     }

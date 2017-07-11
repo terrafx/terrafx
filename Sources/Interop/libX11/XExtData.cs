@@ -7,14 +7,14 @@ using System;
 
 namespace TerraFX.Interop
 {
-    unsafe public struct XExtData
+    unsafe public /* blittable */ struct XExtData
     {
         #region Fields
         public int number;
 
         public XExtData* next;
 
-        public UIntPtr free_private;
+        public IntPtr /* free_private */ free_private;
 
         public XPointer private_data;
         #endregion

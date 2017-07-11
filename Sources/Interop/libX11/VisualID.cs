@@ -4,40 +4,27 @@
 // Original source is Copyright © The Open Group.
 
 using System;
-using System.Diagnostics;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>A visual ID.</summary>
-    unsafe public struct VisualID : IComparable, IComparable<VisualID>, IEquatable<VisualID>, IFormattable
+    public /* blittable */ struct VisualID : IComparable, IComparable<VisualID>, IEquatable<VisualID>, IFormattable
     {
         #region Fields
-        private UIntPtr _value;
+        internal nuint _value;
         #endregion
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="VisualID" /> struct.</summary>
-        /// <param name="value">The value of the instance.</param>
-        public VisualID(uint value) : this((UIntPtr)(value))
-        {
-        }
-
-        /// <summary>Initializes a new instance of the <see cref="VisualID" /> struct.</summary>
-        /// <param name="value">The value of the instance.</param>
-        public VisualID(ulong value) : this((UIntPtr)(value))
-        {
-        }
-
-        /// <summary>Initializes a new instance of the <see cref="VisualID" /> struct.</summary>
-        /// <param name="value">The value of the instance.</param>
-        public VisualID(UIntPtr value)
+        /// <param name="value">The <see cref="nuint" /> used to initialize the instance.</param>
+        public VisualID(nuint value)
         {
             _value = value;
         }
         #endregion
 
-        #region Operators
+        #region Comparison Operators
         /// <summary>Compares two <see cref="VisualID" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="VisualID" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="VisualID" /> to compare with <paramref name="left" />.</param>
@@ -53,25 +40,7 @@ namespace TerraFX.Interop
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
         public static bool operator !=(VisualID left, VisualID right)
         {
-            return (left._value == right._value);
-        }
-
-        /// <summary>Compares two <see cref="VisualID" /> instances to determine relative sort-order.</summary>
-        /// <param name="left">The <see cref="VisualID" /> to compare with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="VisualID" /> to compare with <paramref name="left" />.</param>
-        /// <returns><c>true</c> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise, <c>false</c>.</returns>
-        public static bool operator >(VisualID left, VisualID right)
-        {
-            return ((void*)(left._value) > (void*)(right._value));
-        }
-
-        /// <summary>Compares two <see cref="VisualID" /> instances to determine relative sort-order.</summary>
-        /// <param name="left">The <see cref="VisualID" /> to compare with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="VisualID" /> to compare with <paramref name="left" />.</param>
-        /// <returns><c>true</c> if <paramref name="left" /> is greater than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
-        public static bool operator >=(VisualID left, VisualID right)
-        {
-            return ((void*)(left._value) >= (void*)(right._value));
+            return (left._value != right._value);
         }
 
         /// <summary>Compares two <see cref="VisualID" /> instances to determine relative sort-order.</summary>
@@ -80,7 +49,16 @@ namespace TerraFX.Interop
         /// <returns><c>true</c> if <paramref name="left" /> is less than <paramref name="right" />; otherwise, <c>false</c>.</returns>
         public static bool operator <(VisualID left, VisualID right)
         {
-            return ((void*)(left._value) < (void*)(right._value));
+            return (left._value < right._value);
+        }
+
+        /// <summary>Compares two <see cref="VisualID" /> instances to determine relative sort-order.</summary>
+        /// <param name="left">The <see cref="VisualID" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="VisualID" /> to compare with <paramref name="left" />.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise, <c>false</c>.</returns>
+        public static bool operator >(VisualID left, VisualID right)
+        {
+            return (left._value > right._value);
         }
 
         /// <summary>Compares two <see cref="VisualID" /> instances to determine relative sort-order.</summary>
@@ -89,115 +67,36 @@ namespace TerraFX.Interop
         /// <returns><c>true</c> if <paramref name="left" /> is less than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
         public static bool operator <=(VisualID left, VisualID right)
         {
-            return ((void*)(left._value) <= (void*)(right._value));
+            return (left._value <= right._value);
         }
 
-        /// <summary>Converts a <see cref="VisualID" /> to an equivalent <see cref="uint" /> value.</summary>
-        /// <param name="value">The <see cref="VisualID" /> to convert.</param>
-        public static explicit operator uint(VisualID value)
+        /// <summary>Compares two <see cref="VisualID" /> instances to determine relative sort-order.</summary>
+        /// <param name="left">The <see cref="VisualID" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="VisualID" /> to compare with <paramref name="left" />.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> is greater than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
+        public static bool operator >=(VisualID left, VisualID right)
         {
-            return (uint)(value._value);
+            return (left._value >= right._value);
         }
+        #endregion
 
-        /// <summary>Converts a <see cref="VisualID" /> to an equivalent <see cref="ulong" /> value.</summary>
-        /// <param name="value">The <see cref="VisualID" /> to convert.</param>
-        public static implicit operator ulong(VisualID value)
-        {
-            return (ulong)(value._value);
-        }
-
-        /// <summary>Converts a <see cref="VisualID" /> to an equivalent <see cref="UIntPtr" /> value.</summary>
-        /// <param name="value">The <see cref="VisualID" /> to convert.</param>
-        public static implicit operator UIntPtr(VisualID value)
+        #region Cast Operators
+        /// <summary>Implicitly converts a <see cref="VisualID" /> value to a <see cref="nuint" /> value.</summary>
+        /// <param name="value">The <see cref="VisualID" /> value to convert.</param>
+        public static implicit operator nuint(VisualID value)
         {
             return value._value;
         }
 
-        /// <summary>Converts a <see cref="ulong" /> to an equivalent <see cref="VisualID" /> value.</summary>
-        /// <param name="value">The <see cref="ulong" /> to convert.</param>
-        public static explicit operator VisualID(ulong value)
-        {
-            return new VisualID(value);
-        }
-
-        /// <summary>Converts a <see cref="uint" /> to an equivalent <see cref="VisualID" /> value.</summary>
-        /// <param name="value">The <see cref="uint" /> to convert.</param>
-        public static implicit operator VisualID(uint value)
-        {
-            return new VisualID(value);
-        }
-
-        /// <summary>Converts a <see cref="UIntPtr" /> to an equivalent <see cref="VisualID" /> value.</summary>
-        /// <param name="value">The <see cref="UIntPtr" /> to convert.</param>
-        public static implicit operator VisualID(UIntPtr value)
+        /// <summary>Implicitly converts a <see cref="nuint" /> value to a <see cref="VisualID" /> value.</summary>
+        /// <param name="value">The <see cref="nuint" /> value to convert.</param>
+        public static implicit operator VisualID(nuint value)
         {
             return new VisualID(value);
         }
         #endregion
 
-        #region Methods
-        /// <summary>Gets the high-order byte for the instance.</summary>
-        /// <returns>The high-order byte for the instance.</returns>
-        public ushort HIBYTE()
-        {
-            if (UIntPtr.Size == sizeof(int))
-            {
-                return unchecked((byte)(((uint)(_value)) >> 8));
-            }
-            else
-            {
-                Debug.Assert(UIntPtr.Size == sizeof(long));
-                return unchecked((byte)(((ulong)(_value)) >> 8));
-            }
-        }
-
-        /// <summary>Gets the high-order word for the instance.</summary>
-        /// <returns>The high-order word for the instance.</returns>
-        public ushort HIWORD()
-        {
-            if (UIntPtr.Size == sizeof(int))
-            {
-                return unchecked((ushort)(((uint)(_value)) >> 16));
-            }
-            else
-            {
-                Debug.Assert(UIntPtr.Size == sizeof(long));
-                return unchecked((ushort)(((ulong)(_value)) >> 16));
-            }
-        }
-
-        /// <summary>Gets the low-order byte for the instance.</summary>
-        /// <returns>The low-order byte for the instance.</returns>
-        public ushort LOBYTE()
-        {
-            if (UIntPtr.Size == sizeof(int))
-            {
-                return unchecked((byte)((uint)(_value)));
-            }
-            else
-            {
-                Debug.Assert(UIntPtr.Size == sizeof(long));
-                return unchecked((byte)((ulong)(_value)));
-            }
-        }
-
-        /// <summary>Gets the low-order word for the instance.</summary>
-        /// <returns>The low-order word for the instance.</returns>
-        public ushort LOWORD()
-        {
-            if (UIntPtr.Size == sizeof(int))
-            {
-                return unchecked((ushort)((uint)(_value)));
-            }
-            else
-            {
-                Debug.Assert(UIntPtr.Size == sizeof(long));
-                return unchecked((ushort)((ulong)(_value)));
-            }
-        }
-        #endregion
-
-        #region System.IComparable
+        #region System.IComparable Methods
         /// <summary>Compares a <see cref="object" /> with the current instance to determine relative sort-order.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns>A value <c>less than zero</c> if <paramref name="obj" /> is greater than the current instance, <c>zero</c> if <paramref name="obj"/> is equal to the current instance; and <c>greater than zero</c> if <paramref name="obj" /> is <c>null</c> or greater than the current instance.</returns>
@@ -219,60 +118,40 @@ namespace TerraFX.Interop
         }
         #endregion
 
-        #region System.IComparable<VisualID>
+        #region System.IComparable<VisualID> Methods
         /// <summary>Compares a <see cref="VisualID" /> with the current instance to determine relative sort-order.</summary>
         /// <param name="other">The <see cref="VisualID" /> to compare with the current instance.</param>
         /// <returns>A value <c>less than zero</c> if <paramref name="other" /> is greater than the current instance, <c>zero</c> if <paramref name="other"/> is equal to the current instance; and <c>greater than zero</c> if <paramref name="other" /> is greater than the current instance.</returns>
         public int CompareTo(VisualID other)
         {
-            // We have to actually compare because subtraction
-            // causes wrapping for very large negative numbers.
-
-            if (this < other)
-            {
-                return -1;
-            }
-            else if (this > other)
-            {
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
+            var otherValue = other._value;
+            return _value.CompareTo(otherValue);
         }
         #endregion
 
-        #region System.IEquatable<VisualID>
+        #region System.IEquatable<VisualID> Methods
         /// <summary>Compares a <see cref="VisualID" /> with the current instance to determine equality.</summary>
         /// <param name="other">The <see cref="VisualID" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
         public bool Equals(VisualID other)
         {
-            return (this == other);
+            var otherValue = other._value;
+            return _value.Equals(otherValue);
         }
         #endregion
 
-        #region System.IFormattable
+        #region System.IFormattable Methods
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
         /// <param name="formatProvider">The provider to use when formatting the current instance or <c>null</c> to use the default provider.</param>
         /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            if (UIntPtr.Size == sizeof(int))
-            {
-                return ((int)(_value)).ToString(format, formatProvider);
-            }
-            else
-            {
-                Debug.Assert(UIntPtr.Size == sizeof(long));
-                return ((long)(_value)).ToString(format, formatProvider);
-            }
+            return _value.ToString(format, formatProvider);
         }
         #endregion
 
-        #region System.Object
+        #region System.Object Methods
         /// <summary>Compares a <see cref="object" /> with the current instance to determine equality.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="VisualID" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>
@@ -293,7 +172,7 @@ namespace TerraFX.Interop
         /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
         public override string ToString()
         {
-            return ToString(format: null, formatProvider: null);
+            return _value.ToString();
         }
         #endregion
     }

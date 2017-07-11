@@ -3,13 +3,13 @@
 // Ported from X11\xlib.h in the Xlib - C Language X Interface: X Version 11, Release 7.7
 // Original source is Copyright © The Open Group.
 
-using System;
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit)]
-    unsafe public struct XEvent
+    public /* blittable */ struct XEvent
     {
         #region Fields
         [FieldOffset(0)]
@@ -119,33 +119,87 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public struct _pad_e__FixedBuffer
+        unsafe public /* blittable */ struct _pad_e__FixedBuffer
         {
             #region Fields
-            public IntPtr _0;
-            public IntPtr _1;
-            public IntPtr _2;
-            public IntPtr _3;
-            public IntPtr _4;
-            public IntPtr _5;
-            public IntPtr _6;
-            public IntPtr _7;
-            public IntPtr _8;
-            public IntPtr _9;
-            public IntPtr _10;
-            public IntPtr _11;
-            public IntPtr _12;
-            public IntPtr _13;
-            public IntPtr _14;
-            public IntPtr _15;
-            public IntPtr _16;
-            public IntPtr _17;
-            public IntPtr _18;
-            public IntPtr _19;
-            public IntPtr _20;
-            public IntPtr _21;
-            public IntPtr _22;
-            public IntPtr _23;
+            public nint e0;
+
+            public nint e1;
+
+            public nint e2;
+
+            public nint e3;
+
+            public nint e4;
+
+            public nint e5;
+
+            public nint e6;
+
+            public nint e7;
+
+            public nint e8;
+
+            public nint e9;
+
+            public nint e10;
+
+            public nint e11;
+
+            public nint e12;
+
+            public nint e13;
+
+            public nint e14;
+
+            public nint e15;
+
+            public nint e16;
+
+            public nint e17;
+
+            public nint e18;
+
+            public nint e19;
+
+            public nint e20;
+
+            public nint e21;
+
+            public nint e22;
+
+            public nint e23;
+            #endregion
+
+            #region Properties
+            public nint this[int index]
+            {
+                get
+                {
+                    if ((uint)(index) > 23) // (index < 0) || (index > 23)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                    }
+
+                    fixed (nint* e = &e0)
+                    {
+                        return e[index];
+                    }
+                }
+
+                set
+                {
+                    if ((uint)(index) > 23) // (index < 0) || (index > 23)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                    }
+
+                    fixed (nint* e = &e0)
+                    {
+                        e[index] = value;
+                    }
+                }
+            }
             #endregion
         }
         #endregion

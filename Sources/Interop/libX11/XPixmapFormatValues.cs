@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public struct XPixmapFormatValues
+    public /* blittable */ struct XPixmapFormatValues
     {
         #region Fields
         public int depth;

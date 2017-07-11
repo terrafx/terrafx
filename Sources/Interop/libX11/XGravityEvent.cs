@@ -3,16 +3,16 @@
 // Ported from X11\xlib.h in the Xlib - C Language X Interface: X Version 11, Release 7.7
 // Original source is Copyright © The Open Group.
 
-using System;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    unsafe public struct XGravityEvent
+    unsafe public /* blittable */ struct XGravityEvent
     {
         #region Fields
         public int type;
 
-        public UIntPtr serial;
+        public nuint serial;
 
         public Bool send_event;
 

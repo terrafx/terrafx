@@ -4,9 +4,12 @@
 // Original source is Copyright © The Open Group.
 
 using System.Runtime.InteropServices;
+using System.Security;
 
 namespace TerraFX.Interop
 {
+    [SuppressUnmanagedCodeSecurity]
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl, BestFitMapping = false, CharSet = CharSet.Ansi, SetLastError = false, ThrowOnUnmappableChar = false)]
     unsafe public /* static */ delegate Bool predicate(
         [In] Display* display,
         [In] XEvent* @event,

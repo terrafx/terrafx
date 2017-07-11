@@ -9,16 +9,16 @@ namespace TerraFX.Interop
     public enum clockid_t
     {
         /// <summary>The identifier of the system-wide clock measuring real time.</summary>
-        REALTIME = 0,
+        CLOCK_REALTIME = 0,
 
-        /// <summary>The identifier for the system-wide monotonic clock, which is defined as a clock measuring real time, whose value cannot be set via <see cref="libc.clock_settime(clockid_t, ref timespec)" /> and which cannot have negative clock jumps.</summary>
+        /// <summary>The identifier for the system-wide monotonic clock, which is defined as a clock measuring real time, whose value cannot be set via <see cref="libc.clock_settime(clockid_t, timespec*)" /> and which cannot have negative clock jumps.</summary>
         /// <remarks>The maximum possible clock jump shall be implementation-defined.</remarks>
-        MONOTONIC = 1,
+        CLOCK_MONOTONIC = 1,
 
         /// <summary>The identifier of the CPU-time clock associated with the process making a <c>clock</c> or <c>timer</c> function call.</summary>
-        PROCESS_CPUTIME_ID = 2,
+        CLOCK_PROCESS_CPUTIME_ID = 2,
 
         /// <summary>The identifier of the CPU-time clock associated with the thread making a <c>clock</c> or <c>timer</c> function call.</summary>
-        THREAD_CPUTIME_ID = 3
+        CLOCK_THREAD_CPUTIME_ID = 3
     }
 }

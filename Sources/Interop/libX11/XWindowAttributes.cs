@@ -3,11 +3,11 @@
 // Ported from X11\xlib.h in the Xlib - C Language X Interface: X Version 11, Release 7.7
 // Original source is Copyright © The Open Group.
 
-using System;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    unsafe public struct XWindowAttributes
+    unsafe public /* blittable */ struct XWindowAttributes
     {
         #region Fields
         public int x, y;
@@ -30,9 +30,9 @@ namespace TerraFX.Interop
 
         public int backing_store;
 
-        public UIntPtr backing_planes;
+        public nuint backing_planes;
 
-        public UIntPtr backing_pixel;
+        public nuint backing_pixel;
 
         public Bool save_under;
 
@@ -42,11 +42,11 @@ namespace TerraFX.Interop
 
         public int map_state;
 
-        public IntPtr all_event_masks;
+        public nint all_event_masks;
 
-        public IntPtr your_event_mask;
+        public nint your_event_mask;
 
-        public IntPtr do_not_propagate_mask;
+        public nint do_not_propagate_mask;
 
         public Bool override_redirect;
 

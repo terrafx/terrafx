@@ -3,11 +3,11 @@
 // Ported from X11\xlib.h in the Xlib - C Language X Interface: X Version 11, Release 7.7
 // Original source is Copyright © The Open Group.
 
-using System;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    unsafe public struct Visual
+    unsafe public /* blittable */ struct Visual
     {
         #region Fields
         public XExtData* ext_data;
@@ -16,7 +16,7 @@ namespace TerraFX.Interop
 
         public int @class;
 
-        public UIntPtr red_mask, green_mask, blue_mask;
+        public nuint red_mask, green_mask, blue_mask;
 
         public int bits_per_rgb;
 

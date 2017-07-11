@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public struct Depth
+    unsafe public /* blittable */ struct Depth
     {
         #region Fields
         public int depth;

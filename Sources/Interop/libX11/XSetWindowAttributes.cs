@@ -3,20 +3,20 @@
 // Ported from X11\xlib.h in the Xlib - C Language X Interface: X Version 11, Release 7.7
 // Original source is Copyright © The Open Group.
 
-using System;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    unsafe public struct XSetWindowAttributes
+    public /* blittable */ struct XSetWindowAttributes
     {
         #region Fields
         public Pixmap background_pixmap;
 
-        public UIntPtr background_pixel;
+        public nuint background_pixel;
 
         public Pixmap border_pixmap;
 
-        public UIntPtr border_pixel;
+        public nuint border_pixel;
 
         public int bit_gravity;
 
@@ -24,15 +24,15 @@ namespace TerraFX.Interop
 
         public int backing_store;
 
-        public UIntPtr backing_planes;
+        public nuint backing_planes;
 
-        public UIntPtr backing_pixel;
+        public nuint backing_pixel;
 
         public Bool save_under;
 
-        public IntPtr event_mask;
+        public nint event_mask;
 
-        public IntPtr do_not_propagate_mask;
+        public nint do_not_propagate_mask;
 
         public Bool override_redirect;
 

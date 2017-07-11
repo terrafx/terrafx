@@ -4,10 +4,11 @@
 // Original source is Copyright © The Open Group.
 
 using System;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    unsafe public struct Display
+    unsafe public /* blittable */ struct Display
     {
         #region Fields
         public XExtData* ext_data;
@@ -22,7 +23,7 @@ namespace TerraFX.Interop
 
         public int proto_minor_version;
 
-        public byte* vendor;
+        public sbyte* vendor;
 
         public XID private3;
 
@@ -32,7 +33,7 @@ namespace TerraFX.Interop
 
         public int private6;
 
-        public UIntPtr resource_alloc;
+        public IntPtr /* resource_alloc */ resource_alloc;
 
         public int byte_order;
 
@@ -54,9 +55,9 @@ namespace TerraFX.Interop
 
         public int qlen;
 
-        public UIntPtr last_request_read;
+        public nuint last_request_read;
 
-        public UIntPtr request;
+        public nuint request;
 
         public XPointer private11;
 
@@ -70,9 +71,9 @@ namespace TerraFX.Interop
 
         public void* db;
 
-        public UIntPtr private15;
+        public nuint private15;
 
-        public byte* displayName;
+        public sbyte* displayName;
 
         public int default_screen;
 
@@ -80,9 +81,9 @@ namespace TerraFX.Interop
 
         public Screen* screens;
 
-        public UIntPtr motion_buffer;
+        public nuint motion_buffer;
 
-        public UIntPtr private16;
+        public nuint private16;
 
         public int min_keycode;
 
@@ -94,7 +95,7 @@ namespace TerraFX.Interop
 
         public int private19;
 
-        public byte* xdefaults;
+        public sbyte* xdefaults;
 
         // There is more to this structure but it is private to the Xlib implementation
         #endregion

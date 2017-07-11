@@ -4,32 +4,26 @@
 // Original source is Copyright © The Open Group.
 
 using System;
-using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>A colormap resource ID.</summary>
-    unsafe public struct Colormap : IEquatable<Colormap>, IFormattable
+    public /* blittable */ struct Colormap : IEquatable<Colormap>, IFormattable
     {
-        #region Constants
-        /// <summary>A null colormap resource ID.</summary>
-        public static readonly Colormap None = new Colormap(0);
-        #endregion
-
         #region Fields
-        internal nint _value;
+        internal XID _value;
         #endregion
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Colormap" /> struct.</summary>
-        /// <param name="value">The value of the instance.</param>
-        public Colormap(nint value)
+        /// <param name="value">The <see cref="XID" /> used to initialize the instance.</param>
+        public Colormap(XID value)
         {
             _value = value;
         }
         #endregion
 
-        #region Operators
+        #region Comparison Operators
         /// <summary>Compares two <see cref="Colormap" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="Colormap" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="Colormap" /> to compare with <paramref name="left" />.</param>
@@ -45,35 +39,38 @@ namespace TerraFX.Interop
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
         public static bool operator !=(Colormap left, Colormap right)
         {
-            return (left._value == right._value);
+            return (left._value != right._value);
         }
+        #endregion
 
-        /// <summary>Converts a <see cref="Colormap" /> to a <see cref="nint" /> value.</summary>
-        /// <param name="value">The <see cref="Colormap" /> to convert.</param>
-        public static implicit operator nint(Colormap value)
+        #region Cast Operators
+        /// <summary>Implicitly converts a <see cref="Colormap" /> value to a <see cref="XID" /> value.</summary>
+        /// <param name="value">The <see cref="Colormap" /> value to convert.</param>
+        public static implicit operator XID(Colormap value)
         {
             return value._value;
         }
 
-        /// <summary>Converts a <see cref="nint" /> to a <see cref="Colormap" /> value.</summary>
-        /// <param name="value">The <see cref="nint" /> to convert.</param>
-        public static implicit operator Colormap(nint value)
+        /// <summary>Implicitly converts a <see cref="XID" /> value to a <see cref="Colormap" /> value.</summary>
+        /// <param name="value">The <see cref="XID" /> value to convert.</param>
+        public static implicit operator Colormap(XID value)
         {
             return new Colormap(value);
         }
         #endregion
 
-        #region System.IEquatable<Colormap>
+        #region System.IEquatable<Colormap> Methods
         /// <summary>Compares a <see cref="Colormap" /> with the current instance to determine equality.</summary>
         /// <param name="other">The <see cref="Colormap" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
         public bool Equals(Colormap other)
         {
-            return (this == other);
+            var otherValue = other._value;
+            return _value.Equals(otherValue);
         }
         #endregion
 
-        #region System.IFormattable
+        #region System.IFormattable Methods
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
         /// <param name="formatProvider">The provider to use when formatting the current instance or <c>null</c> to use the default provider.</param>
@@ -84,7 +81,7 @@ namespace TerraFX.Interop
         }
         #endregion
 
-        #region System.Object
+        #region System.Object Methods
         /// <summary>Compares a <see cref="object" /> with the current instance to determine equality.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="Colormap" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>
@@ -105,7 +102,7 @@ namespace TerraFX.Interop
         /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
         public override string ToString()
         {
-            return ToString(format: null, formatProvider: null);
+            return _value.ToString();
         }
         #endregion
     }
