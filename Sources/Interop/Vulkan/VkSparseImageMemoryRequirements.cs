@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkSparseImageMemoryRequirements
+    public /* blittable */ struct VkSparseImageMemoryRequirements
     {
         #region Fields
         public VkSparseImageFormatProperties formatProperties;

@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkSparseImageMemoryBind
+    public /* blittable */ struct VkSparseImageMemoryBind
     {
         #region Fields
         public VkImageSubresource subresource;

@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkSubpassDependency
+    public /* blittable */ struct VkSubpassDependency
     {
         #region Fields
         public uint srcSubpass;

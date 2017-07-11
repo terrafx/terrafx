@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkPhysicalDeviceFeatures
+    public /* blittable */ struct VkPhysicalDeviceFeatures
     {
         #region Fields
         public VkBool32 robustBufferAccess;

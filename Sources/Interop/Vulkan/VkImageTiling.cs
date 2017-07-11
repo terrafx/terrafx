@@ -7,8 +7,16 @@ namespace TerraFX.Interop
 {
     public enum VkImageTiling
     {
-        OPTIMAL = 0,
+        VK_IMAGE_TILING_OPTIMAL = 0,
 
-        LINEAR = 1
+        VK_IMAGE_TILING_LINEAR = 1,
+
+        VK_IMAGE_TILING_BEGIN_RANGE = VK_IMAGE_TILING_OPTIMAL,
+
+        VK_IMAGE_TILING_END_RANGE = VK_IMAGE_TILING_LINEAR,
+
+        VK_IMAGE_TILING_RANGE_SIZE = (VK_IMAGE_TILING_LINEAR - VK_IMAGE_TILING_OPTIMAL + 1),
+
+        VK_IMAGE_TILING_MAX_ENUM = 0x7FFFFFFF
     }
 }

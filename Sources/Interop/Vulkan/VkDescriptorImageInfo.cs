@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkDescriptorImageInfo
+    public /* blittable */ struct VkDescriptorImageInfo
     {
         #region Fields
         public VkSampler sampler;

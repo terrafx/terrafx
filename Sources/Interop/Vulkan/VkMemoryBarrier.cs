@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public struct VkMemoryBarrier
+    unsafe public /* blittable */ struct VkMemoryBarrier
     {
         #region Fields
         public VkStructureType sType;

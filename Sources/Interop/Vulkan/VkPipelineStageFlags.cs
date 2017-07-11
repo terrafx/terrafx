@@ -4,48 +4,175 @@
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
 using System;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    [Flags]
-    public enum VkPipelineStageFlags : uint
+    public /* blittable */ struct VkPipelineStageFlags : IComparable, IComparable<VkPipelineStageFlags>, IEquatable<VkPipelineStageFlags>, IFormattable
     {
-        NONE = 0x00000000,
+        #region Fields
+        internal VkFlags _value;
+        #endregion
 
-        TOP_OF_PIPE_BIT = 0x00000001,
+        #region Constructors
+        /// <summary>Initializes a new instance of the <see cref="VkPipelineStageFlags" /> struct.</summary>
+        /// <param name="value">The <see cref="VkFlags" /> used to initialize the instance.</param>
+        public VkPipelineStageFlags(VkFlags value)
+        {
+            _value = value;
+        }
+        #endregion
 
-        DRAW_INDIRECT_BIT = 0x00000002,
+        #region Comparison Operators
+        /// <summary>Compares two <see cref="VkPipelineStageFlags" /> instances to determine equality.</summary>
+        /// <param name="left">The <see cref="VkPipelineStageFlags" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="VkPipelineStageFlags" /> to compare with <paramref name="left" />.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
+        public static bool operator ==(VkPipelineStageFlags left, VkPipelineStageFlags right)
+        {
+            return (left._value == right._value);
+        }
 
-        VERTEX_INPUT_BIT = 0x00000004,
+        /// <summary>Compares two <see cref="VkPipelineStageFlags" /> instances to determine inequality.</summary>
+        /// <param name="left">The <see cref="VkPipelineStageFlags" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="VkPipelineStageFlags" /> to compare with <paramref name="left" />.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
+        public static bool operator !=(VkPipelineStageFlags left, VkPipelineStageFlags right)
+        {
+            return (left._value != right._value);
+        }
 
-        VERTEX_SHADER_BIT = 0x00000008,
+        /// <summary>Compares two <see cref="VkPipelineStageFlags" /> instances to determine relative sort-order.</summary>
+        /// <param name="left">The <see cref="VkPipelineStageFlags" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="VkPipelineStageFlags" /> to compare with <paramref name="left" />.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> is less than <paramref name="right" />; otherwise, <c>false</c>.</returns>
+        public static bool operator <(VkPipelineStageFlags left, VkPipelineStageFlags right)
+        {
+            return (left._value < right._value);
+        }
 
-        TESSELLATION_CONTROL_SHADER_BIT = 0x00000010,
+        /// <summary>Compares two <see cref="VkPipelineStageFlags" /> instances to determine relative sort-order.</summary>
+        /// <param name="left">The <see cref="VkPipelineStageFlags" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="VkPipelineStageFlags" /> to compare with <paramref name="left" />.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise, <c>false</c>.</returns>
+        public static bool operator >(VkPipelineStageFlags left, VkPipelineStageFlags right)
+        {
+            return (left._value > right._value);
+        }
 
-        TESSELLATION_EVALUATION_SHADER_BIT = 0x00000020,
+        /// <summary>Compares two <see cref="VkPipelineStageFlags" /> instances to determine relative sort-order.</summary>
+        /// <param name="left">The <see cref="VkPipelineStageFlags" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="VkPipelineStageFlags" /> to compare with <paramref name="left" />.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> is less than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
+        public static bool operator <=(VkPipelineStageFlags left, VkPipelineStageFlags right)
+        {
+            return (left._value <= right._value);
+        }
 
-        GEOMETRY_SHADER_BIT = 0x00000040,
+        /// <summary>Compares two <see cref="VkPipelineStageFlags" /> instances to determine relative sort-order.</summary>
+        /// <param name="left">The <see cref="VkPipelineStageFlags" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="VkPipelineStageFlags" /> to compare with <paramref name="left" />.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> is greater than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
+        public static bool operator >=(VkPipelineStageFlags left, VkPipelineStageFlags right)
+        {
+            return (left._value >= right._value);
+        }
+        #endregion
 
-        FRAGMENT_SHADER_BIT = 0x00000080,
+        #region Cast Operators
+        /// <summary>Implicitly converts a <see cref="VkPipelineStageFlags" /> value to a <see cref="VkFlags" /> value.</summary>
+        /// <param name="value">The <see cref="VkPipelineStageFlags" /> value to convert.</param>
+        public static implicit operator VkFlags(VkPipelineStageFlags value)
+        {
+            return value._value;
+        }
 
-        EARLY_FRAGMENT_TESTS_BIT = 0x00000100,
+        /// <summary>Implicitly converts a <see cref="VkFlags" /> value to a <see cref="VkPipelineStageFlags" /> value.</summary>
+        /// <param name="value">The <see cref="VkFlags" /> value to convert.</param>
+        public static implicit operator VkPipelineStageFlags(VkFlags value)
+        {
+            return new VkPipelineStageFlags(value);
+        }
+        #endregion
 
-        LATE_FRAGMENT_TESTS_BIT = 0x00000200,
+        #region System.IComparable Methods
+        /// <summary>Compares a <see cref="object" /> with the current instance to determine relative sort-order.</summary>
+        /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
+        /// <returns>A value <c>less than zero</c> if <paramref name="obj" /> is greater than the current instance, <c>zero</c> if <paramref name="obj"/> is equal to the current instance; and <c>greater than zero</c> if <paramref name="obj" /> is <c>null</c> or greater than the current instance.</returns>
+        /// <exception cref="ArgumentException"><paramref name="obj" /> is not <c>null</c> and is not an instance of <see cref="VkPipelineStageFlags" />.</exception>
+        public int CompareTo(object obj)
+        {
+            if (obj is null)
+            {
+                return 1;
+            }
+            else if (obj is VkPipelineStageFlags other)
+            {
+                return CompareTo(other);
+            }
+            else
+            {
+                throw ExceptionUtilities.NewArgumentExceptionForInvalidType(nameof(obj), obj.GetType());
+            }
+        }
+        #endregion
 
-        COLOR_ATTACHMENT_OUTPUT_BIT = 0x00000400,
+        #region System.IComparable<VkPipelineStageFlags> Methods
+        /// <summary>Compares a <see cref="VkPipelineStageFlags" /> with the current instance to determine relative sort-order.</summary>
+        /// <param name="other">The <see cref="VkPipelineStageFlags" /> to compare with the current instance.</param>
+        /// <returns>A value <c>less than zero</c> if <paramref name="other" /> is greater than the current instance, <c>zero</c> if <paramref name="other"/> is equal to the current instance; and <c>greater than zero</c> if <paramref name="other" /> is greater than the current instance.</returns>
+        public int CompareTo(VkPipelineStageFlags other)
+        {
+            var otherValue = other._value;
+            return _value.CompareTo(otherValue);
+        }
+        #endregion
 
-        COMPUTE_SHADER_BIT = 0x00000800,
+        #region System.IEquatable<VkPipelineStageFlags> Methods
+        /// <summary>Compares a <see cref="VkPipelineStageFlags" /> with the current instance to determine equality.</summary>
+        /// <param name="other">The <see cref="VkPipelineStageFlags" /> to compare with the current instance.</param>
+        /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
+        public bool Equals(VkPipelineStageFlags other)
+        {
+            var otherValue = other._value;
+            return _value.Equals(otherValue);
+        }
+        #endregion
 
-        TRANSFER_BIT = 0x00001000,
+        #region System.IFormattable Methods
+        /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
+        /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
+        /// <param name="formatProvider">The provider to use when formatting the current instance or <c>null</c> to use the default provider.</param>
+        /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return _value.ToString(format, formatProvider);
+        }
+        #endregion
 
-        BOTTOM_OF_PIPE_BIT = 0x00002000,
+        #region System.Object Methods
+        /// <summary>Compares a <see cref="object" /> with the current instance to determine equality.</summary>
+        /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
+        /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="VkPipelineStageFlags" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>
+        public override bool Equals(object obj)
+        {
+            return (obj is VkPipelineStageFlags other)
+                && Equals(other);
+        }
 
-        HOST_BIT = 0x00004000,
+        /// <summary>Gets a hash code for the current instance.</summary>
+        /// <returns>A hash code for the current instance.</returns>
+        public override int GetHashCode()
+        {
+            return _value.GetHashCode();
+        }
 
-        ALL_GRAPHICS_BIT = 0x00008000,
-
-        ALL_COMMANDS_BIT = 0x00010000,
-
-        COMMAND_PROCESS_BIT_NVX = 0x00020000
+        /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
+        /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
+        public override string ToString()
+        {
+            return _value.ToString();
+        }
+        #endregion
     }
 }

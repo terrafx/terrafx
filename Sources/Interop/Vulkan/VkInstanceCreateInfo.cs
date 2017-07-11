@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public struct VkInstanceCreateInfo
+    unsafe public /* blittable */ struct VkInstanceCreateInfo
     {
         #region Fields
         public VkStructureType sType;
@@ -18,11 +18,11 @@ namespace TerraFX.Interop
 
         public uint enabledLayerCount;
 
-        public byte** ppEnabledLayerNames;
+        public sbyte** ppEnabledLayerNames;
 
         public uint enabledExtensionCount;
 
-        public byte** ppEnabledExtensionNames;
+        public sbyte** ppEnabledExtensionNames;
         #endregion
     }
 }

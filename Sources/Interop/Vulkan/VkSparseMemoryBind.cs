@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkSparseMemoryBind
+    public /* blittable */ struct VkSparseMemoryBind
     {
         #region Fields
         public VkDeviceSize resourceOffset;

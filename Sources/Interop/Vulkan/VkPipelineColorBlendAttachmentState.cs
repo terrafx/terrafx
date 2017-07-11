@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkPipelineColorBlendAttachmentState
+    public /* blittable */ struct VkPipelineColorBlendAttachmentState
     {
         #region Fields
         public VkBool32 blendEnable;

@@ -7,7 +7,7 @@ using System;
 
 namespace TerraFX.Interop
 {
-    unsafe public struct VkAllocationCallbacks
+    unsafe public /* blittable */ struct VkAllocationCallbacks
     {
         #region Fields
         public void* pUserData;

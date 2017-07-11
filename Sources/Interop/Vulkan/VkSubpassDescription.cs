@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public struct VkSubpassDescription
+    unsafe public /* blittable */ struct VkSubpassDescription
     {
         #region Fields
         public VkSubpassDescriptionFlags flags;

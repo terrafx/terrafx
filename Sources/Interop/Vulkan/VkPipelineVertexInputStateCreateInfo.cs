@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public struct VkPipelineVertexInputStateCreateInfo
+    unsafe public /* blittable */ struct VkPipelineVertexInputStateCreateInfo
     {
         #region Fields
         public VkStructureType sType;

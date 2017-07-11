@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public struct VkDeviceQueueCreateInfo
+    unsafe public /* blittable */ struct VkDeviceQueueCreateInfo
     {
         #region Fields
         public VkStructureType sType;

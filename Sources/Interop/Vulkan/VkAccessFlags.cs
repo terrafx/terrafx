@@ -4,50 +4,175 @@
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
 using System;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    [Flags]
-    public enum VkAccessFlags : uint
+    public /* blittable */ struct VkAccessFlags : IComparable, IComparable<VkAccessFlags>, IEquatable<VkAccessFlags>, IFormattable
     {
-        NONE = 0x00000000,
+        #region Fields
+        internal VkFlags _value;
+        #endregion
 
-        INDIRECT_COMMAND_READ_BIT = 0x00000001,
+        #region Constructors
+        /// <summary>Initializes a new instance of the <see cref="VkAccessFlags" /> struct.</summary>
+        /// <param name="value">The <see cref="VkFlags" /> used to initialize the instance.</param>
+        public VkAccessFlags(VkFlags value)
+        {
+            _value = value;
+        }
+        #endregion
 
-        INDEX_READ_BIT = 0x00000002,
+        #region Comparison Operators
+        /// <summary>Compares two <see cref="VkAccessFlags" /> instances to determine equality.</summary>
+        /// <param name="left">The <see cref="VkAccessFlags" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="VkAccessFlags" /> to compare with <paramref name="left" />.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
+        public static bool operator ==(VkAccessFlags left, VkAccessFlags right)
+        {
+            return (left._value == right._value);
+        }
 
-        VERTEX_ATTRIBUTE_READ_BIT = 0x00000004,
+        /// <summary>Compares two <see cref="VkAccessFlags" /> instances to determine inequality.</summary>
+        /// <param name="left">The <see cref="VkAccessFlags" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="VkAccessFlags" /> to compare with <paramref name="left" />.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
+        public static bool operator !=(VkAccessFlags left, VkAccessFlags right)
+        {
+            return (left._value != right._value);
+        }
 
-        UNIFORM_READ_BIT = 0x00000008,
+        /// <summary>Compares two <see cref="VkAccessFlags" /> instances to determine relative sort-order.</summary>
+        /// <param name="left">The <see cref="VkAccessFlags" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="VkAccessFlags" /> to compare with <paramref name="left" />.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> is less than <paramref name="right" />; otherwise, <c>false</c>.</returns>
+        public static bool operator <(VkAccessFlags left, VkAccessFlags right)
+        {
+            return (left._value < right._value);
+        }
 
-        INPUT_ATTACHMENT_READ_BIT = 0x00000010,
+        /// <summary>Compares two <see cref="VkAccessFlags" /> instances to determine relative sort-order.</summary>
+        /// <param name="left">The <see cref="VkAccessFlags" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="VkAccessFlags" /> to compare with <paramref name="left" />.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise, <c>false</c>.</returns>
+        public static bool operator >(VkAccessFlags left, VkAccessFlags right)
+        {
+            return (left._value > right._value);
+        }
 
-        SHADER_READ_BIT = 0x00000020,
+        /// <summary>Compares two <see cref="VkAccessFlags" /> instances to determine relative sort-order.</summary>
+        /// <param name="left">The <see cref="VkAccessFlags" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="VkAccessFlags" /> to compare with <paramref name="left" />.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> is less than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
+        public static bool operator <=(VkAccessFlags left, VkAccessFlags right)
+        {
+            return (left._value <= right._value);
+        }
 
-        SHADER_WRITE_BIT = 0x00000040,
+        /// <summary>Compares two <see cref="VkAccessFlags" /> instances to determine relative sort-order.</summary>
+        /// <param name="left">The <see cref="VkAccessFlags" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="VkAccessFlags" /> to compare with <paramref name="left" />.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> is greater than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
+        public static bool operator >=(VkAccessFlags left, VkAccessFlags right)
+        {
+            return (left._value >= right._value);
+        }
+        #endregion
 
-        COLOR_ATTACHMENT_READ_BIT = 0x00000080,
+        #region Cast Operators
+        /// <summary>Implicitly converts a <see cref="VkAccessFlags" /> value to a <see cref="VkFlags" /> value.</summary>
+        /// <param name="value">The <see cref="VkAccessFlags" /> value to convert.</param>
+        public static implicit operator VkFlags(VkAccessFlags value)
+        {
+            return value._value;
+        }
 
-        COLOR_ATTACHMENT_WRITE_BIT = 0x00000100,
+        /// <summary>Implicitly converts a <see cref="VkFlags" /> value to a <see cref="VkAccessFlags" /> value.</summary>
+        /// <param name="value">The <see cref="VkFlags" /> value to convert.</param>
+        public static implicit operator VkAccessFlags(VkFlags value)
+        {
+            return new VkAccessFlags(value);
+        }
+        #endregion
 
-        DEPTH_STENCIL_ATTACHMENT_READ_BIT = 0x00000200,
+        #region System.IComparable Methods
+        /// <summary>Compares a <see cref="object" /> with the current instance to determine relative sort-order.</summary>
+        /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
+        /// <returns>A value <c>less than zero</c> if <paramref name="obj" /> is greater than the current instance, <c>zero</c> if <paramref name="obj"/> is equal to the current instance; and <c>greater than zero</c> if <paramref name="obj" /> is <c>null</c> or greater than the current instance.</returns>
+        /// <exception cref="ArgumentException"><paramref name="obj" /> is not <c>null</c> and is not an instance of <see cref="VkAccessFlags" />.</exception>
+        public int CompareTo(object obj)
+        {
+            if (obj is null)
+            {
+                return 1;
+            }
+            else if (obj is VkAccessFlags other)
+            {
+                return CompareTo(other);
+            }
+            else
+            {
+                throw ExceptionUtilities.NewArgumentExceptionForInvalidType(nameof(obj), obj.GetType());
+            }
+        }
+        #endregion
 
-        DEPTH_STENCIL_ATTACHMENT_WRITE_BIT = 0x00000400,
+        #region System.IComparable<VkAccessFlags> Methods
+        /// <summary>Compares a <see cref="VkAccessFlags" /> with the current instance to determine relative sort-order.</summary>
+        /// <param name="other">The <see cref="VkAccessFlags" /> to compare with the current instance.</param>
+        /// <returns>A value <c>less than zero</c> if <paramref name="other" /> is greater than the current instance, <c>zero</c> if <paramref name="other"/> is equal to the current instance; and <c>greater than zero</c> if <paramref name="other" /> is greater than the current instance.</returns>
+        public int CompareTo(VkAccessFlags other)
+        {
+            var otherValue = other._value;
+            return _value.CompareTo(otherValue);
+        }
+        #endregion
 
-        TRANSFER_READ_BIT = 0x00000800,
+        #region System.IEquatable<VkAccessFlags> Methods
+        /// <summary>Compares a <see cref="VkAccessFlags" /> with the current instance to determine equality.</summary>
+        /// <param name="other">The <see cref="VkAccessFlags" /> to compare with the current instance.</param>
+        /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
+        public bool Equals(VkAccessFlags other)
+        {
+            var otherValue = other._value;
+            return _value.Equals(otherValue);
+        }
+        #endregion
 
-        TRANSFER_WRITE_BIT = 0x00001000,
+        #region System.IFormattable Methods
+        /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
+        /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
+        /// <param name="formatProvider">The provider to use when formatting the current instance or <c>null</c> to use the default provider.</param>
+        /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return _value.ToString(format, formatProvider);
+        }
+        #endregion
 
-        HOST_READ_BIT = 0x00002000,
+        #region System.Object Methods
+        /// <summary>Compares a <see cref="object" /> with the current instance to determine equality.</summary>
+        /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
+        /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="VkAccessFlags" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>
+        public override bool Equals(object obj)
+        {
+            return (obj is VkAccessFlags other)
+                && Equals(other);
+        }
 
-        HOST_WRITE_BIT = 0x00004000,
+        /// <summary>Gets a hash code for the current instance.</summary>
+        /// <returns>A hash code for the current instance.</returns>
+        public override int GetHashCode()
+        {
+            return _value.GetHashCode();
+        }
 
-        MEMORY_READ_BIT = 0x00008000,
-
-        MEMORY_WRITE_BIT = 0x00010000,
-
-        COMMAND_PROCESS_READ_BIT_NVX = 0x00020000,
-
-        COMMAND_PROCESS_WRITE_BIT_NVX = 0x00040000
+        /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
+        /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
+        public override string ToString()
+        {
+            return _value.ToString();
+        }
+        #endregion
     }
 }

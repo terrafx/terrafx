@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkMemoryType
+    public /* blittable */ struct VkMemoryType
     {
         #region Fields
         public VkMemoryPropertyFlags propertyFlags;

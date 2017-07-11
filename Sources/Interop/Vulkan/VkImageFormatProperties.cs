@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkImageFormatProperties
+    public /* blittable */ struct VkImageFormatProperties
     {
         #region Fields
         public VkExtent3D maxExtent;

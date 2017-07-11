@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkMemoryRequirements
+    public /* blittable */ struct VkMemoryRequirements
     {
         #region Fields
         public VkDeviceSize size;

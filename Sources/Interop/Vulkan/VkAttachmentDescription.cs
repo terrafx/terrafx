@@ -5,14 +5,14 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkAttachmentDescription
+    public /* blittable */ struct VkAttachmentDescription
     {
         #region Fields
         public VkAttachmentDescriptionFlags flags;
 
         public VkFormat format;
 
-        public VkSampleCountFlags samples;
+        public VkSampleCountFlagBits samples;
 
         public VkAttachmentLoadOp loadOp;
 

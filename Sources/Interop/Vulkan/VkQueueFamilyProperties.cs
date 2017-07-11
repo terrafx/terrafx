@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkQueueFamilyProperties
+    public /* blittable */ struct VkQueueFamilyProperties
     {
         #region Fields
         public VkQueueFlags queueFlags;

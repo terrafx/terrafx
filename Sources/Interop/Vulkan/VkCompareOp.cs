@@ -7,20 +7,28 @@ namespace TerraFX.Interop
 {
     public enum VkCompareOp
     {
-        NEVER = 0,
+        VK_COMPARE_OP_NEVER = 0,
 
-        LESS = 1,
+        VK_COMPARE_OP_LESS = 1,
 
-        EQUAL = 2,
+        VK_COMPARE_OP_EQUAL = 2,
 
-        LESS_OR_EQUAL = 3,
+        VK_COMPARE_OP_LESS_OR_EQUAL = 3,
 
-        GREATER = 4,
+        VK_COMPARE_OP_GREATER = 4,
 
-        NOT_EQUAL = 5,
+        VK_COMPARE_OP_NOT_EQUAL = 5,
 
-        GREATER_OR_EQUAL = 6,
+        VK_COMPARE_OP_GREATER_OR_EQUAL = 6,
 
-        ALWAYS = 7
+        VK_COMPARE_OP_ALWAYS = 7,
+
+        VK_COMPARE_OP_BEGIN_RANGE = VK_COMPARE_OP_NEVER,
+
+        VK_COMPARE_OP_END_RANGE = VK_COMPARE_OP_ALWAYS,
+
+        VK_COMPARE_OP_RANGE_SIZE = (VK_COMPARE_OP_ALWAYS - VK_COMPARE_OP_NEVER + 1),
+
+        VK_COMPARE_OP_MAX_ENUM = 0x7FFFFFFF
     }
 }

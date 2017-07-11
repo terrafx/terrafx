@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public struct VkDescriptorSetLayoutBinding
+    unsafe public /* blittable */ struct VkDescriptorSetLayoutBinding
     {
         #region Fields
         public uint binding;

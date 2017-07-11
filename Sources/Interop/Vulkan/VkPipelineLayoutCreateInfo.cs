@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public struct VkPipelineLayoutCreateInfo
+    unsafe public /* blittable */ struct VkPipelineLayoutCreateInfo
     {
         #region Fields
         public VkStructureType sType;

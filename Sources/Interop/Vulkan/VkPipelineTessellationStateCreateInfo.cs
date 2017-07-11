@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public struct VkPipelineTessellationStateCreateInfo
+    unsafe public /* blittable */ struct VkPipelineTessellationStateCreateInfo
     {
         #region Fields
         public VkStructureType sType;

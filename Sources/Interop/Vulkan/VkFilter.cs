@@ -7,10 +7,18 @@ namespace TerraFX.Interop
 {
     public enum VkFilter
     {
-        NEAREST = 0,
+        VK_FILTER_NEAREST = 0,
 
-        LINEAR = 1,
+        VK_FILTER_LINEAR = 1,
 
-        CUBIC_IMG = 1000015000
+        VK_FILTER_CUBIC_IMG = 1000015000,
+
+        VK_FILTER_BEGIN_RANGE = VK_FILTER_NEAREST,
+
+        VK_FILTER_END_RANGE = VK_FILTER_LINEAR,
+
+        VK_FILTER_RANGE_SIZE = (VK_FILTER_LINEAR - VK_FILTER_NEAREST + 1),
+
+        VK_FILTER_MAX_ENUM = 0x7FFFFFFF
     }
 }

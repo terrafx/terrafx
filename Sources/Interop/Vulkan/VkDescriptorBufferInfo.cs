@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkDescriptorBufferInfo
+    public /* blittable */ struct VkDescriptorBufferInfo
     {
         #region Fields
         public VkBuffer buffer;

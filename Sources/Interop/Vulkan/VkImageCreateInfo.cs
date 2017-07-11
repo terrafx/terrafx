@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public struct VkImageCreateInfo
+    unsafe public /* blittable */ struct VkImageCreateInfo
     {
         #region Fields
         public VkStructureType sType;
@@ -24,7 +24,7 @@ namespace TerraFX.Interop
 
         public uint arrayLayers;
 
-        public VkSampleCountFlags samples;
+        public VkSampleCountFlagBits samples;
 
         public VkImageTiling tiling;
 

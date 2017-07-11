@@ -3,9 +3,11 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
+using TerraFX.Utilities;
+
 namespace TerraFX.Interop
 {
-    public struct VkPhysicalDeviceMemoryProperties
+    public /* blittable */ struct VkPhysicalDeviceMemoryProperties
     {
         #region Fields
         public uint memoryTypeCount;
@@ -18,109 +20,171 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public struct _memoryTypes_e__FixedBuffer
+        unsafe public /* blittable */ struct _memoryTypes_e__FixedBuffer
         {
             #region Fields
-            public VkMemoryType _0;
+            public VkMemoryType e0;
 
-            public VkMemoryType _1;
+            public VkMemoryType e1;
 
-            public VkMemoryType _2;
+            public VkMemoryType e2;
 
-            public VkMemoryType _3;
+            public VkMemoryType e3;
 
-            public VkMemoryType _4;
+            public VkMemoryType e4;
 
-            public VkMemoryType _5;
+            public VkMemoryType e5;
 
-            public VkMemoryType _6;
+            public VkMemoryType e6;
 
-            public VkMemoryType _7;
+            public VkMemoryType e7;
 
-            public VkMemoryType _8;
+            public VkMemoryType e8;
 
-            public VkMemoryType _9;
+            public VkMemoryType e9;
 
-            public VkMemoryType _10;
+            public VkMemoryType e10;
 
-            public VkMemoryType _11;
+            public VkMemoryType e11;
 
-            public VkMemoryType _12;
+            public VkMemoryType e12;
 
-            public VkMemoryType _13;
+            public VkMemoryType e13;
 
-            public VkMemoryType _14;
+            public VkMemoryType e14;
 
-            public VkMemoryType _15;
+            public VkMemoryType e15;
 
-            public VkMemoryType _16;
+            public VkMemoryType e16;
 
-            public VkMemoryType _17;
+            public VkMemoryType e17;
 
-            public VkMemoryType _18;
+            public VkMemoryType e18;
 
-            public VkMemoryType _19;
+            public VkMemoryType e19;
 
-            public VkMemoryType _20;
+            public VkMemoryType e20;
 
-            public VkMemoryType _21;
+            public VkMemoryType e21;
 
-            public VkMemoryType _22;
+            public VkMemoryType e22;
 
-            public VkMemoryType _23;
+            public VkMemoryType e23;
 
-            public VkMemoryType _24;
+            public VkMemoryType e24;
 
-            public VkMemoryType _25;
+            public VkMemoryType e25;
 
-            public VkMemoryType _26;
+            public VkMemoryType e26;
 
-            public VkMemoryType _27;
+            public VkMemoryType e27;
 
-            public VkMemoryType _28;
+            public VkMemoryType e28;
 
-            public VkMemoryType _29;
+            public VkMemoryType e29;
 
-            public VkMemoryType _30;
+            public VkMemoryType e30;
 
-            public VkMemoryType _31;
+            public VkMemoryType e31;
+            #endregion
+
+            #region Properties
+            public VkMemoryType this[int index]
+            {
+                get
+                {
+                    if ((uint)(index) > 31) // (index < 0) || (index > 31)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                    }
+
+                    fixed (VkMemoryType* e = &e0)
+                    {
+                        return e[index];
+                    }
+                }
+
+                set
+                {
+                    if ((uint)(index) > 31) // (index < 0) || (index > 31)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                    }
+
+                    fixed (VkMemoryType* e = &e0)
+                    {
+                        e[index] = value;
+                    }
+                }
+            }
             #endregion
         }
 
-        public struct _memoryHeaps_e__FixedBuffer
+        unsafe public /* blittable */ struct _memoryHeaps_e__FixedBuffer
         {
             #region Fields
-            public VkMemoryHeap _0;
+            public VkMemoryHeap e0;
 
-            public VkMemoryHeap _1;
+            public VkMemoryHeap e1;
 
-            public VkMemoryHeap _2;
+            public VkMemoryHeap e2;
 
-            public VkMemoryHeap _3;
+            public VkMemoryHeap e3;
 
-            public VkMemoryHeap _4;
+            public VkMemoryHeap e4;
 
-            public VkMemoryHeap _5;
+            public VkMemoryHeap e5;
 
-            public VkMemoryHeap _6;
+            public VkMemoryHeap e6;
 
-            public VkMemoryHeap _7;
+            public VkMemoryHeap e7;
 
-            public VkMemoryHeap _8;
+            public VkMemoryHeap e8;
 
-            public VkMemoryHeap _9;
+            public VkMemoryHeap e9;
 
-            public VkMemoryHeap _10;
+            public VkMemoryHeap e10;
 
-            public VkMemoryHeap _11;
+            public VkMemoryHeap e11;
 
-            public VkMemoryHeap _12;
+            public VkMemoryHeap e12;
 
-            public VkMemoryHeap _13;
+            public VkMemoryHeap e13;
 
-            public VkMemoryHeap _14;
+            public VkMemoryHeap e14;
 
-            public VkMemoryHeap _15;
+            public VkMemoryHeap e15;
+            #endregion
+
+            #region Properties
+            public VkMemoryHeap this[int index]
+            {
+                get
+                {
+                    if ((uint)(index) > 15) // (index < 0) || (index > 15)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                    }
+
+                    fixed (VkMemoryHeap* e = &e0)
+                    {
+                        return e[index];
+                    }
+                }
+
+                set
+                {
+                    if ((uint)(index) > 15) // (index < 0) || (index > 15)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                    }
+
+                    fixed (VkMemoryHeap* e = &e0)
+                    {
+                        e[index] = value;
+                    }
+                }
+            }
             #endregion
         }
         #endregion

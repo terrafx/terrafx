@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkClearAttachment
+    public /* blittable */ struct VkClearAttachment
     {
         #region Fields
         public VkImageAspectFlags aspectMask;

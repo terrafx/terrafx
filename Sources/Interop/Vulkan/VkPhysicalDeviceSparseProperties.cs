@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkPhysicalDeviceSparseProperties
+    public /* blittable */ struct VkPhysicalDeviceSparseProperties
     {
         #region Fields
         public VkBool32 residencyStandard2DBlockShape;

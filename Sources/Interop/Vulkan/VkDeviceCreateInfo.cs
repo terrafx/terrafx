@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public struct VkDeviceCreateInfo
+    unsafe public /* blittable */ struct VkDeviceCreateInfo
     {
         #region Fields
         public VkStructureType sType;
@@ -20,11 +20,11 @@ namespace TerraFX.Interop
 
         public uint enabledLayerCount;
 
-        public byte** ppEnabledLayerNames;
+        public sbyte** ppEnabledLayerNames;
 
         public uint enabledExtensionCount;
 
-        public byte** ppEnabledExtensionNames;
+        public sbyte** ppEnabledExtensionNames;
 
         public VkPhysicalDeviceFeatures* pEnabledFeatures;
         #endregion

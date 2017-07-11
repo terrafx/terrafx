@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkPushConstantRange
+    public /* blittable */ struct VkPushConstantRange
     {
         #region Fields
         public VkShaderStageFlags stageFlags;

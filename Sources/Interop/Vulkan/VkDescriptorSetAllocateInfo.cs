@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public struct VkDescriptorSetAllocateInfo
+    unsafe public /* blittable */ struct VkDescriptorSetAllocateInfo
     {
         #region Fields
         public VkStructureType sType;

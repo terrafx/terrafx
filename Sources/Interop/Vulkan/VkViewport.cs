@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkViewport
+    public /* blittable */ struct VkViewport
     {
         #region Fields
         public float x;

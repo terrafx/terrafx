@@ -7,10 +7,18 @@ namespace TerraFX.Interop
 {
     public enum VkImageType
     {
-        _1D = 0,
+        VK_IMAGE_TYPE_1D = 0,
 
-        _2D = 1,
+        VK_IMAGE_TYPE_2D = 1,
 
-        _3D = 2
+        VK_IMAGE_TYPE_3D = 2,
+
+        VK_IMAGE_TYPE_BEGIN_RANGE = VK_IMAGE_TYPE_1D,
+
+        VK_IMAGE_TYPE_END_RANGE = VK_IMAGE_TYPE_3D,
+
+        VK_IMAGE_TYPE_RANGE_SIZE = (VK_IMAGE_TYPE_3D - VK_IMAGE_TYPE_1D + 1),
+
+        VK_IMAGE_TYPE_MAX_ENUM = 0x7FFFFFFF
     }
 }

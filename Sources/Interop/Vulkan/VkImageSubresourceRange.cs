@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkImageSubresourceRange
+    public /* blittable */ struct VkImageSubresourceRange
     {
         #region Fields
         public VkImageAspectFlags aspectMask;

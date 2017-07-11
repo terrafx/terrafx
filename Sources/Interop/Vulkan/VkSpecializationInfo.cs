@@ -3,18 +3,18 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
-using System;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    unsafe public struct VkSpecializationInfo
+    unsafe public /* blittable */ struct VkSpecializationInfo
     {
         #region Fields
         public uint mapEntryCount;
 
         public VkSpecializationMapEntry* pMapEntries;
 
-        public UIntPtr dataSize;
+        public nuint dataSize;
 
         public void* pData;
         #endregion

@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkFormatProperties
+    public /* blittable */ struct VkFormatProperties
     {
         #region Fields
         public VkFormatFeatureFlags linearTilingFeatures;

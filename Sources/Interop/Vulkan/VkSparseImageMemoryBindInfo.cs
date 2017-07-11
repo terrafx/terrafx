@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public struct VkSparseImageMemoryBindInfo
+    unsafe public /* blittable */ struct VkSparseImageMemoryBindInfo
     {
         #region Fields
         public VkImage image;

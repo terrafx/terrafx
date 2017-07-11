@@ -5,18 +5,18 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public struct VkApplicationInfo
+    unsafe public /* blittable */ struct VkApplicationInfo
     {
         #region Fields
         public VkStructureType sType;
 
         public void* pNext;
 
-        public byte* pApplicationName;
+        public sbyte* pApplicationName;
 
         public uint applicationVersion;
 
-        public byte* pEngineName;
+        public sbyte* pEngineName;
 
         public uint engineVersion;
 

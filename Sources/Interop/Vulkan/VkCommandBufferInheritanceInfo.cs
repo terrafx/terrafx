@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public struct VkCommandBufferInheritanceInfo
+    unsafe public /* blittable */ struct VkCommandBufferInheritanceInfo
     {
         #region Fields
         public VkStructureType sType;

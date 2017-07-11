@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkClearDepthStencilValue
+    public /* blittable */ struct VkClearDepthStencilValue
     {
         #region Fields
         public float depth;

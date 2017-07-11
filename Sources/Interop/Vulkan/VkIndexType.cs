@@ -7,8 +7,16 @@ namespace TerraFX.Interop
 {
     public enum VkIndexType
     {
-        UINT16 = 0,
+        VK_INDEX_TYPE_UINT16 = 0,
 
-        UINT32 = 1
+        VK_INDEX_TYPE_UINT32 = 1,
+
+        VK_INDEX_TYPE_BEGIN_RANGE = VK_INDEX_TYPE_UINT16,
+
+        VK_INDEX_TYPE_END_RANGE = VK_INDEX_TYPE_UINT32,
+
+        VK_INDEX_TYPE_RANGE_SIZE = (VK_INDEX_TYPE_UINT32 - VK_INDEX_TYPE_UINT16 + 1),
+
+        VK_INDEX_TYPE_MAX_ENUM = 0x7FFFFFFF
     }
 }

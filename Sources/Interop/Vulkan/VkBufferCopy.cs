@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkBufferCopy
+    public /* blittable */ struct VkBufferCopy
     {
         #region Fields
         public VkDeviceSize srcOffset;

@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkComponentMapping
+    public /* blittable */ struct VkComponentMapping
     {
         #region Fields
         public VkComponentSwizzle r;

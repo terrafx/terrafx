@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public struct VkPipelineShaderStageCreateInfo
+    unsafe public /* blittable */ struct VkPipelineShaderStageCreateInfo
     {
         #region Fields
         public VkStructureType sType;
@@ -14,11 +14,11 @@ namespace TerraFX.Interop
 
         public VkPipelineShaderStageCreateFlags flags;
 
-        public VkShaderStageFlags stage;
+        public VkShaderStageFlagBits stage;
 
         public VkShaderModule module;
 
-        public byte* pName;
+        public sbyte* pName;
 
         public VkSpecializationInfo* pSpecializationInfo;
         #endregion

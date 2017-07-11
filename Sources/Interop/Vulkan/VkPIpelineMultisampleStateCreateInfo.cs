@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public struct VkPipelineMultisampleStateCreateInfo
+    unsafe public /* blittable */ struct VkPipelineMultisampleStateCreateInfo
     {
         #region Fields
         public VkStructureType sType;
@@ -14,7 +14,7 @@ namespace TerraFX.Interop
 
         public VkPipelineMultisampleStateCreateFlags flags;
 
-        public VkSampleCountFlags rasterizationSamples;
+        public VkSampleCountFlagBits rasterizationSamples;
 
         public VkBool32 sampleShadingEnable;
 

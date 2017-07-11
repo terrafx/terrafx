@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkOffset2D
+    public /* blittable */ struct VkOffset2D
     {
         #region Fields
         public int x;

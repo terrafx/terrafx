@@ -7,10 +7,18 @@ namespace TerraFX.Interop
 {
     public enum VkPolygonMode
     {
-        FILL = 0,
+        VK_POLYGON_MODE_FILL = 0,
 
-        LINE = 1,
+        VK_POLYGON_MODE_LINE = 1,
 
-        POINT = 2
+        VK_POLYGON_MODE_POINT = 2,
+
+        VK_POLYGON_MODE_BEGIN_RANGE = VK_POLYGON_MODE_FILL,
+
+        VK_POLYGON_MODE_END_RANGE = VK_POLYGON_MODE_POINT,
+
+        VK_POLYGON_MODE_RANGE_SIZE = (VK_POLYGON_MODE_POINT - VK_POLYGON_MODE_FILL + 1),
+
+        VK_POLYGON_MODE_MAX_ENUM = 0x7FFFFFFF
     }
 }

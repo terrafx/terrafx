@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkSubresourceLayout
+    public /* blittable */ struct VkSubresourceLayout
     {
         #region Fields
         public VkDeviceSize offset;

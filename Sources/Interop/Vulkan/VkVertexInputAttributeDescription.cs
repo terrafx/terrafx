@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkVertexInputAttributeDescription
+    public /* blittable */ struct VkVertexInputAttributeDescription
     {
         #region Fields
         public uint location;

@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public struct VkImageCopy
+    public /* blittable */ struct VkImageCopy
     {
         #region Fields
         public VkImageSubresourceLayers srcSubresource;

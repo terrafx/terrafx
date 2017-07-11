@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public struct VkEventCreateInfo
+    unsafe public /* blittable */ struct VkEventCreateInfo
     {
         #region Fields
         public VkStructureType sType;
