@@ -11,8 +11,9 @@ namespace TerraFX.Interop
     {
         #region Constants
         public const int D3D_RETURN_PARAMETER_INDEX = -1;
+        #endregion
 
-        #region D3D_SHADER_REQUIRES_*
+        #region D3D_SHADER_REQUIRES_* Constants
         public const uint D3D_SHADER_REQUIRES_DOUBLES = 0x00000001;
 
         public const uint D3D_SHADER_REQUIRES_EARLY_DEPTH_STENCIL = 0x00000002;
@@ -42,7 +43,7 @@ namespace TerraFX.Interop
         public const uint D3D_SHADER_REQUIRES_VIEWPORT_AND_RT_ARRAY_INDEX_FROM_ANY_SHADER_FEEDING_RASTERIZER = 0x00002000;
         #endregion
 
-        #region IID_*
+        #region IID_* Constants
         public static readonly GUID IID_ID3D12ShaderReflectionType = new Guid(0xE913C351, 0x783D, 0x48CA, 0xA1, 0xD1, 0x4F, 0x30, 0x62, 0x84, 0xAD, 0x56);
 
         public static readonly GUID IID_ID3D12ShaderReflectionVariable = new Guid(0x8337A8A6, 0xA216, 0x444A, 0xB2, 0xF4, 0x31, 0x47, 0x33, 0xA7, 0x3A, 0xEA);
@@ -56,7 +57,6 @@ namespace TerraFX.Interop
         public static readonly GUID IID_ID3D12FunctionReflection = new Guid(0x1108795C, 0x2772, 0x4BA9, 0xB2, 0xA8, 0xD4, 0x64, 0xDC, 0x7E, 0x27, 0x99);
 
         public static readonly GUID IID_ID3D12FunctionParameterReflection = new Guid(0xEC25F42D, 0x7006, 0x4F2B, 0xB3, 0x3E, 0x02, 0xCC, 0x33, 0x75, 0x73, 0x3F);
-        #endregion
         #endregion
     }
 }

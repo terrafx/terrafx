@@ -13,13 +13,17 @@ namespace TerraFX.Interop
         #region Constants
         /// <summary>Maximum alpha value in a texture returned by IDWriteGlyphRunAnalysis::CreateAlphaTexture.</summary>
         public const int DWRITE_ALPHA_MAX = 255;
+        #endregion
 
+        #region FACILITY_* Constants
         public const int FACILITY_DWRITE = 0x898;
+        #endregion
 
+        #region DWRITE_ERR_* Constants
         public const int DWRITE_ERR_BASE = 0x5000;
         #endregion
 
-        #region Methods
+        #region External Methods
         /// <summary>Creates a DirectWrite factory object that is used for subsequent creation of individual DirectWrite objects.</summary>
         /// <param name="factoryType">Identifies whether the factory object will be shared or isolated.</param>
         /// <param name="iid">Identifies the DirectWrite factory interface, such as __uuidof(IDWriteFactory).</param>

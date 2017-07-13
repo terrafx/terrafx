@@ -22,14 +22,14 @@ namespace TerraFX.Interop
         }
         #endregion
 
-        #region Operators
+        #region Comparison Operators
         /// <summary>Compares two <see cref="HBITMAP" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="HBITMAP" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="HBITMAP" /> to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
         public static bool operator ==(HBITMAP left, HBITMAP right)
         {
-            return left._value == right._value;
+            return (left._value == right._value);
         }
 
         /// <summary>Compares two <see cref="HBITMAP" /> instances to determine inequality.</summary>
@@ -38,26 +38,14 @@ namespace TerraFX.Interop
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
         public static bool operator !=(HBITMAP left, HBITMAP right)
         {
-            return left._value != right._value;
+            return (left._value != right._value);
         }
+        #endregion
 
-        /// <summary>Explicitly converts a <see cref="HBITMAP" /> value to a <see cref="IntPtr" />* value.</summary>
+        #region Cast Operators
+        /// <summary>Implicitly converts a <see cref="HBITMAP" /> value to a <see cref="void" />* value.</summary>
         /// <param name="value">The <see cref="HBITMAP" /> value to convert.</param>
-        public static explicit operator IntPtr(HBITMAP value)
-        {
-            return (IntPtr)(value._value);
-        }
-
-        /// <summary>Explicitly converts a <see cref="IntPtr" /> value to a <see cref="HBITMAP" />* value.</summary>
-        /// <param name="value">The <see cref="IntPtr" /> value to convert.</param>
-        public static explicit operator HBITMAP(IntPtr value)
-        {
-            return new HBITMAP((HANDLE)(value));
-        }
-
-        /// <summary>Implicitly converts a <see cref="HBITMAP" /> value to a <see cref="UIntPtr" />* value.</summary>
-        /// <param name="value">The <see cref="HBITMAP" /> value to convert.</param>
-        public static implicit operator UIntPtr(HBITMAP value)
+        public static implicit operator void* (HBITMAP value)
         {
             return value._value;
         }
@@ -69,9 +57,9 @@ namespace TerraFX.Interop
             return value._value;
         }
 
-        /// <summary>Implicitly converts a <see cref="UIntPtr" /> value to a <see cref="HBITMAP" /> value.</summary>
-        /// <param name="value">The <see cref="UIntPtr" /> value to convert.</param>
-        public static implicit operator HBITMAP(UIntPtr value)
+        /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HBITMAP" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static implicit operator HBITMAP(void* value)
         {
             return new HBITMAP(value);
         }
@@ -82,33 +70,20 @@ namespace TerraFX.Interop
         {
             return new HBITMAP(value);
         }
-
-        /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HBITMAP" /> value.</summary>
-        /// <param name="value">The <see cref="void" />* value to convert.</param>
-        public static implicit operator HBITMAP(void* value)
-        {
-            return new HBITMAP(value);
-        }
-
-        /// <summary>Implicitly converts a <see cref="HBITMAP" /> value to a <see cref="void" />* value.</summary>
-        /// <param name="value">The <see cref="HBITMAP" /> value to convert.</param>
-        public static implicit operator void* (HBITMAP value)
-        {
-            return value._value;
-        }
         #endregion
 
-        #region System.IEquatable<HBITMAP>
+        #region System.IEquatable<HBITMAP> Methods
         /// <summary>Compares a <see cref="HBITMAP" /> with the current instance to determine equality.</summary>
         /// <param name="other">The <see cref="HBITMAP" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
         public bool Equals(HBITMAP other)
         {
-            return (this == other);
+            var otherValue = other._value;
+            return _value.Equals(otherValue);
         }
         #endregion
 
-        #region System.IFormattable
+        #region System.IFormattable Methods
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
         /// <param name="formatProvider">The provider to use when formatting the current instance or <c>null</c> to use the default provider.</param>
@@ -119,7 +94,7 @@ namespace TerraFX.Interop
         }
         #endregion
 
-        #region System.Object
+        #region System.Object Methods
         /// <summary>Compares a <see cref="object" /> with the current instance to determine equality.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="HBITMAP" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>

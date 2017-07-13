@@ -57,8 +57,8 @@ namespace TerraFX.Provider.Win32.UI
                 hInstance = EntryModuleHandle,
                 hIcon = null,
                 hCursor = null,
-                hbrBackground = (void*)((int)(COLOR_WINDOW + 1)),
-                lpszMenuName = null,
+                hbrBackground = (void*)(COLOR_WINDOW + 1),
+                lpszMenuName = (WCHAR*)(null),
                 lpszClassName = _lpClassName,
                 hIconSm = null
             };
@@ -105,7 +105,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (_classAtom != 0)
             {
-                var lpClassName = (LPWSTR)((void*)((ushort)(_classAtom)));
+                var lpClassName = (LPWSTR)(_classAtom);
                 UnregisterClass((WCHAR*)(lpClassName), EntryModuleHandle);
                 _classAtom = 0;
             }
@@ -143,7 +143,7 @@ namespace TerraFX.Provider.Win32.UI
                 ExceptionUtilities.ThrowObjectDisposedException(nameof(IWindowManager));
             }
 
-            var lpClassName = (LPWSTR)((void*)((ushort)(_classAtom)));
+            var lpClassName = (LPWSTR)(_classAtom);
             var window = new Window(_dispatchManager.Value, lpClassName, _lpWindowName, EntryModuleHandle);
 
             var succeeded = CreatedWindows.TryAdd((void*)(window.Handle), window);

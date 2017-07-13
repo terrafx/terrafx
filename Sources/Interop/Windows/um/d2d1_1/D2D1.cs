@@ -14,7 +14,7 @@ namespace TerraFX.Interop
         public const uint D2D1_INVALID_PROPERTY_INDEX = uint.MaxValue;
         #endregion
 
-        #region Methods
+        #region External Methods
         [DllImport("D2D1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1CreateDevice", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern HRESULT D2D1CreateDevice(

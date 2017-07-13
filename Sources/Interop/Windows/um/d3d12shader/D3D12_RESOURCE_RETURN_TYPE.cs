@@ -20,7 +20,7 @@ namespace TerraFX.Interop
         }
         #endregion
 
-        #region Operators
+        #region Cast Operators
         /// <summary>Implicitly converts a <see cref="D3D12_RESOURCE_RETURN_TYPE" /> value to a <see cref="D3D_RESOURCE_RETURN_TYPE" /> value.</summary>
         /// <param name="value">The <see cref="D3D12_RESOURCE_RETURN_TYPE" /> value to convert.</param>
         public static implicit operator D3D_RESOURCE_RETURN_TYPE(D3D12_RESOURCE_RETURN_TYPE value)

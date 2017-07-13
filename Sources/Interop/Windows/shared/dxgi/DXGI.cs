@@ -12,7 +12,10 @@ namespace TerraFX.Interop
     unsafe public static partial class DXGI
     {
         #region Constants
-        #region DXGI_USAGE_*
+        public const uint DXGI_MAX_SWAP_CHAIN_BUFFERS = 16;
+        #endregion
+
+        #region DXGI_USAGE_* Constants
         public const uint DXGI_USAGE_SHADER_INPUT = 0x00000010;
 
         public const uint DXGI_USAGE_RENDER_TARGET_OUTPUT = 0x00000020;
@@ -28,7 +31,7 @@ namespace TerraFX.Interop
         public const uint DXGI_USAGE_UNORDERED_ACCESS = 0x00000400;
         #endregion
 
-        #region DXGI_RESOURCE_PRIORITY_*
+        #region DXGI_RESOURCE_PRIORITY_* Constants
         public const uint DXGI_RESOURCE_PRIORITY_MINIMUM = 0x28000000;
 
         public const uint DXGI_RESOURCE_PRIORITY_LOW = 0x50000000;
@@ -40,7 +43,7 @@ namespace TerraFX.Interop
         public const uint DXGI_RESOURCE_PRIORITY_MAXIMUM = 0xC8000000;
         #endregion
 
-        #region DXGI_MAP_*
+        #region DXGI_MAP_* Constants
         public const uint DXGI_MAP_READ = 1;
 
         public const uint DXGI_MAP_WRITE = 2;
@@ -48,15 +51,13 @@ namespace TerraFX.Interop
         public const uint DXGI_MAP_DISCARD = 4;
         #endregion
 
-        #region DXGI_ENUM_MODES_*
+        #region DXGI_ENUM_MODES_* Constants
         public const uint DXGI_ENUM_MODES_INTERLACED = 1;
 
         public const uint DXGI_ENUM_MODES_SCALING = 2;
         #endregion
 
-        public const uint DXGI_MAX_SWAP_CHAIN_BUFFERS = 16;
-
-        #region DXGI_PRESENT_*
+        #region DXGI_PRESENT_* Constants
         public const uint DXGI_PRESENT_TEST = 0x00000001;
 
         public const uint DXGI_PRESENT_DO_NOT_SEQUENCE = 0x00000002;
@@ -76,7 +77,7 @@ namespace TerraFX.Interop
         public const uint DXGI_PRESENT_ALLOW_TEARING = 0x00000200;
         #endregion
 
-        #region DXGI_MWA_*
+        #region DXGI_MWA_* Constants
         public const uint DXGI_MWA_NO_WINDOW_CHANGES = (1 << 0);
 
         public const uint DXGI_MWA_NO_ALT_ENTER = (1 << 1);
@@ -86,7 +87,7 @@ namespace TerraFX.Interop
         public const uint DXGI_MWA_VALID = 0x7;
         #endregion
 
-        #region IID_*
+        #region IID_* Constants
         public static readonly GUID IID_IDXGIObject = new Guid(0xAEC22FB8, 0x76F3, 0x4639, 0x9B, 0xE0, 0x28, 0xEB, 0x43, 0xA6, 0x7A, 0x2E);
 
         public static readonly GUID IID_IDXGIDeviceSubObject = new Guid(0x3D3E0379, 0xF9DE, 0x4D58, 0xBB, 0x6C, 0x18, 0xD6, 0x29, 0x92, 0xF1, 0xA6);
@@ -115,9 +116,8 @@ namespace TerraFX.Interop
 
         public static readonly GUID IID_IDXGIDevice1 = new Guid(0x77DB970F, 0x6276, 0x48BA, 0xBA, 0x28, 0x07, 0x01, 0x43, 0xB4, 0x39, 0x2C);
         #endregion
-        #endregion
 
-        #region Methods
+        #region External Methods
         [DllImport("DXGI", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CreateDXGIFactory1", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern HRESULT CreateDXGIFactory1(

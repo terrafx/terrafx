@@ -5,11 +5,12 @@
 
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit)]
-    unsafe public /* blittable */ struct GUID : IEquatable<GUID>, IFormattable
+    public /* blittable */ struct GUID : IEquatable<GUID>, IFormattable
     {
         #region Fields
         #region struct
@@ -23,7 +24,7 @@ namespace TerraFX.Interop
         public ushort Data3;
 
         [FieldOffset(8)]
-        public fixed byte Data4[8];
+        public _Data4_e__FixedBuffer Data4;
         #endregion
 
         [FieldOffset(0)]
@@ -39,7 +40,27 @@ namespace TerraFX.Interop
         }
         #endregion
 
-        #region Operators
+        #region Comparison Operators
+        /// <summary>Compares two <see cref="GUID" /> instances to determine equality.</summary>
+        /// <param name="left">The <see cref="GUID" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="GUID" /> to compare with <paramref name="left" />.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
+        public static bool operator ==(GUID left, GUID right)
+        {
+            return (left._value == right._value);
+        }
+
+        /// <summary>Compares two <see cref="GUID" /> instances to determine inequality.</summary>
+        /// <param name="left">The <see cref="GUID" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="GUID" /> to compare with <paramref name="left" />.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
+        public static bool operator !=(GUID left, GUID right)
+        {
+            return (left._value != right._value);
+        }
+        #endregion
+
+        #region Cast Operators
         /// <summary>Implicitly converts a <see cref="GUID" /> value to a <see cref="Guid" /> value.</summary>
         /// <param name="value">The <see cref="GUID" /> value to convert.</param>
         public static implicit operator Guid(GUID value)
@@ -55,17 +76,18 @@ namespace TerraFX.Interop
         }
         #endregion
 
-        #region System.IEquatable<GUID>
+        #region System.IEquatable<GUID> Methods
         /// <summary>Compares a <see cref="GUID" /> with the current instance to determine equality.</summary>
         /// <param name="other">The <see cref="GUID" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
         public bool Equals(GUID other)
         {
-            return _value.Equals(other._value);
+            var otherValue = other._value;
+            return _value.Equals(otherValue);
         }
         #endregion
 
-        #region System.IFormattable
+        #region System.IFormattable Methods
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
         /// <param name="formatProvider">The provider to use when formatting the current instance or <c>null</c> to use the default provider.</param>
@@ -76,7 +98,7 @@ namespace TerraFX.Interop
         }
         #endregion
 
-        #region System.Object
+        #region System.Object Methods
         /// <summary>Compares a <see cref="object" /> with the current instance to determine equality.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="GUID" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>
@@ -98,6 +120,47 @@ namespace TerraFX.Interop
         public override string ToString()
         {
             return _value.ToString();
+        }
+        #endregion
+
+        #region Structs
+        unsafe public /* blittable */ struct _Data4_e__FixedBuffer
+        {
+            #region Fields
+            public byte e0;
+
+            public byte e1;
+
+            public byte e2;
+
+            public byte e3;
+
+            public byte e4;
+
+            public byte e5;
+
+            public byte e6;
+
+            public byte e7;
+            #endregion
+
+            #region Properties
+            public byte this[int index]
+            {
+                get
+                {
+                    if ((uint)(index) > 7) // (index < 0) || (index > 7)
+                    {
+                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                    }
+
+                    fixed (byte* e = &e0)
+                    {
+                        return e[index];
+                    }
+                }
+            }
+            #endregion
         }
         #endregion
     }

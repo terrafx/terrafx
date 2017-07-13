@@ -11,8 +11,7 @@ namespace TerraFX.Interop
 {
     unsafe public static partial class DXGI
     {
-        #region Constants
-        #region IID_*
+        #region IID_* Constants
         public static readonly GUID IID_IDXGIDevice3 = new Guid(0x6007896C, 0x3244, 0x4AFD, 0xBF, 0x18, 0xA6, 0xD3, 0xBE, 0xDA, 0x50, 0x23);
 
         public static readonly GUID IID_IDXGISwapChain2 = new Guid(0xA8BE2AC4, 0x199F, 0x4946, 0xB3, 0x31, 0x79, 0x59, 0x9F, 0xB9, 0x8D, 0xE7);
@@ -29,9 +28,8 @@ namespace TerraFX.Interop
 
         public static readonly GUID IID_IDXGIOutput3 = new Guid(0x8A6BB301, 0x7E7E, 0x41F4, 0xA8, 0xE0, 0x5B, 0x32, 0xF7, 0xF9, 0x9B, 0x18);
         #endregion
-        #endregion
 
-        #region Methods
+        #region External Methods
         [DllImport("DXGI", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CreateDXGIFactory2", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void CreateDXGIFactory2(

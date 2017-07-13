@@ -10,7 +10,7 @@ namespace TerraFX.Interop
 {
     public static partial class Kernel32
     {
-        #region Methods
+        #region External Methods
         [DllImport("Kernel32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "GetModuleHandleW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern HMODULE GetModuleHandle(

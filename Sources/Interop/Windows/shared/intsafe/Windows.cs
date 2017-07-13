@@ -8,11 +8,11 @@ namespace TerraFX.Interop
     public static partial class Windows
     {
         #region Constants
-        #region INTSAFE_E_*
-        public static readonly HRESULT INTSAFE_E_ARITHMETIC_OVERFLOW = (HRESULT)(0x80070216);
+        public const ulong ULONGLONG_MAX = 0xFFFFFFFFFFFFFFFF;
         #endregion
 
-        public const ulong ULONGLONG_MAX = 0xFFFFFFFFFFFFFFFF;
+        #region INTSAFE_E_* Constants
+        public const int INTSAFE_E_ARITHMETIC_OVERFLOW = unchecked((int)(0x80070216));
         #endregion
     }
 }

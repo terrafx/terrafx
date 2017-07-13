@@ -11,7 +11,11 @@ namespace TerraFX.Interop
     public /* blittable */ struct D2D1_COLOR_F
     {
         #region Fields
-        #region struct
+        [FieldOffset(0)]
+        internal D2D_COLOR_F _value;
+        #endregion
+
+        #region D2D_COLOR_F Fields
         [FieldOffset(0)]
         public float r;
 
@@ -25,10 +29,6 @@ namespace TerraFX.Interop
         public float a;
         #endregion
 
-        [FieldOffset(0)]
-        internal D2D_COLOR_F _value;
-        #endregion
-
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="D2D1_COLOR_F" /> struct.</summary>
         /// <param name="value">The <see cref="D2D_COLOR_F" /> used to initialize the instance.</param>
@@ -38,7 +38,7 @@ namespace TerraFX.Interop
         }
         #endregion
 
-        #region Operators
+        #region Cast Operators
         /// <summary>Implicitly converts a <see cref="D2D1_COLOR_F" /> value to a <see cref="D2D_COLOR_F" /> value.</summary>
         /// <param name="value">The <see cref="D2D1_COLOR_F" /> value to convert.</param>
         public static implicit operator D2D_COLOR_F(D2D1_COLOR_F value)
@@ -49,20 +49,6 @@ namespace TerraFX.Interop
         /// <summary>Implicitly converts a <see cref="D2D_COLOR_F" /> value to a <see cref="D2D1_COLOR_F" /> value.</summary>
         /// <param name="value">The <see cref="D2D_COLOR_F" /> value to convert.</param>
         public static implicit operator D2D1_COLOR_F(D2D_COLOR_F value)
-        {
-            return new D2D1_COLOR_F(value);
-        }
-
-        /// <summary>Implicitly converts a <see cref="D2D1_COLOR_F" /> value to a <see cref="D3DCOLORVALUE" /> value.</summary>
-        /// <param name="value">The <see cref="D2D1_COLOR_F" /> value to convert.</param>
-        public static implicit operator D3DCOLORVALUE(D2D1_COLOR_F value)
-        {
-            return value._value;
-        }
-
-        /// <summary>Implicitly converts a <see cref="D3DCOLORVALUE" /> value to a <see cref="D2D1_COLOR_F" /> value.</summary>
-        /// <param name="value">The <see cref="D3DCOLORVALUE" /> value to convert.</param>
-        public static implicit operator D2D1_COLOR_F(D3DCOLORVALUE value)
         {
             return new D2D1_COLOR_F(value);
         }

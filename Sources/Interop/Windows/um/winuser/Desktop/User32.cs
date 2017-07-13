@@ -10,7 +10,7 @@ namespace TerraFX.Interop.Desktop
 {
     unsafe public static partial class User32
     {
-        #region Methods
+        #region External Methods
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CloseWindow", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern BOOL CloseWindow(

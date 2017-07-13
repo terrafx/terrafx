@@ -23,21 +23,63 @@ namespace TerraFX.Interop
         }
         #endregion
 
-        #region Operators
-        /// <summary>Explicitly converts a <see cref="DWORD" /> value to a <see cref="int" /> value.</summary>
-        /// <param name="value">The <see cref="DWORD" /> value to convert.</param>
-        public static explicit operator int(DWORD value)
+        #region Comparison Operators
+        /// <summary>Compares two <see cref="DWORD" /> instances to determine equality.</summary>
+        /// <param name="left">The <see cref="DWORD" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="DWORD" /> to compare with <paramref name="left" />.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
+        public static bool operator ==(DWORD left, DWORD right)
         {
-            return (int)(value._value);
+            return (left._value == right._value);
         }
 
-        /// <summary>Explicitly converts a <see cref="int" /> value to a <see cref="DWORD" /> value.</summary>
-        /// <param name="value">The <see cref="int" /> value to convert.</param>
-        public static explicit operator DWORD(int value)
+        /// <summary>Compares two <see cref="DWORD" /> instances to determine inequality.</summary>
+        /// <param name="left">The <see cref="DWORD" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="DWORD" /> to compare with <paramref name="left" />.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
+        public static bool operator !=(DWORD left, DWORD right)
         {
-            return new DWORD((uint)(value));
+            return (left._value != right._value);
         }
 
+        /// <summary>Compares two <see cref="DWORD" /> instances to determine relative sort-order.</summary>
+        /// <param name="left">The <see cref="DWORD" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="DWORD" /> to compare with <paramref name="left" />.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> is less than <paramref name="right" />; otherwise, <c>false</c>.</returns>
+        public static bool operator <(DWORD left, DWORD right)
+        {
+            return (left._value < right._value);
+        }
+
+        /// <summary>Compares two <see cref="DWORD" /> instances to determine relative sort-order.</summary>
+        /// <param name="left">The <see cref="DWORD" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="DWORD" /> to compare with <paramref name="left" />.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise, <c>false</c>.</returns>
+        public static bool operator >(DWORD left, DWORD right)
+        {
+            return (left._value > right._value);
+        }
+
+        /// <summary>Compares two <see cref="DWORD" /> instances to determine relative sort-order.</summary>
+        /// <param name="left">The <see cref="DWORD" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="DWORD" /> to compare with <paramref name="left" />.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> is less than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
+        public static bool operator <=(DWORD left, DWORD right)
+        {
+            return (left._value <= right._value);
+        }
+
+        /// <summary>Compares two <see cref="DWORD" /> instances to determine relative sort-order.</summary>
+        /// <param name="left">The <see cref="DWORD" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="DWORD" /> to compare with <paramref name="left" />.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> is greater than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
+        public static bool operator >=(DWORD left, DWORD right)
+        {
+            return (left._value >= right._value);
+        }
+        #endregion
+
+        #region Cast Operators
         /// <summary>Implicitly converts a <see cref="DWORD" /> value to a <see cref="uint" /> value.</summary>
         /// <param name="value">The <see cref="DWORD" /> value to convert.</param>
         public static implicit operator uint(DWORD value)
@@ -53,7 +95,7 @@ namespace TerraFX.Interop
         }
         #endregion
 
-        #region System.IComparable
+        #region System.IComparable Methods
         /// <summary>Compares a <see cref="object" /> with the current instance to determine relative sort-order.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns>A value <c>less than zero</c> if <paramref name="obj" /> is greater than the current instance, <c>zero</c> if <paramref name="obj"/> is equal to the current instance; and <c>greater than zero</c> if <paramref name="obj" /> is <c>null</c> or greater than the current instance.</returns>
@@ -75,27 +117,29 @@ namespace TerraFX.Interop
         }
         #endregion
 
-        #region System.IComparable<DWORD>
+        #region System.IComparable<DWORD> Methods
         /// <summary>Compares a <see cref="DWORD" /> with the current instance to determine relative sort-order.</summary>
         /// <param name="other">The <see cref="DWORD" /> to compare with the current instance.</param>
         /// <returns>A value <c>less than zero</c> if <paramref name="other" /> is greater than the current instance, <c>zero</c> if <paramref name="other"/> is equal to the current instance; and <c>greater than zero</c> if <paramref name="other" /> is greater than the current instance.</returns>
         public int CompareTo(DWORD other)
         {
-            return _value.CompareTo(other._value);
+            var otherValue = other._value;
+            return _value.CompareTo(otherValue);
         }
         #endregion
 
-        #region System.IEquatable<DWORD>
+        #region System.IEquatable<DWORD> Methods
         /// <summary>Compares a <see cref="DWORD" /> with the current instance to determine equality.</summary>
         /// <param name="other">The <see cref="DWORD" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
         public bool Equals(DWORD other)
         {
-            return _value.Equals(other._value);
+            var otherValue = other._value;
+            return _value.Equals(otherValue);
         }
         #endregion
 
-        #region System.IFormattable
+        #region System.IFormattable Methods
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
         /// <param name="formatProvider">The provider to use when formatting the current instance or <c>null</c> to use the default provider.</param>
@@ -106,7 +150,7 @@ namespace TerraFX.Interop
         }
         #endregion
 
-        #region System.Object
+        #region System.Object Methods
         /// <summary>Compares a <see cref="object" /> with the current instance to determine equality.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="DWORD" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>

@@ -15,8 +15,9 @@ namespace TerraFX.Interop
         public const ulong D2D1_INVALID_TAG = ULONGLONG_MAX;
 
         public const float D2D1_DEFAULT_FLATTENING_TOLERANCE = 0.25f;
+        #endregion
 
-        #region D2D1_INTERPOLATION_MODE_*
+        #region D2D1_INTERPOLATION_MODE_* Constants
         // This defines the superset of interpolation mode supported by D2D APIs and built-in effects
 
         public const int D2D1_INTERPOLATION_MODE_DEFINITION_NEAREST_NEIGHBOR = 0;
@@ -35,9 +36,8 @@ namespace TerraFX.Interop
 
         public const int D2D1_INTERPOLATION_MODE_DEFINITION_MIPMAP_LINEAR = 7;
         #endregion
-        #endregion
 
-        #region Methods
+        #region External Methods
         [DllImport("D2D1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1CreateFactory", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern HRESULT D2D1CreateFactory(

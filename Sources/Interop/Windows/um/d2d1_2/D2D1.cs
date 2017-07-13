@@ -10,7 +10,7 @@ namespace TerraFX.Interop
 {
     unsafe public static partial class D2D1
     {
-        #region Methods
+        #region External Methods
         [DllImport("D2D1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1ComputeMaximumScaleFactor", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern FLOAT D2D1ComputeMaximumScaleFactor(

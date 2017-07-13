@@ -7,8 +7,7 @@ namespace TerraFX.Interop
 {
     public static partial class User32
     {
-        #region Constants
-        #region SW_*
+        #region SW_* Constants
         public const int SW_HIDE = 0;
 
         public const int SW_SHOWNORMAL = 1;
@@ -40,7 +39,7 @@ namespace TerraFX.Interop
         public const int SW_MAX = 11;
         #endregion
 
-        #region WM_*
+        #region WM_* Constants
         public const uint WM_NULL = 0x0000;
 
         public const uint WM_CREATE = 0x0001;
@@ -556,7 +555,7 @@ namespace TerraFX.Interop
         public const uint WM_APP = 0x8000;
         #endregion
 
-        #region WA_*
+        #region WA_* Constants
         public const int WA_INACTIVE = 0;
 
         public const int WA_ACTIVE = 1;
@@ -564,7 +563,7 @@ namespace TerraFX.Interop
         public const int WA_CLICKACTIVE = 2;
         #endregion
 
-        #region WS_*
+        #region WS_* Constants
         public const uint WS_OVERLAPPED = 0x00000000;
 
         public const uint WS_POPUP = 0x80000000;
@@ -620,7 +619,7 @@ namespace TerraFX.Interop
         public const uint WS_CHILDWINDOW = WS_CHILD;
         #endregion
 
-        #region WS_EX_*
+        #region WS_EX_* Constants
         public const uint WS_EX_DLGMODALFRAME = 0x00000001;
 
         public const uint WS_EX_NOPARENTNOTIFY = 0x00000004;
@@ -676,7 +675,7 @@ namespace TerraFX.Interop
         public const uint WS_EX_NOACTIVATE = 0x08000000;
         #endregion
 
-        #region CS_*
+        #region CS_* Constants
         public const int CS_VREDRAW = 0x0001;
 
         public const int CS_HREDRAW = 0x0002;
@@ -704,7 +703,7 @@ namespace TerraFX.Interop
         public const int CS_DROPSHADOW = 0x00020000;
         #endregion
 
-        #region PM_*
+        #region PM_* Constants
         public const int PM_NOREMOVE = 0x0000;
 
         public const int PM_REMOVE = 0x0001;
@@ -720,9 +719,11 @@ namespace TerraFX.Interop
         public const int PM_QS_SENDMESSAGE = (QS_SENDMESSAGE << 16);
         #endregion
 
+        #region CW_* Constants
         public const uint CW_USEDEFAULT = 0x80000000;
+        #endregion
 
-        #region QS_*
+        #region QS_* Constants
         public const int QS_KEY = 0x0001;
 
         public const int QS_MOUSEMOVE = 0x0002;
@@ -756,7 +757,7 @@ namespace TerraFX.Interop
         public const int QS_ALLINPUT = (QS_INPUT | QS_POSTMESSAGE | QS_TIMER | QS_PAINT | QS_HOTKEY | QS_SENDMESSAGE);
         #endregion
 
-        #region COLOR_*
+        #region COLOR_* Constants
         public const int COLOR_SCROLLBAR = 0;
 
         public const int COLOR_BACKGROUND = 1;
@@ -828,7 +829,6 @@ namespace TerraFX.Interop
         public const int COLOR_3DHILIGHT = COLOR_BTNHIGHLIGHT;
 
         public const int COLOR_BTNHILIGHT = COLOR_BTNHIGHLIGHT;
-        #endregion
         #endregion
     }
 }

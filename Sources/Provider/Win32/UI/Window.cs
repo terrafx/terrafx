@@ -1,13 +1,13 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Diagnostics;
 using TerraFX.Collections;
 using TerraFX.Interop;
 using TerraFX.Threading;
 using TerraFX.UI;
 using TerraFX.Utilities;
 using static TerraFX.Interop.User32;
+using static TerraFX.Interop.Windows;
 using static TerraFX.Interop.Desktop.User32;
 
 namespace TerraFX.Provider.Win32.UI
@@ -95,8 +95,8 @@ namespace TerraFX.Provider.Win32.UI
             {
                 case WM_MOVE:
                 {
-                    var x = (ushort)(lParam);
-                    var y = (ushort)(lParam >> 16);
+                    var x = LOWORD(lParam);
+                    var y = HIWORD(lParam);
 
                     _bounds.Location = new Point2D(x, y);
                     return 0;
@@ -104,8 +104,8 @@ namespace TerraFX.Provider.Win32.UI
 
                 case WM_SIZE:
                 {
-                    var width = (ushort)(lParam);
-                    var height = (ushort)(lParam >> 16);
+                    var width = LOWORD(lParam);
+                    var height = HIWORD(lParam);
 
                     _bounds.Size = new Size2D(width, height);
                     return 0;
@@ -113,14 +113,14 @@ namespace TerraFX.Provider.Win32.UI
 
                 case WM_ACTIVATE:
                 {
-                    var activateCmd = ((ushort)(wParam));
+                    var activateCmd = LOWORD(wParam);
                     _isActive = (activateCmd != WA_INACTIVE);
                     return 0;
                 }
 
                 case WM_SHOWWINDOW:
                 {
-                    var shown = (BOOL)(unchecked((int)((uint)(wParam))));
+                    var shown = (BOOL)(LOWORD(wParam));
                     _isVisible = (shown != 0);
                     return 0;
                 }

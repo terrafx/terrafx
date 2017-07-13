@@ -3,24 +3,42 @@
 // Ported from um\dcommon.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
+    [StructLayout(LayoutKind.Explicit)]
     public /* blittable */ struct D2D_RECT_L
     {
         #region Fields
+        [FieldOffset(0)]
         internal RECT _value;
+        #endregion
+
+        #region RECT Fields
+        [FieldOffset(0)]
+        public LONG left;
+
+        [FieldOffset(4)]
+        public LONG top;
+
+        [FieldOffset(8)]
+        public LONG right;
+
+        [FieldOffset(12)]
+        public LONG bottom;
         #endregion
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="D2D_RECT_L" /> struct.</summary>
         /// <param name="value">The <see cref="RECT" /> used to initialize the instance.</param>
-        public D2D_RECT_L(RECT value)
+        public D2D_RECT_L(RECT value) : this()
         {
             _value = value;
         }
         #endregion
 
-        #region Operators
+        #region Cast Operators
         /// <summary>Implicitly converts a <see cref="D2D_RECT_L" /> value to a <see cref="RECT" /> value.</summary>
         /// <param name="value">The <see cref="D2D_RECT_L" /> value to convert.</param>
         public static implicit operator RECT(D2D_RECT_L value)

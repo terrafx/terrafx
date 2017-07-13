@@ -10,7 +10,7 @@ namespace TerraFX.Interop.Desktop
 {
     unsafe public static partial class DXGI
     {
-        #region Methods
+        #region External Methods
         [DllImport("DXGI", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CreateDXGIFactory", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern HRESULT CreateDXGIFactory(

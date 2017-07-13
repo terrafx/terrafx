@@ -12,8 +12,7 @@ namespace TerraFX.Interop
 {
     unsafe public static partial class WinCodec
     {
-        #region Constants
-        #region CLSID_*
+        #region CLSID_* Constants
         public static readonly GUID CLSID_WICImagingFactory = CLSID_WICImagingFactory2; // Prior to Win8 = new Guid(0xCACAF262, 0x9370, 0x4615, 0xA1, 0x3B, 0x9F, 0x55, 0x39, 0xDA, 0x4C, 0x0A)
 
         public static readonly GUID CLSID_WICImagingFactory1 = new Guid(0xCACAF262, 0x9370, 0x4615, 0xA1, 0x3B, 0x9F, 0x55, 0x39, 0xDA, 0x4C, 0x0A);
@@ -71,13 +70,13 @@ namespace TerraFX.Interop
         public static readonly GUID CLSID_WICPlanarFormatConverter = new Guid(0x184132B8, 0x32F8, 0x4784, 0x91, 0x31, 0xDD, 0x72, 0x24, 0xB2, 0x34, 0x38);
         #endregion
 
-        #region GUID_Vendor*
+        #region GUID_Vendor* Constants
         public static readonly GUID GUID_VendorMicrosoft = new Guid(0xF0E749CA, 0xEDEF, 0x4589, 0xA7, 0x3A, 0xEE, 0x0E, 0x62, 0x6A, 0x2A, 0x2B);
 
         public static readonly GUID GUID_VendorMicrosoftBuiltIn = new Guid(0x257A30FD, 0x06B6, 0x462B, 0xAE, 0xA4, 0x63, 0xF7, 0x0B, 0x86, 0xE5, 0x33);
         #endregion
 
-        #region GUID_ContainerFormat*
+        #region GUID_ContainerFormat* Constants
         public static readonly GUID GUID_ContainerFormatBmp = new Guid(0x0AF1D87E, 0xFCFE, 0x4188, 0xBD, 0xEB, 0xA7, 0x90, 0x64, 0x71, 0xCB, 0xE3);
 
         public static readonly GUID GUID_ContainerFormatPng = new Guid(0x1B7CFAF4, 0x713F, 0x473C, 0xBB, 0xCD, 0x61, 0x37, 0x42, 0x5F, 0xAE, 0xAF);
@@ -97,7 +96,7 @@ namespace TerraFX.Interop
         public static readonly GUID GUID_ContainerFormatAdng = new Guid(0xF3FF6D0D, 0x38C0, 0x41C4, 0xB1, 0xFE, 0x1F, 0x38, 0x24, 0xF1, 0x7B, 0x84);
         #endregion
 
-        #region GUID_PixelFormat*
+        #region GUID_PixelFormat* Constants
         public static readonly GUID GUID_WICPixelFormatUndefined = GUID_WICPixelFormatDontCare;
 
         public static readonly GUID GUID_WICPixelFormatDontCare = new Guid(0x6FDDC324, 0x4E03, 0x4BFE, 0xB1, 0x85, 0x3D, 0x77, 0x76, 0x8D, 0xC9, 0x00);
@@ -277,7 +276,7 @@ namespace TerraFX.Interop
         public static readonly GUID GUID_WICPixelFormat16bppCrQuantizedDctCoefficients = new Guid(0x2FE354F0, 0x1680, 0x42D8, 0x92, 0x31, 0xE7, 0x3C, 0x05, 0x65, 0xBF, 0xC1);
         #endregion
 
-        #region CATID_*
+        #region CATID_* Constants
         public static readonly GUID CATID_WICBitmapDecoders = new Guid(0x7ED96837, 0x96F0, 0x4812, 0xB2, 0x11, 0xF1, 0x3C, 0x24, 0x11, 0x7E, 0xD3);
 
         public static readonly GUID CATID_WICBitmapEncoders = new Guid(0xAC757296, 0x3522, 0x4E11, 0x98, 0x62, 0xC1, 0x7B, 0xE5, 0xA1, 0x76, 0x7E);
@@ -291,13 +290,13 @@ namespace TerraFX.Interop
         public static readonly GUID CATID_WICMetadataWriter = new Guid(0xABE3B9A4, 0x257D, 0x4B97, 0xBD, 0x1A, 0x29, 0x4A, 0xF4, 0x96, 0x22, 0x2E);
         #endregion
 
-        #region WIC_JPEG_MAX_*
+        #region WIC_JPEG_MAX_* Constants
         public const int WIC_JPEG_MAX_COMPONENT_COUNT = 4;
 
         public const int WIC_JPEG_MAX_TABLE_INDEX = 3;
         #endregion
 
-        #region WIC_JPEG_SAMPLE_FACTORS_*
+        #region WIC_JPEG_SAMPLE_FACTORS_* Constants
         public const int WIC_JPEG_SAMPLE_FACTORS_ONE = 0x11;
 
         public const int WIC_JPEG_SAMPLE_FACTORS_THREE_420 = 0x111122;
@@ -309,39 +308,41 @@ namespace TerraFX.Interop
         public const int WIC_JPEG_SAMPLE_FACTORS_THREE_444 = 0x111111;
         #endregion
 
-        #region WIC_JPEG_QUANTIZATION_BASELINE_*
+        #region WIC_JPEG_QUANTIZATION_BASELINE_* Constants
         public const int WIC_JPEG_QUANTIZATION_BASELINE_ONE = 0;
 
         public const int WIC_JPEG_QUANTIZATION_BASELINE_THREE = 0x10100;
         #endregion
 
-        #region WIC_JPEG_HUFFMAN_BASELINE_*
+        #region WIC_JPEG_HUFFMAN_BASELINE_* Constants
         public const int WIC_JPEG_HUFFMAN_BASELINE_ONE = 0;
 
         public const int WIC_JPEG_HUFFMAN_BASELINE_THREE = 0x111100;
         #endregion
 
+        #region FACILITY_* Constants
         public const int FACILITY_WINCODEC_ERR = 0x898;
-
-        #region WINCODEC_ERR_*
-        public const int WINCODEC_ERR_BASE = 0x2000;
-
-        public static readonly HRESULT WINCODEC_ERR_GENERIC_ERROR = E_FAIL;
-
-        public static readonly HRESULT WINCODEC_ERR_INVALIDPARAMETER = E_INVALIDARG;
-
-        public static readonly HRESULT WINCODEC_ERR_OUTOFMEMORY = E_OUTOFMEMORY;
-
-        public static readonly HRESULT WINCODEC_ERR_NOTIMPLEMENTED = E_NOTIMPL;
-
-        public static readonly HRESULT WINCODEC_ERR_ABORTED = E_ABORT;
-
-        public static readonly HRESULT WINCODEC_ERR_ACCESSDENIED = E_ACCESSDENIED;
-
-        public static readonly HRESULT WINCODEC_ERR_VALUEOVERFLOW = INTSAFE_E_ARITHMETIC_OVERFLOW;
         #endregion
 
-        #region WICRawChangeNotification_*
+        #region WINCODEC_ERR_* Constants
+        public const int WINCODEC_ERR_BASE = 0x2000;
+
+        public const int WINCODEC_ERR_GENERIC_ERROR = E_FAIL;
+
+        public const int WINCODEC_ERR_INVALIDPARAMETER = E_INVALIDARG;
+
+        public const int WINCODEC_ERR_OUTOFMEMORY = E_OUTOFMEMORY;
+
+        public const int WINCODEC_ERR_NOTIMPLEMENTED = E_NOTIMPL;
+
+        public const int WINCODEC_ERR_ABORTED = E_ABORT;
+
+        public const int WINCODEC_ERR_ACCESSDENIED = E_ACCESSDENIED;
+
+        public const int WINCODEC_ERR_VALUEOVERFLOW = INTSAFE_E_ARITHMETIC_OVERFLOW;
+        #endregion
+
+        #region WICRawChangeNotification_* Constants
         public const int WICRawChangeNotification_ExposureCompensation = 0x00000001;
 
         public const int WICRawChangeNotification_NamedWhitePoint = 0x00000002;
@@ -370,9 +371,8 @@ namespace TerraFX.Interop
 
         public const int WICRawChangeNotification_RenderMode = 0x00002000;
         #endregion
-        #endregion
 
-        #region Methods
+        #region External Methods
         [DllImport("WinCodec", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "WICConvertBitmapSource", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern HRESULT WICConvertBitmapSource(

@@ -83,55 +83,15 @@ namespace TerraFX.Interop
         unsafe public /* blittable */ struct _m_e__FixedBuffer
         {
             #region Fields
-            #region e0_*
-            public FLOAT e0_0;
+            public FLOAT e0_0, e0_1, e0_2, e0_3;
 
-            public FLOAT e0_1;
+            public FLOAT e1_0, e1_1, e1_2, e1_3;
 
-            public FLOAT e0_2;
+            public FLOAT e2_0, e2_1, e2_2, e2_3;
 
-            public FLOAT e0_3;
-            #endregion
+            public FLOAT e3_0, e3_1, e3_2, e3_3;
 
-            #region e1_*
-            public FLOAT e1_0;
-
-            public FLOAT e1_1;
-
-            public FLOAT e1_2;
-
-            public FLOAT e1_3;
-            #endregion
-
-            #region e2_*
-            public FLOAT e2_0;
-
-            public FLOAT e2_1;
-
-            public FLOAT e2_2;
-
-            public FLOAT e2_3;
-            #endregion
-
-            #region e3_*
-            public FLOAT e3_0;
-
-            public FLOAT e3_1;
-
-            public FLOAT e3_2;
-
-            public FLOAT e3_3;
-            #endregion
-
-            #region e4_*
-            public FLOAT e4_0;
-
-            public FLOAT e4_1;
-
-            public FLOAT e4_2;
-
-            public FLOAT e4_3;
-            #endregion
+            public FLOAT e4_0, e4_1, e4_2, e4_3;
             #endregion
 
             #region Properties

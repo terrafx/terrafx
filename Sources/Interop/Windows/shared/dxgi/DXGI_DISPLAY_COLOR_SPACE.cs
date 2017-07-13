@@ -15,57 +15,25 @@ namespace TerraFX.Interop
         public _WhitePoints_e__FixedBuffer WhitePoints;
         #endregion
 
-        #region Struct
+        #region Structs
         unsafe public /* blittable */ struct _PrimaryCoordinates_e__FixedBuffer
         {
             #region Fields
-            #region e0_*
-            public FLOAT e0_0;
+            public FLOAT e0_0, e0_1;
 
-            public FLOAT e0_1;
-            #endregion
+            public FLOAT e1_0, e1_1;
 
-            #region e1_*
-            public FLOAT e1_0;
+            public FLOAT e2_0, e2_1;
 
-            public FLOAT e1_1;
-            #endregion
+            public FLOAT e3_0, e3_1;
 
-            #region e2_*
-            public FLOAT e2_0;
+            public FLOAT e4_0, e4_1;
 
-            public FLOAT e2_1;
-            #endregion
+            public FLOAT e5_0, e5_1;
 
-            #region e3_*
-            public FLOAT e3_0;
+            public FLOAT e6_0, e6_1;
 
-            public FLOAT e3_1;
-            #endregion
-
-            #region e4_*
-            public FLOAT e4_0;
-
-            public FLOAT e4_1;
-            #endregion
-
-            #region e5_*
-            public FLOAT e5_0;
-
-            public FLOAT e5_1;
-            #endregion
-
-            #region e6_*
-            public FLOAT e6_0;
-
-            public FLOAT e6_1;
-            #endregion
-
-            #region e7_*
-            public FLOAT e7_0;
-
-            public FLOAT e7_1;
-            #endregion
+            public FLOAT e7_0, e7_1;
             #endregion
 
             #region Properties
@@ -95,100 +63,37 @@ namespace TerraFX.Interop
         unsafe public /* blittable */ struct _WhitePoints_e__FixedBuffer
         {
             #region Fields
-            #region e0_*
-            public FLOAT e0_0;
+            public FLOAT e0_0, e0_1;
 
-            public FLOAT e0_1;
-            #endregion
+            public FLOAT e1_0, e1_1;
 
-            #region e1_*
-            public FLOAT e1_0;
+            public FLOAT e2_0, e2_1;
 
-            public FLOAT e1_1;
-            #endregion
+            public FLOAT e3_0, e3_1;
 
-            #region e2_*
-            public FLOAT e2_0;
+            public FLOAT e4_0, e4_1;
 
-            public FLOAT e2_1;
-            #endregion
+            public FLOAT e5_0, e5_1;
 
-            #region e3_*
-            public FLOAT e3_0;
+            public FLOAT e6_0, e6_1;
 
-            public FLOAT e3_1;
-            #endregion
+            public FLOAT e7_0, e7_1;
 
-            #region e4_*
-            public FLOAT e4_0;
+            public FLOAT e8_0, e8_1;
 
-            public FLOAT e4_1;
-            #endregion
+            public FLOAT e9_0, e9_1;
 
-            #region e5_*
-            public FLOAT e5_0;
+            public FLOAT e10_0, e10_1;
 
-            public FLOAT e5_1;
-            #endregion
+            public FLOAT e11_0, e11_1;
 
-            #region e6_*
-            public FLOAT e6_0;
+            public FLOAT e12_0, e12_1;
 
-            public FLOAT e6_1;
-            #endregion
+            public FLOAT e13_0, e13_1;
 
-            #region e7_*
-            public FLOAT e7_0;
+            public FLOAT e14_0, e14_1;
 
-            public FLOAT e7_1;
-            #endregion
-
-            #region e8_*
-            public FLOAT e8_0;
-
-            public FLOAT e8_1;
-            #endregion
-
-            #region e9_*
-            public FLOAT e9_0;
-
-            public FLOAT e9_1;
-            #endregion
-
-            #region e10_*
-            public FLOAT e10_0;
-
-            public FLOAT e10_1;
-            #endregion
-
-            #region e11_*
-            public FLOAT e11_0;
-
-            public FLOAT e11_1;
-            #endregion
-
-            #region e12_*
-            public FLOAT e12_0;
-
-            public FLOAT e12_1;
-            #endregion
-
-            #region e13_*
-            public FLOAT e13_0;
-
-            public FLOAT e13_1;
-            #endregion
-
-            #region e14_*
-            public FLOAT e14_0;
-            public FLOAT e14_1;
-            #endregion
-
-            #region e15_*
-            public FLOAT e15_0;
-
-            public FLOAT e15_1;
-            #endregion
+            public FLOAT e15_0, e15_1;
             #endregion
 
             #region Properties

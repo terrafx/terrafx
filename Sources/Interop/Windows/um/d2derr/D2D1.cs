@@ -9,16 +9,16 @@ namespace TerraFX.Interop
 {
     public static partial class D2D1
     {
-        #region Constants
+        #region FACILITY_* Constants
         public const int FACILITY_D2D = 0x899;
-
-        #region D2DERR_*
-        public static readonly HRESULT D2DERR_UNSUPPORTED_PIXEL_FORMAT = WINCODEC_ERR_UNSUPPORTEDPIXELFORMAT;
-
-        public static readonly HRESULT D2DERR_INSUFFICIENT_BUFFER = (HRESULT)(ERROR_INSUFFICIENT_BUFFER | (FACILITY_WIN32 << 16) | 0x80000000);
-
-        public static readonly HRESULT D2DERR_FILE_NOT_FOUND = (HRESULT)(ERROR_FILE_NOT_FOUND | (FACILITY_WIN32 << 16) | 0x80000000);
         #endregion
+
+        #region D2DERR_* Constants
+        public const int D2DERR_UNSUPPORTED_PIXEL_FORMAT = WINCODEC_ERR_UNSUPPORTEDPIXELFORMAT;
+
+        public const int D2DERR_INSUFFICIENT_BUFFER = unchecked((int)(ERROR_INSUFFICIENT_BUFFER | (FACILITY_WIN32 << 16) | 0x80000000));
+
+        public const int D2DERR_FILE_NOT_FOUND = unchecked((int)(ERROR_FILE_NOT_FOUND | (FACILITY_WIN32 << 16) | 0x80000000));
         #endregion
     }
 }

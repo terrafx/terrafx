@@ -20,7 +20,7 @@ namespace TerraFX.Interop
         }
         #endregion
 
-        #region Operators
+        #region Cast Operators
         /// <summary>Implicitly converts a <see cref="D3D12_TESSELLATOR_PARTITIONING" /> value to a <see cref="D3D_TESSELLATOR_PARTITIONING" /> value.</summary>
         /// <param name="value">The <see cref="D3D12_TESSELLATOR_PARTITIONING" /> value to convert.</param>
         public static implicit operator D3D_TESSELLATOR_PARTITIONING(D3D12_TESSELLATOR_PARTITIONING value)

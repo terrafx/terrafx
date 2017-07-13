@@ -11,7 +11,11 @@ namespace TerraFX.Interop
     public /* blittable */ struct DXGI_RGBA
     {
         #region Fields
-        #region struct
+        [FieldOffset(0)]
+        internal D3DCOLORVALUE _value;
+        #endregion
+
+        #region D3DCOLORVALUE Fields
         [FieldOffset(0)]
         public float r;
 
@@ -25,10 +29,6 @@ namespace TerraFX.Interop
         public float a;
         #endregion
 
-        [FieldOffset(0)]
-        internal D3DCOLORVALUE _value;
-        #endregion
-
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="DXGI_RGBA" /> struct.</summary>
         /// <param name="value">The <see cref="D3DCOLORVALUE" /> used to initialize the instance.</param>
@@ -38,7 +38,7 @@ namespace TerraFX.Interop
         }
         #endregion
 
-        #region Operators
+        #region Cast Operators
         /// <summary>Implicitly converts a <see cref="DXGI_RGBA" /> value to a <see cref="D3DCOLORVALUE" /> value.</summary>
         /// <param name="value">The <see cref="DXGI_RGBA" /> value to convert.</param>
         public static implicit operator D3DCOLORVALUE(DXGI_RGBA value)

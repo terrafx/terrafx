@@ -9,7 +9,7 @@ namespace TerraFX.Interop
 {
     public static partial class D2D1
     {
-        #region Constants
+        #region CLSID_* Constants
         public static readonly GUID CLSID_D2D12DAffineTransform = new Guid(0x6AA97485, 0x6354, 0x4CFC, 0x90, 0x8C, 0xE4, 0xA7, 0x4F, 0x62, 0xC9, 0x6C);
 
         public static readonly GUID CLSID_D2D13DPerspectiveTransform = new Guid(0xC2844D0B, 0x3D86, 0x46E7, 0x85, 0xBA, 0x52, 0x6C, 0x92, 0x40, 0xF3, 0xFB);

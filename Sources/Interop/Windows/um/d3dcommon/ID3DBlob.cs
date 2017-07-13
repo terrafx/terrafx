@@ -3,24 +3,31 @@
 // Ported from um\d3dcommon.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct ID3DBlob
+    [Guid("8BA5FB08-5195-40E2-AC58-0D989C3A0102")]
+    unsafe public /* blittable */ struct ID3DBlob
     {
         #region Fields
         internal ID3D10Blob _value;
         #endregion
 
+        #region ID3D10Blob Fields
+        public readonly void* /* Vtbl* */ lpVtbl;
+        #endregion
+
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="ID3DBlob" /> struct.</summary>
         /// <param name="value">The <see cref="ID3D10Blob" /> used to initialize the instance.</param>
-        public ID3DBlob(ID3D10Blob value)
+        public ID3DBlob(ID3D10Blob value) : this()
         {
             _value = value;
         }
         #endregion
 
-        #region Operators
+        #region Cast Operators
         /// <summary>Implicitly converts a <see cref="ID3DBlob" /> value to a <see cref="ID3D10Blob" /> value.</summary>
         /// <param name="value">The <see cref="ID3DBlob" /> value to convert.</param>
         public static implicit operator ID3D10Blob(ID3DBlob value)

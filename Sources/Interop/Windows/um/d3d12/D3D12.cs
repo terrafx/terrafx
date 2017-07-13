@@ -12,7 +12,12 @@ namespace TerraFX.Interop
     unsafe public static partial class D3D12
     {
         #region Constants
-        #region D3D12_*
+        public const int D3D12_ANISOTROPIC_FILTERING_BIT = 0x40;
+
+        public static readonly GUID D3D12ExperimentalShaderModels = new Guid(0x76F5573E, 0xF13A, 0x40F5, 0xB2, 0x97, 0x81, 0xCE, 0x9E, 0x18, 0x93, 0x3F);
+        #endregion
+
+        #region D3D12_* Constants
         public const uint D3D12_16BIT_INDEX_STRIP_CUT_VALUE = 0xffff;
 
         public const uint D3D12_32BIT_INDEX_STRIP_CUT_VALUE = 0xffffffff;
@@ -804,7 +809,7 @@ namespace TerraFX.Interop
         public const uint D3D12_WHQL_DRAW_VERTEX_COUNT_2_TO_EXP = 25;
         #endregion
 
-        #region D3D12_SHADER_COMPONENT_MAPPING_*
+        #region D3D12_SHADER_COMPONENT_MAPPING_* Constants
         public const int D3D12_SHADER_COMPONENT_MAPPING_MASK = 0x7;
 
         public const int D3D12_SHADER_COMPONENT_MAPPING_SHIFT = 3;
@@ -812,7 +817,7 @@ namespace TerraFX.Interop
         public const int D3D12_SHADER_COMPONENT_MAPPING_ALWAYS_SET_BIT_AVOIDING_ZEROMEM_MISTAKES = (1 << (D3D12_SHADER_COMPONENT_MAPPING_SHIFT * 4));
         #endregion
 
-        #region D3D12_FILTER_*
+        #region D3D12_FILTER_* Constants
         public const int D3D12_FILTER_REDUCTION_TYPE_MASK = 0x3;
 
         public const int D3D12_FILTER_REDUCTION_TYPE_SHIFT = 7;
@@ -820,7 +825,7 @@ namespace TerraFX.Interop
         public const int D3D12_FILTER_TYPE_MASK = 0x3;
         #endregion
 
-        #region D3D12_*_FILTER_SHIFT
+        #region D3D12_*_FILTER_SHIFT Constants
         public const int D3D12_MIN_FILTER_SHIFT = 4;
 
         public const int D3D12_MAG_FILTER_SHIFT = 2;
@@ -828,11 +833,7 @@ namespace TerraFX.Interop
         public const int D3D12_MIP_FILTER_SHIFT = 0;
         #endregion
 
-        public const int D3D12_ANISOTROPIC_FILTERING_BIT = 0x40;
-
-        public static readonly GUID D3D12ExperimentalShaderModels = new Guid(0x76F5573E, 0xF13A, 0x40F5, 0xB2, 0x97, 0x81, 0xCE, 0x9E, 0x18, 0x93, 0x3F);
-
-        #region IID_*
+        #region IID_* Constants
         public static readonly GUID IID_ID3D12Object = new Guid(0xC4FEC28F, 0x7966, 0x4E95, 0x9F, 0x94, 0xF4, 0x31, 0xCB, 0x56, 0xC3, 0xB8);
 
         public static readonly GUID IID_ID3D12DeviceChild = new Guid(0x905DB94B, 0xA00C, 0x4140, 0x9D, 0xF5, 0x2B, 0x64, 0xCA, 0x9E, 0xA3, 0x57);
@@ -881,9 +882,8 @@ namespace TerraFX.Interop
 
         public static readonly GUID IID_ID3D12Tools = new Guid(0x7071E1F0, 0xE84B, 0x4B33, 0x97, 0x4F, 0x12, 0xFA, 0x49, 0xDE, 0x65, 0xC5);
         #endregion
-        #endregion
 
-        #region Methods
+        #region External Methods
         [DllImport("D3D12", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D3D12SerializeRootSignature", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern HRESULT D3D12SerializeRootSignature(
