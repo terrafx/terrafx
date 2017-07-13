@@ -44,11 +44,25 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="HANDLE" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="HANDLE" /> value to convert.</param>
+        public static explicit operator uint(HANDLE value)
+        {
+            return (uint)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="HANDLE" /> value to a <see cref="void" />* value.</summary>
         /// <param name="value">The <see cref="HANDLE" /> value to convert.</param>
         public static implicit operator void* (HANDLE value)
         {
             return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="HANDLE" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator HANDLE(uint value)
+        {
+            return new HANDLE((void*)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HANDLE" /> value.</summary>

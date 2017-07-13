@@ -44,11 +44,25 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="LPPARAMDESCEX" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="LPPARAMDESCEX" /> value to convert.</param>
+        public static explicit operator uint(LPPARAMDESCEX value)
+        {
+            return (uint)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="LPPARAMDESCEX" /> value to a <see cref="PARAMDESCEX" />* value.</summary>
         /// <param name="value">The <see cref="LPPARAMDESCEX" /> value to convert.</param>
         public static implicit operator PARAMDESCEX* (LPPARAMDESCEX value)
         {
             return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="LPPARAMDESCEX" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator LPPARAMDESCEX(uint value)
+        {
+            return new LPPARAMDESCEX((PARAMDESCEX*)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="PARAMDESCEX" />* value to a <see cref="LPPARAMDESCEX" /> value.</summary>

@@ -44,11 +44,25 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="LPMSG" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="LPMSG" /> value to convert.</param>
+        public static explicit operator uint(LPMSG value)
+        {
+            return (uint)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="LPMSG" /> value to a <see cref="MSG" />* value.</summary>
         /// <param name="value">The <see cref="LPMSG" /> value to convert.</param>
         public static implicit operator MSG* (LPMSG value)
         {
             return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="LPMSG" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator LPMSG(uint value)
+        {
+            return new LPMSG((MSG*)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="MSG" />* value to a <see cref="LPMSG" /> value.</summary>

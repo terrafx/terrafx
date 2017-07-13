@@ -43,6 +43,13 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="REFWICPixelFormatGUID" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="REFWICPixelFormatGUID" /> value to convert.</param>
+        public static explicit operator uint(REFWICPixelFormatGUID value)
+        {
+            return (uint)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="REFWICPixelFormatGUID" /> value to a <see cref="Guid" />* value.</summary>
         /// <param name="value">The <see cref="REFWICPixelFormatGUID" /> value to convert.</param>
         public static implicit operator Guid* (REFWICPixelFormatGUID value)
@@ -62,6 +69,13 @@ namespace TerraFX.Interop
         public static implicit operator REFGUID(REFWICPixelFormatGUID value)
         {
             return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="REFWICPixelFormatGUID" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator REFWICPixelFormatGUID(uint value)
+        {
+            return new REFWICPixelFormatGUID((REFGUID)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="Guid" />* value to a <see cref="REFWICPixelFormatGUID" /> value.</summary>

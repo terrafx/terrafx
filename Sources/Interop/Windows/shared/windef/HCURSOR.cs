@@ -43,6 +43,13 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="HCURSOR" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="HCURSOR" /> value to convert.</param>
+        public static explicit operator uint(HCURSOR value)
+        {
+            return (uint)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="HCURSOR" /> value to a <see cref="void" />* value.</summary>
         /// <param name="value">The <see cref="HCURSOR" /> value to convert.</param>
         public static implicit operator void* (HCURSOR value)
@@ -62,6 +69,13 @@ namespace TerraFX.Interop
         public static implicit operator HICON(HCURSOR value)
         {
             return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="HCURSOR" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator HCURSOR(uint value)
+        {
+            return new HCURSOR((HICON)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HCURSOR" /> value.</summary>

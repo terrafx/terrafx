@@ -44,6 +44,13 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="REFIID" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="REFIID" /> value to convert.</param>
+        public static explicit operator uint(REFIID value)
+        {
+            return (uint)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="REFIID" /> value to a <see cref="Guid" />* value.</summary>
         /// <param name="value">The <see cref="REFIID" /> value to convert.</param>
         public static implicit operator Guid* (REFIID value)
@@ -63,6 +70,13 @@ namespace TerraFX.Interop
         public static implicit operator IID* (REFIID value)
         {
             return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="REFIID" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator REFIID(uint value)
+        {
+            return new REFIID((IID*)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="Guid" />* value to a <see cref="REFIID" /> value.</summary>

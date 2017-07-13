@@ -80,11 +80,25 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="UINT" /> value to a <see cref="int" /> value.</summary>
+        /// <param name="value">The <see cref="UINT" /> value to convert.</param>
+        public static explicit operator int(UINT value)
+        {
+            return (int)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="UINT" /> value to a <see cref="uint" /> value.</summary>
         /// <param name="value">The <see cref="UINT" /> value to convert.</param>
         public static implicit operator uint(UINT value)
         {
             return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="int" /> value to a <see cref="UINT" /> value.</summary>
+        /// <param name="value">The <see cref="int" /> value to convert.</param>
+        public static explicit operator UINT(int value)
+        {
+            return new UINT((uint)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="uint" /> value to a <see cref="UINT" /> value.</summary>

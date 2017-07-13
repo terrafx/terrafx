@@ -43,6 +43,13 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="HMONITOR" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="HMONITOR" /> value to convert.</param>
+        public static explicit operator uint(HMONITOR value)
+        {
+            return (uint)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="HMONITOR" /> value to a <see cref="void" />* value.</summary>
         /// <param name="value">The <see cref="HMONITOR" /> value to convert.</param>
         public static implicit operator void* (HMONITOR value)
@@ -55,6 +62,13 @@ namespace TerraFX.Interop
         public static implicit operator HANDLE(HMONITOR value)
         {
             return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="HMONITOR" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator HMONITOR(uint value)
+        {
+            return new HMONITOR((HANDLE)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HMONITOR" /> value.</summary>

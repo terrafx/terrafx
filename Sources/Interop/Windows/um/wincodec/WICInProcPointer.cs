@@ -44,6 +44,13 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="WICInProcPointer" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="WICInProcPointer" /> value to convert.</param>
+        public static explicit operator uint(WICInProcPointer value)
+        {
+            return (uint)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="WICInProcPointer" /> value to a <see cref="byte" />* value.</summary>
         /// <param name="value">The <see cref="WICInProcPointer" /> value to convert.</param>
         public static implicit operator byte* (WICInProcPointer value)
@@ -56,6 +63,13 @@ namespace TerraFX.Interop
         public static implicit operator BYTE* (WICInProcPointer value)
         {
             return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="WICInProcPointer" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator WICInProcPointer(uint value)
+        {
+            return new WICInProcPointer((BYTE*)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="byte" />* value to a <see cref="WICInProcPointer" /> value.</summary>

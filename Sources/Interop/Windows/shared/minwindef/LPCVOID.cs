@@ -44,11 +44,25 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="LPCVOID" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="LPCVOID" /> value to convert.</param>
+        public static explicit operator uint(LPCVOID value)
+        {
+            return (uint)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="LPCVOID" /> value to a <see cref="void" />* value.</summary>
         /// <param name="value">The <see cref="LPCVOID" /> value to convert.</param>
         public static implicit operator void* (LPCVOID value)
         {
             return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="LPCVOID" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator LPCVOID(uint value)
+        {
+            return new LPCVOID((void*)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="LPCVOID" /> value.</summary>

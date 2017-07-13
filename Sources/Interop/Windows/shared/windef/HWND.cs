@@ -43,6 +43,13 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="HWND" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="HWND" /> value to convert.</param>
+        public static explicit operator uint(HWND value)
+        {
+            return (uint)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="HWND" /> value to a <see cref="void" />* value.</summary>
         /// <param name="value">The <see cref="HWND" /> value to convert.</param>
         public static implicit operator void* (HWND value)
@@ -55,6 +62,13 @@ namespace TerraFX.Interop
         public static implicit operator HANDLE(HWND value)
         {
             return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="HWND" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator HWND(uint value)
+        {
+            return new HWND((HANDLE)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HWND" /> value.</summary>

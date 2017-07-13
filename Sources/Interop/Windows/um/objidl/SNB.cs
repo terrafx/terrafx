@@ -44,6 +44,13 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="SNB" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="SNB" /> value to convert.</param>
+        public static explicit operator uint(SNB value)
+        {
+            return (uint)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="SNB" /> value to a <see cref="ushort" />** value.</summary>
         /// <param name="value">The <see cref="SNB" /> value to convert.</param>
         public static implicit operator ushort** (SNB value)
@@ -70,6 +77,13 @@ namespace TerraFX.Interop
         public static implicit operator WCHAR** (SNB value)
         {
             return (WCHAR**)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="SNB" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator SNB(uint value)
+        {
+            return new SNB((LPOLESTR*)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="ushort" />** value to a <see cref="SNB" /> value.</summary>

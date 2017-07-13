@@ -44,11 +44,25 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="LPVERSIONEDSTREAM" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="LPVERSIONEDSTREAM" /> value to convert.</param>
+        public static explicit operator uint(LPVERSIONEDSTREAM value)
+        {
+            return (uint)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="LPVERSIONEDSTREAM" /> value to a <see cref="VERSIONEDSTREAM" />* value.</summary>
         /// <param name="value">The <see cref="LPVERSIONEDSTREAM" /> value to convert.</param>
         public static implicit operator VERSIONEDSTREAM* (LPVERSIONEDSTREAM value)
         {
             return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="LPVERSIONEDSTREAM" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator LPVERSIONEDSTREAM(uint value)
+        {
+            return new LPVERSIONEDSTREAM((VERSIONEDSTREAM*)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="VERSIONEDSTREAM" />* value to a <see cref="LPVERSIONEDSTREAM" /> value.</summary>

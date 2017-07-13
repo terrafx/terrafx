@@ -43,6 +43,13 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="HMENU" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="HMENU" /> value to convert.</param>
+        public static explicit operator uint(HMENU value)
+        {
+            return (uint)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="HMENU" /> value to a <see cref="void" />* value.</summary>
         /// <param name="value">The <see cref="HMENU" /> value to convert.</param>
         public static implicit operator void* (HMENU value)
@@ -55,6 +62,13 @@ namespace TerraFX.Interop
         public static implicit operator HANDLE(HMENU value)
         {
             return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="HMENU" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator HMENU(uint value)
+        {
+            return new HMENU((HANDLE)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HMENU" /> value.</summary>

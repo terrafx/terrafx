@@ -44,6 +44,13 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="LPWSTR" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="LPWSTR" /> value to convert.</param>
+        public static explicit operator uint(LPWSTR value)
+        {
+            return (uint)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="LPWSTR" /> value to a <see cref="ushort" />* value.</summary>
         /// <param name="value">The <see cref="LPWSTR" /> value to convert.</param>
         public static implicit operator ushort* (LPWSTR value)
@@ -56,6 +63,13 @@ namespace TerraFX.Interop
         public static implicit operator WCHAR* (LPWSTR value)
         {
             return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="LPWSTR" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator LPWSTR(uint value)
+        {
+            return new LPWSTR((WCHAR*)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="ushort" />* value to a <see cref="LPWSTR" /> value.</summary>

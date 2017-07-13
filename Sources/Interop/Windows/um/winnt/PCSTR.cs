@@ -44,6 +44,13 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="PCSTR" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="PCSTR" /> value to convert.</param>
+        public static explicit operator uint (PCSTR value)
+        {
+            return (uint)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="PCSTR" /> value to a <see cref="sbyte" />* value.</summary>
         /// <param name="value">The <see cref="PCSTR" /> value to convert.</param>
         public static implicit operator sbyte* (PCSTR value)
@@ -56,6 +63,13 @@ namespace TerraFX.Interop
         public static implicit operator CHAR* (PCSTR value)
         {
             return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="PCSTR" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator PCSTR(uint value)
+        {
+            return new PCSTR((CHAR*)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="sbyte" />* value to a <see cref="PCSTR" /> value.</summary>

@@ -43,6 +43,13 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="HMODULE" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="HMODULE" /> value to convert.</param>
+        public static explicit operator uint(HMODULE value)
+        {
+            return (uint)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="HMODULE" /> value to a <see cref="void" />* value.</summary>
         /// <param name="value">The <see cref="HMODULE" /> value to convert.</param>
         public static implicit operator void* (HMODULE value)
@@ -62,6 +69,13 @@ namespace TerraFX.Interop
         public static implicit operator HINSTANCE(HMODULE value)
         {
             return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="HMODULE" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator HMODULE(uint value)
+        {
+            return new HMODULE((HINSTANCE)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HMODULE" /> value.</summary>

@@ -44,6 +44,13 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="LPSTR" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="LPSTR" /> value to convert.</param>
+        public static explicit operator uint(LPSTR value)
+        {
+            return (uint)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="LPSTR" /> value to a <see cref="sbyte" />* value.</summary>
         /// <param name="value">The <see cref="LPSTR" /> value to convert.</param>
         public static implicit operator sbyte* (LPSTR value)
@@ -56,6 +63,13 @@ namespace TerraFX.Interop
         public static implicit operator CHAR* (LPSTR value)
         {
             return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="LPSTR" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator LPSTR(uint value)
+        {
+            return new LPSTR((CHAR*)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="sbyte" />* value to a <see cref="LPSTR" /> value.</summary>

@@ -44,11 +44,25 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="LPRECT" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="LPRECT" /> value to convert.</param>
+        public static explicit operator uint(LPRECT value)
+        {
+            return (uint)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="LPRECT" /> value to a <see cref="RECT" />* value.</summary>
         /// <param name="value">The <see cref="LPRECT" /> value to convert.</param>
         public static implicit operator RECT* (LPRECT value)
         {
             return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="LPRECT" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator LPRECT(uint value)
+        {
+            return new LPRECT((RECT*)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="RECT" />* value to a <see cref="LPRECT" /> value.</summary>

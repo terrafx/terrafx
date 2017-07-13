@@ -44,11 +44,25 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="LPSAFEARRAY" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="LPSAFEARRAY" /> value to convert.</param>
+        public static explicit operator uint(LPSAFEARRAY value)
+        {
+            return (uint)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="LPSAFEARRAY" /> value to a <see cref="SAFEARRAY" />* value.</summary>
         /// <param name="value">The <see cref="LPSAFEARRAY" /> value to convert.</param>
         public static implicit operator SAFEARRAY* (LPSAFEARRAY value)
         {
             return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="LPSAFEARRAY" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator LPSAFEARRAY(uint value)
+        {
+            return new LPSAFEARRAY((SAFEARRAY*)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="SAFEARRAY" />* value to a <see cref="LPSAFEARRAY" /> value.</summary>

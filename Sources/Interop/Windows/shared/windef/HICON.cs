@@ -43,6 +43,13 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="HICON" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="HICON" /> value to convert.</param>
+        public static explicit operator uint(HICON value)
+        {
+            return (uint)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="HICON" /> value to a <see cref="void" />* value.</summary>
         /// <param name="value">The <see cref="HICON" /> value to convert.</param>
         public static implicit operator void* (HICON value)
@@ -55,6 +62,13 @@ namespace TerraFX.Interop
         public static implicit operator HANDLE(HICON value)
         {
             return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="HICON" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator HICON(uint value)
+        {
+            return new HICON((HANDLE)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="void" />* value to a <see cref="HICON" /> value.</summary>

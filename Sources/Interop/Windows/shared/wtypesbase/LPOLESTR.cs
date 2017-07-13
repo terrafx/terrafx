@@ -44,6 +44,13 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="LPOLESTR" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="LPOLESTR" /> value to convert.</param>
+        public static explicit operator uint(LPOLESTR value)
+        {
+            return (uint)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="LPOLESTR" /> value to a <see cref="ushort" />* value.</summary>
         /// <param name="value">The <see cref="LPOLESTR" /> value to convert.</param>
         public static implicit operator ushort* (LPOLESTR value)
@@ -63,6 +70,13 @@ namespace TerraFX.Interop
         public static implicit operator WCHAR* (LPOLESTR value)
         {
             return (WCHAR*)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="LPOLESTR" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static explicit operator LPOLESTR(uint value)
+        {
+            return new LPOLESTR((OLECHAR*)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="ushort" />* value to a <see cref="LPOLESTR" /> value.</summary>
