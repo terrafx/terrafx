@@ -27,6 +27,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <HighEntropyVA>true</HighEntropyVA>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
+    <LangVersion>latest</LangVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
     <OutputPath>$(BaseOutputPath)</OutputPath>
     <OverwriteReadOnlyFiles>true</OverwriteReadOnlyFiles>
