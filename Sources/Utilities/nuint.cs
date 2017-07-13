@@ -43,7 +43,7 @@ namespace TerraFX.Utilities
         }
         #endregion
 
-        #region Operators
+        #region Unary Operators
         /// <summary>Computes the bitwise-complement of a <see cref="nuint" /> value.</summary>
         /// <param name="value">The <see cref="nuint" /> for which to compute the bitwise-complement.</param>
         /// <returns>The bitwise-complement of <paramref name="value" />.</returns>
@@ -94,7 +94,9 @@ namespace TerraFX.Utilities
                 return (nuint)(result);
             }
         }
+        #endregion
 
+        #region Binary Operators
         /// <summary>Adds two <see cref="nuint" /> values to compute their sum.</summary>
         /// <param name="left">The <see cref="nuint" /> to add with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="nuint" /> to add with <paramref name="left" />.</param>
@@ -274,7 +276,9 @@ namespace TerraFX.Utilities
                 return (nuint)(result);
             }
         }
+        #endregion
 
+        #region Comparison Operators
         /// <summary>Compares two <see cref="nuint" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="nuint" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="nuint" /> to compare with <paramref name="left" />.</param>
@@ -376,6 +380,15 @@ namespace TerraFX.Utilities
                 return ((ulong)(left._value)) >= ((ulong)(right._value));
             }
         }
+        #endregion
+
+        #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="nuint" /> value to a <see cref="nint" /> value.</summary>
+        /// <param name="value">The <see cref="nuint" /> value to convert.</param>
+        public static explicit operator nint(nuint value)
+        {
+            return (nint)(value._value);
+        }
 
         /// <summary>Explicitly converts a <see cref="nuint" /> value to a <see cref="uint" /> value.</summary>
         /// <param name="value">The <see cref="nuint" /> value to convert.</param>
@@ -384,11 +397,25 @@ namespace TerraFX.Utilities
             return (uint)(value._value);
         }
 
-        /// <summary>Explicitly converts a <see cref="nuint" /> value to a <see cref="nint" /> value.</summary>
+        /// <summary>Implicitly converts a <see cref="nuint" /> value to a <see cref="ulong" /> value.</summary>
         /// <param name="value">The <see cref="nuint" /> value to convert.</param>
-        public static explicit operator nint(nuint value)
+        public static implicit operator ulong(nuint value)
         {
-            return (nint)(value._value);
+            return (ulong)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="nuint" /> value to a <see cref="void" />* value.</summary>
+        /// <param name="value">The <see cref="nuint" /> value to convert.</param>
+        public static explicit operator void* (nuint value)
+        {
+            return value._value;
+        }
+
+        /// <summary>Implicitly converts a <see cref="uint" /> value to a <see cref="nuint" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static implicit operator nuint(uint value)
+        {
+            return new nuint(value);
         }
 
         /// <summary>Explicitly converts a <see cref="ulong" /> value to a <see cref="nuint" /> value.</summary>
@@ -404,30 +431,9 @@ namespace TerraFX.Utilities
         {
             return new nuint(value);
         }
-
-        /// <summary>Explicitly converts a <see cref="nuint" /> value to a <see cref="void" />* value.</summary>
-        /// <param name="value">The <see cref="nuint" /> value to convert.</param>
-        public static explicit operator void*(nuint value)
-        {
-            return value._value;
-        }
-
-        /// <summary>Implicitly converts a <see cref="nuint" /> value to a <see cref="ulong" /> value.</summary>
-        /// <param name="value">The <see cref="nuint" /> value to convert.</param>
-        public static implicit operator ulong(nuint value)
-        {
-            return (ulong)(value._value);
-        }
-
-        /// <summary>Implicitly converts a <see cref="uint" /> value to a <see cref="nuint" /> value.</summary>
-        /// <param name="value">The <see cref="uint" /> value to convert.</param>
-        public static implicit operator nuint(uint value)
-        {
-            return new nuint(value);
-        }
         #endregion
 
-        #region System.IComparable
+        #region System.IComparable Methods
         /// <summary>Compares a <see cref="object" /> with the current instance to determine relative sort-order.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns>A value <c>less than zero</c> if <paramref name="obj" /> is greater than the current instance, <c>zero</c> if <paramref name="obj"/> is equal to the current instance; and <c>greater than zero</c> if <paramref name="obj" /> is <c>null</c> or greater than the current instance.</returns>
@@ -449,7 +455,7 @@ namespace TerraFX.Utilities
         }
         #endregion
 
-        #region System.IComparable<nuint>
+        #region System.IComparable<nuint> Methods
         /// <summary>Compares a <see cref="nuint" /> with the current instance to determine relative sort-order.</summary>
         /// <param name="other">The <see cref="nuint" /> to compare with the current instance.</param>
         /// <returns>A value <c>less than zero</c> if <paramref name="other" /> is greater than the current instance, <c>zero</c> if <paramref name="other"/> is equal to the current instance; and <c>greater than zero</c> if <paramref name="other" /> is greater than the current instance.</returns>
@@ -473,7 +479,7 @@ namespace TerraFX.Utilities
         }
         #endregion
 
-        #region System.IEquatable<nuint>
+        #region System.IEquatable<nuint> Methods
         /// <summary>Compares a <see cref="nuint" /> with the current instance to determine equality.</summary>
         /// <param name="other">The <see cref="nuint" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
@@ -483,7 +489,7 @@ namespace TerraFX.Utilities
         }
         #endregion
 
-        #region System.IFormattable
+        #region System.IFormattable Methods
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
         /// <param name="formatProvider">The provider to use when formatting the current instance or <c>null</c> to use the default provider.</param>
@@ -502,7 +508,7 @@ namespace TerraFX.Utilities
         }
         #endregion
 
-        #region System.Object
+        #region System.Object Methods
         /// <summary>Compares a <see cref="object" /> with the current instance to determine equality.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="nuint" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>

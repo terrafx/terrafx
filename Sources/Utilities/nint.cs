@@ -43,7 +43,7 @@ namespace TerraFX.Utilities
         }
         #endregion
 
-        #region Operators
+        #region Unary Operators
         /// <summary>Negates a <see cref="nint" /> value to determine its inverse.</summary>
         /// <param name="value">The <see cref="nint" /> to negate.</param>
         /// <returns>The inverse of <paramref name="value" />.</returns>
@@ -111,7 +111,9 @@ namespace TerraFX.Utilities
                 return (nint)(result);
             }
         }
+        #endregion
 
+        #region Binary Operators
         /// <summary>Adds two <see cref="nint" /> values to compute their sum.</summary>
         /// <param name="left">The <see cref="nint" /> to add with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="nint" /> to add with <paramref name="left" />.</param>
@@ -291,7 +293,9 @@ namespace TerraFX.Utilities
                 return (nint)(result);
             }
         }
+        #endregion
 
+        #region Comparison Operators
         /// <summary>Compares two <see cref="nint" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="nint" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="nint" /> to compare with <paramref name="left" />.</param>
@@ -393,7 +397,9 @@ namespace TerraFX.Utilities
                 return ((long)(left._value)) >= ((long)(right._value));
             }
         }
+        #endregion
 
+        #region Cast Operators
         /// <summary>Explicitly converts a <see cref="nint" /> value to a <see cref="int" /> value.</summary>
         /// <param name="value">The <see cref="nint" /> value to convert.</param>
         public static explicit operator int(nint value)
@@ -401,18 +407,11 @@ namespace TerraFX.Utilities
             return (int)(value._value);
         }
 
-        /// <summary>Explicitly converts a <see cref="long" /> value to a <see cref="nint" /> value.</summary>
-        /// <param name="value">The <see cref="long" /> value to convert.</param>
-        public static explicit operator nint(long value)
+        /// <summary>Implicitly converts a <see cref="nint" /> value to a <see cref="long" /> value.</summary>
+        /// <param name="value">The <see cref="nint" /> value to convert.</param>
+        public static implicit operator long(nint value)
         {
-            return new nint(value);
-        }
-
-        /// <summary>Explicitly converts a <see cref="void" />* value to a <see cref="nint" /> value.</summary>
-        /// <param name="value">The <see cref="void" />* value to convert.</param>
-        public static explicit operator nint(void* value)
-        {
-            return new nint(value);
+            return (long)(value._value);
         }
 
         /// <summary>Explicitly converts a <see cref="nint" /> value to a <see cref="nuint" /> value.</summary>
@@ -429,22 +428,29 @@ namespace TerraFX.Utilities
             return value._value;
         }
 
-        /// <summary>Implicitly converts a <see cref="nint" /> value to a <see cref="long" /> value.</summary>
-        /// <param name="value">The <see cref="nint" /> value to convert.</param>
-        public static implicit operator long(nint value)
-        {
-            return (long)(value._value);
-        }
-
         /// <summary>Implicitly converts a <see cref="int" /> value to a <see cref="nint" /> value.</summary>
         /// <param name="value">The <see cref="int" /> value to convert.</param>
         public static implicit operator nint(int value)
         {
             return new nint(value);
         }
+
+        /// <summary>Explicitly converts a <see cref="long" /> value to a <see cref="nint" /> value.</summary>
+        /// <param name="value">The <see cref="long" /> value to convert.</param>
+        public static explicit operator nint(long value)
+        {
+            return new nint(value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="void" />* value to a <see cref="nint" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static explicit operator nint(void* value)
+        {
+            return new nint(value);
+        }
         #endregion
 
-        #region System.IComparable
+        #region System.IComparable Methods
         /// <summary>Compares a <see cref="object" /> with the current instance to determine relative sort-order.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns>A value <c>less than zero</c> if <paramref name="obj" /> is greater than the current instance, <c>zero</c> if <paramref name="obj"/> is equal to the current instance; and <c>greater than zero</c> if <paramref name="obj" /> is <c>null</c> or greater than the current instance.</returns>
@@ -466,7 +472,7 @@ namespace TerraFX.Utilities
         }
         #endregion
 
-        #region System.IComparable<nint>
+        #region System.IComparable<nint> Methods
         /// <summary>Compares a <see cref="nint" /> with the current instance to determine relative sort-order.</summary>
         /// <param name="other">The <see cref="nint" /> to compare with the current instance.</param>
         /// <returns>A value <c>less than zero</c> if <paramref name="other" /> is greater than the current instance, <c>zero</c> if <paramref name="other"/> is equal to the current instance; and <c>greater than zero</c> if <paramref name="other" /> is greater than the current instance.</returns>
@@ -490,7 +496,7 @@ namespace TerraFX.Utilities
         }
         #endregion
 
-        #region System.IEquatable<nint>
+        #region System.IEquatable<nint> Methods
         /// <summary>Compares a <see cref="nint" /> with the current instance to determine equality.</summary>
         /// <param name="other">The <see cref="nint" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
@@ -500,7 +506,7 @@ namespace TerraFX.Utilities
         }
         #endregion
 
-        #region System.IFormattable
+        #region System.IFormattable Methods
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
         /// <param name="formatProvider">The provider to use when formatting the current instance or <c>null</c> to use the default provider.</param>
@@ -519,7 +525,7 @@ namespace TerraFX.Utilities
         }
         #endregion
 
-        #region System.Object
+        #region System.Object Methods
         /// <summary>Compares a <see cref="object" /> with the current instance to determine equality.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="nint" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>
