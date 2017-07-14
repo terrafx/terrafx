@@ -5,7 +5,7 @@ using TerraFX.Collections;
 using TerraFX.Interop;
 using TerraFX.Threading;
 using TerraFX.UI;
-using TerraFX.Utilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Interop.User32;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Interop.Desktop.User32;
@@ -50,7 +50,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (hWnd == null)
             {
-                ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(CreateWindowEx));
+                ThrowExternalExceptionForLastError(nameof(CreateWindowEx));
             }
 
             _hWnd = hWnd;
@@ -63,7 +63,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (succeeded == 0)
             {
-                ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(GetWindowRect));
+                ThrowExternalExceptionForLastError(nameof(GetWindowRect));
             }
 
             _bounds = new Rectangle(rect.left, rect.top, (rect.right - rect.left), (rect.bottom - rect.top));
@@ -196,7 +196,7 @@ namespace TerraFX.Provider.Win32.UI
 
                 if (succeeded == 0)
                 {
-                    ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(DestroyWindow));
+                    ThrowExternalExceptionForLastError(nameof(DestroyWindow));
                 }
 
                 _hWnd = null;
@@ -223,7 +223,7 @@ namespace TerraFX.Provider.Win32.UI
 
                 if (succeeded == 0)
                 {
-                    ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(SetForegroundWindow));
+                    ThrowExternalExceptionForLastError(nameof(SetForegroundWindow));
                 }
             }
         }
@@ -243,7 +243,7 @@ namespace TerraFX.Provider.Win32.UI
 
                 if (succeeded == 0)
                 {
-                    ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(ShowWindow));
+                    ThrowExternalExceptionForLastError(nameof(ShowWindow));
                 }
             }
         }
@@ -257,7 +257,7 @@ namespace TerraFX.Provider.Win32.UI
 
                 if (succeeded == 0)
                 {
-                    ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(ShowWindow));
+                    ThrowExternalExceptionForLastError(nameof(ShowWindow));
                 }
             }
         }

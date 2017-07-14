@@ -4,7 +4,7 @@
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
 using System;
-using TerraFX.Utilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
@@ -112,7 +112,7 @@ namespace TerraFX.Interop
             }
             else
             {
-                throw ExceptionUtilities.NewArgumentExceptionForInvalidType(nameof(obj), obj.GetType());
+                throw NewArgumentExceptionForInvalidType(nameof(obj), obj.GetType());
             }
         }
         #endregion

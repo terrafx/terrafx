@@ -3,7 +3,7 @@
 using System;
 using System.Globalization;
 using System.Text;
-using TerraFX.Utilities;
+using static TerraFX.Utilities.HashUtilities;
 
 namespace TerraFX
 {
@@ -127,10 +127,10 @@ namespace TerraFX
         {
             var combinedValue = 0;
             {
-                combinedValue = HashUtilities.CombineValue(Width.GetHashCode(), combinedValue);
-                combinedValue = HashUtilities.CombineValue(Height.GetHashCode(), combinedValue);
+                combinedValue = CombineValue(Width.GetHashCode(), combinedValue);
+                combinedValue = CombineValue(Height.GetHashCode(), combinedValue);
             }
-            return HashUtilities.FinalizeValue(combinedValue, (sizeof(float) * 2));
+            return FinalizeValue(combinedValue, (sizeof(float) * 2));
         }
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>

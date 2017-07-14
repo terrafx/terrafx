@@ -2,7 +2,7 @@
 
 using System;
 using System.Diagnostics;
-using TerraFX.Utilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX
 {
@@ -136,7 +136,7 @@ namespace TerraFX
             }
             else
             {
-                throw ExceptionUtilities.NewArgumentExceptionForInvalidType(nameof(obj), obj.GetType());
+                throw NewArgumentExceptionForInvalidType(nameof(obj), obj.GetType());
             }
         }
         #endregion

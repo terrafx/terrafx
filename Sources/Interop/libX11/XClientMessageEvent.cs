@@ -5,6 +5,7 @@
 
 using System.Runtime.InteropServices;
 using TerraFX.Utilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
@@ -95,7 +96,7 @@ namespace TerraFX.Interop
                     {
                         if ((uint)(index) > 19) // (index < 0) || (index > 19)
                         {
-                            ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                            ThrowArgumentOutOfRangeException(nameof(index), index);
                         }
 
                         fixed (sbyte* e = &e0)
@@ -108,7 +109,7 @@ namespace TerraFX.Interop
                     {
                         if ((uint)(index) > 19) // (index < 0) || (index > 19)
                         {
-                            ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                            ThrowArgumentOutOfRangeException(nameof(index), index);
                         }
 
                         fixed (sbyte* e = &e0)
@@ -151,7 +152,7 @@ namespace TerraFX.Interop
                     {
                         if ((uint)(index) > 9) // (index < 0) || (index > 9)
                         {
-                            ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                            ThrowArgumentOutOfRangeException(nameof(index), index);
                         }
 
                         fixed (short* e = &e0)
@@ -164,7 +165,7 @@ namespace TerraFX.Interop
                     {
                         if ((uint)(index) > 9) // (index < 0) || (index > 9)
                         {
-                            ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                            ThrowArgumentOutOfRangeException(nameof(index), index);
                         }
 
                         fixed (short* e = &e0)
@@ -197,7 +198,7 @@ namespace TerraFX.Interop
                     {
                         if ((uint)(index) > 4) // (index < 0) || (index > 4)
                         {
-                            ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                            ThrowArgumentOutOfRangeException(nameof(index), index);
                         }
 
                         fixed (nint* e = &e0)
@@ -210,7 +211,7 @@ namespace TerraFX.Interop
                     {
                         if ((uint)(index) > 4) // (index < 0) || (index > 4)
                         {
-                            ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                            ThrowArgumentOutOfRangeException(nameof(index), index);
                         }
 
                         fixed (nint* e = &e0)

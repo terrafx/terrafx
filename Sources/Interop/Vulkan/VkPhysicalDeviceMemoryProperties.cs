@@ -3,7 +3,7 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
-using TerraFX.Utilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
@@ -95,7 +95,7 @@ namespace TerraFX.Interop
                 {
                     if ((uint)(index) > 31) // (index < 0) || (index > 31)
                     {
-                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                        ThrowArgumentOutOfRangeException(nameof(index), index);
                     }
 
                     fixed (VkMemoryType* e = &e0)
@@ -108,7 +108,7 @@ namespace TerraFX.Interop
                 {
                     if ((uint)(index) > 31) // (index < 0) || (index > 31)
                     {
-                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                        ThrowArgumentOutOfRangeException(nameof(index), index);
                     }
 
                     fixed (VkMemoryType* e = &e0)
@@ -163,7 +163,7 @@ namespace TerraFX.Interop
                 {
                     if ((uint)(index) > 15) // (index < 0) || (index > 15)
                     {
-                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                        ThrowArgumentOutOfRangeException(nameof(index), index);
                     }
 
                     fixed (VkMemoryHeap* e = &e0)
@@ -176,7 +176,7 @@ namespace TerraFX.Interop
                 {
                     if ((uint)(index) > 15) // (index < 0) || (index > 15)
                     {
-                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                        ThrowArgumentOutOfRangeException(nameof(index), index);
                     }
 
                     fixed (VkMemoryHeap* e = &e0)

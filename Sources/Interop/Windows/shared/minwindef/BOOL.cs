@@ -4,7 +4,7 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System;
-using TerraFX.Utilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Interop.Windows;
 
 namespace TerraFX.Interop
@@ -127,7 +127,7 @@ namespace TerraFX.Interop
             }
             else
             {
-                throw ExceptionUtilities.NewArgumentExceptionForInvalidType(nameof(obj), obj.GetType());
+                throw NewArgumentExceptionForInvalidType(nameof(obj), obj.GetType());
             }
         }
         #endregion

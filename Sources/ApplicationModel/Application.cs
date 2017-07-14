@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Threading;
 using TerraFX.Threading;
 using TerraFX.UI;
-using TerraFX.Utilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.ApplicationModel
 {
@@ -34,7 +34,7 @@ namespace TerraFX.ApplicationModel
         {
             if (compositionAssemblies is null)
             {
-                ExceptionUtilities.ThrowArgumentNullException(nameof(compositionAssemblies));
+                ThrowArgumentNullException(nameof(compositionAssemblies));
             }
 
             var containerConfiguration = new ContainerConfiguration();
@@ -117,14 +117,14 @@ namespace TerraFX.ApplicationModel
         {
             if (Interlocked.Exchange(ref _isRunning, 1) != 0)
             {
-                ExceptionUtilities.ThrowInvalidOperationException(nameof(IsRunning), true);
+                ThrowInvalidOperationException(nameof(IsRunning), true);
             }
 
             var currentApartmentState = Thread.CurrentThread.GetApartmentState();
 
             if (currentApartmentState != ApartmentState.STA)
             {
-                ExceptionUtilities.ThrowInvalidOperationException(nameof(currentApartmentState), currentApartmentState);
+                ThrowInvalidOperationException(nameof(currentApartmentState), currentApartmentState);
             }
 
             var dispatchManager = DispatchManager;

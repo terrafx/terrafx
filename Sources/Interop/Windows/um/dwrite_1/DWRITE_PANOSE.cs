@@ -4,7 +4,7 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
-using TerraFX.Utilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
@@ -65,7 +65,7 @@ namespace TerraFX.Interop
                 {
                     if ((uint)(index) > 9) // (index < 0) || (index > 9)
                     {
-                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                        ThrowArgumentOutOfRangeException(nameof(index), index);
                     }
 
                     fixed (UINT8* e = &e0)

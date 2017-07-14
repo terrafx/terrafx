@@ -3,6 +3,8 @@
 using System;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.IntegerUtilities;
 
 namespace TerraFX.Utilities
 {
@@ -22,7 +24,7 @@ namespace TerraFX.Utilities
 
             unchecked
             {
-                combinedHashCode = IntegerUtilities.RotateLeft(combinedHashCode, 13);
+                combinedHashCode = RotateLeft(combinedHashCode, 13);
                 combinedHashCode *= 5;
                 combinedHashCode -= 430675100;
             }
@@ -46,7 +48,7 @@ namespace TerraFX.Utilities
             unchecked
             {
                 combinedHashCode *= (-862048943);
-                combinedHashCode = IntegerUtilities.RotateLeft(combinedHashCode, 15);
+                combinedHashCode = RotateLeft(combinedHashCode, 15);
 
                 combinedHashCode *= 461845907;
                 combinedHashCode ^= seed;
@@ -68,15 +70,15 @@ namespace TerraFX.Utilities
         {
             if (values == null)
             {
-                ExceptionUtilities.ThrowArgumentNullException(nameof(values));
+                ThrowArgumentNullException(nameof(values));
             }
             else if ((offset < 0) || (offset > values.Length))
             {
-                ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(offset), offset);
+                ThrowArgumentOutOfRangeException(nameof(offset), offset);
             }
             else if ((count < 0) || ((uint)(offset + count) > (uint)(values.Length)))
             {
-                ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(count), count);
+                ThrowArgumentOutOfRangeException(nameof(count), count);
             }
             Contract.EndContractBlock();
 
@@ -148,15 +150,15 @@ namespace TerraFX.Utilities
         {
             if (values == null)
             {
-                ExceptionUtilities.ThrowArgumentNullException(nameof(values));
+                ThrowArgumentNullException(nameof(values));
             }
             else if ((offset < 0) || (offset > values.Length))
             {
-                ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(offset), offset);
+                ThrowArgumentOutOfRangeException(nameof(offset), offset);
             }
             else if ((count < 0) || ((uint)(offset + count) > (uint)(values.Length)))
             {
-                ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(count), count);
+                ThrowArgumentOutOfRangeException(nameof(count), count);
             }
             Contract.EndContractBlock();
 

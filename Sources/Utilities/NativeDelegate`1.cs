@@ -2,6 +2,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Utilities
 {
@@ -23,7 +24,7 @@ namespace TerraFX.Utilities
 
             if ((typeof(Delegate).IsAssignableFrom(typeof(TDelegate))) == false)
             {
-                ExceptionUtilities.ThrowArgumentExceptionForInvalidType(nameof(TDelegate), typeof(TDelegate));
+                ThrowArgumentExceptionForInvalidType(nameof(TDelegate), typeof(TDelegate));
             }
         }
         #endregion
@@ -38,7 +39,7 @@ namespace TerraFX.Utilities
         {
             if (value is null)
             {
-                ExceptionUtilities.ThrowArgumentNullException(nameof(value));
+                ThrowArgumentNullException(nameof(value));
             }
 
             // The validation that this a valid cast is done in the static constructor.
@@ -46,12 +47,12 @@ namespace TerraFX.Utilities
 
             if (@delegate.Target != null)
             {
-                ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(value), value);
+                ThrowArgumentOutOfRangeException(nameof(value), value);
             }
 
             if (@delegate.GetInvocationList().Length != 1)
             {
-                ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(value), value);
+                ThrowArgumentOutOfRangeException(nameof(value), value);
             }
 
             _value = value;
@@ -65,7 +66,7 @@ namespace TerraFX.Utilities
         {
             if (handle == IntPtr.Zero)
             {
-                ExceptionUtilities.ThrowArgumentNullException(nameof(handle));
+                ThrowArgumentNullException(nameof(handle));
             }
 
             _value = Marshal.GetDelegateForFunctionPointer<TDelegate>(handle);

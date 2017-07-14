@@ -9,7 +9,7 @@ using TerraFX.Interop;
 using TerraFX.Interop.Desktop;
 using TerraFX.Threading;
 using TerraFX.UI;
-using TerraFX.Utilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Interop.Kernel32;
 using static TerraFX.Interop.User32;
 using static TerraFX.Interop.Desktop.User32;
@@ -69,7 +69,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (classAtom == 0)
             {
-                ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(RegisterClassEx));
+                ThrowExternalExceptionForLastError(nameof(RegisterClassEx));
             }
 
             _classAtom = classAtom;
@@ -142,7 +142,7 @@ namespace TerraFX.Provider.Win32.UI
         {
             if (_classAtom == 0)
             {
-                ExceptionUtilities.ThrowObjectDisposedException(nameof(IWindowManager));
+                ThrowObjectDisposedException(nameof(IWindowManager));
             }
 
             var lpClassName = (LPWSTR)(_classAtom);

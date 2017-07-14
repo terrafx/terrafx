@@ -6,7 +6,7 @@ using System.Composition;
 using System.Threading;
 using TerraFX.Interop;
 using TerraFX.Threading;
-using TerraFX.Utilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Interop.Kernel32;
 
 namespace TerraFX.Provider.Win32.Threading
@@ -33,7 +33,7 @@ namespace TerraFX.Provider.Win32.Threading
 
             if (succeeded == 0)
             {
-                ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(QueryPerformanceFrequency));
+                ThrowExternalExceptionForLastError(nameof(QueryPerformanceFrequency));
             }
 
             const double ticksPerSecond = Timestamp.TicksPerSecond;
@@ -54,7 +54,7 @@ namespace TerraFX.Provider.Win32.Threading
 
                 if (succeeded == 0)
                 {
-                    ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(QueryPerformanceCounter));
+                    ThrowExternalExceptionForLastError(nameof(QueryPerformanceCounter));
                 }
 
                 var ticks = (long)(performanceCount.QuadPart * _tickFrequency);
@@ -83,7 +83,7 @@ namespace TerraFX.Provider.Win32.Threading
         {
             if (thread is null)
             {
-                ExceptionUtilities.ThrowArgumentNullException(nameof(thread));
+                ThrowArgumentNullException(nameof(thread));
             }
 
             _dispatchers.TryGetValue(thread, out var dispatcher);

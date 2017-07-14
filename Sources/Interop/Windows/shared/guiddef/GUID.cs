@@ -5,7 +5,7 @@
 
 using System;
 using System.Runtime.InteropServices;
-using TerraFX.Utilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
@@ -151,7 +151,7 @@ namespace TerraFX.Interop
                 {
                     if ((uint)(index) > 7) // (index < 0) || (index > 7)
                     {
-                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                        ThrowArgumentOutOfRangeException(nameof(index), index);
                     }
 
                     fixed (byte* e = &e0)

@@ -3,7 +3,7 @@
 // Ported from shared\dxgi.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using TerraFX.Utilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
@@ -43,12 +43,12 @@ namespace TerraFX.Interop
                 {
                     if ((uint)(index1) > 7) // (index1 < 0) || (index1 > 7)
                     {
-                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index1), index1);
+                        ThrowArgumentOutOfRangeException(nameof(index1), index1);
                     }
 
                     if ((uint)(index2) > 1) // (index2 < 0) || (index2 > 1)
                     {
-                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index2), index2);
+                        ThrowArgumentOutOfRangeException(nameof(index2), index2);
                     }
 
                     fixed (FLOAT* e = &e0_0)
@@ -103,12 +103,12 @@ namespace TerraFX.Interop
                 {
                     if ((uint)(index1) > 15) // (index1 < 0) || (index1 > 15)
                     {
-                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index1), index1);
+                        ThrowArgumentOutOfRangeException(nameof(index1), index1);
                     }
 
                     if ((uint)(index2) > 1) // (index2 < 0) || (index2 > 1)
                     {
-                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index2), index2);
+                        ThrowArgumentOutOfRangeException(nameof(index2), index2);
                     }
 
                     fixed (FLOAT* e = &e0_0)

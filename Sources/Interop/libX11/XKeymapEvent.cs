@@ -4,6 +4,7 @@
 // Original source is Copyright © The Open Group.
 
 using TerraFX.Utilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
@@ -99,7 +100,7 @@ namespace TerraFX.Interop
                 {
                     if ((uint)(index) > 31) // (index < 0) || (index > 31)
                     {
-                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                        ThrowArgumentOutOfRangeException(nameof(index), index);
                     }
 
                     fixed (sbyte* e = &e0)
@@ -112,7 +113,7 @@ namespace TerraFX.Interop
                 {
                     if ((uint)(index) > 31) // (index < 0) || (index > 31)
                     {
-                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                        ThrowArgumentOutOfRangeException(nameof(index), index);
                     }
 
                     fixed (sbyte* e = &e0)

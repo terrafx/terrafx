@@ -3,7 +3,7 @@
 // Ported from um\wingdi.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using TerraFX.Utilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
@@ -115,7 +115,7 @@ namespace TerraFX.Interop
                 {
                     if ((uint)(index) > 31) // (index < 0) || (index > 31)
                     {
-                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                        ThrowArgumentOutOfRangeException(nameof(index), index);
                     }
 
                     fixed (WCHAR* e = &e0)

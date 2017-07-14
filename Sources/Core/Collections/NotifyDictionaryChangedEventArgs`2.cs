@@ -2,7 +2,7 @@
 
 using System;
 using System.Diagnostics;
-using TerraFX.Utilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Collections
 {
@@ -54,7 +54,7 @@ namespace TerraFX.Collections
             {
                 if (Action == NotifyDictionaryChangedAction.Reset)
                 {
-                    ExceptionUtilities.ThrowInvalidOperationException(nameof(Action), Action);
+                    ThrowInvalidOperationException(nameof(Action), Action);
                 }
 
                 return _key;
@@ -69,7 +69,7 @@ namespace TerraFX.Collections
             {
                 if (Action != NotifyDictionaryChangedAction.ValueChanged)
                 {
-                    ExceptionUtilities.ThrowInvalidOperationException(nameof(Action), Action);
+                    ThrowInvalidOperationException(nameof(Action), Action);
                 }
 
                 return _oldValue;
@@ -84,7 +84,7 @@ namespace TerraFX.Collections
             {
                 if (Action != NotifyDictionaryChangedAction.ValueChanged)
                 {
-                    ExceptionUtilities.ThrowInvalidOperationException(nameof(Action), Action);
+                    ThrowInvalidOperationException(nameof(Action), Action);
                 }
 
                 return _newValue;

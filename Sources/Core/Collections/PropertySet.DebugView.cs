@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using TerraFX.Utilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Collections
 {
@@ -24,7 +24,7 @@ namespace TerraFX.Collections
             {
                 if (propertySet is null)
                 {
-                    ExceptionUtilities.ThrowArgumentNullException(nameof(propertySet));
+                    ThrowArgumentNullException(nameof(propertySet));
                 }
 
                 _propertySet = propertySet;

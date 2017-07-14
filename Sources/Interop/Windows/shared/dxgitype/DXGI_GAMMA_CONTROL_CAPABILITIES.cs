@@ -3,7 +3,7 @@
 // Ported from shared\dxgitype.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using TerraFX.Utilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
@@ -2083,7 +2083,7 @@ namespace TerraFX.Interop
                 {
                     if ((uint)(index) > 1024) // (index < 0) || (index > 1024)
                     {
-                        ExceptionUtilities.ThrowArgumentOutOfRangeException(nameof(index), index);
+                        ThrowArgumentOutOfRangeException(nameof(index), index);
                     }
 
                     fixed (float* e = &e0)
