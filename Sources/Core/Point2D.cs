@@ -11,9 +11,9 @@ namespace TerraFX
     public struct Point2D : IEquatable<Point2D>, IFormattable
     {
         #region Fields
-        private float _x;
+        internal float _x;
 
-        private float _y;
+        internal float _y;
         #endregion
 
         #region Constructors
@@ -57,7 +57,7 @@ namespace TerraFX
         }
         #endregion
 
-        #region Operators
+        #region Comparison Operators
         /// <summary>Compares two <see cref="Point2D" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="Point2D" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="Point2D" /> to compare with <paramref name="left" />.</param>
@@ -79,7 +79,7 @@ namespace TerraFX
         }
         #endregion
 
-        #region System.IEquatable<Point2D>
+        #region System.IEquatable<Point2D> Methods
         /// <summary>Compares a <see cref="Point2D" /> with the current instance to determine equality.</summary>
         /// <param name="other">The <see cref="Point2D" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
@@ -89,7 +89,7 @@ namespace TerraFX
         }
         #endregion
 
-        #region System.IFormattable
+        #region System.IFormattable Methods
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
         /// <param name="formatProvider">The provider to use when formatting the current instance or <c>null</c> to use the default provider.</param>
@@ -111,7 +111,7 @@ namespace TerraFX
         }
         #endregion
 
-        #region System.Object
+        #region System.Object Methods
         /// <summary>Compares a <see cref="object" /> with the current instance to determine equality.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="Point2D" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>

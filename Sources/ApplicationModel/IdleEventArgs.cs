@@ -8,7 +8,7 @@ namespace TerraFX.ApplicationModel
     public sealed class IdleEventArgs : EventArgs
     {
         #region Fields
-        private readonly TimeSpan _delta;
+        internal readonly TimeSpan _delta;
         #endregion
 
         #region Constructors

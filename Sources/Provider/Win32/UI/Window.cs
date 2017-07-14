@@ -16,17 +16,17 @@ namespace TerraFX.Provider.Win32.UI
     unsafe public sealed class Window : IDisposable, IWindow
     {
         #region Fields
-        private HWND _hWnd;
+        internal HWND _hWnd;
 
-        private IDispatcher _dispatcher;
+        internal readonly IDispatcher _dispatcher;
 
-        private PropertySet _properties;
+        internal readonly PropertySet _properties;
 
-        private Rectangle _bounds;
+        internal Rectangle _bounds;
 
-        private bool _isActive;
+        internal bool _isActive;
 
-        private bool _isVisible;
+        internal bool _isVisible;
         #endregion
 
         #region Constructors
@@ -83,81 +83,7 @@ namespace TerraFX.Provider.Win32.UI
         }
         #endregion
 
-        #region Methods
-        /// <summary>Processes messages sent to the instance.</summary>
-        /// <param name="Msg">The message.</param>
-        /// <param name="wParam">Additional message information.</param>
-        /// <param name="lParam">Additional message information.</param>
-        /// <returns>The result of processing <paramref name="Msg" />.</returns>
-        public LRESULT WindowProc(UINT Msg, WPARAM wParam, LPARAM lParam)
-        {
-            switch (Msg)
-            {
-                case WM_MOVE:
-                {
-                    var x = LOWORD(lParam);
-                    var y = HIWORD(lParam);
-
-                    _bounds.Location = new Point2D(x, y);
-                    return 0;
-                }
-
-                case WM_SIZE:
-                {
-                    var width = LOWORD(lParam);
-                    var height = HIWORD(lParam);
-
-                    _bounds.Size = new Size2D(width, height);
-                    return 0;
-                }
-
-                case WM_ACTIVATE:
-                {
-                    var activateCmd = LOWORD(wParam);
-                    _isActive = (activateCmd != WA_INACTIVE);
-                    return 0;
-                }
-
-                case WM_SHOWWINDOW:
-                {
-                    var shown = (BOOL)(LOWORD(wParam));
-                    _isVisible = (shown != 0);
-                    return 0;
-                }
-
-                default:
-                {
-                    return DefWindowProc(_hWnd, Msg, wParam, lParam);
-                }
-            }
-        }
-
-        private void Dispose(bool isDisposing)
-        {
-            if (_hWnd != null)
-            {
-                var succeeded = DestroyWindow(_hWnd);
-
-                if (succeeded == 0)
-                {
-                    ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(DestroyWindow));
-                }
-
-                _hWnd = null;
-            }
-        }
-        #endregion
-
-        #region System.IDisposable
-        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
-        }
-        #endregion
-
-        #region TerraFX.UI.IWindow
+        #region TerraFX.UI.IWindow Properties
         /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
         public Rectangle Bounds
         {
@@ -211,7 +137,83 @@ namespace TerraFX.Provider.Win32.UI
                 return _properties;
             }
         }
+        #endregion
 
+        #region Methods
+        /// <summary>Processes messages sent to the instance.</summary>
+        /// <param name="Msg">The message.</param>
+        /// <param name="wParam">Additional message information.</param>
+        /// <param name="lParam">Additional message information.</param>
+        /// <returns>The result of processing <paramref name="Msg" />.</returns>
+        public LRESULT WindowProc(UINT Msg, WPARAM wParam, LPARAM lParam)
+        {
+            switch (Msg)
+            {
+                case WM_MOVE:
+                {
+                    var x = LOWORD(lParam);
+                    var y = HIWORD(lParam);
+
+                    _bounds.Location = new Point2D(x, y);
+                    return 0;
+                }
+
+                case WM_SIZE:
+                {
+                    var width = LOWORD(lParam);
+                    var height = HIWORD(lParam);
+
+                    _bounds.Size = new Size2D(width, height);
+                    return 0;
+                }
+
+                case WM_ACTIVATE:
+                {
+                    var activateCmd = LOWORD(wParam);
+                    _isActive = (activateCmd != WA_INACTIVE);
+                    return 0;
+                }
+
+                case WM_SHOWWINDOW:
+                {
+                    var shown = (BOOL)(LOWORD(wParam));
+                    _isVisible = (shown != 0);
+                    return 0;
+                }
+
+                default:
+                {
+                    return DefWindowProc(_hWnd, Msg, wParam, lParam);
+                }
+            }
+        }
+
+        internal void Dispose(bool isDisposing)
+        {
+            if (_hWnd != null)
+            {
+                var succeeded = DestroyWindow(_hWnd);
+
+                if (succeeded == 0)
+                {
+                    ExceptionUtilities.ThrowExternalExceptionForLastError(nameof(DestroyWindow));
+                }
+
+                _hWnd = null;
+            }
+        }
+        #endregion
+
+        #region System.IDisposable Methods
+        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
+        public void Dispose()
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
+
+        #region TerraFX.UI.IWindow Methods
         /// <summary>Activates the instance.</summary>
         public void Activate()
         {

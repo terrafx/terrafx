@@ -5,11 +5,12 @@ using System.Diagnostics;
 
 namespace TerraFX.Utilities
 {
+#pragma warning disable IDE1006
     /// <summary>Defines a native-sized unsigned integer.</summary>
     unsafe public /* blittable */ struct nuint : IComparable, IComparable<nuint>, IEquatable<nuint>, IFormattable
     {
         #region Fields
-        internal void* _value;
+        internal readonly void* _value;
         #endregion
 
         #region Constructors
@@ -541,4 +542,5 @@ namespace TerraFX.Utilities
         }
         #endregion
     }
+#pragma warning restore IDE1006
 }

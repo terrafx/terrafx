@@ -15,7 +15,7 @@ namespace TerraFX.Collections
     public sealed partial class PropertySet : IPropertySet
     {
         #region Fields
-        private IDictionary<string, object> _items;
+        internal readonly IDictionary<string, object> _items;
         #endregion
 
         #region Constructors
@@ -39,25 +39,12 @@ namespace TerraFX.Collections
         }
         #endregion
 
-        #region Methods
-        /// <summary>Raises the <see cref="DictionaryChanged" /> event.</summary>
-        /// <param name="eventArgs">The <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> for the event.</param>
-        private void OnDictionaryChanged(NotifyDictionaryChangedEventArgs<string, object> eventArgs)
-        {
-            DictionaryChanged?.Invoke(this, eventArgs);
-        }
+        #region TerraFX.Collections.INotifyDictionaryChanged<string, object> Events
+        /// <summary>Occurs when underlying dictionary changes.</summary>
+        public event NotifyDictionaryChangedEventHandler<string, object> DictionaryChanged;
         #endregion
 
-        #region System.Collections.IEnumerable
-        /// <summary>Gets an <see cref="IEnumerator" /> that can iterate through the items contained by the instance.</summary>
-        /// <returns>An <see cref="IEnumerator" /> that can iterate through the items contained by the instance.</returns>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-        #endregion
-
-        #region System.Collections.Generic.ICollection<KeyValuePair<string, object>>
+        #region System.Collections.Generic.ICollection<KeyValuePair<string, object>> Properties
         /// <summary>Gets the number of items contained by the instance.</summary>
         public int Count
         {
@@ -76,65 +63,9 @@ namespace TerraFX.Collections
                 return _items.IsReadOnly;
             }
         }
-
-        /// <summary>Adds an item to the instance.</summary>
-        /// <param name="item">The item to add to the instance.</param>
-        /// <exception cref="ArgumentException">An item with the same <paramref name="item" />.<see cref="KeyValuePair{TKey, TValue}.Key" /> already exists in the instance.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="item" />.<see cref="KeyValuePair{TKey, TValue}.Key" /> is <c>null</c>.</exception>
-        /// <exception cref="NotSupportedException">The instance is <c>read-only</c>.</exception>
-        void ICollection<KeyValuePair<string, object>>.Add(KeyValuePair<string, object> item)
-        {
-            _items.Add(item);
-            OnDictionaryChanged(NotifyDictionaryChangedEventArgs<string, object>.ForAddAction(item.Key));
-        }
-
-        /// <summary>Removes all items from the instance.</summary>
-        /// <exception cref="NotSupportedException">The instance is <c>read-only</c>.</exception>
-        public void Clear()
-        {
-            _items.Clear();
-            OnDictionaryChanged(NotifyDictionaryChangedEventArgs<string, object>.ForResetAction());
-        }
-
-        /// <summary>Determines whether the instance contains a specific item.</summary>
-        /// <param name="item">The item for which to check.</param>
-        /// <returns><c>true</c> if the instance contains <paramref name="item" />; otherwise, <c>false</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="item" />.<see cref="KeyValuePair{TKey, TValue}.Key" /> is <c>null</c>.</exception>
-        bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> item)
-        {
-            return _items.Contains(item);
-        }
-
-        /// <summary>Copies items from the instance to another <see cref="Array" />.</summary>
-        /// <param name="array">The <see cref="Array" /> that is the destination of the copy.</param>
-        /// <param name="arrayIndex">The <c>zero-based</c> index in <paramref name="array" /> at which copying begins.</param>
-        /// <exception cref="ArgumentException">The number of items in the instance is greater than the available space in <paramref name="array" /> when starting at <paramref name="arrayIndex" />.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="array" /> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="arrayIndex" /> is less than zero.</exception>
-        void ICollection<KeyValuePair<string, object>>.CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
-        {
-            _items.CopyTo(array, arrayIndex);
-        }
-
-        /// <summary>Removes an item from the instance.</summary>
-        /// <param name="item">The item to remove from the instance.</param>
-        /// <returns><c>true</c> if the item was succesfully removed; otherwise, <c>false</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="item" />.<see cref="KeyValuePair{TKey, TValue}.Key" /> is <c>null</c>.</exception>
-        /// <exception cref="NotSupportedException">The instance is <c>read-only</c>.</exception>
-        bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item)
-        {
-            var removed = _items.Remove(item);
-
-            if (removed)
-            {
-                OnDictionaryChanged(NotifyDictionaryChangedEventArgs<string, object>.ForRemoveAction(item.Key));
-            }
-
-            return removed;
-        }
         #endregion
 
-        #region System.Collections.Generic.IDictionary<string, object>
+        #region System.Collections.Generic.IDictionary<string, object> Properties
         /// <summary>Gets a <see cref="ICollection{TKey}" /> that contains the keys contained by the instance.</summary>
         public ICollection<string> Keys
         {
@@ -181,7 +112,85 @@ namespace TerraFX.Collections
                 }
             }
         }
+        #endregion
 
+        #region Methods
+        /// <summary>Raises the <see cref="DictionaryChanged" /> event.</summary>
+        /// <param name="eventArgs">The <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> for the event.</param>
+        internal void OnDictionaryChanged(NotifyDictionaryChangedEventArgs<string, object> eventArgs)
+        {
+            DictionaryChanged?.Invoke(this, eventArgs);
+        }
+        #endregion
+
+        #region System.Collections.IEnumerable Methods
+        /// <summary>Gets an <see cref="IEnumerator" /> that can iterate through the items contained by the instance.</summary>
+        /// <returns>An <see cref="IEnumerator" /> that can iterate through the items contained by the instance.</returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+        #endregion
+
+        #region System.Collections.Generic.ICollection<KeyValuePair<string, object>> Methods
+        /// <summary>Removes all items from the instance.</summary>
+        /// <exception cref="NotSupportedException">The instance is <c>read-only</c>.</exception>
+        public void Clear()
+        {
+            _items.Clear();
+            OnDictionaryChanged(NotifyDictionaryChangedEventArgs<string, object>.ForResetAction());
+        }
+
+        /// <summary>Adds an item to the instance.</summary>
+        /// <param name="item">The item to add to the instance.</param>
+        /// <exception cref="ArgumentException">An item with the same <paramref name="item" />.<see cref="KeyValuePair{TKey, TValue}.Key" /> already exists in the instance.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="item" />.<see cref="KeyValuePair{TKey, TValue}.Key" /> is <c>null</c>.</exception>
+        /// <exception cref="NotSupportedException">The instance is <c>read-only</c>.</exception>
+        void ICollection<KeyValuePair<string, object>>.Add(KeyValuePair<string, object> item)
+        {
+            _items.Add(item);
+            OnDictionaryChanged(NotifyDictionaryChangedEventArgs<string, object>.ForAddAction(item.Key));
+        }
+
+        /// <summary>Determines whether the instance contains a specific item.</summary>
+        /// <param name="item">The item for which to check.</param>
+        /// <returns><c>true</c> if the instance contains <paramref name="item" />; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="item" />.<see cref="KeyValuePair{TKey, TValue}.Key" /> is <c>null</c>.</exception>
+        bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> item)
+        {
+            return _items.Contains(item);
+        }
+
+        /// <summary>Copies items from the instance to another <see cref="Array" />.</summary>
+        /// <param name="array">The <see cref="Array" /> that is the destination of the copy.</param>
+        /// <param name="arrayIndex">The <c>zero-based</c> index in <paramref name="array" /> at which copying begins.</param>
+        /// <exception cref="ArgumentException">The number of items in the instance is greater than the available space in <paramref name="array" /> when starting at <paramref name="arrayIndex" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="array" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="arrayIndex" /> is less than zero.</exception>
+        void ICollection<KeyValuePair<string, object>>.CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
+        {
+            _items.CopyTo(array, arrayIndex);
+        }
+
+        /// <summary>Removes an item from the instance.</summary>
+        /// <param name="item">The item to remove from the instance.</param>
+        /// <returns><c>true</c> if the item was succesfully removed; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="item" />.<see cref="KeyValuePair{TKey, TValue}.Key" /> is <c>null</c>.</exception>
+        /// <exception cref="NotSupportedException">The instance is <c>read-only</c>.</exception>
+        bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item)
+        {
+            var removed = _items.Remove(item);
+
+            if (removed)
+            {
+                OnDictionaryChanged(NotifyDictionaryChangedEventArgs<string, object>.ForRemoveAction(item.Key));
+            }
+
+            return removed;
+        }
+        #endregion
+
+        #region System.Collections.Generic.IDictionary<string, object> Methods
         /// <summary>Adds an item to the instance.</summary>
         /// <param name="key">The key of the item to add to the instance.</param>
         /// <param name="value">The value of the item to add to the instance.</param>
@@ -230,18 +239,13 @@ namespace TerraFX.Collections
         }
         #endregion
 
-        #region System.Collections.Generic.IEnumerable<KeyValuePair<string, object>>
+        #region System.Collections.Generic.IEnumerable<KeyValuePair<string, object>> Methods
         /// <summary>Gets an <see cref="IEnumerator{T}" /> that can iterate through the items contained by the instance.</summary>
         /// <returns>An <see cref="IEnumerator{T}" /> that can iterate through the items contained by the instance.</returns>
         public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
         {
             return _items.GetEnumerator();
         }
-        #endregion
-
-        #region TerraFX.Collections.INotifyDictionaryChanged<string, object>
-        /// <summary>Occurs when underlying dictionary changes.</summary>
-        public event NotifyDictionaryChangedEventHandler<string, object> DictionaryChanged;
         #endregion
     }
 }

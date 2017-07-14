@@ -27,7 +27,7 @@ namespace TerraFX
         #endregion
 
         #region Fields
-        private readonly long _ticks;
+        internal readonly long _ticks;
         #endregion
 
         #region Constructors
@@ -50,7 +50,7 @@ namespace TerraFX
         }
         #endregion
 
-        #region Operators
+        #region Comparison Operators
         /// <summary>Compares two <see cref="Timestamp" /> values to determine equality.</summary>
         /// <param name="left">The <see cref="Timestamp" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="Timestamp" /> to compare with <paramref name="left" />.</param>
@@ -104,7 +104,9 @@ namespace TerraFX
         {
             return (left._ticks <= right._ticks);
         }
+        #endregion
 
+        #region Binary Operators
         /// <summary>Subtracts two <see cref="Timestamp" /> values to determine their delta.</summary>
         /// <param name="left">The <see cref="Timestamp" /> from which <paramref name="right" /> will be subtracted.</param>
         /// <param name="right">The <see cref="Timestamp" /> to subtract from <paramref name="left" />.</param>
@@ -117,7 +119,7 @@ namespace TerraFX
         }
         #endregion
 
-        #region System.IComparable
+        #region System.IComparable Methods
         /// <summary>Compares an <see cref="object" /> with the current instance to determine relative sort-order.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns>A value <c>less than zero</c> if <paramref name="obj" /> is greater than the current instance, <c>zero</c> if <paramref name="obj"/> is equal to the current instance; and <c>greater than zero</c> if <paramref name="obj" /> is <c>null</c> or greater than the current instance.</returns>
@@ -139,7 +141,7 @@ namespace TerraFX
         }
         #endregion
 
-        #region System.IComparable<Timestamp>
+        #region System.IComparable<Timestamp> Methods
         /// <summary>Compares a <see cref="Timestamp" /> with the current instance to determine relative sort-order.</summary>
         /// <param name="other">The <see cref="Timestamp" /> to compare with the current instance.</param>
         /// <returns>A value <c>less than zero</c> if <paramref name="other" /> is greater than the current instance, <c>zero</c> if <paramref name="other"/> is equal to the current instance; and <c>greater than zero</c> if <paramref name="other" /> is greater than the current instance.</returns>
@@ -163,7 +165,7 @@ namespace TerraFX
         }
         #endregion
 
-        #region System.IEquatable<Timestamp>
+        #region System.IEquatable<Timestamp> Methods
         /// <summary>Compares a <see cref="Timestamp" /> with the current instance to determine equality.</summary>
         /// <param name="other">The <see cref="Timestamp" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
@@ -173,7 +175,7 @@ namespace TerraFX
         }
         #endregion
 
-        #region System.IFormattable
+        #region System.IFormattable Methods
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
         /// <param name="formatProvider">The provider to use when formatting the current instance or <c>null</c> to use the default provider.</param>
@@ -184,7 +186,7 @@ namespace TerraFX
         }
         #endregion
 
-        #region System.Object
+        #region System.Object Methods
         /// <summary>Compares an <see cref="object" /> with the current instance to determine equality.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="Timestamp" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>

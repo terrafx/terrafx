@@ -21,20 +21,22 @@ namespace TerraFX.Provider.Win32.UI
     [Shared]
     unsafe public sealed class WindowManager : IDisposable, IWindowManager
     {
+        #region Static Fields
+        internal static readonly ConcurrentDictionary<HWND, Window> _createdWindows = new ConcurrentDictionary<HWND, Window>();
+
+        internal static readonly HINSTANCE _entryModuleHandle = GetModuleHandle(); 
+
+        internal static readonly WNDPROC _wndProc = WindowProc;
+        #endregion
+
         #region Fields
-        internal static readonly ConcurrentDictionary<HWND, Window> CreatedWindows = new ConcurrentDictionary<HWND, Window>();
+        internal WCHAR* _lpClassName;
 
-        internal static readonly HINSTANCE EntryModuleHandle = GetModuleHandle(); 
+        internal WCHAR* _lpWindowName;
 
-        internal static readonly WNDPROC WndProc = WindowProc;
+        internal readonly Lazy<IDispatchManager> _dispatchManager;
 
-        private WCHAR* _lpClassName;
-
-        private WCHAR* _lpWindowName;
-
-        private Lazy<IDispatchManager> _dispatchManager;
-
-        private ATOM _classAtom;
+        internal ATOM _classAtom;
         #endregion
 
         #region Constructors
@@ -44,17 +46,17 @@ namespace TerraFX.Provider.Win32.UI
             [Import] Lazy<IDispatchManager> dispatchManager
         )
         {
-            _lpClassName = (WCHAR*)(Marshal.StringToHGlobalUni($"TerraFX.Interop.Provider.Win32.UI.Window.{EntryModuleHandle}"));
+            _lpClassName = (WCHAR*)(Marshal.StringToHGlobalUni($"TerraFX.Interop.Provider.Win32.UI.Window.{_entryModuleHandle}"));
             _lpWindowName = (WCHAR*)(Marshal.StringToHGlobalUni($"TerraFX Win32 Window"));
             _dispatchManager = dispatchManager;
 
             var wndClassEx = new WNDCLASSEX() {
                 cbSize = unchecked((uint)(Marshal.SizeOf<WNDCLASSEX>())),
                 style = CS_VREDRAW | CS_HREDRAW,
-                lpfnWndProc = Marshal.GetFunctionPointerForDelegate(WndProc),
+                lpfnWndProc = Marshal.GetFunctionPointerForDelegate(_wndProc),
                 cbClsExtra = 0,
                 cbWndExtra = 0,
-                hInstance = EntryModuleHandle,
+                hInstance = _entryModuleHandle,
                 hIcon = null,
                 hCursor = null,
                 hbrBackground = (void*)(COLOR_WINDOW + 1),
@@ -83,9 +85,9 @@ namespace TerraFX.Provider.Win32.UI
         #endregion
 
         #region Methods
-        private static LRESULT WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
+        internal static LRESULT WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
         {
-            if (CreatedWindows.TryGetValue(hWnd, out var window))
+            if (_createdWindows.TryGetValue(hWnd, out var window))
             {
                 return window.WindowProc(Msg, wParam, lParam);
             }
@@ -93,11 +95,11 @@ namespace TerraFX.Provider.Win32.UI
             return DefWindowProc(hWnd, Msg, wParam, lParam);
         }
 
-        private void Dispose(bool isDisposing)
+        internal void Dispose(bool isDisposing)
         {
             if (isDisposing)
             {
-                foreach (var createdWindow in CreatedWindows.Values)
+                foreach (var createdWindow in _createdWindows.Values)
                 {
                     createdWindow.Dispose();
                 }
@@ -106,7 +108,7 @@ namespace TerraFX.Provider.Win32.UI
             if (_classAtom != 0)
             {
                 var lpClassName = (LPWSTR)(_classAtom);
-                UnregisterClass((WCHAR*)(lpClassName), EntryModuleHandle);
+                UnregisterClass((WCHAR*)(lpClassName), _entryModuleHandle);
                 _classAtom = 0;
             }
 
@@ -124,7 +126,7 @@ namespace TerraFX.Provider.Win32.UI
         }
         #endregion
 
-        #region System.IDisposable
+        #region System.IDisposable Methods
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
         public void Dispose()
         {
@@ -133,7 +135,7 @@ namespace TerraFX.Provider.Win32.UI
         }
         #endregion
 
-        #region TerraFX.UI.IWindowManager
+        #region TerraFX.UI.IWindowManager Methods
         /// <summary>Create a new <see cref="IWindow"/> instance.</summary>
         /// <returns>A new <see cref="IWindow" /> instance</returns>
         public IWindow CreateWindow()
@@ -144,9 +146,9 @@ namespace TerraFX.Provider.Win32.UI
             }
 
             var lpClassName = (LPWSTR)(_classAtom);
-            var window = new Window(_dispatchManager.Value, lpClassName, _lpWindowName, EntryModuleHandle);
+            var window = new Window(_dispatchManager.Value, lpClassName, _lpWindowName, _entryModuleHandle);
 
-            var succeeded = CreatedWindows.TryAdd((void*)(window.Handle), window);
+            var succeeded = _createdWindows.TryAdd((void*)(window.Handle), window);
             Debug.Assert(succeeded);
 
             return window;

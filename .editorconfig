@@ -249,7 +249,7 @@ csharp_space_between_square_brackets = false
 #   suggest pattern-matching over "is" with "cast" check,
 #   suggest throw expressions,
 #   suggest var for built-in types,
-#   don't suggest var when the type is not apparent, and
+#   suggest var when the type is not apparent, and
 #   suggest var when the type is apparent
 ###############################################################################
 [*.cs]
@@ -270,5 +270,5 @@ csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
 csharp_style_throw_expression = true:suggestion
 
 csharp_style_var_for_built_in_types = true:suggestion
-csharp_style_var_elsewhere = false:suggestion
+csharp_style_var_elsewhere = true:suggestion
 csharp_style_var_when_type_is_apparent = true:suggestion

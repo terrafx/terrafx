@@ -13,7 +13,7 @@ namespace TerraFX.Collections
         internal sealed class DebugView
         {
             #region Fields
-            private IPropertySet _propertySet;
+            internal readonly IPropertySet _propertySet;
             #endregion
 
             #region Constructors

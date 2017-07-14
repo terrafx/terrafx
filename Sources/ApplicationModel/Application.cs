@@ -15,15 +15,15 @@ namespace TerraFX.ApplicationModel
     public sealed class Application : IDisposable
     {
         #region Fields
-        private readonly CompositionHost _compositionHost;
+        internal readonly CompositionHost _compositionHost;
 
-        private readonly Lazy<IDispatchManager> _dispatchManager;
+        internal readonly Lazy<IDispatchManager> _dispatchManager;
 
-        private readonly Lazy<IWindowManager> _windowManager;
+        internal readonly Lazy<IWindowManager> _windowManager;
 
-        private volatile int _isRunning;
+        internal volatile int _isRunning;
 
-        private bool _exitRequested;
+        internal bool _exitRequested;
         #endregion
 
         #region Constructors
@@ -147,7 +147,7 @@ namespace TerraFX.ApplicationModel
             _isRunning = 0;
         }
 
-        private void Dispose(bool isDisposing)
+        internal void Dispose(bool isDisposing)
         {
             if (isDisposing)
             {
@@ -155,13 +155,13 @@ namespace TerraFX.ApplicationModel
             }
         }
 
-        private void OnIdle(IdleEventArgs eventArgs)
+        internal void OnIdle(IdleEventArgs eventArgs)
         {
             Idle?.Invoke(this, eventArgs);
         }
         #endregion
 
-        #region System.IDisposable
+        #region System.IDisposable Methods
         /// <summary>Disposes of any unmanaged resources owned by the current instance.</summary>
         public void Dispose()
         {

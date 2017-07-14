@@ -11,9 +11,9 @@ namespace TerraFX
     public struct Rectangle : IEquatable<Rectangle>, IFormattable
     {
         #region Fields
-        private Point2D _location;
+        internal Point2D _location;
 
-        private Size2D _size;
+        internal Size2D _size;
         #endregion
 
         #region Constructors
@@ -124,7 +124,7 @@ namespace TerraFX
         }
         #endregion
 
-        #region Operators
+        #region Comparison Operators
         /// <summary>Compares two <see cref="Rectangle" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="Rectangle" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="Rectangle" /> to compare with <paramref name="left" />.</param>
@@ -146,7 +146,7 @@ namespace TerraFX
         }
         #endregion
 
-        #region System.IEquatable<Rectangle>
+        #region System.IEquatable<Rectangle> Methods
         /// <summary>Compares a <see cref="Rectangle" /> with the current instance to determine equality.</summary>
         /// <param name="other">The <see cref="Rectangle" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
@@ -156,7 +156,7 @@ namespace TerraFX
         }
         #endregion
 
-        #region System.IFormattable
+        #region System.IFormattable Methods
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
         /// <param name="formatProvider">The provider to use when formatting the current instance or <c>null</c> to use the default provider.</param>
@@ -184,7 +184,7 @@ namespace TerraFX
         }
         #endregion
 
-        #region System.Object
+        #region System.Object Methods
         /// <summary>Compares a <see cref="object" /> with the current instance to determine equality.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="Rectangle" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>

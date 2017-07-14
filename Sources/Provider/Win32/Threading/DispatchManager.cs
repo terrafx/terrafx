@@ -13,13 +13,14 @@ namespace TerraFX.Provider.Win32.Threading
 {
     /// <summary>Provides a means of managing the message dispatch objects for an application.</summary>
     [Export(typeof(IDispatchManager))]
+    [Export(typeof(DispatchManager))]
     [Shared]
     unsafe public sealed class DispatchManager : IDispatchManager
     {
         #region Fields
-        private readonly double _tickFrequency;
+        internal readonly double _tickFrequency;
 
-        private readonly ConcurrentDictionary<Thread, Dispatcher> _dispatchers;
+        internal readonly ConcurrentDictionary<Thread, Dispatcher> _dispatchers;
         #endregion
 
         #region Constructors
@@ -42,7 +43,7 @@ namespace TerraFX.Provider.Win32.Threading
         }
         #endregion
 
-        #region TerraFX.Threading.IDispatchManager
+        #region TerraFX.Threading.IDispatchManager Properties
         /// <summary>Gets the current <see cref="Timestamp" /> for the instance.</summary>
         public Timestamp CurrentTimestamp
         {
@@ -71,7 +72,9 @@ namespace TerraFX.Provider.Win32.Threading
                 return _dispatchers.GetOrAdd(Thread.CurrentThread, (thread) => new Dispatcher(thread));
             }
         }
+        #endregion
 
+        #region TerraFX.Threading.IDispatchManager Methods
         /// <summary>Gets the <see cref="IDispatcher" /> instance associated with a <see cref="Thread" />.</summary>
         /// <param name="thread">The <see cref="Thread" /> for which the <see cref="IDispatcher" /> instance should be retrieved.</param>
         /// <returns>The <see cref="IDispatcher" /> instance associated with <paramref name="thread" /> or <c>null</c> if an instance does not exist.</returns>

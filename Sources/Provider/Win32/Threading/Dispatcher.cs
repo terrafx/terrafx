@@ -12,7 +12,7 @@ namespace TerraFX.Provider.Win32.Threading
     unsafe public sealed class Dispatcher : IDispatcher
     {
         #region Fields
-        private Thread _parentThread;
+        internal readonly Thread _parentThread;
         #endregion
 
         #region Constructors
@@ -24,7 +24,7 @@ namespace TerraFX.Provider.Win32.Threading
         }
         #endregion
 
-        #region TerraFX.Threading.IDispatcher
+        #region TerraFX.Threading.IDispatcher Properties
         /// <summary>Gets the <see cref="Thread" /> associated with the instance.</summary>
         public Thread ParentThread
         {
@@ -33,7 +33,9 @@ namespace TerraFX.Provider.Win32.Threading
                 return _parentThread;
             }
         }
+        #endregion
 
+        #region TerraFX.Threading.IDispatcher Methods
         /// <summary>Dispatches all messages currently pending in the queue.</summary>
         /// <remarks>This method does not wait for a new event to be raised if the queue is empty.</remarks>
         public void DispatchPending()

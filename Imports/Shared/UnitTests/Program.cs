@@ -8,6 +8,7 @@ namespace TerraFX.UnitTests
     /// <summary>Provides a set of methods for executing a program.</summary>
     public static class Program
     {
+        #region Static Methods
         /// <summary>The entry point of the program.</summary>
         /// <param name="args">The arguments that should be used when running the program.</param>
         /// <returns>The exit code of the program.</returns>
@@ -16,5 +17,6 @@ namespace TerraFX.UnitTests
             var autoRun = new AutoRun(Assembly.GetEntryAssembly());
             return autoRun.Execute(args);
         }
+        #endregion
     }
 }

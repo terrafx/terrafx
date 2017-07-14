@@ -9,8 +9,10 @@ namespace TerraFX
     public static class Resources
     {
         #region Static Fields
-        private static readonly ResourceManager _resourceManager = new ResourceManager(typeof(Resources));
-        private static CultureInfo _culture;
+        /// <summary>The <see cref="ResourceManager" /> instance that is used to lookup the localized resources.</summary>
+        public static readonly ResourceManager ResourceManager = new ResourceManager(typeof(Resources));
+
+        internal static CultureInfo _culture;
         #endregion
 
         #region Static Properties
@@ -41,6 +43,21 @@ namespace TerraFX
             }
         }
 
+        /// <summary>Gets or sets the <see cref="CultureInfo" /> used during resource lookup.</summary>
+        /// <remarks>When this property has a value of <c>null</c>, <see cref="CultureInfo.CurrentUICulture" /> is used instead.</remarks>
+        public static CultureInfo Culture
+        {
+            get
+            {
+                return _culture;
+            }
+
+            set
+            {
+                _culture = value;
+            }
+        }
+
         /// <summary>Gets a localized <see cref="string" /> similar to <c>{0} failed with an error code of {1}</c>.</summary>
         public static string ExternalExceptionMessage
         {
@@ -65,30 +82,6 @@ namespace TerraFX
             get
             {
                 return ResourceManager.GetString(nameof(ObjectDisposedExceptionMessage), Culture);
-            }
-        }
-
-        /// <summary>Gets or sets the <see cref="CultureInfo" /> used during resource lookup.</summary>
-        /// <remarks>When this property has a value of <c>null</c>, <see cref="CultureInfo.CurrentUICulture" /> is used instead.</remarks>
-        public static CultureInfo Culture
-        {
-            get
-            {
-                return _culture;
-            }
-
-            set
-            {
-                _culture = value;
-            }
-        }
-
-        /// <summary>Gets the <see cref="ResourceManager" /> instance that is used to lookup the localized resources.</summary>
-        public static ResourceManager ResourceManager
-        {
-            get
-            {
-                return _resourceManager;
             }
         }
         #endregion
