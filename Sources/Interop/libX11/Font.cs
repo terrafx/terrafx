@@ -4,11 +4,12 @@
 // Original source is Copyright © The Open Group.
 
 using System;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>A font resource ID.</summary>
-    public /* blittable */ struct Font : IEquatable<Font>, IFormattable
+    unsafe public /* blittable */ struct Font : IEquatable<Font>, IFormattable
     {
         #region Fields
         internal XID _value;
@@ -44,11 +45,74 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="Font" /> value to a <see cref="nint" /> value.</summary>
+        /// <param name="value">The <see cref="Font" /> value to convert.</param>
+        public static explicit operator nint(Font value)
+        {
+            return (nint)(value._value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="Font" /> value to a <see cref="nuint" /> value.</summary>
+        /// <param name="value">The <see cref="Font" /> value to convert.</param>
+        public static implicit operator nuint(Font value)
+        {
+            return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="Font" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="Font" /> value to convert.</param>
+        public static explicit operator uint(Font value)
+        {
+            return (uint)(value._value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="Font" /> value to a <see cref="ulong" /> value.</summary>
+        /// <param name="value">The <see cref="Font" /> value to convert.</param>
+        public static implicit operator ulong(Font value)
+        {
+            return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="Font" /> value to a <see cref="void" />* value.</summary>
+        /// <param name="value">The <see cref="Font" /> value to convert.</param>
+        public static explicit operator void* (Font value)
+        {
+            return (void*)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="Font" /> value to a <see cref="XID" /> value.</summary>
         /// <param name="value">The <see cref="Font" /> value to convert.</param>
         public static implicit operator XID(Font value)
         {
             return value._value;
+        }
+
+        /// <summary>Implicitly converts a <see cref="uint" /> value to a <see cref="Font" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static implicit operator Font(uint value)
+        {
+            return new Font(value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="ulong" /> value to a <see cref="Font" /> value.</summary>
+        /// <param name="value">The <see cref="ulong" /> value to convert.</param>
+        public static explicit operator Font(ulong value)
+        {
+            return new Font((nuint)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="nuint" /> value to a <see cref="Font" /> value.</summary>
+        /// <param name="value">The <see cref="nuint" /> value to convert.</param>
+        public static implicit operator Font(nuint value)
+        {
+            return new Font(value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="void" />* value to a <see cref="Font" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static explicit operator Font(void* value)
+        {
+            return new Font((nuint)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="XID" /> value to a <see cref="Font" /> value.</summary>

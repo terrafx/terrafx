@@ -4,11 +4,12 @@
 // Original source is Copyright © The Open Group.
 
 using System;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>A cursor resource ID.</summary>
-    public /* blittable */ struct Cursor : IEquatable<Cursor>, IFormattable
+    unsafe public /* blittable */ struct Cursor : IEquatable<Cursor>, IFormattable
     {
         #region Fields
         internal XID _value;
@@ -44,11 +45,74 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="Cursor" /> value to a <see cref="nint" /> value.</summary>
+        /// <param name="value">The <see cref="Cursor" /> value to convert.</param>
+        public static explicit operator nint(Cursor value)
+        {
+            return (nint)(value._value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="Cursor" /> value to a <see cref="nuint" /> value.</summary>
+        /// <param name="value">The <see cref="Cursor" /> value to convert.</param>
+        public static implicit operator nuint(Cursor value)
+        {
+            return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="Cursor" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="Cursor" /> value to convert.</param>
+        public static explicit operator uint(Cursor value)
+        {
+            return (uint)(value._value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="Cursor" /> value to a <see cref="ulong" /> value.</summary>
+        /// <param name="value">The <see cref="Cursor" /> value to convert.</param>
+        public static implicit operator ulong(Cursor value)
+        {
+            return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="Cursor" /> value to a <see cref="void" />* value.</summary>
+        /// <param name="value">The <see cref="Cursor" /> value to convert.</param>
+        public static explicit operator void* (Cursor value)
+        {
+            return (void*)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="Cursor" /> value to a <see cref="XID" /> value.</summary>
         /// <param name="value">The <see cref="Cursor" /> value to convert.</param>
         public static implicit operator XID(Cursor value)
         {
             return value._value;
+        }
+
+        /// <summary>Implicitly converts a <see cref="uint" /> value to a <see cref="Cursor" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static implicit operator Cursor(uint value)
+        {
+            return new Cursor(value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="ulong" /> value to a <see cref="Cursor" /> value.</summary>
+        /// <param name="value">The <see cref="ulong" /> value to convert.</param>
+        public static explicit operator Cursor(ulong value)
+        {
+            return new Cursor((nuint)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="nuint" /> value to a <see cref="Cursor" /> value.</summary>
+        /// <param name="value">The <see cref="nuint" /> value to convert.</param>
+        public static implicit operator Cursor(nuint value)
+        {
+            return new Cursor(value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="void" />* value to a <see cref="Cursor" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static explicit operator Cursor(void* value)
+        {
+            return new Cursor((nuint)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="XID" /> value to a <see cref="Cursor" /> value.</summary>

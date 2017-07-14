@@ -4,11 +4,12 @@
 // Original source is Copyright © The Open Group.
 
 using System;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>A window resource ID.</summary>
-    public /* blittable */ struct Window : IEquatable<Window>, IFormattable
+    unsafe public /* blittable */ struct Window : IEquatable<Window>, IFormattable
     {
         #region Fields
         internal XID _value;
@@ -44,11 +45,74 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="Window" /> value to a <see cref="nint" /> value.</summary>
+        /// <param name="value">The <see cref="Window" /> value to convert.</param>
+        public static explicit operator nint(Window value)
+        {
+            return (nint)(value._value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="Window" /> value to a <see cref="nuint" /> value.</summary>
+        /// <param name="value">The <see cref="Window" /> value to convert.</param>
+        public static implicit operator nuint(Window value)
+        {
+            return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="Window" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="Window" /> value to convert.</param>
+        public static explicit operator uint(Window value)
+        {
+            return (uint)(value._value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="Window" /> value to a <see cref="ulong" /> value.</summary>
+        /// <param name="value">The <see cref="Window" /> value to convert.</param>
+        public static implicit operator ulong(Window value)
+        {
+            return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="Window" /> value to a <see cref="void" />* value.</summary>
+        /// <param name="value">The <see cref="Window" /> value to convert.</param>
+        public static explicit operator void* (Window value)
+        {
+            return (void*)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="Window" /> value to a <see cref="XID" /> value.</summary>
         /// <param name="value">The <see cref="Window" /> value to convert.</param>
         public static implicit operator XID(Window value)
         {
             return value._value;
+        }
+
+        /// <summary>Implicitly converts a <see cref="uint" /> value to a <see cref="Window" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static implicit operator Window(uint value)
+        {
+            return new Window(value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="ulong" /> value to a <see cref="Window" /> value.</summary>
+        /// <param name="value">The <see cref="ulong" /> value to convert.</param>
+        public static explicit operator Window(ulong value)
+        {
+            return new Window((nuint)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="nuint" /> value to a <see cref="Window" /> value.</summary>
+        /// <param name="value">The <see cref="nuint" /> value to convert.</param>
+        public static implicit operator Window(nuint value)
+        {
+            return new Window(value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="void" />* value to a <see cref="Window" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static explicit operator Window(void* value)
+        {
+            return new Window((nuint)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="XID" /> value to a <see cref="Window" /> value.</summary>

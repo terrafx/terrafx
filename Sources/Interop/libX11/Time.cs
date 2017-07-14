@@ -10,7 +10,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Interop
 {
     /// <summary>A timestampt (expressed in milliseconds).</summary>
-    public /* blittable */ struct Time : IComparable, IComparable<Time>, IEquatable<Time>, IFormattable
+    unsafe public /* blittable */ struct Time : IComparable, IComparable<Time>, IEquatable<Time>, IFormattable
     {
         #region Fields
         internal nuint _value;
@@ -82,6 +82,13 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="Time" /> value to a <see cref="nint" /> value.</summary>
+        /// <param name="value">The <see cref="Time" /> value to convert.</param>
+        public static explicit operator nint(Time value)
+        {
+            return (nint)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="Time" /> value to a <see cref="nuint" /> value.</summary>
         /// <param name="value">The <see cref="Time" /> value to convert.</param>
         public static implicit operator nuint(Time value)
@@ -89,11 +96,53 @@ namespace TerraFX.Interop
             return value._value;
         }
 
+        /// <summary>Explicitly converts a <see cref="Time" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="Time" /> value to convert.</param>
+        public static explicit operator uint(Time value)
+        {
+            return (uint)(value._value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="Time" /> value to a <see cref="ulong" /> value.</summary>
+        /// <param name="value">The <see cref="Time" /> value to convert.</param>
+        public static implicit operator ulong(Time value)
+        {
+            return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="Time" /> value to a <see cref="void" />* value.</summary>
+        /// <param name="value">The <see cref="Time" /> value to convert.</param>
+        public static explicit operator void* (Time value)
+        {
+            return (void*)(value._value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="uint" /> value to a <see cref="Time" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static implicit operator Time(uint value)
+        {
+            return new Time(value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="ulong" /> value to a <see cref="Time" /> value.</summary>
+        /// <param name="value">The <see cref="ulong" /> value to convert.</param>
+        public static explicit operator Time(ulong value)
+        {
+            return new Time((nuint)(value));
+        }
+
         /// <summary>Implicitly converts a <see cref="nuint" /> value to a <see cref="Time" /> value.</summary>
         /// <param name="value">The <see cref="nuint" /> value to convert.</param>
         public static implicit operator Time(nuint value)
         {
             return new Time(value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="void" />* value to a <see cref="Time" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static explicit operator Time(void* value)
+        {
+            return new Time((nuint)(value));
         }
         #endregion
 

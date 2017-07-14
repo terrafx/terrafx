@@ -4,11 +4,12 @@
 // Original source is Copyright © The Open Group.
 
 using System;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>A pixmap resource ID.</summary>
-    public /* blittable */ struct Pixmap : IEquatable<Pixmap>, IFormattable
+    unsafe public /* blittable */ struct Pixmap : IEquatable<Pixmap>, IFormattable
     {
         #region Fields
         internal XID _value;
@@ -44,11 +45,74 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="Pixmap" /> value to a <see cref="nint" /> value.</summary>
+        /// <param name="value">The <see cref="Pixmap" /> value to convert.</param>
+        public static explicit operator nint(Pixmap value)
+        {
+            return (nint)(value._value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="Pixmap" /> value to a <see cref="nuint" /> value.</summary>
+        /// <param name="value">The <see cref="Pixmap" /> value to convert.</param>
+        public static implicit operator nuint(Pixmap value)
+        {
+            return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="Pixmap" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="Pixmap" /> value to convert.</param>
+        public static explicit operator uint(Pixmap value)
+        {
+            return (uint)(value._value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="Pixmap" /> value to a <see cref="ulong" /> value.</summary>
+        /// <param name="value">The <see cref="Pixmap" /> value to convert.</param>
+        public static implicit operator ulong(Pixmap value)
+        {
+            return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="Pixmap" /> value to a <see cref="void" />* value.</summary>
+        /// <param name="value">The <see cref="Pixmap" /> value to convert.</param>
+        public static explicit operator void* (Pixmap value)
+        {
+            return (void*)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="Pixmap" /> value to a <see cref="XID" /> value.</summary>
         /// <param name="value">The <see cref="Pixmap" /> value to convert.</param>
         public static implicit operator XID(Pixmap value)
         {
             return value._value;
+        }
+
+        /// <summary>Implicitly converts a <see cref="uint" /> value to a <see cref="Pixmap" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static implicit operator Pixmap(uint value)
+        {
+            return new Pixmap(value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="ulong" /> value to a <see cref="Pixmap" /> value.</summary>
+        /// <param name="value">The <see cref="ulong" /> value to convert.</param>
+        public static explicit operator Pixmap(ulong value)
+        {
+            return new Pixmap((nuint)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="nuint" /> value to a <see cref="Pixmap" /> value.</summary>
+        /// <param name="value">The <see cref="nuint" /> value to convert.</param>
+        public static implicit operator Pixmap(nuint value)
+        {
+            return new Pixmap(value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="void" />* value to a <see cref="Pixmap" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static explicit operator Pixmap(void* value)
+        {
+            return new Pixmap((nuint)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="XID" /> value to a <see cref="Pixmap" /> value.</summary>

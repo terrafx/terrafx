@@ -4,11 +4,12 @@
 // Original source is Copyright © The Open Group.
 
 using System;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>A colormap resource ID.</summary>
-    public /* blittable */ struct Colormap : IEquatable<Colormap>, IFormattable
+    unsafe public /* blittable */ struct Colormap : IEquatable<Colormap>, IFormattable
     {
         #region Fields
         internal XID _value;
@@ -44,11 +45,74 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="Colormap" /> value to a <see cref="nint" /> value.</summary>
+        /// <param name="value">The <see cref="Colormap" /> value to convert.</param>
+        public static explicit operator nint(Colormap value)
+        {
+            return (nint)(value._value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="Colormap" /> value to a <see cref="nuint" /> value.</summary>
+        /// <param name="value">The <see cref="Colormap" /> value to convert.</param>
+        public static implicit operator nuint(Colormap value)
+        {
+            return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="Colormap" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="Colormap" /> value to convert.</param>
+        public static explicit operator uint(Colormap value)
+        {
+            return (uint)(value._value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="Colormap" /> value to a <see cref="ulong" /> value.</summary>
+        /// <param name="value">The <see cref="Colormap" /> value to convert.</param>
+        public static implicit operator ulong(Colormap value)
+        {
+            return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="Colormap" /> value to a <see cref="void" />* value.</summary>
+        /// <param name="value">The <see cref="Colormap" /> value to convert.</param>
+        public static explicit operator void* (Colormap value)
+        {
+            return (void*)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="Colormap" /> value to a <see cref="XID" /> value.</summary>
         /// <param name="value">The <see cref="Colormap" /> value to convert.</param>
         public static implicit operator XID(Colormap value)
         {
             return value._value;
+        }
+
+        /// <summary>Implicitly converts a <see cref="uint" /> value to a <see cref="Colormap" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static implicit operator Colormap(uint value)
+        {
+            return new Colormap(value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="ulong" /> value to a <see cref="Colormap" /> value.</summary>
+        /// <param name="value">The <see cref="ulong" /> value to convert.</param>
+        public static explicit operator Colormap(ulong value)
+        {
+            return new Colormap((nuint)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="nuint" /> value to a <see cref="Colormap" /> value.</summary>
+        /// <param name="value">The <see cref="nuint" /> value to convert.</param>
+        public static implicit operator Colormap(nuint value)
+        {
+            return new Colormap(value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="void" />* value to a <see cref="Colormap" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static explicit operator Colormap(void* value)
+        {
+            return new Colormap((nuint)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="XID" /> value to a <see cref="Colormap" /> value.</summary>

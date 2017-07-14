@@ -10,7 +10,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Interop
 {
     /// <summary>Used for time in seconds.</summary>
-    public /* blittable */ struct time_t : IComparable, IComparable<time_t>, IEquatable<time_t>, IFormattable
+    unsafe public /* blittable */ struct time_t : IComparable, IComparable<time_t>, IEquatable<time_t>, IFormattable
     {
         #region Fields
         internal nint _value;
@@ -22,6 +22,132 @@ namespace TerraFX.Interop
         public time_t(nint value)
         {
             _value = value;
+        }
+        #endregion
+
+        #region Unary Operators
+        /// <summary>Negates a <see cref="time_t" /> value to determine its inverse.</summary>
+        /// <param name="value">The <see cref="time_t" /> to negate.</param>
+        /// <returns>The inverse of <paramref name="value" />.</returns>
+        public static time_t operator -(time_t value)
+        {
+            return -value._value;
+        }
+
+        /// <summary>Computes the bitwise-complement of a <see cref="time_t" /> value.</summary>
+        /// <param name="value">The <see cref="time_t" /> for which to compute the bitwise-complement.</param>
+        /// <returns>The bitwise-complement of <paramref name="value" />.</returns>
+        public static time_t operator ~(time_t value)
+        {
+            return ~value._value;
+        }
+
+        /// <summary>Increments a <see cref="time_t" /> value.</summary>
+        /// <param name="value">The <see cref="time_t" /> for which to increment.</param>
+        /// <returns>The increment of <paramref name="value" /></returns>
+        public static time_t operator ++(time_t value)
+        {
+            return (value._value + 1);
+        }
+
+        /// <summary>Decrements a <see cref="time_t" /> value.</summary>
+        /// <param name="value">The <see cref="time_t" /> for which to decrement.</param>
+        /// <returns>The decrement of <paramref name="value" /></returns>
+        public static time_t operator --(time_t value)
+        {
+            return (value._value - 1);
+        }
+        #endregion
+
+        #region Binary Operators
+        /// <summary>Adds two <see cref="time_t" /> values to compute their sum.</summary>
+        /// <param name="left">The <see cref="time_t" /> to add with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="time_t" /> to add with <paramref name="left" />.</param>
+        /// <returns>The sum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        public static time_t operator +(time_t left, time_t right)
+        {
+            return (left._value + right._value);
+        }
+
+        /// <summary>Subtracts two <see cref="time_t" /> values to compute their difference.</summary>
+        /// <param name="left">The <see cref="time_t" /> from which to subtract <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="time_t" /> to subtract from <paramref name="left" />.</param>
+        /// <returns>The difference of <paramref name="right" /> subtracted from <paramref name="left" />.</returns>
+        public static time_t operator -(time_t left, time_t right)
+        {
+            return (left._value - right._value);
+        }
+
+        /// <summary>Multiplies two <see cref="time_t" /> values to compute their product.</summary>
+        /// <param name="left">The <see cref="time_t" /> to multiply with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="time_t" /> to multiply with <paramref name="left" />.</param>
+        /// <returns>The product of <paramref name="left" /> and <paramref name="right" />.</returns>
+        public static time_t operator *(time_t left, time_t right)
+        {
+            return (left._value * right._value);
+        }
+
+        /// <summary>Divides two <see cref="time_t" /> values to compute their quotient.</summary>
+        /// <param name="left">The <see cref="time_t" /> that will be divided by <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="time_t" /> to divide <paramref name="left" /> by.</param>
+        /// <returns>The quotient of <paramref name="left" /> divided by <paramref name="right" />.</returns>
+        public static time_t operator /(time_t left, time_t right)
+        {
+            return (left._value / right._value);
+        }
+
+        /// <summary>Divides two <see cref="time_t" /> values to compute their remainder.</summary>
+        /// <param name="left">The <see cref="time_t" /> that will be divided by <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="time_t" /> to divide <paramref name="left" /> by.</param>
+        /// <returns>The remainder of <paramref name="left" /> divided by <paramref name="right" />.</returns>
+        public static time_t operator %(time_t left, time_t right)
+        {
+            return (left._value % right._value);
+        }
+
+        /// <summary>Computes the bitwise AND of two <see cref="time_t" /> values.</summary>
+        /// <param name="left">The <see cref="time_t" /> to bitwise AND with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="time_t" /> to bitwise AND with <paramref name="left" />.</param>
+        /// <returns>The bitwise AND of <paramref name="left" /> and <paramref name="right" />.</returns>
+        public static time_t operator &(time_t left, time_t right)
+        {
+            return (left._value & right._value);
+        }
+
+        /// <summary>Computes the bitwise OR of two <see cref="time_t" /> values.</summary>
+        /// <param name="left">The <see cref="time_t" /> to bitwise OR with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="time_t" /> to bitwise OR with <paramref name="left" />.</param>
+        /// <returns>The bitwise OR of <paramref name="left" /> and <paramref name="right" />.</returns>
+        public static time_t operator |(time_t left, time_t right)
+        {
+            return (left._value | right._value);
+        }
+
+        /// <summary>Computes the bitwise XOR of two <see cref="time_t" /> values.</summary>
+        /// <param name="left">The <see cref="time_t" /> to bitwise XOR with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="time_t" /> to bitwise XOR with <paramref name="left" />.</param>
+        /// <returns>The bitwise XOR of <paramref name="left" /> and <paramref name="right" />.</returns>
+        public static time_t operator ^(time_t left, time_t right)
+        {
+            return (left._value ^ right._value);
+        }
+
+        /// <summary>Shifts a <see cref="time_t" /> value left.</summary>
+        /// <param name="value">The <see cref="time_t" /> to shift left.</param>
+        /// <param name="bits">The number of bits to shift <paramref name="value"/> left by.</param>
+        /// <returns>The result of shifting <paramref name="value" /> left <paramref name="bits" /> times.</returns>
+        public static time_t operator <<(time_t value, int bits)
+        {
+            return (value._value << bits);
+        }
+
+        /// <summary>Shifts a <see cref="time_t" /> value right.</summary>
+        /// <param name="value">The <see cref="time_t" /> to shift right.</param>
+        /// <param name="bits">The number of bits to shift <paramref name="value"/> left by.</param>
+        /// <returns>The result of shifting <paramref name="value" /> right <paramref name="bits" /> times.</returns>
+        public static time_t operator >>(time_t value, int bits)
+        {
+            return (value._value >> bits);
         }
         #endregion
 
@@ -82,6 +208,20 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="time_t" /> value to a <see cref="int" /> value.</summary>
+        /// <param name="value">The <see cref="time_t" /> value to convert.</param>
+        public static explicit operator int(time_t value)
+        {
+            return (int)(value._value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="time_t" /> value to a <see cref="long" /> value.</summary>
+        /// <param name="value">The <see cref="time_t" /> value to convert.</param>
+        public static implicit operator long(time_t value)
+        {
+            return value._value;
+        }
+
         /// <summary>Implicitly converts a <see cref="time_t" /> value to a <see cref="nint" /> value.</summary>
         /// <param name="value">The <see cref="time_t" /> value to convert.</param>
         public static implicit operator nint(time_t value)
@@ -89,11 +229,46 @@ namespace TerraFX.Interop
             return value._value;
         }
 
+        /// <summary>Explicitly converts a <see cref="time_t" /> value to a <see cref="nuint" /> value.</summary>
+        /// <param name="value">The <see cref="nuint" /> value to convert.</param>
+        public static explicit operator nuint(time_t value)
+        {
+            return (nuint)(value._value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="time_t" /> value to a <see cref="void" />* value.</summary>
+        /// <param name="value">The <see cref="time_t" /> value to convert.</param>
+        public static explicit operator void* (time_t value)
+        {
+            return (void*)(value._value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="int" /> value to a <see cref="time_t" /> value.</summary>
+        /// <param name="value">The <see cref="int" /> value to convert.</param>
+        public static implicit operator time_t(int value)
+        {
+            return new time_t(value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="long" /> value to a <see cref="time_t" /> value.</summary>
+        /// <param name="value">The <see cref="long" /> value to convert.</param>
+        public static explicit operator time_t(long value)
+        {
+            return new time_t((nint)(value));
+        }
+
         /// <summary>Implicitly converts a <see cref="nint" /> value to a <see cref="time_t" /> value.</summary>
         /// <param name="value">The <see cref="nint" /> value to convert.</param>
         public static implicit operator time_t(nint value)
         {
             return new time_t(value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="void" />* value to a <see cref="time_t" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static explicit operator time_t(void* value)
+        {
+            return new time_t((nint)(value));
         }
         #endregion
 

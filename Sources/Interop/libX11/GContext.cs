@@ -4,11 +4,12 @@
 // Original source is Copyright © The Open Group.
 
 using System;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>A graphics-context resource ID.</summary>
-    public /* blittable */ struct GContext : IEquatable<GContext>, IFormattable
+    unsafe public /* blittable */ struct GContext : IEquatable<GContext>, IFormattable
     {
         #region Fields
         internal XID _value;
@@ -44,11 +45,74 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="GContext" /> value to a <see cref="nint" /> value.</summary>
+        /// <param name="value">The <see cref="GContext" /> value to convert.</param>
+        public static explicit operator nint(GContext value)
+        {
+            return (nint)(value._value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="GContext" /> value to a <see cref="nuint" /> value.</summary>
+        /// <param name="value">The <see cref="GContext" /> value to convert.</param>
+        public static implicit operator nuint(GContext value)
+        {
+            return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="GContext" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="GContext" /> value to convert.</param>
+        public static explicit operator uint(GContext value)
+        {
+            return (uint)(value._value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="GContext" /> value to a <see cref="ulong" /> value.</summary>
+        /// <param name="value">The <see cref="GContext" /> value to convert.</param>
+        public static implicit operator ulong(GContext value)
+        {
+            return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="GContext" /> value to a <see cref="void" />* value.</summary>
+        /// <param name="value">The <see cref="GContext" /> value to convert.</param>
+        public static explicit operator void* (GContext value)
+        {
+            return (void*)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="GContext" /> value to a <see cref="XID" /> value.</summary>
         /// <param name="value">The <see cref="GContext" /> value to convert.</param>
         public static implicit operator XID(GContext value)
         {
             return value._value;
+        }
+
+        /// <summary>Implicitly converts a <see cref="uint" /> value to a <see cref="GContext" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static implicit operator GContext(uint value)
+        {
+            return new GContext(value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="ulong" /> value to a <see cref="GContext" /> value.</summary>
+        /// <param name="value">The <see cref="ulong" /> value to convert.</param>
+        public static explicit operator GContext(ulong value)
+        {
+            return new GContext((nuint)(value));
+        }
+
+        /// <summary>Implicitly converts a <see cref="nuint" /> value to a <see cref="GContext" /> value.</summary>
+        /// <param name="value">The <see cref="nuint" /> value to convert.</param>
+        public static implicit operator GContext(nuint value)
+        {
+            return new GContext(value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="void" />* value to a <see cref="GContext" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static explicit operator GContext(void* value)
+        {
+            return new GContext((nuint)(value));
         }
 
         /// <summary>Implicitly converts a <see cref="XID" /> value to a <see cref="GContext" /> value.</summary>

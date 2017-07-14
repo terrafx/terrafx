@@ -9,7 +9,7 @@ using TerraFX.Utilities;
 namespace TerraFX.Interop
 {
     /// <summary>A generic resource ID.</summary>
-    public /* blittable */ struct XID : IEquatable<XID>, IFormattable
+    unsafe public /* blittable */ struct XID : IEquatable<XID>, IFormattable
     {
         #region Fields
         internal nuint _value;
@@ -45,6 +45,13 @@ namespace TerraFX.Interop
         #endregion
 
         #region Cast Operators
+        /// <summary>Explicitly converts a <see cref="XID" /> value to a <see cref="nint" /> value.</summary>
+        /// <param name="value">The <see cref="XID" /> value to convert.</param>
+        public static explicit operator nint(XID value)
+        {
+            return (nint)(value._value);
+        }
+
         /// <summary>Implicitly converts a <see cref="XID" /> value to a <see cref="nuint" /> value.</summary>
         /// <param name="value">The <see cref="XID" /> value to convert.</param>
         public static implicit operator nuint(XID value)
@@ -52,11 +59,53 @@ namespace TerraFX.Interop
             return value._value;
         }
 
+        /// <summary>Explicitly converts a <see cref="XID" /> value to a <see cref="uint" /> value.</summary>
+        /// <param name="value">The <see cref="XID" /> value to convert.</param>
+        public static explicit operator uint(XID value)
+        {
+            return (uint)(value._value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="XID" /> value to a <see cref="ulong" /> value.</summary>
+        /// <param name="value">The <see cref="XID" /> value to convert.</param>
+        public static implicit operator ulong(XID value)
+        {
+            return value._value;
+        }
+
+        /// <summary>Explicitly converts a <see cref="XID" /> value to a <see cref="void" />* value.</summary>
+        /// <param name="value">The <see cref="XID" /> value to convert.</param>
+        public static explicit operator void* (XID value)
+        {
+            return (void*)(value._value);
+        }
+
+        /// <summary>Implicitly converts a <see cref="uint" /> value to a <see cref="XID" /> value.</summary>
+        /// <param name="value">The <see cref="uint" /> value to convert.</param>
+        public static implicit operator XID(uint value)
+        {
+            return new XID(value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="ulong" /> value to a <see cref="XID" /> value.</summary>
+        /// <param name="value">The <see cref="ulong" /> value to convert.</param>
+        public static explicit operator XID(ulong value)
+        {
+            return new XID((nuint)(value));
+        }
+
         /// <summary>Implicitly converts a <see cref="nuint" /> value to a <see cref="XID" /> value.</summary>
         /// <param name="value">The <see cref="nuint" /> value to convert.</param>
         public static implicit operator XID(nuint value)
         {
             return new XID(value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="void" />* value to a <see cref="XID" /> value.</summary>
+        /// <param name="value">The <see cref="void" />* value to convert.</param>
+        public static explicit operator XID(void* value)
+        {
+            return new XID((nuint)(value));
         }
         #endregion
 
