@@ -6,8 +6,9 @@ using System.Composition;
 using System.Threading;
 using TerraFX.Interop;
 using TerraFX.Threading;
-using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Interop.Kernel32;
+using static TerraFX.Interop.Windows;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Provider.Win32.Threading
 {
@@ -27,19 +28,25 @@ namespace TerraFX.Provider.Win32.Threading
         /// <summary>Initializes a new instance of the <see cref="DispatchManager" /> class.</summary>
         public DispatchManager()
         {
+            _tickFrequency = GetTickFrequency();
+            _dispatchers = new ConcurrentDictionary<Thread, Dispatcher>();
+        }
+        #endregion
+
+        #region Static Methods
+        internal static double GetTickFrequency()
+        {
             LARGE_INTEGER frequency;
 
             var succeeded = QueryPerformanceFrequency(&frequency);
 
-            if (succeeded == 0)
+            if (succeeded == FALSE)
             {
                 ThrowExternalExceptionForLastError(nameof(QueryPerformanceFrequency));
             }
 
             const double ticksPerSecond = Timestamp.TicksPerSecond;
-            _tickFrequency = (ticksPerSecond / frequency.QuadPart);
-
-            _dispatchers = new ConcurrentDictionary<Thread, Dispatcher>();
+            return (ticksPerSecond / frequency.QuadPart);
         }
         #endregion
 
@@ -52,7 +59,7 @@ namespace TerraFX.Provider.Win32.Threading
                 LARGE_INTEGER performanceCount;
                 var succeeded = QueryPerformanceCounter(&performanceCount);
 
-                if (succeeded == 0)
+                if (succeeded == FALSE)
                 {
                     ThrowExternalExceptionForLastError(nameof(QueryPerformanceCounter));
                 }
@@ -69,7 +76,7 @@ namespace TerraFX.Provider.Win32.Threading
         {
             get
             {
-                return _dispatchers.GetOrAdd(Thread.CurrentThread, (thread) => new Dispatcher(thread));
+                return _dispatchers.GetOrAdd(Thread.CurrentThread, (thread) => new Dispatcher(this, thread));
             }
         }
         #endregion

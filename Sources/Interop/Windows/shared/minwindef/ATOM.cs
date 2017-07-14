@@ -87,6 +87,13 @@ namespace TerraFX.Interop
             return value._value;
         }
 
+        /// <summary>Explicitly converts a <see cref="ATOM" /> value to a <see cref="LPCWSTR" /> value.</summary>
+        /// <param name="value">The <see cref="ATOM" /> value to convert.</param>
+        public static explicit operator LPCWSTR(ATOM value)
+        {
+            return (WCHAR*)((ushort)(value._value));
+        }
+
         /// <summary>Explicitly converts a <see cref="ATOM" /> value to a <see cref="LPWSTR" /> value.</summary>
         /// <param name="value">The <see cref="ATOM" /> value to convert.</param>
         public static explicit operator LPWSTR(ATOM value)
@@ -106,6 +113,13 @@ namespace TerraFX.Interop
         public static implicit operator ATOM(ushort value)
         {
             return new ATOM(value);
+        }
+
+        /// <summary>Explicitly converts a <see cref="LPCWSTR" /> value to a <see cref="ATOM" /> value.</summary>
+        /// <param name="value">The <see cref="LPCWSTR" /> value to convert.</param>
+        public static explicit operator ATOM(LPCWSTR value)
+        {
+            return new ATOM((ushort)((WCHAR*)(value)));
         }
 
         /// <summary>Explicitly converts a <see cref="LPWSTR" /> value to a <see cref="ATOM" /> value.</summary>

@@ -85,6 +85,13 @@ namespace TerraFX.Interop
         {
             return new LPCWSTR(value);
         }
+
+        /// <summary>Explicitly converts a <see cref="NativeStringUni" /> value to a <see cref="LPCWSTR" /> value.</summary>
+        /// <param name="value">The <see cref="NativeStringUni" /> value to convert.</param>
+        public static explicit operator LPCWSTR(NativeStringUni value)
+        {
+            return new LPCWSTR((WCHAR*)((IntPtr)(value)));
+        }
         #endregion
 
         #region System.IEquatable<LPCWSTR> Methods

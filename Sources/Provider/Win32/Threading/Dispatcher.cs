@@ -12,19 +12,32 @@ namespace TerraFX.Provider.Win32.Threading
     unsafe public sealed class Dispatcher : IDispatcher
     {
         #region Fields
+        internal readonly DispatchManager _dispatchManager;
+
         internal readonly Thread _parentThread;
         #endregion
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Dispatcher" /> class.</summary>
+        /// <param name="dispatchManager">The <see cref="DispatchManager" /> the instance is associated with.</param>
         /// <param name="parentThread">The <see cref="Thread" /> the instance is associated with.</param>
-        internal Dispatcher(Thread parentThread)
+        internal Dispatcher(DispatchManager dispatchManager, Thread parentThread)
         {
+            _dispatchManager = dispatchManager;
             _parentThread = parentThread;
         }
         #endregion
 
         #region TerraFX.Threading.IDispatcher Properties
+        /// <summary>Gets the <see cref="IDispatchManager" /> associated with the instance.</summary>
+        public IDispatchManager DispatchManager
+        {
+            get
+            {
+                return _dispatchManager;
+            }
+        }
+
         /// <summary>Gets the <see cref="Thread" /> associated with the instance.</summary>
         public Thread ParentThread
         {
@@ -42,7 +55,7 @@ namespace TerraFX.Provider.Win32.Threading
         {
             MSG msg;
 
-            while (PeekMessage(&msg, wMsgFilterMin: WM_NULL, wMsgFilterMax: WM_NULL, wRemoveMsg: PM_REMOVE) != 0)
+            while (PeekMessage(&msg, wMsgFilterMin: WM_NULL, wMsgFilterMax: WM_NULL, wRemoveMsg: PM_REMOVE))
             {
                 TranslateMessage(&msg);
                 DispatchMessage(&msg);

@@ -8,6 +8,9 @@ namespace TerraFX.Threading
     public interface IDispatcher
     {
         #region Properties
+        /// <summary>Gets the <see cref="IDispatchManager" /> associated with the instance.</summary>
+        IDispatchManager DispatchManager { get; }
+
         /// <summary>Gets the <see cref="Thread" /> associated with the instance.</summary>
         Thread ParentThread { get; }
         #endregion

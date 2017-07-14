@@ -13,7 +13,7 @@ namespace TerraFX.UI
         /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
         Rectangle Bounds { get; }
 
-        /// <summary>Gets the dispatcher for the instance.</summary>
+        /// <summary>Gets the <see cref="IDispatcher" /> for the instance.</summary>
         IDispatcher Dispatcher { get; }
 
         /// <summary>Gets the handle for the instance.</summary>
@@ -25,8 +25,11 @@ namespace TerraFX.UI
         /// <summary>Gets a value that indicates whether the instance is visible.</summary>
         bool IsVisible { get; }
 
-        /// <summary>Gets the set of properties associated with the instance.</summary>
+        /// <summary>Gets the <see cref="IPropertySet" /> associated with the instance.</summary>
         IPropertySet Properties { get; }
+
+        /// <summary>Gets the <see cref="IWindowManager" /> for the instance.</summary>
+        IWindowManager WindowManager { get; }
         #endregion
 
         #region Methods

@@ -3,6 +3,7 @@
 using System;
 using TerraFX.Collections;
 using TerraFX.Interop;
+using TerraFX.Provider.Win32.Threading;
 using TerraFX.Threading;
 using TerraFX.UI;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -16,11 +17,13 @@ namespace TerraFX.Provider.Win32.UI
     unsafe public sealed class Window : IDisposable, IWindow
     {
         #region Fields
-        internal HWND _hWnd;
-
-        internal readonly IDispatcher _dispatcher;
+        internal readonly Dispatcher _dispatcher;
 
         internal readonly PropertySet _properties;
+
+        internal readonly WindowManager _windowManager;
+
+        internal HWND _handle;
 
         internal Rectangle _bounds;
 
@@ -31,47 +34,17 @@ namespace TerraFX.Provider.Win32.UI
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Window" /> class.</summary>
-        internal Window(IDispatchManager dispatchManager, LPWSTR lpClassName, LPWSTR lpWindowName, HINSTANCE hInstance)
+        internal Window(WindowManager windowManager, DispatchManager dispatchManager, LPCWSTR className, LPCWSTR windowName, HINSTANCE instanceHandle)
         {
-            var hWnd = CreateWindowEx(
-                WS_EX_OVERLAPPEDWINDOW,
-                (WCHAR*)(lpClassName),
-                (WCHAR*)(lpWindowName),
-                WS_OVERLAPPEDWINDOW,
-                unchecked((int)(CW_USEDEFAULT)),
-                unchecked((int)(CW_USEDEFAULT)),
-                unchecked((int)(CW_USEDEFAULT)),
-                unchecked((int)(CW_USEDEFAULT)),
-                null,
-                null,
-                hInstance,
-                null
-            );
-
-            if (hWnd == null)
-            {
-                ThrowExternalExceptionForLastError(nameof(CreateWindowEx));
-            }
-
-            _hWnd = hWnd;
-            _dispatcher = dispatchManager.DispatcherForCurrentThread;
+            _dispatcher = (Dispatcher)(dispatchManager.DispatcherForCurrentThread);
             _properties = new PropertySet();
+            _windowManager = windowManager;
 
-            RECT rect;
+            _handle = CreateWindowHandle(className, windowName, instanceHandle);
 
-            var succeeded = GetWindowRect(_hWnd, &rect);
-
-            if (succeeded == 0)
-            {
-                ThrowExternalExceptionForLastError(nameof(GetWindowRect));
-            }
-
-            _bounds = new Rectangle(rect.left, rect.top, (rect.right - rect.left), (rect.bottom - rect.top));
-
-            var activeWindow = GetActiveWindow();
-            _isActive = (activeWindow == _hWnd);
-
-            _isVisible = (IsWindowVisible(hWnd) != 0);
+            _bounds = GetWindowBounds(_handle);
+            _isActive = IsWindowActive(_handle);
+            _isVisible = IsWindowVisible(_handle);
         }
         #endregion
 
@@ -107,7 +80,7 @@ namespace TerraFX.Provider.Win32.UI
         {
             get
             {
-                return (IntPtr)((void*)(_hWnd));
+                return (IntPtr)((void*)(_handle));
             }
         }
 
@@ -137,69 +110,132 @@ namespace TerraFX.Provider.Win32.UI
                 return _properties;
             }
         }
+
+        /// <summary>Gets the <see cref="IWindowManager" /> associated with the instance.</summary>
+        public IWindowManager WindowManager
+        {
+            get
+            {
+                return _windowManager;
+            }
+        }
+        #endregion
+
+        #region Static Methods
+        internal static HWND CreateWindowHandle(LPCWSTR className, LPCWSTR windowName, HINSTANCE instanceHandle)
+        {
+            var hWnd = CreateWindowEx(
+                WS_EX_OVERLAPPEDWINDOW,
+                className,
+                windowName,
+                WS_OVERLAPPEDWINDOW,
+                X: CW_USEDEFAULT,
+                Y: CW_USEDEFAULT,
+                nWidth: CW_USEDEFAULT,
+                nHeight: CW_USEDEFAULT,
+                hWndParent: (HWND)(NULL),
+                hMenu: (HMENU)(NULL),
+                hInstance: instanceHandle,
+                lpParam: (LPVOID)(NULL)
+            );
+
+            if (hWnd == (HWND)(NULL))
+            {
+                ThrowExternalExceptionForLastError(nameof(CreateWindowEx));
+            }
+
+            return hWnd;
+        }
+
+        internal static bool IsWindowActive(HWND handle)
+        {
+            var activeWindow = GetActiveWindow();
+            return (activeWindow == handle);
+        }
+
+        internal static Rectangle GetWindowBounds(HWND handle)
+        {
+            RECT rect;
+
+            var succeeded = GetWindowRect(handle, &rect);
+
+            if (succeeded == FALSE)
+            {
+                ThrowExternalExceptionForLastError(nameof(GetWindowRect));
+            }
+
+            return new Rectangle(rect.left, rect.top, (rect.right - rect.left), (rect.bottom - rect.top));
+        }
         #endregion
 
         #region Methods
-        /// <summary>Processes messages sent to the instance.</summary>
-        /// <param name="Msg">The message.</param>
-        /// <param name="wParam">Additional message information.</param>
-        /// <param name="lParam">Additional message information.</param>
-        /// <returns>The result of processing <paramref name="Msg" />.</returns>
-        public LRESULT WindowProc(UINT Msg, WPARAM wParam, LPARAM lParam)
+        internal void Dispose(bool isDisposing)
+        {
+            if (_handle != (HWND)(NULL))
+            {
+                var succeeded = DestroyWindow(_handle);
+
+                if (succeeded == FALSE)
+                {
+                    ThrowExternalExceptionForLastError(nameof(DestroyWindow));
+                }
+
+                _handle = (HWND)(NULL);
+            }
+        }
+
+        internal LRESULT HandleWmActivate(WPARAM wParam)
+        {
+            _isActive = (LOWORD(wParam) != WA_INACTIVE);
+            return 0;
+        }
+
+        internal LRESULT HandleWmMove(LPARAM lParam)
+        {
+            _bounds.Location = new Point2D(x: LOWORD(lParam), y: HIWORD(lParam));
+            return 0;
+        }
+
+        internal LRESULT HandleWmShowWindow(WPARAM wParam)
+        {
+            _isVisible = (LOWORD(wParam) != FALSE);
+            return 0;
+        }
+
+        internal LRESULT HandleWmSize(LPARAM lParam)
+        {
+            _bounds.Size = new Size2D(width: LOWORD(lParam), height: HIWORD(lParam));
+            return 0;
+        }
+
+        internal LRESULT WindowProc(UINT Msg, WPARAM wParam, LPARAM lParam)
         {
             switch (Msg)
             {
                 case WM_MOVE:
                 {
-                    var x = LOWORD(lParam);
-                    var y = HIWORD(lParam);
-
-                    _bounds.Location = new Point2D(x, y);
-                    return 0;
+                    return HandleWmMove(lParam);
                 }
 
                 case WM_SIZE:
                 {
-                    var width = LOWORD(lParam);
-                    var height = HIWORD(lParam);
-
-                    _bounds.Size = new Size2D(width, height);
-                    return 0;
+                    return HandleWmSize(lParam);
                 }
 
                 case WM_ACTIVATE:
                 {
-                    var activateCmd = LOWORD(wParam);
-                    _isActive = (activateCmd != WA_INACTIVE);
-                    return 0;
+                    return HandleWmActivate(wParam);
                 }
 
                 case WM_SHOWWINDOW:
                 {
-                    var shown = (BOOL)(LOWORD(wParam));
-                    _isVisible = (shown != 0);
-                    return 0;
+                    return HandleWmShowWindow(wParam);
                 }
 
                 default:
                 {
-                    return DefWindowProc(_hWnd, Msg, wParam, lParam);
+                    return DefWindowProc(_handle, Msg, wParam, lParam);
                 }
-            }
-        }
-
-        internal void Dispose(bool isDisposing)
-        {
-            if (_hWnd != null)
-            {
-                var succeeded = DestroyWindow(_hWnd);
-
-                if (succeeded == 0)
-                {
-                    ThrowExternalExceptionForLastError(nameof(DestroyWindow));
-                }
-
-                _hWnd = null;
             }
         }
         #endregion
@@ -219,9 +255,9 @@ namespace TerraFX.Provider.Win32.UI
         {
             if (IsVisible)
             {
-                var succeeded = SetForegroundWindow(_hWnd);
+                var succeeded = SetForegroundWindow(_handle);
 
-                if (succeeded == 0)
+                if (succeeded == FALSE)
                 {
                     ThrowExternalExceptionForLastError(nameof(SetForegroundWindow));
                 }
@@ -231,7 +267,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Closes the instance.</summary>
         public void Close()
         {
-            SendMessage(_hWnd, WM_CLOSE, 0, 0);
+            SendMessage(_handle, WM_CLOSE, wParam: 0, lParam: 0);
         }
 
         /// <summary>Hides the instance.</summary>
@@ -239,9 +275,9 @@ namespace TerraFX.Provider.Win32.UI
         {
             if (_isVisible)
             {
-                var succeeded = ShowWindow(_hWnd, SW_HIDE);
+                var succeeded = ShowWindow(_handle, SW_HIDE);
 
-                if (succeeded == 0)
+                if (succeeded == FALSE)
                 {
                     ThrowExternalExceptionForLastError(nameof(ShowWindow));
                 }
@@ -251,11 +287,11 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Shows the instance.</summary>
         public void Show()
         {
-            if (!_isVisible)
+            if (_isVisible == false)
             {
-                var succeeded = ShowWindow(_hWnd, SW_SHOW);
+                var succeeded = ShowWindow(_handle, SW_SHOW);
 
-                if (succeeded == 0)
+                if (succeeded == FALSE)
                 {
                     ThrowExternalExceptionForLastError(nameof(ShowWindow));
                 }

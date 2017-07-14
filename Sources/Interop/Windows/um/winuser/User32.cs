@@ -720,7 +720,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region CW_* Constants
-        public const uint CW_USEDEFAULT = 0x80000000;
+        public const int CW_USEDEFAULT = unchecked((int)(0x80000000));
         #endregion
 
         #region QS_* Constants
