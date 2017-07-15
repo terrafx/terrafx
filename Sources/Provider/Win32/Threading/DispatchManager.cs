@@ -26,7 +26,7 @@ namespace TerraFX.Provider.Win32.Threading
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="DispatchManager" /> class.</summary>
-        public DispatchManager()
+        internal DispatchManager()
         {
             _tickFrequency = GetTickFrequency();
             _dispatchers = new ConcurrentDictionary<Thread, Dispatcher>();
