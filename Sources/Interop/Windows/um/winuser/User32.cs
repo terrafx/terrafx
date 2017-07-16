@@ -723,6 +723,10 @@ namespace TerraFX.Interop
         public const int CW_USEDEFAULT = unchecked((int)(0x80000000));
         #endregion
 
+        #region HWND_* Constants
+        public const uint HWND_DESKTOP = 0;
+        #endregion
+
         #region QS_* Constants
         public const int QS_KEY = 0x0001;
 

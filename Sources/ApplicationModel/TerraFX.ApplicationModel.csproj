@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Graphics\TerraFX.Graphics.csproj" />
     <ProjectReference Include="..\Threading\TerraFX.Threading.csproj" />
     <ProjectReference Include="..\UI\TerraFX.UI.csproj" />
     <ProjectReference Include="..\Utilities\TerraFX.Utilities.csproj" />

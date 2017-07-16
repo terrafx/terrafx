@@ -60,6 +60,27 @@ namespace TerraFX.Interop.Desktop
         public static extern HWND GetActiveWindow(
         );
 
+        [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "GetClassInfoExW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        [SuppressUnmanagedCodeSecurity]
+        public static extern BOOL GetClassInfoEx(
+            [In, Optional] HINSTANCE hInstance,
+            [In] LPCWSTR lpszClass,
+            [Out] LPWNDCLASSEX lpwcx
+        );
+
+        [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "GetClassNameW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        [SuppressUnmanagedCodeSecurity]
+        public static extern int GetClassName(
+            [In] HWND hWnd,
+            [Out] LPWSTR lpClassName,
+            [In] int nMaxCount
+        );
+
+        [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "GetDesktopWindow", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        [SuppressUnmanagedCodeSecurity]
+        public static extern HWND GetDesktopWindow(
+        );
+
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "GetWindowRect", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern BOOL GetWindowRect(
@@ -87,12 +108,6 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         public static extern void PostQuitMessage(
             [In] int nExitCode
-        );
-
-        [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "RegisterClassW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
-        [SuppressUnmanagedCodeSecurity]
-        public static extern ATOM RegisterClass(
-            [In] /* readonly */ WNDCLASS* lpWndClass
         );
 
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "RegisterClassExW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
