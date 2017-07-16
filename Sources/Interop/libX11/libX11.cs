@@ -254,12 +254,10 @@ namespace TerraFX.Interop
         public const int NotifyUngrab = 2;
 
         public const int NotifyWhileGrabbed = 3;
-
         #endregion
 
         #region Notify Constants
         public const int NotifyHint = 1;
-
         #endregion
 
         #region Notify Detail Constants
@@ -278,7 +276,6 @@ namespace TerraFX.Interop
         public const int NotifyPointerRoot = 6;
 
         public const int NotifyDetailNone = 7;
-
         #endregion
 
         #region Visibility Notify Constsants;
@@ -288,14 +285,12 @@ namespace TerraFX.Interop
         public const int VisibilityPartiallyObscured = 1;
 
         public const int VisibilityFullyObscured = 2;
-
         #endregion
 
         #region Circulation Request Constants
         public const int PlaceOnTop = 0;
 
         public const int PlaceOnBottom = 1;
-
         #endregion
 
         #region Protocol Family Constants
@@ -308,28 +303,24 @@ namespace TerraFX.Interop
         public const int FamilyServerInterpreted = 5;
 
         public const int FamilyInternet6 = 6;
-
         #endregion
 
         #region Property Notification Constants
         public const int PropertyNewValue = 0;
 
         public const int PropertyDelete = 1;
-
         #endregion
 
         #region Colormap Notification Constants
         public const int ColormapUninstalled = 0;
 
         public const int ColormapInstalled = 1;
-
         #endregion
 
         #region Grab Mode Constants
         public const int GrabModeSync = 0;
 
         public const int GrabModeAsync = 1;
-
         #endregion
 
         #region Grab Reply Status Constantsa;
@@ -343,7 +334,6 @@ namespace TerraFX.Interop
         public const int GrabNotViewable = 3;
 
         public const int GrabFrozen = 4;
-
         #endregion
 
         #region AllowEvents Mode Constants
@@ -362,7 +352,6 @@ namespace TerraFX.Interop
         public const int AsyncBoth = 6;
 
         public const int SyncBoth = 7;
-
         #endregion
 
         #region InputFocus Constants
@@ -371,7 +360,6 @@ namespace TerraFX.Interop
         public const int RevertToPointerRoot = (int)PointerRoot;
 
         public const int RevertToParent = 2;
-
         #endregion
 
         #region Error Code Constants
@@ -414,14 +402,12 @@ namespace TerraFX.Interop
         public const int FirstExtensionError = 128;
 
         public const int LastExtensionError = 255;
-
         #endregion
 
         #region Window Class Constants
         public const int InputOutput = 1;
 
         public const int InputOnly = 2;
-
         #endregion
 
         #region CreateWindow and ChangeWindowAttributes Constants
@@ -454,7 +440,6 @@ namespace TerraFX.Interop
         public const int CWColormap = (1 << 13);
 
         public const int CWCursor = (1 << 14);
-
         #endregion
 
         #region ConfigureWindow Constants
@@ -471,7 +456,6 @@ namespace TerraFX.Interop
         public const int CWSibling = (1<<5);
 
         public const int CWStackMode = (1<<6);
-
         #endregion
 
         #region Bit Gravity Constants
@@ -496,12 +480,10 @@ namespace TerraFX.Interop
         public const int SouthEastGravity = 9;
 
         public const int StaticGravity = 10;
-
         #endregion
 
         #region Gravity Constants
         public const int UnmapGravity = 0;
-
         #endregion
 
         #region Backing-Store Constants
@@ -510,7 +492,6 @@ namespace TerraFX.Interop
         public const int WhenMapped = 1;
 
         public const int Always = 2;
-
         #endregion
 
         #region Map State Constants
@@ -519,14 +500,12 @@ namespace TerraFX.Interop
         public const int IsUnviewable = 1;
 
         public const int IsViewable = 2;
-
         #endregion
 
         #region ChangeSaveSet Constants
         public const int SetModeInsert = 0;
 
         public const int SetModeDelete = 1;
-
         #endregion
 
         #region ChangeCloseDownMode Constants
@@ -535,7 +514,6 @@ namespace TerraFX.Interop
         public const int RetainPermanent = 1;
 
         public const int RetainTemporary = 2;
-
         #endregion
 
         #region Window Stacking Method Constants
@@ -548,14 +526,12 @@ namespace TerraFX.Interop
         public const int BottomIf = 3;
 
         public const int Opposite = 4;
-
         #endregion
 
         #region Circulation Direction Constants
         public const int RaiseLowest = 0;
 
         public const int LowerHighest = 1;
-
         #endregion
 
         #region Property Mode Constants
@@ -564,7 +540,6 @@ namespace TerraFX.Interop
         public const int PropModePrepend = 1;
 
         public const int PropModeAppend = 2;
-
         #endregion
 
         #region Bool Constants
