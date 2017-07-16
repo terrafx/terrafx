@@ -11,8 +11,10 @@ namespace TerraFX
     public struct Rectangle : IEquatable<Rectangle>, IFormattable
     {
         #region Fields
+        /// <summary>The location of the instance.</summary>
         internal Point2D _location;
 
+        /// <summary>The size of the instance.</summary>
         internal Size2D _size;
         #endregion
 

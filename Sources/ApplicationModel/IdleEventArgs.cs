@@ -8,6 +8,7 @@ namespace TerraFX.ApplicationModel
     public sealed class IdleEventArgs : EventArgs
     {
         #region Fields
+        /// <summary>The delta between the current and previous <see cref="Application.Idle" /> events.</summary>
         internal readonly TimeSpan _delta;
         #endregion
 

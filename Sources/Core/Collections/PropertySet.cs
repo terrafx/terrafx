@@ -15,11 +15,13 @@ namespace TerraFX.Collections
     public sealed partial class PropertySet : IPropertySet
     {
         #region Fields
+        /// <summary>The <see cref="IDictionary{TKey, TValue}" /> that is wrapped by the instance.</summary>
         internal readonly IDictionary<string, object> _items;
         #endregion
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="PropertySet" /> class.</summary>
+        /// <remarks>This constructor is equivalent to calling <see cref="PropertySet(IDictionary{string, object})" /> with <see cref="Dictionary{TKey, TValue}()" />.</remarks>
         public PropertySet()
         {
             _items = new Dictionary<string, object>();
@@ -66,7 +68,7 @@ namespace TerraFX.Collections
         #endregion
 
         #region System.Collections.Generic.IDictionary<string, object> Properties
-        /// <summary>Gets a <see cref="ICollection{TKey}" /> that contains the keys contained by the instance.</summary>
+        /// <summary>Gets a <see cref="ICollection{TKey}" /> that contains the keys for the instance.</summary>
         public ICollection<string> Keys
         {
             get
@@ -75,7 +77,7 @@ namespace TerraFX.Collections
             }
         }
 
-        /// <summary>Gets a <see cref="ICollection{TKey}" /> that contains the values contained by the instance.</summary>
+        /// <summary>Gets a <see cref="ICollection{TKey}" /> that contains the values for the instance.</summary>
         public ICollection<object> Values
         {
             get
@@ -103,23 +105,65 @@ namespace TerraFX.Collections
                 {
                     var oldValue = _items[key];
                     _items[key] = value;
-                    OnDictionaryChanged(NotifyDictionaryChangedEventArgs<string, object>.ForValueChangedAction(key, oldValue, value));
+                    OnDictionaryItemChanged(key, oldValue, value);
                 }
                 else
                 {
                     _items[key] = value;
-                    OnDictionaryChanged(NotifyDictionaryChangedEventArgs<string, object>.ForAddAction(key));
+                    OnDictionaryItemAdded(key);
                 }
             }
         }
         #endregion
 
         #region Methods
-        /// <summary>Raises the <see cref="DictionaryChanged" /> event.</summary>
-        /// <param name="eventArgs">The <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> for the event.</param>
-        internal void OnDictionaryChanged(NotifyDictionaryChangedEventArgs<string, object> eventArgs)
+        /// <summary>Raises the <see cref="DictionaryChanged" /> event for the <see cref="NotifyDictionaryChangedAction.Reset" /> action.</summary>
+        /// <remarks>This method takes no parameters rather than a <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> to help reduce allocations when <see cref="DictionaryChanged" /> is <c>null</c>.</remarks>
+        internal void OnDictionaryReset()
         {
-            DictionaryChanged?.Invoke(this, eventArgs);
+            if (DictionaryChanged != null)
+            {
+                var eventArgs = NotifyDictionaryChangedEventArgs<string, object>.ForResetAction();
+                DictionaryChanged(this, eventArgs);
+            }
+        }
+
+        /// <summary>Raises the <see cref="DictionaryChanged" /> event for the <see cref="NotifyDictionaryChangedAction.Add" /> action.</summary>
+        /// <param name="key">The key of the item that caused the event.</param>
+        /// <remarks>This method takes a <see cref="string" /> rather than a <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> to help reduce allocations when <see cref="DictionaryChanged" /> is <c>null</c>.</remarks>
+        internal void OnDictionaryItemAdded(string key)
+        {
+            if (DictionaryChanged != null)
+            {
+                var eventArgs = NotifyDictionaryChangedEventArgs<string, object>.ForAddAction(key);
+                DictionaryChanged(this, eventArgs);
+            }
+        }
+
+        /// <summary>Raises the <see cref="DictionaryChanged" /> event for the <see cref="NotifyDictionaryChangedAction.Add" /> action.</summary>
+        /// <param name="key">The key of the item that caused the event.</param>
+        /// <param name="oldValue">The old value of the item that caused the event.</param>
+        /// <param name="newValue">The new value of the item that caused the event.</param>
+        /// <remarks>This method takes a set of parameters rather than a <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> to help reduce allocations when <see cref="DictionaryChanged" /> is <c>null</c>.</remarks>
+        internal void OnDictionaryItemChanged(string key, object oldValue, object newValue)
+        {
+            if (DictionaryChanged != null)
+            {
+                var eventArgs = NotifyDictionaryChangedEventArgs<string, object>.ForValueChangedAction(key, oldValue, newValue);
+                DictionaryChanged(this, eventArgs);
+            }
+        }
+
+        /// <summary>Raises the <see cref="DictionaryChanged" /> event for the <see cref="NotifyDictionaryChangedAction.Remove" /> action.</summary>
+        /// <param name="key">The key of the item that caused the event.</param>
+        /// <remarks>This method takes a <see cref="string" /> rather than a <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> to help reduce allocations when <see cref="DictionaryChanged" /> is <c>null</c>.</remarks>
+        internal void OnDictionaryItemRemoved(string key)
+        {
+            if (DictionaryChanged != null)
+            {
+                var eventArgs = NotifyDictionaryChangedEventArgs<string, object>.ForRemoveAction(key);
+                DictionaryChanged(this, eventArgs);
+            }
         }
         #endregion
 
@@ -138,7 +182,7 @@ namespace TerraFX.Collections
         public void Clear()
         {
             _items.Clear();
-            OnDictionaryChanged(NotifyDictionaryChangedEventArgs<string, object>.ForResetAction());
+            OnDictionaryReset();
         }
 
         /// <summary>Adds an item to the instance.</summary>
@@ -149,7 +193,7 @@ namespace TerraFX.Collections
         void ICollection<KeyValuePair<string, object>>.Add(KeyValuePair<string, object> item)
         {
             _items.Add(item);
-            OnDictionaryChanged(NotifyDictionaryChangedEventArgs<string, object>.ForAddAction(item.Key));
+            OnDictionaryItemAdded(item.Key);
         }
 
         /// <summary>Determines whether the instance contains a specific item.</summary>
@@ -183,7 +227,7 @@ namespace TerraFX.Collections
 
             if (removed)
             {
-                OnDictionaryChanged(NotifyDictionaryChangedEventArgs<string, object>.ForRemoveAction(item.Key));
+                OnDictionaryItemRemoved(item.Key);
             }
 
             return removed;
@@ -200,7 +244,7 @@ namespace TerraFX.Collections
         public void Add(string key, object value)
         {
             _items.Add(key, value);
-            OnDictionaryChanged(NotifyDictionaryChangedEventArgs<string, object>.ForAddAction(key));
+            OnDictionaryItemAdded(key);
         }
 
         /// <summary>Determines whether the instance contains a specific key.</summary>
@@ -223,7 +267,7 @@ namespace TerraFX.Collections
 
             if (removed)
             {
-                OnDictionaryChanged(NotifyDictionaryChangedEventArgs<string, object>.ForRemoveAction(key));
+                OnDictionaryItemRemoved(key);
             }
 
             return removed;

@@ -11,15 +11,17 @@ namespace TerraFX
     public struct Size2D : IEquatable<Size2D>, IFormattable
     {
         #region Fields
+        /// <summary>The width of the instance.</summary>
         internal float _width;
 
+        /// <summary>The height of the instance.</summary>
         internal float _height;
         #endregion
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Size2D" /> struct.</summary>
-        /// <param name="width">The value of the x-coordinate.</param>
-        /// <param name="height">The value of the y-coordinate.</param>
+        /// <param name="width">The width of the instance.</param>
+        /// <param name="height">The height of the instance.</param>
         public Size2D(float width, float height)
         {
             _width = width;

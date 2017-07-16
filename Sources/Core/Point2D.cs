@@ -11,8 +11,10 @@ namespace TerraFX
     public struct Point2D : IEquatable<Point2D>, IFormattable
     {
         #region Fields
+        /// <summary>The value of the x-coordinate.</summary>
         internal float _x;
 
+        /// <summary>The value of the y-coordinate.</summary>
         internal float _y;
         #endregion
 

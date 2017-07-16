@@ -27,12 +27,13 @@ namespace TerraFX
         #endregion
 
         #region Fields
+        /// <summary>The number of 100-nanosecond ticks represented by the instance.</summary>
         internal readonly long _ticks;
         #endregion
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Timestamp" /> struct.</summary>
-        /// <param name="ticks">The number of 100-nanosecond ticks that will be represented by the instance.</param>
+        /// <param name="ticks">The number of 100-nanosecond ticks represented by the instance.</param>
         public Timestamp(long ticks)
         {
             _ticks = ticks;

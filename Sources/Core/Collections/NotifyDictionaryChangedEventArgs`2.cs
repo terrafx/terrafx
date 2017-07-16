@@ -12,22 +12,34 @@ namespace TerraFX.Collections
     public sealed class NotifyDictionaryChangedEventArgs<TKey, TValue> : EventArgs
     {
         #region Static Fields
+        /// <summary>The <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> instance that is returned for the <see cref="NotifyDictionaryChangedAction.Reset" /> action.</summary>
         internal static readonly NotifyDictionaryChangedEventArgs<TKey, TValue> _resetEventArgs = new NotifyDictionaryChangedEventArgs<TKey, TValue>(NotifyDictionaryChangedAction.Reset);
         #endregion
 
         #region Fields
+        /// <summary>The action that caused the event.</summary>
         internal readonly NotifyDictionaryChangedAction _action;
 
+        /// <summary>The key of the item that caused the event.</summary>
         internal readonly TKey _key;
 
+        /// <summary>The old value of the item that caused the event.</summary>
         internal readonly TValue _oldValue;
 
+        /// <summary>The new value of the item that caused the event.</summary>
         internal readonly TValue _newValue;
         #endregion
 
         #region Constructors
+        /// <summary>Initializes a new instance of the <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> class.</summary>
+        /// <param name="action">The action that caused the event.</param>
+        /// <param name="key">The key of the item that caused the event.</param>
+        /// <param name="oldValue">The old value of the item that caused the event.</param>
+        /// <param name="newValue">The new value of the item that caused the event.</param>
         internal NotifyDictionaryChangedEventArgs(NotifyDictionaryChangedAction action, TKey key = default, TValue oldValue = default, TValue newValue = default)
         {
+            Debug.Assert(Enum.IsDefined(typeof(NotifyDictionaryChangedAction), action));
+
             _action = action;
             _key = key;
             _oldValue = oldValue;
@@ -41,7 +53,6 @@ namespace TerraFX.Collections
         {
             get
             {
-                Debug.Assert(Enum.IsDefined(typeof(NotifyDictionaryChangedAction), _action));
                 return _action;
             }
         }
@@ -52,7 +63,7 @@ namespace TerraFX.Collections
         {
             get
             {
-                if (Action == NotifyDictionaryChangedAction.Reset)
+                if (_action == NotifyDictionaryChangedAction.Reset)
                 {
                     ThrowInvalidOperationException(nameof(Action), Action);
                 }
@@ -67,7 +78,7 @@ namespace TerraFX.Collections
         {
             get
             {
-                if (Action != NotifyDictionaryChangedAction.ValueChanged)
+                if (_action != NotifyDictionaryChangedAction.ValueChanged)
                 {
                     ThrowInvalidOperationException(nameof(Action), Action);
                 }
@@ -82,7 +93,7 @@ namespace TerraFX.Collections
         {
             get
             {
-                if (Action != NotifyDictionaryChangedAction.ValueChanged)
+                if (_action != NotifyDictionaryChangedAction.ValueChanged)
                 {
                     ThrowInvalidOperationException(nameof(Action), Action);
                 }
