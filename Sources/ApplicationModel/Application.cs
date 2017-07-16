@@ -9,6 +9,7 @@ using System.Threading;
 using TerraFX.Graphics;
 using TerraFX.Threading;
 using TerraFX.UI;
+using static System.Threading.Interlocked;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.ApplicationModel
@@ -16,6 +17,23 @@ namespace TerraFX.ApplicationModel
     /// <summary>Represents a multimedia-based application.</summary>
     public sealed class Application : IDisposable
     {
+        #region State Constants
+        /// <summary>Indicates the application is stopped but has not been disposed.</summary>
+        internal const int Stopped = 0;
+
+        /// <summary>Indicates the application is running.</summary>
+        internal const int Running = 1;
+
+        /// <summary>Indicates the application is stopped.</summary>
+        internal const int ExitRequested = 2;
+
+        /// <summary>Indicates the application is being disposed.</summary>
+        internal const int Disposing = 3;
+
+        /// <summary>Indicates the application has been disposed.</summary>
+        internal const int Disposed = 4;
+        #endregion
+
         #region Fields
         /// <summary>The <see cref="CompositionHost" /> for the instance.</summary>
         internal readonly CompositionHost _compositionHost;
@@ -32,14 +50,12 @@ namespace TerraFX.ApplicationModel
         /// <summary>The <see cref="IWindowManager" /> for the instance.</summary>
         internal readonly Lazy<IWindowManager> _windowManager;
 
-        /// <summary>A value that indicates whether the instance is running.</summary>
-        internal bool _isRunning;
-
-        /// <summary>A value that indicates whether the instance is disposed.</summary>
-        internal bool _isDisposed;
-
-        /// <summary>A value that indicates whether an exit has been requested.</summary>
-        internal bool _exitRequested;
+        /// <summary>The state for the instance.</summary>
+        /// <remarks>
+        ///     <para>This field is <c>volatile</c> to ensure state changes update all threads simultaneously.</para>
+        ///     <para><c>volatile</c> does add a read/write barrier at every access, but the state transitions are believed to be infrequent enough for this to not be a problem.</para>
+        /// </remarks>
+        internal volatile int _state;
         #endregion
 
         #region Constructors
@@ -112,7 +128,7 @@ namespace TerraFX.ApplicationModel
         {
             get
             {
-                return _isRunning;
+                return (_state == Running);
             }
         }
 
@@ -159,6 +175,16 @@ namespace TerraFX.ApplicationModel
 
             return currentThread;
         }
+
+        /// <summary>Throws a <see cref="ObjectDisposedException" /> if the instance has already been disposed.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        internal static void ThrowIfDisposed(int state)
+        {
+            if (state >= Disposing) // (_state == Disposing) || (_state == Disposed)
+            {
+                ThrowObjectDisposedException(nameof(Application));
+            }
+        }
         #endregion
 
         #region Methods
@@ -170,12 +196,8 @@ namespace TerraFX.ApplicationModel
         /// </remarks>
         public void RequestExit()
         {
-            ThrowIfDisposed();
-
-            if (_isRunning == false)
-            {
-                _exitRequested = true;
-            }
+            var previousState = CompareExchange(ref _state, ExitRequested, Running); // if (_state == Running) { _state = ExitRequested; }
+            ThrowIfDisposed(previousState);
         }
 
         /// <summary>Runs the event loop for the instance.</summary>
@@ -184,17 +206,15 @@ namespace TerraFX.ApplicationModel
         /// <remarks>This method does nothing if an exit is requested before the first iteration of the event loop has started.</remarks>
         public void Run()
         {
-            ThrowIfDisposed();
-            ThrowIfNotDispatcherThread();
+            var previousState = CompareExchange(ref _state, Running, Stopped); // if (_state == Stopped) { _state = Running; }
 
-            Debug.Assert(_isRunning == false);
+            ThrowIfDisposed(previousState);
+            ThrowIfNotParentThread();
 
-            _isRunning = true;
-            {
-                var dispatchManager = _dispatchManager.Value;
-                RunLoop(dispatchManager, dispatchManager.DispatcherForCurrentThread);
-            }
-            _isRunning = false;
+            var dispatchManager = _dispatchManager.Value;
+            RunLoop(dispatchManager, dispatchManager.DispatcherForCurrentThread);
+
+            CompareExchange(ref _state, Stopped, ExitRequested); // if (_state == ExitRequested) { _state = Stopped; }
         }
 
         /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
@@ -202,21 +222,17 @@ namespace TerraFX.ApplicationModel
         /// <remarks>This method will call <see cref="RequestExit" /> to ensure that the event loop is no longer running.</remarks>
         internal void Dispose(bool isDisposing)
         {
-            if (_isDisposed)
+            var previousState = Exchange(ref _state, Disposing);
+
+            if (previousState < Disposing) // (previousState != Disposing) && (previousState != Disposed)
             {
-                Debug.Assert(_isRunning == false);
-                return;
+                if (isDisposing)
+                {
+                    _compositionHost?.Dispose();
+                }
             }
 
-            // Make sure we request an exit before actually disposing anything
-            RequestExit();
-
-            if (isDisposing)
-            {
-                _compositionHost?.Dispose();
-            }
-
-            _isDisposed = true;
+            _state = Disposed;
         }
 
         /// <summary>Raises the <see cref="Idle" /> event.</summary>
@@ -236,7 +252,6 @@ namespace TerraFX.ApplicationModel
         /// <param name="parentDispatcher">The <see cref="IDispatchManager" /> associated with <see cref="ParentThread" />.</param>
         internal void RunLoop(IDispatchManager dispatchManager, IDispatcher parentDispatcher)
         {
-            Debug.Assert(_isRunning);
             Debug.Assert(Thread.CurrentThread == _parentThread);
             Debug.Assert(dispatchManager != null);
             Debug.Assert(parentDispatcher != null);
@@ -244,7 +259,7 @@ namespace TerraFX.ApplicationModel
 
             var previousTimestamp = dispatchManager.CurrentTimestamp;
 
-            while (_exitRequested == false)
+            while (_state == Running)
             {
                 parentDispatcher.DispatchPending();
 
@@ -255,22 +270,11 @@ namespace TerraFX.ApplicationModel
                 }
                 previousTimestamp = currentTimestamp;
             }
-            _exitRequested = false;
-        }
-
-        /// <summary>Throws a <see cref="ObjectDisposedException" /> if the instance has already been disposed.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        internal void ThrowIfDisposed()
-        {
-            if (_isDisposed)
-            {
-                ThrowObjectDisposedException(nameof(Application));
-            }
         }
 
         /// <summary>Throws a <see cref="InvalidOperationException" /> if <see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</summary>
         /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</exception>
-        internal void ThrowIfNotDispatcherThread()
+        internal void ThrowIfNotParentThread()
         {
             if (Thread.CurrentThread != _parentThread)
             {
