@@ -69,7 +69,7 @@ namespace TerraFX.Provider.Win32.UI
         {
             foreach (var createdWindowHandle in _createdWindows.Keys)
             {
-                if (_createdWindows.TryGetValue(createdWindowHandle, out var createdWindow))
+                if (_createdWindows.TryRemove(createdWindowHandle, out var createdWindow))
                 {
                     createdWindow.Dispose();
                 }
@@ -115,6 +115,11 @@ namespace TerraFX.Provider.Win32.UI
         #endregion
 
         #region Methods
+        internal void DestroyWindow(HWND windowHandle)
+        {
+            _createdWindows.TryRemove(windowHandle, out _);
+        }
+
         internal void Dispose(bool isDisposing)
         {
             if (isDisposing)

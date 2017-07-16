@@ -180,6 +180,8 @@ namespace TerraFX.Provider.Win32.UI
                     ThrowExternalExceptionForLastError(nameof(DestroyWindow));
                 }
 
+                _windowManager.DestroyWindow(_handle);
+
                 _handle = (HWND)(NULL);
             }
         }
@@ -187,6 +189,12 @@ namespace TerraFX.Provider.Win32.UI
         internal LRESULT HandleWmActivate(WPARAM wParam)
         {
             _isActive = (LOWORD(wParam) != WA_INACTIVE);
+            return 0;
+        }
+
+        internal LRESULT HandleWmClose()
+        {
+            Dispose();
             return 0;
         }
 
@@ -225,6 +233,11 @@ namespace TerraFX.Provider.Win32.UI
                 case WM_ACTIVATE:
                 {
                     return HandleWmActivate(wParam);
+                }
+
+                case WM_CLOSE:
+                {
+                    return HandleWmClose();
                 }
 
                 case WM_SHOWWINDOW:
