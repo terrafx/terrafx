@@ -14,23 +14,23 @@ using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.ApplicationModel
 {
-    /// <summary>Represents a multimedia-based application.</summary>
-    public sealed class Application : IDisposable
+    /// <summary>A multimedia-based application.</summary>
+    public sealed class Application : IDisposable, IServiceProvider
     {
         #region State Constants
-        /// <summary>Indicates the application is stopped but has not been disposed.</summary>
+        /// <summary>The event loop for the instance is stopped.</summary>
         internal const int Stopped = 0;
 
-        /// <summary>Indicates the application is running.</summary>
+        /// <summary>The event loop for the instance is running.</summary>
         internal const int Running = 1;
 
-        /// <summary>Indicates the application is stopped.</summary>
-        internal const int ExitRequested = 2;
+        /// <summary>The event loop for the instance is exiting.</summary>
+        internal const int Exiting = 2;
 
-        /// <summary>Indicates the application is being disposed.</summary>
+        /// <summary>The instance is being disposed.</summary>
         internal const int Disposing = 3;
 
-        /// <summary>Indicates the application has been disposed.</summary>
+        /// <summary>The instance has been disposed.</summary>
         internal const int Disposed = 4;
         #endregion
 
@@ -38,11 +38,8 @@ namespace TerraFX.ApplicationModel
         /// <summary>The <see cref="CompositionHost" /> for the instance.</summary>
         internal readonly CompositionHost _compositionHost;
 
-        /// <summary>The <see cref="Thread" /> that was used to create the instance.</summary>
-        internal readonly Thread _parentThread;
-
-        /// <summary>The <see cref="IDispatchManager" /> for the instance.</summary>
-        internal readonly Lazy<IDispatchManager> _dispatchManager;
+        /// <summary>The <see cref="IDispatcher" /> for the <see cref="Thread" /> that was used to create the instance.</summary>
+        internal readonly IDispatcher _dispatcher;
 
         /// <summary>The <see cref="IGraphicsManager" /> for the instance.</summary>
         internal readonly Lazy<IGraphicsManager> _graphicsManager;
@@ -65,9 +62,13 @@ namespace TerraFX.ApplicationModel
         /// <exception cref="ArgumentNullException"><paramref name="compositionAssemblies" /> is <c>null</c>.</exception>
         public Application(IEnumerable<Assembly> compositionAssemblies)
         {
-            _parentThread = GetParentThread();
-            _compositionHost = CreateCompositionHost(compositionAssemblies);
-            _dispatchManager = new Lazy<IDispatchManager>(_compositionHost.GetExport<IDispatchManager>, isThreadSafe: true);
+            ThrowIfCurrentThreadIsNotSTA();
+
+            var compositionHost = CreateCompositionHost(compositionAssemblies);
+            var dispatchManager = _compositionHost.GetExport<IDispatchManager>();
+
+            _dispatcher = dispatchManager.DispatcherForCurrentThread;
+
             _graphicsManager = new Lazy<IGraphicsManager>(_compositionHost.GetExport<IGraphicsManager>, isThreadSafe: true);
             _windowManager = new Lazy<IWindowManager>(_compositionHost.GetExport<IWindowManager>, isThreadSafe: true);
         }
@@ -87,21 +88,12 @@ namespace TerraFX.ApplicationModel
         #endregion
 
         #region Properties
-        /// <summary>Gets the <see cref="CompositionHost" /> for the instance.</summary>
-        public CompositionHost CompositionHost
+        /// <summary>Gets the <see cref="IDispatcher" /> for the <see cref="Thread" /> that was used to create the instance.</summary>
+        public IDispatcher Dispatcher
         {
             get
             {
-                return _compositionHost;
-            }
-        }
-
-        /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
-        public Thread ParentThread
-        {
-            get
-            {
-                return _parentThread;
+                return _dispatcher;
             }
         }
 
@@ -110,7 +102,7 @@ namespace TerraFX.ApplicationModel
         {
             get
             {
-                return _dispatchManager.Value;
+                return _dispatcher.DispatchManager;
             }
         }
 
@@ -123,12 +115,21 @@ namespace TerraFX.ApplicationModel
             }
         }
 
-        /// <summary>Gets a value that indicates whether the instance is running.</summary>
+        /// <summary>Gets a value that indicates whether the event loop for the instance is running.</summary>
         public bool IsRunning
         {
             get
             {
                 return (_state == Running);
+            }
+        }
+
+        /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
+        public Thread ParentThread
+        {
+            get
+            {
+                return _dispatcher.ParentThread;
             }
         }
 
@@ -161,19 +162,16 @@ namespace TerraFX.ApplicationModel
             return containerConfiguration.CreateContainer();
         }
 
-        /// <summary>Gets <see cref="Thread.CurrentThread" /> and validates that <see cref="Thread.GetApartmentState" /> is <see cref="ApartmentState.STA" />.</summary>
-        /// <returns><see cref="Thread.CurrentThread"/></returns>
+        /// <summary>Thows a <see cref="InvalidOperationException"/> if the <see cref="ApartmentState" /> for <see cref="Thread.CurrentThread" /> is not <see cref="ApartmentState.STA"/>.</summary>
         /// <exception cref="InvalidOperationException">The <see cref="ApartmentState" /> for <see cref="Thread.CurrentThread" /> is not <see cref="ApartmentState.STA"/>.</exception>
-        internal static Thread GetParentThread()
+        internal static void ThrowIfCurrentThreadIsNotSTA()
         {
-            var currentThread = Thread.CurrentThread;
+            var apartmentState = Thread.CurrentThread.GetApartmentState();
 
-            if (currentThread.GetApartmentState() != ApartmentState.STA)
+            if (apartmentState != ApartmentState.STA)
             {
-                ThrowInvalidOperationException(nameof(Thread.GetApartmentState), currentThread.GetApartmentState());
+                ThrowInvalidOperationException(nameof(Thread.GetApartmentState), apartmentState);
             }
-
-            return currentThread;
         }
 
         /// <summary>Throws a <see cref="ObjectDisposedException" /> if the instance has already been disposed.</summary>
@@ -196,7 +194,7 @@ namespace TerraFX.ApplicationModel
         /// </remarks>
         public void RequestExit()
         {
-            var previousState = CompareExchange(ref _state, ExitRequested, Running); // if (_state == Running) { _state = ExitRequested; }
+            var previousState = CompareExchange(ref _state, Exiting, Running); // if (_state == Running) { _state = ExitRequested; }
             ThrowIfDisposed(previousState);
         }
 
@@ -211,15 +209,23 @@ namespace TerraFX.ApplicationModel
             ThrowIfDisposed(previousState);
             ThrowIfNotParentThread();
 
-            var dispatchManager = _dispatchManager.Value;
-            RunLoop(dispatchManager, dispatchManager.DispatcherForCurrentThread);
+            RunEventLoop();
 
-            CompareExchange(ref _state, Stopped, ExitRequested); // if (_state == ExitRequested) { _state = Stopped; }
+            CompareExchange(ref _state, Stopped, Exiting); // if (_state == ExitRequested) { _state = Stopped; }
+        }
+
+        /// <summary>Gets the service object of the specified type.</summary>
+        /// <typeparam name="TService">The type of the service object to get.</typeparam>
+        /// <returns>A service object of <typeparamref name="TService" /> if one exists; otherwise, <c>default</c>.</returns>
+        public TService GetService<TService>()
+        {
+            _compositionHost.TryGetExport<TService>(out var service);
+            return service;
         }
 
         /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
         /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
-        /// <remarks>This method will call <see cref="RequestExit" /> to ensure that the event loop is no longer running.</remarks>
+        /// <remarks>This method exits the event loop for the instance if it is running.</remarks>
         internal void Dispose(bool isDisposing)
         {
             var previousState = Exchange(ref _state, Disposing);
@@ -240,28 +246,27 @@ namespace TerraFX.ApplicationModel
         /// <remarks>This method takes a <see cref="TimeSpan" /> rather than a <see cref="IdleEventArgs" /> to help reduce allocations when <see cref="Idle" /> is <c>null</c>.</remarks>
         internal void OnIdle(TimeSpan delta)
         {
-            if (Idle != null)
+            var idle = Idle;
+
+            if (idle != null)
             {
                 var eventArgs = new IdleEventArgs(delta);
-                Idle(this, eventArgs);
+                idle(this, eventArgs);
             }
         }
 
         /// <summary>Runs the event loop for the instance.</summary>
-        /// <param name="dispatchManager">The <see cref="IDispatchManager" /> for the instance.</param>
-        /// <param name="parentDispatcher">The <see cref="IDispatchManager" /> associated with <see cref="ParentThread" />.</param>
-        internal void RunLoop(IDispatchManager dispatchManager, IDispatcher parentDispatcher)
+        internal void RunEventLoop()
         {
-            Debug.Assert(Thread.CurrentThread == _parentThread);
-            Debug.Assert(dispatchManager != null);
-            Debug.Assert(parentDispatcher != null);
-            Debug.Assert(parentDispatcher.ParentThread == _parentThread);
+            var dispatcher = _dispatcher;
+            Debug.Assert(Thread.CurrentThread == dispatcher.ParentThread);
 
+            var dispatchManager = dispatcher.DispatchManager;
             var previousTimestamp = dispatchManager.CurrentTimestamp;
 
             while (_state == Running)
             {
-                parentDispatcher.DispatchPending();
+                dispatcher.DispatchPending();
 
                 var currentTimestamp = dispatchManager.CurrentTimestamp;
                 {
@@ -276,9 +281,11 @@ namespace TerraFX.ApplicationModel
         /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</exception>
         internal void ThrowIfNotParentThread()
         {
-            if (Thread.CurrentThread != _parentThread)
+            var currentThread = Thread.CurrentThread;
+
+            if (currentThread != _dispatcher.ParentThread)
             {
-                ThrowInvalidOperationException(nameof(Thread.CurrentThread), Thread.CurrentThread);
+                ThrowInvalidOperationException(nameof(Thread.CurrentThread), currentThread);
             }
         }
         #endregion
@@ -289,6 +296,17 @@ namespace TerraFX.ApplicationModel
         {
             Dispose(isDisposing: true);
             GC.SuppressFinalize(this);
+        }
+        #endregion
+
+        #region System.IServiceProvider Methods
+        /// <summary>Gets the service object of the specified type.</summary>
+        /// <param name="serviceType">The type of the service object to get.</param>
+        /// <returns>A service object of <paramref name="serviceType" /> if one exists; otherwise, <c>null</c>.</returns>
+        public object GetService(Type serviceType)
+        {
+            _compositionHost.TryGetExport(serviceType, out var service);
+            return service;
         }
         #endregion
     }

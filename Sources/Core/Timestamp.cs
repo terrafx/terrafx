@@ -148,21 +148,7 @@ namespace TerraFX
         /// <returns>A value <c>less than zero</c> if <paramref name="other" /> is greater than the current instance, <c>zero</c> if <paramref name="other"/> is equal to the current instance; and <c>greater than zero</c> if <paramref name="other" /> is greater than the current instance.</returns>
         public int CompareTo(Timestamp other)
         {
-            // We have to actually compare because subtraction
-            // causes wrapping for very large negative numbers.
-
-            if (this < other)
-            {
-                return -1;
-            }
-            else if (this > other)
-            {
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
+            return _ticks.CompareTo(other._ticks);
         }
         #endregion
 
@@ -172,7 +158,7 @@ namespace TerraFX
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
         public bool Equals(Timestamp other)
         {
-            return (this == other);
+            return _ticks.Equals(other._ticks);
         }
         #endregion
 
@@ -208,7 +194,7 @@ namespace TerraFX
         /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
         public override string ToString()
         {
-            return ToString(format: null, formatProvider: null);
+            return _ticks.ToString();
         }
         #endregion
     }

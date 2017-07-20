@@ -11,7 +11,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Provider.Win32.Threading
 {
-    /// <summary>Provides a means of dispatching messages for a thread.</summary>
+    /// <summary>Provides a means of dispatching events for a thread.</summary>
     unsafe public sealed class Dispatcher : IDispatcher
     {
         #region Fields
@@ -25,7 +25,7 @@ namespace TerraFX.Provider.Win32.Threading
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Dispatcher" /> class.</summary>
         /// <param name="dispatchManager">The <see cref="DispatchManager" /> for the instance.</param>
-        /// <param name="parentThread">The <see cref="Thread" /> the instance is associated with.</param>
+        /// <param name="parentThread">The <see cref="Thread" /> that was used to create the instance.</param>
         internal Dispatcher(DispatchManager dispatchManager, Thread parentThread)
         {
             Debug.Assert(dispatchManager != null);
@@ -36,14 +36,27 @@ namespace TerraFX.Provider.Win32.Threading
         }
         #endregion
 
+        #region TerraFX.Threading.IDispatcher Events
+        /// <summary>Occurs when an exit event is dispatched from the queue.</summary>
+        public event EventHandler ExitRequested;
+        #endregion
+
         #region Methods
+        /// <summary>Raises the <see cref="ExitRequested" /> event.</summary>
+        internal void OnExitRequested()
+        {
+            ExitRequested?.Invoke(this, EventArgs.Empty);
+        }
+
         /// <summary>Throws a <see cref="InvalidOperationException" /> if <see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</summary>
         /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</exception>
         internal void ThrowIfNotParentThread()
         {
-            if (Thread.CurrentThread != _parentThread)
+            var currentThread = Thread.CurrentThread;
+
+            if (currentThread != _parentThread)
             {
-                ThrowInvalidOperationException(nameof(Thread.CurrentThread), Thread.CurrentThread);
+                ThrowInvalidOperationException(nameof(Thread.CurrentThread), currentThread);
             }
         }
         #endregion
@@ -69,8 +82,13 @@ namespace TerraFX.Provider.Win32.Threading
         #endregion
 
         #region TerraFX.Threading.IDispatcher Methods
-        /// <summary>Dispatches all messages currently pending in the queue.</summary>
-        /// <remarks>This method does not wait for a new event to be raised if the queue is empty.</remarks>
+        /// <summary>Dispatches all events currently pending in the queue.</summary>
+        /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</exception>
+        /// <remarks>
+        ///     <para>This method does not wait for a new event to be raised if the queue is empty.</para>
+        ///     <para>This method does not performing any translation or pre-processing on the dispatched events.</para>
+        ///     <para>This method will continue dispatching pending events even after the <see cref="ExitRequested" /> event is raised.</para>
+        /// </remarks>
         public void DispatchPending()
         {
             ThrowIfNotParentThread();
@@ -79,8 +97,14 @@ namespace TerraFX.Provider.Win32.Threading
 
             while (PeekMessage(&msg, wMsgFilterMin: WM_NULL, wMsgFilterMax: WM_NULL, wRemoveMsg: PM_REMOVE))
             {
-                TranslateMessage(&msg);
-                DispatchMessage(&msg);
+                if (msg.message != WM_QUIT)
+                {
+                    DispatchMessage(&msg);
+                }
+                else
+                {
+                    OnExitRequested();
+                }
             }
         }
         #endregion

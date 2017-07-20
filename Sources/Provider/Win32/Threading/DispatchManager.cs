@@ -44,7 +44,6 @@ namespace TerraFX.Provider.Win32.Threading
         internal static double GetTickFrequency()
         {
             LARGE_INTEGER frequency;
-
             var succeeded = QueryPerformanceFrequency(&frequency);
 
             if (succeeded == FALSE)

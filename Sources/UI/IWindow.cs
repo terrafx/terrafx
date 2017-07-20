@@ -16,17 +16,23 @@ namespace TerraFX.UI
         /// <summary>Gets the <see cref="IDispatcher" /> for the instance.</summary>
         IDispatcher Dispatcher { get; }
 
+        /// <summary>Gets <see cref="FlowDirection" /> for the instance.</summary>
+        FlowDirection FlowDirection { get; }
+
         /// <summary>Gets the handle for the instance.</summary>
         IntPtr Handle { get; }
 
-        /// <summary>Gets a value that indicates whether the flow-direction of the instance is left-to-right.</summary>
-        bool IsLeftToRight { get; }
+        /// <summary>Gets a value that indicates whether the instance is the active window.</summary>
+        bool IsActive { get; }
 
         /// <summary>Gets a value that indicates whether the instance is visible.</summary>
         bool IsVisible { get; }
 
-        /// <summary>Gets the <see cref="IPropertySet" /> associated with the instance.</summary>
+        /// <summary>Gets the <see cref="IPropertySet" /> for the instance.</summary>
         IPropertySet Properties { get; }
+
+        /// <summary>Gets the <see cref="ReadingDirection" /> for the instance.</summary>
+        ReadingDirection ReadingDirection { get; }
 
         /// <summary>Gets the <see cref="IWindowManager" /> for the instance.</summary>
         IWindowManager WindowManager { get; }

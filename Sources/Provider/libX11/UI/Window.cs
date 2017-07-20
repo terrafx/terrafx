@@ -30,6 +30,10 @@ namespace TerraFX.Provider.libX11.UI
 
         internal Rectangle _bounds;
 
+        internal FlowDirection _flowDirection;
+
+        internal ReadingDirection _readingDirection;
+
         internal bool _isActive;
 
         internal bool _isVisible;
@@ -86,6 +90,15 @@ namespace TerraFX.Provider.libX11.UI
             }
         }
 
+        /// <summary>Gets <see cref="FlowDirection" /> for the instance.</summary>
+        public FlowDirection FlowDirection
+        {
+            get
+            {
+                return _flowDirection;
+            }
+        }
+
         /// <summary>Gets the handle for the instance.</summary>
         public IntPtr Handle
         {
@@ -95,12 +108,12 @@ namespace TerraFX.Provider.libX11.UI
             }
         }
 
-        /// <summary>Gets a value that indicates whether the flow-direction of the instance is left-to-right.</summary>
-        public bool IsLeftToRight
+        /// <summary>Gets a value that indicates whether the instance is the active window.</summary>
+        public bool IsActive
         {
             get
             {
-                return false;
+                return _isActive;
             }
         }
 
@@ -113,7 +126,7 @@ namespace TerraFX.Provider.libX11.UI
             }
         }
 
-        /// <summary>Gets the set of properties associated with the instance.</summary>
+        /// <summary>Gets the set of properties for the instance.</summary>
         public IPropertySet Properties
         {
             get
@@ -122,7 +135,16 @@ namespace TerraFX.Provider.libX11.UI
             }
         }
 
-        /// <summary>Gets the <see cref="IWindowManager" /> associated with the instance.</summary>
+        /// <summary>Gets the <see cref="ReadingDirection" /> for the instance.</summary>
+        public ReadingDirection ReadingDirection
+        {
+            get
+            {
+                return _readingDirection;
+            }
+        }
+
+        /// <summary>Gets the <see cref="IWindowManager" /> for the instance.</summary>
         public IWindowManager WindowManager
         {
             get

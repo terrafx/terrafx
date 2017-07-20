@@ -47,6 +47,12 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>A <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
         internal Rectangle _bounds;
 
+        /// <summary>The <see cref="FlowDirection" /> for the instance.</summary>
+        internal FlowDirection _flowDirection;
+
+        /// <summary>The <see cref="ReadingDirection" /> for the instance.</summary>
+        internal ReadingDirection _readingDirection;
+
         /// <summary>The state for the instance.</summary>
         /// <remarks>
         ///     <para>This field is <c>volatile</c> to ensure state changes update all threads simultaneously.</para>
@@ -65,15 +71,17 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Initializes a new instance of the <see cref="Window" /> class.</summary>
         /// <param name="windowManager">The <see cref="WindowManager" /> for the instance.</param>
         /// <param name="dispatchManager">The <see cref="DispatchManager" /> for the instance.</param>
-        internal Window(WindowManager windowManager, DispatchManager dispatchManager)
+        /// <param name="entryModuleHandle">The <see cref="HINSTANCE" /> for the entry module.</param>
+        internal Window(WindowManager windowManager, DispatchManager dispatchManager, HINSTANCE entryModuleHandle)
         {
             Debug.Assert(windowManager != null);
             Debug.Assert(dispatchManager != null);
+            Debug.Assert(entryModuleHandle != (HINSTANCE)(NULL));
 
             _dispatcher = (Dispatcher)(dispatchManager.DispatcherForCurrentThread);
             _properties = new PropertySet();
             _windowManager = windowManager;
-            _handle = CreateWindowHandle((LPCWSTR)(windowManager.ClassName), (LPCWSTR)(windowManager.DefaultWindowTitle), windowManager.EntryModuleHandle);
+            _handle = CreateWindowHandle((LPCWSTR)(windowManager.ClassName), (LPCWSTR)(windowManager.DefaultWindowTitle), entryModuleHandle);
         }
         #endregion
 
@@ -104,6 +112,15 @@ namespace TerraFX.Provider.Win32.UI
             }
         }
 
+        /// <summary>Gets <see cref="FlowDirection" /> for the instance.</summary>
+        public FlowDirection FlowDirection
+        {
+            get
+            {
+                return _flowDirection;
+            }
+        }
+
         /// <summary>Gets the handle for the instance.</summary>
         public IntPtr Handle
         {
@@ -113,12 +130,12 @@ namespace TerraFX.Provider.Win32.UI
             }
         }
 
-        /// <summary>Gets a value that indicates whether the flow-direction of the instance is left-to-right.</summary>
-        public bool IsLeftToRight
+        /// <summary>Gets a value that indicates whether the instance is the active window.</summary>
+        public bool IsActive
         {
             get
             {
-                return true;
+                return _isActive;
             }
         }
 
@@ -137,6 +154,15 @@ namespace TerraFX.Provider.Win32.UI
             get
             {
                 return _properties;
+            }
+        }
+
+        /// <summary>Gets the <see cref="ReadingDirection" /> for the instance.</summary>
+        public ReadingDirection ReadingDirection
+        {
+            get
+            {
+                return _readingDirection;
             }
         }
 

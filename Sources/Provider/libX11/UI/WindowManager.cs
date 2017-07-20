@@ -18,7 +18,7 @@ namespace TerraFX.Provider.libX11.UI
     unsafe public sealed class WindowManager : IDisposable, IWindowManager
     {
         #region Static Fields
-        internal static readonly ConcurrentDictionary<XWindow, Window> _createdWindows = new ConcurrentDictionary<XWindow, Window>();
+        internal static readonly ConcurrentDictionary<XWindow, Window> CreatedWindows = new ConcurrentDictionary<XWindow, Window>();
         #endregion
 
         #region Fields
@@ -47,9 +47,9 @@ namespace TerraFX.Provider.libX11.UI
         #region Static Methods
         internal static void DisposeCreatedWindows()
         {
-            foreach (var createdWindowHandle in _createdWindows.Keys)
+            foreach (var createdWindowHandle in CreatedWindows.Keys)
             {
-                if (_createdWindows.TryRemove(createdWindowHandle, out var createdWindow))
+                if (CreatedWindows.TryRemove(createdWindowHandle, out var createdWindow))
                 {
                     createdWindow.Dispose();
                 }
@@ -60,7 +60,7 @@ namespace TerraFX.Provider.libX11.UI
         #region Methods
         internal void DestroyWindow(XWindow windowHandle)
         {
-            _createdWindows.TryRemove(windowHandle, out _);
+            CreatedWindows.TryRemove(windowHandle, out _);
         }
 
         internal void Dispose(bool isDisposing)
@@ -88,7 +88,7 @@ namespace TerraFX.Provider.libX11.UI
         {
             var window = new Window(this, _dispatchManager.Value);
 
-            var succeeded = _createdWindows.TryAdd(window._handle, window);
+            var succeeded = CreatedWindows.TryAdd(window._handle, window);
             Debug.Assert(succeeded);
 
             return window;

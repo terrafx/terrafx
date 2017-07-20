@@ -13,7 +13,7 @@ namespace TerraFX.Collections
     {
         #region Static Fields
         /// <summary>The <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> instance that is returned for the <see cref="NotifyDictionaryChangedAction.Reset" /> action.</summary>
-        internal static readonly NotifyDictionaryChangedEventArgs<TKey, TValue> _resetEventArgs = new NotifyDictionaryChangedEventArgs<TKey, TValue>(NotifyDictionaryChangedAction.Reset);
+        internal static readonly NotifyDictionaryChangedEventArgs<TKey, TValue> Reset = new NotifyDictionaryChangedEventArgs<TKey, TValue>(NotifyDictionaryChangedAction.Reset);
         #endregion
 
         #region Fields
@@ -124,7 +124,7 @@ namespace TerraFX.Collections
         /// <returns>An instance of the <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> class.</returns>
         public static NotifyDictionaryChangedEventArgs<TKey, TValue> ForResetAction()
         {
-            return _resetEventArgs;
+            return Reset;
         }
 
         /// <summary>Gets or creates an instance of the <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> class for the <see cref="NotifyDictionaryChangedAction.ValueChanged" /> action.</summary>

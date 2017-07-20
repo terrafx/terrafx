@@ -39,13 +39,13 @@ namespace TerraFX.Provider.Win32.UI
 
         #region Static Fields
         /// <summary>The <see cref="Window" /> instances that have been created.</summary>
-        internal static readonly ConcurrentDictionary<HWND, Window> _createdWindows = new ConcurrentDictionary<HWND, Window>();
+        internal static readonly ConcurrentDictionary<HWND, Window> CreatedWindows = new ConcurrentDictionary<HWND, Window>();
 
         /// <summary>The <see cref="HINSTANCE" /> for the entry-point module.</summary>
-        internal static readonly HINSTANCE _entryModuleHandle = GetModuleHandle(); 
+        internal static readonly HINSTANCE EntryModuleHandle = GetModuleHandle(); 
 
         /// <summary>The <see cref="NativeDelegate{TDelegate}" /> for the <see cref="WNDPROC" /> method.</summary>
-        internal static readonly NativeDelegate<WNDPROC> _wndProc = new NativeDelegate<WNDPROC>(ProcessWindowMessage);
+        internal static readonly NativeDelegate<WNDPROC> WindowProcedure = new NativeDelegate<WNDPROC>(ProcessWindowMessage);
         #endregion
 
         #region Fields
@@ -77,7 +77,7 @@ namespace TerraFX.Provider.Win32.UI
         )
         {
             _dispatchManager = dispatchManager;
-            _className = new NativeStringUni($"TerraFX.Interop.Provider.Win32.UI.WindowManager.{_entryModuleHandle}");
+            _className = new NativeStringUni($"TerraFX.Interop.Provider.Win32.UI.WindowManager.{EntryModuleHandle}");
             _defaultWindowTitle = new NativeStringUni("TerraFX Win32 Window");
             _classAtom = CreateClassAtom((LPCWSTR)(_className));
         }
@@ -88,17 +88,6 @@ namespace TerraFX.Provider.Win32.UI
         ~WindowManager()
         {
             Dispose(isDisposing: false);
-        }
-        #endregion
-
-        #region Static Properties
-        /// <summary>Gets the <see cref="HINSTANCE" /> for the entry-point module.</summary>
-        public HINSTANCE EntryModuleHandle
-        {
-            get
-            {
-                return _entryModuleHandle;
-            }
         }
         #endregion
 
@@ -139,9 +128,9 @@ namespace TerraFX.Provider.Win32.UI
         {
             if (isDisposing)
             {
-                foreach (var createdWindowHandle in _createdWindows.Keys)
+                foreach (var createdWindowHandle in CreatedWindows.Keys)
                 {
-                    if (_createdWindows.TryRemove(createdWindowHandle, out var createdWindow))
+                    if (CreatedWindows.TryRemove(createdWindowHandle, out var createdWindow))
                     {
                         createdWindow.Dispose();
                     }
@@ -149,10 +138,10 @@ namespace TerraFX.Provider.Win32.UI
             }
             else
             {
-                _createdWindows.Clear();
+                CreatedWindows.Clear();
             }
 
-            Debug.Assert(_createdWindows.IsEmpty);
+            Debug.Assert(CreatedWindows.IsEmpty);
         }
 
         /// <summary>Creates a <see cref="ATOM" /> for a native window class.</summary>
@@ -166,10 +155,10 @@ namespace TerraFX.Provider.Win32.UI
             var wndClassEx = new WNDCLASSEX() {
                 cbSize = SizeOf<WNDCLASSEX>(),
                 style = (CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS),
-                lpfnWndProc = _wndProc,
+                lpfnWndProc = WindowProcedure,
                 cbClsExtra = 0,
                 cbWndExtra = 0,
-                hInstance = _entryModuleHandle,
+                hInstance = EntryModuleHandle,
                 hIcon = (HICON)(NULL),
                 hCursor = GetDesktopCursor(),
                 hbrBackground = (HBRUSH)(COLOR_WINDOW + 1),
@@ -226,7 +215,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <returns>A value that varies based on the exact message that was processed.</returns>
         internal static LRESULT ProcessWindowMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
         {
-            if (_createdWindows.TryGetValue(hWnd, out var window))
+            if (CreatedWindows.TryGetValue(hWnd, out var window))
             {
                 return window.ProcessWindowMessage(Msg, wParam, lParam);
             }
@@ -250,7 +239,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <param name="window">The <see cref="Window" /> to remove.</param>
         internal void RemoveWindow(Window window)
         {
-            _createdWindows.TryRemove((void*)(window.Handle), out var destroyedWindow);
+            CreatedWindows.TryRemove((void*)(window.Handle), out var destroyedWindow);
             Debug.Assert(destroyedWindow == window);
         }
 
@@ -272,7 +261,7 @@ namespace TerraFX.Provider.Win32.UI
                 DisposeClassAtom();
             }
 
-            Debug.Assert(_createdWindows.IsEmpty);
+            Debug.Assert(CreatedWindows.IsEmpty);
             Debug.Assert(_className == IntPtr.Zero);
             Debug.Assert(_defaultWindowTitle == IntPtr.Zero);
             Debug.Assert(_classAtom == NULL);
@@ -288,7 +277,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (_classAtom != NULL)
             {
-                var result = UnregisterClass((LPCWSTR)(_classAtom), _entryModuleHandle);
+                var result = UnregisterClass((LPCWSTR)(_classAtom), EntryModuleHandle);
 
                 if (result == FALSE)
                 {
@@ -316,9 +305,9 @@ namespace TerraFX.Provider.Win32.UI
         public IWindow CreateWindow()
         {
             ThrowIfDisposed(_state);
-            var window = new Window(this, _dispatchManager.Value);
+            var window = new Window(this, _dispatchManager.Value, EntryModuleHandle);
 
-            var succeeded = _createdWindows.TryAdd((void*)(window.Handle), window);
+            var succeeded = CreatedWindows.TryAdd((void*)(window.Handle), window);
             Debug.Assert(succeeded);
 
             return window;

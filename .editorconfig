@@ -42,7 +42,9 @@ indent_style = tab
 ###############################################################################
 # Set dotnet naming rules to:
 #    suggest async members be pascal case suffixed with Async
-#    suggest interfaces be pascal case prefixed with I 
+#    suggest interfaces be pascal case prefixed with I
+#    suggest const declarations be pascal case
+#    suggest static readonly declarations be pascal case
 #    suggest private and internal fields be camel case and prefixed with underscore
 #    suggest public and protected declarations be pascal case
 ###############################################################################
@@ -54,6 +56,14 @@ dotnet_naming_rule.async_members_should_be_pascal_case_suffixed_with_async.symbo
 dotnet_naming_rule.interfaces_should_be_pascal_case_prefixed_with_i.severity = suggestion
 dotnet_naming_rule.interfaces_should_be_pascal_case_prefixed_with_i.style = pascal_case_prefixed_with_i
 dotnet_naming_rule.interfaces_should_be_pascal_case_prefixed_with_i.symbols = interfaces
+
+dotnet_naming_rule.const_declarations_should_be_pascal_case.severity = suggestion
+dotnet_naming_rule.const_declarations_should_be_pascal_case.style = pascal_case
+dotnet_naming_rule.const_declarations_should_be_pascal_case.symbols = const_declarations
+
+dotnet_naming_rule.static_readonly_declarations_should_be_pascal_case.severity = suggestion
+dotnet_naming_rule.static_readonly_declarations_should_be_pascal_case.style = pascal_case
+dotnet_naming_rule.static_readonly_declarations_should_be_pascal_case.symbols = static_readonly_declarations
 
 dotnet_naming_rule.private_and_internal_fields_should_be_camel_case_prefixed_with_underscore.severity = suggestion
 dotnet_naming_rule.private_and_internal_fields_should_be_camel_case_prefixed_with_underscore.style = camel_case_prefixed_with_underscore
@@ -91,12 +101,16 @@ dotnet_naming_style.pascal_case_suffixed_with_async.required_suffix = Async
 [*.cs]
 dotnet_naming_symbols.async_members.required_modifiers = async
 
+dotnet_naming_symbols.const_declarations.required_modifiers = const
+
 dotnet_naming_symbols.interfaces.applicable_kinds = interface
 
 dotnet_naming_symbols.private_and_internal_fields.applicable_accessibilities = private, internal
 dotnet_naming_symbols.private_and_internal_fields.applicable_kinds = field
 
 dotnet_naming_symbols.public_and_protected_declarations.applicable_accessibilities = public, protected
+
+dotnet_naming_symbols.static_readonly_declarations.required_modifiers = static, readonly
 
 ###############################################################################
 # Set dotnet sort options to:
