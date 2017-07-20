@@ -166,7 +166,7 @@ namespace TerraFX.Provider.Win32.UI
             }
         }
 
-        /// <summary>Gets the <see cref="IWindowManager" /> associated with the instance.</summary>
+        /// <summary>Gets the <see cref="IWindowManager" /> for the instance.</summary>
         public IWindowManager WindowManager
         {
             get
