@@ -24,6 +24,7 @@
     <CompileUsingReferenceAssemblies>true</CompileUsingReferenceAssemblies>
     <Copyright>Copyright © Tanner Gooding and Contributors</Copyright>
     <Description>A framework for developing multimedia-based applications.</Description>
+    <EnableDefaultNoneItems>false</EnableDefaultNoneItems>
     <Features>strict</Features>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <HighEntropyVA>true</HighEntropyVA>
