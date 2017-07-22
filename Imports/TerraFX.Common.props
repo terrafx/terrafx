@@ -50,7 +50,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Net.Compilers" Version="2.3.0" />
+    <PackageReference Include="Microsoft.Net.Compilers" Version="2.3.1" />
   </ItemGroup>
 
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
