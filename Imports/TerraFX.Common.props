@@ -21,6 +21,7 @@
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Shared\Common\TerraFX.snk</AssemblyOriginatorKeyFile>
     <Authors>Tanner Gooding and Contributors</Authors>
     <Company>TerraFX</Company>
+    <CompileUsingReferenceAssemblies>true</CompileUsingReferenceAssemblies>
     <Copyright>Copyright © Tanner Gooding and Contributors</Copyright>
     <Description>A framework for developing multimedia-based applications.</Description>
     <Features>strict</Features>
@@ -34,6 +35,7 @@
     <PackageLicenseUrl>https://github.com/tannergooding/terrafx/blob/master/License.md</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/tannergooding/terrafx</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
     <Product>TerraFX</Product>
     <PublicSign>true</PublicSign>
     <RepositoryType>git</RepositoryType>
