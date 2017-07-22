@@ -8,13 +8,16 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     [Guid("8BA5FB08-5195-40E2-AC58-0D989C3A0102")]
+    [StructLayout(LayoutKind.Explicit)]
     unsafe public /* blittable */ struct ID3DBlob
     {
         #region Fields
+        [FieldOffset(0)]
         internal ID3D10Blob _value;
         #endregion
 
         #region ID3D10Blob Fields
+        [FieldOffset(0)]
         public readonly void* /* Vtbl* */ lpVtbl;
         #endregion
 

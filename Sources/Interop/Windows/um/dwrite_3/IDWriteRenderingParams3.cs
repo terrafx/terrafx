@@ -30,6 +30,8 @@ namespace TerraFX.Interop
         {
             #region Fields
             public IDWriteRenderingParams2.Vtbl BaseVtbl;
+
+            public GetRenderingMode1 GetRenderingMode1;
             #endregion
         }
         #endregion

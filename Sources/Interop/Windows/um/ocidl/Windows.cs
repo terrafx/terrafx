@@ -1,16 +1,16 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-// Ported from um\d2d1effects_1.h in the Windows SDK for Windows 10.0.15063.0
+// Ported from um\ocidl.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System;
 
 namespace TerraFX.Interop
 {
-    public static partial class D2D1
+    public static partial class Windows
     {
-        #region CLSID_* Constants
-        public static readonly Guid CLSID_D2D1YCbCr = new Guid(0x99503CC1, 0x66C7, 0x45C9, 0xA8, 0x75, 0x8A, 0xD8, 0xA7, 0x91, 0x44, 0x01);
+        #region IID_* Constants
+        public static readonly Guid IID_IPropertyBag2 = new Guid(0x22F55882, 0x280B, 0x11D0, 0xA8, 0xA9, 0x00, 0xA0, 0xC9, 0x0C, 0x20, 0x04);
         #endregion
     }
 }

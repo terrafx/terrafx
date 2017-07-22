@@ -8,13 +8,16 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     [Guid("2CD9069E-12E2-11DC-9FED-001143A055F9")]
+    [StructLayout(LayoutKind.Explicit)]
     unsafe public /* blittable */ struct IDWriteGeometrySink
     {
         #region Fields
+        [FieldOffset(0)]
         internal ID2D1SimplifiedGeometrySink _value;
         #endregion
 
         #region ID2D1SimplifiedGeometrySink Fields
+        [FieldOffset(0)]
         public readonly void* /* Vtbl* */ lpVtbl;
         #endregion
 
