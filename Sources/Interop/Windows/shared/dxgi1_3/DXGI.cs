@@ -11,6 +11,10 @@ namespace TerraFX.Interop
 {
     unsafe public static partial class DXGI
     {
+        #region DXGI_CREATE_FACTORY_* Constants
+        public const uint DXGI_CREATE_FACTORY_DEBUG = 0x00000001;
+        #endregion
+
         #region IID_* Constants
         public static readonly GUID IID_IDXGIDevice3 = new Guid(0x6007896C, 0x3244, 0x4AFD, 0xBF, 0x18, 0xA6, 0xD3, 0xBE, 0xDA, 0x50, 0x23);
 
@@ -32,7 +36,7 @@ namespace TerraFX.Interop
         #region External Methods
         [DllImport("DXGI", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CreateDXGIFactory2", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern void CreateDXGIFactory2(
+        public static extern HRESULT CreateDXGIFactory2(
             [In] UINT Flags,
             [In] REFIID riid,
             [Out] void** ppFactory
@@ -40,7 +44,7 @@ namespace TerraFX.Interop
 
         [DllImport("DXGI", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "DXGIGetDebugInterface1", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern void DXGIGetDebugInterface1(
+        public static extern HRESULT DXGIGetDebugInterface1(
             [In] UINT Flags,
             [In] REFIID riid,
             [Out] void** pDebug

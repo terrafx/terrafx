@@ -332,5 +332,17 @@ namespace TerraFX.Interop
 
         public const int WINCODEC_ERR_INVALIDJPEGSCANINDEX = unchecked((int)(0x88982F96));
         #endregion
+
+        #region Methods
+        public static bool SUCCEEDED(HRESULT hr)
+        {
+            return (hr >= 0);
+        }
+
+        public static bool FAILED(HRESULT hr)
+        {
+            return (hr < 0);
+        }
+        #endregion
     }
 }
