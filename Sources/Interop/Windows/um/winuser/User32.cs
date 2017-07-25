@@ -3,6 +3,9 @@
 // Ported from um\winuser.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+using System.Security;
+
 namespace TerraFX.Interop
 {
     public static partial class User32
@@ -833,6 +836,15 @@ namespace TerraFX.Interop
         public const int COLOR_3DHILIGHT = COLOR_BTNHIGHLIGHT;
 
         public const int COLOR_BTNHILIGHT = COLOR_BTNHIGHLIGHT;
+        #endregion
+
+        #region External Methods
+        [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "SetWindowTextW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        [SuppressUnmanagedCodeSecurity]
+        public static extern BOOL SetWindowText(
+            [In] HWND hWnd,
+            [In, Optional] LPCWSTR lpString
+        );
         #endregion
     }
 }

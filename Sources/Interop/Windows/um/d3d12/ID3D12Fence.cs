@@ -28,7 +28,7 @@ namespace TerraFX.Interop
         public /* static */ delegate HRESULT SetEventOnCompletion(
             [In] ID3D12Fence* This,
             [In] UINT64 Value,
-            [In] IntPtr hEvent
+            [In] HANDLE hEvent
         );
 
         [SuppressUnmanagedCodeSecurity]
