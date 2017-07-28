@@ -9,10 +9,10 @@ namespace TerraFX.Interop
     public /* blittable */ struct DWRITE_SCRIPT_ANALYSIS
     {
         #region Fields
-        /// <summary>Zero-based index representation of writing system script.</summary>>
+        /// <summary>Zero-based index representation of writing system script.</summary>
         public UINT16 script;
 
-        /// <summary>Additional shaping requirement of text.</summary>>
+        /// <summary>Additional shaping requirement of text.</summary>
         public DWRITE_SCRIPT_SHAPES shapes;
         #endregion
     }

@@ -17,7 +17,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Gets the current locality of a font given its zero-based index.</summary>>
+        /// <summary>Gets the current locality of a font given its zero-based index.</summary>
         /// <param name="listIndex">Zero-based index of the font in the font list.</param>
         /// <remarks> The locality enumeration. For fully local files, the result will always be DWRITE_LOCALITY_LOCAL. For downloadable files, the result depends on how much of the file has been downloaded, and GetFont() fails if the locality is REMOTE and potentially fails if PARTIAL. The application can explicitly ask for the font to be enqueued for download via EnqueueFontDownloadRequest followed by BeginDownload().</remarks>
         /// <returns> The locality enumeration.</returns>
@@ -28,7 +28,7 @@ namespace TerraFX.Interop
             [In] UINT32 listIndex
         );
 
-        /// <summary>Gets a font given its zero-based index.</summary>>
+        /// <summary>Gets a font given its zero-based index.</summary>
         /// <param name="listIndex">Zero-based index of the font in the font list.</param>
         /// <param name="font">Receives a pointer to the newly created font object.</param>
         /// <returns> Standard HRESULT error code.</returns>
@@ -40,7 +40,7 @@ namespace TerraFX.Interop
             [Out] IDWriteFont3** font
         );
 
-        /// <summary>Gets a font face reference given its zero-based index.</summary>>
+        /// <summary>Gets a font face reference given its zero-based index.</summary>
         /// <param name="listIndex">Zero-based index of the font in the font list.</param>
         /// <param name="fontFaceReference">Receives a pointer to the newly created font face reference object.</param>
         /// <returns> Standard HRESULT error code.</returns>

@@ -9,24 +9,24 @@ namespace TerraFX.Interop
     public /* blittable */ struct DWRITE_SCRIPT_PROPERTIES
     {
         #region Fields
-        /// <summary>The standardized four character code for the given script. Note these only include the general Unicode scripts, not any additional ISO 15924 scripts for bibliographic distinction (for example, Fraktur Latin vs Gaelic Latin). http://unicode.org/iso15924/iso15924-codes.html</summary>>
+        /// <summary>The standardized four character code for the given script. Note these only include the general Unicode scripts, not any additional ISO 15924 scripts for bibliographic distinction (for example, Fraktur Latin vs Gaelic Latin). http://unicode.org/iso15924/iso15924-codes.html</summary>
         public UINT32 isoScriptCode;
 
-        /// <summary>The standardized numeric code, ranging 0-999. http://unicode.org/iso15924/iso15924-codes.html</summary>>
+        /// <summary>The standardized numeric code, ranging 0-999. http://unicode.org/iso15924/iso15924-codes.html</summary>
         public UINT32 isoScriptNumber;
 
-        /// <summary>Number of characters to estimate look-ahead for complex scripts. Latin and all Kana are generally 1. Indic scripts are up to 15, and most others are 8. Note that combining marks and variation selectors can produce clusters longer than these look-aheads, so this estimate is considered typical language use. Diacritics must be tested explicitly separately.</summary>>
+        /// <summary>Number of characters to estimate look-ahead for complex scripts. Latin and all Kana are generally 1. Indic scripts are up to 15, and most others are 8. Note that combining marks and variation selectors can produce clusters longer than these look-aheads, so this estimate is considered typical language use. Diacritics must be tested explicitly separately.</summary>
         public UINT32 clusterLookahead;
 
         /// <summary>Appropriate character to elongate the given script for justification.
-        /// Examples: Arabic    - U+0640 Tatweel Ogham     - U+1680 Ogham Space Mark</summary>>
+        /// Examples: Arabic    - U+0640 Tatweel Ogham     - U+1680 Ogham Space Mark</summary>
         public UINT32 justificationCharacter;
 
         internal UINT32 _bitField;
         #endregion
 
         #region Properties
-        /// <summary>Restrict the caret to whole clusters, like Thai and Devanagari. Scripts such as Arabic by default allow navigation between clusters. Others like Thai always navigate across whole clusters.</summary>>
+        /// <summary>Restrict the caret to whole clusters, like Thai and Devanagari. Scripts such as Arabic by default allow navigation between clusters. Others like Thai always navigate across whole clusters.</summary>
         public UINT32 restrictCaretToClusters
         {
             get
@@ -41,7 +41,7 @@ namespace TerraFX.Interop
         }
 
         /// <summary>The language uses dividers between words, such as spaces between Latin or the Ethiopic wordspace.
-        /// Examples: Latin, Greek, Devanagari, Ethiopic Excludes: Chinese, Korean, Thai.</summary>>
+        /// Examples: Latin, Greek, Devanagari, Ethiopic Excludes: Chinese, Korean, Thai.</summary>
         public UINT32 usesWordDividers
         {
             get
@@ -56,7 +56,7 @@ namespace TerraFX.Interop
         }
 
         /// <summary>The characters are discrete units from each other. This includes both block scripts and clustered scripts.
-        /// Examples: Latin, Greek, Cyrillic, Hebrew, Chinese, Thai</summary>>
+        /// Examples: Latin, Greek, Cyrillic, Hebrew, Chinese, Thai</summary>
         public UINT32 isDiscreteWriting
         {
             get
@@ -71,7 +71,7 @@ namespace TerraFX.Interop
         }
 
         /// <summary>The language is a block script, expanding between characters.
-        /// Examples: Chinese, Japanese, Korean, Bopomofo.</summary>>
+        /// Examples: Chinese, Japanese, Korean, Bopomofo.</summary>
         public UINT32 isBlockWriting
         {
             get
@@ -86,7 +86,7 @@ namespace TerraFX.Interop
         }
 
         /// <summary>The language is justified within glyph clusters, not just between glyph clusters. One such as the character sequence is Thai Lu and Sara Am (U+E026, U+E033) which form a single cluster but still expand between them.
-        /// Examples: Thai, Lao, Khmer</summary>>
+        /// Examples: Thai, Lao, Khmer</summary>
         public UINT32 isDistributedWithinCluster
         {
             get
@@ -101,7 +101,7 @@ namespace TerraFX.Interop
         }
 
         /// <summary>The script's clusters are connected to each other (such as the baseline-linked Devanagari), and no separation should be added between characters. Note that cursively linked scripts like Arabic are also connected (but not all connected scripts are cursive).
-        /// Examples: Devanagari, Arabic, Syriac, Bengali, Gurmukhi, Ogham Excludes: Latin, Chinese, Thaana</summary>>
+        /// Examples: Devanagari, Arabic, Syriac, Bengali, Gurmukhi, Ogham Excludes: Latin, Chinese, Thaana</summary>
         public UINT32 isConnectedWriting
         {
             get
@@ -116,7 +116,7 @@ namespace TerraFX.Interop
         }
 
         /// <summary>The script is naturally cursive (Arabic/Syriac), meaning it uses other justification methods like kashida extension rather than intercharacter spacing. Note that although other scripts like Latin and Japanese may actually support handwritten cursive forms, they are not considered cursive scripts.
-        /// Examples: Arabic, Syriac, Mongolian Excludes: Thaana, Devanagari, Latin, Chinese</summary>>
+        /// Examples: Arabic, Syriac, Mongolian Excludes: Thaana, Devanagari, Latin, Chinese</summary>
         public UINT32 isCursiveWriting
         {
             get

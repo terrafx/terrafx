@@ -16,7 +16,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Set line spacing.</summary>>
+        /// <summary>Set line spacing.</summary>
         /// <param name="lineSpacingOptions">How to manage space between lines.</param>
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
@@ -26,7 +26,7 @@ namespace TerraFX.Interop
             [In] /* readonly */ DWRITE_LINE_SPACING* lineSpacingOptions
         );
 
-        /// <summary>Get line spacing.</summary>>
+        /// <summary>Get line spacing.</summary>
         /// <param name="lineSpacingOptions">How to manage space between lines.</param>
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]

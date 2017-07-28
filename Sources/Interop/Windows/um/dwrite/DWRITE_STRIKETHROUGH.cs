@@ -9,27 +9,27 @@ namespace TerraFX.Interop
     unsafe public /* blittable */ struct DWRITE_STRIKETHROUGH
     {
         #region Fields
-        /// <summary>Width of the strikethrough, measured parallel to the baseline.</summary>>
+        /// <summary>Width of the strikethrough, measured parallel to the baseline.</summary>
         public FLOAT width;
 
-        /// <summary>Thickness of the strikethrough, measured perpendicular to the baseline.</summary>>
+        /// <summary>Thickness of the strikethrough, measured perpendicular to the baseline.</summary>
         public FLOAT thickness;
 
-        /// <summary>Offset of the strikethrough from the baseline. A positive offset represents a position below the baseline and a negative offset is above.</summary>>
+        /// <summary>Offset of the strikethrough from the baseline. A positive offset represents a position below the baseline and a negative offset is above.</summary>
         public FLOAT offset;
 
-        /// <summary>Reading direction of the text associated with the strikethrough. This value is used to interpret whether the width value runs horizontally or vertically.</summary>>
+        /// <summary>Reading direction of the text associated with the strikethrough. This value is used to interpret whether the width value runs horizontally or vertically.</summary>
         public DWRITE_READING_DIRECTION readingDirection;
 
-        /// <summary>Flow direction of the text associated with the strikethrough. This value is used to interpret whether the thickness value advances top to bottom, left to right, or right to left.</summary>>
+        /// <summary>Flow direction of the text associated with the strikethrough. This value is used to interpret whether the thickness value advances top to bottom, left to right, or right to left.</summary>
         public DWRITE_FLOW_DIRECTION flowDirection;
 
-        /// <summary>Locale of the range. Can be pertinent where the locale affects the style.</summary>>
+        /// <summary>Locale of the range. Can be pertinent where the locale affects the style.</summary>
         public /* readonly */ WCHAR* localeName;
 
         /// <summary>The measuring mode can be useful to the renderer to determine how
         /// underlines are rendered, e.g. rounding the thickness to a whole pixel
-        /// in GDI-compatible modes.</summary>>
+        /// in GDI-compatible modes.</summary>
         public DWRITE_MEASURING_MODE measuringMode;
         #endregion
     }

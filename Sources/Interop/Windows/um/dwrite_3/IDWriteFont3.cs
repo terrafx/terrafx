@@ -17,7 +17,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Creates a font face object for the font.</summary>>
+        /// <summary>Creates a font face object for the font.</summary>
         /// <param name="fontFace">Receives a pointer to the newly created font face object.</param>
         /// <returns> Standard HRESULT error code. The function returns DWRITE_E_REMOTEFONT if it could not conpublic /* blittable */ struct a remote font.</returns>
         [SuppressUnmanagedCodeSecurity]
@@ -27,7 +27,7 @@ namespace TerraFX.Interop
             [Out] IDWriteFontFace3** fontFace
         );
 
-        /// <summary>Compares two instances of a font references for equality.</summary>>
+        /// <summary>Compares two instances of a font references for equality.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate BOOL _Equals(
@@ -35,7 +35,7 @@ namespace TerraFX.Interop
             [In] IDWriteFont* font
         );
 
-        /// <summary>Return a font face reference identifying this font.</summary>>
+        /// <summary>Return a font face reference identifying this font.</summary>
         /// <param name="fontFaceReference">A uniquely identifying reference to a font face.</param>
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
@@ -45,7 +45,7 @@ namespace TerraFX.Interop
             [Out] IDWriteFontFaceReference** fontFaceReference
         );
 
-        /// <summary>Determines whether the font supports the specified character.</summary>>
+        /// <summary>Determines whether the font supports the specified character.</summary>
         /// <param name="unicodeValue">Unicode (UCS-4) character value.</param>
         /// <returns> Returns TRUE if the font has the specified character, FALSE if not.</returns>
         [SuppressUnmanagedCodeSecurity]
@@ -55,7 +55,7 @@ namespace TerraFX.Interop
             [In] UINT32 unicodeValue
         );
 
-        /// <summary>Gets the current locality of the font.</summary>>
+        /// <summary>Gets the current locality of the font.</summary>
         /// <remarks> The locality enumeration. For fully local files, the result will always be DWRITE_LOCALITY_LOCAL. A downloadable file may be any of the states, and this function may change between calls.</remarks>
         /// <returns> The locality enumeration.</returns>
         [SuppressUnmanagedCodeSecurity]

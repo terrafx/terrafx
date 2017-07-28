@@ -8,19 +8,19 @@ namespace TerraFX.Interop
     /// <summary>How the glyph is oriented to the x-axis. This is an output from the text analyzer, dependent on the desired orientation, bidi level, and character properties.</summary>
     public enum DWRITE_GLYPH_ORIENTATION_ANGLE
     {
-        /// <summary>Glyph orientation is upright.</summary>>
+        /// <summary>Glyph orientation is upright.</summary>
         DWRITE_GLYPH_ORIENTATION_ANGLE_0_DEGREES,
 
 
-        /// <summary>Glyph orientation is rotated 90 clockwise.</summary>>
+        /// <summary>Glyph orientation is rotated 90 clockwise.</summary>
         DWRITE_GLYPH_ORIENTATION_ANGLE_90_DEGREES,
 
 
-        /// <summary>Glyph orientation is upside-down.</summary>>
+        /// <summary>Glyph orientation is upside-down.</summary>
         DWRITE_GLYPH_ORIENTATION_ANGLE_180_DEGREES,
 
 
-        /// <summary>Glyph orientation is rotated 270 clockwise.</summary>>
+        /// <summary>Glyph orientation is rotated 270 clockwise.</summary>
         DWRITE_GLYPH_ORIENTATION_ANGLE_270_DEGREES
     }
 }

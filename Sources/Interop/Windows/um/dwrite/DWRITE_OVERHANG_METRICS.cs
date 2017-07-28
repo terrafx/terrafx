@@ -10,16 +10,16 @@ namespace TerraFX.Interop
     public /* blittable */ struct DWRITE_OVERHANG_METRICS
     {
         #region Fields
-        /// <summary>The distance from the left-most visible DIP to its left alignment edge.</summary>>
+        /// <summary>The distance from the left-most visible DIP to its left alignment edge.</summary>
         public FLOAT left;
 
-        /// <summary>The distance from the top-most visible DIP to its top alignment edge.</summary>>
+        /// <summary>The distance from the top-most visible DIP to its top alignment edge.</summary>
         public FLOAT top;
 
-        /// <summary>The distance from the right-most visible DIP to its right alignment edge.</summary>>
+        /// <summary>The distance from the right-most visible DIP to its right alignment edge.</summary>
         public FLOAT right;
 
-        /// <summary>The distance from the bottom-most visible DIP to its bottom alignment edge.</summary>>
+        /// <summary>The distance from the bottom-most visible DIP to its bottom alignment edge.</summary>
         public FLOAT bottom;
         #endregion
     }

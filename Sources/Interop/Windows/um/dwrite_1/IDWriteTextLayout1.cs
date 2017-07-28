@@ -18,7 +18,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Enables/disables pair-kerning on the given range.</summary>>
+        /// <summary>Enables/disables pair-kerning on the given range.</summary>
         /// <param name="isPairKerningEnabled">The Boolean flag indicates whether text is pair-kerned.</param>
         /// <param name="textRange">Text range to which this change applies.</param>
         /// <returns> Standard HRESULT error code.</returns>
@@ -30,7 +30,7 @@ namespace TerraFX.Interop
             [In] DWRITE_TEXT_RANGE textRange
         );
 
-        /// <summary>Get whether or not pair-kerning is enabled at given position.</summary>>
+        /// <summary>Get whether or not pair-kerning is enabled at given position.</summary>
         /// <param name="currentPosition">The current text position.</param>
         /// <param name="isPairKerningEnabled">The Boolean flag indicates whether text is pair-kerned.</param>
         /// <param name="textRange">The position range of the current format.</param>
@@ -44,7 +44,7 @@ namespace TerraFX.Interop
             [Out] DWRITE_TEXT_RANGE* textRange = null
         );
 
-        /// <summary>Sets the spacing between characters.</summary>>
+        /// <summary>Sets the spacing between characters.</summary>
         /// <param name="leadingSpacing">The spacing before each character, in reading order.</param>
         /// <param name="trailingSpacing">The spacing after each character, in reading order.</param>
         /// <param name="minimumAdvanceWidth">The minimum advance of each character, to prevent characters from becoming too thin or zero-width. This must be zero or greater.</param>
@@ -60,7 +60,7 @@ namespace TerraFX.Interop
             [In] DWRITE_TEXT_RANGE textRange
         );
 
-        /// <summary>Gets the spacing between characters.</summary>>
+        /// <summary>Gets the spacing between characters.</summary>
         /// <param name="currentPosition">The current text position.</param>
         /// <param name="leadingSpacing">The spacing before each character, in reading order.</param>
         /// <param name="trailingSpacing">The spacing after each character, in reading order.</param>

@@ -18,7 +18,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Gets common metrics for the font in design units. These metrics are applicable to all the glyphs within a font, and are used by applications for layout calculations.</summary>>
+        /// <summary>Gets common metrics for the font in design units. These metrics are applicable to all the glyphs within a font, and are used by applications for layout calculations.</summary>
         /// <param name="fontMetrics">Metrics public structure to fill in.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -27,7 +27,7 @@ namespace TerraFX.Interop
             [Out] DWRITE_FONT_METRICS1* fontMetrics
         );
 
-        /// <summary>Gets common metrics for the font in design units. These metrics are applicable to all the glyphs within a font, and are used by applications for layout calculations.</summary>>
+        /// <summary>Gets common metrics for the font in design units. These metrics are applicable to all the glyphs within a font, and are used by applications for layout calculations.</summary>
         /// <param name="emSize">Logical size of the font in DIP units. A DIP ("device-independent pixel") equals 1/96 inch.</param>
         /// <param name="pixelsPerDip">Number of physical pixels per DIP. For example, if the DPI of the rendering surface is 96 this value is 1.0f. If the DPI is 120, this value is 120.0f/96.</param>
         /// <param name="transform">Optional transform applied to the glyphs and their positions. This transform is applied after the scaling specified by the font size and pixelsPerDip.</param>
@@ -43,7 +43,7 @@ namespace TerraFX.Interop
             [Out] DWRITE_FONT_METRICS1* fontMetrics
         );
 
-        /// <summary>Gets caret metrics for the font in design units. These are used by text editors for drawing the correct caret placement/slant.</summary>>
+        /// <summary>Gets caret metrics for the font in design units. These are used by text editors for drawing the correct caret placement/slant.</summary>
         /// <param name="caretMetrics">Metrics public structure to fill in.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -52,7 +52,7 @@ namespace TerraFX.Interop
             [Out] DWRITE_CARET_METRICS* caretMetrics
         );
 
-        /// <summary>Returns the list of character ranges supported by the font, which is useful for scenarios like character picking, glyph display, and efficient font selection lookup. This is similar to GDI's GetFontUnicodeRanges, except that it returns the full Unicode range, not just 16-bit UCS-2.</summary>>
+        /// <summary>Returns the list of character ranges supported by the font, which is useful for scenarios like character picking, glyph display, and efficient font selection lookup. This is similar to GDI's GetFontUnicodeRanges, except that it returns the full Unicode range, not just 16-bit UCS-2.</summary>
         /// <param name="maxRangeCount">Maximum number of character ranges passed in from the client.</param>
         /// <param name="unicodeRanges">Array of character ranges.</param>
         /// <param name="actualRangeCount">Actual number of character ranges, regardless of the maximum count.</param>
@@ -67,14 +67,14 @@ namespace TerraFX.Interop
             [Out] UINT32* actualRangeCount
         );
 
-        /// <summary>Returns true if the font is monospaced, meaning its characters are the same fixed-pitch width (non-proportional).</summary>>
+        /// <summary>Returns true if the font is monospaced, meaning its characters are the same fixed-pitch width (non-proportional).</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate BOOL IsMonospacedFont(
             [In] IDWriteFontFace1* This
         );
 
-        /// <summary>Returns the advances in design units for a sequences of glyphs.</summary>>
+        /// <summary>Returns the advances in design units for a sequences of glyphs.</summary>
         /// <param name="glyphCount">Number of glyphs to retrieve advances for.</param>
         /// <param name="glyphIndices">Array of glyph id's to retrieve advances for.</param>
         /// <param name="glyphAdvances">Returned advances in font design units for each glyph.</param>
@@ -91,7 +91,7 @@ namespace TerraFX.Interop
             [In, DefaultParameterValue(FALSE)] BOOL isSideways
         );
 
-        /// <summary>Returns the pixel-aligned advances for a sequences of glyphs, the same as GetGdiCompatibleGlyphMetrics would return.</summary>>
+        /// <summary>Returns the pixel-aligned advances for a sequences of glyphs, the same as GetGdiCompatibleGlyphMetrics would return.</summary>
         /// <param name="emSize">Logical size of the font in DIP units. A DIP ("device-independent pixel") equals 1/96 inch.</param>
         /// <param name="pixelsPerDip">Number of physical pixels per DIP. For example, if the DPI of the rendering surface is 96 this value is 1.0f. If the DPI is 120, this value is 120.0f/96.</param>
         /// <param name="transform">Optional transform applied to the glyphs and their positions. This transform is applied after the scaling specified by the font size and pixelsPerDip.</param>
@@ -116,7 +116,7 @@ namespace TerraFX.Interop
             [Out] INT32* glyphAdvances
         );
 
-        /// <summary>Retrieves the kerning pair adjustments from the font's kern table.</summary>>
+        /// <summary>Retrieves the kerning pair adjustments from the font's kern table.</summary>
         /// <param name="glyphCount">Number of glyphs to retrieve adjustments for.</param>
         /// <param name="glyphIndices">Array of glyph id's to retrieve adjustments for.</param>
         /// <param name="glyphAdvanceAdjustments">Returned advances in font design units for each glyph. The last glyph adjustment is zero.</param>
@@ -132,7 +132,7 @@ namespace TerraFX.Interop
             [Out] INT32* glyphAdvanceAdjustments
         );
 
-        /// <summary>Returns whether or not the font supports pair-kerning.</summary>>
+        /// <summary>Returns whether or not the font supports pair-kerning.</summary>
         /// <remarks> If the font does not support pair table kerning, there is no need to call GetKerningPairAdjustments (it would be all zeroes).</remarks>
         /// <returns> Whether the font supports kerning pairs.</returns>
         [SuppressUnmanagedCodeSecurity]
@@ -141,7 +141,7 @@ namespace TerraFX.Interop
             [In] IDWriteFontFace1* This
         );
 
-        /// <summary>Determines the recommended text rendering mode to be used based on the font, size, world transform, and measuring mode.</summary>>
+        /// <summary>Determines the recommended text rendering mode to be used based on the font, size, world transform, and measuring mode.</summary>
         /// <param name="fontEmSize">Logical font size in DIPs.</param>
         /// <param name="dpiX">Number of pixels per logical inch in the horizontal direction.</param>
         /// <param name="dpiY">Number of pixels per logical inch in the vertical direction.</param>
@@ -165,7 +165,7 @@ namespace TerraFX.Interop
             [Out] DWRITE_RENDERING_MODE* renderingMode
         );
 
-        /// <summary>Retrieves the vertical forms of the nominal glyphs retrieved from GetGlyphIndices, using the font's 'vert' table. This is used in CJK vertical layout so the correct characters are shown.</summary>>
+        /// <summary>Retrieves the vertical forms of the nominal glyphs retrieved from GetGlyphIndices, using the font's 'vert' table. This is used in CJK vertical layout so the correct characters are shown.</summary>
         /// <param name="glyphCount">Number of glyphs to retrieve.</param>
         /// <param name="nominalGlyphIndices">Original glyph indices from cmap.</param>
         /// <param name="verticalGlyphIndices">The vertical form of glyph indices.</param>
@@ -180,7 +180,7 @@ namespace TerraFX.Interop
             [Out] UINT16* verticalGlyphIndices
         );
 
-        /// <summary>Returns whether or not the font has any vertical glyph variants.</summary>>
+        /// <summary>Returns whether or not the font has any vertical glyph variants.</summary>
         /// <remarks> For OpenType fonts, this will return true if the font contains a 'vert' feature.</remarks>
         /// <returns> True if the font contains vertical glyph variants.</returns>
         [SuppressUnmanagedCodeSecurity]

@@ -17,7 +17,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Gets the current text antialiasing mode of the bitmap render target.</summary>>
+        /// <summary>Gets the current text antialiasing mode of the bitmap render target.</summary>
         /// <returns> Returns the antialiasing mode.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -25,7 +25,7 @@ namespace TerraFX.Interop
             [In] IDWriteBitmapRenderTarget1* This
         );
 
-        /// <summary>Sets the current text antialiasing mode of the bitmap render target.</summary>>
+        /// <summary>Sets the current text antialiasing mode of the bitmap render target.</summary>
         /// <returns> Returns S_OK if successful, or E_INVALIDARG if the argument is not valid.</returns>
         /// <remarks> The antialiasing mode of a newly-created bitmap render target defaults to DWRITE_TEXT_ANTIALIAS_MODE_CLEARTYPE. An application can change the antialiasing mode by calling SetTextAntialiasMode. For example, an application might specify grayscale antialiasing when rendering text onto a transparent bitmap.</remarks>
         [SuppressUnmanagedCodeSecurity]

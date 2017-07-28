@@ -18,7 +18,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Creates a remote font file stream object that encapsulates an open file resource and can be used to download remote file data.</summary>>
+        /// <summary>Creates a remote font file stream object that encapsulates an open file resource and can be used to download remote file data.</summary>
         /// <param name="fontFileReferenceKey">Font file reference key that uniquely identifies the font file resource within the scope of the font loader being used.</param>
         /// <param name="fontFileReferenceKeySize">Size of font file reference key in bytes.</param>
         /// <param name="fontFileStream">Pointer to the newly created font file stream.</param>
@@ -33,7 +33,7 @@ namespace TerraFX.Interop
             [Out] IDWriteRemoteFontFileStream** fontFileStream
         );
 
-        /// <summary>Gets the locality of the file resource identified by the unique key.</summary>>
+        /// <summary>Gets the locality of the file resource identified by the unique key.</summary>
         /// <param name="fontFileReferenceKey">Font file reference key that uniquely identifies the font file resource within the scope of the font loader being used.</param>
         /// <param name="fontFileReferenceKeySize">Size of font file reference key in bytes.</param>
         /// <param name="locality">Locality of the file.</param>
@@ -47,7 +47,7 @@ namespace TerraFX.Interop
             [Out] DWRITE_LOCALITY* locality
         );
 
-        /// <summary>Creates a font file reference from a URL if the loader supports this capability.</summary>>
+        /// <summary>Creates a font file reference from a URL if the loader supports this capability.</summary>
         /// <param name="factory">Factory used to create the font file reference.</param>
         /// <param name="baseUrl">Optional base URL. The base URL is used to resolve the fontFileUrl if it is relative. For example, the baseUrl might be the URL of the referring document that contained the fontFileUrl.</param>
         /// <param name="fontFileUrl">URL of the font resource.</param>

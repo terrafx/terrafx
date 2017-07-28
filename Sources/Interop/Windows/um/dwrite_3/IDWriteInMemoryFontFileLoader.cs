@@ -17,7 +17,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>The CreateInMemoryFontFileReference method creates a font file reference (IDWriteFontFile object) from an array of bytes. The font file reference is bound to the IDWRiteInMemoryFontFileLoader instance with which it was created and remains valid for as long as that loader is registered with the factory.</summary>>
+        /// <summary>The CreateInMemoryFontFileReference method creates a font file reference (IDWriteFontFile object) from an array of bytes. The font file reference is bound to the IDWRiteInMemoryFontFileLoader instance with which it was created and remains valid for as long as that loader is registered with the factory.</summary>
         /// <param name="factory">Factory object used to create the font file reference.</param>
         /// <param name="fontData">Pointer to a memory block containing the font data.</param>
         /// <param name="fontDataSize">Size of the font data.</param>
@@ -35,7 +35,7 @@ namespace TerraFX.Interop
             [Out] IDWriteFontFile** fontFile
         );
 
-        /// <summary>The GetFileCount method returns the number of font file references that have been created using this loader instance.</summary>>
+        /// <summary>The GetFileCount method returns the number of font file references that have been created using this loader instance.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate UINT32 GetFileCount(

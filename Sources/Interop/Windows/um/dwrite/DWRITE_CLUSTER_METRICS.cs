@@ -9,17 +9,17 @@ namespace TerraFX.Interop
     public /* blittable */ struct DWRITE_CLUSTER_METRICS
     {
         #region Fields
-        /// <summary>The total advance width of all glyphs in the cluster.</summary>>
+        /// <summary>The total advance width of all glyphs in the cluster.</summary>
         public FLOAT width;
 
-        /// <summary>The number of text positions in the cluster.</summary>>
+        /// <summary>The number of text positions in the cluster.</summary>
         public UINT16 length;
 
         internal UINT16 _bitField;
         #endregion
 
         #region Properties
-        /// <summary>Indicate whether line can be broken right after the cluster.</summary>>
+        /// <summary>Indicate whether line can be broken right after the cluster.</summary>
         public UINT16 canWrapLineAfter
         {
             get
@@ -33,7 +33,7 @@ namespace TerraFX.Interop
             }
         }
 
-        /// <summary>Indicate whether the cluster corresponds to whitespace character.</summary>>
+        /// <summary>Indicate whether the cluster corresponds to whitespace character.</summary>
         public UINT16 isWhitespace
         {
             get
@@ -47,7 +47,7 @@ namespace TerraFX.Interop
             }
         }
 
-        /// <summary>Indicate whether the cluster corresponds to a newline character.</summary>>
+        /// <summary>Indicate whether the cluster corresponds to a newline character.</summary>
         public UINT16 isNewline
         {
             get
@@ -61,7 +61,7 @@ namespace TerraFX.Interop
             }
         }
 
-        /// <summary>Indicate whether the cluster corresponds to soft hyphen character.</summary>>
+        /// <summary>Indicate whether the cluster corresponds to soft hyphen character.</summary>
         public UINT16 isSoftHyphen
         {
             get
@@ -75,7 +75,7 @@ namespace TerraFX.Interop
             }
         }
 
-        /// <summary>Indicate whether the cluster is read from right to left.</summary>>
+        /// <summary>Indicate whether the cluster is read from right to left.</summary>
         public UINT16 isRightToLeft
         {
             get

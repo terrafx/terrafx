@@ -17,28 +17,28 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Returns TRUE if the font contains tables that can provide color information (including COLR, CPAL, SVG, CBDT, sbix  tables), or FALSE if not. Note that TRUE is returned even in the case when the font tables contain only grayscale images.</summary>>
+        /// <summary>Returns TRUE if the font contains tables that can provide color information (including COLR, CPAL, SVG, CBDT, sbix  tables), or FALSE if not. Note that TRUE is returned even in the case when the font tables contain only grayscale images.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate BOOL IsColorFont(
             [In] IDWriteFontFace2* This
         );
 
-        /// <summary>Returns the number of color palettes defined by the font. The return value is zero if the font has no color information. Color fonts must have at least one palette, with palette index zero being the default.</summary>>
+        /// <summary>Returns the number of color palettes defined by the font. The return value is zero if the font has no color information. Color fonts must have at least one palette, with palette index zero being the default.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate UINT32 GetColorPaletteCount(
             [In] IDWriteFontFace2* This
         );
 
-        /// <summary>Returns the number of entries in each color palette. All color palettes in a font have the same number of palette entries. The return value is zero if the font has no color information.</summary>>
+        /// <summary>Returns the number of entries in each color palette. All color palettes in a font have the same number of palette entries. The return value is zero if the font has no color information.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate UINT32 GetPaletteEntryCount(
             [In] IDWriteFontFace2* This
         );
 
-        /// <summary>Reads color values from the font's color palette.</summary>>
+        /// <summary>Reads color values from the font's color palette.</summary>
         /// <param name="colorPaletteIndex">Zero-based index of the color palette. If the font does not have a palette with the specified index, the method returns DWRITE_E_NOCOLOR.</param>
         /// <param name="firstEntryIndex">Zero-based index of the first palette entry to read.</param>
         /// <param name="entryCount">Number of palette entries to read.</param>
@@ -54,7 +54,7 @@ namespace TerraFX.Interop
             [Out] DWRITE_COLOR_F* paletteEntries
         );
 
-        /// <summary>Determines the recommended text rendering and grid-fit mode to be used based on the font, size, world transform, and measuring mode.</summary>>
+        /// <summary>Determines the recommended text rendering and grid-fit mode to be used based on the font, size, world transform, and measuring mode.</summary>
         /// <param name="fontEmSize">Logical font size in DIPs.</param>
         /// <param name="dpiX">Number of pixels per logical inch in the horizontal direction.</param>
         /// <param name="dpiY">Number of pixels per logical inch in the vertical direction.</param>

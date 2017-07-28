@@ -8,16 +8,16 @@ namespace TerraFX.Interop
     /// <summary>Alignment of paragraph text along the reading direction axis relative to the leading and trailing edge of the layout box.</summary>
     public enum DWRITE_TEXT_ALIGNMENT
     {
-        /// <summary>The leading edge of the paragraph text is aligned to the layout box's leading edge.</summary>>
+        /// <summary>The leading edge of the paragraph text is aligned to the layout box's leading edge.</summary>
         DWRITE_TEXT_ALIGNMENT_LEADING,
 
-        /// <summary>The trailing edge of the paragraph text is aligned to the layout box's trailing edge.</summary>>
+        /// <summary>The trailing edge of the paragraph text is aligned to the layout box's trailing edge.</summary>
         DWRITE_TEXT_ALIGNMENT_TRAILING,
 
-        /// <summary>The center of the paragraph text is aligned to the center of the layout box.</summary>>
+        /// <summary>The center of the paragraph text is aligned to the center of the layout box.</summary>
         DWRITE_TEXT_ALIGNMENT_CENTER,
 
-        /// <summary>Align text to the leading side, and also justify text to fill the lines.</summary>>
+        /// <summary>Align text to the leading side, and also justify text to fill the lines.</summary>
         DWRITE_TEXT_ALIGNMENT_JUSTIFIED
     }
 }

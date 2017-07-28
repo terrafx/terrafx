@@ -17,7 +17,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>The DownloadCompleted method is called back on an arbitrary thread when a download operation ends.</summary>>
+        /// <summary>The DownloadCompleted method is called back on an arbitrary thread when a download operation ends.</summary>
         /// <param name="downloadQueue">Pointer to the download queue interface on which the BeginDownload method was called.</param>
         /// <param name="context">Optional context object that was passed to BeginDownload. AddRef is called on the context object by BeginDownload and Release is called after the DownloadCompleted method returns.</param>
         /// <param name="downloadResult">Result of the download operation.</param>

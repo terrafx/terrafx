@@ -18,7 +18,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Appends a single mapping to the list. Call this once for each additional mapping.</summary>>
+        /// <summary>Appends a single mapping to the list. Call this once for each additional mapping.</summary>
         /// <param name="ranges">Unicode ranges that apply to this mapping.</param>
         /// <param name="rangesCount">Number of Unicode ranges.</param>
         /// <param name="localeName">Locale of the context (e.g. document locale).</param>
@@ -42,7 +42,7 @@ namespace TerraFX.Interop
             [In, DefaultParameterValue(1.0f)] FLOAT scale
         );
 
-        /// <summary>Appends all the mappings from an existing font fallback object.</summary>>
+        /// <summary>Appends all the mappings from an existing font fallback object.</summary>
         /// <param name="fontFallback">Font fallback to read mappings from.</param>
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
@@ -52,7 +52,7 @@ namespace TerraFX.Interop
             [In] IDWriteFontFallback* fontFallback
         );
 
-        /// <summary>Creates the finalized fallback object from the mappings added.</summary>>
+        /// <summary>Creates the finalized fallback object from the mappings added.</summary>
         /// <param name="fontFallback">Created fallback list.</param>
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]

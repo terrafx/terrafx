@@ -9,31 +9,31 @@ namespace TerraFX.Interop
     unsafe public /* blittable */ struct DWRITE_UNDERLINE
     {
         #region Fields
-        /// <summary>Width of the underline, measured parallel to the baseline.</summary>>
+        /// <summary>Width of the underline, measured parallel to the baseline.</summary>
         public FLOAT width;
 
         /// <summary>Thickness of the underline, measured perpendicular to the
-        /// baseline.</summary>>
+        /// baseline.</summary>
         public FLOAT thickness;
 
-        /// <summary>Offset of the underline from the baseline. A positive offset represents a position below the baseline and a negative offset is above.</summary>>
+        /// <summary>Offset of the underline from the baseline. A positive offset represents a position below the baseline and a negative offset is above.</summary>
         public FLOAT offset;
 
-        /// <summary>Height of the tallest run where the underline applies.</summary>>
+        /// <summary>Height of the tallest run where the underline applies.</summary>
         public FLOAT runHeight;
 
-        /// <summary>Reading direction of the text associated with the underline.  This value is used to interpret whether the width value runs horizontally or vertically.</summary>>
+        /// <summary>Reading direction of the text associated with the underline.  This value is used to interpret whether the width value runs horizontally or vertically.</summary>
         public DWRITE_READING_DIRECTION readingDirection;
 
-        /// <summary>Flow direction of the text associated with the underline.  This value is used to interpret whether the thickness value advances top to bottom, left to right, or right to left.</summary>>
+        /// <summary>Flow direction of the text associated with the underline.  This value is used to interpret whether the thickness value advances top to bottom, left to right, or right to left.</summary>
         public DWRITE_FLOW_DIRECTION flowDirection;
 
-        /// <summary>Locale of the text the underline is being drawn under. Can be pertinent where the locale affects how the underline is drawn. For example, in vertical text, the underline belongs on the left for Chinese but on the right for Japanese. This choice is completely left up to higher levels.</summary>>
+        /// <summary>Locale of the text the underline is being drawn under. Can be pertinent where the locale affects how the underline is drawn. For example, in vertical text, the underline belongs on the left for Chinese but on the right for Japanese. This choice is completely left up to higher levels.</summary>
         public /* readonly */ WCHAR* localeName;
 
         /// <summary>The measuring mode can be useful to the renderer to determine how
         /// underlines are rendered, e.g. rounding the thickness to a whole pixel
-        /// in GDI-compatible modes.</summary>>
+        /// in GDI-compatible modes.</summary>
         public DWRITE_MEASURING_MODE measuringMode;
         #endregion
     }

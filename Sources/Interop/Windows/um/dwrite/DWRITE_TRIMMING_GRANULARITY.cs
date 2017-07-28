@@ -8,13 +8,13 @@ namespace TerraFX.Interop
     /// <summary>Text granularity used to trim text overflowing the layout box.</summary>
     public enum DWRITE_TRIMMING_GRANULARITY
     {
-        /// <summary>No trimming occurs. Text flows beyond the layout width.</summary>>
+        /// <summary>No trimming occurs. Text flows beyond the layout width.</summary>
         DWRITE_TRIMMING_GRANULARITY_NONE,
 
-        /// <summary>Trimming occurs at character cluster boundary.</summary>>
+        /// <summary>Trimming occurs at character cluster boundary.</summary>
         DWRITE_TRIMMING_GRANULARITY_CHARACTER,
 
-        /// <summary>Trimming occurs at word boundary.</summary>>
+        /// <summary>Trimming occurs at word boundary.</summary>
         DWRITE_TRIMMING_GRANULARITY_WORD
     }
 }

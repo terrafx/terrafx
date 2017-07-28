@@ -16,7 +16,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Adds references to all the fonts in the specified font file. The method parses the font file to determine the fonts and their properties.</summary>>
+        /// <summary>Adds references to all the fonts in the specified font file. The method parses the font file to determine the fonts and their properties.</summary>
         /// <param name="fontFile">Font file reference object to add to the set.</param>
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]

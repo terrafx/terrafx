@@ -17,14 +17,14 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Gets all the glyph image formats supported by the entire font (SVG, PNG, JPEG, ...).</summary>>
+        /// <summary>Gets all the glyph image formats supported by the entire font (SVG, PNG, JPEG, ...).</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate DWRITE_GLYPH_IMAGE_FORMATS GetGlyphImageFormats(
             [In] IDWriteFontFace4* This
         );
 
-        /// <summary>Gets the available image formats of a specific glyph and ppem. Glyphs often have at least TrueType or CFF outlines, but they may also have SVG outlines, or they may have only bitmaps with no TrueType/CFF outlines. Some image formats, notably the PNG/JPEG ones, are size specific and will return no match when there isn't an entry in that size range.</summary>>
+        /// <summary>Gets the available image formats of a specific glyph and ppem. Glyphs often have at least TrueType or CFF outlines, but they may also have SVG outlines, or they may have only bitmaps with no TrueType/CFF outlines. Some image formats, notably the PNG/JPEG ones, are size specific and will return no match when there isn't an entry in that size range.</summary>
         /// <remarks> Glyph ids beyond the glyph count return DWRITE_GLYPH_IMAGE_FORMATS_NONE.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -36,7 +36,7 @@ namespace TerraFX.Interop
             [Out] DWRITE_GLYPH_IMAGE_FORMATS* glyphImageFormats
         );
 
-        /// <summary>Gets a pointer to the glyph data based on the desired image format.</summary>>
+        /// <summary>Gets a pointer to the glyph data based on the desired image format.</summary>
         /// <remarks> The glyphDataContext must be released via ReleaseGlyphImageData when done if the data is not empty, similar to IDWriteFontFileStream::ReadFileFragment and IDWriteFontFileStream::ReleaseFileFragment. The data pointer is valid so long as the IDWriteFontFace exists and ReleaseGlyphImageData has not been called.</remarks>
         /// <remarks> The DWRITE_GLYPH_IMAGE_DATA::uniqueDataId is valuable for caching purposes so that if the same resource is returned more than once, an existing resource can be quickly retrieved rather than needing to reparse or decompress the data.</remarks>
         /// <remarks> The function only returns SVG or raster data - requesting TrueType/CFF/COLR data returns DWRITE_E_INVALIDARG. Those must be drawn via DrawGlyphRun or queried using GetGlyphOutline instead. Exactly one format may be requested or else the function returns DWRITE_E_INVALIDARG. If the glyph does not have that format, the call is not an error, but the function returns empty data.</remarks>
@@ -51,7 +51,7 @@ namespace TerraFX.Interop
             [Out] void** glyphDataContext
         );
 
-        /// <summary>Releases the table data obtained earlier from ReadGlyphData.</summary>>
+        /// <summary>Releases the table data obtained earlier from ReadGlyphData.</summary>
         /// <param name="glyphDataContext">Opaque context from ReadGlyphData.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]

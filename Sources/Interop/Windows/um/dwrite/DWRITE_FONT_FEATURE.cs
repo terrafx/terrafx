@@ -9,10 +9,10 @@ namespace TerraFX.Interop
     public /* blittable */ struct DWRITE_FONT_FEATURE
     {
         #region Fields
-        /// <summary>The feature OpenType name identifier.</summary>>
+        /// <summary>The feature OpenType name identifier.</summary>
         public DWRITE_FONT_FEATURE_TAG nameTag;
 
-        /// <summary>Execution parameter of the feature.</summary>>
+        /// <summary>Execution parameter of the feature.</summary>
         /// <remarks>The parameter should be non-zero to enable the feature.  Once enabled, a feature can't be disabled again within the same range.  Features requiring a selector use this value to indicate the selector index.</remarks>
         public UINT32 parameter;
         #endregion

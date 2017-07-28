@@ -18,7 +18,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>GetLocalFileSize returns the number of bytes of the font file that are currently local, which should always be less than or equal to the full file size returned by GetFileSize. If the locality is remote, the return value is zero. If the file is fully local, the return value must be the same as GetFileSize.</summary>>
+        /// <summary>GetLocalFileSize returns the number of bytes of the font file that are currently local, which should always be less than or equal to the full file size returned by GetFileSize. If the locality is remote, the return value is zero. If the file is fully local, the return value must be the same as GetFileSize.</summary>
         /// <param name="localFileSize">Receives the local size of the file.</param>
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
@@ -27,7 +27,7 @@ namespace TerraFX.Interop
             [Out] UINT64* localFileSize
         );
 
-        /// <summary>GetFileFragmentLocality returns information about the locality of a byte range (i.e., font fragment) within the font file stream.</summary>>
+        /// <summary>GetFileFragmentLocality returns information about the locality of a byte range (i.e., font fragment) within the font file stream.</summary>
         /// <param name="fileOffset">Offset of the fragment from the beginning of the font file.</param>
         /// <param name="fragmentSize">Size of the fragment in bytes.</param>
         /// <param name="isLocal">Receives TRUE if the first byte of the fragment is local, FALSE if not.</param>
@@ -42,14 +42,14 @@ namespace TerraFX.Interop
             [Out] UINT64* partialSize
         );
 
-        /// <summary>Gets the current locality of the file.</summary>>
+        /// <summary>Gets the current locality of the file.</summary>
         /// <returns> Returns the locality enumeration (i.e., remote, partial, or local).</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate DWRITE_LOCALITY GetLocality(
         );
 
-        /// <summary>BeginDownload begins downloading all or part of the font file.</summary>>
+        /// <summary>BeginDownload begins downloading all or part of the font file.</summary>
         /// <param name="fileFragments">Array of public structures, each specifying a byte range to download.</param>
         /// <param name="fragmentCount">Number of elements in the fileFragments array. This can be zero to just download file information, such as the size.</param>
         /// <param name="asyncResult">Receives an object that can be used to wait for the asynchronous download to complete and to get the download result upon completion. The result may be NULL if the download completes synchronously. For example, this can happen if method determines that the requested data is already local.</param>

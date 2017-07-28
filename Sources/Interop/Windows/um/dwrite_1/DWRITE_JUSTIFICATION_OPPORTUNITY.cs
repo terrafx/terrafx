@@ -9,20 +9,20 @@ namespace TerraFX.Interop
     public /* blittable */ struct DWRITE_JUSTIFICATION_OPPORTUNITY
     {
         #region Fields
-        /// <summary>Minimum amount of expansion to apply to the side of the glyph. This may vary from 0 to infinity, typically being zero except for kashida.</summary>>
+        /// <summary>Minimum amount of expansion to apply to the side of the glyph. This may vary from 0 to infinity, typically being zero except for kashida.</summary>
         public FLOAT expansionMinimum;
 
-        /// <summary>Maximum amount of expansion to apply to the side of the glyph. This may vary from 0 to infinity, being zero for fixed-size characters and connected scripts, and non-zero for discrete scripts, and non-zero for cursive scripts at expansion points.</summary>>
+        /// <summary>Maximum amount of expansion to apply to the side of the glyph. This may vary from 0 to infinity, being zero for fixed-size characters and connected scripts, and non-zero for discrete scripts, and non-zero for cursive scripts at expansion points.</summary>
         public FLOAT expansionMaximum;
 
-        /// <summary>Maximum amount of compression to apply to the side of the glyph. This may vary from 0 up to the glyph cluster size.</summary>>
+        /// <summary>Maximum amount of compression to apply to the side of the glyph. This may vary from 0 up to the glyph cluster size.</summary>
         public FLOAT compressionMaximum;
 
         internal UINT32 _bitField;
         #endregion
 
         #region Properties
-        /// <summary>Priority of this expansion point. Larger priorities are applied later, while priority zero does nothing.</summary>>
+        /// <summary>Priority of this expansion point. Larger priorities are applied later, while priority zero does nothing.</summary>
         public UINT32 expansionPriority
         {
             get
@@ -36,7 +36,7 @@ namespace TerraFX.Interop
             }
         }
 
-        /// <summary>Priority of this compression point. Larger priorities are applied later, while priority zero does nothing.</summary>>
+        /// <summary>Priority of this compression point. Larger priorities are applied later, while priority zero does nothing.</summary>
         public UINT32 compressionPriority
         {
             get
@@ -50,7 +50,7 @@ namespace TerraFX.Interop
             }
         }
 
-        /// <summary>Allow this expansion point to use up any remaining slack space even after all expansion priorities have been used up.</summary>>
+        /// <summary>Allow this expansion point to use up any remaining slack space even after all expansion priorities have been used up.</summary>
         public UINT32 allowResidualExpansion
         {
             get
@@ -64,7 +64,7 @@ namespace TerraFX.Interop
             }
         }
 
-        /// <summary>Allow this compression point to use up any remaining space even after all compression priorities have been used up.</summary>>
+        /// <summary>Allow this compression point to use up any remaining space even after all compression priorities have been used up.</summary>
         public UINT32 allowResidualCompression
         {
             get
@@ -78,7 +78,7 @@ namespace TerraFX.Interop
             }
         }
 
-        /// <summary>Apply expansion/compression to the leading edge of the glyph. This will be false for connected scripts, fixed-size characters, and diacritics. It is generally false within a multi-glyph cluster, unless the script allows expansion of glyphs within a cluster, like Thai.</summary>>
+        /// <summary>Apply expansion/compression to the leading edge of the glyph. This will be false for connected scripts, fixed-size characters, and diacritics. It is generally false within a multi-glyph cluster, unless the script allows expansion of glyphs within a cluster, like Thai.</summary>
         public UINT32 applyToLeadingEdge
         {
             get
@@ -92,7 +92,7 @@ namespace TerraFX.Interop
             }
         }
 
-        /// <summary>Apply expansion/compression to the trailing edge of the glyph. This will be false for connected scripts, fixed-size characters, and diacritics. It is generally false within a multi-glyph cluster, unless the script allows expansion of glyphs within a cluster, like Thai.</summary>>
+        /// <summary>Apply expansion/compression to the trailing edge of the glyph. This will be false for connected scripts, fixed-size characters, and diacritics. It is generally false within a multi-glyph cluster, unless the script allows expansion of glyphs within a cluster, like Thai.</summary>
         public UINT32 applyToTrailingEdge
         {
             get

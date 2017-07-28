@@ -17,14 +17,14 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Gets the number of strings.</summary>>
+        /// <summary>Gets the number of strings.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate UINT32 GetCount(
             [In] IDWriteStringList* This
         );
 
-        /// <summary>Gets the length in characters (not including the null terminator) of the locale name with the specified index.</summary>>
+        /// <summary>Gets the length in characters (not including the null terminator) of the locale name with the specified index.</summary>
         /// <param name="listIndex">Zero-based index of the locale name.</param>
         /// <param name="length">Receives the length in characters, not including the null terminator.</param>
         /// <returns> Standard HRESULT error code.</returns>
@@ -36,7 +36,7 @@ namespace TerraFX.Interop
             [Out] UINT32* length
         );
 
-        /// <summary>Copies the locale name with the specified index to the specified array.</summary>>
+        /// <summary>Copies the locale name with the specified index to the specified array.</summary>
         /// <param name="listIndex">Zero-based index of the locale name.</param>
         /// <param name="localeName">Character array that receives the locale name.</param>
         /// <param name="size">Size of the array in characters. The size must include space for the terminating null character.</param>
@@ -50,7 +50,7 @@ namespace TerraFX.Interop
             [In] UINT32 size
         );
 
-        /// <summary>Gets the length in characters (not including the null terminator) of the string with the specified index.</summary>>
+        /// <summary>Gets the length in characters (not including the null terminator) of the string with the specified index.</summary>
         /// <param name="listIndex">Zero-based index of the string.</param>
         /// <param name="length">Receives the length in characters, not including the null terminator.</param>
         /// <returns> Standard HRESULT error code.</returns>
@@ -62,7 +62,7 @@ namespace TerraFX.Interop
             [Out] UINT32* length
         );
 
-        /// <summary>Copies the string with the specified index to the specified array.</summary>>
+        /// <summary>Copies the string with the specified index to the specified array.</summary>
         /// <param name="listIndex">Zero-based index of the string.</param>
         /// <param name="stringBuffer">Character array that receives the string.</param>
         /// <param name="stringBufferSize">Size of the array in characters. The size must include space for the terminating null character.</param>

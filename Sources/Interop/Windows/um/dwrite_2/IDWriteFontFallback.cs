@@ -17,7 +17,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Determines an appropriate font to use to render the range of text.</summary>>
+        /// <summary>Determines an appropriate font to use to render the range of text.</summary>
         /// <param name="analysisSource">The text source implementation holds the text and locale.</param>
         /// <param name="textLength">Length of the text to analyze.</param>
         /// <param name="baseFontCollection">Default font collection to use.</param>

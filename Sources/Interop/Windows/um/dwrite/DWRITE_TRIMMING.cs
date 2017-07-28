@@ -9,13 +9,13 @@ namespace TerraFX.Interop
     public /* blittable */ struct DWRITE_TRIMMING
     {
         #region Fields
-        /// <summary>Text granularity of which trimming applies.</summary>>
+        /// <summary>Text granularity of which trimming applies.</summary>
         public DWRITE_TRIMMING_GRANULARITY granularity;
 
-        /// <summary>Character code used as the delimiter signaling the beginning of the portion of text to be preserved, most useful for path ellipsis, where the delimiter would be a slash. Leave this zero if there is no delimiter.</summary>>
+        /// <summary>Character code used as the delimiter signaling the beginning of the portion of text to be preserved, most useful for path ellipsis, where the delimiter would be a slash. Leave this zero if there is no delimiter.</summary>
         public UINT32 delimiter;
 
-        /// <summary>How many occurrences of the delimiter to step back. Leave this zero if there is no delimiter.</summary>>
+        /// <summary>How many occurrences of the delimiter to step back. Leave this zero if there is no delimiter.</summary>
         public UINT32 delimiterCount;
         #endregion
     }

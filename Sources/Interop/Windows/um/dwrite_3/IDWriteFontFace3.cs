@@ -17,7 +17,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Return a font face reference identifying this font.</summary>>
+        /// <summary>Return a font face reference identifying this font.</summary>
         /// <param name="fontFaceReference">A uniquely identifying reference to a font face.</param>
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
@@ -27,7 +27,7 @@ namespace TerraFX.Interop
             [Out] IDWriteFontFaceReference** fontFaceReference
         );
 
-        /// <summary>Gets the PANOSE values from the font, used for font selection and matching.</summary>>
+        /// <summary>Gets the PANOSE values from the font, used for font selection and matching.</summary>
         /// <param name="panose">PANOSE public structure to fill in.</param>
         /// <remarks> The function does not simulate these, such as substituting a weight or proportion inferred on other values. If the font does not specify them, they are all set to 'any' (0).</remarks>
         [SuppressUnmanagedCodeSecurity]
@@ -37,28 +37,28 @@ namespace TerraFX.Interop
             [Out] DWRITE_PANOSE* panose
         );
 
-        /// <summary>Gets the weight of the specified font.</summary>>
+        /// <summary>Gets the weight of the specified font.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate DWRITE_FONT_WEIGHT GetWeight(
             [In] IDWriteFontFace3* This
         );
 
-        /// <summary>Gets the stretch (aka. width) of the specified font.</summary>>
+        /// <summary>Gets the stretch (aka. width) of the specified font.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate DWRITE_FONT_STRETCH GetStretch(
             [In] IDWriteFontFace3* This
         );
 
-        /// <summary>Gets the style (aka. slope) of the specified font.</summary>>
+        /// <summary>Gets the style (aka. slope) of the specified font.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate DWRITE_FONT_STYLE GetStyle(
             [In] IDWriteFontFace3* This
         );
 
-        /// <summary>Creates an localized strings object that contains the family names for the font family, indexed by locale name.</summary>>
+        /// <summary>Creates an localized strings object that contains the family names for the font family, indexed by locale name.</summary>
         /// <param name="names">Receives a pointer to the newly created localized strings object.</param>
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
@@ -68,7 +68,7 @@ namespace TerraFX.Interop
             [Out] IDWriteLocalizedStrings** names
         );
 
-        /// <summary>Gets a localized strings collection containing the face names for the font (e.g., Regular or Bold), indexed by locale name.</summary>>
+        /// <summary>Gets a localized strings collection containing the face names for the font (e.g., Regular or Bold), indexed by locale name.</summary>
         /// <param name="names">Receives a pointer to the newly created localized strings object.</param>
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
@@ -78,7 +78,7 @@ namespace TerraFX.Interop
             [Out] IDWriteLocalizedStrings** names
         );
 
-        /// <summary>Gets a localized strings collection containing the specified informational strings, indexed by locale name.</summary>>
+        /// <summary>Gets a localized strings collection containing the specified informational strings, indexed by locale name.</summary>
         /// <param name="informationalStringID">Identifies the string to get.</param>
         /// <param name="informationalStrings">Receives a pointer to the newly created localized strings object.</param>
         /// <param name="exists">Receives the value TRUE if the font contains the specified string ID or FALSE if not.</param>
@@ -92,7 +92,7 @@ namespace TerraFX.Interop
             [Out] BOOL* exists
         );
 
-        /// <summary>Determines whether the font supports the specified character.</summary>>
+        /// <summary>Determines whether the font supports the specified character.</summary>
         /// <param name="unicodeValue">Unicode (UCS-4) character value.</param>
         /// <returns> Returns TRUE if the font has the specified character, FALSE if not.</returns>
         [SuppressUnmanagedCodeSecurity]
@@ -102,7 +102,7 @@ namespace TerraFX.Interop
             [In] UINT32 unicodeValue
         );
 
-        /// <summary>Determines the recommended text rendering and grid-fit mode to be used based on the font, size, world transform, and measuring mode.</summary>>
+        /// <summary>Determines the recommended text rendering and grid-fit mode to be used based on the font, size, world transform, and measuring mode.</summary>
         /// <param name="fontEmSize">Logical font size in DIPs.</param>
         /// <param name="dpiX">Number of pixels per logical inch in the horizontal direction.</param>
         /// <param name="dpiY">Number of pixels per logical inch in the vertical direction.</param>
@@ -130,7 +130,7 @@ namespace TerraFX.Interop
             [Out] DWRITE_GRID_FIT_MODE* gridFitMode
         );
 
-        /// <summary>Determines whether the character is locally downloaded from the font.</summary>>
+        /// <summary>Determines whether the character is locally downloaded from the font.</summary>
         /// <param name="unicodeValue">Unicode (UCS-4) character value.</param>
         /// <returns> Returns TRUE if the font has the specified character locally available, FALSE if not or if the font does not support that character.</returns>
         [SuppressUnmanagedCodeSecurity]
@@ -140,7 +140,7 @@ namespace TerraFX.Interop
             [In] UINT32 unicodeValue
         );
 
-        /// <summary>Determines whether the glyph is locally downloaded from the font.</summary>>
+        /// <summary>Determines whether the glyph is locally downloaded from the font.</summary>
         /// <param name="glyphId">Glyph identifier.</param>
         /// <returns> Returns TRUE if the font has the specified glyph locally available.</returns>
         [SuppressUnmanagedCodeSecurity]
@@ -150,7 +150,7 @@ namespace TerraFX.Interop
             [In] UINT16 glyphId
         );
 
-        /// <summary>Determines whether the specified characters are local.</summary>>
+        /// <summary>Determines whether the specified characters are local.</summary>
         /// <param name="characters">Array of characters.</param>
         /// <param name="characterCount">The number of elements in the character array.</param>
         /// <param name="enqueueIfNotLocal">Specifies whether to enqueue a download request if any of the specified characters are not local.</param>
@@ -166,7 +166,7 @@ namespace TerraFX.Interop
             [Out] BOOL* isLocal
         );
 
-        /// <summary>Determines whether the specified glyphs are local.</summary>>
+        /// <summary>Determines whether the specified glyphs are local.</summary>
         /// <param name="glyphIndices">Array of glyph indices.</param>
         /// <param name="glyphCount">The number of elements in the glyph index array.</param>
         /// <param name="enqueueIfNotLocal">Specifies whether to enqueue a download request if any of the specified glyphs are not local.</param>

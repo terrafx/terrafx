@@ -9,10 +9,10 @@ namespace TerraFX.Interop
     public /* blittable */ struct DWRITE_GLYPH_OFFSET
     {
         #region Fields
-        /// <summary>Offset in the advance direction of the run. A positive advance offset moves the glyph to the right (in pre-transform coordinates) if the run is left-to-right or to the left if the run is right-to-left.</summary>>
+        /// <summary>Offset in the advance direction of the run. A positive advance offset moves the glyph to the right (in pre-transform coordinates) if the run is left-to-right or to the left if the run is right-to-left.</summary>
         public FLOAT advanceOffset;
 
-        /// <summary>Offset in the ascent direction, i.e., the direction ascenders point. A positive ascender offset moves the glyph up (in pre-transform coordinates).</summary>>
+        /// <summary>Offset in the ascent direction, i.e., the direction ascenders point. A positive ascender offset moves the glyph up (in pre-transform coordinates).</summary>
         public FLOAT ascenderOffset;
         #endregion
     }

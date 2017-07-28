@@ -17,7 +17,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Creates a font object that matches the properties specified by the LOGFONT public structure.</summary>>
+        /// <summary>Creates a font object that matches the properties specified by the LOGFONT public structure.</summary>
         /// <param name="logFont">Structure containing a GDI-compatible font description.</param>
         /// <param name="fontCollection">The font collection to search. If NULL, the local system font collection is used.</param>
         /// <param name="font">Receives a newly created font object if successful, or NULL in case of error.</param>
@@ -32,7 +32,7 @@ namespace TerraFX.Interop
             [Out] IDWriteFont** font
         );
 
-        /// <summary>Reads the font signature from the given font.</summary>>
+        /// <summary>Reads the font signature from the given font.</summary>
         /// <param name="font">Font to read font signature from.</param>
         /// <param name="fontSignature">Font signature from the OS/2 table, ulUnicodeRange and ulCodePageRange.</param>
         /// <returns> Standard HRESULT error code.</returns>
@@ -44,7 +44,7 @@ namespace TerraFX.Interop
             [Out] FONTSIGNATURE* fontSignature
         );
 
-        /// <summary>Reads the font signature from the given font.</summary>>
+        /// <summary>Reads the font signature from the given font.</summary>
         /// <param name="fontFace">Font to read font signature from.</param>
         /// <param name="fontSignature">Font signature from the OS/2 table, ulUnicodeRange and ulCodePageRange.</param>
         /// <returns> Standard HRESULT error code.</returns>
@@ -56,7 +56,7 @@ namespace TerraFX.Interop
             [Out] FONTSIGNATURE* fontSignature
         );
 
-        /// <summary>Get a list of matching fonts based on the LOGFONT values. Only fonts of that family name will be returned.</summary>>
+        /// <summary>Get a list of matching fonts based on the LOGFONT values. Only fonts of that family name will be returned.</summary>
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]

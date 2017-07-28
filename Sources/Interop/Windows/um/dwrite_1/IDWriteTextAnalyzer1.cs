@@ -17,7 +17,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Applies spacing between characters, properly adjusting glyph clusters and diacritics.</summary>>
+        /// <summary>Applies spacing between characters, properly adjusting glyph clusters and diacritics.</summary>
         /// <param name="leadingSpacing">The spacing before each character, in reading order.</param>
         /// <param name="trailingSpacing">The spacing after each character, in reading order.</param>
         /// <param name="minimumAdvanceWidth">The minimum advance of each character, to prevent characters from becoming too thin or zero-width. This must be zero or greater.</param>
@@ -48,7 +48,7 @@ namespace TerraFX.Interop
             [Out] DWRITE_GLYPH_OFFSET* modifiedGlyphOffsets
         );
 
-        /// <summary>Retrieves the given baseline from the font.</summary>>
+        /// <summary>Retrieves the given baseline from the font.</summary>
         /// <param name="fontFace">The font face to read.</param>
         /// <param name="baseline">The baseline of interest.</param>
         /// <param name="isVertical">Whether the baseline is vertical or horizontal.</param>
@@ -73,7 +73,7 @@ namespace TerraFX.Interop
             [Out] BOOL* exists
         );
 
-        /// <summary>Analyzes a text range for script orientation, reading text and attributes from the source and reporting results to the sink.</summary>>
+        /// <summary>Analyzes a text range for script orientation, reading text and attributes from the source and reporting results to the sink.</summary>
         /// <param name="analysisSource">Source object to analyze.</param>
         /// <param name="textPosition">Starting position within the source object.</param>
         /// <param name="textLength">Length to analyze.</param>
@@ -90,7 +90,7 @@ namespace TerraFX.Interop
             [In] IDWriteTextAnalysisSink1* analysisSink
         );
 
-        /// <summary>Returns 2x3 transform matrix for the respective angle to draw the glyph run.</summary>>
+        /// <summary>Returns 2x3 transform matrix for the respective angle to draw the glyph run.</summary>
         /// <param name="glyphOrientationAngle">The angle reported into SetGlyphOrientation.</param>
         /// <param name="isSideways">Whether the run's glyphs are sideways or not.</param>
         /// <param name="transform">Returned transform.</param>
@@ -105,7 +105,7 @@ namespace TerraFX.Interop
             [Out] DWRITE_MATRIX* transform
         );
 
-        /// <summary>Returns the properties for a given script.</summary>>
+        /// <summary>Returns the properties for a given script.</summary>
         /// <param name="scriptAnalysis">The script for a run of text returned from IDWriteTextAnalyzer::AnalyzeScript.</param>
         /// <param name="scriptProperties">Information for the script.</param>
         /// <returns> Returns properties for the given script. If the script is invalid, it returns generic properties for the unknown script and E_INVALIDARG.</returns>
@@ -117,7 +117,7 @@ namespace TerraFX.Interop
             [Out] DWRITE_SCRIPT_PROPERTIES* scriptProperties
         );
 
-        /// <summary>Determines the complexity of text, and whether or not full script shaping needs to be called (GetGlyphs).</summary>>
+        /// <summary>Determines the complexity of text, and whether or not full script shaping needs to be called (GetGlyphs).</summary>
         /// <param name="fontFace">The font face to read.</param>
         /// <param name="textLength">Length of the text to check.</param>
         /// <param name="textString">The text to check for complexity. This string may be UTF-16, but any supplementary characters will be considered complex.</param>
@@ -138,7 +138,7 @@ namespace TerraFX.Interop
             [Out, Optional] UINT16* glyphIndices
         );
 
-        /// <summary>Retrieves justification opportunity information for each of the glyphs given the text and shaping glyph properties.</summary>>
+        /// <summary>Retrieves justification opportunity information for each of the glyphs given the text and shaping glyph properties.</summary>
         /// <param name="fontFace">Font face that was used for shaping. This is mainly important for returning correct results of the kashida width.</param>
         /// <param name="fontEmSize">Font em size used for the glyph run.</param>
         /// <param name="scriptAnalysis">Script of the text from the itemizer.</param>
@@ -165,7 +165,7 @@ namespace TerraFX.Interop
             [Out] DWRITE_JUSTIFICATION_OPPORTUNITY* justificationOpportunities
         );
 
-        /// <summary>Justifies an array of glyph advances to fit the line width.</summary>>
+        /// <summary>Justifies an array of glyph advances to fit the line width.</summary>
         /// <param name="lineWidth">Width of the line.</param>
         /// <param name="glyphCount">Number of glyphs.</param>
         /// <param name="justificationOpportunities">Opportunities per glyph. Call GetJustificationOpportunities() to get suitable opportunities according to script.</param>
@@ -188,7 +188,7 @@ namespace TerraFX.Interop
             [Out, Optional] DWRITE_GLYPH_OFFSET* justifiedGlyphOffsets
         );
 
-        /// <summary>Fills in new glyphs for complex scripts where justification increased the advances of glyphs, such as Arabic with kashida.</summary>>
+        /// <summary>Fills in new glyphs for complex scripts where justification increased the advances of glyphs, such as Arabic with kashida.</summary>
         /// <param name="fontFace">Font face used for shaping.</param>
         /// <param name="fontEmSize">Font em size used for the glyph run.</param>
         /// <param name="scriptAnalysis">Script of the text from the itemizer.</param>

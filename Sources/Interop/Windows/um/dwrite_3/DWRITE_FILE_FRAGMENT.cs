@@ -9,10 +9,10 @@ namespace TerraFX.Interop
     public /* blittable */ struct DWRITE_FILE_FRAGMENT
     {
         #region Fields
-        /// <summary>Starting offset of the fragment from the beginning of the file.</summary>>
+        /// <summary>Starting offset of the fragment from the beginning of the file.</summary>
         public UINT64 fileOffset;
 
-        /// <summary>Size of the file fragment, in bytes.</summary>>
+        /// <summary>Size of the file fragment, in bytes.</summary>
         public UINT64 fragmentSize;
         #endregion
     }

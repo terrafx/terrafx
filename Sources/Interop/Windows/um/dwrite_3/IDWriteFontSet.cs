@@ -16,7 +16,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Get the number of total fonts in the set.</summary>>
+        /// <summary>Get the number of total fonts in the set.</summary>
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -24,7 +24,7 @@ namespace TerraFX.Interop
             [In] IDWriteFontSet* This
         );
 
-        /// <summary>Get a reference to the font at this index, which may be local or remote.</summary>>
+        /// <summary>Get a reference to the font at this index, which may be local or remote.</summary>
         /// <param name="listIndex">Zero-based index of the font.</param>
         /// <param name="fontFaceReference">Receives a pointer the font face reference object, or nullptr on failure.</param>
         /// <returns> Standard HRESULT error code.</returns>
@@ -36,7 +36,7 @@ namespace TerraFX.Interop
             [Out] IDWriteFontFaceReference** fontFaceReference
         );
 
-        /// <summary>Gets the index of the matching font face reference in the font set, with the same file, face index, and simulations.</summary>>
+        /// <summary>Gets the index of the matching font face reference in the font set, with the same file, face index, and simulations.</summary>
         /// <param name="fontFaceReference">Font face reference object that specifies the physical font.</param>
         /// <param name="listIndex">Receives the zero-based index of the matching font if the font was found, or UINT_MAX otherwise.</param>
         /// <param name="exists">Receives TRUE if the font exists or FALSE otherwise.</param>
@@ -50,7 +50,7 @@ namespace TerraFX.Interop
             [Out] BOOL* exists
         );
 
-        /// <summary>Gets the index of the matching font face reference in the font set, with the same file, face index, and simulations.</summary>>
+        /// <summary>Gets the index of the matching font face reference in the font set, with the same file, face index, and simulations.</summary>
         /// <param name="fontFace">Font face object that specifies the physical font.</param>
         /// <param name="listIndex">Receives the zero-based index of the matching font if the font was found, or UINT_MAX otherwise.</param>
         /// <param name="exists">Receives TRUE if the font exists or FALSE otherwise.</param>
@@ -64,7 +64,7 @@ namespace TerraFX.Interop
             [Out] BOOL* exists
         );
 
-        /// <summary>Returns the property values of a specific font item index.</summary>>
+        /// <summary>Returns the property values of a specific font item index.</summary>
         /// <param name="listIndex">Zero-based index of the font.</param>
         /// <param name="propertyId">Font property of interest.</param>
         /// <param name="exists">Receives the value TRUE if the font contains the specified property identifier or FALSE if not.</param>
@@ -80,7 +80,7 @@ namespace TerraFX.Interop
             [Out] IDWriteLocalizedStrings** values
         );
 
-        /// <summary>Returns all unique property values in the set, which can be used for purposes such as displaying a family list or tag cloud. Values are returned in priority order according to the language list, such that if a font contains more than one localized name, the preferred one will be returned.</summary>>
+        /// <summary>Returns all unique property values in the set, which can be used for purposes such as displaying a family list or tag cloud. Values are returned in priority order according to the language list, such that if a font contains more than one localized name, the preferred one will be returned.</summary>
         /// <param name="propertyID">Font property of interest.</param>
         /// <param name="preferredLocaleNames">List of semicolon delimited language names in preferred order. When a particular string like font family has more than one localized name, the first match is returned.</param>
         /// <param name="values">Receives a pointer to the newly created strings list.</param>
@@ -95,7 +95,7 @@ namespace TerraFX.Interop
             [Out] IDWriteStringList** values
         );
 
-        /// <summary>Returns all unique property values in the set, which can be used for purposes such as displaying a family list or tag cloud. All values are returned regardless of language, including all localized names.</summary>>
+        /// <summary>Returns all unique property values in the set, which can be used for purposes such as displaying a family list or tag cloud. All values are returned regardless of language, including all localized names.</summary>
         /// <param name="propertyID">Font property of interest.</param>
         /// <param name="values">Receives a pointer to the newly created strings list.</param>
         /// <returns> Standard HRESULT error code.</returns>
@@ -108,7 +108,7 @@ namespace TerraFX.Interop
             [Out] IDWriteStringList** values
         );
 
-        /// <summary>Returns how many times a given property value occurs in the set.</summary>>
+        /// <summary>Returns how many times a given property value occurs in the set.</summary>
         /// <param name="property">Font property of interest.</param>
         /// <param name="propertyOccurrenceCount">How many times that property occurs.</param>
         /// <returns> Standard HRESULT error code.</returns>
@@ -121,7 +121,7 @@ namespace TerraFX.Interop
             [Out] UINT32* propertyOccurrenceCount
         );
 
-        /// <summary>Returns a subset of fonts filtered by the given properties.</summary>>
+        /// <summary>Returns a subset of fonts filtered by the given properties.</summary>
         /// <param name="properties">List of properties to filter using.</param>
         /// <param name="propertyCount">How many properties to filter.</param>
         /// <param name="filteredSet">Subset of fonts that match the properties, or nullptr on failure.</param>
@@ -136,7 +136,7 @@ namespace TerraFX.Interop
             [Out] IDWriteFontSet** filteredSet
         );
 
-        /// <summary>Returns a list of fonts within the given WWS family prioritized by WWS distance.</summary>>
+        /// <summary>Returns a list of fonts within the given WWS family prioritized by WWS distance.</summary>
         /// <param name="familyName">Neutral or localized family name of font.</param>
         /// <param name="fontWeight">Weight of font.</param>
         /// <param name="fontStretch">Stretch of font.</param>

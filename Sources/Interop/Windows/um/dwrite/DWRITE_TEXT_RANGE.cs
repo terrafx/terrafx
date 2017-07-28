@@ -9,10 +9,10 @@ namespace TerraFX.Interop
     public /* blittable */ struct DWRITE_TEXT_RANGE
     {
         #region Fields
-        /// <summary>The start text position of the range.</summary>>
+        /// <summary>The start text position of the range.</summary>
         public UINT32 startPosition;
 
-        /// <summary>The number of text positions in the range.</summary>>
+        /// <summary>The number of text positions in the range.</summary>
         public UINT32 length;
         #endregion
     }

@@ -17,7 +17,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Returns 2x3 transform matrix for the respective angle to draw the glyph run or other object.</summary>>
+        /// <summary>Returns 2x3 transform matrix for the respective angle to draw the glyph run or other object.</summary>
         /// <param name="glyphOrientationAngle">The angle reported to one of the application callbacks, including IDWriteTextAnalysisSink1::SetGlyphOrientation and IDWriteTextRenderer1::Draw*.</param>
         /// <param name="isSideways">Whether the run's glyphs are sideways or not.</param>
         /// <param name="originX">X origin of the element, be it a glyph run or underline or other.</param>
@@ -36,7 +36,7 @@ namespace TerraFX.Interop
             [Out] DWRITE_MATRIX* transform
         );
 
-        /// <summary>Returns a list of typographic feature tags for the given script and language.</summary>>
+        /// <summary>Returns a list of typographic feature tags for the given script and language.</summary>
         /// <param name="fontFace">The font face to get features from.</param>
         /// <param name="scriptAnalysis">Script analysis result from AnalyzeScript.</param>
         /// <param name="localeName">The locale to use when selecting the feature, such en-us or ja-jp.</param>
@@ -56,7 +56,7 @@ namespace TerraFX.Interop
             [Out] DWRITE_FONT_FEATURE_TAG* tags
         );
 
-        /// <summary>Returns an array of which glyphs are affected by a given feature.</summary>>
+        /// <summary>Returns an array of which glyphs are affected by a given feature.</summary>
         /// <param name="fontFace">The font face to read glyph information from.</param>
         /// <param name="scriptAnalysis">Script analysis result from AnalyzeScript.</param>
         /// <param name="localeName">The locale to use when selecting the feature, such en-us or ja-jp.</param>

@@ -16,7 +16,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Invalidates the layout, forcing layout to remeasure before calling the metrics or drawing functions. This is useful if the locality of a font changes, and layout should be redrawn, or if the size of a client implemented IDWriteInlineObject changes.</summary>>
+        /// <summary>Invalidates the layout, forcing layout to remeasure before calling the metrics or drawing functions. This is useful if the locality of a font changes, and layout should be redrawn, or if the size of a client implemented IDWriteInlineObject changes.</summary>
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -24,7 +24,7 @@ namespace TerraFX.Interop
             [In] IDWriteTextLayout3* This
         );
 
-        /// <summary>Set line spacing.</summary>>
+        /// <summary>Set line spacing.</summary>
         /// <param name="lineSpacingOptions">How to manage space between lines.</param>
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
@@ -34,7 +34,7 @@ namespace TerraFX.Interop
             [In] /* readonly */ DWRITE_LINE_SPACING* lineSpacingOptions
         );
 
-        /// <summary>Get line spacing.</summary>>
+        /// <summary>Get line spacing.</summary>
         /// <param name="lineSpacingOptions">How to manage space between lines.</param>
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
@@ -44,7 +44,7 @@ namespace TerraFX.Interop
             [Out] DWRITE_LINE_SPACING* lineSpacingOptions
         );
 
-        /// <summary>GetLineMetrics returns properties of each line.</summary>>
+        /// <summary>GetLineMetrics returns properties of each line.</summary>
         /// <param name="lineMetrics">The array to fill with line information.</param>
         /// <param name="maxLineCount">The maximum size of the lineMetrics array.</param>
         /// <param name="actualLineCount">The actual size of the lineMetrics array that is needed.</param>

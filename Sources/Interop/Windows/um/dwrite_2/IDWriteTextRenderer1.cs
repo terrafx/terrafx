@@ -17,7 +17,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>IDWriteTextLayout::Draw calls this function to inpublic /* blittable */ struct the client to render a run of glyphs.</summary>>
+        /// <summary>IDWriteTextLayout::Draw calls this function to inpublic /* blittable */ struct the client to render a run of glyphs.</summary>
         /// <param name="clientDrawingContext">The context passed to IDWriteTextLayout::Draw.</param>
         /// <param name="baselineOriginX">X-coordinate of the baseline.</param>
         /// <param name="baselineOriginY">Y-coordinate of the baseline.</param>
@@ -42,7 +42,7 @@ namespace TerraFX.Interop
             [In, Optional] IUnknown* clientDrawingEffect
         );
 
-        /// <summary>IDWriteTextLayout::Draw calls this function to inpublic /* blittable */ struct the client to draw an underline.</summary>>
+        /// <summary>IDWriteTextLayout::Draw calls this function to inpublic /* blittable */ struct the client to draw an underline.</summary>
         /// <param name="clientDrawingContext">The context passed to IDWriteTextLayout::Draw.</param>
         /// <param name="baselineOriginX">X-coordinate of the baseline.</param>
         /// <param name="baselineOriginY">Y-coordinate of the baseline.</param>
@@ -64,7 +64,7 @@ namespace TerraFX.Interop
             [In, Optional] IUnknown* clientDrawingEffect
         );
 
-        /// <summary>IDWriteTextLayout::Draw calls this function to inpublic /* blittable */ struct the client to draw a strikethrough.</summary>>
+        /// <summary>IDWriteTextLayout::Draw calls this function to inpublic /* blittable */ struct the client to draw a strikethrough.</summary>
         /// <param name="clientDrawingContext">The context passed to IDWriteTextLayout::Draw.</param>
         /// <param name="baselineOriginX">X-coordinate of the baseline.</param>
         /// <param name="baselineOriginY">Y-coordinate of the baseline.</param>
@@ -85,7 +85,7 @@ namespace TerraFX.Interop
             [In, Optional] IUnknown* clientDrawingEffect
         );
 
-        /// <summary>IDWriteTextLayout::Draw calls this application callback when it needs to draw an inline object.</summary>>
+        /// <summary>IDWriteTextLayout::Draw calls this application callback when it needs to draw an inline object.</summary>
         /// <param name="clientDrawingContext">The context passed to IDWriteTextLayout::Draw.</param>
         /// <param name="originX">X-coordinate at the top-left corner of the inline object.</param>
         /// <param name="originY">Y-coordinate at the top-left corner of the inline object.</param>

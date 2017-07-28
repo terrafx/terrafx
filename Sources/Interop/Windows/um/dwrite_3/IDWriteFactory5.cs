@@ -17,7 +17,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Creates an empty font set builder to add font face references and create a custom font set.</summary>>
+        /// <summary>Creates an empty font set builder to add font face references and create a custom font set.</summary>
         /// <param name="fontSetBuilder">Holds the newly created font set builder object, or NULL in case of failure.</param>
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
@@ -27,7 +27,7 @@ namespace TerraFX.Interop
             [Out] IDWriteFontSetBuilder1** fontSetBuilder
         );
 
-        /// <summary>The CreateInMemoryFontFileLoader method creates a loader object that can be used to create font file references to in-memory fonts. The caller is responsible for registering and unregistering the loader.</summary>>
+        /// <summary>The CreateInMemoryFontFileLoader method creates a loader object that can be used to create font file references to in-memory fonts. The caller is responsible for registering and unregistering the loader.</summary>
         /// <param name="newLoader">Receives a pointer to the newly-created loader object.</param>
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
@@ -37,7 +37,7 @@ namespace TerraFX.Interop
             [Out] IDWriteInMemoryFontFileLoader** newLoader
         );
 
-        /// <summary>The CreateHttpFontFileLoader function creates a remote font file loader that can create font file references from HTTP or HTTPS URLs. The caller is responsible for registering and unregistering the loader.</summary>>
+        /// <summary>The CreateHttpFontFileLoader function creates a remote font file loader that can create font file references from HTTP or HTTPS URLs. The caller is responsible for registering and unregistering the loader.</summary>
         /// <param name="referrerUrl">Optional referrer URL for HTTP requests.</param>
         /// <param name="extraHeaders">Optional additional header fields to include in HTTP requests. Each header field consists of a name followed by a colon (":") and the field value, as specified by RFC 2616. Multiple header fields may be separated by newlines.</param>
         /// <param name="newLoader">Receives a pointer to the newly-created loader object.</param>
@@ -51,7 +51,7 @@ namespace TerraFX.Interop
             [Out] IDWriteRemoteFontFileLoader** newLoader
             );
 
-        /// <summary>The AnalyzeContainerType method analyzes the specified file data to determine whether it is a known font container format (e.g., WOFF or WOFF2).</summary>>
+        /// <summary>The AnalyzeContainerType method analyzes the specified file data to determine whether it is a known font container format (e.g., WOFF or WOFF2).</summary>
         /// <returns> Returns the container type if recognized. DWRITE_CONTAINER_TYPE_UNKOWNN is returned for all other files, including uncompressed font files.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -61,7 +61,7 @@ namespace TerraFX.Interop
             [In] UINT32 fileDataSize
         );
 
-        /// <summary>The UnpackFontFile method unpacks font data from a container file (WOFF or WOFF2) and returns the unpacked font data in the form of a font file stream.</summary>>
+        /// <summary>The UnpackFontFile method unpacks font data from a container file (WOFF or WOFF2) and returns the unpacked font data in the form of a font file stream.</summary>
         /// <param name="containerType">Container type returned by AnalyzeContainerType.</param>
         /// <param name="fileData">Pointer to the compressed data.</param>
         /// <param name="fileDataSize">Size of the compressed data, in bytes.</param>

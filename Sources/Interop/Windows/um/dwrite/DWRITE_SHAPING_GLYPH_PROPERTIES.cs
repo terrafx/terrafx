@@ -13,7 +13,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Properties
-        /// <summary>Justification class, whether to use spacing, kashidas, or another method. This exists for backwards compatibility with Uniscribe's SCRIPT_JUSTIFY enum.</summary>>
+        /// <summary>Justification class, whether to use spacing, kashidas, or another method. This exists for backwards compatibility with Uniscribe's SCRIPT_JUSTIFY enum.</summary>
         public UINT16 justification
         {
             get
@@ -27,7 +27,7 @@ namespace TerraFX.Interop
             }
         }
 
-        /// <summary>Indicates glyph is the first of a cluster.</summary>>
+        /// <summary>Indicates glyph is the first of a cluster.</summary>
         public UINT16 isClusterStart
         {
             get
@@ -41,7 +41,7 @@ namespace TerraFX.Interop
             }
         }
 
-        /// <summary>Glyph is a diacritic.</summary>>
+        /// <summary>Glyph is a diacritic.</summary>
         public UINT16 isDiacritic
         {
             get
@@ -55,7 +55,7 @@ namespace TerraFX.Interop
             }
         }
 
-        /// <summary>Glyph has no width, blank, ZWJ, ZWNJ etc.</summary>>
+        /// <summary>Glyph has no width, blank, ZWJ, ZWNJ etc.</summary>
         public UINT16 isZeroWidthSpace
         {
             get
@@ -69,7 +69,7 @@ namespace TerraFX.Interop
             }
         }
 
-        /// <summary>Reserved for use by shaping engine.</summary>>
+        /// <summary>Reserved for use by shaping engine.</summary>
         public UINT16 reserved
         {
             get

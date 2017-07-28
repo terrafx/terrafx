@@ -18,7 +18,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Gets a font collection representing the set of end-user defined custom fonts.</summary>>
+        /// <summary>Gets a font collection representing the set of end-user defined custom fonts.</summary>
         /// <param name="fontCollection">Receives a pointer to the EUDC font collection object, or NULL in case of failure.</param>
         /// <param name="checkForUpdates">If this parameter is nonzero, the function performs an immediate check for changes to the set of EUDC fonts. If this parameter is FALSE, the function will still detect changes, but there may be some latency. For example, an application might specify TRUE if it has itself just modified a font and wants to be sure the font collection contains that font.</param>
         /// <returns> Standard HRESULT error code. Note that if no EUDC is set on the system, the returned collection will be empty, meaning it will return success but GetFontFamilyCount will be zero.</returns>
@@ -32,7 +32,7 @@ namespace TerraFX.Interop
             [In, DefaultParameterValue(FALSE)] BOOL checkForUpdates
     )   ;
 
-        /// <summary>Creates a rendering parameters object with the specified properties.</summary>>
+        /// <summary>Creates a rendering parameters object with the specified properties.</summary>
         /// <param name="gamma">The gamma value used for gamma correction, which must be greater than zero and cannot exceed 256.</param>
         /// <param name="enhancedContrast">The amount of contrast enhancement, zero or greater.</param>
         /// <param name="enhancedContrastGrayscale">The amount of contrast enhancement to use for grayscale antialiasing, zero or greater.</param>

@@ -8,28 +8,28 @@ namespace TerraFX.Interop
     /// <summary>The file format of a complete font face. Font formats that consist of multiple files, e.g. Type 1 .PFM and .PFB, have a single enum entry.</summary>
     public enum DWRITE_FONT_FACE_TYPE
     {
-        /// <summary>OpenType font face with CFF outlines.</summary>>
+        /// <summary>OpenType font face with CFF outlines.</summary>
         DWRITE_FONT_FACE_TYPE_CFF,
 
-        /// <summary>OpenType font face with TrueType outlines.</summary>>
+        /// <summary>OpenType font face with TrueType outlines.</summary>
         DWRITE_FONT_FACE_TYPE_TRUETYPE,
 
-        /// <summary>OpenType font face that is a part of a TrueType or CFF collection.</summary>>
+        /// <summary>OpenType font face that is a part of a TrueType or CFF collection.</summary>
         DWRITE_FONT_FACE_TYPE_OPENTYPE_COLLECTION,
 
-        /// <summary>A Type 1 font face.</summary>>
+        /// <summary>A Type 1 font face.</summary>
         DWRITE_FONT_FACE_TYPE_TYPE1,
 
-        /// <summary>A vector .FON format font face.</summary>>
+        /// <summary>A vector .FON format font face.</summary>
         DWRITE_FONT_FACE_TYPE_VECTOR,
 
-        /// <summary>A bitmap .FON format font face.</summary>>
+        /// <summary>A bitmap .FON format font face.</summary>
         DWRITE_FONT_FACE_TYPE_BITMAP,
 
-        /// <summary>Font face type is not recognized by the DirectWrite font system.</summary>>
+        /// <summary>Font face type is not recognized by the DirectWrite font system.</summary>
         DWRITE_FONT_FACE_TYPE_UNKNOWN,
 
-        /// <summary>The font data includes only the CFF table from an OpenType CFF font. This font face type can be used only for embedded fonts (i.e., custom font file loaders) and the resulting font face object supports only the minimum functionality necessary to render glyphs.</summary>>
+        /// <summary>The font data includes only the CFF table from an OpenType CFF font. This font face type can be used only for embedded fonts (i.e., custom font file loaders) and the resulting font face object supports only the minimum functionality necessary to render glyphs.</summary>
         DWRITE_FONT_FACE_TYPE_RAW_CFF,
 
         // The following name is obsolete, but kept as an alias to avoid breaking existing code.

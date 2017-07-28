@@ -9,10 +9,10 @@ namespace TerraFX.Interop
     unsafe public /* blittable */ struct DWRITE_TYPOGRAPHIC_FEATURES
     {
         #region Fields
-        /// <summary>Array of font features.</summary>>
+        /// <summary>Array of font features.</summary>
         public DWRITE_FONT_FEATURE* features;
 
-        /// <summary>The number of features.</summary>>
+        /// <summary>The number of features.</summary>
         public UINT32 featureCount;
         #endregion
     }

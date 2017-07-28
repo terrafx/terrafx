@@ -11,7 +11,7 @@ namespace TerraFX.Interop
         #region Fields
         public DWRITE_TEXT_METRICS BaseValue;
 
-        /// <summary>The height of the formatted text taking into account the trailing whitespace at the end of each line, which will matter for vertical reading directions.</summary>>
+        /// <summary>The height of the formatted text taking into account the trailing whitespace at the end of each line, which will matter for vertical reading directions.</summary>
         public FLOAT heightIncludingTrailingWhitespace;
         #endregion
     }

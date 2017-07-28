@@ -9,19 +9,19 @@ namespace TerraFX.Interop
     unsafe public /* blittable */ struct DWRITE_GLYPH_RUN_DESCRIPTION
     {
         #region Fields
-        /// <summary>The locale name associated with this run.</summary>>
+        /// <summary>The locale name associated with this run.</summary>
         public /* readonly */ WCHAR* localeName;
 
-        /// <summary>The text associated with the glyphs.</summary>>
+        /// <summary>The text associated with the glyphs.</summary>
         public /* readonly */ WCHAR* @string;
 
-        /// <summary>The number of characters (UTF16 code-units). Note that this may be different than the number of glyphs.</summary>>
+        /// <summary>The number of characters (UTF16 code-units). Note that this may be different than the number of glyphs.</summary>
         public UINT32 stringLength;
 
-        /// <summary>An array of indices to the glyph indices array, of the first glyphs of all the glyph clusters of the glyphs to render.</summary>>
+        /// <summary>An array of indices to the glyph indices array, of the first glyphs of all the glyph clusters of the glyphs to render.</summary>
         public /* readonly */ UINT16* clusterMap;
 
-        /// <summary>Corresponding text position in the original string this glyph run came from.</summary>>
+        /// <summary>Corresponding text position in the original string this glyph run came from.</summary>
         public UINT32 textPosition;
         #endregion
     }

@@ -11,13 +11,13 @@ namespace TerraFX.Interop
     [Flags]
     public enum DWRITE_FONT_SIMULATIONS
     {
-        /// <summary>No simulations are performed.</summary>>
+        /// <summary>No simulations are performed.</summary>
         DWRITE_FONT_SIMULATIONS_NONE = 0x0000,
 
-        /// <summary>Algorithmic emboldening is performed.</summary>>
+        /// <summary>Algorithmic emboldening is performed.</summary>
         DWRITE_FONT_SIMULATIONS_BOLD = 0x0001,
 
-        /// <summary>Algorithmic italicization is performed.</summary>>
+        /// <summary>Algorithmic italicization is performed.</summary>
         DWRITE_FONT_SIMULATIONS_OBLIQUE = 0x0002
     }
 }

@@ -17,7 +17,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>The text analyzer calls back to this to report the actual orientation of each character for shaping and drawing.</summary>>
+        /// <summary>The text analyzer calls back to this to report the actual orientation of each character for shaping and drawing.</summary>
         /// <param name="textPosition">Starting position to report from.</param>
         /// <param name="textLength">Number of UTF-16 units of the reported range.</param>
         /// <param name="glyphOrientationAngle">Angle of the glyphs within the text range (pass to GetGlyphOrientationTransform to get the world relative transform).</param>

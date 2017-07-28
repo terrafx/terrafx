@@ -9,22 +9,22 @@ namespace TerraFX.Interop
     public /* blittable */ struct DWRITE_MATRIX
     {
         #region Fields
-        /// <summary>Horizontal scaling / cosine of rotation</summary>>
+        /// <summary>Horizontal scaling / cosine of rotation</summary>
         public FLOAT m11;
 
-        /// <summary>Vertical shear / sine of rotation</summary>>
+        /// <summary>Vertical shear / sine of rotation</summary>
         public FLOAT m12;
 
-        /// <summary>Horizontal shear / negative sine of rotation</summary>>
+        /// <summary>Horizontal shear / negative sine of rotation</summary>
         public FLOAT m21;
 
-        /// <summary>Vertical scaling / cosine of rotation</summary>>
+        /// <summary>Vertical scaling / cosine of rotation</summary>
         public FLOAT m22;
 
-        /// <summary>Horizontal shift (always orthogonal regardless of rotation)</summary>>
+        /// <summary>Horizontal shift (always orthogonal regardless of rotation)</summary>
         public FLOAT dx;
 
-        /// <summary>Vertical shift (always orthogonal regardless of rotation)</summary>>
+        /// <summary>Vertical shift (always orthogonal regardless of rotation)</summary>
         public FLOAT dy;
         #endregion
     }

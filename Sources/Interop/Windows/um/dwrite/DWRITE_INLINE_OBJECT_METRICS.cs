@@ -9,16 +9,16 @@ namespace TerraFX.Interop
     public /* blittable */ struct DWRITE_INLINE_OBJECT_METRICS
     {
         #region Fields
-        /// <summary>Width of the inline object.</summary>>
+        /// <summary>Width of the inline object.</summary>
         public FLOAT width;
 
-        /// <summary>Height of the inline object as measured from top to bottom.</summary>>
+        /// <summary>Height of the inline object as measured from top to bottom.</summary>
         public FLOAT height;
 
-        /// <summary>Distance from the top of the object to the baseline where it is lined up with the adjacent text. If the baseline is at the bottom, baseline simply equals height.</summary>>
+        /// <summary>Distance from the top of the object to the baseline where it is lined up with the adjacent text. If the baseline is at the bottom, baseline simply equals height.</summary>
         public FLOAT baseline;
 
-        /// <summary>Flag indicating whether the object is to be placed upright or alongside the text baseline for vertical text.</summary>>
+        /// <summary>Flag indicating whether the object is to be placed upright or alongside the text baseline for vertical text.</summary>
         public BOOL  supportsSideways;
         #endregion
     }

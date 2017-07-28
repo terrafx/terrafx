@@ -17,7 +17,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Creates a font face from the reference for use with layout, shaping, or rendering.</summary>>
+        /// <summary>Creates a font face from the reference for use with layout, shaping, or rendering.</summary>
         /// <param name="fontFace">Newly created font face object, or nullptr in the case of failure.</param>
         /// <returns> Standard HRESULT error code.</returns>
         /// <remarks> This function can fail with DWRITE_E_REMOTEFONT if the font is not local.</remarks>
@@ -28,7 +28,7 @@ namespace TerraFX.Interop
             [Out] IDWriteFontFace3** fontFace
         );
 
-        /// <summary>Creates a font face with alternate font simulations, for example, to explicitly simulate a bold font face out of a regular variant.</summary>>
+        /// <summary>Creates a font face with alternate font simulations, for example, to explicitly simulate a bold font face out of a regular variant.</summary>
         /// <param name="fontFaceSimulationFlags">Font face simulation flags for algorithmic emboldening and italicization.</param>
         /// <param name="fontFace">Newly created font face object, or nullptr in the case of failure.</param>
         /// <returns> Standard HRESULT error code.</returns>
@@ -41,7 +41,7 @@ namespace TerraFX.Interop
             [Out] IDWriteFontFace3** fontFace
         );
 
-        /// <summary>Compares two instances of a font face references for equality.</summary>>
+        /// <summary>Compares two instances of a font face references for equality.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate BOOL _Equals(
@@ -49,21 +49,21 @@ namespace TerraFX.Interop
             [In] IDWriteFontFaceReference* fontFaceReference
         );
 
-        /// <summary>Obtains the zero-based index of the font face in its font file or files. If the font files contain a single face, the return value is zero.</summary>>
+        /// <summary>Obtains the zero-based index of the font face in its font file or files. If the font files contain a single face, the return value is zero.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate UINT32 GetFontFaceIndex(
             [In] IDWriteFontFaceReference* This
         );
 
-        /// <summary>Obtains the algorithmic style simulation flags of a font face.</summary>>
+        /// <summary>Obtains the algorithmic style simulation flags of a font face.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate DWRITE_FONT_SIMULATIONS GetSimulations(
             [In] IDWriteFontFaceReference* This
         );
 
-        /// <summary>Obtains the font file representing a font face.</summary>>
+        /// <summary>Obtains the font file representing a font face.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT GetFontFile(
@@ -71,7 +71,7 @@ namespace TerraFX.Interop
             [Out] IDWriteFontFile** fontFile
         );
 
-        /// <summary>Get the local size of the font face in bytes.</summary>>
+        /// <summary>Get the local size of the font face in bytes.</summary>
         /// <remarks> The value returned by GetLocalFileSize will always be less than or equal to the value returned by GetFullSize. If the locality is remote, the GetLocalFileSize value is zero. If the locality is local, this value will equal the value returned by GetFileSize. If the locality is partial, this value will equal the size of the portions of the font data that have been downloaded, which will be greater than zero and less than or equal to the GetFileSize value.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -79,7 +79,7 @@ namespace TerraFX.Interop
             [In] IDWriteFontFaceReference* This
         );
 
-        /// <summary>Get the total size of the font face in bytes.</summary>>
+        /// <summary>Get the total size of the font face in bytes.</summary>
         /// <remarks> If the locality is remote, this value is unknown and will be zero. If the locality is partial or local, the value is the full size of the font face.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -87,7 +87,7 @@ namespace TerraFX.Interop
             [In] IDWriteFontFaceReference* This
         );
 
-        /// <summary>Get the last modified date.</summary>>
+        /// <summary>Get the last modified date.</summary>
         /// <remarks> The time may be zero if the font file loader does not expose file time.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -96,14 +96,14 @@ namespace TerraFX.Interop
             [Out] FILETIME* lastWriteTime
         );
 
-        /// <summary>Get the locality of this font face reference. You can always successfully create a font face from a fully local font. Attempting to create a font face on a remote or partially local font may fail with DWRITE_E_REMOTEFONT. This function may change between calls depending on background downloads and whether cached data expires.</summary>>
+        /// <summary>Get the locality of this font face reference. You can always successfully create a font face from a fully local font. Attempting to create a font face on a remote or partially local font may fail with DWRITE_E_REMOTEFONT. This function may change between calls depending on background downloads and whether cached data expires.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate DWRITE_LOCALITY GetLocality(
             [In] IDWriteFontFaceReference* This
         );
 
-        /// <summary>Adds a request to the font download queue (IDWriteFontDownloadQueue).</summary>>
+        /// <summary>Adds a request to the font download queue (IDWriteFontDownloadQueue).</summary>
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -111,7 +111,7 @@ namespace TerraFX.Interop
             [In] IDWriteFontFaceReference* This
         );
 
-        /// <summary>Adds a request to the font download queue (IDWriteFontDownloadQueue).</summary>>
+        /// <summary>Adds a request to the font download queue (IDWriteFontDownloadQueue).</summary>
         /// <param name="characters">Array of characters to download.</param>
         /// <param name="characterCount">The number of elements in the character array.</param>
         /// <returns> Standard HRESULT error code.</returns>
@@ -124,7 +124,7 @@ namespace TerraFX.Interop
             [In] UINT32 characterCount
         );
 
-        /// <summary>Adds a request to the font download queue (IDWriteFontDownloadQueue).</summary>>
+        /// <summary>Adds a request to the font download queue (IDWriteFontDownloadQueue).</summary>
         /// <param name="glyphIndices">Array of glyph indices to download.</param>
         /// <param name="glyphCount">The number of elements in the glyph index array.</param>
         /// <returns> Standard HRESULT error code.</returns>
@@ -137,7 +137,7 @@ namespace TerraFX.Interop
             [In] UINT32 glyphCount
         );
 
-        /// <summary>Adds a request to the font download queue (IDWriteFontDownloadQueue).</summary>>
+        /// <summary>Adds a request to the font download queue (IDWriteFontDownloadQueue).</summary>
         /// <param name="fileOffset">Offset of the fragment from the beginning of the font file.</param>
         /// <param name="fragmentSize">Size of the fragment in bytes.</param>
         /// <returns> Standard HRESULT error code.</returns>

@@ -9,13 +9,13 @@ namespace TerraFX.Interop
     unsafe public /* blittable */ struct DWRITE_FONT_PROPERTY
     {
         #region Fields
-        /// <summary>Specifies the requested font property, such as DWRITE_FONT_PROPERTY_ID_FAMILY_NAME.</summary>>
+        /// <summary>Specifies the requested font property, such as DWRITE_FONT_PROPERTY_ID_FAMILY_NAME.</summary>
         public DWRITE_FONT_PROPERTY_ID propertyId;
 
-        /// <summary>Specifies the property value, such as "Segoe UI".</summary>>
+        /// <summary>Specifies the property value, such as "Segoe UI".</summary>
         public /* readonly */ WCHAR* propertyValue;
 
-        /// <summary>Specifies the language / locale to use, such as "en-US". </summary>>
+        /// <summary>Specifies the language / locale to use, such as "en-US". </summary>
         /// <remarks> When passing property information to AddFontFaceReference, localeName indicates the language of the property value. BCP 47 language tags should be used. If a property value is inherently non-linguistic, this can be left empty.
         /// When used for font set filtering, leave this empty: a match will be found regardless of language associated with property values.</remarks>
         public /* readonly */ WCHAR* localeName;

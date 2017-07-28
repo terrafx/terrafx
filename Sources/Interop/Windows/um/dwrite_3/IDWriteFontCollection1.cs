@@ -16,7 +16,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Get the underlying font set used by this collection.</summary>>
+        /// <summary>Get the underlying font set used by this collection.</summary>
         /// <param name="fontSet">Contains font set used by the collection.</param>
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
@@ -26,7 +26,7 @@ namespace TerraFX.Interop
             [Out] IDWriteFontSet** fontSet
         );
 
-        /// <summary>Creates a font family object given a zero-based font family index.</summary>>
+        /// <summary>Creates a font family object given a zero-based font family index.</summary>
         /// <param name="index">Zero-based index of the font family.</param>
         /// <param name="fontFamily">Receives a pointer the newly created font family object.</param>
         /// <returns> Standard HRESULT error code.</returns>

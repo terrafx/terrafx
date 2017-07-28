@@ -9,31 +9,31 @@ namespace TerraFX.Interop
     public /* blittable */ struct DWRITE_HIT_TEST_METRICS
     {
         #region Fields
-        /// <summary>First text position within the geometry.</summary>>
+        /// <summary>First text position within the geometry.</summary>
         public UINT32 textPosition;
 
-        /// <summary>Number of text positions within the geometry.</summary>>
+        /// <summary>Number of text positions within the geometry.</summary>
         public UINT32 length;
 
-        /// <summary>Left position of the top-left coordinate of the geometry.</summary>>
+        /// <summary>Left position of the top-left coordinate of the geometry.</summary>
         public FLOAT left;
 
-        /// <summary>Top position of the top-left coordinate of the geometry.</summary>>
+        /// <summary>Top position of the top-left coordinate of the geometry.</summary>
         public FLOAT top;
 
-        /// <summary>Geometry's width.</summary>>
+        /// <summary>Geometry's width.</summary>
         public FLOAT width;
 
-        /// <summary>Geometry's height.</summary>>
+        /// <summary>Geometry's height.</summary>
         public FLOAT height;
 
-        /// <summary>Bidi level of text positions enclosed within the geometry.</summary>>
+        /// <summary>Bidi level of text positions enclosed within the geometry.</summary>
         public UINT32 bidiLevel;
 
-        /// <summary>Geometry encloses text?</summary>>
+        /// <summary>Geometry encloses text?</summary>
         public BOOL isText;
 
-        /// <summary>Range is trimmed.</summary>>
+        /// <summary>Range is trimmed.</summary>
         public BOOL isTrimmed;
         #endregion
     }

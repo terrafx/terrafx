@@ -18,7 +18,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Creates a glyph run analysis object, which encapsulates information used to render a glyph run.</summary>>
+        /// <summary>Creates a glyph run analysis object, which encapsulates information used to render a glyph run.</summary>
         /// <param name="glyphRun">Structure specifying the properties of the glyph run.</param>
         /// <param name="transform">Optional transform applied to the glyphs and their positions. This transform is applied after the scaling specified by the emSize.</param>
         /// <param name="renderingMode">Specifies the rendering mode, which must be one of the raster rendering modes (i.e., not default and not outline).</param>
@@ -43,7 +43,7 @@ namespace TerraFX.Interop
             [Out] IDWriteGlyphRunAnalysis** glyphRunAnalysis
         );
 
-        /// <summary>Creates a rendering parameters object with the specified properties.</summary>>
+        /// <summary>Creates a rendering parameters object with the specified properties.</summary>
         /// <param name="gamma">The gamma value used for gamma correction, which must be greater than zero and cannot exceed 256.</param>
         /// <param name="enhancedContrast">The amount of contrast enhancement, zero or greater.</param>
         /// <param name="grayscaleEnhancedContrast">The amount of contrast enhancement to use for grayscale antialiasing, zero or greater.</param>
@@ -67,7 +67,7 @@ namespace TerraFX.Interop
             [Out] IDWriteRenderingParams3** renderingParams
         );
 
-        /// <summary>Creates a reference to a font given a full path.</summary>>
+        /// <summary>Creates a reference to a font given a full path.</summary>
         /// <param name="filePath">Absolute file path. Subsequent operations on the conpublic /* blittable */ structed object may fail if the user provided filePath doesn't correspond to a valid file on the disk.</param>
         /// <param name="lastWriteTime">Last modified time of the input file path. If the parameter is omitted, the function will access the font file to obtain its last write time, so the clients are encouraged to specify this value to avoid extra disk access. Subsequent operations on the conpublic /* blittable */ structed object may fail if the user provided lastWriteTime doesn't match the file on the disk.</param>
         /// <param name="faceIndex">The zero based index of a font face in cases when the font files contain a collection of font faces. If the font files contain a single face, this value should be zero.</param>
@@ -85,7 +85,7 @@ namespace TerraFX.Interop
             [Out] IDWriteFontFaceReference** fontFaceReference
         );
 
-        /// <summary>Creates a reference to a font given a file.</summary>>
+        /// <summary>Creates a reference to a font given a file.</summary>
         /// <param name="fontFile">User provided font file representing the font face.</param>
         /// <param name="faceIndex">The zero based index of a font face in cases when the font files contain a collection of font faces. If the font files contain a single face, this value should be zero.</param>
         /// <param name="fontSimulations">Font face simulation flags for algorithmic emboldening and italicization.</param>
@@ -101,7 +101,7 @@ namespace TerraFX.Interop
             [Out] IDWriteFontFaceReference** fontFaceReference
         );
 
-        /// <summary>Retrieves the list of system fonts.</summary>>
+        /// <summary>Retrieves the list of system fonts.</summary>
         /// <param name="fontSet">Holds the newly created font set object, or NULL in case of failure.</param>
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
@@ -111,7 +111,7 @@ namespace TerraFX.Interop
             [Out] IDWriteFontSet** fontSet
         );
 
-        /// <summary>Creates an empty font set builder to add font face references and create a custom font set.</summary>>
+        /// <summary>Creates an empty font set builder to add font face references and create a custom font set.</summary>
         /// <param name="fontSetBuilder">Holds the newly created font set builder object, or NULL in case of failure.</param>
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
@@ -121,7 +121,7 @@ namespace TerraFX.Interop
             [Out] IDWriteFontSetBuilder** fontSetBuilder
         );
 
-        /// <summary>Create a weight/width/slope tree from a set of fonts.</summary>>
+        /// <summary>Create a weight/width/slope tree from a set of fonts.</summary>
         /// <param name="fontSet">A set of fonts to use to build the collection.</param>
         /// <param name="fontCollection">Holds the newly created font collection object, or NULL in case of failure.</param>
         /// <returns> Standard HRESULT error code.</returns>
@@ -133,7 +133,7 @@ namespace TerraFX.Interop
             [Out] IDWriteFontCollection1** fontCollection
         );
 
-        /// <summary>Retrieves a weight/width/slope tree of system fonts.</summary>>
+        /// <summary>Retrieves a weight/width/slope tree of system fonts.</summary>
         /// <param name="includeDownloadableFonts">Include cloud fonts or only locally installed ones.</param>
         /// <param name="fontCollection">Holds the newly created font collection object, or NULL in case of failure.</param>
         /// <param name="checkForUpdates">If this parameter is nonzero, the function performs an immediate check for changes to the set of system fonts. If this parameter is FALSE, the function will still detect changes if the font cache service is running, but there may be some latency. For example, an application might specify TRUE if it has itself just installed a font and wants to be sure the font collection contains that font.</param>
@@ -147,7 +147,7 @@ namespace TerraFX.Interop
             [In, DefaultParameterValue(FALSE)] BOOL checkForUpdates
         );
 
-        /// <summary>Gets the font download queue associated with this factory object.</summary>>
+        /// <summary>Gets the font download queue associated with this factory object.</summary>
         /// <param name="fontDownloadQueue">Receives a pointer to the font download queue interface.</param>
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]

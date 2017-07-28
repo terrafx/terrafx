@@ -8,28 +8,28 @@ namespace TerraFX.Interop
     /// <summary>The type of a font represented by a single font file. Font formats that consist of multiple files, e.g. Type 1 .PFM and .PFB, have separate enum values for each of the file type.</summary>
     public enum DWRITE_FONT_FILE_TYPE
     {
-        /// <summary>Font type is not recognized by the DirectWrite font system.</summary>>
+        /// <summary>Font type is not recognized by the DirectWrite font system.</summary>
         DWRITE_FONT_FILE_TYPE_UNKNOWN,
 
-        /// <summary>OpenType font with CFF outlines.</summary>>
+        /// <summary>OpenType font with CFF outlines.</summary>
         DWRITE_FONT_FILE_TYPE_CFF,
 
-        /// <summary>OpenType font with TrueType outlines.</summary>>
+        /// <summary>OpenType font with TrueType outlines.</summary>
         DWRITE_FONT_FILE_TYPE_TRUETYPE,
 
-        /// <summary>OpenType font that contains a TrueType collection.</summary>>
+        /// <summary>OpenType font that contains a TrueType collection.</summary>
         DWRITE_FONT_FILE_TYPE_OPENTYPE_COLLECTION,
 
-        /// <summary>Type 1 PFM font.</summary>>
+        /// <summary>Type 1 PFM font.</summary>
         DWRITE_FONT_FILE_TYPE_TYPE1_PFM,
 
-        /// <summary>Type 1 PFB font.</summary>>
+        /// <summary>Type 1 PFB font.</summary>
         DWRITE_FONT_FILE_TYPE_TYPE1_PFB,
 
-        /// <summary>Vector .FON font.</summary>>
+        /// <summary>Vector .FON font.</summary>
         DWRITE_FONT_FILE_TYPE_VECTOR,
 
-        /// <summary>Bitmap .FON font.</summary>>
+        /// <summary>Bitmap .FON font.</summary>
         DWRITE_FONT_FILE_TYPE_BITMAP,
 
         // The following name is obsolete, but kept as an alias to avoid breaking existing code.

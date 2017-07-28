@@ -16,7 +16,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Translates a glyph run to a sequence of color glyph runs, which can be rendered to produce a color representation of the original "base" run.</summary>>
+        /// <summary>Translates a glyph run to a sequence of color glyph runs, which can be rendered to produce a color representation of the original "base" run.</summary>
         /// <param name="baselineOrigin">Horizontal and vertical origin of the base glyph run in pre-transform coordinates.</param>
         /// <param name="glyphRun">Pointer to the original "base" glyph run.</param>
         /// <param name="glyphRunDescription">Optional glyph run description.</param>
@@ -41,7 +41,7 @@ namespace TerraFX.Interop
             [Out] IDWriteColorGlyphRunEnumerator1** colorLayers
         );
 
-        /// <summary>Converts glyph run placements to glyph origins.</summary>>
+        /// <summary>Converts glyph run placements to glyph origins.</summary>
         /// <returns> Standard HRESULT error code.</returns>
         /// <remarks> The transform and DPI have no affect on the origin scaling. They are solely used to compute glyph advances when not supplied and align glyphs in pixel aligned measuring modes.</remarks>
         [SuppressUnmanagedCodeSecurity]
@@ -55,7 +55,7 @@ namespace TerraFX.Interop
             [Out] D2D1_POINT_2F* glyphOrigins
         );
 
-        /// <summary>Converts glyph run placements to glyph origins. This overload is for natural metrics, which includes SVG, TrueType natural modes, and bitmap placement.</summary>>
+        /// <summary>Converts glyph run placements to glyph origins. This overload is for natural metrics, which includes SVG, TrueType natural modes, and bitmap placement.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate HRESULT ComputeGlyphOrigins1(

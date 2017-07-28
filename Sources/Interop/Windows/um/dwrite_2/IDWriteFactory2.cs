@@ -17,7 +17,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>Get the system-appropriate font fallback mapping list.</summary>>
+        /// <summary>Get the system-appropriate font fallback mapping list.</summary>
         /// <param name="fontFallback">The system fallback list.</param>
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
@@ -27,7 +27,7 @@ namespace TerraFX.Interop
             [Out] IDWriteFontFallback** fontFallback
         );
 
-        /// <summary>Create a custom font fallback builder.</summary>>
+        /// <summary>Create a custom font fallback builder.</summary>
         /// <param name="fontFallbackBuilder">Empty font fallback builder.</param>
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
@@ -37,7 +37,7 @@ namespace TerraFX.Interop
             [Out] IDWriteFontFallbackBuilder** fontFallbackBuilder
         );
 
-        /// <summary>Translates a glyph run to a sequence of color glyph runs, which can be rendered to produce a color representation of the original "base" run.</summary>>
+        /// <summary>Translates a glyph run to a sequence of color glyph runs, which can be rendered to produce a color representation of the original "base" run.</summary>
         /// <param name="baselineOriginX">Horizontal origin of the base glyph run in pre-transform coordinates.</param>
         /// <param name="baselineOriginY">Vertical origin of the base glyph run in pre-transform coordinates.</param>
         /// <param name="glyphRun">Pointer to the original "base" glyph run.</param>
@@ -61,7 +61,7 @@ namespace TerraFX.Interop
             [Out] IDWriteColorGlyphRunEnumerator** colorLayers
         );
 
-        /// <summary>Creates a rendering parameters object with the specified properties.</summary>>
+        /// <summary>Creates a rendering parameters object with the specified properties.</summary>
         /// <param name="gamma">The gamma value used for gamma correction, which must be greater than zero and cannot exceed 256.</param>
         /// <param name="enhancedContrast">The amount of contrast enhancement, zero or greater.</param>
         /// <param name="clearTypeLevel">The degree of ClearType level, from 0.0f (no ClearType) to 1.0f (full ClearType).</param>
@@ -84,7 +84,7 @@ namespace TerraFX.Interop
             [Out] IDWriteRenderingParams2** renderingParams
         );
 
-        /// <summary>Creates a glyph run analysis object, which encapsulates information used to render a glyph run.</summary>>
+        /// <summary>Creates a glyph run analysis object, which encapsulates information used to render a glyph run.</summary>
         /// <param name="glyphRun">Structure specifying the properties of the glyph run.</param>
         /// <param name="transform">Optional transform applied to the glyphs and their positions. This transform is applied after the scaling specified by the emSize and pixelsPerDip.</param>
         /// <param name="renderingMode">Specifies the rendering mode, which must be one of the raster rendering modes (i.e., not default and not outline).</param>

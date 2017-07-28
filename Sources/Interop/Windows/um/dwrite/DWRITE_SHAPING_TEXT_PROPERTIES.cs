@@ -13,7 +13,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Properties
-        /// <summary>This character can be shaped independently from the others (usually set for the space character).</summary>>
+        /// <summary>This character can be shaped independently from the others (usually set for the space character).</summary>
         public UINT16 isShapedAlone
         {
             get
@@ -27,7 +27,7 @@ namespace TerraFX.Interop
             }
         }
 
-        /// <summary>Reserved for use by shaping engine.</summary>>
+        /// <summary>Reserved for use by shaping engine.</summary>
         public UINT16 reserved
         {
             get

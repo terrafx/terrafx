@@ -9,21 +9,21 @@ namespace TerraFX.Interop
     unsafe public /* blittable */ struct DWRITE_COLOR_GLYPH_RUN
     {
         #region Fields
-        /// <summary>Glyph run to render.</summary>>
+        /// <summary>Glyph run to render.</summary>
         public DWRITE_GLYPH_RUN glyphRun;
 
-        /// <summary>Optional glyph run description.</summary>>
+        /// <summary>Optional glyph run description.</summary>
         public DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription;
 
-        /// <summary>Location at which to draw this glyph run.</summary>>
+        /// <summary>Location at which to draw this glyph run.</summary>
         public FLOAT baselineOriginX;
 
         public FLOAT baselineOriginY;
 
-        /// <summary>Color to use for this layer, if any. This is the same color that IDWriteFontFace2::GetPaletteEntries would return for the current palette index if the paletteIndex member is less than 0xFFFF. If the paletteIndex member is 0xFFFF then there is no associated palette entry, this member is set to { 0, 0, 0, 0 }, and the client should use the current foreground brush.</summary>>
+        /// <summary>Color to use for this layer, if any. This is the same color that IDWriteFontFace2::GetPaletteEntries would return for the current palette index if the paletteIndex member is less than 0xFFFF. If the paletteIndex member is 0xFFFF then there is no associated palette entry, this member is set to { 0, 0, 0, 0 }, and the client should use the current foreground brush.</summary>
         public DWRITE_COLOR_F runColor;
 
-        /// <summary>Zero-based index of this layer's color entry in the current color palette, or 0xFFFF if this layer is to be rendered using the current foreground brush.</summary>>
+        /// <summary>Zero-based index of this layer's color entry in the current color palette, or 0xFFFF if this layer is to be rendered using the current foreground brush.</summary>
         public UINT16 paletteIndex;
         #endregion
     }

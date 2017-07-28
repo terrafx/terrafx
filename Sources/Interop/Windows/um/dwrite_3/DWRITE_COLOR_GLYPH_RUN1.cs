@@ -12,10 +12,10 @@ namespace TerraFX.Interop
         #region Fields
         public DWRITE_COLOR_GLYPH_RUN BaseValue;
 
-        /// <summary>Type of glyph image format for this color run. Exactly one type will be set since TranslateColorGlyphRun has already broken down the run into separate parts.</summary>>
+        /// <summary>Type of glyph image format for this color run. Exactly one type will be set since TranslateColorGlyphRun has already broken down the run into separate parts.</summary>
         public DWRITE_GLYPH_IMAGE_FORMATS glyphImageFormat;
 
-        /// <summary>Measuring mode to use for this glyph run.</summary>>
+        /// <summary>Measuring mode to use for this glyph run.</summary>
         public DWRITE_MEASURING_MODE measuringMode;
         #endregion
     }

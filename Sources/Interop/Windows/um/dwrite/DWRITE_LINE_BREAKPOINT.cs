@@ -13,7 +13,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Properties
-        /// <summary>Breaking condition before the character.</summary>>
+        /// <summary>Breaking condition before the character.</summary>
         public UINT8 breakConditionBefore
         {
             get
@@ -27,7 +27,7 @@ namespace TerraFX.Interop
             }
         }
 
-        /// <summary>Breaking condition after the character.</summary>>
+        /// <summary>Breaking condition after the character.</summary>
         public UINT8 breakConditionAfter
         {
             get
@@ -41,7 +41,7 @@ namespace TerraFX.Interop
             }
         }
 
-        /// <summary>The character is some form of whitespace, which may be meaningful for justification.</summary>>
+        /// <summary>The character is some form of whitespace, which may be meaningful for justification.</summary>
         public UINT8 isWhitespace
         {
             get
@@ -55,7 +55,7 @@ namespace TerraFX.Interop
             }
         }
 
-        /// <summary>The character is a soft hyphen, often used to indicate hyphenation points inside words.</summary>>
+        /// <summary>The character is a soft hyphen, often used to indicate hyphenation points inside words.</summary>
         public UINT8 isSoftHyphen
         {
             get
