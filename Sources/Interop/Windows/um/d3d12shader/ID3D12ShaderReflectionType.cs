@@ -19,7 +19,8 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDesc(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDesc(
             [In] ID3D12ShaderReflectionType* This,
             [Out] D3D12_SHADER_TYPE_DESC* pDesc
         );
@@ -28,26 +29,28 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate ID3D12ShaderReflectionType* GetMemberTypeByIndex(
             [In] ID3D12ShaderReflectionType* This,
-            [In] UINT Index
+            [In, ComAliasName("UINT")] uint Index
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate ID3D12ShaderReflectionType* GetMemberTypeByName(
             [In] ID3D12ShaderReflectionType* This,
-            [In] LPCSTR Name
+            [In, ComAliasName("LPCSTR")] /* readonly */ sbyte* Name
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate LPSTR GetMemberTypeName(
+        [return: ComAliasName("LPSTR")]
+        public /* static */ delegate sbyte* GetMemberTypeName(
             [In] ID3D12ShaderReflectionType* This,
-            [In] UINT Index
+            [In, ComAliasName("UINT")] uint Index
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT IsEqual(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int IsEqual(
             [In] ID3D12ShaderReflectionType* This,
             [In] ID3D12ShaderReflectionType* pType
         );
@@ -74,19 +77,21 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate ID3D12ShaderReflectionType* GetInterfaceByIndex(
             [In] ID3D12ShaderReflectionType* This,
-            [In] UINT uIndex
+            [In, ComAliasName("UINT")] uint uIndex
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT IsOfType(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int IsOfType(
             [In] ID3D12ShaderReflectionType* This,
             [In] ID3D12ShaderReflectionType* pType
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ImplementsInterface(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ImplementsInterface(
             [In] ID3D12ShaderReflectionType* This,
             [In] ID3D12ShaderReflectionType* pBase
         );

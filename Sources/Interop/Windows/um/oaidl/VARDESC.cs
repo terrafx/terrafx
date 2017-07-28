@@ -7,18 +7,22 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-   unsafe  public  /* blittable */ struct VARDESC
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    unsafe public /* blittable */ struct VARDESC
     {
         #region Fields
-        public MEMBERID memid;
+        [ComAliasName("MEMBERID")]
+        public int memid;
 
-        public LPOLESTR lpstrSchema;
+        [ComAliasName("LPOLESTR")]
+        public char* lpstrSchema;
 
         internal _u_e__Union u;
 
         public ELEMDESC elemdescVar;
 
-        public WORD wVarFlags;
+        [ComAliasName("WORD")]
+        public ushort wVarFlags;
 
         public VARKIND varkind;
         #endregion
@@ -29,7 +33,8 @@ namespace TerraFX.Interop
         {
             #region Fields
             [FieldOffset(0)]
-            public ULONG oInst;
+            [ComAliasName("ULONG")]
+            public uint oInst;
 
             [FieldOffset(0)]
             public VARIANT* lpvarValue;

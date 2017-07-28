@@ -27,12 +27,13 @@ namespace TerraFX.Interop
         /// <remarks> This rotates around the given origin x and y, returning a translation component such that the glyph run, text decoration, or inline object is drawn with the right orientation at the expected coordinate.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetGlyphOrientationTransform(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetGlyphOrientationTransform(
             [In] IDWriteTextAnalyzer2* This,
             [In] DWRITE_GLYPH_ORIENTATION_ANGLE glyphOrientationAngle,
-            [In] BOOL isSideways,
-            [In] FLOAT originX,
-            [In] FLOAT originY,
+            [In, ComAliasName("BOOL")] int isSideways,
+            [In, ComAliasName("FLOAT")] float originX,
+            [In, ComAliasName("FLOAT")] float originY,
             [Out] DWRITE_MATRIX* transform
         );
 
@@ -46,13 +47,14 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetTypographicFeatures(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetTypographicFeatures(
             [In] IDWriteTextAnalyzer2* This,
             [In] IDWriteFontFace* fontFace,
             [In] DWRITE_SCRIPT_ANALYSIS scriptAnalysis,
-            [In, Optional] /* readonly */ WCHAR* localeName,
-            [In] UINT32 maxTagCount,
-            [Out] UINT32* actualTagCount,
+            [In, Optional, ComAliasName("WCHAR")] /* readonly */ char* localeName,
+            [In, ComAliasName("UINT32")] uint maxTagCount,
+            [Out, ComAliasName("UINT32")] uint* actualTagCount,
             [Out] DWRITE_FONT_FEATURE_TAG* tags
         );
 
@@ -67,15 +69,16 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CheckTypographicFeature(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CheckTypographicFeature(
             [In] IDWriteTextAnalyzer2* This,
             [In] IDWriteFontFace* fontFace,
             [In] DWRITE_SCRIPT_ANALYSIS scriptAnalysis,
-            [In, Optional] /* readonly */ WCHAR* localeName,
+            [In, Optional, ComAliasName("WCHAR")] /* readonly */ char* localeName,
             [In] DWRITE_FONT_FEATURE_TAG featureTag,
-            [In] UINT32 glyphCount,
-            [In] /* readonly */ UINT16* glyphIndices,
-            [Out] UINT8* featureApplies
+            [In, ComAliasName("UINT32")] uint glyphCount,
+            [In, ComAliasName("UINT16")] /* readonly */ ushort* glyphIndices,
+            [Out, ComAliasName("UINT8")] byte* featureApplies
         );
         #endregion
 

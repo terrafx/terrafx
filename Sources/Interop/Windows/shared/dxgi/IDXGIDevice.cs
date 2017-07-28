@@ -19,43 +19,48 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetAdapter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetAdapter(
             [In] IDXGIDevice* This,
             [Out] IDXGIAdapter** pAdapter
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateSurface(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateSurface(
             [In] IDXGIDevice* This,
             [In] /* readonly */ DXGI_SURFACE_DESC* pDesc,
-            [In] UINT NumSurfaces,
-            [In] DXGI_USAGE Usage,
+            [In, ComAliasName("UINT")] uint NumSurfaces,
+            [In, ComAliasName("DXGI_USAGE")] uint Usage,
             [In, Optional] /* readonly */ DXGI_SHARED_RESOURCE* pSharedResource,
             [Out] IDXGISurface** ppSurface
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT QueryResourceResidency(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryResourceResidency(
             [In] IDXGIDevice* This,
             [In] /* readonly */ IUnknown** ppResources,
             [Out] DXGI_RESIDENCY* pResidencyStatus,
-            [In] UINT NumResources
+            [In, ComAliasName("UINT")] uint NumResources
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetGPUThreadPriority(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetGPUThreadPriority(
             [In] IDXGIDevice* This,
-            [In] INT Priority
+            [In, ComAliasName("INT")] int Priority
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetGPUThreadPriority(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetGPUThreadPriority(
             [In] IDXGIDevice* This,
-            [Out] INT* pPriority
+            [Out, ComAliasName("INT")] int* pPriority
         );
         #endregion
 

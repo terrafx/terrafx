@@ -3,6 +3,8 @@
 // Ported from um\dwrite_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>Range of Unicode codepoints.</summary>
@@ -10,10 +12,12 @@ namespace TerraFX.Interop
     {
         #region Fields
         /// <summary>The first codepoint in the Unicode range.</summary>
-        public UINT32 first;
+        [ComAliasName("UINT32")]
+        public uint first;
 
         /// <summary>The last codepoint in the Unicode range.</summary>
-        public UINT32 last;
+        [ComAliasName("UINT32")]
+        public uint last;
         #endregion
     }
 }

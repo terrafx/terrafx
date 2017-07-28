@@ -23,7 +23,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetCenter(
             [In] ID2D1RadialGradientBrush* This,
-            [In] D2D1_POINT_2F center
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F center
         );
 
         /// <summary>Sets offset of the origin relative to the radial gradient center.</summary>
@@ -31,44 +31,48 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetGradientOriginOffset(
             [In] ID2D1RadialGradientBrush* This,
-            [In] D2D1_POINT_2F gradientOriginOffset
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F gradientOriginOffset
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetRadiusX(
             [In] ID2D1RadialGradientBrush* This,
-            [In] FLOAT radiusX
+            [In, ComAliasName("FLOAT")] float radiusX
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetRadiusY(
             [In] ID2D1RadialGradientBrush* This,
-            [In] FLOAT radiusY
+            [In, ComAliasName("FLOAT")] float radiusY
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_POINT_2F GetCenter(
+        [return: ComAliasName("D2D1_POINT_2F")]
+        public /* static */ delegate D2D_POINT_2F GetCenter(
             [In] ID2D1RadialGradientBrush* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_POINT_2F GetGradientOriginOffset(
+        [return: ComAliasName("D2D1_POINT_2F")]
+        public /* static */ delegate D2D_POINT_2F GetGradientOriginOffset(
             [In] ID2D1RadialGradientBrush* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate FLOAT GetRadiusX(
+        [return: ComAliasName("FLOAT")]
+        public /* static */ delegate float GetRadiusX(
             [In] ID2D1RadialGradientBrush* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate FLOAT GetRadiusY(
+        [return: ComAliasName("FLOAT")]
+        public /* static */ delegate float GetRadiusY(
             [In] ID2D1RadialGradientBrush* This
         );
 

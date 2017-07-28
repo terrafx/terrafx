@@ -19,31 +19,35 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetContainerFormat(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetContainerFormat(
             [In] IWICMetadataQueryReader* This,
-            [Out] GUID* pguidContainerFormat
+            [Out, ComAliasName("GUID")] Guid* pguidContainerFormat
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetLocation(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetLocation(
             [In] IWICMetadataQueryReader* This,
-            [In] UINT cchMaxLength,
-            [In, Out, Optional] WCHAR* wzNamespace,
-            [Out] UINT* pcchActualLength
+            [In, ComAliasName("UINT")] uint cchMaxLength,
+            [In, Out, Optional, ComAliasName("WCHAR")] char* wzNamespace,
+            [Out, ComAliasName("UINT")] uint* pcchActualLength
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetMetadataByName(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetMetadataByName(
             [In] IWICMetadataQueryReader* This,
-            [In] LPCWSTR wzName,
+            [In, ComAliasName("LPCWSTR")] /* readonly */ char* wzName,
             [In, Out, Optional] PROPVARIANT* pvarValue
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetEnumerator(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetEnumerator(
             [In] IWICMetadataQueryReader* This,
             [Out, Optional] IEnumString** ppIEnumString
         );

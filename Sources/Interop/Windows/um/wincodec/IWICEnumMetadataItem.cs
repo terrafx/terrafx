@@ -19,31 +19,35 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Next(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Next(
             [In] IWICEnumMetadataItem* This,
-            [In] ULONG celt,
+            [In, ComAliasName("ULONG")] uint celt,
             [In, Out, Optional] PROPVARIANT* rgeltSchema,
             [In, Out] PROPVARIANT* rgeltId,
             [In, Out, Optional] PROPVARIANT* rgeltValue,
-            [Out, Optional] ULONG* pceltFetched
+            [Out, Optional, ComAliasName("ULONG")] uint* pceltFetched
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Skip(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Skip(
             [In] IWICEnumMetadataItem* This,
-            [In] ULONG celt
+            [In, ComAliasName("ULONG")] uint celt
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Reset(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Reset(
             [In] IWICEnumMetadataItem* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Clone(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Clone(
             [In] IWICEnumMetadataItem* This,
             [Out, Optional] IWICEnumMetadataItem** ppIEnumMetadataItem
         );

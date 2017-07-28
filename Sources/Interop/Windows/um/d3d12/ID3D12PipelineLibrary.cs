@@ -19,44 +19,49 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT StorePipeline(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int StorePipeline(
             [In] ID3D12PipelineLibrary* This,
-            [In, Optional] LPCWSTR pName,
+            [In, Optional, ComAliasName("LPCWSTR")] /* readonly */ char* pName,
             [In] ID3D12PipelineState* pPipeline
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT LoadGraphicsPipeline(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int LoadGraphicsPipeline(
             [In] ID3D12PipelineLibrary* This,
-            [In] LPCWSTR pName,
+            [In, ComAliasName("LPCWSTR")] /* readonly */ char* pName,
             [In] /* readonly */ D3D12_GRAPHICS_PIPELINE_STATE_DESC* pDesc,
-            [In] REFIID riid,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out] void** ppPipelineState
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT LoadComputePipeline(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int LoadComputePipeline(
             [In] ID3D12PipelineLibrary* This,
-            [In] LPCWSTR pName,
+            [In, ComAliasName("LPCWSTR")] /* readonly */ char* pName,
             [In] /* readonly */ D3D12_COMPUTE_PIPELINE_STATE_DESC* pDesc,
-            [In] REFIID riid,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out] void** ppPipelineState
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate SIZE_T GetSerializedSize(
+        [return: ComAliasName("SIZE_T")]
+        public /* static */ delegate nuint GetSerializedSize(
             [In] ID3D12PipelineLibrary* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Serialize(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Serialize(
             [In] ID3D12PipelineLibrary* This,
             [Out] void* pData,
-            [In] SIZE_T DataSizeInBytes
+            [In, ComAliasName("SIZE_T")] nuint DataSizeInBytes
         );
         #endregion
 

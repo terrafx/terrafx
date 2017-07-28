@@ -19,30 +19,34 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetSharedHandle(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSharedHandle(
             [In] IDXGIResource* This,
-            [Out] HANDLE* pSharedHandle
+            [Out, ComAliasName("HANDLE")] void** pSharedHandle
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetUsage(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetUsage(
             [In] IDXGIResource* This,
-            [Out] DXGI_USAGE* pUsage
+            [Out, ComAliasName("DXGI_USAGE")] uint* pUsage
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetEvictionPriority(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetEvictionPriority(
             [In] IDXGIResource* This,
-            [In] UINT EvictionPriority
+            [In, ComAliasName("UINT")] uint EvictionPriority
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetEvictionPriority(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetEvictionPriority(
             [In] IDXGIResource* This,
-            [Out] UINT* pEvictionPriority
+            [Out, ComAliasName("UINT")] uint* pEvictionPriority
         );
         #endregion
 

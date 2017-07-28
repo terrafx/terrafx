@@ -19,19 +19,21 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT WritePixels(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int WritePixels(
             [In] IWICPlanarBitmapFrameEncode* This,
-            [In] UINT lineCount,
+            [In, ComAliasName("UINT")] uint lineCount,
             [In] WICBitmapPlane* pPlanes,
-            [In] UINT cPlanes
+            [In, ComAliasName("UINT")] uint cPlanes
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT WriteSource(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int WriteSource(
             [In] IWICPlanarBitmapFrameEncode* This,
             [In] IWICBitmapSource** ppPlanes,
-            [In] UINT cPlanes,
+            [In, ComAliasName("UINT")] uint cPlanes,
             [In, Optional] WICRect* prcSource
         );
         #endregion

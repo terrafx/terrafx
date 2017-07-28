@@ -19,11 +19,12 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Initialize(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Initialize(
             [In] IWICBitmapScaler* This,
             [In, Optional] IWICBitmapSource* pISource,
-            [In] UINT uiWidth,
-            [In] UINT uiHeight,
+            [In, ComAliasName("UINT")] uint uiWidth,
+            [In, ComAliasName("UINT")] uint uiHeight,
             [In] WICBitmapInterpolationMode mode
         );
         #endregion

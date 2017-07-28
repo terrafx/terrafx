@@ -19,9 +19,10 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AddError(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddError(
             [In] IErrorLog* This,
-            [In] LPCOLESTR pszPropName,
+            [In, ComAliasName("LPCOLESTR")] /* readonly */ char* pszPropName,
             [In] EXCEPINFO* pExcepInfo
         );
         #endregion

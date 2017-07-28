@@ -19,18 +19,20 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetRenderInfo(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetRenderInfo(
             [In] ID2D1SourceTransform* This,
             [In] ID2D1RenderInfo* renderInfo
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Draw(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Draw(
             [In] ID2D1SourceTransform* This,
             [In] ID2D1Bitmap1* target,
-            [In] /* readonly */ D2D1_RECT_L* drawRect,
-            [In] D2D1_POINT_2U targetOrigin
+            [In, ComAliasName("D2D1_RECT_L")] /* readonly */ RECT* drawRect,
+            [In, ComAliasName("D2D1_POINT_2U")] D2D_POINT_2U targetOrigin
         );
         #endregion
 

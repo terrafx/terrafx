@@ -34,7 +34,8 @@ namespace TerraFX.Interop
         /// <summary>Retrieves a set simple color profile.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetSimpleColorProfile(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSimpleColorProfile(
             [In] ID2D1ColorContext1* This,
             [Out] D2D1_SIMPLE_COLOR_PROFILE* simpleProfile
         );

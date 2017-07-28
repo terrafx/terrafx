@@ -19,17 +19,19 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AcquireSync(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AcquireSync(
             [In] IDXGIKeyedMutex* This,
-            [In] UINT64 Key,
-            [In] DWORD dwMilliseconds
+            [In, ComAliasName("UINT64")] ulong Key,
+            [In, ComAliasName("DWORD")] uint dwMilliseconds
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ReleaseSync(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ReleaseSync(
             [In] IDXGIKeyedMutex* This,
-            [In] UINT64 Key
+            [In, ComAliasName("UINT64")] ulong Key
         );
         #endregion
 

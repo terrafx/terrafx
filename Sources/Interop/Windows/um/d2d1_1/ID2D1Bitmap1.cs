@@ -35,7 +35,8 @@ namespace TerraFX.Interop
         /// <summary>Retrieves the DXGI surface from the corresponding bitmap, if the bitmap was created from a device derived from a D3D device.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetSurface(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSurface(
             [In] ID2D1Bitmap1* This,
             [Out] IDXGISurface** dxgiSurface
         );
@@ -43,7 +44,8 @@ namespace TerraFX.Interop
         /// <summary>Maps the given bitmap into memory. The bitmap must have been created with the D2D1_BITMAP_OPTIONS_CPU_READ flag.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Map(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Map(
             [In] ID2D1Bitmap1* This,
             [In] D2D1_MAP_OPTIONS options,
             [Out] D2D1_MAPPED_RECT* mappedRect
@@ -52,7 +54,8 @@ namespace TerraFX.Interop
         /// <summary>Unmaps the given bitmap from memory.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Unmap(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Unmap(
             [In] ID2D1Bitmap1* This
         );
         #endregion

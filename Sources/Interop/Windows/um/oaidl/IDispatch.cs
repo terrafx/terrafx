@@ -19,43 +19,47 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetTypeInfoCount(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetTypeInfoCount(
             [In] IDispatch* This,
-            [Out] UINT* pctinfo
+            [Out, ComAliasName("UINT")] uint* pctinfo
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetTypeInfo(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetTypeInfo(
             [In] IDispatch* This,
-            [In] UINT iTInfo,
-            [In] LCID lcid,
+            [In, ComAliasName("UINT")] uint iTInfo,
+            [In, ComAliasName("LCID")] uint lcid,
             [Out, Optional] ITypeInfo** ppTInfo
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetIDsOfNames(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetIDsOfNames(
             [In] IDispatch* This,
-            [In] REFIID riid,
-            [In] LPOLESTR* rgszNames,
-            [In] UINT cNames,
-            [In] LCID lcid,
-            [Out] DISPID* rgDispId
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
+            [In, ComAliasName("LPOLESTR")] char** rgszNames,
+            [In, ComAliasName("UINT")] uint cNames,
+            [In, ComAliasName("LCID")] uint lcid,
+            [Out, ComAliasName("DISPID")] int* rgDispId
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Invoke(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Invoke(
             [In] IDispatch* This,
-            [In] DISPID dispIdMember,
-            [In] REFIID riid,
-            [In] LCID lcid,
-            [In] WORD wFlags,
+            [In, ComAliasName("DISPID")] int dispIdMember,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
+            [In, ComAliasName("LCID")] uint lcid,
+            [In, ComAliasName("WORD")] ushort wFlags,
             [In] DISPPARAMS* pDispParams,
             [Out, Optional] VARIANT* pVarResult,
             [Out, Optional] EXCEPINFO* pExcepInfo,
-            [Out, Optional] UINT* puArgErr
+            [Out, Optional, ComAliasName("UINT")] uint* puArgErr
         );
         #endregion
 

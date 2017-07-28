@@ -3,14 +3,18 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_DEPTH_STENCIL_VALUE
     {
         #region Fields
-        public FLOAT Depth;
+        [ComAliasName("FLOAT")]
+        public float Depth;
 
-        public UINT8 Stencil;
+        [ComAliasName("UINT8")]
+        public byte Stencil;
         #endregion
     }
 }

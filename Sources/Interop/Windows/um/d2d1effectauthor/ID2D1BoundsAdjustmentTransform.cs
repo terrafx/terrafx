@@ -21,14 +21,14 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetOutputBounds(
             [In] ID2D1BoundsAdjustmentTransform* This,
-            [In] /* readonly */ D2D1_RECT_L* outputBounds
+            [In, ComAliasName("D2D1_RECT_L")] /* readonly */ RECT* outputBounds
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void GetOutputBounds(
             [In] ID2D1BoundsAdjustmentTransform* This,
-            [Out] D2D1_RECT_L* outputBounds
+            [Out, ComAliasName("D2D1_RECT_L")] RECT* outputBounds
         );
         #endregion
 

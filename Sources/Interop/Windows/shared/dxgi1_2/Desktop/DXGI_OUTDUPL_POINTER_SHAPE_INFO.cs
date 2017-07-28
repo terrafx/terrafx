@@ -3,18 +3,24 @@
 // Ported from shared\dxgi1_2.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop.Desktop
 {
     public /* blittable */ struct DXGI_OUTDUPL_POINTER_SHAPE_INFO
     {
         #region Fields
-        public UINT Type;
+        [ComAliasName("UINT")]
+        public uint Type;
 
-        public UINT Width;
+        [ComAliasName("UINT")]
+        public uint Width;
 
-        public UINT Height;
+        [ComAliasName("UINT")]
+        public uint Height;
 
-        public UINT Pitch;
+        [ComAliasName("UINT")]
+        public uint Pitch;
 
         public POINT HotSpot;
         #endregion

@@ -19,24 +19,27 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetPackageTargetTypes(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPackageTargetTypes(
             [In] IPrintDocumentPackageTarget* This,
-            [Out] UINT32* targetCount,
-            [Out, Optional] GUID **targetTypes
+            [Out, ComAliasName("UINT32")] uint* targetCount,
+            [Out, Optional, ComAliasName("GUID")] Guid **targetTypes
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetPackageTarget(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPackageTarget(
             [In] IPrintDocumentPackageTarget* This,
-            [In] REFGUID guidTargetType,
-            [In] REFIID riid,
+            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidTargetType,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out, Optional] void** ppvTarget
         );
         
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Cancel(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Cancel(
             [In] IPrintDocumentPackageTarget* This
         );
         #endregion

@@ -19,14 +19,16 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SupportsTransparency(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SupportsTransparency(
             [In] IWICPixelFormatInfo2* This,
-            [Out] BOOL* pfSupportsTransparency
+            [Out, ComAliasName("BOOL")] int* pfSupportsTransparency
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetNumericRepresentation(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetNumericRepresentation(
             [In] IWICPixelFormatInfo2* This,
             [Out] WICPixelFormatNumericRepresentation* pNumericRepresentation
         );

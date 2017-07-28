@@ -30,11 +30,12 @@ namespace TerraFX.Interop
         /// <remarks> If a non-identity orientation is passed, the glyph run should be rotated around the given baseline x and y coordinates. The function IDWriteAnalyzer2::GetGlyphOrientationTransform will return the necessary transform for you, which can be combined with any existing world transform on the drawing context.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DrawGlyphRun(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DrawGlyphRun(
             [In] IDWriteTextRenderer1* This,
             [In, Optional] void* clientDrawingContext,
-            [In] FLOAT baselineOriginX,
-            [In] FLOAT baselineOriginY,
+            [In, ComAliasName("FLOAT")] float baselineOriginX,
+            [In, ComAliasName("FLOAT")] float baselineOriginY,
             [In] DWRITE_GLYPH_ORIENTATION_ANGLE orientationAngle,
             [In] DWRITE_MEASURING_MODE measuringMode,
             [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
@@ -54,11 +55,12 @@ namespace TerraFX.Interop
         /// To get the correct top coordinate of the underline rect, add underline::offset to the baseline's Y. Otherwise the underline will be immediately under the text. The x coordinate will always be passed as the left side, regardless of text directionality. This simplifies drawing and reduces the problem of round-off that could potentially cause gaps or a double stamped alpha blend. To avoid alpha overlap, round the end points to the nearest device pixel.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DrawUnderline(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DrawUnderline(
             [In] IDWriteTextRenderer1* This,
             [In, Optional] void* clientDrawingContext,
-            [In] FLOAT baselineOriginX,
-            [In] FLOAT baselineOriginY,
+            [In, ComAliasName("FLOAT")] float baselineOriginX,
+            [In, ComAliasName("FLOAT")] float baselineOriginY,
             [In] DWRITE_GLYPH_ORIENTATION_ANGLE orientationAngle,
             [In] /* readonly */ DWRITE_UNDERLINE* underline,
             [In, Optional] IUnknown* clientDrawingEffect
@@ -75,11 +77,12 @@ namespace TerraFX.Interop
         /// <remarks> A single strikethrough can be broken into multiple calls, depending on how the formatting changes attributes. Strikethrough is not averaged across font sizes/styles changes. To get the correct top coordinate of the strikethrough rect, add strikethrough::offset to the baseline's Y. Like underlines, the x coordinate will always be passed as the left side, regardless of text directionality.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DrawStrikethrough(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DrawStrikethrough(
             [In] IDWriteTextRenderer1* This,
             [In, Optional] void* clientDrawingContext,
-            [In] FLOAT baselineOriginX,
-            [In] FLOAT baselineOriginY,
+            [In, ComAliasName("FLOAT")] float baselineOriginX,
+            [In, ComAliasName("FLOAT")] float baselineOriginY,
             [In] DWRITE_GLYPH_ORIENTATION_ANGLE orientationAngle,
             [In] /* readonly */ DWRITE_STRIKETHROUGH* strikethrough,
             [In, Optional] IUnknown* clientDrawingEffect
@@ -98,15 +101,16 @@ namespace TerraFX.Interop
         /// <remarks> The right-to-left flag is a hint to draw the appropriate visual for that reading direction. For example, it would look strange to draw an arrow pointing to the right to indicate a submenu. The sideways flag similarly hints that the object is drawn in a different orientation. If a non-identity orientation is passed, the top left of the inline object should be rotated around the given x and y coordinates. IDWriteAnalyzer2::GetGlyphOrientationTransform returns the necessary transform for this.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DrawInlineObject(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DrawInlineObject(
             [In] IDWriteTextRenderer1* This,
             [In, Optional] void* clientDrawingContext,
-            [In] FLOAT originX,
-            [In] FLOAT originY,
+            [In, ComAliasName("FLOAT")] float originX,
+            [In, ComAliasName("FLOAT")] float originY,
             [In] DWRITE_GLYPH_ORIENTATION_ANGLE orientationAngle,
             [In] IDWriteInlineObject* inlineObject,
-            [In] BOOL isSideways,
-            [In] BOOL isRightToLeft,
+            [In, ComAliasName("BOOL")] int isSideways,
+            [In, ComAliasName("BOOL")] int isRightToLeft,
             [In, Optional] IUnknown* clientDrawingEffect
         );
         #endregion

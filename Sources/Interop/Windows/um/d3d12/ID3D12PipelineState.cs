@@ -19,7 +19,8 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetCachedBlob(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetCachedBlob(
             [In] ID3D12PipelineState* This,
             [Out] ID3DBlob** ppBlob
         );

@@ -23,7 +23,8 @@ namespace TerraFX.Interop
         /// <remarks> This function can fail with DWRITE_E_REMOTEFONT if the font is not local.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateFontFace(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateFontFace(
             [In] IDWriteFontFaceReference* This,
             [Out] IDWriteFontFace3** fontFace
         );
@@ -35,7 +36,8 @@ namespace TerraFX.Interop
         /// <remarks> This function can fail with DWRITE_E_REMOTEFONT if the font is not local.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateFontFaceWithSimulations(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateFontFaceWithSimulations(
             [In] IDWriteFontFaceReference* This,
             [In] DWRITE_FONT_SIMULATIONS fontFaceSimulationFlags,
             [Out] IDWriteFontFace3** fontFace
@@ -44,7 +46,8 @@ namespace TerraFX.Interop
         /// <summary>Compares two instances of a font face references for equality.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL _Equals(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int _Equals(
             [In] IDWriteFontFaceReference* This,
             [In] IDWriteFontFaceReference* fontFaceReference
         );
@@ -52,7 +55,8 @@ namespace TerraFX.Interop
         /// <summary>Obtains the zero-based index of the font face in its font file or files. If the font files contain a single face, the return value is zero.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetFontFaceIndex(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetFontFaceIndex(
             [In] IDWriteFontFaceReference* This
         );
 
@@ -66,7 +70,8 @@ namespace TerraFX.Interop
         /// <summary>Obtains the font file representing a font face.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFontFile(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFontFile(
             [In] IDWriteFontFaceReference* This,
             [Out] IDWriteFontFile** fontFile
         );
@@ -75,7 +80,8 @@ namespace TerraFX.Interop
         /// <remarks> The value returned by GetLocalFileSize will always be less than or equal to the value returned by GetFullSize. If the locality is remote, the GetLocalFileSize value is zero. If the locality is local, this value will equal the value returned by GetFileSize. If the locality is partial, this value will equal the size of the portions of the font data that have been downloaded, which will be greater than zero and less than or equal to the GetFileSize value.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT64 GetLocalFileSize(
+        [return: ComAliasName("UINT64")]
+        public /* static */ delegate ulong GetLocalFileSize(
             [In] IDWriteFontFaceReference* This
         );
 
@@ -83,7 +89,8 @@ namespace TerraFX.Interop
         /// <remarks> If the locality is remote, this value is unknown and will be zero. If the locality is partial or local, the value is the full size of the font face.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT64 GetFileSize(
+        [return: ComAliasName("UINT64")]
+        public /* static */ delegate ulong GetFileSize(
             [In] IDWriteFontFaceReference* This
         );
 
@@ -91,7 +98,8 @@ namespace TerraFX.Interop
         /// <remarks> The time may be zero if the font file loader does not expose file time.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFileTime(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFileTime(
             [In] IDWriteFontFaceReference* This,
             [Out] FILETIME* lastWriteTime
         );
@@ -107,7 +115,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT EnqueueFontDownloadRequest(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int EnqueueFontDownloadRequest(
             [In] IDWriteFontFaceReference* This
         );
 
@@ -118,10 +127,11 @@ namespace TerraFX.Interop
         /// <remarks> Downloading a character involves downloading every glyph it depends on directly or indirectly, via font tables (cmap, GSUB, COLR, glyf).</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT EnqueueCharacterDownloadRequest(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int EnqueueCharacterDownloadRequest(
             [In] IDWriteFontFaceReference* This,
-            [In] /* readonly */ WCHAR* characters,
-            [In] UINT32 characterCount
+            [In, ComAliasName("WCHAR")] /* readonly */ char* characters,
+            [In, ComAliasName("UINT32")] uint characterCount
         );
 
         /// <summary>Adds a request to the font download queue (IDWriteFontDownloadQueue).</summary>
@@ -131,10 +141,11 @@ namespace TerraFX.Interop
         /// <remarks> Downloading a glyph involves downloading any other glyphs it depends on from the font tables (GSUB, COLR, glyf).</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT EnqueueGlyphDownloadRequest(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int EnqueueGlyphDownloadRequest(
             [In] IDWriteFontFaceReference* This,
-            [In] /* readonly */ UINT16* glyphIndices,
-            [In] UINT32 glyphCount
+            [In, ComAliasName("UINT16")] /* readonly */ ushort* glyphIndices,
+            [In, ComAliasName("UINT32")] uint glyphCount
         );
 
         /// <summary>Adds a request to the font download queue (IDWriteFontDownloadQueue).</summary>
@@ -143,10 +154,11 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT EnqueueFileFragmentDownloadRequest(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int EnqueueFileFragmentDownloadRequest(
             [In] IDWriteFontFaceReference* This,
-            [In] UINT64 fileOffset,
-            [In] UINT64 fragmentSize
+            [In, ComAliasName("UINT64")] ulong fileOffset,
+            [In, ComAliasName("UINT64")] ulong fragmentSize
         );
         #endregion
 

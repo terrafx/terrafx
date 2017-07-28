@@ -19,26 +19,29 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetParameters(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetParameters(
             [In] IWICDdsEncoder* This,
             [In] WICDdsParameters* pParameters
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetParameters(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetParameters(
             [In] IWICDdsEncoder* This,
             [Out] WICDdsParameters* pParameters
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateNewFrame(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateNewFrame(
             [In] IWICDdsEncoder* This,
             [Out, Optional] IWICBitmapFrameEncode** ppIFrameEncode,
-            [Out, Optional] UINT* pArrayIndex,
-            [Out, Optional] UINT* pMipLevel,
-            [Out, Optional] UINT* pSliceIndex
+            [Out, Optional, ComAliasName("UINT")] uint* pArrayIndex,
+            [Out, Optional, ComAliasName("UINT")] uint* pMipLevel,
+            [Out, Optional, ComAliasName("UINT")] uint* pSliceIndex
         );
         #endregion
 

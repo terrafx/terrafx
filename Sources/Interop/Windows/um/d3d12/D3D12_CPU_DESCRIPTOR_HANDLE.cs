@@ -3,12 +3,15 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_CPU_DESCRIPTOR_HANDLE
     {
         #region Fields
-        public SIZE_T ptr;
+        [ComAliasName("SIZE_T")]
+        public nuint ptr;
         #endregion
     }
 }

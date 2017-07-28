@@ -38,7 +38,8 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate FLOAT GetMiterLimit(
+        [return: ComAliasName("FLOAT")]
+        public /* static */ delegate float GetMiterLimit(
             [In] ID2D1StrokeStyle* This
         );
 
@@ -50,7 +51,8 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate FLOAT GetDashOffset(
+        [return: ComAliasName("FLOAT")]
+        public /* static */ delegate float GetDashOffset(
             [In] ID2D1StrokeStyle* This
         );
 
@@ -62,7 +64,8 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetDashesCount(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetDashesCount(
             [In] ID2D1StrokeStyle* This
         );
 
@@ -71,8 +74,8 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void GetDashes(
             [In] ID2D1StrokeStyle* This,
-            [Out] FLOAT* dashes,
-            [In] UINT32 dashesCount
+            [Out, ComAliasName("FLOAT")] float* dashes,
+            [In, ComAliasName("UINT32")] uint dashesCount
         );
         #endregion
 

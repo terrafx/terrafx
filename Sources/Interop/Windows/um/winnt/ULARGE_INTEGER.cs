@@ -13,26 +13,31 @@ namespace TerraFX.Interop
         #region Fields
         #region struct
         [FieldOffset(0)]
-        public DWORD LowPart;
+        [ComAliasName("DWORD")]
+        public uint LowPart;
 
         [FieldOffset(4)]
-        public DWORD HighPart;
+        [ComAliasName("DWORD")]
+        public uint HighPart;
         #endregion
 
         [FieldOffset(0)]
         public _u__e__Struct u;
 
         [FieldOffset(0)]
-        public ULONGLONG QuadPart;
+        [ComAliasName("ULONGLONG")]
+        public ulong QuadPart;
         #endregion
 
         #region Structs
         public  /* blittable */ struct _u__e__Struct
         {
             #region Fields
-            public DWORD LowPart;
+            [ComAliasName("DWORD")]
+            public uint LowPart;
 
-            public DWORD HighPart;
+            [ComAliasName("DWORD")]
+            public uint HighPart;
             #endregion
         }
         #endregion

@@ -3,16 +3,20 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct D3D12_ROOT_SIGNATURE_DESC
     {
         #region Fields
-        public UINT NumParameters;
+        [ComAliasName("UINT")]
+        public uint NumParameters;
 
         public /* readonly */ D3D12_ROOT_PARAMETER* pParameters;
 
-        public UINT NumStaticSamplers;
+        [ComAliasName("UINT")]
+        public uint NumStaticSamplers;
 
         public /* readonly */ D3D12_STATIC_SAMPLER_DESC* pStaticSamplers;
 

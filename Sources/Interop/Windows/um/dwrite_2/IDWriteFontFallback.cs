@@ -31,19 +31,20 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT MapCharacters(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int MapCharacters(
             [In] IDWriteFontFallback* This,
             [In] IDWriteTextAnalysisSource* analysisSource,
-            [In] UINT32 textPosition,
-            [In] UINT32 textLength,
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [In, ComAliasName("UINT32")] uint textLength,
             [In, Optional] IDWriteFontCollection* baseFontCollection,
-            [In, Optional] /* readonly */ WCHAR* baseFamilyName,
+            [In, Optional, ComAliasName("WCHAR")] /* readonly */ char* baseFamilyName,
             [In] DWRITE_FONT_WEIGHT baseWeight,
             [In] DWRITE_FONT_STYLE baseStyle,
             [In] DWRITE_FONT_STRETCH baseStretch,
-            [Out] UINT32* mappedLength,
+            [Out, ComAliasName("UINT32")] uint* mappedLength,
             [Out] IDWriteFont** mappedFont,
-            [Out] FLOAT* scale
+            [Out, ComAliasName("FLOAT")] float* scale
         );
         #endregion
 

@@ -3,13 +3,16 @@
 // Ported from um\d2d1svg.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>Represents an SVG length.</summary>
     public /* blittable */ struct D2D1_SVG_LENGTH
     {
         #region Fields
-        public FLOAT value;
+        [ComAliasName("FLOAT")]
+        public float value;
 
         public D2D1_SVG_LENGTH_UNITS units;
         #endregion

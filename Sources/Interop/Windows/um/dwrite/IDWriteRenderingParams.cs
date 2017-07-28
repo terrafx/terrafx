@@ -21,21 +21,23 @@ namespace TerraFX.Interop
         /// <summary>Gets the gamma value used for gamma correction. Valid values must be greater than zero and cannot exceed 256.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate FLOAT GetGamma(
+        [return: ComAliasName("FLOAT")]
+        public /* static */ delegate float GetGamma(
             [In] IDWriteRenderingParams* This
         );
 
         /// <summary>Gets the amount of contrast enhancement. Valid values are greater than or equal to zero.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate FLOAT GetEnhancedContrast(
+        [return: ComAliasName("FLOAT")]
+        public /* static */ delegate float GetEnhancedContrast(
             [In] IDWriteRenderingParams* This
         );
 
         /// <summary>Gets the ClearType level. Valid values range from 0.0f (no ClearType) to 1.0f (full ClearType).</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate FLOAT GetClearTypeLevel(
+        public /* static */ delegate float GetClearTypeLevel(
             [In] IDWriteRenderingParams* This
         );
 

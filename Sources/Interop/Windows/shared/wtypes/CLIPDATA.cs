@@ -3,16 +3,21 @@
 // Ported from shared\wtypes.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct CLIPDATA
     {
         #region Fields
-        public ULONG cbSize;
+        [ComAliasName("ULONG")]
+        public uint cbSize;
 
-        public LONG ulClipFmt;
+        [ComAliasName("LONG")]
+        public int ulClipFmt;
 
-        public BYTE* pClipDAta;
+        [ComAliasName("BYTE")]
+        public byte* pClipDAta;
         #endregion
     }
 }

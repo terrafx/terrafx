@@ -3,18 +3,25 @@
 // Ported from um\wincodec.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct WICBitmapPlane
     {
         #region Fields
-        public WICPixelFormatGUID Format;
+        [ComAliasName("WICPixelFormatGUID")]
+        public Guid Format;
 
-        public BYTE* pbBuffer;
+        [ComAliasName("BYTE")]
+        public byte* pbBuffer;
 
-        public UINT cbStride;
+        [ComAliasName("UINT")]
+        public uint cbStride;
 
-        public UINT cbBufferSize;
+        [ComAliasName("UINT")]
+        public uint cbBufferSize;
         #endregion
     }
 }

@@ -3,14 +3,18 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_FEATURE_DATA_D3D12_OPTIONS
     {
         #region Fields
-        public BOOL DoublePrecisionFloatShaderOps;
+        [ComAliasName("BOOL")]
+        public int DoublePrecisionFloatShaderOps;
 
-        public BOOL OutputMergerLogicOp;
+        [ComAliasName("BOOL")]
+        public int OutputMergerLogicOp;
 
         public D3D12_SHADER_MIN_PRECISION_SUPPORT MinPrecisionSupport;
 
@@ -18,23 +22,30 @@ namespace TerraFX.Interop
 
         public D3D12_RESOURCE_BINDING_TIER ResourceBindingTier;
 
-        public BOOL PSSpecifiedStencilRefSupported;
+        [ComAliasName("BOOL")]
+        public int PSSpecifiedStencilRefSupported;
 
-        public BOOL TypedUAVLoadAdditionalFormats;
+        [ComAliasName("BOOL")]
+        public int TypedUAVLoadAdditionalFormats;
 
-        public BOOL ROVsSupported;
+        [ComAliasName("BOOL")]
+        public int ROVsSupported;
 
         public D3D12_CONSERVATIVE_RASTERIZATION_TIER ConservativeRasterizationTier;
 
-        public UINT MaxGPUVirtualAddressBitsPerResource;
+        [ComAliasName("UINT")]
+        public uint MaxGPUVirtualAddressBitsPerResource;
 
-        public BOOL StandardSwizzle64KBSupported;
+        [ComAliasName("BOOL")]
+        public int StandardSwizzle64KBSupported;
 
         public D3D12_CROSS_NODE_SHARING_TIER CrossNodeSharingTier;
 
-        public BOOL CrossAdapterRowMajorTextureSupported;
+        [ComAliasName("BOOL")]
+        public int CrossAdapterRowMajorTextureSupported;
 
-        public BOOL VPAndRTArrayIndexFromAnyShaderFeedingRasterizerSupportedWithoutGSEmulation;
+        [ComAliasName("BOOL")]
+        public int VPAndRTArrayIndexFromAnyShaderFeedingRasterizerSupportedWithoutGSEmulation;
 
         public D3D12_RESOURCE_HEAP_TIER ResourceHeapTier;
         #endregion

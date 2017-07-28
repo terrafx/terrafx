@@ -19,13 +19,15 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Close(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Close(
             [In] ID3D12GraphicsCommandList* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Reset(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Reset(
             [In] ID3D12GraphicsCommandList* This,
             [In] ID3D12CommandAllocator* pAllocator,
             [In, Optional] ID3D12PipelineState* pInitialState
@@ -42,30 +44,30 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void DrawInstanced(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT VertexCountPerInstance,
-            [In] UINT InstanceCount,
-            [In] UINT StartVertexLocation,
-            [In] UINT StartInstanceLocation
+            [In, ComAliasName("UINT")] uint VertexCountPerInstance,
+            [In, ComAliasName("UINT")] uint InstanceCount,
+            [In, ComAliasName("UINT")] uint StartVertexLocation,
+            [In, ComAliasName("UINT")] uint StartInstanceLocation
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void DrawIndexedInstanced(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT IndexCountPerInstance,
-            [In] UINT InstanceCount,
-            [In] UINT StartIndexLocation,
-            [In] INT BaseVertexLocation,
-            [In] UINT StartInstanceLocation
+            [In, ComAliasName("UINT")] uint IndexCountPerInstance,
+            [In, ComAliasName("UINT")] uint InstanceCount,
+            [In, ComAliasName("UINT")] uint StartIndexLocation,
+            [In, ComAliasName("INT")] int BaseVertexLocation,
+            [In, ComAliasName("UINT")] uint StartInstanceLocation
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void Dispatch(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT ThreadGroupCountX,
-            [In] UINT ThreadGroupCountY,
-            [In] UINT ThreadGroupCountZ
+            [In, ComAliasName("UINT")] uint ThreadGroupCountX,
+            [In, ComAliasName("UINT")] uint ThreadGroupCountY,
+            [In, ComAliasName("UINT")] uint ThreadGroupCountZ
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -73,10 +75,10 @@ namespace TerraFX.Interop
         public /* static */ delegate void CopyBufferRegion(
             [In] ID3D12GraphicsCommandList* This,
             [In] ID3D12Resource* pDstBuffer,
-            [In] UINT64 DstOffset,
+            [In, ComAliasName("UINT64")] ulong DstOffset,
             [In] ID3D12Resource* pSrcBuffer,
-            [In] UINT64 SrcOffset,
-            [In] UINT64 NumBytes
+            [In, ComAliasName("UINT64")] ulong SrcOffset,
+            [In, ComAliasName("UINT64")] ulong NumBytes
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -84,9 +86,9 @@ namespace TerraFX.Interop
         public /* static */ delegate void CopyTextureRegion(
             [In] ID3D12GraphicsCommandList* This,
             [In] /* readonly */ D3D12_TEXTURE_COPY_LOCATION* pDst,
-            [In] UINT DstX,
-            [In] UINT DstY,
-            [In] UINT DstZ,
+            [In, ComAliasName("UINT")] uint DstX,
+            [In, ComAliasName("UINT")] uint DstY,
+            [In, ComAliasName("UINT")] uint DstZ,
             [In] /* readonly */ D3D12_TEXTURE_COPY_LOCATION* pSrc,
             [In, Optional] /* readonly */ D3D12_BOX* pSrcBox
         );
@@ -107,7 +109,7 @@ namespace TerraFX.Interop
             [In] /* readonly */ D3D12_TILED_RESOURCE_COORDINATE* pTileRegionStartCoordinate,
             [In] /* readonly */ D3D12_TILE_REGION_SIZE* pTileRegionSize,
             [In] ID3D12Resource* pBuffer,
-            [In] UINT64 BufferStartOffsetInBytes,
+            [In, ComAliasName("UINT64")] ulong BufferStartOffsetInBytes,
             [In] D3D12_TILE_COPY_FLAGS Flags
         );
 
@@ -116,9 +118,9 @@ namespace TerraFX.Interop
         public /* static */ delegate void ResolveSubresource(
             [In] ID3D12GraphicsCommandList* This,
             [In] ID3D12Resource* pDstResource,
-            [In] UINT DstSubresource,
+            [In, ComAliasName("UINT")] uint DstSubresource,
             [In] ID3D12Resource* pSrcResource,
-            [In] UINT SrcSubresource,
+            [In, ComAliasName("UINT")] uint SrcSubresource,
             [In] DXGI_FORMAT Format
         );
 
@@ -133,7 +135,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void RSSetViewports(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT NumViewports,
+            [In, ComAliasName("UINT")] uint NumViewports,
             [In] /* readonly */ D3D12_VIEWPORT* pViewports
         );
 
@@ -141,22 +143,22 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void RSSetScissorRects(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT NumRects,
-            [In] /* readonly */ D3D12_RECT* pRects
+            [In, ComAliasName("UINT")] uint NumRects,
+            [In, ComAliasName("D3D12_RECT")] /* readonly */ RECT* pRects
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void OMSetBlendFactor(
             [In] ID3D12GraphicsCommandList* This,
-            [In, Optional] /* readonly */ FLOAT* BlendFactor
+            [In, Optional, ComAliasName("FLOAT")] /* readonly */ float* BlendFactor
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void OMSetStencilRef(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT StencilRef
+            [In, ComAliasName("UINT")] uint StencilRef
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -170,7 +172,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void ResourceBarrier(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT NumBarriers,
+            [In, ComAliasName("UINT")] uint NumBarriers,
             [In] /* readonly */ D3D12_RESOURCE_BARRIER* pBarriers
         );
 
@@ -185,7 +187,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetDescriptorHeaps(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT NumDescriptorHeaps,
+            [In, ComAliasName("UINT")] uint NumDescriptorHeaps,
             [In] /* readonly */ ID3D12DescriptorHeap** ppDescriptorHeaps
         );
 
@@ -207,7 +209,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetComputeRootDescriptorTable(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT RootParameterIndex,
+            [In, ComAliasName("UINT")] uint RootParameterIndex,
             [In] D3D12_GPU_DESCRIPTOR_HANDLE BaseDescriptor
         );
 
@@ -215,7 +217,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetGraphicsRootDescriptorTable(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT RootParameterIndex,
+            [In, ComAliasName("UINT")] uint RootParameterIndex,
             [In] D3D12_GPU_DESCRIPTOR_HANDLE BaseDescriptor
         );
 
@@ -223,86 +225,86 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetComputeRoot32BitConstant(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT RootParameterIndex,
-            [In] UINT SrcData,
-            [In] UINT DestOffsetIn32BitValues
+            [In, ComAliasName("UINT")] uint RootParameterIndex,
+            [In, ComAliasName("UINT")] uint SrcData,
+            [In, ComAliasName("UINT")] uint DestOffsetIn32BitValues
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetGraphicsRoot32BitConstant(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT RootParameterIndex,
-            [In] UINT SrcData,
-            [In] UINT DestOffsetIn32BitValues
+            [In, ComAliasName("UINT")] uint RootParameterIndex,
+            [In, ComAliasName("UINT")] uint SrcData,
+            [In, ComAliasName("UINT")] uint DestOffsetIn32BitValues
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetComputeRoot32BitConstants(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT RootParameterIndex,
-            [In] UINT Num32BitValuesToSet,
+            [In, ComAliasName("UINT")] uint RootParameterIndex,
+            [In, ComAliasName("UINT")] uint Num32BitValuesToSet,
             [In] /* readonly */ void* pSrcData,
-            [In] UINT DestOffsetIn32BitValues
+            [In, ComAliasName("UINT")] uint DestOffsetIn32BitValues
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetGraphicsRoot32BitConstants(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT RootParameterIndex,
-            [In] UINT Num32BitValuesToSet,
+            [In, ComAliasName("UINT")] uint RootParameterIndex,
+            [In, ComAliasName("UINT")] uint Num32BitValuesToSet,
             [In] /* readonly */ void* pSrcData,
-            [In] UINT DestOffsetIn32BitValues
+            [In, ComAliasName("UINT")] uint DestOffsetIn32BitValues
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetComputeRootConstantBufferView(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT RootParameterIndex,
-            [In] D3D12_GPU_VIRTUAL_ADDRESS BufferLocation
+            [In, ComAliasName("UINT")] uint RootParameterIndex,
+            [In, ComAliasName("D3D12_GPU_VIRTUAL_ADDRESS")] ulong BufferLocation
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetGraphicsRootConstantBufferView(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT RootParameterIndex,
-            [In] D3D12_GPU_VIRTUAL_ADDRESS BufferLocation
+            [In, ComAliasName("UINT")] uint RootParameterIndex,
+            [In, ComAliasName("D3D12_GPU_VIRTUAL_ADDRESS")] ulong BufferLocation
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetComputeRootShaderResourceView(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT RootParameterIndex,
-            [In] D3D12_GPU_VIRTUAL_ADDRESS BufferLocation
+            [In, ComAliasName("UINT")] uint RootParameterIndex,
+            [In, ComAliasName("D3D12_GPU_VIRTUAL_ADDRESS")] ulong BufferLocation
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetGraphicsRootShaderResourceView(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT RootParameterIndex,
-            [In] D3D12_GPU_VIRTUAL_ADDRESS BufferLocation
+            [In, ComAliasName("UINT")] uint RootParameterIndex,
+            [In, ComAliasName("D3D12_GPU_VIRTUAL_ADDRESS")] ulong BufferLocation
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetComputeRootUnorderedAccessView(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT RootParameterIndex,
-            [In] D3D12_GPU_VIRTUAL_ADDRESS BufferLocation
+            [In, ComAliasName("UINT")] uint RootParameterIndex,
+            [In, ComAliasName("D3D12_GPU_VIRTUAL_ADDRESS")] ulong BufferLocation
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetGraphicsRootUnorderedAccessView(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT RootParameterIndex,
-            [In] D3D12_GPU_VIRTUAL_ADDRESS BufferLocation
+            [In, ComAliasName("UINT")] uint RootParameterIndex,
+            [In, ComAliasName("D3D12_GPU_VIRTUAL_ADDRESS")] ulong BufferLocation
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -316,8 +318,8 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void IASetVertexBuffers(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT StartSlot,
-            [In] UINT NumViews,
+            [In, ComAliasName("UINT")] uint StartSlot,
+            [In, ComAliasName("UINT")] uint NumViews,
             [In, Optional] /* readonly */ D3D12_VERTEX_BUFFER_VIEW* pViews
         );
 
@@ -325,8 +327,8 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SOSetTargets(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT StartSlot,
-            [In] UINT NumViews,
+            [In, ComAliasName("UINT")] uint StartSlot,
+            [In, ComAliasName("UINT")] uint NumViews,
             [In, Optional] /* readonly */ D3D12_STREAM_OUTPUT_BUFFER_VIEW* pViews
         );
 
@@ -334,9 +336,9 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void OMSetRenderTargets(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT NumRenderTargetDescriptors,
+            [In, ComAliasName("UINT")] uint NumRenderTargetDescriptors,
             [In, Optional] /* readonly */ D3D12_CPU_DESCRIPTOR_HANDLE* pRenderTargetDescriptors,
-            [In] INT RTsSingleHandleToDescriptorRange,
+            [In, ComAliasName("INT")] int RTsSingleHandleToDescriptorRange,
             [In, Optional] /* readonly */ D3D12_CPU_DESCRIPTOR_HANDLE* pDepthStencilDescriptor
         );
 
@@ -346,10 +348,10 @@ namespace TerraFX.Interop
             [In] ID3D12GraphicsCommandList* This,
             [In] D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView,
             [In] D3D12_CLEAR_FLAGS ClearFlags,
-            [In] FLOAT Depth,
-            [In] UINT8 Stencil,
-            [In] UINT NumRects,
-            [In] /* readonly */ D3D12_RECT* pRects
+            [In, ComAliasName("FLOAT")] float Depth,
+            [In, ComAliasName("UINT8")] byte Stencil,
+            [In, ComAliasName("UINT")] uint NumRects,
+            [In, ComAliasName("D3D12_RECT")] /* readonly */ RECT* pRects
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -357,9 +359,9 @@ namespace TerraFX.Interop
         public /* static */ delegate void ClearRenderTargetView(
             [In] ID3D12GraphicsCommandList* This,
             [In] D3D12_CPU_DESCRIPTOR_HANDLE RenderTargetView,
-            [In] /* readonly */ FLOAT* ColorRGBA,
-            [In] UINT NumRects,
-            [In] /* readonly */ D3D12_RECT* pRects
+            [In, ComAliasName("FLOAT")] /* readonly */ float* ColorRGBA,
+            [In, ComAliasName("UINT")] uint NumRects,
+            [In, ComAliasName("D3D12_RECT")] /* readonly */ RECT* pRects
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -369,9 +371,9 @@ namespace TerraFX.Interop
             [In] D3D12_GPU_DESCRIPTOR_HANDLE ViewGPUHandleInCurrentHeap,
             [In] D3D12_CPU_DESCRIPTOR_HANDLE ViewCPUHandle,
             [In] [MarshalAs(UnmanagedType.Interface)] ID3D12Resource pResource,
-            [In] /* readonly */ UINT* Values,
-            [In] UINT NumRects,
-            [In] /* readonly */ D3D12_RECT* pRects
+            [In, ComAliasName("UINT")] /* readonly */ uint* Values,
+            [In, ComAliasName("UINT")] uint NumRects,
+            [In, ComAliasName("D3D12_RECT")] /* readonly */ RECT* pRects
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -381,9 +383,9 @@ namespace TerraFX.Interop
             [In] D3D12_GPU_DESCRIPTOR_HANDLE ViewGPUHandleInCurrentHeap,
             [In] D3D12_CPU_DESCRIPTOR_HANDLE ViewCPUHandle,
             [In] ID3D12Resource* pResource,
-            [In] /* readonly */ FLOAT* Values,
-            [In] UINT NumRects,
-            [In] /* readonly */ D3D12_RECT* pRects
+            [In, ComAliasName("FLOAT")] /* readonly */ float* Values,
+            [In, ComAliasName("UINT")] uint NumRects,
+            [In, ComAliasName("D3D12_RECT")] /* readonly */ RECT* pRects
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -400,7 +402,7 @@ namespace TerraFX.Interop
             [In] ID3D12GraphicsCommandList* This,
             [In] ID3D12QueryHeap* pQueryHeap,
             [In] D3D12_QUERY_TYPE Type,
-            [In] UINT Index
+            [In, ComAliasName("UINT")] uint Index
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -409,7 +411,7 @@ namespace TerraFX.Interop
             [In] ID3D12GraphicsCommandList* This,
             [In] ID3D12QueryHeap* pQueryHeap,
             [In] D3D12_QUERY_TYPE Type,
-            [In] UINT Index
+            [In, ComAliasName("UINT")] uint Index
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -418,10 +420,10 @@ namespace TerraFX.Interop
             [In] ID3D12GraphicsCommandList* This,
             [In] ID3D12QueryHeap* pQueryHeap,
             [In] D3D12_QUERY_TYPE Type,
-            [In] UINT StartIndex,
-            [In] UINT NumQueries,
+            [In, ComAliasName("UINT")] uint StartIndex,
+            [In, ComAliasName("UINT")] uint NumQueries,
             [In] ID3D12Resource* pDestinationBuffer,
-            [In] UINT64 AlignedDestinationBufferOffset
+            [In, ComAliasName("UINT64")] ulong AlignedDestinationBufferOffset
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -429,7 +431,7 @@ namespace TerraFX.Interop
         public /* static */ delegate void SetPredication(
             [In] ID3D12GraphicsCommandList* This,
             [In, Optional] ID3D12Resource* pBuffer,
-            [In] UINT64 AlignedBufferOffset,
+            [In, ComAliasName("UINT64")] ulong AlignedBufferOffset,
             [In] D3D12_PREDICATION_OP Operation
         );
 
@@ -437,18 +439,18 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetMarker(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT Metadata,
+            [In, ComAliasName("UINT")] uint Metadata,
             [In, Optional] /* readonly */ void* pData,
-            [In] UINT Size
+            [In, ComAliasName("UINT")] uint Size
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void BeginEvent(
             [In] ID3D12GraphicsCommandList* This,
-            [In] UINT Metadata,
+            [In, ComAliasName("UINT")] uint Metadata,
             [In, Optional] /* readonly */ void* pData,
-            [In] UINT Size
+            [In, ComAliasName("UINT")] uint Size
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -462,11 +464,11 @@ namespace TerraFX.Interop
         public /* static */ delegate void ExecuteIndirect(
             [In] ID3D12GraphicsCommandList* This,
             [In] ID3D12CommandSignature* pCommandSignature,
-            [In] UINT MaxCommandCount,
+            [In, ComAliasName("UINT")] uint MaxCommandCount,
             [In] ID3D12Resource* pArgumentBuffer,
-            [In] UINT64 ArgumentBufferOffset,
+            [In, ComAliasName("UINT64")] ulong ArgumentBufferOffset,
             [In, Optional] ID3D12Resource* pCountBuffer,
-            [In] UINT64 CountBufferOffset
+            [In, ComAliasName("UINT64")] ulong CountBufferOffset
         );
         #endregion
 

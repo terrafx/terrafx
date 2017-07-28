@@ -23,7 +23,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AddFontFeature(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddFontFeature(
             [In] IDWriteTypography* This,
             [In] DWRITE_FONT_FEATURE fontFeature
         );
@@ -31,7 +32,8 @@ namespace TerraFX.Interop
         /// <summary>Get the number of font features.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetFontFeatureCount(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetFontFeatureCount(
             [In] IDWriteTypography* This
         );
 
@@ -41,9 +43,10 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFontFeature(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFontFeature(
             [In] IDWriteTypography* This,
-            [In] UINT32 fontFeatureIndex,
+            [In, ComAliasName("UINT32")] uint fontFeatureIndex,
             [Out] DWRITE_FONT_FEATURE* fontFeature
         );
         #endregion

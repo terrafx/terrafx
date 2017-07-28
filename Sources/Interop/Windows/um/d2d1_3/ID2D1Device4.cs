@@ -19,7 +19,8 @@ namespace TerraFX.Interop
         /// <summary>Creates a new device context with no initially assigned target.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateDeviceContext(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateDeviceContext(
             [In] ID2D1Device4* This,
             [In] D2D1_DEVICE_CONTEXT_OPTIONS options,
             [Out] ID2D1DeviceContext4** deviceContext4
@@ -30,13 +31,14 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetMaximumColorGlyphCacheMemory(
             [In] ID2D1Device4* This,
-            [In] UINT64 maximumInBytes
+            [In, ComAliasName("UINT64")] ulong maximumInBytes
         );
 
         /// <summary>Gets the maximum capacity of the color glyph cache.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT64 GetMaximumColorGlyphCacheMemory(
+        [return: ComAliasName("UINT64")]
+        public /* static */ delegate ulong GetMaximumColorGlyphCacheMemory(
             [In] ID2D1Device4* This
         );
         #endregion

@@ -20,7 +20,8 @@ namespace TerraFX.Interop
         /// <summary>Creates a new device context with no initially assigned target.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateDeviceContext(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateDeviceContext(
             [In] ID2D1Device* This,
             [In] D2D1_DEVICE_CONTEXT_OPTIONS options,
             [Out] ID2D1DeviceContext** deviceContext
@@ -29,7 +30,8 @@ namespace TerraFX.Interop
         /// <summary>Creates a D2D print control.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreatePrintControl(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreatePrintControl(
             [In] ID2D1Device* This,
             [In] IWICImagingFactory* wicFactory,
             [In] IPrintDocumentPackageTarget* documentTarget,
@@ -42,13 +44,14 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetMaximumTextureMemory(
             [In] ID2D1Device* This,
-            [In] UINT64 maximumInBytes
+            [In, ComAliasName("UINT64")] ulong maximumInBytes
         );
 
         /// <summary>Gets the maximum amount of texture memory to maintain before evicting caches.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT64 GetMaximumTextureMemory(
+        [return: ComAliasName("UINT64")]
+        public /* static */ delegate ulong GetMaximumTextureMemory(
             [In] ID2D1Device* This
         );
 
@@ -57,7 +60,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void ClearResources(
             [In] ID2D1Device* This,
-            [In, DefaultParameterValue(0u)] UINT32 millisecondsSinceUse
+            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint millisecondsSinceUse
         );
         #endregion
 

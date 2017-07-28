@@ -19,25 +19,28 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetPatterns(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPatterns(
             [In] IWICBitmapDecoderInfo* This,
-            [In] UINT cbSizePatterns,
+            [In, ComAliasName("UINT")] uint cbSizePatterns,
             [Out, Optional] WICBitmapPattern* pPatterns,
-            [Out, Optional] UINT* pcPatterns,
-            [Out] UINT* pcbPatternsActual
+            [Out, Optional, ComAliasName("UINT")] uint* pcPatterns,
+            [Out, ComAliasName("UINT")] uint* pcbPatternsActual
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT MatchesPattern(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int MatchesPattern(
             [In] IWICBitmapDecoderInfo* This,
             [In, Optional] IStream* pIStream,
-            [Out] BOOL* pfMatches
+            [Out, ComAliasName("BOOL")] int* pfMatches
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateInstance(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateInstance(
             [In] IWICBitmapDecoderInfo* This,
             [Out, Optional] IWICBitmapDecoder** ppIBitmapDecoder
         );

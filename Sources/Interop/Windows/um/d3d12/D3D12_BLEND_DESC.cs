@@ -3,6 +3,7 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
@@ -10,9 +11,11 @@ namespace TerraFX.Interop
     public /* blittable */ struct D3D12_BLEND_DESC
     {
         #region Fields
-        public BOOL AlphaToCoverageEnable;
+        [ComAliasName("BOOL")]
+        public int AlphaToCoverageEnable;
 
-        public BOOL IndependentBlendEnable;
+        [ComAliasName("BOOL")]
+        public int IndependentBlendEnable;
 
         public _RenderTarget_e__FixedBuffer RenderTarget;
         #endregion

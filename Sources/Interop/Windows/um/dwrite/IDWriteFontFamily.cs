@@ -23,7 +23,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFamilyNames(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFamilyNames(
             [In] IDWriteFontFamily* This,
             [Out] IDWriteLocalizedStrings** names
         );
@@ -36,7 +37,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFirstMatchingFont(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFirstMatchingFont(
             [In] IDWriteFontFamily* This,
             [In] DWRITE_FONT_WEIGHT weight,
             [In] DWRITE_FONT_STRETCH stretch,
@@ -52,7 +54,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetMatchingFonts(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetMatchingFonts(
             [In] IDWriteFontFamily* This,
             [In] DWRITE_FONT_WEIGHT weight,
             [In] DWRITE_FONT_STRETCH stretch,

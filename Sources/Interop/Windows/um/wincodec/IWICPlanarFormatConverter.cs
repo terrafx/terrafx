@@ -19,11 +19,12 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Initialize(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Initialize(
             [In] IWICPlanarFormatConverter* This,
             [In] IWICBitmapSource** ppPlanes,
-            [In] UINT cPlanes,
-            [In] REFWICPixelFormatGUID dstFormat,
+            [In, ComAliasName("UINT")] uint cPlanes,
+            [In, ComAliasName("REFWICPixelFormatGUID")] /* readonly */ Guid* dstFormat,
             [In] WICBitmapDitherType dither,
             [In, Optional] IWICPalette* pIPalette,
             [In] double alphaThresholdPercent,
@@ -32,12 +33,13 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CanConvert(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CanConvert(
             [In] IWICPlanarFormatConverter* This,
-            [In] /* readonly */ WICPixelFormatGUID* pSrcPixelFormats,
-            [In] UINT cSrcPlanes,
-            [In] REFWICPixelFormatGUID dstPixelFormat,
-            [Out] BOOL* pfCanConvert
+            [In, ComAliasName("WICPixelFormatGUID")] /* readonly */ Guid* pSrcPixelFormats,
+            [In, ComAliasName("UINT")] uint cSrcPlanes,
+            [In, ComAliasName("REFWICPixelFormatGUID")] /* readonly */ Guid* dstPixelFormat,
+            [Out, ComAliasName("BOOL")] int* pfCanConvert
         );
         #endregion
 

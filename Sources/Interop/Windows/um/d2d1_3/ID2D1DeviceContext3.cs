@@ -21,7 +21,8 @@ namespace TerraFX.Interop
         /// <summary>Creates a new sprite batch.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateSpriteBatch(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateSpriteBatch(
             [In] ID2D1DeviceContext3* This,
             [Out] ID2D1SpriteBatch** spriteBatch
         );
@@ -32,8 +33,8 @@ namespace TerraFX.Interop
         public /* static */ delegate void DrawSpriteBatch(
             [In] ID2D1DeviceContext3* This,
             [In] ID2D1SpriteBatch* spriteBatch,
-            [In] UINT32 startIndex,
-            [In] UINT32 spriteCount,
+            [In, ComAliasName("UINT32")] uint startIndex,
+            [In, ComAliasName("UINT32")] uint spriteCount,
             [In] ID2D1Bitmap* bitmap,
             [In] D2D1_BITMAP_INTERPOLATION_MODE interpolationMode = D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
             [In] D2D1_SPRITE_OPTIONS spriteOptions = D2D1_SPRITE_OPTIONS_NONE

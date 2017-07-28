@@ -19,23 +19,26 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT64 GetCompletedValue(
+        [return: ComAliasName("UINT64")]
+        public /* static */ delegate ulong GetCompletedValue(
             [In] ID3D12Fence* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetEventOnCompletion(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetEventOnCompletion(
             [In] ID3D12Fence* This,
-            [In] UINT64 Value,
-            [In] HANDLE hEvent
+            [In, ComAliasName("UINT64")] ulong Value,
+            [In, ComAliasName("HANDLE")] void* hEvent
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Signal(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Signal(
             [In] ID3D12Fence* This,
-            [In] UINT64 Value
+            [In, ComAliasName("UINT64")] ulong Value
         );
         #endregion
 

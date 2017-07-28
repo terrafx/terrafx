@@ -3,6 +3,8 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_RASTERIZER_DESC
@@ -12,21 +14,29 @@ namespace TerraFX.Interop
 
         public D3D12_CULL_MODE CullMode;
 
-        public BOOL FrontCounterClockwise;
+        [ComAliasName("BOOL")]
+        public int FrontCounterClockwise;
 
-        public INT DepthBias;
+        [ComAliasName("INT")]
+        public int DepthBias;
 
-        public FLOAT DepthBiasClamp;
+        [ComAliasName("FLOAT")]
+        public float DepthBiasClamp;
 
-        public FLOAT SlopeScaledDepthBias;
+        [ComAliasName("FLOAT")]
+        public float SlopeScaledDepthBias;
 
-        public BOOL DepthClipEnable;
+        [ComAliasName("BOOL")]
+        public int DepthClipEnable;
 
-        public BOOL MultisampleEnable;
+        [ComAliasName("BOOL")]
+        public int MultisampleEnable;
 
-        public BOOL AntialiasedLineEnable;
+        [ComAliasName("BOOL")]
+        public int AntialiasedLineEnable;
 
-        public UINT ForcedSampleCount;
+        [ComAliasName("UINT")]
+        public uint ForcedSampleCount;
 
         public D3D12_CONSERVATIVE_RASTERIZATION_MODE ConservativeRaster;
         #endregion

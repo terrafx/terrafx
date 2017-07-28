@@ -3,6 +3,8 @@
 // Ported from shared\dxgi1_2.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop.Desktop
 {
     public /* blittable */ struct DXGI_OUTDUPL_DESC
@@ -12,7 +14,8 @@ namespace TerraFX.Interop.Desktop
 
         public DXGI_MODE_ROTATION Rotation;
 
-        public BOOL DesktopImageInSystemMemory;
+        [ComAliasName("BOOL")]
+        public int DesktopImageInSystemMemory;
         #endregion
     }
 }

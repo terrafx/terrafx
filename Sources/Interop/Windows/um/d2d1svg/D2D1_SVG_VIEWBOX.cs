@@ -3,19 +3,25 @@
 // Ported from um\d2d1svg.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>Represents an SVG viewBox.</summary>
     public /* blittable */ struct D2D1_SVG_VIEWBOX
     {
         #region Fields
-        public FLOAT x;
+        [ComAliasName("FLOAT")]
+        public float x;
 
-        public FLOAT y;
+        [ComAliasName("FLOAT")]
+        public float y;
 
-        public FLOAT width;
+        [ComAliasName("FLOAT")]
+        public float width;
 
-        public FLOAT height;
+        [ComAliasName("FLOAT")]
+        public float height;
         #endregion
     }
 }

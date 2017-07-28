@@ -19,7 +19,8 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT GetCreationFlags(
+        [return: ComAliasName("UINT")]
+        public /* static */ delegate uint GetCreationFlags(
             [In] IDXGIFactory3* This
         );
         #endregion

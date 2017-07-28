@@ -22,7 +22,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateFontSetBuilder(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateFontSetBuilder(
             [In] IDWriteFactory5* This,
             [Out] IDWriteFontSetBuilder1** fontSetBuilder
         );
@@ -32,7 +33,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateInMemoryFontFileLoader(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateInMemoryFontFileLoader(
             [In] IDWriteFactory5* This,
             [Out] IDWriteInMemoryFontFileLoader** newLoader
         );
@@ -44,10 +46,11 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateHttpFontFileLoader(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateHttpFontFileLoader(
             [In] IDWriteFactory5* This,
-            [In, Optional] /* readonly */ WCHAR* referrerUrl,
-            [In, Optional] /* readonly */ WCHAR* extraHeaders,
+            [In, Optional, ComAliasName("WCHAR")] /* readonly */ char* referrerUrl,
+            [In, Optional, ComAliasName("WCHAR")] /* readonly */ char* extraHeaders,
             [Out] IDWriteRemoteFontFileLoader** newLoader
             );
 
@@ -58,7 +61,7 @@ namespace TerraFX.Interop
         public /* static */ delegate DWRITE_CONTAINER_TYPE AnalyzeContainerType(
             [In] IDWriteFactory5* This,
             [In] /* readonly */ void* fileData,
-            [In] UINT32 fileDataSize
+            [In, ComAliasName("UINT32")] uint fileDataSize
         );
 
         /// <summary>The UnpackFontFile method unpacks font data from a container file (WOFF or WOFF2) and returns the unpacked font data in the form of a font file stream.</summary>
@@ -69,11 +72,12 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code. The return value is E_INVALIDARG if the container type is DWRITE_CONTAINER_TYPE_UNKNOWN.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT UnpackFontFile(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int UnpackFontFile(
             [In] IDWriteFactory5* This,
             [In] DWRITE_CONTAINER_TYPE containerType,
             [In] /* readonly */ void* fileData,
-            [In] UINT32 fileDataSize,
+            [In, ComAliasName("UINT32")] uint fileDataSize,
             [Out] IDWriteFontFileStream** unpackedFontStream
         );
         #endregion

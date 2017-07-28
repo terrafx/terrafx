@@ -3,22 +3,28 @@
 // Ported from um\oaidl.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
-    public  /* blittable */ struct SAFEARRAY
+    unsafe public  /* blittable */ struct SAFEARRAY
     {
         #region Fields
-        public USHORT cDims;
+        [ComAliasName("USHORT")]
+        public ushort cDims;
 
-        public USHORT fFeatures;
+        [ComAliasName("USHORT")]
+        public ushort fFeatures;
 
-        public ULONG cbElements;
+        [ComAliasName("ULONG")]
+        public uint cbElements;
 
-        public ULONG cLocks;
+        [ComAliasName("ULONG")]
+        public uint cLocks;
 
-        public PVOID pvData;
+        [ComAliasName("PVOID")]
+        public void* pvData;
 
         public _rgsabound_e__FixedBuffer rgsabound;
         #endregion

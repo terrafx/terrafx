@@ -3,6 +3,7 @@
 // Ported from um\wingdi.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
@@ -10,8 +11,10 @@ namespace TerraFX.Interop
     public /* blittable */ struct FONTSIGNATURE
     {
         #region Fields
+        [ComAliasName("DWORD[4]")]
         public _fsUsb_e__FixedBuffer fsUsb;
 
+        [ComAliasName("DWORD[2]")]
         public _fsCsb_e__FixedBuffer fsCsb;
         #endregion
 
@@ -19,17 +22,17 @@ namespace TerraFX.Interop
         unsafe public /* blittable */ struct _fsUsb_e__FixedBuffer
         {
             #region Fields
-            public DWORD e0;
+            public uint e0;
 
-            public DWORD e1;
+            public uint e1;
 
-            public DWORD e2;
+            public uint e2;
 
-            public DWORD e3;
+            public uint e3;
             #endregion
 
             #region Properties
-            public DWORD this[int index]
+            public uint this[int index]
             {
                 get
                 {
@@ -38,7 +41,7 @@ namespace TerraFX.Interop
                         ThrowArgumentOutOfRangeException(nameof(index), index);
                     }
 
-                    fixed (DWORD* e = &e0)
+                    fixed (uint* e = &e0)
                     {
                         return e[index];
                     }
@@ -50,13 +53,13 @@ namespace TerraFX.Interop
         unsafe public /* blittable */ struct _fsCsb_e__FixedBuffer
         {
             #region Fields
-            public DWORD e0;
+            public uint e0;
 
-            public DWORD e1;
+            public uint e1;
             #endregion
 
             #region Properties
-            public DWORD this[int index]
+            public uint this[int index]
             {
                 get
                 {
@@ -65,7 +68,7 @@ namespace TerraFX.Interop
                         ThrowArgumentOutOfRangeException(nameof(index), index);
                     }
 
-                    fixed (DWORD* e = &e0)
+                    fixed (uint* e = &e0)
                     {
                         return e[index];
                     }

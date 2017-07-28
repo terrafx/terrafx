@@ -38,8 +38,9 @@ namespace TerraFX.Interop
         #region External Methods
         [DllImport("DXGIDebug", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "DXGIGetDebugInterface", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern HRESULT DXGIGetDebugInterface(
-            [In] REFIID riid,
+        [return: ComAliasName("HRESULT")]
+        public static extern int DXGIGetDebugInterface(
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out] void** pDebug
         );
         #endregion

@@ -3,6 +3,7 @@
 // Ported from shared\dxgitype.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
@@ -10,8 +11,10 @@ namespace TerraFX.Interop
     public /* blittable */ struct DXGI_JPEG_DC_HUFFMAN_TABLE
     {
         #region Fields
+        [ComAliasName("BYTE[12]")]
         public _CodeCounts_e__FixedBuffer CodeCounts;
 
+        [ComAliasName("BYTE[12]")]
         public _CodeValues_e__FixedBuffer CodeValues;
         #endregion
 
@@ -19,33 +22,33 @@ namespace TerraFX.Interop
         unsafe public /* blittable */ struct _CodeCounts_e__FixedBuffer
         {
             #region Fields
-            public BYTE e0;
+            public byte e0;
 
-            public BYTE e1;
+            public byte e1;
 
-            public BYTE e2;
+            public byte e2;
 
-            public BYTE e3;
+            public byte e3;
 
-            public BYTE e4;
+            public byte e4;
 
-            public BYTE e5;
+            public byte e5;
 
-            public BYTE e6;
+            public byte e6;
 
-            public BYTE e7;
+            public byte e7;
 
-            public BYTE e8;
+            public byte e8;
 
-            public BYTE e9;
+            public byte e9;
 
-            public BYTE e10;
+            public byte e10;
 
-            public BYTE e11;
+            public byte e11;
             #endregion
 
             #region Properties
-            public BYTE this[int index]
+            public byte this[int index]
             {
                 get
                 {
@@ -54,7 +57,7 @@ namespace TerraFX.Interop
                         ThrowArgumentOutOfRangeException(nameof(index), index);
                     }
 
-                    fixed (BYTE* e = &e0)
+                    fixed (byte* e = &e0)
                     {
                         return e[index];
                     }
@@ -66,33 +69,33 @@ namespace TerraFX.Interop
         unsafe public /* blittable */ struct _CodeValues_e__FixedBuffer
         {
             #region Fields
-            public BYTE e0;
+            public byte e0;
 
-            public BYTE e1;
+            public byte e1;
 
-            public BYTE e2;
+            public byte e2;
 
-            public BYTE e3;
+            public byte e3;
 
-            public BYTE e4;
+            public byte e4;
 
-            public BYTE e5;
+            public byte e5;
 
-            public BYTE e6;
+            public byte e6;
 
-            public BYTE e7;
+            public byte e7;
 
-            public BYTE e8;
+            public byte e8;
 
-            public BYTE e9;
+            public byte e9;
 
-            public BYTE e10;
+            public byte e10;
 
-            public BYTE e11;
+            public byte e11;
             #endregion
 
             #region Properties
-            public BYTE this[int index]
+            public byte this[int index]
             {
                 get
                 {
@@ -101,7 +104,7 @@ namespace TerraFX.Interop
                         ThrowArgumentOutOfRangeException(nameof(index), index);
                     }
 
-                    fixed (BYTE* e = &e0)
+                    fixed (byte* e = &e0)
                     {
                         return e[index];
                     }

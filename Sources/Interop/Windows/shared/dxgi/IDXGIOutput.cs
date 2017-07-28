@@ -19,24 +19,27 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDesc(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDesc(
             [In] IDXGIOutput* This,
             [Out] DXGI_OUTPUT_DESC* pDesc
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDisplayModeList(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDisplayModeList(
             [In] IDXGIOutput* This,
             [In] DXGI_FORMAT EnumFormat,
-            [In] UINT Flags,
-            [In, Out] UINT* pNumModes,
+            [In, ComAliasName("UINT")] uint Flags,
+            [In, Out, ComAliasName("UINT")] uint* pNumModes,
             [Out, Optional] DXGI_MODE_DESC* pDesc
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT FindClosestMatchingMode(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int FindClosestMatchingMode(
             [In] IDXGIOutput* This,
             [In] /* readonly */ DXGI_MODE_DESC* pModeToMatch,
             [Out] DXGI_MODE_DESC* pClosestMatch,
@@ -45,16 +48,18 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT WaitForVBlank(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int WaitForVBlank(
             [In] IDXGIOutput* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT TakeOwnership(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int TakeOwnership(
             [In] IDXGIOutput* This,
             [In] IUnknown* pDevice,
-            [In] BOOL Exclusive
+            [In, ComAliasName("BOOL")] int Exclusive
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -65,42 +70,48 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetGammaControlCapabilities(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetGammaControlCapabilities(
             [In] IDXGIOutput* This,
             [Out] DXGI_GAMMA_CONTROL_CAPABILITIES* pGammaCaps
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetGammaControl(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetGammaControl(
             [In] IDXGIOutput* This,
             [In] /* readonly */ DXGI_GAMMA_CONTROL* pArray
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetGammaControl(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetGammaControl(
             [In] IDXGIOutput* This,
             [Out] DXGI_GAMMA_CONTROL* pArray
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetDisplaySurface(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetDisplaySurface(
             [In] IDXGIOutput* This,
             [In] IDXGISurface* pScanoutSurface
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDisplaySurfaceData(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDisplaySurfaceData(
             [In] IDXGIOutput* This,
             [In] IDXGISurface* pDestination
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFrameStatistics(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFrameStatistics(
             [In] IDXGIOutput* This,
             [Out] DXGI_FRAME_STATISTICS* pStats
         );

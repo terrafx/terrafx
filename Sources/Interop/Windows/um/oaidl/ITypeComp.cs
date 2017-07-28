@@ -19,11 +19,12 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Bind(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Bind(
             [In] ITypeComp* This,
-            [In] LPOLESTR szName,
-            [In] ULONG lHashVal,
-            [In] WORD wFlags,
+            [In, ComAliasName("LPOLESTR")] char* szName,
+            [In, ComAliasName("ULONG")] uint lHashVal,
+            [In, ComAliasName("WORD")] ushort wFlags,
             [Out] ITypeInfo** ppTInfo,
             [Out] DESCKIND* pDescKind,
             [Out] BINDPTR* pBindPtr
@@ -31,10 +32,11 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT BindType(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int BindType(
             [In] ITypeComp* This,
-            [In] LPOLESTR szName,
-            [In] ULONG lHashVal,
+            [In, ComAliasName("LPOLESTR")] char* szName,
+            [In, ComAliasName("ULONG")] uint lHashVal,
             [Out] ITypeInfo** ppTInfo,
             [Out] ITypeComp** ppTComp
         );

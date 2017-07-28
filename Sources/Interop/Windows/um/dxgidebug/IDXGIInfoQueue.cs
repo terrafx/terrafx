@@ -19,121 +19,136 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetMessageCountLimit(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetMessageCountLimit(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer,
-            [In] UINT64 MessageCountLimit
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer,
+            [In, ComAliasName("UINT64")] ulong MessageCountLimit
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void ClearStoredMessages(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetMessage(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetMessage(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer,
-            [In] UINT64 MessageIndex,
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer,
+            [In, ComAliasName("UINT64")] ulong MessageIndex,
             [Out, Optional] DXGI_INFO_QUEUE_MESSAGE* pMessage,
-            [In, Out] SIZE_T* pMessageByteLength
+            [In, Out, ComAliasName("SIZE_T")] nuint* pMessageByteLength
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT64 GetNumStoredMessagesAllowedByRetrievalFilters(
+        [return: ComAliasName("UINT64")]
+        public /* static */ delegate ulong GetNumStoredMessagesAllowedByRetrievalFilters(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT64 GetNumStoredMessages(
+        [return: ComAliasName("UINT64")]
+        public /* static */ delegate ulong GetNumStoredMessages(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT64 GetNumMessagesDiscardedByMessageCountLimit(
+        [return: ComAliasName("UINT64")]
+        public /* static */ delegate ulong GetNumMessagesDiscardedByMessageCountLimit(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT64 GetMessageCountLimit(
+        [return: ComAliasName("UINT64")]
+        public /* static */ delegate ulong GetMessageCountLimit(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT64 GetNumMessagesAllowedByStorageFilter(
+        [return: ComAliasName("UINT64")]
+        public /* static */ delegate ulong GetNumMessagesAllowedByStorageFilter(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT64 GetNumMessagesDeniedByStorageFilter(
+        [return: ComAliasName("UINT64")]
+        public /* static */ delegate ulong GetNumMessagesDeniedByStorageFilter(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AddStorageFilterEntries(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddStorageFilterEntries(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer,
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer,
             [In] DXGI_INFO_QUEUE_FILTER* pFilter
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetStorageFilter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetStorageFilter(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer,
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer,
             [Out, Optional] DXGI_INFO_QUEUE_FILTER* pFilter,
-            [In, Out] SIZE_T* pFilterByteLength
+            [In, Out, ComAliasName("SIZE_T")] nuint* pFilterByteLength
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ClearStorageFilter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ClearStorageFilter(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT PushEmptyStorageFilter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int PushEmptyStorageFilter(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT PushDenyAllStorageFilter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int PushDenyAllStorageFilter(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT PushCopyOfStorageFilter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int PushCopyOfStorageFilter(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT PushStorageFilter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int PushStorageFilter(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer,
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer,
             [In] DXGI_INFO_QUEUE_FILTER* pFilter
         );
 
@@ -141,66 +156,73 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void PopStorageFilter(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT GetStorageFilterStackSize(
+        [return: ComAliasName("UINT")]
+        public /* static */ delegate uint GetStorageFilterStackSize(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AddRetrievalFilterEntries(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddRetrievalFilterEntries(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer,
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer,
             [In] DXGI_INFO_QUEUE_FILTER* pFilter
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetRetrievalFilter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetRetrievalFilter(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer,
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer,
             [Out, Optional] DXGI_INFO_QUEUE_FILTER* pFilter,
-            [In, Out] SIZE_T* pFilterByteLength
+            [In, Out, ComAliasName("SIZE_T")] nuint* pFilterByteLength
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void ClearRetrievalFilter(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT PushEmptyRetrievalFilter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int PushEmptyRetrievalFilter(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT PushDenyAllRetrievalFilter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int PushDenyAllRetrievalFilter(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT PushCopyOfRetrievalFilter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int PushCopyOfRetrievalFilter(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT PushRetrievalFilter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int PushRetrievalFilter(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer,
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer,
             [In] DXGI_INFO_QUEUE_FILTER* pFilter
         );
 
@@ -208,99 +230,109 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void PopRetrievalFilter(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT GetRetrievalFilterStackSize(
+        [return: ComAliasName("UINT")]
+        public /* static */ delegate uint GetRetrievalFilterStackSize(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AddMessage(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddMessage(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer,
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer,
             [In] DXGI_INFO_QUEUE_MESSAGE_CATEGORY Category,
             [In] DXGI_INFO_QUEUE_MESSAGE_SEVERITY Severity,
-            [In] DXGI_INFO_QUEUE_MESSAGE_ID ID,
-            [In] LPCSTR pDescription
+            [In, ComAliasName("DXGI_INFO_QUEUE_MESSAGE_ID")] int ID,
+            [In, ComAliasName("LPCSTR")] /* readonly */ sbyte* pDescription
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AddApplicationMessage(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddApplicationMessage(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_INFO_QUEUE_MESSAGE_SEVERITY Severity,
-            [In] LPCSTR pDescription
+            [In, ComAliasName("LPCSTR")] /* readonly */ sbyte* pDescription
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetBreakOnCategory(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetBreakOnCategory(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer,
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer,
             [In] DXGI_INFO_QUEUE_MESSAGE_CATEGORY Category,
-            [In] BOOL bEnable
+            [In, ComAliasName("BOOL")] int bEnable
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetBreakOnSeverity(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetBreakOnSeverity(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer,
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer,
             [In] DXGI_INFO_QUEUE_MESSAGE_SEVERITY Severity,
-            [In] BOOL bEnable
+            [In, ComAliasName("BOOL")] int bEnable
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetBreakOnID(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetBreakOnID(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer,
-            [In] DXGI_INFO_QUEUE_MESSAGE_ID ID,
-            [In] BOOL bEnable
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer,
+            [In, ComAliasName("DXGI_INFO_QUEUE_MESSAGE_ID")] int ID,
+            [In, ComAliasName("BOOL")] int bEnable
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL GetBreakOnCategory(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int GetBreakOnCategory(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer,
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer,
             [In] DXGI_INFO_QUEUE_MESSAGE_CATEGORY Category
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL GetBreakOnSeverity(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int GetBreakOnSeverity(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer,
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer,
             [In] DXGI_INFO_QUEUE_MESSAGE_SEVERITY Severity
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL GetBreakOnID(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int GetBreakOnID(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer,
-            [In] DXGI_INFO_QUEUE_MESSAGE_ID ID
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer,
+            [In, ComAliasName("DXGI_INFO_QUEUE_MESSAGE_ID")] int ID
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetMuteDebugOutput(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer,
-            [In] BOOL bMute
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer,
+            [In, ComAliasName("BOOL")] int bMute
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL GetMuteDebugOutput(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int GetMuteDebugOutput(
             [In] IDXGIInfoQueue* This,
-            [In] DXGI_DEBUG_ID Producer
+            [In, ComAliasName("DXGI_DEBUG_ID")] Guid Producer
         );
         #endregion
 

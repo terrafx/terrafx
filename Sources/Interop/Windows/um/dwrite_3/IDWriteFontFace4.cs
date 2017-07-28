@@ -28,11 +28,12 @@ namespace TerraFX.Interop
         /// <remarks> Glyph ids beyond the glyph count return DWRITE_GLYPH_IMAGE_FORMATS_NONE.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetGlyphImageFormats1(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetGlyphImageFormats1(
             [In] IDWriteFontFace4* This,
-            [In] UINT16 glyphId,
-            [In] UINT32 pixelsPerEmFirst,
-            [In] UINT32 pixelsPerEmLast,
+            [In, ComAliasName("UINT16")] ushort glyphId,
+            [In, ComAliasName("UINT32")] uint pixelsPerEmFirst,
+            [In, ComAliasName("UINT32")] uint pixelsPerEmLast,
             [Out] DWRITE_GLYPH_IMAGE_FORMATS* glyphImageFormats
         );
 
@@ -42,10 +43,11 @@ namespace TerraFX.Interop
         /// <remarks> The function only returns SVG or raster data - requesting TrueType/CFF/COLR data returns DWRITE_E_INVALIDARG. Those must be drawn via DrawGlyphRun or queried using GetGlyphOutline instead. Exactly one format may be requested or else the function returns DWRITE_E_INVALIDARG. If the glyph does not have that format, the call is not an error, but the function returns empty data.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetGlyphImageData(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetGlyphImageData(
             [In] IDWriteFontFace4* This,
-            [In] UINT16 glyphId,
-            [In] UINT32 pixelsPerEm,
+            [In, ComAliasName("UINT16")] ushort glyphId,
+            [In, ComAliasName("UINT32")] uint pixelsPerEm,
             [In] DWRITE_GLYPH_IMAGE_FORMATS glyphImageFormat,
             [Out] DWRITE_GLYPH_IMAGE_DATA* glyphData,
             [Out] void** glyphDataContext

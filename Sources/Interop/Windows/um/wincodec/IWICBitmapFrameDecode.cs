@@ -19,23 +19,26 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetMetadataQueryReader(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetMetadataQueryReader(
             [In] IWICBitmapFrameDecode* This,
             [Out, Optional] IWICMetadataQueryReader** ppIMetadataQueryReader
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetColorContexts(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetColorContexts(
             [In] IWICBitmapFrameDecode* This,
-            [In] UINT cCount,
+            [In, ComAliasName("UINT")] uint cCount,
             [In, Out, Optional] IWICColorContext** ppIColorContexts,
-            [Out] UINT* pcActualCount
+            [Out, ComAliasName("UINT")] uint* pcActualCount
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetThumbnail(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetThumbnail(
             [In] IWICBitmapFrameDecode* This,
             [Out, Optional] IWICBitmapSource** ppIThumbnail
          );

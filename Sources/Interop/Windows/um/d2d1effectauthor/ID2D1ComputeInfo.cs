@@ -3,6 +3,7 @@
 // Ported from um\d2d1effectauthor.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -20,26 +21,29 @@ namespace TerraFX.Interop
         /// <summary>Set the constant buffer for this transform.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetComputeShaderConstantBuffer(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetComputeShaderConstantBuffer(
             [In] ID2D1ComputeInfo* This,
-            [In] /* readonly */ BYTE *buffer,
-            [In] UINT32 bufferCount
+            [In, ComAliasName("BYTE")] /* readonly */ byte *buffer,
+            [In, ComAliasName("UINT32")] uint bufferCount
         );
 
         /// <summary>Set the shader instructions for this transform.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetComputeShader(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetComputeShader(
             [In] ID2D1ComputeInfo* This,
-            [In] REFGUID shaderId
+            [In, ComAliasName("REFGUID")] /* readonly */ Guid* shaderId
         );
 
         /// <summary>Sets the resource texture corresponding to the given shader texture index.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetResourceTexture(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetResourceTexture(
             [In] ID2D1ComputeInfo* This,
-            [In] UINT32 textureIndex,
+            [In, ComAliasName("UINT32")] uint textureIndex,
             [In] ID2D1ResourceTexture* resourceTexture
         );
         #endregion

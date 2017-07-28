@@ -24,9 +24,10 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetPairKerning(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetPairKerning(
             [In] IDWriteTextLayout1* This,
-            [In] BOOL isPairKerningEnabled,
+            [In, ComAliasName("BOOL")] int isPairKerningEnabled,
             [In] DWRITE_TEXT_RANGE textRange
         );
 
@@ -37,10 +38,11 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetPairKerning(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPairKerning(
             [In] IDWriteTextLayout1* This,
-            [In] UINT32 currentPosition,
-            [Out] BOOL* isPairKerningEnabled,
+            [In, ComAliasName("UINT32")] uint currentPosition,
+            [Out, ComAliasName("BOOL")] int* isPairKerningEnabled,
             [Out] DWRITE_TEXT_RANGE* textRange = null
         );
 
@@ -52,11 +54,12 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetCharacterSpacing(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetCharacterSpacing(
             [In] IDWriteTextLayout1* This,
-            [In] FLOAT leadingSpacing,
-            [In] FLOAT trailingSpacing,
-            [In] FLOAT minimumAdvanceWidth,
+            [In, ComAliasName("FLOAT")] float leadingSpacing,
+            [In, ComAliasName("FLOAT")] float trailingSpacing,
+            [In, ComAliasName("FLOAT")] float minimumAdvanceWidth,
             [In] DWRITE_TEXT_RANGE textRange
         );
 
@@ -69,12 +72,13 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetCharacterSpacing(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetCharacterSpacing(
             [In] IDWriteTextLayout1* This,
-            [In] UINT32 currentPosition,
-            [Out] FLOAT* leadingSpacing,
-            [Out] FLOAT* trailingSpacing,
-            [Out] FLOAT* minimumAdvanceWidth,
+            [In, ComAliasName("UINT32")] uint currentPosition,
+            [Out, ComAliasName("FLOAT")] float* leadingSpacing,
+            [Out, ComAliasName("FLOAT")] float* trailingSpacing,
+            [Out, ComAliasName("FLOAT")] float* minimumAdvanceWidth,
             [Out] DWRITE_TEXT_RANGE* textRange = null
         );
         #endregion

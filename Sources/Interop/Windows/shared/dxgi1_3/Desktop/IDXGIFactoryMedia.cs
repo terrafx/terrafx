@@ -19,10 +19,11 @@ namespace TerraFX.Interop.Desktop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateSwapChainForCompositionSurfaceHandle(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateSwapChainForCompositionSurfaceHandle(
             [In] IDXGIFactoryMedia* This,
             [In] IUnknown* pDevice,
-            [In, Optional] HANDLE hSurface,
+            [In, Optional, ComAliasName("HANDLE")] void* hSurface,
             [In] /* readonly */ DXGI_SWAP_CHAIN_DESC1* pDesc,
             [In, Optional] IDXGIOutput* pRestrictToOutput,
             [Out] IDXGISwapChain1** ppSwapChain
@@ -30,10 +31,11 @@ namespace TerraFX.Interop.Desktop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateDecodeSwapChainForCompositionSurfaceHandle(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateDecodeSwapChainForCompositionSurfaceHandle(
             [In] IDXGIFactoryMedia* This,
             [In] IUnknown* pDevice,
-            [In, Optional] HANDLE hSurface,
+            [In, Optional, ComAliasName("HANDLE")] void* hSurface,
             [In] DXGI_DECODE_SWAP_CHAIN_DESC* pDesc,
             [In] IDXGIResource* pYuvDecodeBuffers,
             [In, Optional] IDXGIOutput* pRestrictToOutput,

@@ -17,6 +17,7 @@ namespace TerraFX.Interop
 
         #region union
         [FieldOffset(4)]
+        [ComAliasName("FLOAT[4]")]
         public _Color_e__FixedBuffer Color;
 
         [FieldOffset(4)]
@@ -28,17 +29,17 @@ namespace TerraFX.Interop
         public /* blittable */ struct _Color_e__FixedBuffer
         {
             #region Fields
-            public FLOAT e0;
+            public float e0;
 
-            public FLOAT e1;
+            public float e1;
 
-            public FLOAT e2;
+            public float e2;
 
-            public FLOAT e3;
+            public float e3;
             #endregion
 
             #region Properties
-            public FLOAT this[int index]
+            public float this[int index]
             {
                 get
                 {
@@ -47,7 +48,7 @@ namespace TerraFX.Interop
                         ThrowArgumentOutOfRangeException(nameof(index), index);
                     }
 
-                    fixed (FLOAT* e = &e0)
+                    fixed (float* e = &e0)
                     {
                         return e[index];
                     }

@@ -19,32 +19,36 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetSize(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSize(
             [In] IWICBitmapLock* This,
-            [Out] UINT* puiWidth,
-            [Out] UINT* puiHeight
+            [Out, ComAliasName("UINT")] uint* puiWidth,
+            [Out, ComAliasName("UINT")] uint* puiHeight
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetStride(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetStride(
             [In] IWICBitmapLock* This,
-            [Out] UINT* pcbStride
+            [Out, ComAliasName("UINT")] uint* pcbStride
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDataPointer(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDataPointer(
             [In] IWICBitmapLock* This,
-            [Out] UINT* pcbBufferSize,
-            [Out, Optional] WICInProcPointer* ppbData
+            [Out, ComAliasName("UINT")] uint* pcbBufferSize,
+            [Out, Optional, ComAliasName("WICInProcPointer")] byte** ppbData
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetPixelFormat(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPixelFormat(
             [In] IWICBitmapLock* This,
-            [Out] WICPixelFormatGUID* pPixelFormat
+            [Out, ComAliasName("WICPixelFormatGUID")] Guid* pPixelFormat
         );
         #endregion
 

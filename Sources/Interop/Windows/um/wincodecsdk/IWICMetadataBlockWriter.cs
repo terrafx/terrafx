@@ -19,39 +19,44 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT InitializeFromBlockReader(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int InitializeFromBlockReader(
             [In] IWICMetadataBlockWriter* This,
             [In, Optional] IWICMetadataBlockReader* pIMDBlockReader
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetWriterByIndex(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetWriterByIndex(
             [In] IWICMetadataBlockWriter* This,
-            [In] UINT nIndex,
+            [In, ComAliasName("UINT")] uint nIndex,
             [Out, Optional] IWICMetadataWriter** ppIMetadataWriter
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AddWriter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddWriter(
             [In] IWICMetadataBlockWriter* This,
             [In, Optional] IWICMetadataWriter* pIMetadataWriter
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetWriterByIndex(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetWriterByIndex(
             [In] IWICMetadataBlockWriter* This,
-            [In] UINT nIndex,
+            [In, ComAliasName("UINT")] uint nIndex,
             [In, Optional] IWICMetadataWriter* pIMetadataWriter
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RemoveWriterByIndex(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RemoveWriterByIndex(
             [In] IWICMetadataBlockWriter* This,
-            [In] UINT nIndex
+            [In, ComAliasName("UINT")] uint nIndex
         );
         #endregion
 

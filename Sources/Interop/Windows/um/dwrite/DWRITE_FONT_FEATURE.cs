@@ -3,6 +3,8 @@
 // Ported from um\dwrite.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>The DWRITE_FONT_FEATURE public structure specifies properties used to identify and execute typographic feature in the font.</summary>
@@ -14,7 +16,8 @@ namespace TerraFX.Interop
 
         /// <summary>Execution parameter of the feature.</summary>
         /// <remarks>The parameter should be non-zero to enable the feature.  Once enabled, a feature can't be disabled again within the same range.  Features requiring a selector use this value to indicate the selector index.</remarks>
-        public UINT32 parameter;
+        [ComAliasName("UINT32")]
+        public uint parameter;
         #endregion
     }
 }

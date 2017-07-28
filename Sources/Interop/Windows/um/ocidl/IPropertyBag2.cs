@@ -19,47 +19,52 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Read(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Read(
             [In] IPropertyBag2* This,
-            [In] ULONG cProperties,
+            [In, ComAliasName("ULONG")] uint cProperties,
             [In] PROPBAG2* pPropBag,
             [In, Optional] IErrorLog* pErrLog,
             [Out] VARIANT* pvarValue,
-            [In, Out, Optional] HRESULT* phrError
+            [In, Out, Optional, ComAliasName("HRESULT")] int* phrError
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Write(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Write(
             [In] IPropertyBag2* This,
-            [In] ULONG cProperties,
+            [In, ComAliasName("ULONG")] uint cProperties,
             [In] PROPBAG2* pPropBag,
             [In] VARIANT* pvarValue
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CountProperties(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CountProperties(
             [In] IPropertyBag2* This,
-            [Out] ULONG* pcProperties
+            [Out, ComAliasName("ULONG")] uint* pcProperties
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetPropertyInfo(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPropertyInfo(
             [In] IPropertyBag2* This,
-            [In] ULONG iProperty,
-            [In] ULONG cProperties,
+            [In, ComAliasName("ULONG")] uint iProperty,
+            [In, ComAliasName("ULONG")] uint cProperties,
             [Out] PROPBAG2* pPropBag,
-            [Out] ULONG* pcProperties
+            [Out, ComAliasName("ULONG")] uint* pcProperties
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT LoadObject(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int LoadObject(
             [In] IPropertyBag2* This,
-            [In] LPCOLESTR pstrName,
-            [In] DWORD dwHint,
+            [In, ComAliasName("LPCOLESTR")] /* readonly */ char* pstrName,
+            [In, ComAliasName("DWORD")] uint dwHint,
             [In, Optional] IUnknown* pUnkObject,
             [In, Optional] IErrorLog* pErrLog
         );

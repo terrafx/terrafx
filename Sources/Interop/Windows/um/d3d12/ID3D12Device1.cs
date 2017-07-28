@@ -19,30 +19,33 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreatePipelineLibrary(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreatePipelineLibrary(
             [In] ID3D12Device1* This,
             [In] /* readonly */ void* pLibraryBlob,
-            [In] SIZE_T BlobLength,
-            [In] REFIID riid,
+            [In, ComAliasName("SIZE_T")] nuint BlobLength,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out] void** ppPipelineLibrary
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetEventOnMultipleFenceCompletion(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetEventOnMultipleFenceCompletion(
             [In] ID3D12Device1* This,
             [In] /* readonly */ ID3D12Fence** ppFences,
-            [In] /* readonly */ UINT64* pFenceValues,
-            [In] UINT NumFences,
+            [In, ComAliasName("UINT64")] /* readonly */ ulong* pFenceValues,
+            [In, ComAliasName("UINT")] uint NumFences,
             [In] D3D12_MULTIPLE_FENCE_WAIT_FLAGS Flags,
-            [In] HANDLE hEvent
+            [In, ComAliasName("HANDLE")] void* hEvent
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetResidencyPriority(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetResidencyPriority(
             [In] ID3D12Device1* This,
-            [In] UINT NumObjects,
+            [In, ComAliasName("UINT")] uint NumObjects,
             [In] /* readonly */ ID3D12Pageable** ppObjects,
             [In] /* readonly */ D3D12_RESIDENCY_PRIORITY* pPriorities
         );

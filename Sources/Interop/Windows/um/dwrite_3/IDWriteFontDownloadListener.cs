@@ -27,7 +27,7 @@ namespace TerraFX.Interop
             [In] IDWriteFontDownloadListener* This,
             [In] IDWriteFontDownloadQueue* downloadQueue,
             [In, Optional] IUnknown* context,
-            [In] HRESULT downloadResult
+            [In, ComAliasName("HRESULT")] int downloadResult
         );
         #endregion
 

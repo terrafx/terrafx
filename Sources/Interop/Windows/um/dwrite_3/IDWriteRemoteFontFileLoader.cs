@@ -26,10 +26,11 @@ namespace TerraFX.Interop
         /// <remarks> Unlike CreateStreamFromKey, this method can be used to create a stream for a remote file. If the file is remote, the client must call IDWriteRemoteFontFileStream::DownloadFileInformation before the stream can be used to get the file size or access data.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateRemoteStreamFromKey(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateRemoteStreamFromKey(
             [In] IDWriteRemoteFontFileLoader* This,
             [In] /* readonly */ void* fontFileReferenceKey,
-            [In] UINT32 fontFileReferenceKeySize,
+            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
             [Out] IDWriteRemoteFontFileStream** fontFileStream
         );
 
@@ -40,10 +41,11 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetLocalityFromKey(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetLocalityFromKey(
             [In] IDWriteRemoteFontFileLoader* This,
             [In] /* readonly */ void* fontFileReferenceKey,
-            [In] UINT32 fontFileReferenceKeySize,
+            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
             [Out] DWRITE_LOCALITY* locality
         );
 
@@ -55,11 +57,12 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code, or E_NOTIMPL if the loader does not implement this method.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateFontFileReferenceFromUrl(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateFontFileReferenceFromUrl(
             [In] IDWriteRemoteFontFileLoader* This,
             [In] IDWriteFactory* factory,
-            [In, Optional] /* readonly */ WCHAR* baseUrl,
-            [In] /* readonly */ WCHAR* fontFileUrl,
+            [In, Optional, ComAliasName("WCHAR")] /* readonly */ char* baseUrl,
+            [In, ComAliasName("WCHAR")] /* readonly */ char* fontFileUrl,
             [Out] IDWriteFontFile** fontFile
         );
         #endregion

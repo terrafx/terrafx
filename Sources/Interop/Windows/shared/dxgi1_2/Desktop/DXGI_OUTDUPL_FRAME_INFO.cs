@@ -3,6 +3,8 @@
 // Ported from shared\dxgi1_2.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop.Desktop
 {
     public /* blittable */ struct DXGI_OUTDUPL_FRAME_INFO
@@ -12,17 +14,22 @@ namespace TerraFX.Interop.Desktop
 
         public LARGE_INTEGER LastMouseUpdateTime;
 
-        public UINT AccumulatedFrames;
+        [ComAliasName("UINT")]
+        public uint AccumulatedFrames;
 
-        public BOOL RectsCoalesced;
+        [ComAliasName("BOOL")]
+        public int RectsCoalesced;
 
-        public BOOL ProtectedContentMaskedOut;
+        [ComAliasName("BOOL")]
+        public int ProtectedContentMaskedOut;
 
         public DXGI_OUTDUPL_POINTER_POSITION PointerPosition;
 
-        public UINT TotalMetadataBufferSize;
+        [ComAliasName("UINT")]
+        public uint TotalMetadataBufferSize;
 
-        public UINT PointerShapeBufferSize;
+        [ComAliasName("UINT")]
+        public uint PointerShapeBufferSize;
         #endregion
     }
 }

@@ -20,14 +20,16 @@ namespace TerraFX.Interop
         /// <summary>Return the number of input this graph has.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetInputCount(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetInputCount(
             [In] ID2D1TransformGraph* This
         );
 
         /// <summary>Sets the graph to contain a single transform whose inputs map 1:1 with effect inputs.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetSingleTransformNode(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetSingleTransformNode(
             [In] ID2D1TransformGraph* This,
             [In] ID2D1TransformNode* node
         );
@@ -35,7 +37,8 @@ namespace TerraFX.Interop
         /// <summary>Adds the given transform node to the graph.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AddNode(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddNode(
             [In] ID2D1TransformGraph* This,
             [In] ID2D1TransformNode* node
         );
@@ -43,7 +46,8 @@ namespace TerraFX.Interop
         /// <summary>Removes the given transform node from the graph.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RemoveNode(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RemoveNode(
             [In] ID2D1TransformGraph* This,
             [In] ID2D1TransformNode* node
         );
@@ -51,7 +55,8 @@ namespace TerraFX.Interop
         /// <summary>Indicates that the given transform node should be considered to be the output node of the graph.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetOutputNode(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetOutputNode(
             [In] ID2D1TransformGraph* This,
             [In] ID2D1TransformNode* node
         );
@@ -59,21 +64,23 @@ namespace TerraFX.Interop
         /// <summary>Connects one node to another node inside the graph.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ConnectNode(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ConnectNode(
             [In] ID2D1TransformGraph* This,
             [In] ID2D1TransformNode* fromNode,
             [In] ID2D1TransformNode* toNode,
-            [In] UINT32 toNodeInputIndex
+            [In, ComAliasName("UINT32")] uint toNodeInputIndex
         );
 
         /// <summary>Connects a transform node inside the graph to the corresponding input of the encapsulating effect.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ConnectToEffectInput(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ConnectToEffectInput(
             [In] ID2D1TransformGraph* This,
-            [In] UINT32 toEffectInputIndex,
+            [In, ComAliasName("UINT32")] uint toEffectInputIndex,
             [In] ID2D1TransformNode* node,
-            [In] UINT32 toNodeInputIndex
+            [In, ComAliasName("UINT32")] uint toNodeInputIndex
         );
 
         /// <summary>Clears all nodes and connections from the transform graph.</summary>
@@ -86,9 +93,10 @@ namespace TerraFX.Interop
         /// <summary>Uses the specified input as the effect output.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetPassthroughGraph(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetPassthroughGraph(
             [In] ID2D1TransformGraph* This,
-            [In] UINT32 effectInputIndex
+            [In, ComAliasName("UINT32")] uint effectInputIndex
         );
         #endregion
 

@@ -3,20 +3,26 @@
 // Ported from um\dwrite.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>The DWRITE_STRIKETHROUGH public structure contains information about the size and placement of strikethroughs. All coordinates are in device independent pixels (DIPs).</summary>
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     unsafe public /* blittable */ struct DWRITE_STRIKETHROUGH
     {
         #region Fields
         /// <summary>Width of the strikethrough, measured parallel to the baseline.</summary>
-        public FLOAT width;
+        [ComAliasName("FLOAT")]
+        public float width;
 
         /// <summary>Thickness of the strikethrough, measured perpendicular to the baseline.</summary>
-        public FLOAT thickness;
+        [ComAliasName("FLOAT")]
+        public float thickness;
 
         /// <summary>Offset of the strikethrough from the baseline. A positive offset represents a position below the baseline and a negative offset is above.</summary>
-        public FLOAT offset;
+        [ComAliasName("FLOAT")]
+        public float offset;
 
         /// <summary>Reading direction of the text associated with the strikethrough. This value is used to interpret whether the width value runs horizontally or vertically.</summary>
         public DWRITE_READING_DIRECTION readingDirection;
@@ -25,7 +31,8 @@ namespace TerraFX.Interop
         public DWRITE_FLOW_DIRECTION flowDirection;
 
         /// <summary>Locale of the range. Can be pertinent where the locale affects the style.</summary>
-        public /* readonly */ WCHAR* localeName;
+        [ComAliasName("WCHAR")]
+        public /* readonly */ char* localeName;
 
         /// <summary>The measuring mode can be useful to the renderer to determine how
         /// underlines are rendered, e.g. rounding the thickness to a whole pixel

@@ -3,6 +3,8 @@
 // Ported from um\d2d1_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>This defines how geometries should be drawn and widened.</summary>
@@ -17,11 +19,13 @@ namespace TerraFX.Interop
 
         public D2D1_LINE_JOIN lineJoin;
 
-        public FLOAT miterLimit;
+        [ComAliasName("FLOAT")]
+        public float miterLimit;
 
         public D2D1_DASH_STYLE dashStyle;
 
-        public FLOAT dashOffset;
+        [ComAliasName("FLOAT")]
+        public float dashOffset;
 
         /// <summary>How the nib of the stroke is influenced by the context properties.</summary>
         public D2D1_STROKE_TRANSFORM_TYPE transformType;

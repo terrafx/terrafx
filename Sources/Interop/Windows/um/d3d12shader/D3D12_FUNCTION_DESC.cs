@@ -3,76 +3,110 @@
 // Ported from um\d3d12shader.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_FUNCTION_DESC
+    unsafe public /* blittable */ struct D3D12_FUNCTION_DESC
     {
         #region Fields
-        public UINT Version;
+        [ComAliasName("UINT")]
+        public uint Version;
 
-        public LPCSTR Creator;
+        [ComAliasName("LPCSTR")]
+        public /* readonly */ sbyte* Creator;
 
-        public UINT Flags;
+        [ComAliasName("UINT")]
+        public uint Flags;
 
-        public UINT ConstantBuffers;
+        [ComAliasName("UINT")]
+        public uint ConstantBuffers;
 
-        public UINT BoundResources;
+        [ComAliasName("UINT")]
+        public uint BoundResources;
 
-        public UINT InstructionCount;
+        [ComAliasName("UINT")]
+        public uint InstructionCount;
 
-        public UINT TempRegisterCount;
+        [ComAliasName("UINT")]
+        public uint TempRegisterCount;
 
-        public UINT TempArrayCount;
+        [ComAliasName("UINT")]
+        public uint TempArrayCount;
 
-        public UINT DefCount;
+        [ComAliasName("UINT")]
+        public uint DefCount;
 
-        public UINT DclCount;
+        [ComAliasName("UINT")]
+        public uint DclCount;
 
-        public UINT TextureNormalInstructions;
+        [ComAliasName("UINT")]
+        public uint TextureNormalInstructions;
 
-        public UINT TextureLoadInstructions;
+        [ComAliasName("UINT")]
+        public uint TextureLoadInstructions;
 
-        public UINT TextureCompInstructions;
+        [ComAliasName("UINT")]
+        public uint TextureCompInstructions;
 
-        public UINT TextureBiasInstructions;
+        [ComAliasName("UINT")]
+        public uint TextureBiasInstructions;
 
-        public UINT TextureGradientInstructions;
+        [ComAliasName("UINT")]
+        public uint TextureGradientInstructions;
 
-        public UINT FloatInstructionCount;
+        [ComAliasName("UINT")]
+        public uint FloatInstructionCount;
 
-        public UINT IntInstructionCount;
+        [ComAliasName("UINT")]
+        public uint IntInstructionCount;
 
-        public UINT UintInstructionCount;
+        [ComAliasName("UINT")]
+        public uint UintInstructionCount;
 
-        public UINT StaticFlowControlCount;
+        [ComAliasName("UINT")]
+        public uint StaticFlowControlCount;
 
-        public UINT DynamicFlowControlCount;
+        [ComAliasName("UINT")]
+        public uint DynamicFlowControlCount;
 
-        public UINT MacroInstructionCount;
+        [ComAliasName("UINT")]
+        public uint MacroInstructionCount;
 
-        public UINT ArrayInstructionCount;
+        [ComAliasName("UINT")]
+        public uint ArrayInstructionCount;
 
-        public UINT MovInstructionCount;
+        [ComAliasName("UINT")]
+        public uint MovInstructionCount;
 
-        public UINT MovcInstructionCount;
+        [ComAliasName("UINT")]
+        public uint MovcInstructionCount;
 
-        public UINT ConversionInstructionCount;
+        [ComAliasName("UINT")]
+        public uint ConversionInstructionCount;
 
-        public UINT BitwiseInstructionCount;
+        [ComAliasName("UINT")]
+        public uint BitwiseInstructionCount;
 
         public D3D_FEATURE_LEVEL MinFeatureLevel;
 
-        public UINT64 RequiredFeatureFlags;
+        [ComAliasName("UINT64")]
+        public ulong RequiredFeatureFlags;
 
-        public LPCSTR Name;
+        [ComAliasName("LPCSTR")]
+        public /* readonly */ sbyte* Name;
 
-        public INT FunctionParameterCount;
+        [ComAliasName("INT")]
+        public int FunctionParameterCount;
 
-        public BOOL HasReturn;
+        [ComAliasName("BOOL")]
+        public int HasReturn;
 
-        public BOOL Has10Level9VertexShader;
+        [ComAliasName("BOOL")]
+        public int Has10Level9VertexShader;
 
-        public BOOL Has10Level9PixelShader;
+        [ComAliasName("BOOL")]
+        public int Has10Level9PixelShader;
         #endregion
     }
 }

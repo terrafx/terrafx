@@ -3,6 +3,8 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS
@@ -10,11 +12,13 @@ namespace TerraFX.Interop
         #region Fields
         public DXGI_FORMAT Format;
 
-        public UINT SampleCount;
+        [ComAliasName("UINT")]
+        public uint SampleCount;
 
         public D3D12_MULTISAMPLE_QUALITY_LEVEL_FLAGS Flags;
 
-        public UINT NumQualityLevels;
+        [ComAliasName("UINT")]
+        public uint NumQualityLevels;
         #endregion
     }
 }

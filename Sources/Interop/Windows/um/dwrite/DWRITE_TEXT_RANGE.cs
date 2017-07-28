@@ -3,6 +3,8 @@
 // Ported from um\dwrite.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>The DWRITE_TEXT_RANGE public structure specifies a range of text positions where format is applied.</summary>
@@ -10,10 +12,12 @@ namespace TerraFX.Interop
     {
         #region Fields
         /// <summary>The start text position of the range.</summary>
-        public UINT32 startPosition;
+        [ComAliasName("UINT32")]
+        public uint startPosition;
 
         /// <summary>The number of text positions in the range.</summary>
-        public UINT32 length;
+        [ComAliasName("UINT32")]
+        public uint length;
         #endregion
     }
 }

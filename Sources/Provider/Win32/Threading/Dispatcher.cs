@@ -6,6 +6,7 @@ using System.Threading;
 using TerraFX.Interop;
 using TerraFX.Threading;
 using static TerraFX.Interop.User32;
+using static TerraFX.Interop.Windows;
 using static TerraFX.Interop.Desktop.User32;
 using static TerraFX.Utilities.ExceptionUtilities;
 
@@ -95,7 +96,7 @@ namespace TerraFX.Provider.Win32.Threading
 
             MSG msg;
 
-            while (PeekMessage(&msg, wMsgFilterMin: WM_NULL, wMsgFilterMax: WM_NULL, wRemoveMsg: PM_REMOVE))
+            while (PeekMessage(&msg, wMsgFilterMin: WM_NULL, wMsgFilterMax: WM_NULL, wRemoveMsg: PM_REMOVE) != FALSE)
             {
                 if (msg.message != WM_QUIT)
                 {

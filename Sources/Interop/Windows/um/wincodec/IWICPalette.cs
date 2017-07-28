@@ -19,78 +19,88 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT InitializePredefined(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int InitializePredefined(
             [In] IWICPalette* This,
             [In] WICBitmapPaletteType ePaletteType,
-            [In] BOOL fAddTransparentColor
+            [In, ComAliasName("BOOL")] int fAddTransparentColor
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT InitializeCustom(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int InitializeCustom(
             [In] IWICPalette* This,
-            [In] WICColor* pColors,
-            [In] UINT cCount
+            [In, ComAliasName("WICColor")] uint* pColors,
+            [In, ComAliasName("UINT")] uint cCount
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT InitializeFromBitmap(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int InitializeFromBitmap(
             [In] IWICPalette* This,
             [In, Optional] IWICBitmapSource* pISurface,
-            [In] UINT cCount,
-            [In] BOOL fAddTransparentColor
+            [In, ComAliasName("UINT")] uint cCount,
+            [In, ComAliasName("BOOL")] int fAddTransparentColor
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT InitializeFromPalette(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int InitializeFromPalette(
             [In] IWICPalette* This,
             [In, Optional] IWICPalette* pIPalette
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT _GetType(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int _GetType(
             [In] IWICPalette* This,
             [Out] WICBitmapPaletteType* pePaletteType
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetColorCount(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetColorCount(
             [In] IWICPalette* This,
-            [Out] UINT* pcCount
+            [Out, ComAliasName("UINT")] uint* pcCount
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetColors(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetColors(
             [In] IWICPalette* This,
-            [In] UINT cCount,
-            [Out] WICColor* pColors,
-            [Out] UINT* pcActualColors
+            [In, ComAliasName("UINT")] uint cCount,
+            [Out, ComAliasName("WICColor")] uint* pColors,
+            [Out, ComAliasName("UINT")] uint* pcActualColors
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT IsBlackWhite(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int IsBlackWhite(
             [In] IWICPalette* This,
-            [Out] BOOL* pfIsBlackWhite
+            [Out, ComAliasName("BOOL")] int* pfIsBlackWhite
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT IsGrayscale(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int IsGrayscale(
             [In] IWICPalette* This,
-            [Out] BOOL* pfIsGrayscale
+            [Out, ComAliasName("BOOL")] int* pfIsGrayscale
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT HasAlpha(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int HasAlpha(
             [In] IWICPalette* This,
-            [Out] BOOL* pfHasAlpha
+            [Out, ComAliasName("BOOL")] int* pfHasAlpha
         );
         #endregion
 

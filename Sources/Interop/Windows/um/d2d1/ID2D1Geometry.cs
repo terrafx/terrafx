@@ -21,143 +21,156 @@ namespace TerraFX.Interop
         /// <summary>Retrieve the bounds of the geometry, with an optional applied transform.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetBounds(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetBounds(
             [In] ID2D1Geometry* This,
-            [In, Optional] /* readonly */ D2D1_MATRIX_3X2_F* worldTransform,
-            [Out] D2D1_RECT_F* bounds
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* bounds
         );
 
         /// <summary>Get the bounds of the corresponding geometry after it has been widened or have an optional pen style applied.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetWidenedBounds(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetWidenedBounds(
             [In] ID2D1Geometry* This,
-            [In] FLOAT strokeWidth,
+            [In, ComAliasName("FLOAT")] float strokeWidth,
             [In, Optional] ID2D1StrokeStyle* strokeStyle,
-            [In, Optional] /* readonly */ D2D1_MATRIX_3X2_F* worldTransform,
-            [In] FLOAT flatteningTolerance,
-            [Out] D2D1_RECT_F* bounds
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* bounds
         );
 
         /// <summary>Checks to see whether the corresponding penned and widened geometry contains the given point.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT StrokeContainsPoint(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int StrokeContainsPoint(
             [In] ID2D1Geometry* This,
-            [In] D2D1_POINT_2F point,
-            [In] FLOAT strokeWidth,
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F point,
+            [In, ComAliasName("FLOAT")] float strokeWidth,
             [In, Optional] ID2D1StrokeStyle* strokeStyle,
-            [In, Optional] /* readonly */ D2D1_MATRIX_3X2_F* worldTransform,
-            [In] FLOAT flatteningTolerance,
-            [Out] BOOL* contains
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [Out, ComAliasName("BOOL")] int* contains
         );
 
         /// <summary>Test whether the given fill of this geometry would contain this point.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT FillContainsPoint(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int FillContainsPoint(
             [In] ID2D1Geometry* This,
-            [In] D2D1_POINT_2F point,
-            [In, Optional] /* readonly */ D2D1_MATRIX_3X2_F* worldTransform,
-            [In] FLOAT flatteningTolerance,
-            [Out] BOOL* contains
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F point,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [Out, ComAliasName("BOOL")] int* contains
         );
 
         /// <summary>Compare how one geometry intersects or contains another geometry.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CompareWithGeometry(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CompareWithGeometry(
             [In] ID2D1Geometry* This,
             [In] ID2D1Geometry* inputGeometry,
-            [In, Optional] /* readonly */ D2D1_MATRIX_3X2_F* inputGeometryTransform,
-            [In] FLOAT flatteningTolerance,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* inputGeometryTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
             [Out] D2D1_GEOMETRY_RELATION* relation
         );
 
         /// <summary>Converts a geometry to a simplified geometry that has arcs and quadratic beziers removed.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Simplify(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Simplify(
             [In] ID2D1Geometry* This,
             [In] D2D1_GEOMETRY_SIMPLIFICATION_OPTION simplificationOption,
-            [In, Optional] /* readonly */ D2D1_MATRIX_3X2_F* worldTransform,
-            [In] FLOAT flatteningTolerance,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
             [In] ID2D1SimplifiedGeometrySink* geometrySink
         );
 
         /// <summary>Tessellates a geometry into triangles.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Tessellate(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Tessellate(
             [In] ID2D1Geometry* This,
-            [In, Optional] /* readonly */ D2D1_MATRIX_3X2_F* worldTransform,
-            [In] FLOAT flatteningTolerance,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
             [In] ID2D1TessellationSink* tessellationSink
         );
 
         /// <summary>Performs a combine operation between the two geometries to produce a resulting geometry.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CombineWithGeometry(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CombineWithGeometry(
             [In] ID2D1Geometry* This,
             [In] ID2D1Geometry* inputGeometry,
             [In] D2D1_COMBINE_MODE combineMode,
-            [In, Optional] /* readonly */ D2D1_MATRIX_3X2_F* inputGeometryTransform,
-            [In] FLOAT flatteningTolerance,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* inputGeometryTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
             [In] ID2D1SimplifiedGeometrySink* geometrySink
         );
 
         /// <summary>Computes the outline of the geometry. The result is written back into a simplified geometry sink.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Outline(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Outline(
             [In] ID2D1Geometry* This,
-            [In, Optional] /* readonly */ D2D1_MATRIX_3X2_F* worldTransform,
-            [In] FLOAT flatteningTolerance,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
             [In] ID2D1SimplifiedGeometrySink* geometrySink
         );
 
         /// <summary>Computes the area of the geometry.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ComputeArea(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ComputeArea(
             [In] ID2D1Geometry* This,
-            [In, Optional] /* readonly */ D2D1_MATRIX_3X2_F* worldTransform,
-            [In] FLOAT flatteningTolerance,
-            [Out] FLOAT* area
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [Out, ComAliasName("FLOAT")] float* area
         );
 
         /// <summary>Computes the length of the geometry.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ComputeLength(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ComputeLength(
             [In] ID2D1Geometry* This,
-            [In, Optional] /* readonly */ D2D1_MATRIX_3X2_F* worldTransform,
-            [In] FLOAT flatteningTolerance,
-            [Out] FLOAT* length
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [Out, ComAliasName("FLOAT")] float* length
         );
 
         /// <summary>Computes the point and tangent a given distance along the path.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ComputePointAtLength(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ComputePointAtLength(
             [In] ID2D1Geometry* This,
-            [In] FLOAT length,
-            [In, Optional] /* readonly */ D2D1_MATRIX_3X2_F* worldTransform,
-            [In] FLOAT flatteningTolerance,
-            [Out, Optional] D2D1_POINT_2F* point,
-            [Out, Optional] D2D1_POINT_2F* unitTangentVector
+            [In, ComAliasName("FLOAT")] float length,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [Out, Optional, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* point,
+            [Out, Optional, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* unitTangentVector
         );
 
         /// <summary>Get the geometry and widen it as well as apply an optional pen style.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Widen(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Widen(
             [In] ID2D1Geometry* This,
-            [In] FLOAT strokeWidth,
+            [In, ComAliasName("FLOAT")] float strokeWidth,
             [In, Optional] ID2D1StrokeStyle* strokeStyle,
-            [In, Optional] /* readonly */ D2D1_MATRIX_3X2_F* worldTransform,
-            [In] FLOAT flatteningTolerance,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
             [In] ID2D1SimplifiedGeometrySink* geometrySink
         );
         #endregion

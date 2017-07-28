@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void AddLine(
             [In] ID2D1GeometrySink* This,
-            [In] D2D1_POINT_2F point
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F point
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -44,7 +44,7 @@ namespace TerraFX.Interop
         public /* static */ delegate void AddQuadraticBeziers(
             [In] ID2D1GeometrySink* This,
             [In] /* readonly */ D2D1_QUADRATIC_BEZIER_SEGMENT* beziers,
-            [In] UINT32 beziersCount
+            [In, ComAliasName("UINT32")] uint beziersCount
         );
 
         [SuppressUnmanagedCodeSecurity]

@@ -19,15 +19,16 @@ namespace TerraFX.Interop.Desktop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL IsStereoEnabled(
-            IDXGIDisplayControl* This
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int IsStereoEnabled(
+            [In] IDXGIDisplayControl* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetStereoEnabled(
-            IDXGIDisplayControl* This,
-            BOOL enabled
+            [In] IDXGIDisplayControl* This,
+            [In, ComAliasName("BOOL")] int enabled
         );
         #endregion
 

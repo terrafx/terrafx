@@ -19,11 +19,12 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CheckOverlaySupport(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CheckOverlaySupport(
             [In] IDXGIOutput3* This,
             [In] DXGI_FORMAT EnumFormat,
             [In] IUnknown* pConcernedDevice,
-            [Out] UINT* pFlags
+            [Out, ComAliasName("UINT")] uint* pFlags
         );
         #endregion
 

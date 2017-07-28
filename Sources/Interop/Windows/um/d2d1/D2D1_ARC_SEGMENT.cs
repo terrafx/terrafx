@@ -3,17 +3,22 @@
 // Ported from um\d2d1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>Describes an arc that is defined as part of a path.</summary>
     public /* blittable */ struct D2D1_ARC_SEGMENT
     {
         #region Fields
-        public D2D1_POINT_2F point;
+        [ComAliasName("D2D1_POINT_2F")]
+        public D2D_POINT_2F point;
 
-        public D2D1_SIZE_F size;
+        [ComAliasName("D2D1_SIZE_F")]
+        public D2D_SIZE_F size;
 
-        public FLOAT rotationAngle;
+        [ComAliasName("FLOAT")]
+        public float rotationAngle;
 
         public D2D1_SWEEP_DIRECTION sweepDirection;
 

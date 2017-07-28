@@ -22,7 +22,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code. The function returns DWRITE_E_REMOTEFONT if it could not conpublic /* blittable */ struct a remote font.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateFontFace(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateFontFace(
             [In] IDWriteFont3* This,
             [Out] IDWriteFontFace3** fontFace
         );
@@ -30,7 +31,8 @@ namespace TerraFX.Interop
         /// <summary>Compares two instances of a font references for equality.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL _Equals(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int _Equals(
             [In] IDWriteFont3* This,
             [In] IDWriteFont* font
         );
@@ -40,7 +42,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFontFaceReference(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFontFaceReference(
             [In] IDWriteFont3* This,
             [Out] IDWriteFontFaceReference** fontFaceReference
         );
@@ -50,9 +53,10 @@ namespace TerraFX.Interop
         /// <returns> Returns TRUE if the font has the specified character, FALSE if not.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL HasCharacter(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int HasCharacter(
             [In] IDWriteFont3* This,
-            [In] UINT32 unicodeValue
+            [In, ComAliasName("UINT32")] uint unicodeValue
         );
 
         /// <summary>Gets the current locality of the font.</summary>

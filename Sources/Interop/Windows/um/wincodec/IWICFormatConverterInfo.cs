@@ -19,16 +19,18 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetPixelFormats(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPixelFormats(
             [In] IWICFormatConverterInfo* This,
-            [In] UINT cFormats,
-            [In, Out, Optional] WICPixelFormatGUID* pPixelFormatGUIDs,
-            [Out] UINT* pcActual
+            [In, ComAliasName("UINT")] uint cFormats,
+            [In, Out, Optional, ComAliasName("WICPixelFormatGUID")] Guid* pPixelFormatGUIDs,
+            [Out, ComAliasName("UINT")] uint* pcActual
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateInstance(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateInstance(
             [In] IWICFormatConverterInfo* This,
             [Out, Optional] IWICFormatConverter** ppIConverter
         );

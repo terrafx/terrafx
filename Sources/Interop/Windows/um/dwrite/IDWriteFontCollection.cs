@@ -21,7 +21,8 @@ namespace TerraFX.Interop
         /// <summary>Gets the number of font families in the collection.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetFontFamilyCount(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetFontFamilyCount(
             [In] IDWriteFontCollection* This
         );
 
@@ -31,9 +32,10 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFontFamily(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFontFamily(
             [In] IDWriteFontCollection* This,
-            [In] UINT32 index,
+            [In, ComAliasName("UINT32")] uint index,
             [Out] IDWriteFontFamily** fontFamily
         );
 
@@ -44,11 +46,12 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code. If the specified family name does not exist, the return value is S_OK, but *index is UINT_MAX and *exists is FALSE.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT FindFamilyName(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int FindFamilyName(
             [In] IDWriteFontCollection* This,
-            [In] /* readonly */ WCHAR* familyName,
-            [Out] UINT32* index,
-            [Out] BOOL* exists
+            [In, ComAliasName("WCHAR")] /* readonly */ char* familyName,
+            [Out, ComAliasName("UINT32")] uint* index,
+            [Out, ComAliasName("BOOL")] int* exists
         );
 
         /// <summary>Gets the font object that corresponds to the same physical font as the specified font face object. The specified physical font must belong to the font collection.</summary>
@@ -57,7 +60,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code. If the specified physical font is not part of the font collection the return value is DWRITE_E_NOFONT.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFontFromFontFace(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFontFromFontFace(
             [In] IDWriteFontCollection* This,
             [In] IDWriteFontFace* fontFace,
             [Out] IDWriteFont** font

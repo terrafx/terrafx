@@ -24,10 +24,11 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT IsPixelSnappingDisabled(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int IsPixelSnappingDisabled(
             [In] IDWritePixelSnapping* This,
             [In, Optional] void* clientDrawingContext,
-            [Out] BOOL* isDisabled
+            [Out, ComAliasName("BOOL")] int* isDisabled
         );
 
         /// <summary>Gets the current transform that maps abstract coordinates to DIPs, which may disable pixel snapping upon any rotation or shear.</summary>
@@ -36,7 +37,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetCurrentTransform(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetCurrentTransform(
             [In] IDWritePixelSnapping* This,
             [In, Optional] void* clientDrawingContext,
             [Out] DWRITE_MATRIX* transform
@@ -48,10 +50,11 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetPixelsPerDip(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPixelsPerDip(
             [In] IDWritePixelSnapping* This,
             [In, Optional] void* clientDrawingContext,
-            [Out] FLOAT* pixelsPerDip
+            [Out, ComAliasName("FLOAT")] float* pixelsPerDip
         );
         #endregion
 

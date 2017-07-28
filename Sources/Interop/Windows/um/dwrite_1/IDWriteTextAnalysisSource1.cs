@@ -25,12 +25,13 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code. Returning an error will abort the analysis.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetVerticalGlyphOrientation(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetVerticalGlyphOrientation(
             [In] IDWriteTextAnalysisSource1* This,
-            [In] UINT32 textPosition,
-            [Out] UINT32* textLength,
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [Out, ComAliasName("UINT32")] uint* textLength,
             [Out] DWRITE_VERTICAL_GLYPH_ORIENTATION* glyphOrientation,
-            [Out] UINT8* bidiLevel
+            [Out, ComAliasName("UINT8")] byte* bidiLevel
         );
         #endregion
 

@@ -19,53 +19,57 @@ namespace TerraFX.Interop
         /// <summary>Adds sprites to the end of the sprite batch.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AddSprites(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddSprites(
             [In] ID2D1SpriteBatch* This,
-            [In] UINT32 spriteCount,
-            [In] /* readonly */ D2D1_RECT_F* destinationRectangles,
-            [In, Optional] /* readonly */ D2D1_RECT_U* sourceRectangles,
-            [In, Optional] /* readonly */ D2D1_COLOR_F* colors,
-            [In, Optional] /* readonly */ D2D1_MATRIX_3X2_F* transforms,
-            [In, DefaultParameterValue(16u /* sizeof(D2D1_RECT_F) */)] UINT32 destinationRectanglesStride,
-            [In, DefaultParameterValue(16u /* sizeof(D2D1_RECT_U) */)] UINT32 sourceRectanglesStride,
-            [In, DefaultParameterValue(16u /* sizeof(D2D1_COLOR_F) */)] UINT32 colorsStride,
-            [In, DefaultParameterValue(24u /* sizeof(D2D1_MATRIX_3X2_F) */)] UINT32 transformsStride
+            [In, ComAliasName("UINT32")] uint spriteCount,
+            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangles,
+            [In, Optional, ComAliasName("D2D1_RECT_U")] /* readonly */ D2D_RECT_U* sourceRectangles,
+            [In, Optional, ComAliasName("D2D1_COLOR_F")] /* readonly */ DXGI_RGBA* colors,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* transforms,
+            [In, DefaultParameterValue(16u /* sizeof(D2D1_RECT_F) */), ComAliasName("UINT32")] uint destinationRectanglesStride,
+            [In, DefaultParameterValue(16u /* sizeof(D2D1_RECT_U) */), ComAliasName("UINT32")] uint sourceRectanglesStride,
+            [In, DefaultParameterValue(16u /* sizeof(D2D1_COLOR_F) */), ComAliasName("UINT32")] uint colorsStride,
+            [In, DefaultParameterValue(24u /* sizeof(D2D1_MATRIX_3X2_F) */), ComAliasName("UINT32")] uint transformsStride
         );
 
         /// <summary>Set properties for existing sprites. All properties not specified are unmodified.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetSprites(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetSprites(
             [In] ID2D1SpriteBatch* This,
-            [In] UINT32 startIndex,
-            [In] UINT32 spriteCount,
-            [In, Optional] /* readonly */ D2D1_RECT_F* destinationRectangles,
-            [In, Optional] /* readonly */ D2D1_RECT_U* sourceRectangles,
-            [In, Optional] /* readonly */ D2D1_COLOR_F* colors,
-            [In, Optional] /* readonly */ D2D1_MATRIX_3X2_F* transforms,
-            [In, DefaultParameterValue(16u /* sizeof(D2D1_RECT_F) */)] UINT32 destinationRectanglesStride,
-            [In, DefaultParameterValue(16u /* sizeof(D2D1_RECT_U) */)] UINT32 sourceRectanglesStride,
-            [In, DefaultParameterValue(16u /* sizeof(D2D1_COLOR_F) */)] UINT32 colorsStride,
-            [In, DefaultParameterValue(24u /* sizeof(D2D1_MATRIX_3X2_F) */)] UINT32 transformsStride
+            [In, ComAliasName("UINT32")] uint startIndex,
+            [In, ComAliasName("UINT32")] uint spriteCount,
+            [In, Optional, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangles,
+            [In, Optional, ComAliasName("D2D1_RECT_U")] /* readonly */ D2D_RECT_U* sourceRectangles,
+            [In, Optional, ComAliasName("D2D1_COLOR_F")] /* readonly */ DXGI_RGBA* colors,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* transforms,
+            [In, DefaultParameterValue(16u /* sizeof(D2D1_RECT_F) */), ComAliasName("UINT32")] uint destinationRectanglesStride,
+            [In, DefaultParameterValue(16u /* sizeof(D2D1_RECT_U) */), ComAliasName("UINT32")] uint sourceRectanglesStride,
+            [In, DefaultParameterValue(16u /* sizeof(D2D1_COLOR_F) */), ComAliasName("UINT32")] uint colorsStride,
+            [In, DefaultParameterValue(24u /* sizeof(D2D1_MATRIX_3X2_F) */), ComAliasName("UINT32")] uint transformsStride
         );
 
         /// <summary>Retrieves sprite properties.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetSprites(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSprites(
             [In] ID2D1SpriteBatch* This,
-            [In] UINT32 startIndex,
-            [In] UINT32 spriteCount,
-            [Out] D2D1_RECT_F* destinationRectangles = null,
-            [Out] D2D1_RECT_U* sourceRectangles = null,
-            [Out] D2D1_COLOR_F* colors = null,
-            [Out] D2D1_MATRIX_3X2_F* transforms = null
+            [In, ComAliasName("UINT32")] uint startIndex,
+            [In, ComAliasName("UINT32")] uint spriteCount,
+            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* destinationRectangles = null,
+            [Out, ComAliasName("D2D1_RECT_U")] D2D_RECT_U* sourceRectangles = null,
+            [Out, ComAliasName("D2D1_COLOR_F")] DXGI_RGBA* colors = null,
+            [Out, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transforms = null
         );
 
         /// <summary>Retrieves the number of sprites in the sprite batch.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetSpriteCount(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetSpriteCount(
             [In] ID2D1SpriteBatch* This
         );
 

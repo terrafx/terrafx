@@ -3,16 +3,21 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_ROOT_CONSTANTS
     {
         #region Fields
-        public UINT ShaderRegister;
+        [ComAliasName("UINT")]
+        public uint ShaderRegister;
 
-        public UINT RegisterSpace;
+        [ComAliasName("UINT")]
+        public uint RegisterSpace;
 
-        public UINT Num32BitValues;
+        [ComAliasName("UINT")]
+        public uint Num32BitValues;
         #endregion
     }
 }

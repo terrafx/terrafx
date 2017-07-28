@@ -19,10 +19,11 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetHDRMetaData(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetHDRMetaData(
             [In] IDXGISwapChain4* This,
             [In] DXGI_HDR_METADATA_TYPE Type,
-            [In] UINT Size,
+            [In, ComAliasName("UINT")] uint Size,
             [In, Optional] void* pMetaData
         );
         #endregion

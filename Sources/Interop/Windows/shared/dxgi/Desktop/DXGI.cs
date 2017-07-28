@@ -3,6 +3,7 @@
 // Ported from shared\dxgi.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -13,8 +14,9 @@ namespace TerraFX.Interop.Desktop
         #region External Methods
         [DllImport("DXGI", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CreateDXGIFactory", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern HRESULT CreateDXGIFactory(
-            [In] REFIID riid,
+        [return: ComAliasName("HRESULT")]
+        public static extern int CreateDXGIFactory(
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out] void** ppFactory
         );
         #endregion

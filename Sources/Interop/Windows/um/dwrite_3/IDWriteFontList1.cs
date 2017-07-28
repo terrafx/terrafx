@@ -25,7 +25,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate DWRITE_LOCALITY GetFontLocality(
             [In] IDWriteFontList1* This,
-            [In] UINT32 listIndex
+            [In, ComAliasName("UINT32")] uint listIndex
         );
 
         /// <summary>Gets a font given its zero-based index.</summary>
@@ -34,9 +34,10 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code. The function returns DWRITE_E_REMOTEFONT if it could not conpublic /* blittable */ struct a remote font.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFont(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFont(
             [In] IDWriteFontList1* This,
-            [In] UINT32 listIndex,
+            [In, ComAliasName("UINT32")] uint listIndex,
             [Out] IDWriteFont3** font
         );
 
@@ -46,9 +47,10 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFontFaceReference(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFontFaceReference(
             [In] IDWriteFontList1* This,
-            [In] UINT32 listIndex,
+            [In, ComAliasName("UINT32")] uint listIndex,
             [Out] IDWriteFontFaceReference** fontFaceReference
         );
         #endregion

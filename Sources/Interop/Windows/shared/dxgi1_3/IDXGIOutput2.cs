@@ -19,7 +19,8 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL SupportsOverlays(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int SupportsOverlays(
             [In] IDXGIOutput2* This
         );
         #endregion

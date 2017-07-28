@@ -19,16 +19,18 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDesc1(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDesc1(
             [In] IDXGIOutput6* This,
             [Out] DXGI_OUTPUT_DESC1* pDesc
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CheckHardwareCompositionSupport(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CheckHardwareCompositionSupport(
             [In] IDXGIOutput6* This,
-            [Out] UINT* pFlags
+            [Out, ComAliasName("UINT")] uint* pFlags
         );
         #endregion
 

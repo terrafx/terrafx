@@ -3,14 +3,18 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_TEX2D_UAV
     {
         #region Fields
-        public UINT MipSlice;
+        [ComAliasName("UINT")]
+        public uint MipSlice;
 
-        public UINT PlaneSlice;
+        [ComAliasName("UINT")]
+        public uint PlaneSlice;
         #endregion
     }
 }

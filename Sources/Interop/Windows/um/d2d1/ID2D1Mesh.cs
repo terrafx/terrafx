@@ -21,7 +21,8 @@ namespace TerraFX.Interop
         /// <summary>Opens the mesh for population.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Open(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Open(
             [In] ID2D1Mesh* This,
             [Out] ID2D1TessellationSink** tessellationSink
         );

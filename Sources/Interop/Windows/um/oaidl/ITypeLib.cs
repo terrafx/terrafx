@@ -25,71 +25,79 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetTypeInfo(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetTypeInfo(
             [In] ITypeLib* This,
-            [In] UINT index,
+            [In, ComAliasName("UINT")] uint index,
             [Out, Optional] ITypeInfo** ppTInfo
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetTypeInfoType(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetTypeInfoType(
             [In] ITypeLib* This,
-            [In] UINT index,
+            [In, ComAliasName("UINT")] uint index,
             [Out] TYPEKIND* pTKind
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetTypeInfoOfGuid(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetTypeInfoOfGuid(
             [In] ITypeLib* This,
-            [In] REFGUID guid,
+            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guid,
             [Out, Optional] ITypeInfo** ppTinfo
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetLibAttr(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetLibAttr(
             [In] ITypeLib* This,
             [Out] TLIBATTR** ppTLibAttr
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetTypeComp(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetTypeComp(
             [In] ITypeLib* This,
             [Out, Optional] ITypeComp** ppTComp
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDocumentation(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDocumentation(
             [In] ITypeLib* This,
-            [In] INT index,
-            [Out, Optional] BSTR* pBstrName,
-            [Out, Optional] BSTR* pBstrDocString,
-            [Out] DWORD* pdwHelpContext,
-            [Out, Optional] BSTR* pBstrHelpFile
+            [In, ComAliasName("INT")] int index,
+            [Out, Optional, ComAliasName("BSTR")] char** pBstrName,
+            [Out, Optional, ComAliasName("BSTR")] char** pBstrDocString,
+            [Out, ComAliasName("DWORD")] uint* pdwHelpContext,
+            [Out, Optional, ComAliasName("BSTR")] char** pBstrHelpFile
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT IsName(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int IsName(
             [In] ITypeLib* This,
-            [In, Out] LPOLESTR szNameBuf,
-            [In] ULONG lHashVal,
-            [Out] BOOL* pfName
+            [In, Out, ComAliasName("LPOLESTR")] char* szNameBuf,
+            [In, ComAliasName("ULONG")] uint lHashVal,
+            [Out, ComAliasName("BOOL")] int* pfName
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT FindName(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int FindName(
             [In] ITypeLib* This,
-            [In, Out] LPOLESTR szNameBuf,
-            [In] ULONG lHashVal,
+            [In, Out, ComAliasName("LPOLESTR")] char* szNameBuf,
+            [In, ComAliasName("ULONG")] uint lHashVal,
             [Out] ITypeInfo** ppTInfo,
-            [Out] MEMBERID* rgMemId,
-            [In, Out] USHORT* pcFound
+            [Out, ComAliasName("MEMBERID")] int* rgMemId,
+            [In, Out, ComAliasName("USHORT")] ushort* pcFound
         );
 
         [SuppressUnmanagedCodeSecurity]

@@ -19,15 +19,17 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Map(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Map(
             [In] ID2D1VertexBuffer* This,
-            [Out] BYTE **data,
-            [In] UINT32 bufferSize
+            [Out, ComAliasName("BYTE")] byte **data,
+            [In, ComAliasName("UINT32")] uint bufferSize
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Unmap(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Unmap(
             [In] ID2D1VertexBuffer* This
         );
         #endregion

@@ -19,29 +19,33 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Next(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Next(
             [In] IEnumString* This,
-            [In] ULONG celt,
-            [Out] LPOLESTR* rgelt,
-            [Out, Optional] ULONG* pceltFetched
+            [In, ComAliasName("ULONG")] uint celt,
+            [Out, ComAliasName("LPOLESTR")] char** rgelt,
+            [Out, Optional, ComAliasName("ULONG")] uint* pceltFetched
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Skip(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Skip(
             [In] IEnumString* This,
-            [In] ULONG celt
+            [In, ComAliasName("ULONG")] uint celt
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Reset(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Reset(
             [In] IEnumString* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Clone(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Clone(
             [In] IEnumString* This,
             [Out, Optional] IEnumString** ppenum
         );

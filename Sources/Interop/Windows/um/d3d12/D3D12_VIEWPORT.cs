@@ -3,22 +3,30 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_VIEWPORT
     {
         #region Fields
-        public FLOAT TopLeftX;
+        [ComAliasName("FLOAT")]
+        public float TopLeftX;
 
-        public FLOAT TopLeftY;
+        [ComAliasName("FLOAT")]
+        public float TopLeftY;
 
-        public FLOAT Width;
+        [ComAliasName("FLOAT")]
+        public float Width;
 
-        public FLOAT Height;
+        [ComAliasName("FLOAT")]
+        public float Height;
 
-        public FLOAT MinDepth;
+        [ComAliasName("FLOAT")]
+        public float MinDepth;
 
-        public FLOAT MaxDepth;
+        [ComAliasName("FLOAT")]
+        public float MaxDepth;
         #endregion
     }
 }

@@ -15,10 +15,12 @@ namespace TerraFX.Interop
     {
         #region Fields
         [FieldOffset(0)]
+        [ComAliasName("UINT8[10]")]
         public _values_e__FixedBuffer values;
 
         [FieldOffset(0)]
-        public UINT8 familyKind;
+        [ComAliasName("UINT8")]
+        public byte familyKind;
 
         [FieldOffset(0)]
         public _text_e__Struct text;
@@ -37,29 +39,29 @@ namespace TerraFX.Interop
         unsafe public /* blittable */ struct _values_e__FixedBuffer
         {
             #region Fields
-            public UINT8 e0;
+            public byte e0;
 
-            public UINT8 e1;
+            public byte e1;
 
-            public UINT8 e2;
+            public byte e2;
 
-            public UINT8 e3;
+            public byte e3;
 
-            public UINT8 e4;
+            public byte e4;
 
-            public UINT8 e5;
+            public byte e5;
 
-            public UINT8 e6;
+            public byte e6;
 
-            public UINT8 e7;
+            public byte e7;
 
-            public UINT8 e8;
+            public byte e8;
 
-            public UINT8 e9;
+            public byte e9;
             #endregion
 
             #region Properties
-            public UINT8 this[int index]
+            public byte this[int index]
             {
                 get
                 {
@@ -68,7 +70,7 @@ namespace TerraFX.Interop
                         ThrowArgumentOutOfRangeException(nameof(index), index);
                     }
 
-                    fixed (UINT8* e = &e0)
+                    fixed (byte* e = &e0)
                     {
                         return e[index];
                     }
@@ -80,100 +82,140 @@ namespace TerraFX.Interop
         public /* blittable */ struct _text_e__Struct
         {
             #region Fields
-            public UINT8 familyKind;
+            [ComAliasName("UINT8")]
+            public byte familyKind;
 
-            public UINT8 serifStyle;
+            [ComAliasName("UINT8")]
+            public byte serifStyle;
 
-            public UINT8 weight;
+            [ComAliasName("UINT8")]
+            public byte weight;
 
-            public UINT8 proportion;
+            [ComAliasName("UINT8")]
+            public byte proportion;
 
-            public UINT8 contrast;
+            [ComAliasName("UINT8")]
+            public byte contrast;
 
-            public UINT8 strokeVariation;
+            [ComAliasName("UINT8")]
+            public byte strokeVariation;
 
-            public UINT8 armStyle;
+            [ComAliasName("UINT8")]
+            public byte armStyle;
 
-            public UINT8 letterform;
+            [ComAliasName("UINT8")]
+            public byte letterform;
 
-            public UINT8 midline;
+            [ComAliasName("UINT8")]
+            public byte midline;
 
-            public UINT8 xHeight;
+            [ComAliasName("UINT8")]
+            public byte xHeight;
             #endregion
         };
 
         public /* blittable */ struct _script_e__Struct
         {
             #region Fields
-            public UINT8 familyKind;
+            [ComAliasName("UINT8")]
+            public byte familyKind;
 
-            public UINT8 toolKind;
+            [ComAliasName("UINT8")]
+            public byte toolKind;
 
-            public UINT8 weight;
+            [ComAliasName("UINT8")]
+            public byte weight;
 
-            public UINT8 spacing;
+            [ComAliasName("UINT8")]
+            public byte spacing;
 
-            public UINT8 aspectRatio;
+            [ComAliasName("UINT8")]
+            public byte aspectRatio;
 
-            public UINT8 contrast;
+            [ComAliasName("UINT8")]
+            public byte contrast;
 
-            public UINT8 scriptTopology;
+            [ComAliasName("UINT8")]
+            public byte scriptTopology;
 
-            public UINT8 scriptForm;
+            [ComAliasName("UINT8")]
+            public byte scriptForm;
 
-            public UINT8 finials;
+            [ComAliasName("UINT8")]
+            public byte finials;
 
-            public UINT8 xAscent;
+            [ComAliasName("UINT8")]
+            public byte xAscent;
             #endregion
         }
 
         public /* blittable */ struct _decorative_e__Struct
         {
             #region Fields
-            public UINT8 familyKind;
+            [ComAliasName("UINT8")]
+            public byte familyKind;
 
-            public UINT8 decorativeClass;
+            [ComAliasName("UINT8")]
+            public byte decorativeClass;
 
-            public UINT8 weight;
+            [ComAliasName("UINT8")]
+            public byte weight;
 
-            public UINT8 aspect;
+            [ComAliasName("UINT8")]
+            public byte aspect;
 
-            public UINT8 contrast;
+            [ComAliasName("UINT8")]
+            public byte contrast;
 
-            public UINT8 serifVariant;
+            [ComAliasName("UINT8")]
+            public byte serifVariant;
 
-            public UINT8 fill;
+            [ComAliasName("UINT8")]
+            public byte fill;
 
-            public UINT8 lining;
+            [ComAliasName("UINT8")]
+            public byte lining;
 
-            public UINT8 decorativeTopology;
+            [ComAliasName("UINT8")]
+            public byte decorativeTopology;
 
-            public UINT8 characterRange;
+            [ComAliasName("UINT8")]
+            public byte characterRange;
             #endregion
         }
 
         public /* blittable */ struct _symbol_e__Struct
         {
             #region Fields
-            public UINT8 familyKind;
+            [ComAliasName("UINT8")]
+            public byte familyKind;
 
-            public UINT8 symbolKind;
+            [ComAliasName("UINT8")]
+            public byte symbolKind;
 
-            public UINT8 weight;
+            [ComAliasName("UINT8")]
+            public byte weight;
 
-            public UINT8 spacing;
+            [ComAliasName("UINT8")]
+            public byte spacing;
 
-            public UINT8 aspectRatioAndContrast;
+            [ComAliasName("UINT8")]
+            public byte aspectRatioAndContrast;
 
-            public UINT8 aspectRatio94;
+            [ComAliasName("UINT8")]
+            public byte aspectRatio94;
 
-            public UINT8 aspectRatio119;
+            [ComAliasName("UINT8")]
+            public byte aspectRatio119;
 
-            public UINT8 aspectRatio157;
+            [ComAliasName("UINT8")]
+            public byte aspectRatio157;
 
-            public UINT8 aspectRatio163;
+            [ComAliasName("UINT8")]
+            public byte aspectRatio163;
 
-            public UINT8 aspectRatio211;
+            [ComAliasName("UINT8")]
+            public byte aspectRatio211;
             #endregion
         }
         #endregion

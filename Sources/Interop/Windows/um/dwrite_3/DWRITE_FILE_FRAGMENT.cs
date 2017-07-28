@@ -3,6 +3,8 @@
 // Ported from um\dwrite_3.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>DWRITE_FILE_FRAGMENT represents a range of bytes in a font file.</summary>
@@ -10,10 +12,12 @@ namespace TerraFX.Interop
     {
         #region Fields
         /// <summary>Starting offset of the fragment from the beginning of the file.</summary>
-        public UINT64 fileOffset;
+        [ComAliasName("UINT64")]
+        public ulong fileOffset;
 
         /// <summary>Size of the file fragment, in bytes.</summary>
-        public UINT64 fragmentSize;
+        [ComAliasName("UINT64")]
+        public ulong fragmentSize;
         #endregion
     }
 }

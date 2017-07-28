@@ -19,7 +19,8 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateInk(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateInk(
             [In] ID2D1DeviceContext2* This,
             [In] /* readonly */ D2D1_INK_POINT* startPoint,
             [Out] ID2D1Ink** ink
@@ -28,7 +29,8 @@ namespace TerraFX.Interop
         /// <summary>Creates a new ink style.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateInkStyle(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateInkStyle(
             [In] ID2D1DeviceContext2* This,
             [In, Optional] /* readonly */ D2D1_INK_STYLE_PROPERTIES* inkStyleProperties,
             [Out] ID2D1InkStyle** inkStyle
@@ -36,16 +38,18 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateGradientMesh(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateGradientMesh(
             [In] ID2D1DeviceContext2* This,
             [In] /* readonly */ D2D1_GRADIENT_MESH_PATCH* patches,
-            [In] UINT32 patchesCount,
+            [In, ComAliasName("UINT32")] uint patchesCount,
             [Out] ID2D1GradientMesh** gradientMesh
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateImageSourceFromWic(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateImageSourceFromWic(
             [In] ID2D1DeviceContext2* This,
             [In] IWICBitmapSource* wicBitmapSource,
             [In] D2D1_IMAGE_SOURCE_LOADING_OPTIONS loadingOptions,
@@ -56,22 +60,24 @@ namespace TerraFX.Interop
         /// <summary>Creates a 3D lookup table for mapping a 3-channel input to a 3-channel output. The table data must be provided in 4-channel format.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateLookupTable3D(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateLookupTable3D(
             [In] ID2D1DeviceContext2* This,
             [In] D2D1_BUFFER_PRECISION precision,
-            [In] /* readonly */ UINT32* extents,
-            [In] /* readonly */ BYTE* data,
-            [In] UINT32 dataCount,
-            [In] /* readonly */ UINT32* strides,
+            [In, ComAliasName("UINT32")] /* readonly */ uint* extents,
+            [In, ComAliasName("BYTE")] /* readonly */ byte* data,
+            [In, ComAliasName("UINT32")] uint dataCount,
+            [In, ComAliasName("UINT32")] /* readonly */ uint* strides,
             [Out] ID2D1LookupTable3D** lookupTable
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateImageSourceFromDxgi(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateImageSourceFromDxgi(
             [In] ID2D1DeviceContext2* This,
             [In] IDXGISurface** surfaces,
-            [In] UINT32 surfaceCount,
+            [In, ComAliasName("UINT32")] uint surfaceCount,
             [In] DXGI_COLOR_SPACE_TYPE colorSpace,
             [In] D2D1_IMAGE_SOURCE_FROM_DXGI_OPTIONS options,
             [Out] ID2D1ImageSource** imageSource
@@ -80,10 +86,11 @@ namespace TerraFX.Interop
         /// <summary>Retrieves the world-space bounds in DIPs of the gradient mesh using the device context DPI.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetGradientMeshWorldBounds(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetGradientMeshWorldBounds(
             [In] ID2D1DeviceContext2* This,
             [In] ID2D1GradientMesh* gradientMesh,
-            [Out] D2D1_RECT_F* pBounds
+            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* pBounds
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -108,14 +115,15 @@ namespace TerraFX.Interop
         public /* static */ delegate void DrawGdiMetafile(
             [In] ID2D1DeviceContext2* This,
             [In] ID2D1GdiMetafile* gdiMetafile,
-            [In, Optional] /* readonly */ D2D1_RECT_F* destinationRectangle,
-            [In] /* readonly */ D2D1_RECT_F* sourceRectangle = null
+            [In, Optional, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangle,
+            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* sourceRectangle = null
         );
 
         /// <summary>Creates an image source which shares resources with an original.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateTransformedImageSource(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateTransformedImageSource(
             [In] ID2D1DeviceContext2* This,
             [In] ID2D1ImageSource* imageSource,
             [In] /* readonly */ D2D1_TRANSFORMED_IMAGE_SOURCE_PROPERTIES* properties,

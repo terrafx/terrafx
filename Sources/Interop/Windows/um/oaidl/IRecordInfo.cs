@@ -19,104 +19,117 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RecordInit(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RecordInit(
             [In] IRecordInfo* This,
-            [Out] PVOID pvNew
+            [Out, ComAliasName("PVOID")] void* pvNew
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RecordClear(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RecordClear(
             [In] IRecordInfo* This,
-            [In] PVOID pvExisting
+            [In, ComAliasName("PVOID")] void* pvExisting
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RecordCopy(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RecordCopy(
             [In] IRecordInfo* This,
-            [In] PVOID pvExisting,
-            [Out] PVOID pvNew
+            [In, ComAliasName("PVOID")] void* pvExisting,
+            [Out, ComAliasName("PVOID")] void* pvNew
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetGuid(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetGuid(
             [In] IRecordInfo* This,
-            [Out] GUID* pGuid
+            [Out, ComAliasName("GUID")] Guid* pGuid
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetName(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetName(
             [In] IRecordInfo* This,
-            [Out, Optional] BSTR* pbstrName
+            [Out, Optional, ComAliasName("BSTR")] char** pbstrName
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetSize(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSize(
             [In] IRecordInfo* This,
-            [Out] ULONG* pcbSize
+            [Out, ComAliasName("ULONG")] uint* pcbSize
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetTypeInfo(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetTypeInfo(
             [In] IRecordInfo* This,
             [Out] ITypeInfo** ppTypeInfo
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetField(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetField(
             [In] IRecordInfo* This,
-            [In] PVOID pvData,
-            [In] LPCOLESTR szFieldName,
+            [In, ComAliasName("PVOID")] void* pvData,
+            [In, ComAliasName("LPCOLESTR")] /* readonly */ char* szFieldName,
             [Out] VARIANT* pvarField
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFieldNoCopy(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFieldNoCopy(
             [In] IRecordInfo* This,
-            [In] PVOID pvData,
-            [In] LPCOLESTR szFieldName,
+            [In, ComAliasName("PVOID")] void* pvData,
+            [In, ComAliasName("LPCOLESTR")] /* readonly */ char* szFieldName,
             [Out] VARIANT* pvarField,
-            [Out] PVOID* ppvDataCArray
+            [Out, ComAliasName("PVOID")] void** ppvDataCArray
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT PutField(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int PutField(
             [In] IRecordInfo* This,
-            [In] ULONG wFlags,
-            [In, Out] PVOID pvData,
-            [In] LPCOLESTR szFieldName,
+            [In, ComAliasName("ULONG")] uint wFlags,
+            [In, Out, ComAliasName("PVOID")] void* pvData,
+            [In, ComAliasName("LPCOLESTR")] /* readonly */ char* szFieldName,
             [In] VARIANT* pvarField
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT PutFieldNoCopy(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int PutFieldNoCopy(
             [In] IRecordInfo* This,
-            [In] ULONG wFlags,
-            [In, Out] PVOID pvData,
-            [In] LPCOLESTR szFieldName,
+            [In, ComAliasName("ULONG")] uint wFlags,
+            [In, Out, ComAliasName("PVOID")] void* pvData,
+            [In, ComAliasName("LPCOLESTR")] /* readonly */ char* szFieldName,
             [In] VARIANT* pvarField
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFieldNames(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFieldNames(
             [In] IRecordInfo* This,
-            [In, Out] ULONG* pcNames,
-            [Out] BSTR* rgBstrNames
+            [In, Out, ComAliasName("ULONG")] uint* pcNames,
+            [Out, ComAliasName("BSTR")] char** rgBstrNames
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL IsMatchingType(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int IsMatchingType(
             [In] IRecordInfo* This,
             [In] IRecordInfo* pRecordInfo
         );
@@ -129,17 +142,19 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RecordCreateCopy(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RecordCreateCopy(
             [In] IRecordInfo* This,
-            [In] PVOID pvSource,
-            [Out] PVOID* ppvDest
+            [In, ComAliasName("PVOID")] void* pvSource,
+            [Out, ComAliasName("PVOID")] void** ppvDest
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RecordDestroy(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RecordDestroy(
             [In] IRecordInfo* This,
-            [In] PVOID pvRecord
+            [In, ComAliasName("PVOID")] void* pvRecord
         );
         #endregion
 

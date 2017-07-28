@@ -19,7 +19,8 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Reset(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Reset(
             [In] ID3D12CommandAllocator* This
         );
         #endregion

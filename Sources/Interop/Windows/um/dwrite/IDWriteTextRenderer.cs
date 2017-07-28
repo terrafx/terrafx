@@ -29,11 +29,12 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DrawGlyphRun(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DrawGlyphRun(
             [In] IDWriteTextRenderer* This,
             [In, Optional] void* clientDrawingContext,
-            [In] FLOAT baselineOriginX,
-            [In] FLOAT baselineOriginY,
+            [In, ComAliasName("FLOAT")] float baselineOriginX,
+            [In, ComAliasName("FLOAT")] float baselineOriginY,
             [In] DWRITE_MEASURING_MODE measuringMode,
             [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
             [In] /* readonly */ DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
@@ -50,11 +51,12 @@ namespace TerraFX.Interop
         /// <remarks> A single underline can be broken into multiple calls, depending on how the formatting changes attributes. If font sizes/styles change within an underline, the thickness and offset will be averaged weighted according to characters. To get the correct top coordinate of the underline rect, add underline::offset to the baseline's Y. Otherwise the underline will be immediately under the text. The x coordinate will always be passed as the left side, regardless of text directionality. This simplifies drawing and reduces the problem of round-off that could potentially cause gaps or a double stamped alpha blend. To avoid alpha overlap, round the end points to the nearest device pixel.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DrawUnderline(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DrawUnderline(
             [In] IDWriteTextRenderer* This,
             [In, Optional] void* clientDrawingContext,
-            [In] FLOAT baselineOriginX,
-            [In] FLOAT baselineOriginY,
+            [In, ComAliasName("FLOAT")] float baselineOriginX,
+            [In, ComAliasName("FLOAT")] float baselineOriginY,
             [In] /* readonly */ DWRITE_UNDERLINE* underline,
             [In, Optional] IUnknown* clientDrawingEffect
         );
@@ -69,11 +71,12 @@ namespace TerraFX.Interop
         /// <remarks> A single strikethrough can be broken into multiple calls, depending on how the formatting changes attributes. Strikethrough is not averaged across font sizes/styles changes. To get the correct top coordinate of the strikethrough rect, add strikethrough::offset to the baseline's Y. Like underlines, the x coordinate will always be passed as the left side, regardless of text directionality.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DrawStrikethrough(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DrawStrikethrough(
             [In] IDWriteTextRenderer* This,
             [In, Optional] void* clientDrawingContext,
-            [In] FLOAT baselineOriginX,
-            [In] FLOAT baselineOriginY,
+            [In, ComAliasName("FLOAT")] float baselineOriginX,
+            [In, ComAliasName("FLOAT")] float baselineOriginY,
             [In] /* readonly */ DWRITE_STRIKETHROUGH* strikethrough,
             [In, Optional] IUnknown* clientDrawingEffect
         );
@@ -90,14 +93,15 @@ namespace TerraFX.Interop
         /// <remarks> The right-to-left flag is a hint for those cases where it would look strange for the image to be shown normally (like an arrow pointing to right to indicate a submenu).</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DrawInlineObject(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DrawInlineObject(
             [In] IDWriteTextRenderer* This,
             [In, Optional] void* clientDrawingContext,
-            [In] FLOAT originX,
-            [In] FLOAT originY,
+            [In, ComAliasName("FLOAT")] float originX,
+            [In, ComAliasName("FLOAT")] float originY,
             [In] IDWriteInlineObject* inlineObject,
-            [In] BOOL isSideways,
-            [In] BOOL isRightToLeft,
+            [In, ComAliasName("BOOL")] int isSideways,
+            [In, ComAliasName("BOOL")] int isRightToLeft,
             [In, Optional] IUnknown* clientDrawingEffect
         );
         #endregion

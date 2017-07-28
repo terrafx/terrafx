@@ -19,22 +19,25 @@ namespace TerraFX.Interop
         /// <summary>Sets the size of the initial viewport.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetViewportSize(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetViewportSize(
             [In] ID2D1SvgDocument* This,
-            [In] D2D1_SIZE_F viewportSize
+            [In, ComAliasName("D2D1_SIZE_F")] D2D_SIZE_F viewportSize
         );
 
         /// <summary>Returns the size of the initial viewport.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_SIZE_F GetViewportSize(
+        [return: ComAliasName("D2D1_SIZE_F")]
+        public /* static */ delegate D2D_SIZE_F GetViewportSize(
             [In] ID2D1SvgDocument* This
         );
 
         /// <summary>Sets the root element of the document. The root element must be an 'svg' element. If the element already exists within an svg tree, it is first removed.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetRoot(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetRoot(
             [In] ID2D1SvgDocument* This,
             [In, Optional] ID2D1SvgElement* root
         );
@@ -50,9 +53,10 @@ namespace TerraFX.Interop
         /// <summary>Gets the SVG element with the specified ID. If the element cannot be found, the returned element will be null.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT FindElementById(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int FindElementById(
             [In] ID2D1SvgDocument* This,
-            [In] PCWSTR id,
+            [In, ComAliasName("PCWSTR")] /* readonly */ char* id,
             [Out] ID2D1SvgElement** svgElement
         );
 
@@ -61,7 +65,8 @@ namespace TerraFX.Interop
         /// <param name="subtree">The root of the subtree. If null, the entire document is serialized.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Serialize(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Serialize(
             [In] ID2D1SvgDocument* This,
             [In] IStream* outputXmlStream,
             [In] ID2D1SvgElement* subtree = null
@@ -72,7 +77,8 @@ namespace TerraFX.Interop
         /// <param name="subtree">The root of the subtree.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Deserialize(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Deserialize(
             [In] ID2D1SvgDocument* This,
             [In] IStream* inputXmlStream,
             [Out] ID2D1SvgElement** subtree
@@ -83,43 +89,47 @@ namespace TerraFX.Interop
         /// <param name="id">The element id which acts as the paint server. This id is used if the paint type is D2D1_SVG_PAINT_TYPE_URI.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreatePaint(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreatePaint(
             [In] ID2D1SvgDocument* This,
             [In] D2D1_SVG_PAINT_TYPE paintType,
-            [In, Optional] /* readonly */ D2D1_COLOR_F* color,
-            [In, Optional] PCWSTR id,
+            [In, Optional, ComAliasName("D2D1_COLOR_F")] /* readonly */ DXGI_RGBA* color,
+            [In, Optional, ComAliasName("PCWSTR")] /* readonly */ char* id,
             [Out] ID2D1SvgPaint** paint
         );
 
         /// <summary>Creates a dash array object which can be used to set the 'stroke-dasharray' property.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateStrokeDashArray(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateStrokeDashArray(
             [In] ID2D1SvgDocument* This,
             [In, Optional] /* readonly */ D2D1_SVG_LENGTH* dashes,
-            [In] UINT32 dashesCount,
+            [In, ComAliasName("UINT32")] uint dashesCount,
             [Out] ID2D1SvgStrokeDashArray** strokeDashArray
         );
 
         /// <summary>Creates a points object which can be used to set a 'points' attribute on a 'polygon' or 'polyline' element.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreatePointCollection(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreatePointCollection(
             [In] ID2D1SvgDocument* This,
-            [In, Optional] /* readonly */ D2D1_POINT_2F* points,
-            [In] UINT32 pointsCount,
+            [In, Optional, ComAliasName("D2D1_POINT_2F")] /* readonly */ D2D_POINT_2F* points,
+            [In, ComAliasName("UINT32")] uint pointsCount,
             [Out] ID2D1SvgPointCollection** pointCollection
         );
 
         /// <summary>Creates a path data object which can be used to set a 'd' attribute on a 'path' element.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreatePathData(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreatePathData(
             [In] ID2D1SvgDocument* This,
-            [In, Optional] /* readonly */ FLOAT* segmentData,
-            [In] UINT32 segmentDataCount,
+            [In, Optional, ComAliasName("FLOAT")] /* readonly */ float* segmentData,
+            [In, ComAliasName("UINT32")] uint segmentDataCount,
             [In, Optional] /* readonly */ D2D1_SVG_PATH_COMMAND* commands,
-            [In] UINT32 commandsCount,
+            [In, ComAliasName("UINT32")] uint commandsCount,
             [Out] ID2D1SvgPathData** pathData
         );
         #endregion

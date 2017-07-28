@@ -25,11 +25,12 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFilePathLengthFromKey(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFilePathLengthFromKey(
             [In] IDWriteLocalFontFileLoader* This,
             [In] /* readonly */ void* fontFileReferenceKey,
-            [In] UINT32 fontFileReferenceKeySize,
-            [Out] UINT32* filePathLength
+            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [Out, ComAliasName("UINT32")] uint* filePathLength
         );
 
         /// <summary>Obtains the absolute font file path from the font file reference key.</summary>
@@ -40,12 +41,13 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFilePathFromKey(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFilePathFromKey(
             [In] IDWriteLocalFontFileLoader* This,
             [In] /* readonly */ void* fontFileReferenceKey,
-            [In] UINT32 fontFileReferenceKeySize,
-            [Out] WCHAR* filePath,
-            [In] UINT32 filePathSize
+            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [Out, ComAliasName("WCHAR")] char* filePath,
+            [In, ComAliasName("UINT32")] uint filePathSize
         );
 
         /// <summary>Obtains the last write time of the file from the font file reference key.</summary>
@@ -55,10 +57,11 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetLastWriteTimeFromKey(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetLastWriteTimeFromKey(
             [In] IDWriteLocalFontFileLoader* This,
             [In] /* readonly */ void* fontFileReferenceKey,
-            [In] UINT32 fontFileReferenceKeySize,
+            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
             [Out] FILETIME* lastWriteTime
         );
         #endregion

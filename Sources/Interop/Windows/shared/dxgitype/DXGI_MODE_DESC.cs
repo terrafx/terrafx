@@ -3,14 +3,18 @@
 // Ported from shared\dxgitype.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct DXGI_MODE_DESC
     {
         #region Fields
-        public UINT Width;
+        [ComAliasName("UINT")]
+        public uint Width;
 
-        public UINT Height;
+        [ComAliasName("UINT")]
+        public uint Height;
 
         public DXGI_RATIONAL RefreshRate;
 

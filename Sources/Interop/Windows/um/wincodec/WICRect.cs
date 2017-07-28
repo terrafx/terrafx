@@ -3,18 +3,24 @@
 // Ported from um\wincodec.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct WICRect
     {
         #region Fields
-        public INT X;
+        [ComAliasName("INT")]
+        public int X;
 
-        public INT Y;
+        [ComAliasName("INT")]
+        public int Y;
 
-        public INT Width;
+        [ComAliasName("INT")]
+        public int Width;
 
-        public INT Height;
+        [ComAliasName("INT")]
+        public int Height;
         #endregion
     }
 }

@@ -20,7 +20,8 @@ namespace TerraFX.Interop
         /// <summary>Creates a color context from a DXGI color space type. It is only valid to use this with the Color Management Effect in 'Best' mode.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateColorContextFromDxgiColorSpace(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateColorContextFromDxgiColorSpace(
             [In] ID2D1EffectContext2* This,
             [In] DXGI_COLOR_SPACE_TYPE colorSpace,
             [Out] ID2D1ColorContext1** colorContext
@@ -29,7 +30,8 @@ namespace TerraFX.Interop
         /// <summary>Creates a color context from a simple color profile. It is only valid to use this with the Color Management Effect in 'Best' mode.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateColorContextFromSimpleColorProfile(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateColorContextFromSimpleColorProfile(
             [In] ID2D1EffectContext2* This,
             [In] /* readonly */ D2D1_SIMPLE_COLOR_PROFILE* simpleProfile,
             [Out] ID2D1ColorContext1** colorContext

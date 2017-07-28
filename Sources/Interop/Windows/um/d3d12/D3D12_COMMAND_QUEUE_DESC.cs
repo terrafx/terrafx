@@ -3,6 +3,8 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_COMMAND_QUEUE_DESC
@@ -10,11 +12,13 @@ namespace TerraFX.Interop
         #region Fields
         public D3D12_COMMAND_LIST_TYPE Type;
 
-        public INT Priority;
+        [ComAliasName("INT")]
+        public int Priority;
 
         public D3D12_COMMAND_QUEUE_FLAGS Flags;
 
-        public UINT NodeMask;
+        [ComAliasName("UINT")]
+        public uint NodeMask;
         #endregion
     }
 }

@@ -23,7 +23,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFontCollection(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFontCollection(
             [In] IDWriteFontList* This,
             [Out] IDWriteFontCollection** fontCollection
         );
@@ -31,7 +32,8 @@ namespace TerraFX.Interop
         /// <summary>Gets the number of fonts in the font list.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetFontCount(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetFontCount(
             [In] IDWriteFontList* This
         );
 
@@ -41,9 +43,10 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFont(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFont(
             [In] IDWriteFontList* This,
-            [In] UINT32 index,
+            [In, ComAliasName("UINT32")] uint index,
             [Out] IDWriteFont** font
         );
         #endregion

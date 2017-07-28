@@ -3,6 +3,8 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_STATIC_SAMPLER_DESC
@@ -16,21 +18,27 @@ namespace TerraFX.Interop
 
         public D3D12_TEXTURE_ADDRESS_MODE AddressW;
 
-        public FLOAT MipLODBias;
+        [ComAliasName("FLOAT")]
+        public float MipLODBias;
 
-        public UINT MaxAnisotropy;
+        [ComAliasName("UINT")]
+        public uint MaxAnisotropy;
 
         public D3D12_COMPARISON_FUNC ComparisonFunc;
 
         public D3D12_STATIC_BORDER_COLOR BorderColor;
 
-        public FLOAT MinLOD;
+        [ComAliasName("FLOAT")]
+        public float MinLOD;
 
-        public FLOAT MaxLOD;
+        [ComAliasName("FLOAT")]
+        public float MaxLOD;
 
-        public UINT ShaderRegister;
+        [ComAliasName("UINT")]
+        public uint ShaderRegister;
 
-        public UINT RegisterSpace;
+        [ComAliasName("UINT")]
+        public uint RegisterSpace;
 
         public D3D12_SHADER_VISIBILITY ShaderVisibility;
         #endregion

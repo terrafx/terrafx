@@ -3,18 +3,24 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_DRAW_ARGUMENTS
     {
         #region Fields
-        public UINT VertexCountPerInstance;
+        [ComAliasName("UINT")]
+        public uint VertexCountPerInstance;
 
-        public UINT InstanceCount;
+        [ComAliasName("UINT")]
+        public uint InstanceCount;
 
-        public UINT StartVertexLocation;
+        [ComAliasName("UINT")]
+        public uint StartVertexLocation;
 
-        public UINT StartInstanceLocation;
+        [ComAliasName("UINT")]
+        public uint StartInstanceLocation;
         #endregion
     }
 }

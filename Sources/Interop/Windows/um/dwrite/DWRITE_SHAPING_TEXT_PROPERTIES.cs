@@ -3,18 +3,21 @@
 // Ported from um\dwrite.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>Shaping output properties per input character.</summary>
     public /* blittable */ struct DWRITE_SHAPING_TEXT_PROPERTIES
     {
         #region Fields
-        internal UINT16 _bitField;
+        internal ushort _bitField;
         #endregion
 
         #region Properties
         /// <summary>This character can be shaped independently from the others (usually set for the space character).</summary>
-        public UINT16 isShapedAlone
+        [ComAliasName("UINT16:1")]
+        public ushort isShapedAlone
         {
             get
             {
@@ -28,7 +31,8 @@ namespace TerraFX.Interop
         }
 
         /// <summary>Reserved for use by shaping engine.</summary>
-        public UINT16 reserved
+        [ComAliasName("UINT16:15")]
+        public ushort reserved
         {
             get
             {

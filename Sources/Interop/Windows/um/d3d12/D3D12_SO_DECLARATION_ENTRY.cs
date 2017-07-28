@@ -3,22 +3,30 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_SO_DECLARATION_ENTRY
+    unsafe public /* blittable */ struct D3D12_SO_DECLARATION_ENTRY
     {
         #region Fields
-        public UINT Stream;
+        [ComAliasName("UINT")]
+        public uint Stream;
 
-        public LPCSTR SemanticName;
+        [ComAliasName("LPCSTR")]
+        public /* readonly */ sbyte* SemanticName;
 
-        public UINT SemanticIndex;
+        [ComAliasName("UINT")]
+        public uint SemanticIndex;
 
-        public BYTE StartComponent;
+        [ComAliasName("BYTE")]
+        public byte StartComponent;
 
-        public BYTE ComponentCount;
+        [ComAliasName("BYTE")]
+        public byte ComponentCount;
 
-        public BYTE OutputSlot;
+        [ComAliasName("BYTE")]
+        public byte OutputSlot;
         #endregion
     }
 }

@@ -3,6 +3,8 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_HEAP_PROPERTIES
@@ -14,9 +16,11 @@ namespace TerraFX.Interop
 
         public D3D12_MEMORY_POOL MemoryPoolPreference;
 
-        public UINT CreationNodeMask;
+        [ComAliasName("UINT")]
+        public uint CreationNodeMask;
 
-        public UINT VisibleNodeMask;
+        [ComAliasName("UINT")]
+        public uint VisibleNodeMask;
         #endregion
     }
 }

@@ -19,31 +19,34 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT MapOutputRectToInputRects(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int MapOutputRectToInputRects(
             [In] ID2D1Transform* This,
-            [In] /* readonly */ D2D1_RECT_L* outputRect,
-            [Out] D2D1_RECT_L *inputRects,
-            [In] UINT32 inputRectsCount
+            [In, ComAliasName("D2D1_RECT_L")] /* readonly */ RECT* outputRect,
+            [Out, ComAliasName("D2D1_RECT_L")] RECT *inputRects,
+            [In, ComAliasName("UINT32")] uint inputRectsCount
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT MapInputRectsToOutputRect(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int MapInputRectsToOutputRect(
             [In] ID2D1Transform* This,
-            [In] /* readonly */ D2D1_RECT_L* inputRects,
-            [In] /* readonly */ D2D1_RECT_L* inputOpaqueSubRects,
-            [In] UINT32 inputRectCount,
-            [Out] D2D1_RECT_L* outputRect,
-            [Out] D2D1_RECT_L* outputOpaqueSubRect
+            [In, ComAliasName("D2D1_RECT_L")] /* readonly */ RECT* inputRects,
+            [In, ComAliasName("D2D1_RECT_L")] /* readonly */ RECT* inputOpaqueSubRects,
+            [In, ComAliasName("UINT32")] uint inputRectCount,
+            [Out, ComAliasName("D2D1_RECT_L")] RECT* outputRect,
+            [Out, ComAliasName("D2D1_RECT_L")] RECT* outputOpaqueSubRect
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT MapInvalidRect(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int MapInvalidRect(
             [In] ID2D1Transform* This,
-            [In] UINT32 inputIndex,
-            [In] D2D1_RECT_L invalidInputRect,
-            [Out] D2D1_RECT_L* invalidOutputRect
+            [In, ComAliasName("UINT32")] uint inputIndex,
+            [In, ComAliasName("D2D1_RECT_L")] RECT invalidInputRect,
+            [Out, ComAliasName("D2D1_RECT_L")] RECT* invalidOutputRect
         );
         #endregion
 

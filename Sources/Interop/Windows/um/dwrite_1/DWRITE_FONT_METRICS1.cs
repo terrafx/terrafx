@@ -3,6 +3,8 @@
 // Ported from um\dwrite_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct DWRITE_FONT_METRICS1
@@ -11,43 +13,56 @@ namespace TerraFX.Interop
         public DWRITE_FONT_METRICS BaseValue;
 
         /// <summary>Left edge of accumulated bounding blackbox of all glyphs in the font.</summary>
-        public INT16 glyphBoxLeft;
+        [ComAliasName("INT16")]
+        public short glyphBoxLeft;
 
         /// <summary>Top edge of accumulated bounding blackbox of all glyphs in the font.</summary>
-        public INT16 glyphBoxTop;
+        [ComAliasName("INT16")]
+        public short glyphBoxTop;
 
         /// <summary>Right edge of accumulated bounding blackbox of all glyphs in the font.</summary>
-        public INT16 glyphBoxRight;
+        [ComAliasName("INT16")]
+        public short glyphBoxRight;
 
         /// <summary>Bottom edge of accumulated bounding blackbox of all glyphs in the font.</summary>
-        public INT16 glyphBoxBottom;
+        [ComAliasName("INT16")]
+        public short glyphBoxBottom;
 
         /// <summary>Horizontal position of the subscript relative to the baseline origin. This is typically negative (to the left) in italic/oblique fonts, and zero in regular fonts.</summary>
-        public INT16 subscriptPositionX;
+        [ComAliasName("INT16")]
+        public short subscriptPositionX;
 
         /// <summary>Vertical position of the subscript relative to the baseline. This is typically negative.</summary>
-        public INT16 subscriptPositionY;
+        [ComAliasName("INT16")]
+        public short subscriptPositionY;
 
         /// <summary>Horizontal size of the subscript em box in design units, used to scale the simulated subscript relative to the full em box size. This the numerator of the scaling ratio where denominator is the design units per em. If this member is zero, the font does not specify a scale factor, and the client should use its own policy.</summary>
-        public INT16 subscriptSizeX;
+        [ComAliasName("INT16")]
+        public short subscriptSizeX;
 
         /// <summary>Vertical size of the subscript em box in design units, used to scale the simulated subscript relative to the full em box size. This the numerator of the scaling ratio where denominator is the design units per em. If this member is zero, the font does not specify a scale factor, and the client should use its own policy.</summary>
-        public INT16 subscriptSizeY;
+        [ComAliasName("INT16")]
+        public short subscriptSizeY;
 
         /// <summary>Horizontal position of the superscript relative to the baseline origin. This is typically positive (to the right) in italic/oblique fonts, and zero in regular fonts.</summary>
-        public INT16 superscriptPositionX;
+        [ComAliasName("INT16")]
+        public short superscriptPositionX;
 
         /// <summary>Vertical position of the superscript relative to the baseline. This is typically positive.</summary>
-        public INT16 superscriptPositionY;
+        [ComAliasName("INT16")]
+        public short superscriptPositionY;
 
         /// <summary>Horizontal size of the superscript em box in design units, used to scale the simulated superscript relative to the full em box size. This the numerator of the scaling ratio where denominator is the design units per em. If this member is zero, the font does not specify a scale factor, and the client should use its own policy.</summary>
-        public INT16 superscriptSizeX;
+        [ComAliasName("INT16")]
+        public short superscriptSizeX;
 
         /// <summary>Vertical size of the superscript em box in design units, used to scale the simulated superscript relative to the full em box size. This the numerator of the scaling ratio where denominator is the design units per em. If this member is zero, the font does not specify a scale factor, and the client should use its own policy.</summary>
-        public INT16 superscriptSizeY;
+        [ComAliasName("INT16")]
+        public short superscriptSizeY;
 
         /// <summary>Indicates that the ascent, descent, and lineGap are based on newer 'typographic' values in the font, rather than legacy values.</summary>
-        public BOOL hasTypographicMetrics;
+        [ComAliasName("BOOL")]
+        public int hasTypographicMetrics;
     #endregion
     }
 }

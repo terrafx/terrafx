@@ -19,7 +19,8 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetFeatureMask(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetFeatureMask(
             [In] ID3D12DebugDevice* This,
             [In] D3D12_DEBUG_FEATURE Mask
         );
@@ -32,7 +33,8 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ReportLiveDeviceObjects(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ReportLiveDeviceObjects(
             [In] ID3D12DebugDevice* This,
             [In] D3D12_RLDO_FLAGS Flags
         );

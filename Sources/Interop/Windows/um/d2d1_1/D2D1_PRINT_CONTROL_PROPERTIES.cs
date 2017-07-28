@@ -3,6 +3,8 @@
 // Ported from um\d2d1_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>The creation properties for a ID2D1PrintControl object.</summary>
@@ -12,7 +14,8 @@ namespace TerraFX.Interop
         public D2D1_PRINT_FONT_SUBSET_MODE fontSubset;
 
         /// <summary>DPI for rasterization of all unsupported D2D commands or options, defaults to 150.0</summary>
-        public FLOAT rasterDPI;
+        [ComAliasName("FLOAT")]
+        public float rasterDPI;
 
         /// <summary>Color space for vector graphics in XPS package</summary>
         public D2D1_COLOR_SPACE colorSpace;

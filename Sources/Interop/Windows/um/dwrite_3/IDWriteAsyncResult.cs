@@ -20,14 +20,16 @@ namespace TerraFX.Interop
         /// <summary>The GetWaitHandleMethod method returns a handle that can be used to wait for the asynchronous operation to complete. The handle remains valid until the interface is released.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HANDLE GetWaitHandle(
+        [return: ComAliasName("HANDLE")]
+        public /* static */ delegate void* GetWaitHandle(
             [In] IDWriteAsyncResult* This
         );
 
         /// <summary>The GetResult method returns the result of the asynchronous operation. The return value is E_PENDING if the operation has not yet completed.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetResult(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetResult(
             [In] IDWriteAsyncResult* This
         );
         #endregion

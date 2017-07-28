@@ -21,14 +21,16 @@ namespace TerraFX.Interop
         /// <summary>Returns the size of the bitmap in resolution independent units.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_SIZE_F GetSize(
+        [return: ComAliasName("D2D1_SIZE_F")]
+        public /* static */ delegate D2D_SIZE_F GetSize(
             [In] ID2D1Bitmap* This
         );
 
         /// <summary>Returns the size of the bitmap in resolution dependent units, (pixels).</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_SIZE_U GetPixelSize(
+        [return: ComAliasName("D2D1_SIZE_U")]
+        public /* static */ delegate D2D_SIZE_U GetPixelSize(
             [In] ID2D1Bitmap* This
         );
 
@@ -44,35 +46,38 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void GetDpi(
             [In] ID2D1Bitmap* This,
-            [Out] FLOAT* dpiX,
-            [Out] FLOAT* dpiY
+            [Out, ComAliasName("FLOAT")] float* dpiX,
+            [Out, ComAliasName("FLOAT")] float* dpiY
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CopyFromBitmap(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CopyFromBitmap(
             [In] ID2D1Bitmap* This,
-            [In, Optional] /* readonly */ D2D1_POINT_2U* destPoint,
+            [In, Optional, ComAliasName("D2D1_POINT_2U")] /* readonly */ D2D_POINT_2U* destPoint,
             [In] ID2D1Bitmap* bitmap,
-            [In, Optional] /* readonly */ D2D1_RECT_U* srcRect
+            [In, Optional, ComAliasName("D2D1_RECT_U")] /* readonly */ D2D_RECT_U* srcRect
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CopyFromRenderTarget(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CopyFromRenderTarget(
             [In] ID2D1Bitmap* This,
-            [In, Optional] /* readonly */ D2D1_POINT_2U* destPoint,
+            [In, Optional, ComAliasName("D2D1_POINT_2U")] /* readonly */ D2D_POINT_2U* destPoint,
             [In] ID2D1RenderTarget* renderTarget,
-            [In, Optional] /* readonly */ D2D1_RECT_U* srcRect
+            [In, Optional, ComAliasName("D2D1_RECT_U")] /* readonly */ D2D_RECT_U* srcRect
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CopyFromMemory(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CopyFromMemory(
             [In] ID2D1Bitmap* This,
-            [In, Optional] /* readonly */ D2D1_RECT_U* dstRect,
+            [In, Optional, ComAliasName("D2D1_RECT_U")] /* readonly */ D2D_RECT_U* dstRect,
             [In] /* readonly */ void* srcData,
-            [In] UINT32 pitch
+            [In, ComAliasName("UINT32")] uint pitch
         );
         #endregion
 

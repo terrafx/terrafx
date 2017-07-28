@@ -19,16 +19,18 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT EnsureCached(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int EnsureCached(
             [In] ID2D1ImageSourceFromWic* This,
-            [In, Optional] /* readonly */ D2D1_RECT_U* rectangleToFill
+            [In, Optional, ComAliasName("D2D1_RECT_U")] /* readonly */ D2D_RECT_U* rectangleToFill
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT TrimCache(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int TrimCache(
             [In] ID2D1ImageSourceFromWic* This,
-            [In, Optional] /* readonly */ D2D1_RECT_U* rectangleToPreserve
+            [In, Optional, ComAliasName("D2D1_RECT_U")] /* readonly */ D2D_RECT_U* rectangleToPreserve
         );
 
         [SuppressUnmanagedCodeSecurity]

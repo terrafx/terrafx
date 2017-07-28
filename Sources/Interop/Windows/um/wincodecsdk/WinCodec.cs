@@ -266,26 +266,29 @@ namespace TerraFX.Interop
         #region Methods
         [DllImport("WinCodec", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "WICMatchMetadataContent", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern HRESULT WICMatchMetadataContent(
-            [In] REFGUID guidContainerFormat,
-            [In, Optional] /* readonly */ GUID* pguidVendor,
+        [return: ComAliasName("HRESULT")]
+        public static extern int WICMatchMetadataContent(
+            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidContainerFormat,
+            [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor,
             [In] IStream* pIStream,
-            [Out] GUID* pguidMetadataFormat
+            [Out, ComAliasName("GUID")] Guid* pguidMetadataFormat
         );
 
         [DllImport("WinCodec", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "WICSerializeMetadataContent", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern HRESULT WICSerializeMetadataContent(
-            [In] REFGUID guidContainerFormat,
+        [return: ComAliasName("HRESULT")]
+        public static extern int WICSerializeMetadataContent(
+            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidContainerFormat,
             [In] IWICMetadataWriter* pIWriter,
-            [In] DWORD dwPersistOptions,
+            [In, ComAliasName("DWORD")] uint dwPersistOptions,
             [In] IStream* pIStream
         );
 
         [DllImport("WinCodec", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "WICGetMetadataContentSize", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern HRESULT WICGetMetadataContentSize(
-            [In] REFGUID guidContainerFormat,
+        [return: ComAliasName("HRESULT")]
+        public static extern int WICGetMetadataContentSize(
+            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidContainerFormat,
             [In] IWICMetadataWriter* pIWriter,
             [Out] ULARGE_INTEGER* pcbSize
         );

@@ -21,7 +21,8 @@ namespace TerraFX.Interop
         /// <summary>Opens a geometry sink that will be used to create this path geometry.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Open(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Open(
             [In] ID2D1PathGeometry* This,
             [Out] ID2D1GeometrySink** geometrySink
         );
@@ -30,23 +31,26 @@ namespace TerraFX.Interop
         /// ID2D1GeometrySink interface to receive the data.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Stream(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Stream(
             [In] ID2D1PathGeometry* This,
             [In] ID2D1GeometrySink* geometrySink
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetSegmentCount(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSegmentCount(
             [In] ID2D1PathGeometry* This,
-            [Out] UINT32* count
+            [Out, ComAliasName("UINT32")] uint* count
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFigureCount(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFigureCount(
             [In] ID2D1PathGeometry* This,
-            [Out] UINT32* count
+            [Out, ComAliasName("UINT32")] uint* count
         );
         #endregion
 

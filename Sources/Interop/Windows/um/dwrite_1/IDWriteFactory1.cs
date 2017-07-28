@@ -26,10 +26,11 @@ namespace TerraFX.Interop
         /// Be aware that eudcedit.exe can create placeholder empty glyphs that have zero advance width and no glyph outline. Although they are present in the font (HasCharacter returns true), you are best to ignore these and continue on with font fallback in your layout if the metrics for the glyph are zero.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetEudcFontCollection(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetEudcFontCollection(
             [In] IDWriteFactory1* This,
             [Out] IDWriteFontCollection** fontCollection,
-            [In, DefaultParameterValue(FALSE)] BOOL checkForUpdates
+            [In, DefaultParameterValue(FALSE), ComAliasName("BOOL")] int checkForUpdates
     )   ;
 
         /// <summary>Creates a rendering parameters object with the specified properties.</summary>
@@ -43,12 +44,13 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateCustomRenderingParams(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateCustomRenderingParams(
             [In] IDWriteFactory1* This,
-            [In] FLOAT gamma,
-            [In] FLOAT enhancedContrast,
-            [In] FLOAT enhancedContrastGrayscale,
-            [In] FLOAT clearTypeLevel,
+            [In, ComAliasName("FLOAT")] float gamma,
+            [In, ComAliasName("FLOAT")] float enhancedContrast,
+            [In, ComAliasName("FLOAT")] float enhancedContrastGrayscale,
+            [In, ComAliasName("FLOAT")] float clearTypeLevel,
             [In] DWRITE_PIXEL_GEOMETRY pixelGeometry,
             [In] DWRITE_RENDERING_MODE renderingMode,
             [Out] IDWriteRenderingParams1** renderingParams

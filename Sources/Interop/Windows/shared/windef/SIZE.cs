@@ -3,14 +3,18 @@
 // Ported from shared\windef.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct SIZE
     {
         #region Fields
-        public LONG cx;
+        [ComAliasName("LONG")]
+        public int cx;
 
-        public LONG cy;
+        [ComAliasName("LONG")]
+        public int cy;
         #endregion
     }
 }

@@ -3,16 +3,21 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_TILE_SHAPE
     {
         #region Fields
-        public UINT WidthInTexels;
+        [ComAliasName("UINT")]
+        public uint WidthInTexels;
 
-        public UINT HeightInTexels;
+        [ComAliasName("UINT")]
+        public uint HeightInTexels;
 
-        public UINT DepthInTexels;
+        [ComAliasName("UINT")]
+        public uint DepthInTexels;
         #endregion
     }
 }

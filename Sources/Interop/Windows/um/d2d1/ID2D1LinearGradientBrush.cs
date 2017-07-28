@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetStartPoint(
             [In] ID2D1SolidColorBrush* This,
-            [In] D2D1_POINT_2F startPoint
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F startPoint
         );
 
         /// <summary>Sets the end point of the gradient in local coordinate space. This is not
@@ -31,18 +31,20 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetEndPoint(
             [In] ID2D1SolidColorBrush* This,
-            [In] D2D1_POINT_2F endPoint
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F endPoint
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_POINT_2F GetStartPoint(
+        [return: ComAliasName("D2D1_POINT_2F")]
+        public /* static */ delegate D2D_POINT_2F GetStartPoint(
             [In] ID2D1SolidColorBrush* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_POINT_2F GetEndPoint(
+        [return: ComAliasName("D2D1_POINT_2F")]
+        public /* static */ delegate D2D_POINT_2F GetEndPoint(
             [In] ID2D1SolidColorBrush* This
         );
 

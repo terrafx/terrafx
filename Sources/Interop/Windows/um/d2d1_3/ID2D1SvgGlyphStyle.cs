@@ -21,7 +21,8 @@ namespace TerraFX.Interop
         /// <param name="brush">A null brush will cause the context-fill value to come from the defaultFillBrush. If the defaultFillBrush is also null, the context-fill value will be 'none'.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetFill(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetFill(
             [In] ID2D1SvgGlyphStyle* This,
             [In, Optional] ID2D1Brush* brush
         );
@@ -41,19 +42,21 @@ namespace TerraFX.Interop
         /// <param name="dashOffset">Specifies the 'context-value' for the 'stroke-dashoffset' property.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetStroke(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetStroke(
             [In] ID2D1SvgGlyphStyle* This,
             [In, Optional] ID2D1Brush* brush,
-            [In, DefaultParameterValue(1.0f)] FLOAT strokeWidth,
-            [In, Optional] /* readonly */ FLOAT* dashes,
-            [In, DefaultParameterValue(0u)] UINT32 dashesCount,
-            [In, DefaultParameterValue(1.0f)] FLOAT dashOffset
+            [In, DefaultParameterValue(1.0f), ComAliasName("FLOAT")] float strokeWidth,
+            [In, Optional, ComAliasName("FLOAT")] /* readonly */ float* dashes,
+            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint dashesCount,
+            [In, DefaultParameterValue(1.0f), ComAliasName("FLOAT")] float dashOffset
         );
 
         /// <summary>Returns the number of dashes in the dash array.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetStrokeDashesCount(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetStrokeDashesCount(
             [In] ID2D1SvgGlyphStyle* This
         );
 
@@ -63,10 +66,10 @@ namespace TerraFX.Interop
         public /* static */ delegate void GetStroke(
             [In] ID2D1SvgGlyphStyle* This,
             [Out, Optional] ID2D1Brush** brush,
-            [Out, Optional] FLOAT* strokeWidth,
-            [Out, Optional] FLOAT* dashes,
-            [In, DefaultParameterValue(0u)] UINT32 dashesCount,
-            [Out, Optional] FLOAT* dashOffset
+            [Out, Optional, ComAliasName("FLOAT")] float* strokeWidth,
+            [Out, Optional, ComAliasName("FLOAT")] float* dashes,
+            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint dashesCount,
+            [Out, Optional, ComAliasName("FLOAT")] float* dashOffset
         );
         #endregion
 

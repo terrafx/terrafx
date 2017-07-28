@@ -3,18 +3,21 @@
 // Ported from um\dwrite.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>Line breakpoint characteristics of a character.</summary>
     public /* blittable */ struct DWRITE_LINE_BREAKPOINT
     {
         #region Fields
-        internal UINT8 _bitField;
+        internal byte _bitField;
         #endregion
 
         #region Properties
         /// <summary>Breaking condition before the character.</summary>
-        public UINT8 breakConditionBefore
+        [ComAliasName("UINT8:2")]
+        public byte breakConditionBefore
         {
             get
             {
@@ -28,7 +31,8 @@ namespace TerraFX.Interop
         }
 
         /// <summary>Breaking condition after the character.</summary>
-        public UINT8 breakConditionAfter
+        [ComAliasName("UINT8:2")]
+        public byte breakConditionAfter
         {
             get
             {
@@ -42,7 +46,8 @@ namespace TerraFX.Interop
         }
 
         /// <summary>The character is some form of whitespace, which may be meaningful for justification.</summary>
-        public UINT8 isWhitespace
+        [ComAliasName("UINT8:1")]
+        public byte isWhitespace
         {
             get
             {
@@ -56,7 +61,8 @@ namespace TerraFX.Interop
         }
 
         /// <summary>The character is a soft hyphen, often used to indicate hyphenation points inside words.</summary>
-        public UINT8 isSoftHyphen
+        [ComAliasName("UINT8:1")]
+        public byte isSoftHyphen
         {
             get
             {
@@ -69,7 +75,8 @@ namespace TerraFX.Interop
             }
         }
 
-        public UINT8 padding
+        [ComAliasName("UINT8:2")]
+        public byte padding
         {
             get
             {

@@ -22,13 +22,14 @@ namespace TerraFX.Interop
         public /* static */ delegate int AssertResourceState(
             [In] ID3D12DebugCommandList* This,
             [In] ID3D12Resource* pResource,
-            [In] UINT Subresource,
-            [In] UINT State
+            [In, ComAliasName("UINT")] uint Subresource,
+            [In, ComAliasName("UINT")] uint State
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetFeatureMask(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetFeatureMask(
             [In] ID3D12DebugCommandList* This,
             [In] D3D12_DEBUG_FEATURE Mask
         );

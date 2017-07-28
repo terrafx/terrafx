@@ -3,6 +3,8 @@
 // Ported from um\d2d1_3.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>Represents a tensor patch with 16 control points, 4 corner colors, and boundary flags. An ID2D1GradientMesh is made up of 1 or more gradient mesh patches. Use the GradientMeshPatch function or the GradientMeshPatchFromCoonsPatch function to create one.</summary>
@@ -10,64 +12,84 @@ namespace TerraFX.Interop
     {
         #region Fields
         /// <summary>The gradient mesh patch control point at position 00.</summary>
-        public D2D1_POINT_2F point00;
+        [ComAliasName("D2D1_POINT_2F")]
+        public D2D_POINT_2F point00;
 
         /// <summary>The gradient mesh patch control point at position 01.</summary>
-        public D2D1_POINT_2F point01;
+        [ComAliasName("D2D1_POINT_2F")]
+        public D2D_POINT_2F point01;
 
         /// <summary>The gradient mesh patch control point at position 02.</summary>
-        public D2D1_POINT_2F point02;
+        [ComAliasName("D2D1_POINT_2F")]
+        public D2D_POINT_2F point02;
 
         /// <summary>The gradient mesh patch control point at position 03.</summary>
-        public D2D1_POINT_2F point03;
+        [ComAliasName("D2D1_POINT_2F")]
+        public D2D_POINT_2F point03;
 
         /// <summary>The gradient mesh patch control point at position 10.</summary>
-        public D2D1_POINT_2F point10;
+        [ComAliasName("D2D1_POINT_2F")]
+        public D2D_POINT_2F point10;
 
         /// <summary>The gradient mesh patch control point at position 11.</summary>
-        public D2D1_POINT_2F point11;
+        [ComAliasName("D2D1_POINT_2F")]
+        public D2D_POINT_2F point11;
 
         /// <summary>The gradient mesh patch control point at position 12.</summary>
-        public D2D1_POINT_2F point12;
+        [ComAliasName("D2D1_POINT_2F")]
+        public D2D_POINT_2F point12;
 
         /// <summary>The gradient mesh patch control point at position 13.</summary>
-        public D2D1_POINT_2F point13;
+        [ComAliasName("D2D1_POINT_2F")]
+        public D2D_POINT_2F point13;
 
         /// <summary>The gradient mesh patch control point at position 20.</summary>
-        public D2D1_POINT_2F point20;
+        [ComAliasName("D2D1_POINT_2F")]
+        public D2D_POINT_2F point20;
 
         /// <summary>The gradient mesh patch control point at position 21.</summary>
-        public D2D1_POINT_2F point21;
+        [ComAliasName("D2D1_POINT_2F")]
+        public D2D_POINT_2F point21;
 
         /// <summary>The gradient mesh patch control point at position 22.</summary>
-        public D2D1_POINT_2F point22;
+        [ComAliasName("D2D1_POINT_2F")]
+        public D2D_POINT_2F point22;
 
         /// <summary>The gradient mesh patch control point at position 23.</summary>
-        public D2D1_POINT_2F point23;
+        [ComAliasName("D2D1_POINT_2F")]
+        public D2D_POINT_2F point23;
 
         /// <summary>The gradient mesh patch control point at position 30.</summary>
-        public D2D1_POINT_2F point30;
+        [ComAliasName("D2D1_POINT_2F")]
+        public D2D_POINT_2F point30;
 
         /// <summary>The gradient mesh patch control point at position 31.</summary>
-        public D2D1_POINT_2F point31;
+        [ComAliasName("D2D1_POINT_2F")]
+        public D2D_POINT_2F point31;
 
         /// <summary>The gradient mesh patch control point at position 32.</summary>
-        public D2D1_POINT_2F point32;
+        [ComAliasName("D2D1_POINT_2F")]
+        public D2D_POINT_2F point32;
 
         /// <summary>The gradient mesh patch control point at position 33.</summary>
-        public D2D1_POINT_2F point33;
+        [ComAliasName("D2D1_POINT_2F")]
+        public D2D_POINT_2F point33;
 
         /// <summary>The color associated with control point at position 00.</summary>
-        public D2D1_COLOR_F color00;
+        [ComAliasName("D2D1_COLOR_F")]
+        public DXGI_RGBA color00;
 
         /// <summary>The color associated with control point at position 03.</summary>
-        public D2D1_COLOR_F color03;
+        [ComAliasName("D2D1_COLOR_F")]
+        public DXGI_RGBA color03;
 
         /// <summary>The color associated with control point at position 30.</summary>
-        public D2D1_COLOR_F color30;
+        [ComAliasName("D2D1_COLOR_F")]
+        public DXGI_RGBA color30;
 
         /// <summary>The color associated with control point at position 33.</summary>
-        public D2D1_COLOR_F color33;
+        [ComAliasName("D2D1_COLOR_F")]
+        public DXGI_RGBA color33;
 
         /// <summary>The edge mode for the top edge of the patch.</summary>
         public D2D1_PATCH_EDGE_MODE topEdgeMode;

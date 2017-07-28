@@ -7,56 +7,70 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    [StructLayout(LayoutKind.Explicit)]
+    [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Unicode)]
     unsafe public  /* blittable */ struct VARIANT
     {
         #region Fields
         #region struct
         [FieldOffset(0)]
-        public VARTYPE vt;
+        [ComAliasName("VARTYPE")]
+        public ushort vt;
 
         [FieldOffset(2)]
-        public WORD wReserved1;
+        [ComAliasName("WORD")]
+        public ushort wReserved1;
 
         [FieldOffset(4)]
-        public WORD wReserved2;
+        [ComAliasName("WORD")]
+        public ushort wReserved2;
 
         [FieldOffset(6)]
-        public WORD wReserved3;
+        [ComAliasName("WORD")]
+        public ushort wReserved3;
 
         #region union
         [FieldOffset(8)]
-        public LONGLONG llVal;
+        [ComAliasName("LONGLONG")]
+        public long llVal;
 
         [FieldOffset(8)]
-        public LONG lVal;
+        [ComAliasName("LONG")]
+        public int lVal;
 
         [FieldOffset(8)]
-        public BYTE bVal;
+        [ComAliasName("BYTE")]
+        public byte bVal;
 
         [FieldOffset(8)]
-        public SHORT iVal;
+        [ComAliasName("SHORT")]
+        public short iVal;
 
         [FieldOffset(8)]
-        public FLOAT fltVal;
+        [ComAliasName("FLOAT")]
+        public float fltVal;
 
         [FieldOffset(8)]
-        public DOUBLE dblVal;
+        [ComAliasName("DOUBLE")]
+        public double dblVal;
 
         [FieldOffset(8)]
-        public VARIANT_BOOL boolVal;
+        [ComAliasName("VARIANT_BOOL")]
+        public short boolVal;
 
         [FieldOffset(8)]
-        public SCODE scode;
+        [ComAliasName("SCODE")]
+        public int scode;
 
         [FieldOffset(8)]
         public CY cyVal;
 
         [FieldOffset(8)]
-        public DATE date;
+        [ComAliasName("DATE")]
+        public double date;
 
         [FieldOffset(8)]
-        public BSTR bstrVal;
+        [ComAliasName("BSTR")]
+        public char* bstrVal;
 
         [FieldOffset(8)]
         public IUnknown* punkVal;
@@ -68,37 +82,47 @@ namespace TerraFX.Interop
         public SAFEARRAY* parray;
 
         [FieldOffset(8)]
-        public BYTE* pbVal;
+        [ComAliasName("BYTE")]
+        public byte* pbVal;
 
         [FieldOffset(8)]
-        public SHORT* piVal;
+        [ComAliasName("SHORT")]
+        public short* piVal;
 
         [FieldOffset(8)]
-        public LONG* plVal;
+        [ComAliasName("LONG")]
+        public int* plVal;
 
         [FieldOffset(8)]
-        public LONGLONG* pllVal;
+        [ComAliasName("LONGLONG")]
+        public long* pllVal;
 
         [FieldOffset(8)]
-        public FLOAT* pfltVal;
+        [ComAliasName("FLOAT")]
+        public float* pfltVal;
 
         [FieldOffset(8)]
-        public DOUBLE* pdblVal;
+        [ComAliasName("DOUBLE")]
+        public double* pdblVal;
 
         [FieldOffset(8)]
-        public VARIANT_BOOL* pboolVal;
+        [ComAliasName("VARIANT_BOOL")]
+        public short* pboolVal;
 
         [FieldOffset(8)]
-        public SCODE* pscode;
+        [ComAliasName("SCODE")]
+        public int* pscode;
 
         [FieldOffset(8)]
         public CY* pcyVal;
 
         [FieldOffset(8)]
-        public DATE* pdate;
+        [ComAliasName("DATE")]
+        public double* pdate;
 
         [FieldOffset(8)]
-        public BSTR* pbstrVal;
+        [ComAliasName("BSTR")]
+        public char** pbstrVal;
 
         [FieldOffset(8)]
         public IUnknown** ppunkVal;
@@ -113,46 +137,59 @@ namespace TerraFX.Interop
         public VARIANT* pvarVal;
 
         [FieldOffset(8)]
-        public PVOID byref;
+        [ComAliasName("PVOID")]
+        public void* byref;
 
         [FieldOffset(8)]
-        public CHAR cVal;
+        [ComAliasName("CHAR")]
+        public sbyte cVal;
 
         [FieldOffset(8)]
-        public USHORT uiVal;
+        [ComAliasName("USHORT")]
+        public ushort uiVal;
 
         [FieldOffset(8)]
-        public ULONG ulVal;
+        [ComAliasName("ULONG")]
+        public uint ulVal;
 
         [FieldOffset(8)]
-        public ULONGLONG ullVal;
+        [ComAliasName("ULONGLONG")]
+        public ulong ullVal;
 
         [FieldOffset(8)]
-        public INT intVal;
+        [ComAliasName("INT")]
+        public int intVal;
 
         [FieldOffset(8)]
-        public UINT uintVal;
+        [ComAliasName("UINT")]
+        public uint uintVal;
 
         [FieldOffset(8)]
         public DECIMAL* pdecVal;
 
         [FieldOffset(8)]
-        public CHAR* pcVal;
+        [ComAliasName("CHAR")]
+        public sbyte* pcVal;
 
         [FieldOffset(8)]
-        public USHORT* puiVal;
+        [ComAliasName("USHORT")]
+        public ushort* puiVal;
 
         [FieldOffset(8)]
-        public ULONG* pulVal;
+        [ComAliasName("ULONG")]
+        public uint* pulVal;
 
         [FieldOffset(8)]
-        public ULONGLONG* pullVal;
+        [ComAliasName("ULONGLONG")]
+        public ulong* pullVal;
 
         [FieldOffset(8)]
-        public INT* pintVal;
+        [ComAliasName("INT")]
+        public int* pintVal;
 
         [FieldOffset(8)]
-        public UINT* puintVal;
+        [ComAliasName("UINT")]
+        public uint* puintVal;
 
         [FieldOffset(8)]
         public BRECORD brecVal;

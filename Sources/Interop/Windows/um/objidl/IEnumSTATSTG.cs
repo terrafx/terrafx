@@ -19,29 +19,33 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Next(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Next(
             [In] IEnumSTATSTG* This,
-            [In] ULONG celt,
+            [In, ComAliasName("ULONG")] uint celt,
             [Out] STATSTG* rgelt,
-            [Out, Optional] ULONG* pceltFetched
+            [Out, Optional, ComAliasName("ULONG")] uint* pceltFetched
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Skip(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Skip(
             [In] IEnumSTATSTG* This,
-            [In] ULONG celt
+            [In, ComAliasName("ULONG")] uint celt
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Reset(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Reset(
             [In] IEnumSTATSTG* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Clone(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Clone(
             [In] IEnumSTATSTG* This,
             [Out, Optional] IEnumSTATSTG** ppenum
         );

@@ -3,14 +3,18 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_SAMPLE_POSITION
     {
         #region Fields
-        public INT8 X;
+        [ComAliasName("INT8")]
+        public sbyte X;
 
-        public INT8 Y;
+        [ComAliasName("INT8")]
+        public sbyte Y;
         #endregion
     }
 }

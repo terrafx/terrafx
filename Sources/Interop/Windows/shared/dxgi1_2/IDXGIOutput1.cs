@@ -20,17 +20,19 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDisplayModeList1(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDisplayModeList1(
             [In] IDXGIOutput1* This,
             [In] DXGI_FORMAT EnumFormat,
-            [In] UINT Flags,
-            [In, Out] UINT* pNumModes,
+            [In, ComAliasName("UINT")] uint Flags,
+            [In, Out, ComAliasName("UINT")] uint* pNumModes,
             [Out, Optional] DXGI_MODE_DESC1* pDesc
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT FindClosestMatchingMode1(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int FindClosestMatchingMode1(
             [In] IDXGIOutput1* This,
             [In] /* readonly */ DXGI_MODE_DESC1* pModeToMatch,
             [Out] DXGI_MODE_DESC1* pClosestMatch,
@@ -39,14 +41,16 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDisplaySurfaceData1(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDisplaySurfaceData1(
             [In] IDXGIOutput1* This,
             [In] IDXGIResource* pDestination
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DuplicateOutput(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DuplicateOutput(
             [In] IDXGIOutput1* This,
             [In] IUnknown* pDevice,
             [Out] IDXGIOutputDuplication** ppOutputDuplication

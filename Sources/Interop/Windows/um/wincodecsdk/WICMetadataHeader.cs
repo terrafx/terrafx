@@ -3,6 +3,8 @@
 // Ported from um\wincodecsdk.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct WICMetadataHeader
@@ -10,9 +12,11 @@ namespace TerraFX.Interop
         #region Fields
         public ULARGE_INTEGER Position;
 
-        public ULONG Length;
+        [ComAliasName("ULONG")]
+        public uint Length;
 
-        public BYTE* Header;
+        [ComAliasName("BYTE")]
+        public byte* Header;
 
         public ULARGE_INTEGER DataOffset;
         #endregion

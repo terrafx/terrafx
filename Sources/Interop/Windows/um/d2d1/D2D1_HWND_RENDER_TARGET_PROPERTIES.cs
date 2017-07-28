@@ -3,15 +3,19 @@
 // Ported from um\d2d1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>Contains the HWND, pixel size, and presentation options for an ID2D1HwndRenderTarget.</summary>
-    public /* blittable */ struct D2D1_HWND_RENDER_TARGET_PROPERTIES
+    unsafe public /* blittable */ struct D2D1_HWND_RENDER_TARGET_PROPERTIES
     {
         #region Fields
-        public HWND hwnd;
+        [ComAliasName("HWND")]
+        public void* hwnd;
 
-        public D2D1_SIZE_U pixelSize;
+        [ComAliasName("D2D1_SIZE_U")]
+        public D2D_SIZE_U pixelSize;
 
         public D2D1_PRESENT_OPTIONS presentOptions;
         #endregion

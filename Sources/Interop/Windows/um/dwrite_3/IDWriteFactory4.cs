@@ -29,15 +29,16 @@ namespace TerraFX.Interop
         /// <remarks> The old IDWriteFactory2::TranslateColorGlyphRun is equivalent to passing DWRITE_GLYPH_IMAGE_FORMATS_TRUETYPE|CFF|COLR.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT TranslateColorGlyphRun(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int TranslateColorGlyphRun(
             [In] IDWriteFactory4* This,
-            [In] D2D1_POINT_2F baselineOrigin,
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
             [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
             [In, Optional] /* readonly */ DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
             [In] DWRITE_GLYPH_IMAGE_FORMATS desiredGlyphImageFormats,
             [In] DWRITE_MEASURING_MODE measuringMode,
             [In, Optional] /* readonly */ DWRITE_MATRIX* worldAndDpiTransform,
-            [In] UINT32 colorPaletteIndex,
+            [In, ComAliasName("UINT32")] uint colorPaletteIndex,
             [Out] IDWriteColorGlyphRunEnumerator1** colorLayers
         );
 
@@ -46,23 +47,25 @@ namespace TerraFX.Interop
         /// <remarks> The transform and DPI have no affect on the origin scaling. They are solely used to compute glyph advances when not supplied and align glyphs in pixel aligned measuring modes.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ComputeGlyphOrigins(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ComputeGlyphOrigins(
             [In] IDWriteFactory4* This,
             [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
             [In] DWRITE_MEASURING_MODE measuringMode,
-            [In] D2D1_POINT_2F baselineOrigin,
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
             [In, Optional] /* readonly */ DWRITE_MATRIX* worldAndDpiTransform,
-            [Out] D2D1_POINT_2F* glyphOrigins
+            [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* glyphOrigins
         );
 
         /// <summary>Converts glyph run placements to glyph origins. This overload is for natural metrics, which includes SVG, TrueType natural modes, and bitmap placement.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ComputeGlyphOrigins1(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ComputeGlyphOrigins1(
             [In] IDWriteFactory4* This,
             [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
-            [In] D2D1_POINT_2F baselineOrigin,
-            [Out] D2D1_POINT_2F* glyphOrigins
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
+            [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* glyphOrigins
         );
         #endregion
 

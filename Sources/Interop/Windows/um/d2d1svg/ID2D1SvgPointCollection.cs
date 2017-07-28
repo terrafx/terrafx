@@ -21,9 +21,10 @@ namespace TerraFX.Interop
         /// <param name="pointsCount">Specifies how many points to remove.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RemovePointsAtEnd(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RemovePointsAtEnd(
             [In] ID2D1SvgPointCollection* This,
-            [In] UINT32 pointsCount
+            [In, ComAliasName("UINT32")] uint pointsCount
         );
 
         /// <summary>Updates the points array. Existing points not updated by this method are preserved. The array is resized larger if necessary to accomodate the new points.</summary>
@@ -32,11 +33,12 @@ namespace TerraFX.Interop
         /// <param name="startIndex">The index at which to begin updating points. Must be less than or equal to the size of the array.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT UpdatePoints(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int UpdatePoints(
             [In] ID2D1SvgPointCollection* This,
-            [In] /* readonly */ D2D1_POINT_2F* points,
-            [In] UINT32 pointsCount,
-            [In, DefaultParameterValue(0u)] UINT32 startIndex
+            [In, ComAliasName("D2D1_POINT_2F")] /* readonly */ D2D_POINT_2F* points,
+            [In, ComAliasName("UINT32")] uint pointsCount,
+            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
         );
 
         /// <summary>Gets points from the points array.</summary>
@@ -45,17 +47,19 @@ namespace TerraFX.Interop
         /// <param name="startIndex">The index of the first point to retrieve.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetPoints(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPoints(
             [In] ID2D1SvgPointCollection* This,
-            [Out] D2D1_POINT_2F *points,
-            [In] UINT32 pointsCount,
-            [In, DefaultParameterValue(0u)] UINT32 startIndex
+            [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F *points,
+            [In, ComAliasName("UINT32")] uint pointsCount,
+            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
         );
 
         /// <summary>Gets the number of points in the array.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetPointsCount(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetPointsCount(
             [In] ID2D1SvgPointCollection* This
         );
         #endregion

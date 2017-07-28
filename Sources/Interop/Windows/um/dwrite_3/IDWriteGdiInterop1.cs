@@ -25,7 +25,8 @@ namespace TerraFX.Interop
         /// <remarks> The only fields that matter include: lfFaceName, lfCharSet, lfWeight, lfItalic. Font size and rendering mode are a rendering time property, not a font property, and text decorations like underline are drawn separately from the text. If no font matches the given weight, slope, and character set, the best match within the given GDI family name will be returned. DWRITE_E_NOFONT is returned if there is no matching font name using either the GDI family name (e.g. Arial) or the full font name (e.g. Arial Bold Italic).</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateFontFromLOGFONT(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateFontFromLOGFONT(
             [In] IDWriteGdiInterop1* This,
             [In] /* readonly */ LOGFONT* logFont,
             [In, Optional] IDWriteFontCollection* fontCollection,
@@ -38,7 +39,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFontSignature(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFontSignature(
             [In] IDWriteGdiInterop1* This,
             [In] IDWriteFont* font,
             [Out] FONTSIGNATURE* fontSignature
@@ -50,7 +52,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFontSignature1(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFontSignature1(
             [In] IDWriteGdiInterop1* This,
             [In] IDWriteFontFace* fontFace,
             [Out] FONTSIGNATURE* fontSignature
@@ -60,7 +63,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetMatchingFontsByLOGFONT(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetMatchingFontsByLOGFONT(
             [In] IDWriteGdiInterop1* This,
             [In] /* readonly */ LOGFONT* logFont,
             [In] IDWriteFontSet* fontSet,

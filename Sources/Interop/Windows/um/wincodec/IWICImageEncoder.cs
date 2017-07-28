@@ -19,7 +19,8 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT WriteFrame(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int WriteFrame(
             [In] IWICImageEncoder* This,
             [In] ID2D1Image* pImage,
             [In] IWICBitmapFrameEncode* pFrameEncode,
@@ -28,7 +29,8 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT WriteFrameThumbnail(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int WriteFrameThumbnail(
             [In] IWICImageEncoder* This,
             [In] ID2D1Image* pImage,
             [In] IWICBitmapFrameEncode* pFrameEncode,
@@ -37,7 +39,8 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT WriteThumbnail(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int WriteThumbnail(
             [In] IWICImageEncoder* This,
             [In] ID2D1Image* pImage,
             [In] IWICBitmapEncoder* pEncoder,

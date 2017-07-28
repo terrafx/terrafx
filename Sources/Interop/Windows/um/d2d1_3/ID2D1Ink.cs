@@ -35,34 +35,38 @@ namespace TerraFX.Interop
         /// <summary>Add one or more segments to the end of the ink.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AddSegments(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddSegments(
             [In] ID2D1Ink* This,
             [In] /* readonly */ D2D1_INK_BEZIER_SEGMENT* segments,
-            [In] UINT32 segmentsCount
+            [In, ComAliasName("UINT32")] uint segmentsCount
         );
 
         /// <summary>Remove one or more segments from the end of the ink.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RemoveSegmentsAtEnd(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RemoveSegmentsAtEnd(
             [In] ID2D1Ink* This,
-            [In] UINT32 segmentsCount
+            [In, ComAliasName("UINT32")] uint segmentsCount
         );
 
         /// <summary>Updates the specified segments with new control points.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetSegments(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetSegments(
             [In] ID2D1Ink* This,
-            [In] UINT32 startSegment,
+            [In, ComAliasName("UINT32")] uint startSegment,
             [In] /* readonly */ D2D1_INK_BEZIER_SEGMENT* segments,
-            [In] UINT32 segmentsCount
+            [In, ComAliasName("UINT32")] uint segmentsCount
         );
 
         /// <summary>Update the last segment with new control points.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetSegmentAtEnd(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetSegmentAtEnd(
             [In] ID2D1Ink* This,
             [In] /* readonly */ D2D1_INK_BEZIER_SEGMENT* segment
         );
@@ -70,39 +74,43 @@ namespace TerraFX.Interop
         /// <summary>Returns the number of segments the ink is composed of.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetSegmentCount(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetSegmentCount(
             [In] ID2D1Ink* This
         );
 
         /// <summary>Retrieve the segments stored in the ink.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetSegments(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSegments(
             [In] ID2D1Ink* This,
-            [In] UINT32 startSegment,
+            [In, ComAliasName("UINT32")] uint startSegment,
             [Out] D2D1_INK_BEZIER_SEGMENT* segments,
-            [In] UINT32 segmentsCount
+            [In, ComAliasName("UINT32")] uint segmentsCount
         );
 
         /// <summary>Construct a geometric representation of the ink.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT StreamAsGeometry(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int StreamAsGeometry(
             [In] ID2D1Ink* This,
             [In, Optional] ID2D1InkStyle* inkStyle,
-            [In, Optional] /* readonly */ D2D1_MATRIX_3X2_F* worldTransform,
-            [In] FLOAT flatteningTolerance,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
             [In] ID2D1SimplifiedGeometrySink* geometrySink
         );
 
         /// <summary>Retrieve the bounds of the ink, with an optional applied transform.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetBounds(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetBounds(
             [In] ID2D1Ink* This,
             [In, Optional] ID2D1InkStyle* inkStyle,
-            [In, Optional] /* readonly */ D2D1_MATRIX_3X2_F* worldTransform,
-            [Out] D2D1_RECT_F* bounds
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* bounds
         );
         #endregion
 

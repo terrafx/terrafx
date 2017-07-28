@@ -25,10 +25,11 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetSystemFontCollection(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSystemFontCollection(
             [In] IDWriteFactory* This,
             [Out] IDWriteFontCollection** fontCollection,
-            [In, DefaultParameterValue(FALSE)] BOOL checkForUpdates
+            [In, DefaultParameterValue(FALSE), ComAliasName("BOOL")] int checkForUpdates
         );
 
         /// <summary>Creates a font collection using a custom font collection loader.</summary>
@@ -39,11 +40,12 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateCustomFontCollection(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateCustomFontCollection(
             [In] IDWriteFactory* This,
             [In] IDWriteFontCollectionLoader* collectionLoader,
             [In] /* readonly */ void* collectionKey,
-            [In] UINT32 collectionKeySize,
+            [In, ComAliasName("UINT32")] uint collectionKeySize,
             [Out] IDWriteFontCollection** fontCollection
         );
 
@@ -52,7 +54,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RegisterFontCollectionLoader(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RegisterFontCollectionLoader(
             [In] IDWriteFactory* This,
             [In] IDWriteFontCollectionLoader* fontCollectionLoader
         );
@@ -62,7 +65,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT UnregisterFontCollectionLoader(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int UnregisterFontCollectionLoader(
             [In] IDWriteFactory* This,
             [In] IDWriteFontCollectionLoader* fontCollectionLoader
         );
@@ -74,9 +78,10 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateFontFileReference(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateFontFileReference(
             [In] IDWriteFactory* This,
-            [In] /* readonly */ WCHAR* filePath,
+            [In, ComAliasName("WCHAR")] /* readonly */ char* filePath,
             [In, Optional] /* readonly */ FILETIME* lastWriteTime,
             [Out] IDWriteFontFile** fontFile
         );
@@ -90,10 +95,11 @@ namespace TerraFX.Interop
         /// <remarks> This function is provided for cases when an application or a document needs to use a font without having to install it on the system. fontFileReferenceKey has to be unique only in the scope of the fontFileLoader used in this call.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateCustomFontFileReference(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateCustomFontFileReference(
             [In] IDWriteFactory* This,
             [In] /* readonly */ void* fontFileReferenceKey,
-            [In] UINT32 fontFileReferenceKeySize,
+            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
             [In] IDWriteFontFileLoader* fontFileLoader,
             [Out] IDWriteFontFile** fontFile
         );
@@ -108,12 +114,13 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateFontFace(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateFontFace(
             [In] IDWriteFactory* This,
             [In] DWRITE_FONT_FACE_TYPE fontFaceType,
-            [In] UINT32 numberOfFiles,
+            [In, ComAliasName("UINT32")] uint numberOfFiles,
             [In] /* readonly */ IDWriteFontFile** fontFiles,
-            [In] UINT32 faceIndex,
+            [In, ComAliasName("UINT32")] uint faceIndex,
             [In] DWRITE_FONT_SIMULATIONS fontFaceSimulationFlags,
             [Out] IDWriteFontFace** fontFace
         );
@@ -123,7 +130,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateRenderingParams(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateRenderingParams(
             [In] IDWriteFactory* This,
             [Out] IDWriteRenderingParams** renderingParams
         );
@@ -134,9 +142,10 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateMonitorRenderingParams(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateMonitorRenderingParams(
             [In] IDWriteFactory* This,
-            [In] HMONITOR monitor,
+            [In, ComAliasName("HMONITOR")] void* monitor,
             [Out] IDWriteRenderingParams** renderingParams
         );
 
@@ -150,11 +159,12 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateCustomRenderingParams(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateCustomRenderingParams(
             [In] IDWriteFactory* This,
-            [In] FLOAT gamma,
-            [In] FLOAT enhancedContrast,
-            [In] FLOAT clearTypeLevel,
+            [In, ComAliasName("FLOAT")] float gamma,
+            [In, ComAliasName("FLOAT")] float enhancedContrast,
+            [In, ComAliasName("FLOAT")] float clearTypeLevel,
             [In] DWRITE_PIXEL_GEOMETRY pixelGeometry,
             [In] DWRITE_RENDERING_MODE renderingMode,
             [Out] IDWriteRenderingParams** renderingParams
@@ -166,7 +176,8 @@ namespace TerraFX.Interop
         /// <remarks> This function registers a font file loader with DirectWrite. Font file loader interface handles loading font file resources of a particular type from a key. The font file loader interface is recommended to be implemented by a singleton object. A given instance can only be registered once. Succeeding attempts will return an error that it has already been registered. IMPORTANT: font file loader implementations must not register themselves with DirectWrite inside their conpublic /* blittable */ structors and must not unregister themselves in their depublic /* blittable */ structors, because registration and unregistration operations increment and decrement the object reference count respectively. Instead, registration and unregistration of font file loaders with DirectWrite should be performed outside of the font file loader implementation as a separate step.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RegisterFontFileLoader(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RegisterFontFileLoader(
             [In] IDWriteFactory* This,
             [In] IDWriteFontFileLoader* fontFileLoader
         );
@@ -177,7 +188,8 @@ namespace TerraFX.Interop
         /// <remarks> This function unregisters font file loader callbacks with the DirectWrite font system. The font file loader interface is recommended to be implemented by a singleton object. IMPORTANT: font file loader implementations must not register themselves with DirectWrite inside their conpublic /* blittable */ structors and must not unregister themselves in their depublic /* blittable */ structors, because registration and unregistration operations increment and decrement the object reference count respectively. Instead, registration and unregistration of font file loaders with DirectWrite should be performed outside of the font file loader implementation as a separate step.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT UnregisterFontFileLoader(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int UnregisterFontFileLoader(
             [In] IDWriteFactory* This,
             [In] IDWriteFontFileLoader* fontFileLoader
         );
@@ -194,15 +206,16 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateTextFormat(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateTextFormat(
             [In] IDWriteFactory* This,
-            [In] /* readonly */ WCHAR* fontFamilyName,
+            [In, ComAliasName("WCHAR")] /* readonly */ char* fontFamilyName,
             [In, Optional] IDWriteFontCollection* fontCollection,
             [In] DWRITE_FONT_WEIGHT fontWeight,
             [In] DWRITE_FONT_STYLE fontStyle,
             [In] DWRITE_FONT_STRETCH fontStretch,
-            [In] FLOAT fontSize,
-            [In] /* readonly */ WCHAR* localeName,
+            [In, ComAliasName("FLOAT")] float fontSize,
+            [In, ComAliasName("WCHAR")] /* readonly */ char* localeName,
             [Out] IDWriteTextFormat** textFormat
         );
 
@@ -211,7 +224,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateTypography(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateTypography(
             [In] IDWriteFactory* This,
             [Out] IDWriteTypography** typography
         );
@@ -221,7 +235,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetGdiInterop(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetGdiInterop(
             [In] IDWriteFactory* This,
             [Out] IDWriteGdiInterop** gdiInterop
         );
@@ -236,13 +251,14 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateTextLayout(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateTextLayout(
             [In] IDWriteFactory* This,
-            [In] /* readonly */ WCHAR* @string,
-            [In] UINT32 stringLength,
+            [In, ComAliasName("WCHAR")] /* readonly */ char* @string,
+            [In, ComAliasName("UINT32")] uint stringLength,
             [In] IDWriteTextFormat* textFormat,
-            [In] FLOAT maxWidth,
-            [In] FLOAT maxHeight,
+            [In, ComAliasName("FLOAT")] float maxWidth,
+            [In, ComAliasName("FLOAT")] float maxHeight,
             [Out] IDWriteTextLayout** textLayout
         );
 
@@ -259,16 +275,17 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateGdiCompatibleTextLayout(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateGdiCompatibleTextLayout(
             [In] IDWriteFactory* This,
-            [In] /* readonly */ WCHAR* @string,
-            [In] UINT32 stringLength,
+            [In, ComAliasName("WCHAR")] /* readonly */ char* @string,
+            [In, ComAliasName("UINT32")] uint stringLength,
             [In] IDWriteTextFormat* textFormat,
-            [In] FLOAT layoutWidth,
-            [In] FLOAT layoutHeight,
-            [In] FLOAT pixelsPerDip,
+            [In, ComAliasName("FLOAT")] float layoutWidth,
+            [In, ComAliasName("FLOAT")] float layoutHeight,
+            [In, ComAliasName("FLOAT")] float pixelsPerDip,
             [In, Optional] /* readonly */ DWRITE_MATRIX* transform,
-            [In] BOOL useGdiNatural,
+            [In, ComAliasName("BOOL")] int useGdiNatural,
             [Out] IDWriteTextLayout** textLayout
         );
 
@@ -278,7 +295,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateEllipsisTrimmingSign(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateEllipsisTrimmingSign(
             [In] IDWriteFactory* This,
             [In] IDWriteTextFormat* textFormat,
             [Out] IDWriteInlineObject** trimmingSign
@@ -289,7 +307,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateTextAnalyzer(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateTextAnalyzer(
             [In] IDWriteFactory* This,
             [Out] IDWriteTextAnalyzer** textAnalyzer
         );
@@ -301,11 +320,12 @@ namespace TerraFX.Interop
         /// <param name="numberSubstitution">Receives a pointer to the newly created object.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateNumberSubstitution(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateNumberSubstitution(
             [In] IDWriteFactory* This,
             [In] DWRITE_NUMBER_SUBSTITUTION_METHOD substitutionMethod,
-            [In] /* readonly */ WCHAR* localeName,
-            [In] BOOL ignoreUserOverride,
+            [In, ComAliasName("WCHAR")] /* readonly */ char* localeName,
+            [In, ComAliasName("BOOL")] int ignoreUserOverride,
             [Out] IDWriteNumberSubstitution** numberSubstitution
         );
 
@@ -321,15 +341,16 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateGlyphRunAnalysis(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateGlyphRunAnalysis(
             [In] IDWriteFactory* This,
             [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
-            [In] FLOAT pixelsPerDip,
+            [In, ComAliasName("FLOAT")] float pixelsPerDip,
             [In, Optional] /* readonly */ DWRITE_MATRIX* transform,
             [In] DWRITE_RENDERING_MODE renderingMode,
             [In] DWRITE_MEASURING_MODE measuringMode,
-            [In] FLOAT baselineOriginX,
-            [In] FLOAT baselineOriginY,
+            [In, ComAliasName("FLOAT")] float baselineOriginX,
+            [In, ComAliasName("FLOAT")] float baselineOriginY,
             [Out] IDWriteGlyphRunAnalysis** glyphRunAnalysis
         );
         #endregion

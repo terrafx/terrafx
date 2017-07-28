@@ -36,17 +36,19 @@ namespace TerraFX.Interop
         #region External Methods
         [DllImport("DXGI", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CreateDXGIFactory2", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern HRESULT CreateDXGIFactory2(
-            [In] UINT Flags,
-            [In] REFIID riid,
+        [return: ComAliasName("HRESULT")]
+        public static extern int CreateDXGIFactory2(
+            [In, ComAliasName("UINT")] uint Flags,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out] void** ppFactory
         );
 
         [DllImport("DXGI", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "DXGIGetDebugInterface1", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern HRESULT DXGIGetDebugInterface1(
-            [In] UINT Flags,
-            [In] REFIID riid,
+        [return: ComAliasName("HRESULT")]
+        public static extern int DXGIGetDebugInterface1(
+            [In, ComAliasName("UINT")] uint Flags,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out] void** pDebug
         );
         #endregion

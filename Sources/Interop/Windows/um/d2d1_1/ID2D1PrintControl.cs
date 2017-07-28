@@ -19,18 +19,20 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AddPage(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddPage(
             [In] ID2D1PrintControl* This,
             [In] ID2D1CommandList* commandList,
             [In] D2D_SIZE_F pageSize,
             [In, Optional] IStream* pagePrintTicketStream,
-            [Out] D2D1_TAG* tag1 = null,
-            [Out] D2D1_TAG* tag2 = null
+            [Out, ComAliasName("D2D1_TAG")] ulong* tag1 = null,
+            [Out, ComAliasName("D2D1_TAG")] ulong* tag2 = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Close(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Close(
             [In] ID2D1PrintControl* This
         );
         #endregion

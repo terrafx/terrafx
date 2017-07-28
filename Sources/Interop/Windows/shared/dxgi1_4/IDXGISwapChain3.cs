@@ -19,35 +19,39 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT GetCurrentBackBufferIndex(
+        [return: ComAliasName("UINT")]
+        public /* static */ delegate uint GetCurrentBackBufferIndex(
             [In] IDXGISwapChain3* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CheckColorSpaceSupport(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CheckColorSpaceSupport(
             [In] IDXGISwapChain3* This,
             [In] DXGI_COLOR_SPACE_TYPE ColorSpace,
-            [Out] UINT* pColorSpaceSupport
+            [Out, ComAliasName("UINT")] uint* pColorSpaceSupport
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetColorSpace1(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetColorSpace1(
             [In] IDXGISwapChain3* This,
             [In] DXGI_COLOR_SPACE_TYPE ColorSpace
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ResizeBuffers1(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ResizeBuffers1(
             [In] IDXGISwapChain3* This,
-            [In] UINT BufferCount,
-            [In] UINT Width,
-            [In] UINT Height,
+            [In, ComAliasName("UINT")] uint BufferCount,
+            [In, ComAliasName("UINT")] uint Width,
+            [In, ComAliasName("UINT")] uint Height,
             [In] DXGI_FORMAT Format,
-            [In] UINT SwapChainFlags,
-            [In] /* readonly */ UINT* pCreationNodeMask,
+            [In, ComAliasName("UINT")] uint SwapChainFlags,
+            [In, ComAliasName("UINT")] /* readonly */ uint* pCreationNodeMask,
             [In] /* readonly */ IUnknown** ppPresentQueue
         );
         #endregion

@@ -19,14 +19,15 @@ namespace TerraFX.Interop
         /// <summary>Update the vertex text.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Update(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Update(
             [In] ID2D1ResourceTexture* This,
-            [In, Optional] /* readonly */ UINT32* minimumExtents,
-            [In, Optional] /* readonly */ UINT32* maximimumExtents,
-            [In, Optional] /* readonly */ UINT32* strides,
-            [In] UINT32 dimensions,
-            [In]  /* readonly */ BYTE* data,
-            [In] UINT32 dataCount
+            [In, Optional, ComAliasName("UINT32")] /* readonly */ uint* minimumExtents,
+            [In, Optional, ComAliasName("UINT32")] /* readonly */ uint* maximimumExtents,
+            [In, Optional, ComAliasName("UINT32")] /* readonly */ uint* strides,
+            [In, ComAliasName("UINT32")] uint dimensions,
+            [In, ComAliasName("BYTE")]  /* readonly */ byte* data,
+            [In, ComAliasName("UINT32")] uint dataCount
         );
         #endregion
 

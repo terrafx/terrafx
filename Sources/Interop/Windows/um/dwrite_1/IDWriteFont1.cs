@@ -44,17 +44,19 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetUnicodeRanges(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetUnicodeRanges(
             [In] IDWriteFont1* This,
-            [In] UINT32 maxRangeCount,
+            [In, ComAliasName("UINT32")] uint maxRangeCount,
             [Out, Optional] DWRITE_UNICODE_RANGE* unicodeRanges,
-            [Out] UINT32* actualRangeCount
+            [Out, ComAliasName("UINT32")] uint* actualRangeCount
         );
 
         /// <summary>Returns true if the font is monospaced, meaning its characters are the same fixed-pitch width (non-proportional).</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL IsMonospacedFont(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int IsMonospacedFont(
             [In] IDWriteFont1* This
         );
         #endregion

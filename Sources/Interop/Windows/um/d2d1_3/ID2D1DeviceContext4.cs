@@ -22,7 +22,8 @@ namespace TerraFX.Interop
         /// <summary>Creates an SVG glyph style object.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateSvgGlyphStyle(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateSvgGlyphStyle(
             [In] ID2D1DeviceContext4* This,
             [Out] ID2D1SvgGlyphStyle** svgGlyphStyle
         );
@@ -34,13 +35,13 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void DrawText(
             [In] ID2D1DeviceContext4* This,
-            [In] /* readonly */ WCHAR* @string,
-            [In] UINT32 stringLength,
+            [In, ComAliasName("WCHAR")] /* readonly */ char* @string,
+            [In, ComAliasName("UINT32")] uint stringLength,
             [In] IDWriteTextFormat* textFormat,
-            [In] /* readonly */ D2D1_RECT_F* layoutRect,
+            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* layoutRect,
             [In, Optional] ID2D1Brush* defaultFillBrush,
             [In, Optional] ID2D1SvgGlyphStyle* svgGlyphStyle,
-            [In, DefaultParameterValue(0u)] UINT32 colorPaletteIndex,
+            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint colorPaletteIndex,
             [In] D2D1_DRAW_TEXT_OPTIONS options = D2D1_DRAW_TEXT_OPTIONS_ENABLE_COLOR_FONT,
             [In] DWRITE_MEASURING_MODE measuringMode = DWRITE_MEASURING_MODE_NATURAL
         );
@@ -53,11 +54,11 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void DrawTextLayout(
             [In] ID2D1DeviceContext4* This,
-            [In] D2D1_POINT_2F origin,
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F origin,
             [In] IDWriteTextLayout* textLayout,
             [In, Optional] ID2D1Brush* defaultFillBrush,
             [In, Optional] ID2D1SvgGlyphStyle* svgGlyphStyle,
-            [In, DefaultParameterValue(0u)] UINT32 colorPaletteIndex ,
+            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint colorPaletteIndex ,
             [In] D2D1_DRAW_TEXT_OPTIONS options = D2D1_DRAW_TEXT_OPTIONS_ENABLE_COLOR_FONT
         );
 
@@ -67,7 +68,7 @@ namespace TerraFX.Interop
         public /* static */ delegate void DrawColorBitmapGlyphRun(
             [In] ID2D1DeviceContext4* This,
             [In] DWRITE_GLYPH_IMAGE_FORMATS glyphImageFormat,
-            [In] D2D1_POINT_2F baselineOrigin,
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
             [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
             [In] DWRITE_MEASURING_MODE measuringMode = DWRITE_MEASURING_MODE_NATURAL,
             [In] D2D1_COLOR_BITMAP_GLYPH_SNAP_OPTION bitmapSnapOption = D2D1_COLOR_BITMAP_GLYPH_SNAP_OPTION_DEFAULT
@@ -80,11 +81,11 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void DrawSvgGlyphRun(
             [In] ID2D1DeviceContext4* This,
-            [In] D2D1_POINT_2F baselineOrigin,
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
             [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
             [In, Optional] ID2D1Brush* defaultFillBrush,
             [In, Optional] ID2D1SvgGlyphStyle* svgGlyphStyle,
-            [In, DefaultParameterValue(0u)] UINT32 colorPaletteIndex,
+            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint colorPaletteIndex,
             [In] DWRITE_MEASURING_MODE measuringMode = DWRITE_MEASURING_MODE_NATURAL
         );
 
@@ -93,18 +94,19 @@ namespace TerraFX.Interop
         /// <param name="glyphTransform">Output transform, which transforms from the glyph's space to the same output space as the worldTransform. This includes the input glyphOrigin, the glyph's offset from the glyphOrigin, and any other required transformations.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetColorBitmapGlyphImage(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetColorBitmapGlyphImage(
             [In] ID2D1DeviceContext4* This,
             [In] DWRITE_GLYPH_IMAGE_FORMATS glyphImageFormat,
-            [In] D2D1_POINT_2F glyphOrigin,
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F glyphOrigin,
             [In] IDWriteFontFace* fontFace,
-            [In] FLOAT fontEmSize,
-            [In] UINT16 glyphIndex,
-            [In] BOOL isSideways,
-            [In, Optional] /* readonly */ D2D1_MATRIX_3X2_F* worldTransform,
-            [In] FLOAT dpiX,
-            [In] FLOAT dpiY,
-            [Out] D2D1_MATRIX_3X2_F* glyphTransform,
+            [In, ComAliasName("FLOAT")] float fontEmSize,
+            [In, ComAliasName("UINT16")] ushort glyphIndex,
+            [In, ComAliasName("BOOL")] int isSideways,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float dpiX,
+            [In, ComAliasName("FLOAT")] float dpiY,
+            [Out, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* glyphTransform,
             [Out] ID2D1Image** glyphImage
         );
 
@@ -115,18 +117,19 @@ namespace TerraFX.Interop
         /// <param name="glyphTransform">Output transform, which transforms from the glyph's space to the same output space as the worldTransform. This includes the input glyphOrigin, the glyph's offset from the glyphOrigin, and any other required transformations.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetSvgGlyphImage(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSvgGlyphImage(
             [In] ID2D1DeviceContext4* This,
-            [In] D2D1_POINT_2F glyphOrigin,
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F glyphOrigin,
             [In] IDWriteFontFace* fontFace,
-            [In] FLOAT fontEmSize,
-            [In] UINT16 glyphIndex,
-            [In] BOOL isSideways,
-            [In, Optional] /* readonly */ D2D1_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float fontEmSize,
+            [In, ComAliasName("UINT16")] ushort glyphIndex,
+            [In, ComAliasName("BOOL")] int isSideways,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
             [In, Optional] ID2D1Brush* defaultFillBrush,
             [In, Optional] ID2D1SvgGlyphStyle* svgGlyphStyle,
-            [In] UINT32 colorPaletteIndex,
-            [Out] D2D1_MATRIX_3X2_F* glyphTransform,
+            [In, ComAliasName("UINT32")] uint colorPaletteIndex,
+            [Out, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* glyphTransform,
             [Out] ID2D1CommandList** glyphImage
         );
         #endregion

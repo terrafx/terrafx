@@ -20,18 +20,20 @@ namespace TerraFX.Interop
         /// <summary>Returns the number of patches of the gradient mesh.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetPatchCount(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetPatchCount(
             [In] ID2D1GradientMesh* This
         );
 
         /// <summary>Retrieve the patch data stored in the gradient mesh.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetPatches(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPatches(
             [In] ID2D1GradientMesh* This,
-            [In] UINT32 startIndex,
+            [In, ComAliasName("UINT32")] uint startIndex,
             [Out] D2D1_GRADIENT_MESH_PATCH* patches,
-            [In] UINT32 patchesCount
+            [In, ComAliasName("UINT32")] uint patchesCount
         );
         #endregion
 

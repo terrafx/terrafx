@@ -19,9 +19,10 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ReportLiveObjects(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ReportLiveObjects(
             [In] IDXGIDebug* This,
-            [In] GUID apiid,
+            [In, ComAliasName("GUID")] Guid apiid,
             [In] DXGI_DEBUG_RLO_FLAGS flags
         );
         #endregion

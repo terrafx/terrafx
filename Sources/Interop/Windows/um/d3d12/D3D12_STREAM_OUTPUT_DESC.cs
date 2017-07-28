@@ -3,6 +3,8 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct D3D12_STREAM_OUTPUT_DESC
@@ -10,13 +12,17 @@ namespace TerraFX.Interop
         #region Fields
         public /* readonly */ D3D12_SO_DECLARATION_ENTRY* pSODeclaration;
 
-        public UINT NumEntries;
+        [ComAliasName("UINT")]
+        public uint NumEntries;
 
-        public /* readonly */ UINT* pBufferStrides;
+        [ComAliasName("UINT")]
+        public /* readonly */ uint* pBufferStrides;
 
-        public UINT NumStrides;
+        [ComAliasName("UINT")]
+        public uint NumStrides;
 
-        public UINT RasterizedStream;
+        [ComAliasName("UINT")]
+        public uint RasterizedStream;
         #endregion
     }
 }

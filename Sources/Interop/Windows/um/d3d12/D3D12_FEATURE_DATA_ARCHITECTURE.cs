@@ -3,18 +3,24 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_FEATURE_DATA_ARCHITECTURE
     {
         #region Fields
-        public UINT NodeIndex;
+        [ComAliasName("UINT")]
+        public uint NodeIndex;
 
-        public BOOL TileBasedRenderer;
+        [ComAliasName("BOOL")]
+        public int TileBasedRenderer;
 
-        public BOOL UMA;
+        [ComAliasName("BOOL")]
+        public int UMA;
 
-        public BOOL CacheCoherentUMA;
+        [ComAliasName("BOOL")]
+        public int CacheCoherentUMA;
         #endregion
     }
 }

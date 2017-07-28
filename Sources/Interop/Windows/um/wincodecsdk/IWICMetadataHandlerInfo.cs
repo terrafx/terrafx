@@ -20,57 +20,64 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetMetadataFormat(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetMetadataFormat(
             [In] IWICMetadataHandlerInfo* This,
-            [Out] GUID* pguidMetadataFormat
+            [Out, ComAliasName("GUID")] Guid* pguidMetadataFormat
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetContainerFormats(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetContainerFormats(
             [In] IWICMetadataHandlerInfo* This,
-            [In] UINT cContainerFormats,
-            [In, Out, Optional] GUID* pguidContainerFormats,
-            [Out] UINT* pcchActual
+            [In, ComAliasName("UINT")] uint cContainerFormats,
+            [In, Out, Optional, ComAliasName("GUID")] Guid* pguidContainerFormats,
+            [Out, ComAliasName("UINT")] uint* pcchActual
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDeviceManufacturer(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDeviceManufacturer(
             [In] IWICMetadataHandlerInfo* This,
-            [In] UINT cchDeviceManufacturer,
-            [In, Out, Optional] WCHAR* wzDeviceManufacturer,
-            [Out] UINT* pcchActual
+            [In, ComAliasName("UINT")] uint cchDeviceManufacturer,
+            [In, Out, Optional, ComAliasName("WCHAR")] char* wzDeviceManufacturer,
+            [Out, ComAliasName("UINT")] uint* pcchActual
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDeviceModels(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDeviceModels(
             [In] IWICMetadataHandlerInfo* This,
-            [In] UINT cchDeviceModels,
-            [In, Out, Optional] WCHAR* wzDeviceModels,
-            [Out] UINT* pcchActual
+            [In, ComAliasName("UINT")] uint cchDeviceModels,
+            [In, Out, Optional, ComAliasName("WCHAR")] char* wzDeviceModels,
+            [Out, ComAliasName("UINT")] uint* pcchActual
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DoesRequireFullStream(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DoesRequireFullStream(
             [In] IWICMetadataHandlerInfo* This,
-            [Out] BOOL* pfRequiresFullStream
+            [Out, ComAliasName("BOOL")] int* pfRequiresFullStream
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DoesSupportPadding(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DoesSupportPadding(
             [In] IWICMetadataHandlerInfo* This,
-            [Out] BOOL* pfSupportsPadding
+            [Out, ComAliasName("BOOL")] int* pfSupportsPadding
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DoesRequireFixedSize(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DoesRequireFixedSize(
             [In] IWICMetadataHandlerInfo* This,
-            [Out] BOOL* pfFixedSize
+            [Out, ComAliasName("BOOL")] int* pfFixedSize
         );
         #endregion
 

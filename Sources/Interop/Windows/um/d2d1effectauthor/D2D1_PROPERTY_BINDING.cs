@@ -4,15 +4,18 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System;
+using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
     /// <summary>Defines a property binding to a function. The name must match the property defined in the registration schema.</summary>
-    public /* blittable */ struct D2D1_PROPERTY_BINDING
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    unsafe public /* blittable */ struct D2D1_PROPERTY_BINDING
     {
         #region Fields
         /// <summary>The name of the property.</summary>
-        public PCWSTR propertyName;
+        [ComAliasName("PCWSTR")]
+        public /* readonly */ char* propertyName;
 
         /// <summary>The function that will receive the data to set.</summary>
         public IntPtr /* PD2D1_PROPERTY_SET_FUNCTION */ setFunction;

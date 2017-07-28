@@ -3,17 +3,25 @@
 using System;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
+using static TerraFX.Interop.D3DCommon;
 
 namespace TerraFX.Interop.UnitTests
 {
     /// <summary>Provides validation of the <see cref="ID3DBlob" /> struct.</summary>
     public static class ID3DBlobTests
     {
-        /// <summary>Validates that the layout of the <see cref="ID3DBlob" /> struct is <see cref="LayoutKind.Explicit" />.</summary>
+        /// <summary>Validates that the <see cref="Guid" /> of the <see cref="ID3DBlob" /> struct is correct.</summary>
         [Test]
-        public static void IsLayoutExplicitTest()
+        public static void GuidOfTest()
         {
-            Assert.That(typeof(ID3DBlob).IsExplicitLayout, Is.True);
+            Assert.That(typeof(ID3DBlob).GUID, Is.EqualTo(IID_ID3DBlob));
+        }
+
+        /// <summary>Validates that the layout of the <see cref="ID3DBlob" /> struct is <see cref="LayoutKind.Sequential" />.</summary>
+        [Test]
+        public static void IsLayoutSequentialTest()
+        {
+            Assert.That(typeof(ID3DBlob).IsLayoutSequential, Is.True);
         }
 
         /// <summary>Validates that the size of the <see cref="ID3DBlob" /> struct is correct.</summary>
@@ -27,6 +35,31 @@ namespace TerraFX.Interop.UnitTests
             else
             {
                 Assert.That(Marshal.SizeOf<ID3DBlob>(), Is.EqualTo(4));
+            }
+        }
+
+        /// <summary>Provides validation of the <see cref="ID3DBlob.Vtbl" /> struct.</summary>
+        public static class VtblTests
+        {
+            /// <summary>Validates that the layout of the <see cref="ID3DBlob" /> struct is <see cref="LayoutKind.Sequential" />.</summary>
+            [Test]
+            public static void IsLayoutSequentialTest()
+            {
+                Assert.That(typeof(ID3DBlob.Vtbl).IsLayoutSequential, Is.True);
+            }
+
+            /// <summary>Validates that the size of the <see cref="ID3DBlob" /> struct is correct.</summary>
+            [Test]
+            public static void SizeOfTest()
+            {
+                if (Environment.Is64BitProcess)
+                {
+                    Assert.That(Marshal.SizeOf<ID3DBlob.Vtbl>(), Is.EqualTo(40));
+                }
+                else
+                {
+                    Assert.That(Marshal.SizeOf<ID3DBlob.Vtbl>(), Is.EqualTo(20));
+                }
             }
         }
     }

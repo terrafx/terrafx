@@ -20,7 +20,8 @@ namespace TerraFX.Interop
         /// <summary>Creates a new device context with no initially assigned target.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateDeviceContext(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateDeviceContext(
             [In] ID2D1Device2* This,
             [In] D2D1_DEVICE_CONTEXT_OPTIONS options,
             [Out] ID2D1DeviceContext2** deviceContext2
@@ -37,7 +38,8 @@ namespace TerraFX.Interop
         /// <summary>Returns the DXGI device associated with this D2D device.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDxgiDevice(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDxgiDevice(
             [In] ID2D1Device2* This,
             [Out] IDXGIDevice** dxgiDevice
         );

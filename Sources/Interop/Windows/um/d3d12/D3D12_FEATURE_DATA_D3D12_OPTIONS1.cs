@@ -3,22 +3,30 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_FEATURE_DATA_D3D12_OPTIONS1
     {
         #region Fields
-        public BOOL WaveOps;
+        [ComAliasName("BOOL")]
+        public int WaveOps;
 
-        public UINT WaveLaneCountMin;
+        [ComAliasName("UINT")]
+        public uint WaveLaneCountMin;
 
-        public UINT WaveLaneCountMax;
+        [ComAliasName("UINT")]
+        public uint WaveLaneCountMax;
 
-        public UINT TotalLaneCount;
+        [ComAliasName("UINT")]
+        public uint TotalLaneCount;
 
-        public BOOL ExpandedComputeResourceStates;
+        [ComAliasName("BOOL")]
+        public int ExpandedComputeResourceStates;
 
-        public BOOL Int64ShaderOps;
+        [ComAliasName("BOOL")]
+        public int Int64ShaderOps;
         #endregion
     }
 }

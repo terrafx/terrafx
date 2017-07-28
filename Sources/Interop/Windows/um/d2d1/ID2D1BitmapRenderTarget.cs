@@ -20,7 +20,8 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetBitmap(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetBitmap(
             [In] ID2D1BitmapRenderTarget* This,
             [Out] ID2D1Bitmap** bitmap
         );

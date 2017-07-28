@@ -19,8 +19,9 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetClassID(
-            [Out] CLSID* pClassID
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetClassID(
+            [Out, ComAliasName("CLSID")] Guid* pClassID
         );
         #endregion
 

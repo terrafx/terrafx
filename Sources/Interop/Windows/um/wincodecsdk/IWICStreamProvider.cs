@@ -19,28 +19,32 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetStream(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetStream(
             [In] IWICStreamProvider* This,
             [Out, Optional] IStream** ppIStream
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetPersistOptions(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPersistOptions(
             [In] IWICStreamProvider* This,
-            [Out] DWORD* pdwPersistOptions
+            [Out, ComAliasName("DWORD")] uint* pdwPersistOptions
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetPreferredVendorGUID(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPreferredVendorGUID(
             [In] IWICStreamProvider* This,
-            [Out] GUID* pguidPreferredVendor
+            [Out, ComAliasName("GUID")] Guid* pguidPreferredVendor
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RefreshStream(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RefreshStream(
             [In] IWICStreamProvider* This
         );
         #endregion

@@ -3,6 +3,7 @@
 // Ported from um\dwrite_3.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -23,8 +24,9 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetLocalFileSize(
-            [Out] UINT64* localFileSize
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetLocalFileSize(
+            [Out, ComAliasName("UINT64")] ulong* localFileSize
         );
 
         /// <summary>GetFileFragmentLocality returns information about the locality of a byte range (i.e., font fragment) within the font file stream.</summary>
@@ -35,11 +37,12 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFileFragmentLocality(
-            [In] UINT64 fileOffset,
-            [In] UINT64 fragmentSize,
-            [Out] BOOL* isLocal,
-            [Out] UINT64* partialSize
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFileFragmentLocality(
+            [In, ComAliasName("UINT64")] ulong fileOffset,
+            [In, ComAliasName("UINT64")] ulong fragmentSize,
+            [Out, ComAliasName("BOOL")] int* isLocal,
+            [Out, ComAliasName("UINT64")] ulong* partialSize
         );
 
         /// <summary>Gets the current locality of the file.</summary>
@@ -56,10 +59,11 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT BeginDownload(
-            [In] /* readonly */ GUID* downloadOperationID,
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int BeginDownload(
+            [In, ComAliasName("GUID")] /* readonly */ Guid* downloadOperationID,
             [In] /* readonly */ DWRITE_FILE_FRAGMENT* fileFragments,
-            [In] UINT32 fragmentCount,
+            [In, ComAliasName("UINT32")] uint fragmentCount,
             [Out] IDWriteAsyncResult** asyncResult
         );
         #endregion

@@ -120,8 +120,9 @@ namespace TerraFX.Interop
         #region External Methods
         [DllImport("DXGI", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CreateDXGIFactory1", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern HRESULT CreateDXGIFactory1(
-            [In] REFIID riid,
+        [return: ComAliasName("HRESULT")]
+        public static extern int CreateDXGIFactory1(
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out] void** ppFactory
         );
         #endregion

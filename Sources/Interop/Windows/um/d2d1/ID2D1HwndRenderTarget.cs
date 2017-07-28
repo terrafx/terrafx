@@ -27,14 +27,16 @@ namespace TerraFX.Interop
         /// <summary>Resize the buffer underlying the render target. This operation might fail if there is insufficient video memory or system memory, or if the render target is resized beyond the maximum bitmap size. If the method fails, the render target will be placed in a zombie state and D2DERR_RECREATE_TARGET will be returned from it when EndDraw is called. In addition an appropriate failure result will be returned from Resize.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Resize(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Resize(
             [In] ID2D1HwndRenderTarget* This,
-            [In] /* readonly */ D2D1_SIZE_U* pixelSize
+            [In, ComAliasName("D2D1_SIZE_U")] /* readonly */ D2D_SIZE_U* pixelSize
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HWND GetHwnd(
+        [return: ComAliasName("HWND")]
+        public /* static */ delegate void* GetHwnd(
             [In] ID2D1HwndRenderTarget* This
         );
         #endregion

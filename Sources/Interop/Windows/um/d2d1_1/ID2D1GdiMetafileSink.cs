@@ -20,11 +20,12 @@ namespace TerraFX.Interop
         /// <summary>Callback for examining a metafile record.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ProcessRecord(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ProcessRecord(
             [In] ID2D1GdiMetafileSink* This,
-            [In] DWORD recordType,
+            [In, ComAliasName("DWORD")] uint recordType,
             [In, Optional] /* readonly */ void* recordData,
-            [In] DWORD recordDataSize
+            [In, ComAliasName("DWORD")] uint recordDataSize
         );
         #endregion
 

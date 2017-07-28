@@ -3,20 +3,27 @@
 // Ported from um\wincodec.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct WICDdsParameters
     {
         #region Fields
-        public UINT Width;
+        [ComAliasName("UINT")]
+        public uint Width;
 
-        public UINT Height;
+        [ComAliasName("UINT")]
+        public uint Height;
 
-        public UINT Depth;
+        [ComAliasName("UINT")]
+        public uint Depth;
 
-        public UINT MipLevels;
+        [ComAliasName("UINT")]
+        public uint MipLevels;
 
-        public UINT ArraySize;
+        [ComAliasName("UINT")]
+        public uint ArraySize;
 
         public DXGI_FORMAT DxgiFormat;
 

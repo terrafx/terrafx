@@ -58,7 +58,8 @@ namespace TerraFX.Interop
         #region External Methods
         [DllImport("D2D1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1CreateDevice", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern HRESULT D2D1CreateDevice(
+        [return: ComAliasName("HRESULT")]
+        public static extern int D2D1CreateDevice(
             [In] IDXGIDevice* dxgiDevice,
             [In, Optional] /* readonly */ D2D1_CREATION_PROPERTIES* creationProperties,
             [Out] ID2D1Device** d2dDevice
@@ -66,7 +67,8 @@ namespace TerraFX.Interop
 
         [DllImport("D2D1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1CreateDeviceContext", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern HRESULT D2D1CreateDeviceContext(
+        [return: ComAliasName("HRESULT")]
+        public static extern int D2D1CreateDeviceContext(
             [In] IDXGISurface* dxgiSurface,
             [In, Optional] /* readonly */ D2D1_CREATION_PROPERTIES* creationProperties,
             [Out] ID2D1DeviceContext** d2dDeviceContext
@@ -74,33 +76,36 @@ namespace TerraFX.Interop
 
         [DllImport("D2D1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1ConvertColorSpace", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern D2D1_COLOR_F D2D1ConvertColorSpace(
+        [return: ComAliasName("D2D1_COLOR_F")]
+        public static extern DXGI_RGBA D2D1ConvertColorSpace(
             [In] D2D1_COLOR_SPACE sourceColorSpace,
             [In] D2D1_COLOR_SPACE destinationColorSpace,
-            [In] /* readonly */ D2D1_COLOR_F* color
+            [In, ComAliasName("D2D1_COLOR_F")] /* readonly */ DXGI_RGBA* color
         );
 
         [DllImport("D2D1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1SinCos", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void D2D1SinCos(
-          [In] FLOAT angle,
-          [Out] FLOAT* s,
-          [Out] FLOAT* c
+          [In, ComAliasName("FLOAT")] float angle,
+          [Out, ComAliasName("FLOAT")] float* s,
+          [Out, ComAliasName("FLOAT")] float* c
         );
 
 
         [DllImport("D2D1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1Tan", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern FLOAT D2D1Tan(
-            [In] FLOAT angle
+        [return: ComAliasName("FLOAT")]
+        public static extern float D2D1Tan(
+            [In, ComAliasName("FLOAT")] float angle
         );
 
         [DllImport("D2D1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1Vec3Length", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern FLOAT D2D1Vec3Length(
-          [In] FLOAT x,
-          [In] FLOAT y,
-          [In] FLOAT z
+        [return: ComAliasName("FLOAT")]
+        public static extern float D2D1Vec3Length(
+          [In, ComAliasName("FLOAT")] float x,
+          [In, ComAliasName("FLOAT")] float y,
+          [In, ComAliasName("FLOAT")] float z
         );
         #endregion
     }

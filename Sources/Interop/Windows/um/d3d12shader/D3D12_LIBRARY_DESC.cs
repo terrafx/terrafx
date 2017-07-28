@@ -3,16 +3,21 @@
 // Ported from um\d3d12shader.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_LIBRARY_DESC
+    unsafe public /* blittable */ struct D3D12_LIBRARY_DESC
     {
         #region Fields
-        public LPCSTR Creator;
+        [ComAliasName("LPCSTR")]
+        public /* readonly */ sbyte* Creator;
 
-        public UINT Flags;
+        [ComAliasName("UINT")]
+        public uint Flags;
 
-        public UINT FunctionCount;
+        [ComAliasName("UINT")]
+        public uint FunctionCount;
         #endregion
     }
 }

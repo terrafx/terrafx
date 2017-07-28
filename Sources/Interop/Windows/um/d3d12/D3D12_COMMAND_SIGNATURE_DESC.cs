@@ -3,18 +3,23 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct D3D12_COMMAND_SIGNATURE_DESC
     {
         #region Fields
-        public UINT ByteStride;
+        [ComAliasName("UINT")]
+        public uint ByteStride;
 
-        public UINT NumArgumentDescs;
+        [ComAliasName("UINT")]
+        public uint NumArgumentDescs;
 
         public /* readonly */ D3D12_INDIRECT_ARGUMENT_DESC* pArgumentDescs;
 
-        public UINT NodeMask;
+        [ComAliasName("UINT")]
+        public uint NodeMask;
         #endregion
     }
 }

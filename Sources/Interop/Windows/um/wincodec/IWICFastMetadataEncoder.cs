@@ -19,13 +19,15 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Commit(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Commit(
             [In] IWICFastMetadataEncoder* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetMetadataQueryWriter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetMetadataQueryWriter(
             [In] IWICFastMetadataEncoder* This,
             [Out, Optional] IWICMetadataQueryWriter** ppIMetadataQueryWriter
         );

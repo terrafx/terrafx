@@ -19,79 +19,90 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDesc1(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDesc1(
             [In] IDXGISwapChain1* This,
             [Out] DXGI_SWAP_CHAIN_DESC1* pDesc
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFullscreenDesc(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFullscreenDesc(
             [In] IDXGISwapChain1* This,
             [Out] DXGI_SWAP_CHAIN_FULLSCREEN_DESC* pDesc
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetHwnd(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetHwnd(
             [In] IDXGISwapChain1* This,
-            [Out] HWND* pHwnd
+            [Out, ComAliasName("HWND")] void** pHwnd
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetCoreWindow(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetCoreWindow(
             [In] IDXGISwapChain1* This,
-            [In] REFIID refiid,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* refiid,
             [Out] void** ppUnk
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Present1(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Present1(
             [In] IDXGISwapChain1* This,
-            [In] UINT SyncInterval,
-            [In] UINT PresentFlags,
+            [In, ComAliasName("UINT")] uint SyncInterval,
+            [In, ComAliasName("UINT")] uint PresentFlags,
             [In] /* readonly */ DXGI_PRESENT_PARAMETERS* pPresentParameters
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL IsTemporaryMonoSupported(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int IsTemporaryMonoSupported(
             [In] IDXGISwapChain1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetRestrictToOutput(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetRestrictToOutput(
             [In] IDXGISwapChain1* This,
             [Out] IDXGIOutput** ppRestrictToOutput
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetBackgroundColor(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetBackgroundColor(
             [In] IDXGISwapChain1* This,
             [In] /* readonly */ DXGI_RGBA* pColor
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetBackgroundColor(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetBackgroundColor(
             [In] IDXGISwapChain1* This,
             [Out] DXGI_RGBA* pColor
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetRotation(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetRotation(
             [In] IDXGISwapChain1* This,
             [In] DXGI_MODE_ROTATION Rotation
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetRotation(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetRotation(
             [In] IDXGISwapChain1* This,
             [Out] DXGI_MODE_ROTATION* pRotation
         );

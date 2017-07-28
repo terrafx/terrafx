@@ -19,19 +19,21 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetComputeInfo(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetComputeInfo(
             [In] ID2D1ComputeTransform* This,
             [In] ID2D1ComputeInfo* computeInfo
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CalculateThreadgroups(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CalculateThreadgroups(
             [In] ID2D1ComputeTransform* This,
-            [In] /* readonly */ D2D1_RECT_L* outputRect,
-            [Out] UINT32* dimensionX,
-            [Out] UINT32* dimensionY,
-            [Out] UINT32* dimensionZ
+            [In, ComAliasName("D2D1_RECT_L")] /* readonly */ RECT* outputRect,
+            [Out, ComAliasName("UINT32")] uint* dimensionX,
+            [Out, ComAliasName("UINT32")] uint* dimensionY,
+            [Out, ComAliasName("UINT32")] uint* dimensionZ
         );
         #endregion
 

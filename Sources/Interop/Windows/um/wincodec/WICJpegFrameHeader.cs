@@ -3,26 +3,34 @@
 // Ported from um\wincodec.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct WICJpegFrameHeader
     {
         #region Fields
-        public UINT Width;
+        [ComAliasName("UINT")]
+        public uint Width;
 
-        public UINT Height;
+        [ComAliasName("UINT")]
+        public uint Height;
 
         public WICJpegTransferMatrix TransferMatrix;
 
         public WICJpegScanType ScanType;
 
-        public UINT cComponents;
+        [ComAliasName("UINT")]
+        public uint cComponents;
 
-        public DWORD ComponentIdentifiers;
+        [ComAliasName("DWORD")]
+        public uint ComponentIdentifiers;
 
-        public DWORD SampleFactors;
+        [ComAliasName("DWORD")]
+        public uint SampleFactors;
 
-        public DWORD QuantizationTableIndices;
+        [ComAliasName("DWORD")]
+        public uint QuantizationTableIndices;
         #endregion
     }
 }

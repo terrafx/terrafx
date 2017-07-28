@@ -3,6 +3,8 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_QUERY_HEAP_DESC
@@ -10,9 +12,11 @@ namespace TerraFX.Interop
         #region Fields
         public D3D12_QUERY_HEAP_TYPE Type;
 
-        public UINT Count;
+        [ComAliasName("UINT")]
+        public uint Count;
 
-        public UINT NodeMask;
+        [ComAliasName("UINT")]
+        public uint NodeMask;
         #endregion
     }
 }

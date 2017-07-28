@@ -3,6 +3,7 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
@@ -18,34 +19,39 @@ namespace TerraFX.Interop
 
         public D3D12_TEXTURE_ADDRESS_MODE AddressW;
 
-        public FLOAT MipLODBias;
+        [ComAliasName("FLOAT")]
+        public float MipLODBias;
 
-        public UINT MaxAnisotropy;
+        [ComAliasName("UINT")]
+        public uint MaxAnisotropy;
 
         public D3D12_COMPARISON_FUNC ComparisonFunc;
 
+        [ComAliasName("FLOAT[4]")]
         public _BorderColor_e__FixedBuffer BorderColor;
 
-        public FLOAT MinLOD;
+        [ComAliasName("FLOAT")]
+        public float MinLOD;
 
-        public FLOAT MaxLOD;
+        [ComAliasName("FLOAT")]
+        public float MaxLOD;
         #endregion
 
         #region Structs
         unsafe public /* blittable */ struct _BorderColor_e__FixedBuffer
         {
             #region Fields
-            public FLOAT e0;
+            public float e0;
 
-            public FLOAT e1;
+            public float e1;
 
-            public FLOAT e2;
+            public float e2;
 
-            public FLOAT e3;
+            public float e3;
             #endregion
 
             #region Properties
-            public FLOAT this[int index]
+            public float this[int index]
             {
                 get
                 {
@@ -54,7 +60,7 @@ namespace TerraFX.Interop
                         ThrowArgumentOutOfRangeException(nameof(index), index);
                     }
 
-                    fixed (FLOAT* e = &e0)
+                    fixed (float* e = &e0)
                     {
                         return e[index];
                     }

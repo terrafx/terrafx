@@ -3,19 +3,25 @@
 // Ported from um\dcommon.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>A vector of 4 float values (x, y, z, w).</summary>
     public /* blittable */ struct D2D_VECTOR_4F
     {
         #region Fields
-        public FLOAT x;
+        [ComAliasName("FLOAT")]
+        public float x;
 
-        public FLOAT y;
+        [ComAliasName("FLOAT")]
+        public float y;
 
-        public FLOAT z;
+        [ComAliasName("FLOAT")]
+        public float z;
 
-        public FLOAT w;
+        [ComAliasName("FLOAT")]
+        public float w;
         #endregion
     }
 }

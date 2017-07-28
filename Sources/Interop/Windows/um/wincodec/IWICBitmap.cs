@@ -19,23 +19,26 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Lock(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Lock(
             [In] IWICBitmap* This,
             [In, Optional] /* readonly */ WICRect* prcLock,
-            [In] DWORD flags,
+            [In, ComAliasName("DWORD")] uint flags,
             [Out, Optional] IWICBitmapLock** ppILock
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetPalette(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetPalette(
             [In] IWICBitmap* This,
             [In, Optional] IWICPalette* pIPalette
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetResolution(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetResolution(
             [In] IWICBitmap* This,
             [In] double dpiX,
             [In] double dpiY

@@ -19,48 +19,53 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateMetadataReader(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateMetadataReader(
             [In] IWICComponentFactory* This,
-            [In] REFGUID guidMetadataFormat,
-            [In, Optional] /* readonly */ GUID* pguidVendor,
-            [In] DWORD dwOptions,
+            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidMetadataFormat,
+            [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor,
+            [In, ComAliasName("DWORD")] uint dwOptions,
             [In, Optional] IStream* pIStream,
             [Out, Optional] IWICMetadataReader** ppIReader
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateMetadataReaderFromContainer(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateMetadataReaderFromContainer(
             [In] IWICComponentFactory* This,
-            [In] REFGUID guidContainerFormat,
-            [In, Optional] /* readonly */ GUID* pguidVendor,
-            [In] DWORD dwOptions,
+            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidContainerFormat,
+            [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor,
+            [In, ComAliasName("DWORD")] uint dwOptions,
             [In, Optional] IStream* pIStream,
             [Out, Optional] IWICMetadataReader** ppIReader
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateMetadataWriter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateMetadataWriter(
             [In] IWICComponentFactory* This,
-            [In] REFGUID guidMetadataFormat,
-            [In, Optional] /* readonly */ GUID* pguidVendor,
-            [In] DWORD dwMetadataOptions,
+            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidMetadataFormat,
+            [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor,
+            [In, ComAliasName("DWORD")] uint dwMetadataOptions,
             [Out, Optional] IWICMetadataWriter** ppIWriter
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateMetadataWriterFromReader(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateMetadataWriterFromReader(
             [In] IWICComponentFactory* This,
             [In, Optional] IWICMetadataReader* pIReader,
-            [In, Optional] /* readonly */ GUID* pguidVendor,
+            [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor,
             [Out, Optional] IWICMetadataWriter** ppIWriter
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateQueryReaderFromBlockReader(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateQueryReaderFromBlockReader(
             [In] IWICComponentFactory* This,
             [In, Optional] IWICMetadataBlockReader* pIBlockReader,
             [Out, Optional] IWICMetadataQueryReader** ppIQueryReader
@@ -68,7 +73,8 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateQueryWriterFromBlockWriter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateQueryWriterFromBlockWriter(
             [In] IWICComponentFactory* This,
             [In, Optional] IWICMetadataBlockWriter* pIBlockWriter,
             [Out, Optional] IWICMetadataQueryWriter** ppIQueryWriter
@@ -76,10 +82,11 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateEncoderPropertyBag(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateEncoderPropertyBag(
             [In] IWICComponentFactory* This,
             [In, Optional] PROPBAG2* ppropOptions,
-            [In] UINT cCount,
+            [In, ComAliasName("UINT")] uint cCount,
             [Out, Optional] IPropertyBag2** ppIPropertyBag
         );
         #endregion

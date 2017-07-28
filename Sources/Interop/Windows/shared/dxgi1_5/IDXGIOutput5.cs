@@ -20,11 +20,12 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DuplicateOutput1(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DuplicateOutput1(
             [In] IDXGIOutput5* This,
             [In] IUnknown* pDevice,
-            [In] UINT Flags,
-            [In] UINT SupportedFormatsCount,
+            [In, ComAliasName("UINT")] uint Flags,
+            [In, ComAliasName("UINT")] uint SupportedFormatsCount,
             [In] /* readonly */ DXGI_FORMAT* pSupportedFormats,
             [Out] IDXGIOutputDuplication** ppOutputDuplication
         );

@@ -20,7 +20,8 @@ namespace TerraFX.Interop
         /// <summary>Play the command list into a caller-supplied sink interface.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Stream(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Stream(
             [In] ID2D1CommandList* This,
             [In] ID2D1CommandSink* sink
         );
@@ -28,7 +29,8 @@ namespace TerraFX.Interop
         /// <summary>Marks the command list as ready for use.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Close(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Close(
             [In] ID2D1CommandList* This
         );
         #endregion

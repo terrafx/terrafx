@@ -3,6 +3,8 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct D3D12_INPUT_LAYOUT_DESC
@@ -10,7 +12,8 @@ namespace TerraFX.Interop
         #region Fields
         public /* readonly */ D3D12_INPUT_ELEMENT_DESC* pInputElementDescs;
 
-        public UINT NumElements;
+        [ComAliasName("UINT")]
+        public uint NumElements;
         #endregion
     }
 }

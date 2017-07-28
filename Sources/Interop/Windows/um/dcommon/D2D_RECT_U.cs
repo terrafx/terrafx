@@ -3,19 +3,25 @@
 // Ported from um\dcommon.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>Represents a rectangle defined by the coordinates of the upper-left corner (left, top) and the coordinates of the lower-right corner (right, bottom).</summary>
     public /* blittable */ struct D2D_RECT_U
     {
         #region Fields
-        public UINT32 left;
+        [ComAliasName("UINT32")]
+        public uint left;
 
-        public UINT32 top;
+        [ComAliasName("UINT32")]
+        public uint top;
 
-        public UINT32 right;
+        [ComAliasName("UINT32")]
+        public uint right;
 
-        public UINT32 bottom;
+        [ComAliasName("UINT32")]
+        public uint bottom;
         #endregion
     }
 }

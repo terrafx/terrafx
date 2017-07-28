@@ -3,12 +3,15 @@
 // Ported from um\propidlbase.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct CAH
     {
         #region Fields
-        public ULONG cElems;
+        [ComAliasName("ULONG")]
+        public uint cElems;
 
         public LARGE_INTEGER* pElems;
         #endregion

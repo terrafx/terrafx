@@ -20,7 +20,8 @@ namespace TerraFX.Interop
         /// <summary>Return the number of input this node has.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetInputCount(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetInputCount(
             [In] ID2D1TransformNode* This
         );
         #endregion

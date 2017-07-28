@@ -3,6 +3,8 @@
 // Ported from um\wincodec.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct WICDdsFormatInfo
@@ -10,11 +12,14 @@ namespace TerraFX.Interop
         #region Fields
         public DXGI_FORMAT DxgiFormat;
 
-        public UINT BytesPerBlock;
+        [ComAliasName("UINT")]
+        public uint BytesPerBlock;
 
-        public UINT BlockWidth;
+        [ComAliasName("UINT")]
+        public uint BlockWidth;
 
-        public UINT BlockHeight;
+        [ComAliasName("UINT")]
+        public uint BlockHeight;
         #endregion
     }
 }

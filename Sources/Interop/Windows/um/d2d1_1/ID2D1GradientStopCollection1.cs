@@ -23,7 +23,7 @@ namespace TerraFX.Interop
         public /* static */ delegate void GetGradientStops1(
             [In] ID2D1GradientStopCollection1* This,
             [Out] D2D1_GRADIENT_STOP* gradientStops,
-            [In] UINT32 gradientStopsCount
+            [In, ComAliasName("UINT32")] uint gradientStopsCount
         );
 
         /// <summary>Returns the color space in which interpolation occurs. If this object was created using ID2D1RenderTarget::CreateGradientStopCollection, this method returns the color space related to the color interpolation gamma.</summary>

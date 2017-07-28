@@ -3,22 +3,30 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_BOX
     {
         #region Fields
-        public UINT left;
+        [ComAliasName("UINT")]
+        public uint left;
 
-        public UINT top;
+        [ComAliasName("UINT")]
+        public uint top;
 
-        public UINT front;
+        [ComAliasName("UINT")]
+        public uint front;
 
-        public UINT right;
+        [ComAliasName("UINT")]
+        public uint right;
 
-        public UINT bottom;
+        [ComAliasName("UINT")]
+        public uint bottom;
 
-        public UINT back;
+        [ComAliasName("UINT")]
+        public uint back;
         #endregion
     }
 }

@@ -3,15 +3,19 @@
 // Ported from um\d2d1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>Contains the position and color of a gradient stop.</summary>
     public /* blittable */ struct D2D1_GRADIENT_STOP
     {
         #region Fields
-        public FLOAT position;
+        [ComAliasName("FLOAT")]
+        public float position;
 
-        public D2D1_COLOR_F color;
+        [ComAliasName("D2D1_COLOR_F")]
+        public DXGI_RGBA color;
         #endregion
     }
 }

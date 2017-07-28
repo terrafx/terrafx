@@ -22,12 +22,13 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetColor(
             [In] ID2D1SolidColorBrush* This,
-            [In] /* readonly */ D2D1_COLOR_F* color
+            [In, ComAliasName("D2D1_COLOR_F")] /* readonly */ DXGI_RGBA* color
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_COLOR_F GetColor(
+        [return: ComAliasName("D2D1_COLOR_F")]
+        public /* static */ delegate DXGI_RGBA GetColor(
             [In] ID2D1SolidColorBrush* This
         );
         #endregion

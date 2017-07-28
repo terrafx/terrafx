@@ -21,7 +21,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AddFontFile(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddFontFile(
             [In] IDWriteFontSetBuilder1* This,
             [In] IDWriteFontFile* fontFile
         );

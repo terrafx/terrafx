@@ -19,35 +19,39 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetPrivateData(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPrivateData(
             [In] ID3D12Object* This,
-            [In] REFGUID guid,
-            [In, Out] UINT* pDataSize,
+            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guid,
+            [In, Out, ComAliasName("UINT")] uint* pDataSize,
             [Out, Optional] void* pData
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetPrivateData(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetPrivateData(
             [In] ID3D12Object* This,
-            [In] REFGUID guid,
-            [In] UINT DataSize,
+            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guid,
+            [In, ComAliasName("UINT")] uint DataSize,
             [In, Optional] /* readonly */ void* pData);
 
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetPrivateDataInterface(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetPrivateDataInterface(
             [In] ID3D12Object* This,
-            [In] REFGUID guid,
+            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guid,
             [In, Optional] /* readonly */ IUnknown* pData
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetName(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetName(
             [In] ID3D12Object* This,
-            [In] LPCWSTR Name
+            [In, ComAliasName("LPCWSTR")] /* readonly */ char* Name
         );
         #endregion
 

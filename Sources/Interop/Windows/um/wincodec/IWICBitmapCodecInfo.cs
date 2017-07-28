@@ -19,98 +19,110 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetContainerFormat(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetContainerFormat(
             [In] IWICBitmapCodecInfo* This,
-            [Out] GUID* pguidContainerFormat
+            [Out, ComAliasName("GUID")] Guid* pguidContainerFormat
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetPixelFormats(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPixelFormats(
             [In] IWICBitmapCodecInfo* This,
-            [In] UINT cFormats,
-            [In, Out, Optional] GUID* pguidPixelFormats,
-            [Out] UINT* pcActual);
+            [In, ComAliasName("UINT")] uint cFormats,
+            [In, Out, Optional, ComAliasName("GUID")] Guid* pguidPixelFormats,
+            [Out, ComAliasName("UINT")] uint* pcActual);
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetColorManagementVersion(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetColorManagementVersion(
             [In] IWICBitmapCodecInfo* This,
-            [In] UINT cchColorManagementVersion,
-            [In, Out, Optional] WCHAR* wzColorManagementVersion,
-            [Out] UINT* pcchActual
+            [In, ComAliasName("UINT")] uint cchColorManagementVersion,
+            [In, Out, Optional, ComAliasName("WCHAR")] char* wzColorManagementVersion,
+            [Out, ComAliasName("UINT")] uint* pcchActual
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDeviceManufacturer(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDeviceManufacturer(
             [In] IWICBitmapCodecInfo* This,
-            [In] UINT cchDeviceManufacturer,
-            [In, Out, Optional] WCHAR* wzDeviceManufacturer,
-            [Out] UINT* pcchActual
+            [In, ComAliasName("UINT")] uint cchDeviceManufacturer,
+            [In, Out, Optional, ComAliasName("WCHAR")] char* wzDeviceManufacturer,
+            [Out, ComAliasName("UINT")] uint* pcchActual
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDeviceModels(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDeviceModels(
             [In] IWICBitmapCodecInfo* This,
-            [In] UINT cchDeviceModels,
-            [In, Out, Optional] WCHAR* wzDeviceModels,
-            [Out] UINT* pcchActual
+            [In, ComAliasName("UINT")] uint cchDeviceModels,
+            [In, Out, Optional, ComAliasName("WCHAR")] char* wzDeviceModels,
+            [Out, ComAliasName("UINT")] uint* pcchActual
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetMimeTypes(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetMimeTypes(
             [In] IWICBitmapCodecInfo* This,
-            [In] UINT cchMimeTypes,
-            [In, Out, Optional] WCHAR* wzMimeTypes,
-            [Out] UINT* pcchActual
+            [In, ComAliasName("UINT")] uint cchMimeTypes,
+            [In, Out, Optional, ComAliasName("WCHAR")] char* wzMimeTypes,
+            [Out, ComAliasName("UINT")] uint* pcchActual
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFileExtensions(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFileExtensions(
             [In] IWICBitmapCodecInfo* This,
-            [In] UINT cchFileExtensions,
-            [In, Out, Optional] WCHAR* wzFileExtensions,
-            [Out] UINT* pcchActual
+            [In, ComAliasName("UINT")] uint cchFileExtensions,
+            [In, Out, Optional, ComAliasName("WCHAR")] char* wzFileExtensions,
+            [Out, ComAliasName("UINT")] uint* pcchActual
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DoesSupportAnimation(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DoesSupportAnimation(
             [In] IWICBitmapCodecInfo* This,
-            [Out] BOOL* pfSupportAnimation
+            [Out, ComAliasName("BOOL")] int* pfSupportAnimation
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DoesSupportChromakey(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DoesSupportChromakey(
             [In] IWICBitmapCodecInfo* This,
-            [Out] BOOL* pfSupportChromakey
+            [Out, ComAliasName("BOOL")] int* pfSupportChromakey
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DoesSupportLossless(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DoesSupportLossless(
             [In] IWICBitmapCodecInfo* This,
-            [Out] BOOL* pfSupportLossless
+            [Out, ComAliasName("BOOL")] int* pfSupportLossless
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DoesSupportMultiframe(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DoesSupportMultiframe(
             [In] IWICBitmapCodecInfo* This,
-            [Out] BOOL* pfSupportMultiframe
+            [Out, ComAliasName("BOOL")] int* pfSupportMultiframe
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT MatchesMimeType(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int MatchesMimeType(
             [In] IWICBitmapCodecInfo* This,
-            [In] LPCWSTR wzMimeType,
-            [Out] BOOL* pfMatches
+            [In, ComAliasName("LPCWSTR")] /* readonly */ char* wzMimeType,
+            [Out, ComAliasName("BOOL")] int* pfMatches
         );
         #endregion
 

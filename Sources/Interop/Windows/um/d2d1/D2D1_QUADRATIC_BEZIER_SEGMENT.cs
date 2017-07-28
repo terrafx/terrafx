@@ -3,15 +3,19 @@
 // Ported from um\d2d1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>Contains the control point and end point for a quadratic Bezier segment.</summary>
     public /* blittable */ struct D2D1_QUADRATIC_BEZIER_SEGMENT
     {
         #region Fields
-        public D2D1_POINT_2F point1;
+        [ComAliasName("D2D1_POINT_2F")]
+        public D2D_POINT_2F point1;
 
-        public D2D1_POINT_2F point2;
+        [ComAliasName("D2D1_POINT_2F")]
+        public D2D_POINT_2F point2;
         #endregion
     }
 }

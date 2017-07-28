@@ -20,7 +20,8 @@ namespace TerraFX.Interop
         /// <summary>This creates a new Direct2D device from the given IDXGIDevice.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateDevice(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateDevice(
             [In] ID2D1Factory2* This,
             [In] IDXGIDevice* dxgiDevice,
             [Out] ID2D1Device1** d2dDevice1

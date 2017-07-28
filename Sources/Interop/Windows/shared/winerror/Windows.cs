@@ -334,12 +334,12 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        public static bool SUCCEEDED(HRESULT hr)
+        public static bool SUCCEEDED(int hr)
         {
             return (hr >= 0);
         }
 
-        public static bool FAILED(HRESULT hr)
+        public static bool FAILED(int hr)
         {
             return (hr < 0);
         }

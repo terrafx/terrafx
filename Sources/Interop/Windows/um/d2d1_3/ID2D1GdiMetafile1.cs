@@ -20,18 +20,20 @@ namespace TerraFX.Interop
         /// <summary>Returns the DPI reported by the metafile.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDpi(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDpi(
             [In] ID2D1GdiMetafile1* This,
-            [Out] FLOAT* dpiX,
-            [Out] FLOAT* dpiY
+            [Out, ComAliasName("FLOAT")] float* dpiX,
+            [Out, ComAliasName("FLOAT")] float* dpiY
         );
 
         /// <summary>Gets the bounds (in DIPs) of the metafile (as specified by the frame rect declared in the metafile).</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetSourceBounds(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSourceBounds(
             [In] ID2D1GdiMetafile1* This,
-            [Out] D2D1_RECT_F* bounds
+            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* bounds
         );
         #endregion
 

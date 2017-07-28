@@ -3,12 +3,16 @@
 // Ported from um\propidlbase.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct VERSIONEDSTREAM
     {
         #region Fields
-        public GUID guidVersion;
+        [ComAliasName("GUID")]
+        public Guid guidVersion;
 
         public IStream* pStream;
         #endregion

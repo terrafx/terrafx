@@ -3,16 +3,21 @@
 // Ported from um\wincodec.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct WICRawCapabilitiesInfo
     {
         #region Fields
-        public UINT cbSize;
+        [ComAliasName("UINT")]
+        public uint cbSize;
 
-        public UINT CodecMajorVersion;
+        [ComAliasName("UINT")]
+        public uint CodecMajorVersion;
 
-        public UINT CodecMinorVersion;
+        [ComAliasName("UINT")]
+        public uint CodecMinorVersion;
 
         public WICRawCapabilities ExposureCompensationSupport;
 
@@ -22,7 +27,8 @@ namespace TerraFX.Interop
 
         public WICRawCapabilities NamedWhitePointSupport;
 
-        public UINT NamedWhitePointSupportMask;
+        [ComAliasName("UINT")]
+        public uint NamedWhitePointSupportMask;
 
         public WICRawCapabilities KelvinWhitePointSupport;
 

@@ -32,16 +32,18 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFiles(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFiles(
             [In] IDWriteFontFace* This,
-            [In, Out] UINT32* numberOfFiles,
+            [In, Out, ComAliasName("UINT32")] uint* numberOfFiles,
             [Out, Optional] IDWriteFontFile** fontFiles
         );
 
         /// <summary>Obtains the zero-based index of the font face in its font file or files. If the font files contain a single face, the return value is zero.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetIndex(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetIndex(
             [In] IDWriteFontFace* This
         );
 
@@ -55,7 +57,8 @@ namespace TerraFX.Interop
         /// <summary>Determines whether the font is a symbol font.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL IsSymbolFont(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int IsSymbolFont(
             [In] IDWriteFontFace* This
         );
 
@@ -71,7 +74,8 @@ namespace TerraFX.Interop
         /// <summary>Obtains the number of glyphs in the font face.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT16 GetGlyphCount(
+        [return: ComAliasName("UINT16")]
+        public /* static */ delegate ushort GetGlyphCount(
             [In] IDWriteFontFace* This
         );
 
@@ -83,12 +87,13 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code. If any of the input glyph indices are outside of the valid glyph index range for the current font face, E_INVALIDARG will be returned.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDesignGlyphMetrics(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDesignGlyphMetrics(
             [In] IDWriteFontFace* This,
-            [In] /* readonly */ UINT16* glyphIndices,
-            [In] UINT32 glyphCount,
+            [In, ComAliasName("UINT16")] /* readonly */ ushort* glyphIndices,
+            [In, ComAliasName("UINT32")] uint glyphCount,
             [Out] DWRITE_GLYPH_METRICS* glyphMetrics,
-            [In, DefaultParameterValue(FALSE)] BOOL isSideways
+            [In, DefaultParameterValue(FALSE), ComAliasName("BOOL")] int isSideways
         );
 
         /// <summary>Returns the nominal mapping of UTF-32 Unicode code points to glyph indices as defined by the font 'cmap' table. Note that this mapping is primarily provided for line layout engines built on top of the physical font API. Because of OpenType glyph substitution and line layout character substitution, the nominal conversion does not always correspond to how a Unicode string will map to glyph indices when rendering using a particular font face. Also, note that Unicode Variation Selectors provide for alternate mappings for character to glyph. This call will always return the default variant.</summary>
@@ -98,11 +103,12 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetGlyphIndices(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetGlyphIndices(
             [In] IDWriteFontFace* This,
-            [In] /* readonly */ UINT32* codePoints,
-            [In] UINT32 codePointCount,
-            [Out] UINT16* glyphIndices
+            [In, ComAliasName("UINT32")] /* readonly */ uint* codePoints,
+            [In, ComAliasName("UINT32")] uint codePointCount,
+            [Out, ComAliasName("UINT16")] ushort* glyphIndices
         );
 
         /// <summary>Finds the specified OpenType font table if it exists and returns a pointer to it. The function accesses the underlying font data via the IDWriteFontFileStream interface implemented by the font file loader.</summary>
@@ -115,13 +121,14 @@ namespace TerraFX.Interop
         /// <remarks>The context for the same tag may be different for each call,so each one must be held and released separately.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT TryGetFontTable(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int TryGetFontTable(
             [In] IDWriteFontFace* This,
-            [In] UINT32 openTypeTableTag,
+            [In, ComAliasName("UINT32")] uint openTypeTableTag,
             [Out] /* readonly */ void** tableData,
-            [Out] UINT32* tableSize,
+            [Out, ComAliasName("UINT32")] uint* tableSize,
             [Out] void** tableContext,
-            [Out] BOOL* exists
+            [Out, ComAliasName("BOOL")] int* exists
         );
 
         /// <summary>Releases the table obtained earlier from TryGetFontTable.</summary>
@@ -145,16 +152,17 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetGlyphRunOutline(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetGlyphRunOutline(
             [In] IDWriteFontFace* This,
-            [In] FLOAT emSize,
-            [In] /* readonly */ UINT16* glyphIndices,
-            [In, Optional] /* readonly */ FLOAT* glyphAdvances,
+            [In, ComAliasName("FLOAT")] float emSize,
+            [In, ComAliasName("UINT16")] /* readonly */ ushort* glyphIndices,
+            [In, Optional, ComAliasName("FLOAT")] /* readonly */ float* glyphAdvances,
             [In, Optional] /* readonly */ DWRITE_GLYPH_OFFSET* glyphOffsets,
-            [In] UINT32 glyphCount,
-            [In] BOOL isSideways,
-            [In] BOOL isRightToLeft,
-            [In] IDWriteGeometrySink* geometrySink
+            [In, ComAliasName("UINT32")] uint glyphCount,
+            [In, ComAliasName("BOOL")] int isSideways,
+            [In, ComAliasName("BOOL")] int isRightToLeft,
+            [In, ComAliasName("IDWriteGeometrySink")] ID2D1SimplifiedGeometrySink* geometrySink
         );
 
         /// <summary>Determines the recommended rendering mode for the font given the specified size and rendering parameters.</summary>
@@ -166,10 +174,11 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetRecommendedRenderingMode(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetRecommendedRenderingMode(
             [In] IDWriteFontFace* This,
-            [In] FLOAT emSize,
-            [In] FLOAT pixelsPerDip,
+            [In, ComAliasName("FLOAT")] float emSize,
+            [In, ComAliasName("FLOAT")] float pixelsPerDip,
             [In] DWRITE_MEASURING_MODE measuringMode,
             [In] IDWriteRenderingParams* renderingParams,
             [Out] DWRITE_RENDERING_MODE* renderingMode
@@ -182,10 +191,11 @@ namespace TerraFX.Interop
         /// <param name="fontFaceMetrics">Points to a DWRITE_FONT_METRICS public structure to fill in. The metrics returned by this function are in font design units.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetGdiCompatibleMetrics(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetGdiCompatibleMetrics(
             [In] IDWriteFontFace* This,
-            [In] FLOAT emSize,
-            [In] FLOAT pixelsPerDip,
+            [In, ComAliasName("FLOAT")] float emSize,
+            [In, ComAliasName("FLOAT")] float pixelsPerDip,
             [In, Optional] /* readonly */ DWRITE_MATRIX* transform,
             [Out] DWRITE_FONT_METRICS* fontFaceMetrics
         );
@@ -202,16 +212,17 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code. If any of the input glyph indices are outside of the valid glyph index range for the current font face, E_INVALIDARG will be returned.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetGdiCompatibleGlyphMetrics(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetGdiCompatibleGlyphMetrics(
             [In] IDWriteFontFace* This,
-            [In] FLOAT emSize,
-            [In] FLOAT pixelsPerDip,
+            [In, ComAliasName("FLOAT")] float emSize,
+            [In, ComAliasName("FLOAT")] float pixelsPerDip,
             [In, Optional] /* readonly */ DWRITE_MATRIX* transform,
-            [In] BOOL useGdiNatural,
-            [In] /* readonly */ UINT16* glyphIndices,
-            [In] UINT32 glyphCount,
+            [In, ComAliasName("BOOL")] int useGdiNatural,
+            [In, ComAliasName("UINT16")] /* readonly */ ushort* glyphIndices,
+            [In, ComAliasName("UINT32")] uint glyphCount,
             [Out] DWRITE_GLYPH_METRICS* glyphMetrics,
-            [In, DefaultParameterValue(FALSE)] BOOL isSideways
+            [In, DefaultParameterValue(FALSE), ComAliasName("BOOL")] int isSideways
         );
         #endregion
 

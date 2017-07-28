@@ -20,7 +20,8 @@ namespace TerraFX.Interop
         /// <summary>This method is called if primitiveBlend value was added after Windows 8. SetPrimitiveBlend method is used for Win8 values (_SOURCE_OVER and _COPY).</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetPrimitiveBlend1(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetPrimitiveBlend1(
             [In] ID2D1CommandSink1* This,
             [In] D2D1_PRIMITIVE_BLEND primitiveBlend
         );

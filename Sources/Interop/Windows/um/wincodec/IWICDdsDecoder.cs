@@ -19,18 +19,20 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetParameters(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetParameters(
             [In] IWICDdsDecoder* This,
             [Out] WICDdsParameters* pParameters
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFrame(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFrame(
             [In] IWICDdsDecoder* This,
-            [In] UINT arrayIndex,
-            [In] UINT mipLevel,
-            [In] UINT sliceIndex,
+            [In, ComAliasName("UINT")] uint arrayIndex,
+            [In, ComAliasName("UINT")] uint mipLevel,
+            [In, ComAliasName("UINT")] uint sliceIndex,
             [Out, Optional] IWICBitmapFrameDecode** ppIBitmapFrame
         );
         #endregion

@@ -19,29 +19,33 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetContainerFormat(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetContainerFormat(
             [In] IWICMetadataBlockReader* This,
-            [Out] GUID* pguidContainerFormat
+            [Out, ComAliasName("GUID")] Guid* pguidContainerFormat
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetCount(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetCount(
             [In] IWICMetadataBlockReader* This,
-            [Out] UINT* pcCount
+            [Out, ComAliasName("UINT")] uint* pcCount
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetReaderByIndex(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetReaderByIndex(
             [In] IWICMetadataBlockReader* This,
-            [In] UINT nIndex,
+            [In, ComAliasName("UINT")] uint nIndex,
             [Out, Optional] IWICMetadataReader** ppIMetadataReader
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetEnumerator(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetEnumerator(
             [In] IWICMetadataBlockReader* This,
             [Out, Optional] IEnumUnknown** ppIEnumMetadata
         );

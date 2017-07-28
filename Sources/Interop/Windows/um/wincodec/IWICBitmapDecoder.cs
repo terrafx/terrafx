@@ -19,15 +19,17 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT QueryCapability(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryCapability(
             [In] IWICBitmapDecoder* This,
             [In, Optional] IStream* pIStream,
-            [Out] DWORD* pdwCapability
+            [Out, ComAliasName("DWORD")] uint* pdwCapability
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Initialize(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Initialize(
             [In] IWICBitmapDecoder* This,
             [In, Optional] IStream* pIStream,
             [In] WICDecodeOptions cacheOptions
@@ -35,67 +37,76 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetContainerFormat(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetContainerFormat(
             [In] IWICBitmapDecoder* This,
-            [Out] GUID* pguidContainerFormat
+            [Out, ComAliasName("GUID")] Guid* pguidContainerFormat
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDecoderInfo(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDecoderInfo(
             [In] IWICBitmapDecoder* This,
             [Out, Optional] IWICBitmapDecoderInfo** ppIDecoderInfo
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CopyPalette(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CopyPalette(
             [In] IWICBitmapDecoder* This,
             [In, Optional] IWICPalette* pIPalette
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetMetadataQueryReader(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetMetadataQueryReader(
             [In] IWICBitmapDecoder* This,
             [Out, Optional] IWICMetadataQueryReader** ppIMetadataQueryReader
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetPreview(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPreview(
             [In] IWICBitmapDecoder* This,
             [Out, Optional] IWICBitmapSource** ppIBitmapSource
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetColorContexts(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetColorContexts(
             [In] IWICBitmapDecoder* This,
-            [In] UINT cCount,
+            [In, ComAliasName("UINT")] uint cCount,
             [In, Out, Optional]  IWICColorContext** ppIColorContexts,
-            [Out] UINT* pcActualCount
+            [Out, ComAliasName("UINT")] uint* pcActualCount
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetThumbnail(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetThumbnail(
             [In] IWICBitmapDecoder* This,
             [Out, Optional] IWICBitmapSource** ppIThumbnail
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFrameCount(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFrameCount(
             [In] IWICBitmapDecoder* This,
-            [Out] UINT* pCount
+            [Out, ComAliasName("UINT")] uint* pCount
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFrame(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFrame(
             [In] IWICBitmapDecoder* This,
-            [In] UINT index,
+            [In, ComAliasName("UINT")] uint index,
             [Out, Optional] IWICBitmapFrameDecode** ppIBitmapFrame
         );
         #endregion

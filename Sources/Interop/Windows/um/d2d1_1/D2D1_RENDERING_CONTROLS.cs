@@ -3,6 +3,8 @@
 // Ported from um\d2d1_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>This controls advanced settings of the Direct2D imaging pipeline.</summary>
@@ -13,7 +15,8 @@ namespace TerraFX.Interop
         public D2D1_BUFFER_PRECISION bufferPrecision;
 
         /// <summary>The size of allocated tiles used to render imaging effects.</summary>
-        public D2D1_SIZE_U tileSize;
+        [ComAliasName("D2D1_SIZE_U")]
+        public D2D_SIZE_U tileSize;
         #endregion
     }
 }

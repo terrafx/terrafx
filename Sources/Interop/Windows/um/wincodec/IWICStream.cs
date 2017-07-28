@@ -19,30 +19,34 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT InitializeFromIStream(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int InitializeFromIStream(
             [In] IWICStream* This,
             [In, Optional] IStream* pIStream
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT InitializeFromFilename(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int InitializeFromFilename(
             [In] IWICStream* This,
-            [In] LPCWSTR wzFileName,
-            [In] DWORD dwDesiredAccess
+            [In, ComAliasName("LPCWSTR")] /* readonly */ char* wzFileName,
+            [In, ComAliasName("DWORD")] uint dwDesiredAccess
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT InitializeFromMemory(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int InitializeFromMemory(
             [In] IWICStream* This,
-            [In] WICInProcPointer pbBuffer,
-            [In] DWORD cbBufferSize
+            [In, ComAliasName("WICInProcPointer")] byte* pbBuffer,
+            [In, ComAliasName("DWORD")] uint cbBufferSize
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT InitializeFromIStreamRegion(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int InitializeFromIStreamRegion(
             [In] IWICStream* This,
             [In, Optional] IStream* pIStream,
             [In] ULARGE_INTEGER ulOffset,

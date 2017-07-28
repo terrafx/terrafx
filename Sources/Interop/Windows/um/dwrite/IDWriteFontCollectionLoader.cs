@@ -26,11 +26,12 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateEnumeratorFromKey(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateEnumeratorFromKey(
             [In] IDWriteFontCollectionLoader* This,
             [In] IDWriteFactory* factory,
             [In] /* readonly */ void* collectionKey,
-            [In] UINT32 collectionKeySize,
+            [In, ComAliasName("UINT32")] uint collectionKeySize,
             [Out] IDWriteFontFileEnumerator** fontFileEnumerator
         );
         #endregion

@@ -19,20 +19,22 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateFilledGeometryRealization(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateFilledGeometryRealization(
             [In] ID2D1DeviceContext1* This,
             [In] ID2D1Geometry* geometry,
-            [In] FLOAT flatteningTolerance,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
             [Out] ID2D1GeometryRealization** geometryRealization
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateStrokedGeometryRealization(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateStrokedGeometryRealization(
             [In] ID2D1DeviceContext1* This,
             [In] ID2D1Geometry* geometry,
-            [In] FLOAT flatteningTolerance,
-            [In] FLOAT strokeWidth,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [In, ComAliasName("FLOAT")] float strokeWidth,
             [In, Optional] ID2D1StrokeStyle* strokeStyle,
             [Out] ID2D1GeometryRealization** geometryRealization
         );

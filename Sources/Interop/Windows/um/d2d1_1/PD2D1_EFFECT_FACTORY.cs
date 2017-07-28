@@ -11,7 +11,8 @@ namespace TerraFX.Interop
     /// <summary>Function pointer to construct a new effect once registered.</summary>
     [SuppressUnmanagedCodeSecurity]
     [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-    unsafe public /* static */ delegate HRESULT PD2D1_EFFECT_FACTORY(
+    [return: ComAliasName("HRESULT")]
+    unsafe public /* static */ delegate int PD2D1_EFFECT_FACTORY(
         [Out] IUnknown** effectImpl
     );
 }

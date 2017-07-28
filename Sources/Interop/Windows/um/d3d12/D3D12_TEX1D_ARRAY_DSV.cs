@@ -3,16 +3,21 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_TEX1D_ARRAY_DSV
     {
         #region Fields
-        public UINT MipSlice;
+        [ComAliasName("UINT")]
+        public uint MipSlice;
 
-        public UINT FirstArraySlice;
+        [ComAliasName("UINT")]
+        public uint FirstArraySlice;
 
-        public UINT ArraySize;
+        [ComAliasName("UINT")]
+        public uint ArraySize;
         #endregion
     }
 }

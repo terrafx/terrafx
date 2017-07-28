@@ -3,13 +3,16 @@
 // Ported from um\d2d1effectauthor.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>Indicates whether shader support for doubles is present on the underlying hardware.  This may be populated using CheckFeatureSupport.</summary>
     public /* blittable */ struct D2D1_FEATURE_DATA_DOUBLES
     {
         #region Fields
-        public BOOL doublePrecisionFloatShaderOps;
+        [ComAliasName("BOOL")]
+        public int doublePrecisionFloatShaderOps;
         #endregion
     }
 }

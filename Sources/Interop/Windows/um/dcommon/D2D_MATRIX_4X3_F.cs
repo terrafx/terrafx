@@ -15,43 +15,56 @@ namespace TerraFX.Interop
         #region Fields
         #region struct
         [FieldOffset(0)]
-        public FLOAT _11;
+        [ComAliasName("FLOAT")]
+        public float _11;
 
         [FieldOffset(4)]
-        public FLOAT _12;
+        [ComAliasName("FLOAT")]
+        public float _12;
 
         [FieldOffset(8)]
-        public FLOAT _13;
+        [ComAliasName("FLOAT")]
+        public float _13;
 
         [FieldOffset(12)]
-        public FLOAT _21;
+        [ComAliasName("FLOAT")]
+        public float _21;
 
         [FieldOffset(16)]
-        public FLOAT _22;
+        [ComAliasName("FLOAT")]
+        public float _22;
 
         [FieldOffset(20)]
-        public FLOAT _23;
+        [ComAliasName("FLOAT")]
+        public float _23;
 
         [FieldOffset(24)]
-        public FLOAT _31;
+        [ComAliasName("FLOAT")]
+        public float _31;
 
         [FieldOffset(28)]
-        public FLOAT _32;
+        [ComAliasName("FLOAT")]
+        public float _32;
 
         [FieldOffset(32)]
-        public FLOAT _33;
+        [ComAliasName("FLOAT")]
+        public float _33;
 
         [FieldOffset(36)]
-        public FLOAT _41;
+        [ComAliasName("FLOAT")]
+        public float _41;
 
         [FieldOffset(40)]
-        public FLOAT _42;
+        [ComAliasName("FLOAT")]
+        public float _42;
 
         [FieldOffset(44)]
-        public FLOAT _43;
+        [ComAliasName("FLOAT")]
+        public float _43;
         #endregion
 
         [FieldOffset(0)]
+        [ComAliasName("FLOAT[4][3]")]
         public _m_e__FixedBuffer m;
         #endregion
 
@@ -59,17 +72,17 @@ namespace TerraFX.Interop
         unsafe public /* blittable */ struct _m_e__FixedBuffer
         {
             #region Fields
-            public FLOAT e0_0, e0_1, e0_2;
+            public float e0_0, e0_1, e0_2;
 
-            public FLOAT e1_0, e1_1, e1_2;
+            public float e1_0, e1_1, e1_2;
 
-            public FLOAT e2_0, e2_1, e2_2;
+            public float e2_0, e2_1, e2_2;
 
-            public FLOAT e3_0, e3_1, e3_2;
+            public float e3_0, e3_1, e3_2;
             #endregion
 
             #region Properties
-            public FLOAT this[int index1, int index2]
+            public float this[int index1, int index2]
             {
                 get
                 {
@@ -83,7 +96,7 @@ namespace TerraFX.Interop
                         ThrowArgumentOutOfRangeException(nameof(index2), index2);
                     }
 
-                    fixed (FLOAT* e = &e0_0)
+                    fixed (float* e = &e0_0)
                     {
                         return e[(index1 * 2) + index2];
                     }

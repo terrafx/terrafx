@@ -19,9 +19,10 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetMessageCountLimit(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetMessageCountLimit(
             [In] ID3D12InfoQueue* This,
-            [In] UINT64 MessageCountLimit
+            [In, ComAliasName("UINT64")] ulong MessageCountLimit
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -32,62 +33,71 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetMessage(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetMessage(
             [In] ID3D12InfoQueue* This,
-            [In] UINT64 MessageIndex,
+            [In, ComAliasName("UINT64")] ulong MessageIndex,
             [Out, Optional] D3D12_MESSAGE* pMessage,
-            [In, Out] SIZE_T* pMessageByteLength
+            [In, Out, ComAliasName("SIZE_T")] nuint* pMessageByteLength
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT64 GetNumMessagesAllowedByStorageFilter(
+        [return: ComAliasName("UINT64")]
+        public /* static */ delegate ulong GetNumMessagesAllowedByStorageFilter(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT64 GetNumMessagesDeniedByStorageFilter(
+        [return: ComAliasName("UINT64")]
+        public /* static */ delegate ulong GetNumMessagesDeniedByStorageFilter(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT64 GetNumStoredMessages(
+        [return: ComAliasName("UINT64")]
+        public /* static */ delegate ulong GetNumStoredMessages(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT64 GetNumStoredMessagesAllowedByRetrievalFilter(
+        [return: ComAliasName("UINT64")]
+        public /* static */ delegate ulong GetNumStoredMessagesAllowedByRetrievalFilter(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT64 GetNumMessagesDiscardedByMessageCountLimit(
+        [return: ComAliasName("UINT64")]
+        public /* static */ delegate ulong GetNumMessagesDiscardedByMessageCountLimit(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT64 GetMessageCountLimit(
+        [return: ComAliasName("UINT64")]
+        public /* static */ delegate ulong GetMessageCountLimit(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AddStorageFilterEntries(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddStorageFilterEntries(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_INFO_QUEUE_FILTER* pFilter
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetStorageFilter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetStorageFilter(
             [In] ID3D12InfoQueue* This,
             [Out, Optional] D3D12_INFO_QUEUE_FILTER* pFilter,
-            [In, Out] SIZE_T* pFilterByteLength
+            [In, Out, ComAliasName("SIZE_T")] nuint* pFilterByteLength
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -98,19 +108,22 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT PushEmptyStorageFilter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int PushEmptyStorageFilter(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT PushCopyOfStorageFilter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int PushCopyOfStorageFilter(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT PushStorageFilter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int PushStorageFilter(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_INFO_QUEUE_FILTER* pFilter
         );
@@ -123,23 +136,26 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT GetStorageFilterStackSize(
+        [return: ComAliasName("UINT")]
+        public /* static */ delegate uint GetStorageFilterStackSize(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AddRetrievalFilterEntries(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddRetrievalFilterEntries(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_INFO_QUEUE_FILTER* pFilter
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetRetrievalFilter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetRetrievalFilter(
             [In] ID3D12InfoQueue* This,
             [Out, Optional] D3D12_INFO_QUEUE_FILTER* pFilter,
-            [In, Out] SIZE_T* pFilterByteLength
+            [In, Out, ComAliasName("SIZE_T")] nuint* pFilterByteLength
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -150,19 +166,22 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT PushEmptyRetrievalFilter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int PushEmptyRetrievalFilter(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT PushCopyOfRetrievalFilter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int PushCopyOfRetrievalFilter(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT PushRetrievalFilter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int PushRetrievalFilter(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_INFO_QUEUE_FILTER* pFilter
         );
@@ -175,69 +194,78 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT GetRetrievalFilterStackSize(
+        [return: ComAliasName("UINT")]
+        public /* static */ delegate uint GetRetrievalFilterStackSize(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AddMessage(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddMessage(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_MESSAGE_CATEGORY Category,
             [In] D3D12_MESSAGE_SEVERITY Severity,
             [In] D3D12_MESSAGE_ID ID,
-            [In] LPCSTR pDescription
+            [In, ComAliasName("LPCSTR")] /* readonly */ sbyte* pDescription
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AddApplicationMessage(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddApplicationMessage(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_MESSAGE_SEVERITY Severity,
-            [In] LPCSTR pDescription
+            [In, ComAliasName("LPCSTR")] /* readonly */ sbyte* pDescription
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetBreakOnCategory(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetBreakOnCategory(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_MESSAGE_CATEGORY Category,
-            [In] BOOL bEnable
+            [In, ComAliasName("BOOL")] int bEnable
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetBreakOnSeverity(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetBreakOnSeverity(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_MESSAGE_SEVERITY Severity,
-            [In] BOOL bEnable
+            [In, ComAliasName("BOOL")] int bEnable
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetBreakOnID(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetBreakOnID(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_MESSAGE_ID ID,
-            [In] BOOL bEnable
+            [In, ComAliasName("BOOL")] int bEnable
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL GetBreakOnCategory(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int GetBreakOnCategory(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_MESSAGE_CATEGORY Category
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL GetBreakOnSeverity(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int GetBreakOnSeverity(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_MESSAGE_SEVERITY Severity
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL GetBreakOnID(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int GetBreakOnID(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_MESSAGE_ID ID
         );
@@ -246,12 +274,13 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetMuteDebugOutput(
             [In] ID3D12InfoQueue* This,
-            [In] BOOL bMute
+            [In, ComAliasName("BOOL")] int bMute
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL GetMuteDebugOutput(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int GetMuteDebugOutput(
             [In] ID3D12InfoQueue* This
         );
         #endregion

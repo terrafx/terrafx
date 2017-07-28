@@ -19,20 +19,22 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateSubresourceSurface(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateSubresourceSurface(
             [In] IDXGIResource1* This,
-            [In] UINT index,
+            [In, ComAliasName("UINT")] uint index,
             [Out] IDXGISurface2** ppSurface
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateSharedHandle(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateSharedHandle(
             [In] IDXGIResource1* This,
             [In, Optional] /* readonly */ SECURITY_ATTRIBUTES* pAttributes,
-            [In] DWORD dwAccess,
-            [In, Optional] LPCWSTR lpName,
-            [Out] HANDLE pHandle
+            [In, ComAliasName("DWORD")] uint dwAccess,
+            [In, Optional, ComAliasName("LPCWSTR")] /* readonly */ char* lpName,
+            [Out, ComAliasName("HANDLE")] void* pHandle
         );
         #endregion
 

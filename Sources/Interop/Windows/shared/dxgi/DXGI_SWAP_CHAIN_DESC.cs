@@ -3,26 +3,33 @@
 // Ported from shared\dxgi.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct DXGI_SWAP_CHAIN_DESC
+    unsafe public /* blittable */ struct DXGI_SWAP_CHAIN_DESC
     {
         #region Fields
         public DXGI_MODE_DESC BufferDesc;
 
         public DXGI_SAMPLE_DESC SampleDesc;
 
-        public DXGI_USAGE BufferUsage;
+        [ComAliasName("DXGI_USAGE")]
+        public uint BufferUsage;
 
-        public UINT BufferCount;
+        [ComAliasName("UINT")]
+        public uint BufferCount;
 
-        public HWND OutputWindow;
+        [ComAliasName("HWND")]
+        public void* OutputWindow;
 
-        public BOOL Windowed;
+        [ComAliasName("BOOL")]
+        public int Windowed;
 
         public DXGI_SWAP_EFFECT SwapEffect;
 
-        public UINT Flags;
+        [ComAliasName("UINT")]
+        public uint Flags;
         #endregion
     }
 }

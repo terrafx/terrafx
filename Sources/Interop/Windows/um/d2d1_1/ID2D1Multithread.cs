@@ -20,7 +20,8 @@ namespace TerraFX.Interop
         /// <summary>Returns whether the D2D factory was created with D2D1_FACTORY_TYPE_MULTI_THREADED.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL GetMultithreadProtected(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int GetMultithreadProtected(
             [In] ID2D1Multithread* This
         );
 

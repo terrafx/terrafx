@@ -19,12 +19,13 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ComputePointAndSegmentAtLength(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ComputePointAndSegmentAtLength(
             [In] ID2D1PathGeometry1* This,
-            [In] FLOAT length,
-            [In] UINT32 startSegment,
-            [In, Optional] /* readonly */ D2D1_MATRIX_3X2_F* worldTransform,
-            [In] FLOAT flatteningTolerance,
+            [In, ComAliasName("FLOAT")] float length,
+            [In, ComAliasName("UINT32")] uint startSegment,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
             [Out] D2D1_POINT_DESCRIPTION* pointDescription
         );
         #endregion

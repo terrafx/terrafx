@@ -19,25 +19,28 @@ namespace TerraFX.Interop.Desktop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFrameStatisticsMedia(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFrameStatisticsMedia(
             [In] IDXGISwapChainMedia* This,
             [Out] DXGI_FRAME_STATISTICS_MEDIA* pStats
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetPresentDuration(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetPresentDuration(
             [In] IDXGISwapChainMedia* This,
-            [In] UINT Duration
+            [In, ComAliasName("UINT")] uint Duration
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CheckPresentDurationSupport(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CheckPresentDurationSupport(
             [In] IDXGISwapChainMedia* This,
-            [In] UINT DesiredPresentDuration,
-            [Out] UINT* pClosestSmallerPresentDuration,
-            [Out] UINT* pClosestLargerPresentDuration
+            [In, ComAliasName("UINT")] uint DesiredPresentDuration,
+            [Out, ComAliasName("UINT")] uint* pClosestSmallerPresentDuration,
+            [Out, ComAliasName("UINT")] uint* pClosestLargerPresentDuration
         );
         #endregion
 

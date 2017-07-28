@@ -22,7 +22,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetSystemFontFallback(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSystemFontFallback(
             [In] IDWriteFactory2* This,
             [Out] IDWriteFontFallback** fontFallback
         );
@@ -32,7 +33,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateFontFallbackBuilder(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateFontFallbackBuilder(
             [In] IDWriteFactory2* This,
             [Out] IDWriteFontFallbackBuilder** fontFallbackBuilder
         );
@@ -49,15 +51,16 @@ namespace TerraFX.Interop
         /// <returns> Returns DWRITE_E_NOCOLOR if the font has no color information, the base glyph run does not contain any color glyphs, or the specified color palette index is out of range. In this case, the client should render the base glyph run. Otherwise, returns a standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT TranslateColorGlyphRun(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int TranslateColorGlyphRun(
             [In] IDWriteFactory2* This,
-            [In] FLOAT baselineOriginX,
-            [In] FLOAT baselineOriginY,
+            [In, ComAliasName("FLOAT")] float baselineOriginX,
+            [In, ComAliasName("FLOAT")] float baselineOriginY,
             [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
             [In, Optional] /* readonly */ DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
             [In] DWRITE_MEASURING_MODE measuringMode,
             [In, Optional] /* readonly */ DWRITE_MATRIX* worldToDeviceTransform,
-            [In] UINT32 colorPaletteIndex,
+            [In, ComAliasName("UINT32")] uint colorPaletteIndex,
             [Out] IDWriteColorGlyphRunEnumerator** colorLayers
         );
 
@@ -72,12 +75,13 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateCustomRenderingParams(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateCustomRenderingParams(
             [In] IDWriteFactory2* This,
-            [In] FLOAT gamma,
-            [In] FLOAT enhancedContrast,
-            [In] FLOAT grayscaleEnhancedContrast,
-            [In] FLOAT clearTypeLevel,
+            [In, ComAliasName("FLOAT")] float gamma,
+            [In, ComAliasName("FLOAT")] float enhancedContrast,
+            [In, ComAliasName("FLOAT")] float grayscaleEnhancedContrast,
+            [In, ComAliasName("FLOAT")] float clearTypeLevel,
             [In] DWRITE_PIXEL_GEOMETRY pixelGeometry,
             [In] DWRITE_RENDERING_MODE renderingMode,
             [In] DWRITE_GRID_FIT_MODE gridFitMode,
@@ -96,7 +100,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateGlyphRunAnalysis(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateGlyphRunAnalysis(
             [In] IDWriteFactory2* This,
             [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
             [In, Optional] /* readonly */ DWRITE_MATRIX* transform,
@@ -104,8 +109,8 @@ namespace TerraFX.Interop
             [In] DWRITE_MEASURING_MODE measuringMode,
             [In] DWRITE_GRID_FIT_MODE gridFitMode,
             [In] DWRITE_TEXT_ANTIALIAS_MODE antialiasMode,
-            [In] FLOAT baselineOriginX,
-            [In] FLOAT baselineOriginY,
+            [In, ComAliasName("FLOAT")] float baselineOriginX,
+            [In, ComAliasName("FLOAT")] float baselineOriginY,
             [Out] IDWriteGlyphRunAnalysis** glyphRunAnalysis
         );
         #endregion

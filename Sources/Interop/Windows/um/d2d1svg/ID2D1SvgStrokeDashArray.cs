@@ -21,9 +21,10 @@ namespace TerraFX.Interop
         /// <param name="dashesCount">Specifies how many dashes to remove.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RemoveDashesAtEnd(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RemoveDashesAtEnd(
             [In] ID2D1SvgStrokeDashArray* This,
-            [In] UINT32 dashesCount
+            [In, ComAliasName("UINT32")] uint dashesCount
         );
 
         /// <summary>Updates the array. Existing dashes not updated by this method are preserved. The array is resized larger if necessary to accomodate the new dashes.</summary>
@@ -32,11 +33,12 @@ namespace TerraFX.Interop
         /// <param name="startIndex">The index at which to begin updating dashes. Must be less than or equal to the size of the array.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT UpdateDashes(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int UpdateDashes(
             [In] ID2D1SvgStrokeDashArray* This,
-            [In] /* readonly */ FLOAT* dashes,
-            [In] UINT32 dashesCount,
-            [In, DefaultParameterValue(0u)] UINT32 startIndex
+            [In, ComAliasName("FLOAT")] /* readonly */ float* dashes,
+            [In, ComAliasName("UINT32")] uint dashesCount,
+            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
         );
 
         /// <summary>Updates the array. Existing dashes not updated by this method are preserved. The array is resized larger if necessary to accomodate the new dashes.</summary>
@@ -45,11 +47,12 @@ namespace TerraFX.Interop
         /// <param name="startIndex">The index at which to begin updating dashes. Must be less than or equal to the size of the array.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT UpdateDashes1(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int UpdateDashes1(
             [In] ID2D1SvgStrokeDashArray* This,
             [In] /* readonly */ D2D1_SVG_LENGTH* dashes,
-            [In] UINT32 dashesCount,
-            [In, DefaultParameterValue(0u)] UINT32 startIndex
+            [In, ComAliasName("UINT32")] uint dashesCount,
+            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
         );
 
         /// <summary>Gets dashes from the array.</summary>
@@ -58,11 +61,12 @@ namespace TerraFX.Interop
         /// <param name="startIndex">The index of the first dash to retrieve.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDashes(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDashes(
             [In] ID2D1SvgStrokeDashArray* This,
-            [Out] FLOAT *dashes,
-            [In] UINT32 dashesCount,
-            [In, DefaultParameterValue(0u)] UINT32 startIndex
+            [Out, ComAliasName("FLOAT")] float *dashes,
+            [In, ComAliasName("UINT32")] uint dashesCount,
+            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
         );
 
         /// <summary>Gets dashes from the array.</summary>
@@ -71,17 +75,19 @@ namespace TerraFX.Interop
         /// <param name="startIndex">The index of the first dash to retrieve.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDashes1(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDashes1(
             [In] ID2D1SvgStrokeDashArray* This,
             [Out] D2D1_SVG_LENGTH *dashes,
-            [In] UINT32 dashesCount,
-            [In, DefaultParameterValue(0u)] UINT32 startIndex
+            [In, ComAliasName("UINT32")] uint dashesCount,
+            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
         );
 
         /// <summary>Gets the number of the dashes in the array.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetDashesCount(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetDashesCount(
             [In] ID2D1SvgStrokeDashArray* This
         );
         #endregion

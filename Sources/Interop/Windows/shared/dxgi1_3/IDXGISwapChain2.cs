@@ -19,50 +19,57 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetSourceSize(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetSourceSize(
             [In] IDXGISwapChain2* This,
-            [In] UINT Width,
-            [In] UINT Height
+            [In, ComAliasName("UINT")] uint Width,
+            [In, ComAliasName("UINT")] uint Height
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetSourceSize(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSourceSize(
             [In] IDXGISwapChain2* This,
-            [Out] UINT* pWidth,
-            [Out] UINT* pHeight
+            [Out, ComAliasName("UINT")] uint* pWidth,
+            [Out, ComAliasName("UINT")] uint* pHeight
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetMaximumFrameLatency(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetMaximumFrameLatency(
             [In] IDXGISwapChain2* This,
-            [In] UINT MaxLatency
+            [In, ComAliasName("UINT")] uint MaxLatency
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetMaximumFrameLatency(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetMaximumFrameLatency(
             [In] IDXGISwapChain2* This,
-            [Out] UINT* pMaxLatency
+            [Out, ComAliasName("UINT")] uint* pMaxLatency
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HANDLE GetFrameLatencyWaitableObject(
+        [return: ComAliasName("HANDLE")]
+        public /* static */ delegate void* GetFrameLatencyWaitableObject(
             [In] IDXGISwapChain2* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetMatrixTransform(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetMatrixTransform(
             [In] IDXGISwapChain2* This,
             [In] /* readonly */ DXGI_MATRIX_3X2_F* pMatrix
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetMatrixTransform(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetMatrixTransform(
             [In] IDXGISwapChain2* This,
             [Out] DXGI_MATRIX_3X2_F* pMatrix
         );

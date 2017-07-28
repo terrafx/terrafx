@@ -3,6 +3,7 @@
 // Ported from um\d2d1effectauthor.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
@@ -23,6 +24,7 @@ namespace TerraFX.Interop
 
         public D2D1_BLEND_OPERATION blendOperationAlpha;
 
+        [ComAliasName("FLOAT[4]")]
         public _blendFactor_e__FixedBuffer blendFactor;
         #endregion
 
@@ -30,17 +32,17 @@ namespace TerraFX.Interop
         unsafe public struct _blendFactor_e__FixedBuffer
         {
             #region Fields
-            public FLOAT e0;
+            public float e0;
 
-            public FLOAT e1;
+            public float e1;
 
-            public FLOAT e2;
+            public float e2;
 
-            public FLOAT e3;
+            public float e3;
             #endregion
 
             #region Properties
-            public FLOAT this[int index]
+            public float this[int index]
             {
                 get
                 {
@@ -49,7 +51,7 @@ namespace TerraFX.Interop
                         ThrowArgumentOutOfRangeException(nameof(index), index);
                     }
 
-                    fixed (FLOAT* e = &e0)
+                    fixed (float* e = &e0)
                     {
                         return e[index];
                     }

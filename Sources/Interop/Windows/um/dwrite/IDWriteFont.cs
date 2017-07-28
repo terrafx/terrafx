@@ -23,7 +23,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFontFamily(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFontFamily(
             [In] IDWriteFont* This,
             [Out] IDWriteFontFamily** fontFamily
         );
@@ -52,7 +53,8 @@ namespace TerraFX.Interop
         /// <summary>Returns TRUE if the font is a symbol font or FALSE if not.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL IsSymbolFont(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int IsSymbolFont(
             [In] IDWriteFont* This
         );
 
@@ -61,7 +63,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFaceNames(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFaceNames(
             [In] IDWriteFont* This,
             [Out] IDWriteLocalizedStrings** names
         );
@@ -73,11 +76,12 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code. If the font does not contain the specified string, the return value is S_OK but informationalStrings receives a NULL pointer and exists receives the value FALSE.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetInformationalStrings(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetInformationalStrings(
             [In] IDWriteFont* This,
             [In] DWRITE_INFORMATIONAL_STRING_ID informationalStringID,
             [Out] IDWriteLocalizedStrings** informationalStrings,
-            [Out] BOOL* exists
+            [Out, ComAliasName("BOOL")] int* exists
         );
 
         /// <summary>Gets a value that indicates what simulation are applied to the specified font.</summary>
@@ -102,10 +106,11 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT HasCharacter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int HasCharacter(
             [In] IDWriteFont* This,
-            [In] UINT32 unicodeValue,
-            [Out] BOOL* exists
+            [In, ComAliasName("UINT32")] uint unicodeValue,
+            [Out, ComAliasName("BOOL")] int* exists
         );
 
         /// <summary>Creates a font face object for the font.</summary>
@@ -113,7 +118,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateFontFace(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateFontFace(
             [In] IDWriteFont* This,
             [Out] IDWriteFontFace** fontFace
         );

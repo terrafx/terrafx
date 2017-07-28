@@ -3,20 +3,27 @@
 // Ported from um\winuser.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct MSG
+    unsafe public /* blittable */ struct MSG
     {
         #region Fields
-        public HWND hwnd;
+        [ComAliasName("HWND")]
+        public void* hwnd;
 
-        public UINT message;
+        [ComAliasName("UINT")]
+        public uint message;
 
-        public WPARAM wParam;
+        [ComAliasName("WPARAM")]
+        public nuint wParam;
 
-        public LPARAM lParam;
+        [ComAliasName("LPARAM")]
+        public nint lParam;
 
-        public DWORD time;
+        [ComAliasName("DWORD")]
+        public uint time;
 
         public POINT pt;
         #endregion

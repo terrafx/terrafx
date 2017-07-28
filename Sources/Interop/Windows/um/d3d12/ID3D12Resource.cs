@@ -19,9 +19,10 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Map(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Map(
             [In] ID3D12Resource* This,
-            [In] UINT Subresource,
+            [In, ComAliasName("UINT")] uint Subresource,
             [In, Optional] /* readonly */ D3D12_RANGE* pReadRange,
             [Out, Optional] void** ppData
         );
@@ -30,7 +31,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void Unmap(
             [In] ID3D12Resource* This,
-            [In] UINT Subresource,
+            [In, ComAliasName("UINT")] uint Subresource,
             [In, Optional] /* readonly */ D3D12_RANGE* pWrittenRange
         );
 
@@ -42,35 +43,39 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D3D12_GPU_VIRTUAL_ADDRESS GetGPUVirtualAddress(
+        [return: ComAliasName("D3D12_GPU_VIRTUAL_ADDRESS")]
+        public /* static */ delegate ulong GetGPUVirtualAddress(
             [In] ID3D12Resource* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT WriteToSubresource(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int WriteToSubresource(
             [In] ID3D12Resource* This,
-            [In] UINT DstSubresource,
+            [In, ComAliasName("UINT")] uint DstSubresource,
             [In, Optional] /* readonly */ D3D12_BOX* pDstBox,
             [In] /* readonly */ void* pSrcData,
-            [In] UINT SrcRowPitch,
-            [In] UINT SrcDepthPitch
+            [In, ComAliasName("UINT")] uint SrcRowPitch,
+            [In, ComAliasName("UINT")] uint SrcDepthPitch
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ReadFromSubresource(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ReadFromSubresource(
             [In] ID3D12Resource* This,
             [Out] void* pDstData,
-            [In] UINT DstRowPitch,
-            [In] UINT DstDepthPitch,
-            [In] UINT SrcSubresource,
+            [In, ComAliasName("UINT")] uint DstRowPitch,
+            [In, ComAliasName("UINT")] uint DstDepthPitch,
+            [In, ComAliasName("UINT")] uint SrcSubresource,
             [In, Optional] /* readonly */ D3D12_BOX* pSrcBox
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetHeapProperties(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetHeapProperties(
             [In] ID3D12Resource* This,
             [Out, Optional] D3D12_HEAP_PROPERTIES* pHeapProperties,
             [Out, Optional] D3D12_HEAP_FLAGS* pHeapFlags

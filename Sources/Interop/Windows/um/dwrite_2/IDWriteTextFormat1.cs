@@ -23,7 +23,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetVerticalGlyphOrientation(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetVerticalGlyphOrientation(
             [In] IDWriteTextFormat1* This,
             [In] DWRITE_VERTICAL_GLYPH_ORIENTATION glyphOrientation
         );
@@ -40,15 +41,17 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetLastLineWrapping(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetLastLineWrapping(
             [In] IDWriteTextFormat1* This,
-            [In] BOOL isLastLineWrappingEnabled
+            [In, ComAliasName("BOOL")] int isLastLineWrappingEnabled
         );
 
         /// <summary>Get whether or not the last word on the last line is wrapped.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL GetLastLineWrapping(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int GetLastLineWrapping(
             [In] IDWriteTextFormat1* This
         );
 
@@ -57,7 +60,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetOpticalAlignment(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetOpticalAlignment(
             [In] IDWriteTextFormat1* This,
             [In] DWRITE_OPTICAL_ALIGNMENT opticalAlignment
         );
@@ -74,7 +78,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetFontFallback(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetFontFallback(
             [In] IDWriteTextFormat1* This,
             [In] IDWriteFontFallback* fontFallback
         );
@@ -82,7 +87,8 @@ namespace TerraFX.Interop
         /// <summary>Get the current font fallback object.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFontFallback(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFontFallback(
             [In] IDWriteTextFormat1* This,
             [Out] IDWriteFontFallback** fontFallback
         );

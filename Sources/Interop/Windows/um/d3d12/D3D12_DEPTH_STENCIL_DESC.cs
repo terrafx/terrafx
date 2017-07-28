@@ -3,22 +3,28 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_DEPTH_STENCIL_DESC
     {
         #region Fields
-        public BOOL DepthEnable;
+        [ComAliasName("BOOL")]
+        public int DepthEnable;
 
         public D3D12_DEPTH_WRITE_MASK DepthWriteMask;
 
         public D3D12_COMPARISON_FUNC DepthFunc;
 
-        public BOOL StencilEnable;
+        [ComAliasName("BOOL")]
+        public int StencilEnable;
 
-        public UINT8 StencilReadMask;
+        [ComAliasName("UINT8")]
+        public byte StencilReadMask;
 
-        public UINT8 StencilWriteMask;
+        [ComAliasName("UINT8")]
+        public byte StencilWriteMask;
 
         public D3D12_DEPTH_STENCILOP_DESC FrontFace;
 

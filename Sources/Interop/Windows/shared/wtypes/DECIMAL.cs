@@ -17,30 +17,37 @@ namespace TerraFX.Interop
         #region union
         #region struct
         [FieldOffset(2)]
-        public BYTE scale;
+        [ComAliasName("BYTE")]
+        public byte scale;
 
         [FieldOffset(3)]
-        public BYTE sign;
+        [ComAliasName("BYTE")]
+        public byte sign;
         #endregion
 
         [FieldOffset(2)]
-        public USHORT signscale;
+        [ComAliasName("USHORT")]
+        public ushort signscale;
         #endregion
 
         [FieldOffset(4)]
-        public ULONG Hi32;
+        [ComAliasName("ULONG")]
+        public uint Hi32;
 
         #region union
         #region struct
         [FieldOffset(8)]
-        public ULONG Lo32;
+        [ComAliasName("ULONG")]
+        public uint Lo32;
 
         [FieldOffset(12)]
-        public ULONG Mid32;
+        [ComAliasName("ULONG")]
+        public uint Mid32;
         #endregion
 
         [FieldOffset(8)]
-        public ULONGLONG Lo64;
+        [ComAliasName("ULONGLONG")]
+        public ulong Lo64;
         #endregion
         #endregion
     }

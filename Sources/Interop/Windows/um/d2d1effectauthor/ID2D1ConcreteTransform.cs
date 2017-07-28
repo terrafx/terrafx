@@ -20,7 +20,8 @@ namespace TerraFX.Interop
         /// <summary>Controls the output precision and channel-depth for this transform.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetOutputBuffer(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetOutputBuffer(
             [In] ID2D1ConcreteTransform* This,
             [In] D2D1_BUFFER_PRECISION bufferPrecision,
             [In] D2D1_CHANNEL_DEPTH channelDepth
@@ -31,7 +32,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetCached(
             [In] ID2D1ConcreteTransform* This,
-            [In] BOOL isCached
+            [In, ComAliasName("BOOL")] int isCached
         );
         #endregion
 

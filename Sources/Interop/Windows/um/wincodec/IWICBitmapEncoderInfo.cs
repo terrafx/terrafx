@@ -19,7 +19,8 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateInstance(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateInstance(
             [In] IWICBitmapEncoderInfo* This,
             [Out, Optional] IWICBitmapEncoder** ppIBitmapEncoder
         );

@@ -3,14 +3,19 @@
 // Ported from um\propidlbase.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     unsafe public /* blittable */ struct CALPWSTR
     {
         #region Fields
-        public ULONG cElems;
+        [ComAliasName("ULONG")]
+        public uint cElems;
 
-        public LPWSTR* pElems;
+        [ComAliasName("LPWSTR")]
+        public char** pElems;
         #endregion
     }
 }

@@ -19,16 +19,18 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL IsWindowedStereoEnabled(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int IsWindowedStereoEnabled(
             [In] IDXGIFactory2* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateSwapChainForHwnd(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateSwapChainForHwnd(
             [In] IDXGIFactory2* This,
             [In] IUnknown* pDevice,
-            [In] HWND hWnd,
+            [In, ComAliasName("HWND")] void* hWnd,
             [In] /* readonly */ DXGI_SWAP_CHAIN_DESC1* pDesc,
             [In, Optional] /* readonly */ DXGI_SWAP_CHAIN_FULLSCREEN_DESC* pFullscreenDesc,
             [In, Optional] IDXGIOutput* pRestrictToOutput,
@@ -37,7 +39,8 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateSwapChainForCoreWindow(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateSwapChainForCoreWindow(
             [In] IDXGIFactory2* This,
             [In] IUnknown* pDevice,
             [In] IUnknown* pWindow,
@@ -48,63 +51,69 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetSharedResourceAdapterLuid(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSharedResourceAdapterLuid(
             [In] IDXGIFactory2* This,
-            [In] HANDLE hResource,
+            [In, ComAliasName("HANDLE")] void* hResource,
             [Out] LUID* pLuid
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RegisterStereoStatusWindow(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RegisterStereoStatusWindow(
             [In] IDXGIFactory2* This,
-            [In] HWND WindowHandle,
-            [In] UINT wMsg,
-            [Out] DWORD* pdwCookie
+            [In, ComAliasName("HWND")] void* WindowHandle,
+            [In, ComAliasName("UINT")] uint wMsg,
+            [Out, ComAliasName("DWORD")] uint* pdwCookie
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RegisterStereoStatusEvent(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RegisterStereoStatusEvent(
             [In] IDXGIFactory2* This,
-            [In] HANDLE hEvent,
-            [Out] DWORD* pdwCookie
+            [In, ComAliasName("HANDLE")] void* hEvent,
+            [Out, ComAliasName("DWORD")] uint* pdwCookie
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void UnregisterStereoStatus(
             [In] IDXGIFactory2* This,
-            [In] DWORD dwCookie
+            [In, ComAliasName("DWORD")] uint dwCookie
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RegisterOcclusionStatusWindow(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RegisterOcclusionStatusWindow(
             [In] IDXGIFactory2* This,
-            [In] HWND WindowHandle,
-            [In] UINT wMsg,
-            [Out] DWORD* pdwCookie
+            [In, ComAliasName("HWND")] void* WindowHandle,
+            [In, ComAliasName("UINT")] uint wMsg,
+            [Out, ComAliasName("DWORD")] uint* pdwCookie
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RegisterOcclusionStatusEvent(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RegisterOcclusionStatusEvent(
             [In] IDXGIFactory2* This,
-            [In] HANDLE hEvent,
-            [Out] DWORD* pdwCookie
+            [In, ComAliasName("HANDLE")] void* hEvent,
+            [Out, ComAliasName("DWORD")] uint* pdwCookie
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void UnregisterOcclusionStatus(
             [In] IDXGIFactory2* This,
-            [In] UINT dwCookie
+            [In, ComAliasName("UINT")] uint dwCookie
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateSwapChainForComposition(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateSwapChainForComposition(
             [In] IDXGIFactory2* This,
             [In] IUnknown* pDevice,
             [In] /* readonly */ DXGI_SWAP_CHAIN_DESC1* pDesc,

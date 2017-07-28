@@ -19,9 +19,10 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ProcessAnalysisResults(
-            [In] /* readonly */ BYTE *analysisData,
-            [In] UINT32 analysisDataCount
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ProcessAnalysisResults(
+            [In, ComAliasName("BYTE")] /* readonly */ byte *analysisData,
+            [In, ComAliasName("UINT32")] uint analysisDataCount
         );
         #endregion
 

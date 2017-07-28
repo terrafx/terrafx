@@ -19,9 +19,10 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Notify(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Notify(
             [In] IWICDevelopRawNotificationCallback* This,
-            [In] UINT NotificationMask
+            [In, ComAliasName("UINT")] uint NotificationMask
         );
         #endregion
 

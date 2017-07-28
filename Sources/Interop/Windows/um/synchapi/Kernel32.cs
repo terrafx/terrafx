@@ -8,23 +8,25 @@ using System.Security;
 
 namespace TerraFX.Interop
 {
-    public static partial class Kernel32
+    unsafe public static partial class Kernel32
     {
         #region Extern Methods
         [DllImport("Kernel32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CreateEventW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern HANDLE CreateEvent(
-            [In, Optional] LPSECURITY_ATTRIBUTES lpEventAttributes,
-            [In] BOOL bManualReset,
-            [In] BOOL bInitialState,
-            [In, Optional] LPCWSTR lpName
+        [return: ComAliasName("HANDLE")]
+        public static extern void* CreateEvent(
+            [In, Optional, ComAliasName("LPSECURITY_ATTRIBUTES")] SECURITY_ATTRIBUTES* lpEventAttributes,
+            [In, ComAliasName("BOOL")] int bManualReset,
+            [In, ComAliasName("BOOL")] int bInitialState,
+            [In, Optional, ComAliasName("LPCWSTR")] /* readonly */ char* lpName
         );
 
         [DllImport("Kernel32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "WaitForSingleObject", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern DWORD WaitForSingleObject(
-            [In] HANDLE hHandle,
-            [In] DWORD dwMilliseconds
+        [return: ComAliasName("DWORD")]
+        public static extern uint WaitForSingleObject(
+            [In, ComAliasName("HANDLE")] void* hHandle,
+            [In, ComAliasName("DWORD")] uint dwMilliseconds
         );
         #endregion
     }

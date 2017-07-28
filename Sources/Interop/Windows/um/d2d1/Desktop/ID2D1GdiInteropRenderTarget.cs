@@ -20,15 +20,17 @@ namespace TerraFX.Interop.Desktop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDC(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDC(
             [In] ID2D1GdiInteropRenderTarget* This,
             [In] D2D1_DC_INITIALIZE_MODE mode,
-            [Out] HDC* hdc
+            [Out, ComAliasName("HDC")] void** hdc
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ReleaseDC(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ReleaseDC(
             [In] ID2D1GdiInteropRenderTarget* This,
             [In, Optional] /* readonly */ RECT* update
         );

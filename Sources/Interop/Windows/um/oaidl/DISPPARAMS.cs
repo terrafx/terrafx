@@ -3,18 +3,24 @@
 // Ported from um\oaidl.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct DISPPARAMS
     {
         #region Fields
-        public VARIANTARG* rgvarg;
+        [ComAliasName("VARIANTARG")]
+        public VARIANT* rgvarg;
 
-        public DISPID* rgdispidNamedArgs;
+        [ComAliasName("DISPID")]
+        public int* rgdispidNamedArgs;
 
-        public UINT cArgs;
+        [ComAliasName("UINT")]
+        public uint cArgs;
 
-        public UINT cNamedArgs;
+        [ComAliasName("UINT")]
+        public uint cNamedArgs;
         #endregion
     }
 }

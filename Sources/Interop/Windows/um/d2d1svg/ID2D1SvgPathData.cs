@@ -21,9 +21,10 @@ namespace TerraFX.Interop
         /// <param name="dataCount">Specifies how much data to remove.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RemoveSegmentDataAtEnd(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RemoveSegmentDataAtEnd(
             [In] ID2D1SvgPathData* This,
-            [In] UINT32 dataCount
+            [In, ComAliasName("UINT32")] uint dataCount
         );
 
         /// <summary>Updates the segment data array. Existing segment data not updated by this method are preserved. The array is resized larger if necessary to accomodate the new segment data.</summary>
@@ -32,11 +33,12 @@ namespace TerraFX.Interop
         /// <param name="startIndex">The index at which to begin updating segment data. Must be less than or equal to the size of the segment data array.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT UpdateSegmentData(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int UpdateSegmentData(
             [In] ID2D1SvgPathData* This,
-            [In] /* readonly */ FLOAT* data,
-            [In] UINT32 dataCount,
-            [In, DefaultParameterValue(0u)] UINT32 startIndex
+            [In, ComAliasName("FLOAT")] /* readonly */ float* data,
+            [In, ComAliasName("UINT32")] uint dataCount,
+            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
         );
 
         /// <summary>Gets data from the segment data array.</summary>
@@ -45,17 +47,19 @@ namespace TerraFX.Interop
         /// <param name="startIndex">The index of the first segment data to retrieve.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetSegmentData(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSegmentData(
             [In] ID2D1SvgPathData* This,
-            [Out] FLOAT *data,
-            [In] UINT32 dataCount,
-            [In, DefaultParameterValue(0u)] UINT32 startIndex
+            [Out, ComAliasName("FLOAT")] float *data,
+            [In, ComAliasName("UINT32")] uint dataCount,
+            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
         );
 
         /// <summary>Gets the size of the segment data array.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetSegmentDataCount(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetSegmentDataCount(
             [In] ID2D1SvgPathData* This
         );
 
@@ -63,9 +67,10 @@ namespace TerraFX.Interop
         /// <param name="commandsCount">Specifies how many commands to remove.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RemoveCommandsAtEnd(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RemoveCommandsAtEnd(
             [In] ID2D1SvgPathData* This,
-            [In] UINT32 commandsCount
+            [In, ComAliasName("UINT32")] uint commandsCount
         );
 
         /// <summary>Updates the commands array. Existing commands not updated by this method are preserved. The array is resized larger if necessary to accomodate the new commands.</summary>
@@ -74,11 +79,12 @@ namespace TerraFX.Interop
         /// <param name="startIndex">The index at which to begin updating commands. Must be less than or equal to the size of the commands array.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT UpdateCommands(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int UpdateCommands(
             [In] ID2D1SvgPathData* This,
             [In] /* readonly */ D2D1_SVG_PATH_COMMAND* commands,
-            [In] UINT32 commandsCount,
-            [In, DefaultParameterValue(0u)] UINT32 startIndex
+            [In, ComAliasName("UINT32")] uint commandsCount,
+            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
         );
 
         /// <summary>Gets commands from the commands array.</summary>
@@ -87,24 +93,27 @@ namespace TerraFX.Interop
         /// <param name="startIndex">The index of the first commands to retrieve.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetCommands(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetCommands(
             [In] ID2D1SvgPathData* This,
             [Out] D2D1_SVG_PATH_COMMAND *commands,
-            [In] UINT32 commandsCount,
-            [In, DefaultParameterValue(0u)] UINT32 startIndex
+            [In, ComAliasName("UINT32")] uint commandsCount,
+            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
         );
 
         /// <summary>Gets the size of the commands array.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetCommandsCount(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetCommandsCount(
             [In] ID2D1SvgPathData* This
         );
 
         /// <summary>Creates a path geometry object representing the path data.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreatePathGeometry(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreatePathGeometry(
             [In] ID2D1SvgPathData* This,
             [In] D2D1_FILL_MODE fillMode,
             [Out] ID2D1PathGeometry1** pathGeometry

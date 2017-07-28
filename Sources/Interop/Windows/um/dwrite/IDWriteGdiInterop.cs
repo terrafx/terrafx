@@ -24,7 +24,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateFontFromLOGFONT(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateFontFromLOGFONT(
             [In] IDWriteGdiInterop* This,
             [In] /* readonly */ LOGFONT* logFont,
             [Out] IDWriteFont** font
@@ -37,11 +38,12 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ConvertFontToLOGFONT(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ConvertFontToLOGFONT(
             [In] IDWriteGdiInterop* This,
             [In] IDWriteFont* font,
             [Out] LOGFONT* logFont,
-            [Out] BOOL* isSystemFont
+            [Out, ComAliasName("BOOL")] int* isSystemFont
         );
 
         /// <summary>Initializes a LOGFONT public structure based on the GDI-compatible properties of the specified font.</summary>
@@ -50,7 +52,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ConvertFontFaceToLOGFONT(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ConvertFontFaceToLOGFONT(
             [In] IDWriteGdiInterop* This,
             [In] IDWriteFontFace* font,
             [Out] LOGFONT* logFont
@@ -62,9 +65,10 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateFontFaceFromHdc(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateFontFaceFromHdc(
             [In] IDWriteGdiInterop* This,
-            [In] HDC hdc,
+            [In, ComAliasName("HDC")] void* hdc,
             [Out] IDWriteFontFace** fontFace
         );
 
@@ -75,11 +79,12 @@ namespace TerraFX.Interop
         /// <param name="renderTarget">Receives a pointer to the newly created render target.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateBitmapRenderTarget(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateBitmapRenderTarget(
             [In] IDWriteGdiInterop* This,
-            [In, Optional] HDC hdc,
-            [In] UINT32 width,
-            [In] UINT32 height,
+            [In, Optional, ComAliasName("HDC")] void* hdc,
+            [In, ComAliasName("UINT32")] uint width,
+            [In, ComAliasName("UINT32")] uint height,
             [Out] IDWriteBitmapRenderTarget** renderTarget
         );
         #endregion

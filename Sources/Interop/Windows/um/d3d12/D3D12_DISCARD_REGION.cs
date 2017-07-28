@@ -3,18 +3,24 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct D3D12_DISCARD_REGION
     {
         #region Fields
-        public UINT NumRects;
+        [ComAliasName("UINT")]
+        public uint NumRects;
 
-        public /* readonly */ D3D12_RECT* pRects;
+        [ComAliasName("D3D12_RECT")]
+        public /* readonly */ RECT* pRects;
 
-        public UINT FirstSubresource;
+        [ComAliasName("UINT")]
+        public uint FirstSubresource;
 
-        public UINT NumSubresources;
+        [ComAliasName("UINT")]
+        public uint NumSubresources;
         #endregion
     }
 }

@@ -19,91 +19,101 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT GetNodeCount(
+        [return: ComAliasName("UINT")]
+        public /* static */ delegate uint GetNodeCount(
             [In] ID3D12Device* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateCommandQueue(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateCommandQueue(
             [In] ID3D12Device* This,
             [In] /* readonly */ D3D12_COMMAND_QUEUE_DESC* pDesc,
-            [In] REFIID riid,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out] void** ppCommandQueue
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateCommandAllocator(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateCommandAllocator(
             [In] ID3D12Device* This,
             [In] D3D12_COMMAND_LIST_TYPE Type,
-            [In] REFIID riid,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out] void** ppCommandAllocator
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateGraphicsPipelineState(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateGraphicsPipelineState(
             [In] ID3D12Device* This,
             [In] /* readonly */ D3D12_GRAPHICS_PIPELINE_STATE_DESC* pDesc,
-            [In] REFIID riid,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out] void** ppPipelineState
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateComputePipelineState(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateComputePipelineState(
             [In] ID3D12Device* This,
             [In] /* readonly */ D3D12_COMPUTE_PIPELINE_STATE_DESC* pDesc,
-            [In] REFIID riid,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out] void** ppPipelineState
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateCommandList(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateCommandList(
             [In] ID3D12Device* This,
-            [In] UINT NodeMask,
+            [In, ComAliasName("UINT")] uint NodeMask,
             [In] D3D12_COMMAND_LIST_TYPE Type,
             [In] ID3D12CommandAllocator* pCommandAllocator,
             [In, Optional] ID3D12PipelineState* pInitialState,
-            [In] REFIID riid,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out] void** ppCommandList
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CheckFeatureSupport(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CheckFeatureSupport(
             [In] ID3D12Device* This,
             [In] D3D12_FEATURE Feature,
             [In, Out] void* pFeatureSupportData,
-            [In] UINT FeatureSupportDataSize
+            [In, ComAliasName("UINT")] uint FeatureSupportDataSize
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateDescriptorHeap(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateDescriptorHeap(
             [In] ID3D12Device* This,
             [In] /* readonly */ D3D12_DESCRIPTOR_HEAP_DESC* pDescriptorHeapDesc,
-            [In] REFIID riid,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out] void** ppvHeap
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT GetDescriptorHandleIncrementSize(
+        [return: ComAliasName("UINT")]
+        public /* static */ delegate uint GetDescriptorHandleIncrementSize(
             [In] ID3D12Device* This,
             [In] D3D12_DESCRIPTOR_HEAP_TYPE DescriptorHeapType
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateRootSignature(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateRootSignature(
             [In] ID3D12Device* This,
-            [In] UINT NodeMask,
+            [In, ComAliasName("UINT")] uint NodeMask,
             [In] /* readonly */ void* pBlobWithRootSignature,
-            [In] SIZE_T blobLengthInBytes,
-            [In] REFIID riid,
+            [In, ComAliasName("SIZE_T")] nuint blobLengthInBytes,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out] void** ppvRootSignature
         );
 
@@ -164,12 +174,12 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void CopyDescriptors(
             [In] ID3D12Device* This,
-            [In] UINT NumDestDescriptorRanges,
+            [In, ComAliasName("UINT")] uint NumDestDescriptorRanges,
             [In] /* readonly */ D3D12_CPU_DESCRIPTOR_HANDLE* pDestDescriptorRangeStarts,
-            [In, Optional] /* readonly */ UINT* pDestDescriptorRangeSizes,
-            [In] UINT NumSrcDescriptorRanges,
+            [In, Optional, ComAliasName("UINT")] /* readonly */ uint* pDestDescriptorRangeSizes,
+            [In, ComAliasName("UINT")] uint NumSrcDescriptorRanges,
             [In] /* readonly */ D3D12_CPU_DESCRIPTOR_HANDLE* pSrcDescriptorRangeStarts,
-            [In, Optional] /* readonly */ UINT* pSrcDescriptorRangeSizes,
+            [In, Optional, ComAliasName("UINT")] /* readonly */ uint* pSrcDescriptorRangeSizes,
             [In] D3D12_DESCRIPTOR_HEAP_TYPE DescriptorHeapsType
         );
 
@@ -177,7 +187,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void CopyDescriptorsSimple(
             [In] ID3D12Device* This,
-            [In] UINT NumDescriptors,
+            [In, ComAliasName("UINT")] uint NumDescriptors,
             [In] D3D12_CPU_DESCRIPTOR_HANDLE DestDescriptorRangeStart,
             [In] D3D12_CPU_DESCRIPTOR_HANDLE SrcDescriptorRangeStart,
             [In] D3D12_DESCRIPTOR_HEAP_TYPE DescriptorHeapsType
@@ -187,8 +197,8 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate D3D12_RESOURCE_ALLOCATION_INFO GetResourceAllocationInfo(
             [In] ID3D12Device* This,
-            [In] UINT visibleMask,
-            [In] UINT numResourceDescs,
+            [In, ComAliasName("UINT")] uint visibleMask,
+            [In, ComAliasName("UINT")] uint numResourceDescs,
             [In] /* readonly */ D3D12_RESOURCE_DESC* pResourceDescs
         );
 
@@ -196,114 +206,125 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate D3D12_HEAP_PROPERTIES GetCustomHeapProperties(
             [In] ID3D12Device* This,
-            [In] UINT NodeMask,
+            [In, ComAliasName("UINT")] uint NodeMask,
             [In] D3D12_HEAP_TYPE heapType
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateCommittedResource(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateCommittedResource(
             [In] ID3D12Device* This,
             [In] /* readonly */ D3D12_HEAP_PROPERTIES* pHeapProperties,
             [In] D3D12_HEAP_FLAGS HeapFlags,
             [In] /* readonly */ D3D12_RESOURCE_DESC* pDesc,
             [In] D3D12_RESOURCE_STATES InitialResourceState,
             [In, Optional] /* readonly */ D3D12_CLEAR_VALUE* pOptimizedClearValue,
-            [In] REFIID riidResource,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riidResource,
             [Out, Optional] void** ppvResource
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateHeap(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateHeap(
             [In] ID3D12Device* This,
             [In] /* readonly */ D3D12_HEAP_DESC* pDesc,
-            [In] REFIID riid,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out, Optional] void** ppvHeap
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreatePlacedResource(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreatePlacedResource(
             [In] ID3D12Device* This,
             [In] ID3D12Heap* pHeap,
-            [In] UINT64 HeapOffset,
+            [In, ComAliasName("UINT64")] ulong HeapOffset,
             [In] /* readonly */ D3D12_RESOURCE_DESC* pDesc,
             [In] D3D12_RESOURCE_STATES InitialState,
             [In, Optional] /* readonly */ D3D12_CLEAR_VALUE* pOptimizedClearValue,
-            [In] REFIID riid,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out, Optional] void** ppvResource
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateReservedResource(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateReservedResource(
             [In] ID3D12Device* This,
             [In] /* readonly */ D3D12_RESOURCE_DESC* pDesc,
             [In] D3D12_RESOURCE_STATES InitialState,
             [In, Optional] /* readonly */ D3D12_CLEAR_VALUE* pOptimizedClearValue,
-            [In] REFIID riid,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out, Optional] void** ppvResource
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateSharedHandle(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateSharedHandle(
             [In] ID3D12Device* This,
             [In] ID3D12DeviceChild* pObject,
             [In, Optional] /* readonly */ SECURITY_ATTRIBUTES* pAttributes,
-            [In] DWORD Access,
-            [In, Optional] LPCWSTR Name,
-            [Out] HANDLE* pHandle
+            [In, ComAliasName("DWORD")] uint Access,
+            [In, Optional, ComAliasName("LPCWSTR")] /* readonly */ char* Name,
+            [Out, ComAliasName("HANDLE")] void** pHandle
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT OpenSharedHandle(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int OpenSharedHandle(
             [In] ID3D12Device* This,
-            [In] HANDLE NTHandle,
-            [In] REFIID riid,
+            [In, ComAliasName("HANDLE")] void* NTHandle,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out, Optional] void** ppvObj
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT OpenSharedHandleByName(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int OpenSharedHandleByName(
             [In] ID3D12Device* This,
-            [In] LPCWSTR Name,
-            [In] DWORD Access,
-            [Out] HANDLE* pNTHandle
+            [In, ComAliasName("LPCWSTR")] /* readonly */ char* Name,
+            [In, ComAliasName("DWORD")] uint Access,
+            [Out, ComAliasName("HANDLE")] void** pNTHandle
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT MakeResident(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int MakeResident(
             [In] ID3D12Device* This,
-            [In] UINT NumObjects,
+            [In, ComAliasName("UINT")] uint NumObjects,
             [In] /* readonly */ ID3D12Pageable** ppObjects
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Evict(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Evict(
             [In] ID3D12Device* This,
-            [In] UINT NumObjects,
+            [In, ComAliasName("UINT")] uint NumObjects,
             [In] /* readonly */ ID3D12Pageable** ppObjects
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateFence(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateFence(
             [In] ID3D12Device* This,
-            [In] UINT64 InitialValue,
+            [In, ComAliasName("UINT64")] ulong InitialValue,
             [In] D3D12_FENCE_FLAGS Flags,
-            [In] REFIID riid,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out] void** ppFence
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDeviceRemovedReason(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDeviceRemovedReason(
             [In] ID3D12Device* This
         
         );
@@ -313,38 +334,41 @@ namespace TerraFX.Interop
         public /* static */ delegate void GetCopyableFootprints(
             [In] ID3D12Device* This,
             [In] /* readonly */ D3D12_RESOURCE_DESC* pResourceDesc,
-            [In] UINT FirstSubresource,
-            [In] UINT NumSubresources,
-            [In] UINT64 BaseOffset,
+            [In, ComAliasName("UINT")] uint FirstSubresource,
+            [In, ComAliasName("UINT")] uint NumSubresources,
+            [In, ComAliasName("UINT64")] ulong BaseOffset,
             [Out, Optional] D3D12_PLACED_SUBRESOURCE_FOOTPRINT* pLayouts,
-            [Out, Optional] UINT* pNumRows,
-            [Out, Optional] UINT64* pRowSizeInBytes,
-            [Out, Optional] UINT64* pTotalBytes
+            [Out, Optional, ComAliasName("UINT")] uint* pNumRows,
+            [Out, Optional, ComAliasName("UINT64")] ulong* pRowSizeInBytes,
+            [Out, Optional, ComAliasName("UINT64")] ulong* pTotalBytes
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateQueryHeap(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateQueryHeap(
             [In] ID3D12Device* This,
             [In] /* readonly */ D3D12_QUERY_HEAP_DESC* pDesc,
-            [In] REFIID riid,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out, Optional] void** ppvHeap
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetStablePowerState(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetStablePowerState(
             [In] ID3D12Device* This,
-            [In] BOOL Enable
+            [In, ComAliasName("BOOL")] int Enable
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateCommandSignature(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateCommandSignature(
             [In] ID3D12Device* This,
             [In] /* readonly */ D3D12_COMMAND_SIGNATURE_DESC* pDesc,
             [In, Optional] ID3D12RootSignature* pRootSignature,
-            [In] REFIID riid,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out, Optional] void** ppvCommandSignature
         );
 
@@ -353,11 +377,11 @@ namespace TerraFX.Interop
         public /* static */ delegate void GetResourceTiling(
             [In] ID3D12Device* This,
             [In] ID3D12Resource* pTiledResource,
-            [Out, Optional] UINT* pNumTilesForEntireResource,
+            [Out, Optional, ComAliasName("UINT")] uint* pNumTilesForEntireResource,
             [Out, Optional] D3D12_PACKED_MIP_INFO* pPackedMipDesc,
             [Out, Optional] D3D12_TILE_SHAPE* pStandardTileShapeForNonPackedMips,
-            [In, Out, Optional] UINT* pNumSubresourceTilings,
-            [In] UINT FirstSubresourceTilingToGet,
+            [In, Out, Optional, ComAliasName("UINT")] uint* pNumSubresourceTilings,
+            [In, ComAliasName("UINT")] uint FirstSubresourceTilingToGet,
             [Out] D3D12_SUBRESOURCE_TILING* pSubresourceTilingsForNonPackedMips
         );
 

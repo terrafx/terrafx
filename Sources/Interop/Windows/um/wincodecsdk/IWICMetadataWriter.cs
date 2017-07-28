@@ -19,7 +19,8 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetValue(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetValue(
             [In] IWICMetadataWriter* This,
             [In, Optional] /* readonly */ PROPVARIANT* pvarSchema,
             [In] /* readonly */ PROPVARIANT* pvarId,
@@ -28,9 +29,10 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetValueByIndex(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetValueByIndex(
             [In] IWICMetadataWriter* This,
-            [In] UINT nIndex,
+            [In, ComAliasName("UINT")] uint nIndex,
             [In, Optional] /* readonly */ PROPVARIANT* pvarSchema,
             [In] /* readonly */ PROPVARIANT* pvarId,
             [In] /* readonly */ PROPVARIANT* pvarValue
@@ -38,7 +40,8 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RemoveValue(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RemoveValue(
             [In] IWICMetadataWriter* This,
             [In, Optional] /* readonly */ PROPVARIANT* pvarSchema,
             [In] /* readonly */ PROPVARIANT* pvarId
@@ -46,9 +49,10 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RemoveValueByIndex(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RemoveValueByIndex(
             [In] IWICMetadataWriter* This,
-            [In] UINT nIndex
+            [In, ComAliasName("UINT")] uint nIndex
         );
         #endregion
 

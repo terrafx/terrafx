@@ -3,15 +3,19 @@
 // Ported from um\dcommon.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>Represents an x-coordinate and y-coordinate pair in two-dimensional space.</summary>
     public /* blittable */ struct D2D_POINT_2U
     {
         #region Fields
-        public UINT32 x;
+        [ComAliasName("UINT32")]
+        public uint x;
 
-        public UINT32 y;
+        [ComAliasName("UINT32")]
+        public uint y;
         #endregion
     }
 }

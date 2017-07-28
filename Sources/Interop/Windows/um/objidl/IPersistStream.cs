@@ -19,28 +19,32 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT IsDirty(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int IsDirty(
             [In] IPersistStream* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Load(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Load(
             [In] IPersistStream* This,
             [In, Optional] IStream* pStm
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Save(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Save(
             [In] IPersistStream* This,
             [In, Optional] IStream* pStm,
-            [In] BOOL fClearDirty
+            [In, ComAliasName("BOOL")] int fClearDirty
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetSizeMax(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSizeMax(
             [In] IPersistStream* This,
             [Out] ULARGE_INTEGER* pcbSize
         );

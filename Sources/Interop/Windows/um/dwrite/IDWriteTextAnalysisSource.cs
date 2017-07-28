@@ -26,11 +26,12 @@ namespace TerraFX.Interop
         /// <remarks> Although apps can implement sparse textual content that only maps part of the backing store, the app must map any text that is in the range passed to any analysis functions.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetTextAtPosition(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetTextAtPosition(
             [In] IDWriteTextAnalysisSource* This,
-            [In] UINT32 textPosition,
-            [Out] /* readonly */ WCHAR** textString,
-            [Out] UINT32* textLength
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [Out, ComAliasName("WCHAR")] /* readonly */ char** textString,
+            [Out, ComAliasName("UINT32")] uint* textLength
         );
 
         /// <summary>Get a block of text immediately preceding the specified position.</summary>
@@ -41,11 +42,12 @@ namespace TerraFX.Interop
         /// <remarks> Although apps can implement sparse textual content that only maps part of the backing store, the app must map any text that is in the range passed to any analysis functions.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetTextBeforePosition(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetTextBeforePosition(
             [In] IDWriteTextAnalysisSource* This,
-            [In] UINT32 textPosition,
-            [Out] /* readonly */ WCHAR** textString,
-            [Out] UINT32* textLength
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [Out, ComAliasName("WCHAR")] /* readonly */ char** textString,
+            [Out, ComAliasName("UINT32")] uint* textLength
         );
 
         /// <summary>Get paragraph reading direction.</summary>
@@ -62,11 +64,12 @@ namespace TerraFX.Interop
         /// <remarks> The localeName pointer must remain valid until the next call or until the analysis returns.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetLocaleName(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetLocaleName(
             [In] IDWriteTextAnalysisSource* This,
-            [In] UINT32 textPosition,
-            [Out] UINT32* textLength,
-            [Out] /* readonly */ WCHAR** localeName
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [Out, ComAliasName("UINT32")] uint* textLength,
+            [Out, ComAliasName("WCHAR")] /* readonly */ char** localeName
         );
 
         /// <summary>Get number substitution on the range affected by it.</summary>
@@ -76,10 +79,11 @@ namespace TerraFX.Interop
         /// <remarks> Any implementation should return the number substitution with an incremented ref count, and the analysis will release when finished with it (either before the next call or before it returns). However, the sink callback may hold onto it after that.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetNumberSubstitution(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetNumberSubstitution(
             [In] IDWriteTextAnalysisSource* This,
-            [In] UINT32 textPosition,
-            [Out] UINT32* textLength,
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [Out, ComAliasName("UINT32")] uint* textLength,
             [Out] IDWriteNumberSubstitution** numberSubstitution
         );
         #endregion

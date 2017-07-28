@@ -19,22 +19,25 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Initialize(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Initialize(
             [In] IWICBitmapFrameEncode* This,
             [In, Optional] IPropertyBag2* pIEncoderOptions
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetSize(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetSize(
             [In] IWICBitmapFrameEncode* This,
-            [In] UINT uiWidth,
-            [In] UINT uiHeight
+            [In, ComAliasName("UINT")] uint uiWidth,
+            [In, ComAliasName("UINT")] uint uiHeight
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetResolution(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetResolution(
             [In] IWICBitmapFrameEncode* This,
             [In] double dpiX,
             [In] double dpiY
@@ -42,46 +45,52 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetPixelFormat(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetPixelFormat(
             [In] IWICBitmapFrameEncode* This,
-            [In, Out] WICPixelFormatGUID* pPixelFormat
+            [In, Out, ComAliasName("WICPixelFormatGUID")] Guid* pPixelFormat
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetColorContexts(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetColorContexts(
             [In] IWICBitmapFrameEncode* This,
-            [In] UINT cCount,
+            [In, ComAliasName("UINT")] uint cCount,
             [In] IWICColorContext** ppIColorContext
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetPalette(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetPalette(
             [In] IWICBitmapFrameEncode* This,
             [In, Optional] IWICPalette* pIPalette
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetThumbnail(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetThumbnail(
             [In] IWICBitmapFrameEncode* This,
             [In] IWICBitmapSource* pIThumbnail
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT WritePixels(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int WritePixels(
             [In] IWICBitmapFrameEncode* This,
-            [In] UINT lineCount,
-            [In] UINT cbStride,
-            [In] UINT cbBufferSize,
-            [In] BYTE* pbPixels
+            [In, ComAliasName("UINT")] uint lineCount,
+            [In, ComAliasName("UINT")] uint cbStride,
+            [In, ComAliasName("UINT")] uint cbBufferSize,
+            [In, ComAliasName("BYTE")] byte* pbPixels
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT WriteSource(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int WriteSource(
             [In] IWICBitmapFrameEncode* This,
             [In, Optional] IWICBitmapSource* pIBitmapSource,
             [In, Optional] WICRect* prc
@@ -89,13 +98,15 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Commit(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Commit(
             [In] IWICBitmapFrameEncode* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetMetadataQueryWriter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetMetadataQueryWriter(
             [In] IWICBitmapFrameEncode* This,
             [Out, Optional] IWICMetadataQueryWriter** ppIMetadataQueryWriter
         );

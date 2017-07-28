@@ -26,8 +26,9 @@ namespace TerraFX.Interop
         #region External Methods
         [DllImport("D2D1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1ComputeMaximumScaleFactor", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern FLOAT D2D1ComputeMaximumScaleFactor(
-            [In] /* readonly */ D2D1_MATRIX_3X2_F* matrix
+        [return: ComAliasName("FLOAT")]
+        public static extern float D2D1ComputeMaximumScaleFactor(
+            [In, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* matrix
         );
         #endregion
     }

@@ -4,29 +4,39 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System;
+using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct EXCEPINFO
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    unsafe public /* blittable */ struct EXCEPINFO
     {
         #region Fields
-        public WORD wCode;
+        [ComAliasName("WORD")]
+        public ushort wCode;
 
-        public WORD wReserved;
+        [ComAliasName("WORD")]
+        public ushort wReserved;
 
-        public BSTR bstrSource;
+        [ComAliasName("BSTR")]
+        public char* bstrSource;
 
-        public BSTR bstrDescription;
+        [ComAliasName("BSTR")]
+        public char* bstrDescription;
 
-        public BSTR bstrHelpFile;
+        [ComAliasName("BSTR")]
+        public char* bstrHelpFile;
 
-        public DWORD dwHelpContext;
+        [ComAliasName("DWORD")]
+        public uint dwHelpContext;
 
-        public PVOID pvReserved;
+        [ComAliasName("PVOID")]
+        public void* pvReserved;
 
         public IntPtr /* pfnDeferredFillIn */ pfnDeferredFillIn;
 
-        public SCODE scode;
+        [ComAliasName("SCODE")]
+        public int scode;
         #endregion
     }
 }

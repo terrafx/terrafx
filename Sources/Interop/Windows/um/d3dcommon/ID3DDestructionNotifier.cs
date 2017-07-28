@@ -19,18 +19,20 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RegisterDestructionCallback(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RegisterDestructionCallback(
             [In] ID3DDestructionNotifier* This,
             [In] IntPtr /* PFN_DESTRUCTION_CALLBACK */ callbackFn,
             [In] void* pData,
-            [Out] UINT* pCallbackID
+            [Out, ComAliasName("UINT")] uint* pCallbackID
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT UnregisterDestructionCallback(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int UnregisterDestructionCallback(
             [In] ID3DDestructionNotifier* This,
-            [In] UINT callbackID
+            [In, ComAliasName("UINT")] uint callbackID
         );
         #endregion
 

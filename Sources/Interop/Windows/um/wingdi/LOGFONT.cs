@@ -3,6 +3,7 @@
 // Ported from um\wingdi.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
@@ -10,106 +11,121 @@ namespace TerraFX.Interop
     public /* blittable */ struct LOGFONT
     {
         #region Fields
-        public LONG lfHeight;
+        [ComAliasName("LONG")]
+        public int lfHeight;
 
-        public LONG lfWidth;
+        [ComAliasName("LONG")]
+        public int lfWidth;
 
-        public LONG lfEscapement;
+        [ComAliasName("LONG")]
+        public int lfEscapement;
 
-        public LONG lfOrientation;
+        [ComAliasName("LONG")]
+        public int lfOrientation;
 
-        public LONG lfWeight;
+        [ComAliasName("LONG")]
+        public int lfWeight;
 
-        public BYTE lfItalic;
+        [ComAliasName("BYTE")]
+        public byte lfItalic;
 
-        public BYTE lfUnderline;
+        [ComAliasName("BYTE")]
+        public byte lfUnderline;
 
-        public BYTE lfStrikeOut;
+        [ComAliasName("BYTE")]
+        public byte lfStrikeOut;
 
-        public BYTE lfCharSet;
+        [ComAliasName("BYTE")]
+        public byte lfCharSet;
 
-        public BYTE lfOutPrecision;
+        [ComAliasName("BYTE")]
+        public byte lfOutPrecision;
 
-        public BYTE lfClipPrecision;
+        [ComAliasName("BYTE")]
+        public byte lfClipPrecision;
 
-        public BYTE lfQuality;
+        [ComAliasName("BYTE")]
+        public byte lfQuality;
 
-        public BYTE lfPitchAndFamily;
+        [ComAliasName("BYTE")]
+        public byte lfPitchAndFamily;
 
+        [ComAliasName("WCHAR[32]")]
         public _lfFaceName_e__FixedBuffer lfFaceName;
         #endregion
 
         #region Structs
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         unsafe public /* blittable */ struct _lfFaceName_e__FixedBuffer
         {
             #region Fields
-            public WCHAR e0;
+            public char e0;
 
-            public WCHAR e1;
+            public char e1;
 
-            public WCHAR e2;
+            public char e2;
 
-            public WCHAR e3;
+            public char e3;
 
-            public WCHAR e4;
+            public char e4;
 
-            public WCHAR e5;
+            public char e5;
 
-            public WCHAR e6;
+            public char e6;
 
-            public WCHAR e7;
+            public char e7;
 
-            public WCHAR e8;
+            public char e8;
 
-            public WCHAR e9;
+            public char e9;
 
-            public WCHAR e10;
+            public char e10;
 
-            public WCHAR e11;
+            public char e11;
 
-            public WCHAR e12;
+            public char e12;
 
-            public WCHAR e13;
+            public char e13;
 
-            public WCHAR e14;
+            public char e14;
 
-            public WCHAR e15;
+            public char e15;
 
-            public WCHAR e16;
+            public char e16;
 
-            public WCHAR e17;
+            public char e17;
 
-            public WCHAR e18;
+            public char e18;
 
-            public WCHAR e19;
+            public char e19;
 
-            public WCHAR e20;
+            public char e20;
 
-            public WCHAR e21;
+            public char e21;
 
-            public WCHAR e22;
+            public char e22;
 
-            public WCHAR e23;
+            public char e23;
 
-            public WCHAR e24;
+            public char e24;
 
-            public WCHAR e25;
+            public char e25;
 
-            public WCHAR e26;
+            public char e26;
 
-            public WCHAR e27;
+            public char e27;
 
-            public WCHAR e28;
+            public char e28;
 
-            public WCHAR e29;
+            public char e29;
 
-            public WCHAR e30;
+            public char e30;
 
-            public WCHAR e31;
+            public char e31;
             #endregion
 
             #region Properties
-            public WCHAR this[int index]
+            public char this[int index]
             {
                 get
                 {
@@ -118,7 +134,7 @@ namespace TerraFX.Interop
                         ThrowArgumentOutOfRangeException(nameof(index), index);
                     }
 
-                    fixed (WCHAR* e = &e0)
+                    fixed (char* e = &e0)
                     {
                         return e[index];
                     }

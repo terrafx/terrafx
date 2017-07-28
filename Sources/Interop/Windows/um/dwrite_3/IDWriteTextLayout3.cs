@@ -20,7 +20,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT InvalidateLayout(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int InvalidateLayout(
             [In] IDWriteTextLayout3* This
         );
 
@@ -29,7 +30,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetLineSpacing(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetLineSpacing(
             [In] IDWriteTextLayout3* This,
             [In] /* readonly */ DWRITE_LINE_SPACING* lineSpacingOptions
         );
@@ -39,7 +41,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetLineSpacing(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetLineSpacing(
             [In] IDWriteTextLayout3* This,
             [Out] DWRITE_LINE_SPACING* lineSpacingOptions
         );
@@ -52,11 +55,12 @@ namespace TerraFX.Interop
         /// <remarks> If maxLineCount is not large enough E_NOT_SUFFICIENT_BUFFER, which is equivalent to HRESULT_FROM_WIN32(ERROR_INSUFFICIENT_BUFFER), is returned and *actualLineCount is set to the number of lines needed.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetLineMetrics(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetLineMetrics(
             [In] IDWriteTextLayout3* This,
             [Out, Optional] DWRITE_LINE_METRICS1* lineMetrics,
-            [In] UINT32 maxLineCount,
-            [Out] UINT32* actualLineCount
+            [In, ComAliasName("UINT32")] uint maxLineCount,
+            [Out, ComAliasName("UINT32")] uint* actualLineCount
         );
         #endregion
 

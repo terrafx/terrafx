@@ -19,47 +19,53 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT InitializeFromFilename(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int InitializeFromFilename(
             [In] IWICColorContext* This,
-            [In] LPCWSTR wzFilename
+            [In, ComAliasName("LPCWSTR")] /* readonly */ char* wzFilename
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT InitializeFromMemory(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int InitializeFromMemory(
             [In] IWICColorContext* This,
-            [In] /* readonly */ BYTE* pbBuffer,
-            [In] UINT cbBufferSize
+            [In, ComAliasName("BYTE")] /* readonly */ byte* pbBuffer,
+            [In, ComAliasName("UINT")] uint cbBufferSize
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT InitializeFromExifColorSpace(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int InitializeFromExifColorSpace(
             [In] IWICColorContext* This,
-            [In] UINT value
+            [In, ComAliasName("UINT")] uint value
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT _GetType(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int _GetType(
             [In] IWICColorContext* This,
             [Out] WICColorContextType* pType
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetProfileBytes(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetProfileBytes(
             [In] IWICColorContext* This,
-            [In] UINT cbBuffer,
-            [In, Out, Optional] BYTE* pbBuffer,
-            [Out] UINT* pcbActual
+            [In, ComAliasName("UINT")] uint cbBuffer,
+            [In, Out, Optional, ComAliasName("BYTE")] byte* pbBuffer,
+            [Out, ComAliasName("UINT")] uint* pcbActual
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetExifColorSpace(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetExifColorSpace(
             [In] IWICColorContext* This,
-            [Out] UINT* pValue
+            [Out, ComAliasName("UINT")] uint* pValue
         );
         #endregion
 

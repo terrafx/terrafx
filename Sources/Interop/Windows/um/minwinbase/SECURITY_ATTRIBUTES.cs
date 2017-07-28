@@ -3,16 +3,21 @@
 // Ported from um\minwinbase.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct SECURITY_ATTRIBUTES
+    unsafe public /* blittable */ struct SECURITY_ATTRIBUTES
     {
         #region Fields
-        public DWORD nLength;
+        [ComAliasName("DWORD")]
+        public uint nLength;
 
-        public LPVOID lpSecurityDescriptor;
+        [ComAliasName("LPVOID")]
+        public void* lpSecurityDescriptor;
 
-        public BOOL bInheritHandle;
+        [ComAliasName("BOOL")]
+        public int bInheritHandle;
         #endregion
     }
 }

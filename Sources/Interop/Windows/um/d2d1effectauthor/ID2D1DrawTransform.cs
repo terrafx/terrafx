@@ -19,7 +19,8 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetDrawInfo(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetDrawInfo(
             [In] ID2D1DrawTransform* This,
             [In] ID2D1DrawInfo* drawInfo
         );

@@ -19,81 +19,91 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Present(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Present(
             [In] IDXGISwapChain* This,
-            [In] UINT SyncInterval,
-            [In] UINT Flags
+            [In, ComAliasName("UINT")] uint SyncInterval,
+            [In, ComAliasName("UINT")] uint Flags
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetBuffer(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetBuffer(
             [In] IDXGISwapChain* This,
-            [In] UINT Buffer,
-            [In] REFIID riid,
+            [In, ComAliasName("UINT")] uint Buffer,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [In, Out] void** ppSurface
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetFullscreenState(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetFullscreenState(
             [In] IDXGISwapChain* This,
-            [In] BOOL Fullscreen,
+            [In, ComAliasName("BOOL")] int Fullscreen,
             [In, Optional] IDXGIOutput* pTarget
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFullscreenState(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFullscreenState(
             [In] IDXGISwapChain* This,
-            [Out, Optional] BOOL* pFullscreen,
+            [Out, Optional, ComAliasName("BOOL")] int* pFullscreen,
             [Out, Optional] IDXGIOutput** ppTarget
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDesc(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDesc(
             [In] IDXGISwapChain* This,
             [Out] DXGI_SWAP_CHAIN_DESC* pDesc
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ResizeBuffers(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ResizeBuffers(
             [In] IDXGISwapChain* This,
-            [In] UINT BufferCount,
-            [In] UINT Width,
-            [In] UINT Height,
+            [In, ComAliasName("UINT")] uint BufferCount,
+            [In, ComAliasName("UINT")] uint Width,
+            [In, ComAliasName("UINT")] uint Height,
             [In] DXGI_FORMAT NewFormat,
-            [In] UINT SwapChainFlags
+            [In, ComAliasName("UINT")] uint SwapChainFlags
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ResizeTarget(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ResizeTarget(
             [In] IDXGISwapChain* This,
             [In] /* readonly */ DXGI_MODE_DESC* pNewTargetParameters
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetContainingOutput(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetContainingOutput(
             [In] IDXGISwapChain* This,
             [Out] IDXGIOutput** ppOutput
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFrameStatistics(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFrameStatistics(
             [In] IDXGISwapChain* This,
             [Out] DXGI_FRAME_STATISTICS* pStats
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetLastPresentCount(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetLastPresentCount(
             [In] IDXGISwapChain* This,
-            [Out] UINT* pLastPresentCount
+            [Out, ComAliasName("UINT")] uint* pLastPresentCount
         );
         #endregion
 

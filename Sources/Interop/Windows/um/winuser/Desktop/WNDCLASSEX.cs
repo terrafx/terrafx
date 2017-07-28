@@ -4,15 +4,19 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System;
+using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.Desktop
 {
-    public /* blittable */ struct WNDCLASSEX
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    unsafe public /* blittable */ struct WNDCLASSEX
     {
         #region Fields
-        public UINT cbSize;
+        [ComAliasName("UINT")]
+        public uint cbSize;
 
-        public UINT style;
+        [ComAliasName("UINT")]
+        public uint style;
 
         public IntPtr /* WNDPROC */ lpfnWndProc;
 
@@ -20,19 +24,26 @@ namespace TerraFX.Interop.Desktop
 
         public int cbWndExtra;
 
-        public HINSTANCE hInstance;
+        [ComAliasName("HINSTANCE")]
+        public void* hInstance;
 
-        public HICON hIcon;
+        [ComAliasName("HICON")]
+        public void* hIcon;
 
-        public HCURSOR hCursor;
+        [ComAliasName("HCURSOR")]
+        public void* hCursor;
 
-        public HBRUSH hbrBackground;
+        [ComAliasName("HBRUSH")]
+        public void* hbrBackground;
 
-        public LPCWSTR lpszMenuName;
+        [ComAliasName("LPCWSTR")]
+        public char* lpszMenuName;
 
-        public LPCWSTR lpszClassName;
+        [ComAliasName("LPCWSTR")]
+        public char* lpszClassName;
 
-        public HICON hIconSm;
+        [ComAliasName("HICON")]
+        public void* hIconSm;
         #endregion
     }
 }

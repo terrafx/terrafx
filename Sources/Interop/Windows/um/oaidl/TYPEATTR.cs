@@ -3,42 +3,61 @@
 // Ported from um\oaidl.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
-    public  /* blittable */ struct TYPEATTR
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    unsafe public  /* blittable */ struct TYPEATTR
     {
         #region Fields
-        public GUID guid;
+        [ComAliasName("GUID")]
+        public Guid guid;
 
-        public LCID lcid;
+        [ComAliasName("LCID")]
+        public uint lcid;
 
-        public DWORD dwReserved;
+        [ComAliasName("DWORD")]
+        public uint dwReserved;
 
-        public MEMBERID memidConstructor;
+        [ComAliasName("MEMBERID")]
+        public int memidConstructor;
 
-        public MEMBERID memidDestructor;
+        [ComAliasName("MEMBERID")]
+        public int memidDestructor;
 
-        public LPOLESTR lpstrSchema;
+        [ComAliasName("LPOLESTR")]
+        public char* lpstrSchema;
 
-        public ULONG cbSizeInstance;
+        [ComAliasName("ULONG")]
+        public uint cbSizeInstance;
 
         public TYPEKIND typekind;
 
-        public WORD cFuncs;
+        [ComAliasName("WORD")]
+        public ushort cFuncs;
 
-        public WORD cVars;
+        [ComAliasName("WORD")]
+        public ushort cVars;
 
-        public WORD cImplTypes;
+        [ComAliasName("WORD")]
+        public ushort cImplTypes;
 
-        public WORD cbSizeVft;
+        [ComAliasName("WORD")]
+        public ushort cbSizeVft;
 
-        public WORD cbAlignment;
+        [ComAliasName("WORD")]
+        public ushort cbAlignment;
 
-        public WORD wTypeFlags;
+        [ComAliasName("WORD")]
+        public ushort wTypeFlags;
 
-        public WORD wMajorVerNum;
+        [ComAliasName("WORD")]
+        public ushort wMajorVerNum;
 
-        public WORD wMinorVerNum;
+        [ComAliasName("WORD")]
+        public ushort wMinorVerNum;
 
         public TYPEDESC tdescAlias;
 

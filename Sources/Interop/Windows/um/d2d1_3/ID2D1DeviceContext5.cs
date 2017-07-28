@@ -22,10 +22,11 @@ namespace TerraFX.Interop
         /// <param name="svgDocument">When this method returns, contains a pointer to the SVG document.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateSvgDocument(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateSvgDocument(
             [In] ID2D1DeviceContext5* This,
             [In, Optional] IStream* inputXmlStream,
-            [In] D2D1_SIZE_F viewportSize,
+            [In, ComAliasName("D2D1_SIZE_F")] D2D_SIZE_F viewportSize,
             [Out] ID2D1SvgDocument** svgDocument
         );
 
@@ -40,7 +41,8 @@ namespace TerraFX.Interop
         /// <summary>Creates a color context from a DXGI color space type. It is only valid to use this with the Color Management Effect in 'Best' mode.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateColorContextFromDxgiColorSpace(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateColorContextFromDxgiColorSpace(
             [In] ID2D1DeviceContext5* This,
             [In] DXGI_COLOR_SPACE_TYPE colorSpace,
             [Out] ID2D1ColorContext1** colorContext
@@ -49,7 +51,8 @@ namespace TerraFX.Interop
         /// <summary>Creates a color context from a simple color profile. It is only valid to use this with the Color Management Effect in 'Best' mode.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateColorContextFromSimpleColorProfile(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateColorContextFromSimpleColorProfile(
             [In] ID2D1DeviceContext5* This,
             [In] /* readonly */ D2D1_SIMPLE_COLOR_PROFILE* simpleProfile,
             [Out] ID2D1ColorContext1** colorContext

@@ -23,17 +23,18 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetInput(
             [In] ID2D1Effect* This,
-            [In] UINT32 index,
+            [In, ComAliasName("UINT32")] uint index,
             [In, Optional] ID2D1Image* input,
-            [In, DefaultParameterValue(TRUE)] BOOL invalidate
+            [In, DefaultParameterValue(TRUE), ComAliasName("BOOL")] int invalidate
         );
 
         /// <summary>If the effect supports a variable number of inputs, this sets the number of input that are currently active on the effect.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetInputCount(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetInputCount(
             [In] ID2D1Effect* This,
-            [In] UINT32 inputCount
+            [In, ComAliasName("UINT32")] uint inputCount
         );
 
         /// <summary>Returns the input image to the effect. The input could be another effect or a bitmap.</summary>
@@ -41,14 +42,15 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void GetInput(
             [In] ID2D1Effect* This,
-            [In] UINT32 index,
+            [In, ComAliasName("UINT32")] uint index,
             [Out] ID2D1Image** input
         );
 
         /// <summary>This returns the number of input that are bound into this effect.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetInputCount(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetInputCount(
             [In] ID2D1Effect* This
         );
 

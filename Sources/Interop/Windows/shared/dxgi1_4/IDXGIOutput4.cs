@@ -19,12 +19,13 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CheckOverlayColorSpaceSupport(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CheckOverlayColorSpaceSupport(
             [In] IDXGIOutput4* This,
             [In] DXGI_FORMAT Format,
             [In] DXGI_COLOR_SPACE_TYPE ColorSpace,
             [In] IUnknown* pConcernedDevice,
-            [Out] UINT* pFlags
+            [Out, ComAliasName("UINT")] uint* pFlags
         );
         #endregion
 

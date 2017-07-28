@@ -22,7 +22,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFontFaceReference(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFontFaceReference(
             [In] IDWriteFontFace3* This,
             [Out] IDWriteFontFaceReference** fontFaceReference
         );
@@ -63,7 +64,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFamilyNames(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFamilyNames(
             [In] IDWriteFontFace3* This,
             [Out] IDWriteLocalizedStrings** names
         );
@@ -73,7 +75,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFaceNames(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFaceNames(
             [In] IDWriteFontFace3* This,
             [Out] IDWriteLocalizedStrings** names
         );
@@ -85,11 +88,12 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code. If the font does not contain the specified string, the return value is S_OK but informationalStrings receives a NULL pointer and exists receives the value FALSE.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetInformationalStrings(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetInformationalStrings(
             [In] IDWriteFontFace3* This,
             [In] DWRITE_INFORMATIONAL_STRING_ID informationalStringID,
             [Out] IDWriteLocalizedStrings** informationalStrings,
-            [Out] BOOL* exists
+            [Out, ComAliasName("BOOL")] int* exists
         );
 
         /// <summary>Determines whether the font supports the specified character.</summary>
@@ -97,9 +101,10 @@ namespace TerraFX.Interop
         /// <returns> Returns TRUE if the font has the specified character, FALSE if not.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL HasCharacter(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int HasCharacter(
             [In] IDWriteFontFace3* This,
-            [In] UINT32 unicodeValue
+            [In, ComAliasName("UINT32")] uint unicodeValue
         );
 
         /// <summary>Determines the recommended text rendering and grid-fit mode to be used based on the font, size, world transform, and measuring mode.</summary>
@@ -116,13 +121,14 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetRecommendedRenderingMode(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetRecommendedRenderingMode(
             [In] IDWriteFontFace3* This,
-            [In] FLOAT fontEmSize,
-            [In] FLOAT dpiX,
-            [In] FLOAT dpiY,
+            [In, ComAliasName("FLOAT")] float fontEmSize,
+            [In, ComAliasName("FLOAT")] float dpiX,
+            [In, ComAliasName("FLOAT")] float dpiY,
             [In, Optional] /* readonly */ DWRITE_MATRIX* transform,
-            [In] BOOL isSideways,
+            [In, ComAliasName("BOOL")] int isSideways,
             [In] DWRITE_OUTLINE_THRESHOLD outlineThreshold,
             [In] DWRITE_MEASURING_MODE measuringMode,
             [In, Optional] IDWriteRenderingParams* renderingParams,
@@ -135,9 +141,10 @@ namespace TerraFX.Interop
         /// <returns> Returns TRUE if the font has the specified character locally available, FALSE if not or if the font does not support that character.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL IsCharacterLocal(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int IsCharacterLocal(
             [In] IDWriteFontFace3* This,
-            [In] UINT32 unicodeValue
+            [In, ComAliasName("UINT32")] uint unicodeValue
         );
 
         /// <summary>Determines whether the glyph is locally downloaded from the font.</summary>
@@ -145,9 +152,10 @@ namespace TerraFX.Interop
         /// <returns> Returns TRUE if the font has the specified glyph locally available.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL IsGlyphLocal(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int IsGlyphLocal(
             [In] IDWriteFontFace3* This,
-            [In] UINT16 glyphId
+            [In, ComAliasName("UINT16")] ushort glyphId
         );
 
         /// <summary>Determines whether the specified characters are local.</summary>
@@ -158,12 +166,13 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AreCharactersLocal(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AreCharactersLocal(
             [In] IDWriteFontFace3* This,
-            [In] /* readonly */ WCHAR* characters,
-            [In] UINT32 characterCount,
-            [In] BOOL enqueueIfNotLocal,
-            [Out] BOOL* isLocal
+            [In, ComAliasName("WCHAR")] /* readonly */ char* characters,
+            [In, ComAliasName("UINT32")] uint characterCount,
+            [In, ComAliasName("BOOL")] int enqueueIfNotLocal,
+            [Out, ComAliasName("BOOL")] int* isLocal
         );
 
         /// <summary>Determines whether the specified glyphs are local.</summary>
@@ -174,12 +183,13 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AreGlyphsLocal(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AreGlyphsLocal(
             [In] IDWriteFontFace3* This,
-            [In] /* readonly */ UINT16* glyphIndices,
-            [In] UINT32 glyphCount,
-            [In] BOOL enqueueIfNotLocal,
-            [Out] BOOL* isLocal
+            [In, ComAliasName("UINT16")] /* readonly */ ushort* glyphIndices,
+            [In, ComAliasName("UINT32")] uint glyphCount,
+            [In, ComAliasName("BOOL")] int enqueueIfNotLocal,
+            [Out, ComAliasName("BOOL")] int* isLocal
         );
         #endregion
 

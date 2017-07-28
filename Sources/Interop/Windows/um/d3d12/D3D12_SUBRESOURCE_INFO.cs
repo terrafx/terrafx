@@ -3,16 +3,21 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_SUBRESOURCE_INFO
     {
         #region Fields
-        public UINT64 Offset;
+        [ComAliasName("UINT64")]
+        public ulong Offset;
 
-        public UINT RowPitch;
+        [ComAliasName("UINT")]
+        public uint RowPitch;
 
-        public UINT DepthPitch;
+        [ComAliasName("UINT")]
+        public uint DepthPitch;
         #endregion
     }
 }

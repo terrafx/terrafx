@@ -19,16 +19,18 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetMaximumFrameLatency(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetMaximumFrameLatency(
             [In] IDXGIDevice1* This,
-            [In] UINT MaxLatency
+            [In, ComAliasName("UINT")] uint MaxLatency
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetMaximumFrameLatency(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetMaximumFrameLatency(
             [In] IDXGIDevice1* This,
-            [Out] UINT* pMaxLatency
+            [Out, ComAliasName("UINT")] uint* pMaxLatency
         );
         #endregion
 

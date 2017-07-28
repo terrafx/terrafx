@@ -19,17 +19,19 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetMetadataByName(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetMetadataByName(
             [In] IWICMetadataQueryWriter* This,
-            [In] LPCWSTR wzName,
+            [In, ComAliasName("LPCWSTR")] /* readonly */ char* wzName,
             [In] /* readonly */ PROPVARIANT* pvarValue
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RemoveMetadataByName(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RemoveMetadataByName(
             [In] IWICMetadataQueryWriter* This,
-            [In] LPCWSTR wzName
+            [In, ComAliasName("LPCWSTR")] /* readonly */ char* wzName
         );
         #endregion
 

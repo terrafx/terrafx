@@ -22,14 +22,14 @@ namespace TerraFX.Interop
         public /* static */ delegate void UpdateTileMappings(
             [In] ID3D12CommandQueue* This,
             [In] ID3D12Resource* pResource,
-            [In] UINT NumResourceRegions,
+            [In, ComAliasName("UINT")] uint NumResourceRegions,
             [In, Optional] /* readonly */ D3D12_TILED_RESOURCE_COORDINATE* pResourceRegionStartCoordinates,
             [In, Optional] /* readonly */ D3D12_TILE_REGION_SIZE* pResourceRegionSizes,
             [In, Optional] ID3D12Heap* pHeap,
-            [In] UINT NumRanges,
+            [In, ComAliasName("UINT")] uint NumRanges,
             [In, Optional] /* readonly */ D3D12_TILE_RANGE_FLAGS* pRangeFlags,
-            [In, Optional] /* readonly */ UINT* pHeapRangeStartOffsets,
-            [In, Optional] /* readonly */ UINT* pRangeTileCounts,
+            [In, Optional, ComAliasName("UINT")] /* readonly */ uint* pHeapRangeStartOffsets,
+            [In, Optional, ComAliasName("UINT")] /* readonly */ uint* pRangeTileCounts,
             [In] D3D12_TILE_MAPPING_FLAGS Flags
         );
 
@@ -49,7 +49,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void ExecuteCommandLists(
             [In] ID3D12CommandQueue* This,
-            [In] UINT NumCommandLists,
+            [In, ComAliasName("UINT")] uint NumCommandLists,
             [In] /* readonly */ ID3D12CommandList** ppCommandLists
         );
 
@@ -57,18 +57,18 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetMarker(
             [In] ID3D12CommandQueue* This,
-            [In] UINT Metadata,
+            [In, ComAliasName("UINT")] uint Metadata,
             [In, Optional] /* readonly */ void* pData,
-            [In] UINT Size
+            [In, ComAliasName("UINT")] uint Size
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void BeginEvent(
             [In] ID3D12CommandQueue* This,
-            [In] UINT Metadata,
+            [In, ComAliasName("UINT")] uint Metadata,
             [In, Optional] /* readonly */ void* pData,
-            [In] UINT Size
+            [In, ComAliasName("UINT")] uint Size
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -79,33 +79,37 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Signal(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Signal(
             [In] ID3D12CommandQueue* This,
             [In] ID3D12Fence* pFence,
-            [In] UINT64 Value
+            [In, ComAliasName("UINT64")] ulong Value
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Wait(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Wait(
             [In] ID3D12CommandQueue* This,
             [In] ID3D12Fence* pFence,
-            [In] UINT64 Value
+            [In, ComAliasName("UINT64")] ulong Value
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetTimestampFrequency(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetTimestampFrequency(
             [In] ID3D12CommandQueue* This,
-            [Out] UINT64* pFrequency
+            [Out, ComAliasName("UINT64")] ulong* pFrequency
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetClockCalibration(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetClockCalibration(
             [In] ID3D12CommandQueue* This,
-            [Out] UINT64* pGpuTimestamp,
-            [Out] UINT64* pCpuTimestamp
+            [Out, ComAliasName("UINT64")] ulong* pGpuTimestamp,
+            [Out, ComAliasName("UINT64")] ulong* pCpuTimestamp
         );
 
         [SuppressUnmanagedCodeSecurity]

@@ -19,24 +19,27 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT EnumOutputs(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int EnumOutputs(
             [In] IDXGIAdapter* This,
-            [In] UINT Output,
+            [In, ComAliasName("UINT")] uint Output,
             [In, Out] IDXGIOutput** ppOutput
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDesc(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDesc(
             [In] IDXGIAdapter* This,
             [Out] DXGI_ADAPTER_DESC* pDesc
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CheckInterfaceSupport(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CheckInterfaceSupport(
             [In] IDXGIAdapter* This,
-            [In] REFGUID InterfaceName,
+            [In, ComAliasName("REFGUID")] /* readonly */ Guid* InterfaceName,
             [Out] LARGE_INTEGER* pUMDVersion
         );
         #endregion

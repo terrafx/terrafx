@@ -20,21 +20,24 @@ namespace TerraFX.Interop
         /// <summary>Returns TRUE if the font contains tables that can provide color information (including COLR, CPAL, SVG, CBDT, sbix  tables), or FALSE if not. Note that TRUE is returned even in the case when the font tables contain only grayscale images.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL IsColorFont(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int IsColorFont(
             [In] IDWriteFontFace2* This
         );
 
         /// <summary>Returns the number of color palettes defined by the font. The return value is zero if the font has no color information. Color fonts must have at least one palette, with palette index zero being the default.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetColorPaletteCount(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetColorPaletteCount(
             [In] IDWriteFontFace2* This
         );
 
         /// <summary>Returns the number of entries in each color palette. All color palettes in a font have the same number of palette entries. The return value is zero if the font has no color information.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetPaletteEntryCount(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetPaletteEntryCount(
             [In] IDWriteFontFace2* This
         );
 
@@ -46,12 +49,13 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code. The return value is E_INVALIDARG if firstEntryIndex + entryCount is greater than the actual number of palette entries as returned by GetPaletteEntryCount. The return value is DWRITE_E_NOCOLOR if the font does not have a palette with the specified palette index.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetPaletteEntries(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPaletteEntries(
             [In] IDWriteFontFace2* This,
-            [In] UINT32 colorPaletteIndex,
-            [In] UINT32 firstEntryIndex,
-            [In] UINT32 entryCount,
-            [Out] DWRITE_COLOR_F* paletteEntries
+            [In, ComAliasName("UINT32")] uint colorPaletteIndex,
+            [In, ComAliasName("UINT32")] uint firstEntryIndex,
+            [In, ComAliasName("UINT32")] uint entryCount,
+            [Out, ComAliasName("DWRITE_COLOR_F")] DXGI_RGBA* paletteEntries
         );
 
         /// <summary>Determines the recommended text rendering and grid-fit mode to be used based on the font, size, world transform, and measuring mode.</summary>
@@ -68,13 +72,14 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetRecommendedRenderingMode(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetRecommendedRenderingMode(
             [In] IDWriteFontFace2* This,
-            [In] FLOAT fontEmSize,
-            [In] FLOAT dpiX,
-            [In] FLOAT dpiY,
+            [In, ComAliasName("FLOAT")] float fontEmSize,
+            [In, ComAliasName("FLOAT")] float dpiX,
+            [In, ComAliasName("FLOAT")] float dpiY,
             [In, Optional] /* readonly */ DWRITE_MATRIX* transform,
-            [In] BOOL isSideways,
+            [In, ComAliasName("BOOL")] int isSideways,
             [In] DWRITE_OUTLINE_THRESHOLD outlineThreshold,
             [In] DWRITE_MEASURING_MODE measuringMode,
             [In, Optional] IDWriteRenderingParams* renderingParams,

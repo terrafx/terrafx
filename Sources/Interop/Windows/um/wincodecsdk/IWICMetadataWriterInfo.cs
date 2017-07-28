@@ -20,17 +20,19 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetHeader(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetHeader(
             [In] IWICMetadataWriterInfo* This,
-            [In] REFGUID guidContainerFormat,
-            [In] UINT cbSize,
+            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidContainerFormat,
+            [In, ComAliasName("UINT")] uint cbSize,
             [Out, Optional] WICMetadataHeader* pHeader,
-            [Out, Optional] UINT* pcbActual
+            [Out, Optional, ComAliasName("UINT")] uint* pcbActual
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateInstance(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateInstance(
             [In] IWICMetadataWriterInfo* This,
             [Out, Optional] IWICMetadataWriter** ppIWriter
         );

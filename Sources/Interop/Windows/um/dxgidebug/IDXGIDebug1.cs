@@ -31,7 +31,8 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL IsLeakTrackingEnabledForThread(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int IsLeakTrackingEnabledForThread(
             [In] IDXGIDebug1* This
         );
         #endregion

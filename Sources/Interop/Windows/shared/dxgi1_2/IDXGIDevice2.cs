@@ -19,27 +19,30 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT OfferResources(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int OfferResources(
             [In] IDXGIDevice2* This,
-            [In] UINT NumResources,
+            [In, ComAliasName("UINT")] uint NumResources,
             [In] /* readonly */ IDXGIResource** ppResources,
             [In] DXGI_OFFER_RESOURCE_PRIORITY Priority
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ReclaimResources(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ReclaimResources(
             [In] IDXGIDevice2* This,
-            [In] UINT NumResources,
+            [In, ComAliasName("UINT")] uint NumResources,
             [In] /* readonly */ IDXGIResource** ppResources,
-            [Out, Optional] BOOL* pDiscarded
+            [Out, Optional, ComAliasName("BOOL")] int* pDiscarded
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT EnqueueSetEvent(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int EnqueueSetEvent(
             [In] IDXGIDevice2* This,
-            [In] HANDLE hEvent
+            [In, ComAliasName("HANDLE")] void* hEvent
         );
         #endregion
 

@@ -19,30 +19,34 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT EnumAdapters(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int EnumAdapters(
             [In] IDXGIFactory* This,
-            [In] UINT Adapter,
+            [In, ComAliasName("UINT")] uint Adapter,
             [Out] IDXGIAdapter** ppAdapter
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT MakeWindowAssociation(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int MakeWindowAssociation(
             [In] IDXGIFactory* This,
-            [In] HWND WindowHandle,
-            [In] UINT Flags
+            [In, ComAliasName("HWND")] void* WindowHandle,
+            [In, ComAliasName("UINT")] uint Flags
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetWindowAssociation(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetWindowAssociation(
             [In] IDXGIFactory* This,
-            [Out] HWND* pWindowHandle
+            [Out, ComAliasName("HWND")] void** pWindowHandle
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateSwapChain(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateSwapChain(
             [In] IDXGIFactory* This,
             [In] IUnknown* pDevice,
             [In] DXGI_SWAP_CHAIN_DESC* pDesc,
@@ -51,9 +55,10 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateSoftwareAdapter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateSoftwareAdapter(
             [In] IDXGIFactory* This,
-            [In] HMODULE Module,
+            [In, ComAliasName("HMODULE")] void* Module,
             [Out] IDXGIAdapter** ppAdapter
         );
         #endregion

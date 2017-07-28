@@ -10,10 +10,11 @@ namespace TerraFX.Interop.Desktop
 {
     [SuppressUnmanagedCodeSecurity]
     [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-    public /* static */ delegate LRESULT WNDPROC(
-        [In] HWND hWnd,
-        [In] UINT Msg,
-        [In] WPARAM wParam,
-        [In] LPARAM lParam
+    [return: ComAliasName("LRESULT")]
+    unsafe public /* static */ delegate nint WNDPROC(
+        [In, ComAliasName("HWND")] void* hWnd,
+        [In, ComAliasName("UINT")] uint Msg,
+        [In, ComAliasName("WPARAM")] nuint wParam,
+        [In, ComAliasName("LPARAM")] nint lParam
     );
 }

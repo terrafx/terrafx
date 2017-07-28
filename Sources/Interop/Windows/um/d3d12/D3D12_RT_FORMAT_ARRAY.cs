@@ -3,6 +3,7 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
@@ -12,7 +13,8 @@ namespace TerraFX.Interop
         #region Fields
         public _RTFormats_e__FixedBuffer RTFormats;
 
-        public UINT NumRenderTargets;
+        [ComAliasName("UINT")]
+        public uint NumRenderTargets;
         #endregion
 
         #region Structs

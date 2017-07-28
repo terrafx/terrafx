@@ -21,7 +21,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AddFontFaceReference(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddFontFaceReference(
             [In] IDWriteFontSetBuilder* This,
             [In] IDWriteFontFaceReference* fontFaceReference
         );
@@ -33,11 +34,12 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AddFontFaceReference1(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddFontFaceReference1(
             [In] IDWriteFontSetBuilder* This,
             [In] IDWriteFontFaceReference* fontFaceReference,
             [In] /* readonly */ DWRITE_FONT_PROPERTY* properties,
-            [In] UINT32 propertyCount
+            [In, ComAliasName("UINT32")] uint propertyCount
         );
 
         /// <summary>Appends an existing font set to the one being built, allowing one to aggregate two sets or to essentially extend an existing one.</summary>
@@ -45,7 +47,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AddFontSet(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddFontSet(
             [In] IDWriteFontSetBuilder* This,
             [In] IDWriteFontSet* fontSet
         );
@@ -56,7 +59,8 @@ namespace TerraFX.Interop
         /// <remarks> Creating a font set takes less time if the references were added with metadata rather than needing to extract the metadata from the font file.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateFontSet(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateFontSet(
             [In] IDWriteFontSetBuilder* This,
             [Out] IDWriteFontSet** fontSet
         );

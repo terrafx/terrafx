@@ -3,14 +3,17 @@
 // Ported from shared\dxgi.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct DXGI_MAPPED_RECT
     {
         #region Fields
-        public INT Pitch;
+        [ComAliasName("INT")]
+        public int Pitch;
 
-        public BYTE* pBits;
+        [ComAliasName("BYTE")]
+        public byte* pBits;
         #endregion
     }
 }

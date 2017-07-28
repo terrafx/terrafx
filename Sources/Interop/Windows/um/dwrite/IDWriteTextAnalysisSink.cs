@@ -25,10 +25,11 @@ namespace TerraFX.Interop
         /// <returns>A successful code or error code to abort analysis.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetScriptAnalysis(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetScriptAnalysis(
             [In] IDWriteTextAnalysisSink* This,
-            [In] UINT32 textPosition,
-            [In] UINT32 textLength,
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [In, ComAliasName("UINT32")] uint textLength,
             [In] /* readonly */ DWRITE_SCRIPT_ANALYSIS* scriptAnalysis
         );
 
@@ -39,10 +40,11 @@ namespace TerraFX.Interop
         /// <returns>A successful code or error code to abort analysis.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetLineBreakpoints(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetLineBreakpoints(
             [In] IDWriteTextAnalysisSink* This,
-            [In] UINT32 textPosition,
-            [In] UINT32 textLength,
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [In, ComAliasName("UINT32")] uint textLength,
             [In] /* readonly */ DWRITE_LINE_BREAKPOINT* lineBreakpoints
         );
 
@@ -54,12 +56,13 @@ namespace TerraFX.Interop
         /// <returns>A successful code or error code to abort analysis.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetBidiLevel(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetBidiLevel(
             [In] IDWriteTextAnalysisSink* This,
-            [In] UINT32 textPosition,
-            [In] UINT32 textLength,
-            [In] UINT8 explicitLevel,
-            [In] UINT8 resolvedLevel
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [In, ComAliasName("UINT32")] uint textLength,
+            [In, ComAliasName("UINT8")] byte explicitLevel,
+            [In, ComAliasName("UINT8")] byte resolvedLevel
         );
 
         /// <summary>Set number substitution on the range.</summary>
@@ -70,10 +73,11 @@ namespace TerraFX.Interop
         /// <remark> Unlike script and bidi analysis, where every character passed to the analyzer has a result, this will only be called for those ranges where substitution is applicable. For any other range, you will simply not be called.</remark>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetNumberSubstitution(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetNumberSubstitution(
             [In] IDWriteTextAnalysisSink* This,
-            [In] UINT32 textPosition,
-            [In] UINT32 textLength,
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [In, ComAliasName("UINT32")] uint textLength,
             [In] IDWriteNumberSubstitution* numberSubstitution
         );
         #endregion

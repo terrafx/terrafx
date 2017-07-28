@@ -19,27 +19,30 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetSizeInBlocks(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSizeInBlocks(
             [In] IWICDdsFrameDecode* This,
-            [Out] UINT* pWidthInBlocks,
-            [Out] UINT* pHeightInBlocks
+            [Out, ComAliasName("UINT")] uint* pWidthInBlocks,
+            [Out, ComAliasName("UINT")] uint* pHeightInBlocks
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFormatInfo(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFormatInfo(
             [In] IWICDdsFrameDecode* This,
             [Out] WICDdsFormatInfo* pFormatInfo
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CopyBlocks(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CopyBlocks(
             [In] IWICDdsFrameDecode* This,
             [In] /* readonly */ WICRect* prcBoundsInBlocks,
-            [In] UINT cbStride,
-            [In] UINT cbBufferSize,
-            [Out] BYTE* pbBuffer
+            [In, ComAliasName("UINT")] uint cbStride,
+            [In, ComAliasName("UINT")] uint cbBufferSize,
+            [Out, ComAliasName("BYTE")] byte* pbBuffer
         );
         #endregion
 

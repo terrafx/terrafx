@@ -19,35 +19,39 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetPrivateData(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetPrivateData(
             [In] IDXGIObject* This,
-            [In] REFGUID Name,
-            [In] UINT DataSize,
+            [In, ComAliasName("REFGUID")] /* readonly */ Guid* Name,
+            [In, ComAliasName("UINT")] uint DataSize,
             [In] /* readonly */ void* pData
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetPrivateDataInterface(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetPrivateDataInterface(
             [In] IDXGIObject* This,
-            [In] REFGUID Name,
+            [In, ComAliasName("REFGUID")] /* readonly */ Guid* Name,
             [In, Optional] /* readonly */ IUnknown* pUnknown
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetPrivateData(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPrivateData(
             [In] IDXGIObject* This,
-            [In] REFGUID Name,
-            [In, Out] UINT* pDataSize,
+            [In, ComAliasName("REFGUID")] /* readonly */ Guid* Name,
+            [In, Out, ComAliasName("UINT")] uint* pDataSize,
             [Out] void* pData
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetParent(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetParent(
             [In] IDXGIObject* This,
-            [In] REFIID riid,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out] void** ppParent
         );
         #endregion

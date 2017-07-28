@@ -24,10 +24,11 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetReferenceKey(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetReferenceKey(
             [In] IDWriteFontFile* This,
             [Out] /* readonly */ void** fontFileReferenceKey,
-            [Out] UINT32* fontFileReferenceKeySize
+            [Out, ComAliasName("UINT32")] uint* fontFileReferenceKeySize
         );
 
         /// <summary>Obtains the file loader associated with a font file object.</summary>
@@ -35,7 +36,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetLoader(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetLoader(
             [In] IDWriteFontFile* This,
             [Out] IDWriteFontFileLoader** fontFileLoader
         );
@@ -49,12 +51,13 @@ namespace TerraFX.Interop
         /// <remarks>IMPORTANT: certain font file types are recognized, but not supported by the font system. For example, the font system will recognize a file as a Type 1 font file, but will not be able to construct a font face object from it. In such situations, Analyze will set isSupportedFontType output parameter to FALSE.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Analyze(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Analyze(
             [In] IDWriteFontFile* This,
-            [Out] BOOL* isSupportedFontType,
+            [Out, ComAliasName("BOOL")] int* isSupportedFontType,
             [Out] DWRITE_FONT_FILE_TYPE* fontFileType,
             [Out, Optional] DWRITE_FONT_FACE_TYPE* fontFaceType,
-            [Out] UINT32* numberOfFaces
+            [Out, ComAliasName("UINT32")] uint* numberOfFaces
         );
         #endregion
 

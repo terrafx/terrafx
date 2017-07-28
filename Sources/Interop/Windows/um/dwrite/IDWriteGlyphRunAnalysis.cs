@@ -24,7 +24,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetAlphaTextureBounds(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetAlphaTextureBounds(
             [In] IDWriteGlyphRunAnalysis* This,
             [In] DWRITE_TEXTURE_TYPE textureType,
             [Out] RECT* textureBounds
@@ -38,12 +39,13 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateAlphaTexture(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateAlphaTexture(
             [In] IDWriteGlyphRunAnalysis* This,
             [In] DWRITE_TEXTURE_TYPE textureType,
             [In] /* readonly */ RECT* textureBounds,
-            [Out] BYTE* alphaValues,
-            [In] UINT32 bufferSize
+            [Out, ComAliasName("BYTE")] byte* alphaValues,
+            [In, ComAliasName("UINT32")] uint bufferSize
         );
 
         /// <summary>Gets properties required for ClearType blending.</summary>
@@ -53,12 +55,13 @@ namespace TerraFX.Interop
         /// <param name="blendClearTypeLevel">Receives the ClearType level.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetAlphaBlendParams(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetAlphaBlendParams(
             [In] IDWriteGlyphRunAnalysis* This,
             [In] IDWriteRenderingParams* renderingParams,
-            [Out] FLOAT* blendGamma,
-            [Out] FLOAT* blendEnhancedContrast,
-            [Out] FLOAT* blendClearTypeLevel
+            [Out, ComAliasName("FLOAT")] float* blendGamma,
+            [Out, ComAliasName("FLOAT")] float* blendEnhancedContrast,
+            [Out, ComAliasName("FLOAT")] float* blendClearTypeLevel
         );
         #endregion
 

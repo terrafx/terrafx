@@ -19,78 +19,89 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT BeginDraw(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int BeginDraw(
             [In] ID2D1CommandSink* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT EndDraw(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int EndDraw(
             [In] ID2D1CommandSink* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetAntialiasMode(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetAntialiasMode(
             [In] ID2D1CommandSink* This,
             [In] D2D1_ANTIALIAS_MODE antialiasMode 
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetTags(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetTags(
             [In] ID2D1CommandSink* This,
-            [In] D2D1_TAG tag1,
-            [In] D2D1_TAG tag2 
+            [In, ComAliasName("D2D1_TAG")] ulong tag1,
+            [In, ComAliasName("D2D1_TAG")] ulong tag2 
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetTextAntialiasMode(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetTextAntialiasMode(
             [In] ID2D1CommandSink* This,
             [In] D2D1_TEXT_ANTIALIAS_MODE textAntialiasMode 
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetTextRenderingParams(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetTextRenderingParams(
             [In] ID2D1CommandSink* This,
             [In, Optional] IDWriteRenderingParams *textRenderingParams 
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetTransform(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetTransform(
             [In] ID2D1CommandSink* This,
-            [In] /* readonly */ D2D1_MATRIX_3X2_F *transform 
+            [In, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F *transform 
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetPrimitiveBlend(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetPrimitiveBlend(
             [In] ID2D1CommandSink* This,
             [In] D2D1_PRIMITIVE_BLEND primitiveBlend 
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetUnitMode(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetUnitMode(
             [In] ID2D1CommandSink* This,
             [In] D2D1_UNIT_MODE unitMode 
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Clear(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Clear(
             [In] ID2D1CommandSink* This,
-            [In, Optional] /* readonly */ D2D1_COLOR_F *color 
+            [In, Optional, ComAliasName("D2D1_COLOR_F")] /* readonly */ DXGI_RGBA *color 
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DrawGlyphRun(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DrawGlyphRun(
             [In] ID2D1CommandSink* This,
-            [In] D2D1_POINT_2F baselineOrigin,
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
             [In] /* readonly */ DWRITE_GLYPH_RUN *glyphRun,
             [In, Optional] /* readonly */ DWRITE_GLYPH_RUN_DESCRIPTION *glyphRunDescription,
             [In] ID2D1Brush *foregroundBrush,
@@ -99,69 +110,76 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DrawLine(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DrawLine(
             [In] ID2D1CommandSink* This,
-            [In] D2D1_POINT_2F point0,
-            [In] D2D1_POINT_2F point1,
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F point0,
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F point1,
             [In] ID2D1Brush *brush,
-            [In] FLOAT strokeWidth,
+            [In, ComAliasName("FLOAT")] float strokeWidth,
             [In, Optional] ID2D1StrokeStyle *strokeStyle 
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DrawGeometry(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DrawGeometry(
             [In] ID2D1CommandSink* This,
             [In] ID2D1Geometry *geometry,
             [In] ID2D1Brush *brush,
-            [In] FLOAT strokeWidth,
+            [In, ComAliasName("FLOAT")] float strokeWidth,
             [In, Optional] ID2D1StrokeStyle *strokeStyle 
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DrawRectangle(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DrawRectangle(
             [In] ID2D1CommandSink* This,
-            [In] /* readonly */ D2D1_RECT_F *rect,
+            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F *rect,
             [In] ID2D1Brush *brush,
-            [In] FLOAT strokeWidth,
+            [In, ComAliasName("FLOAT")] float strokeWidth,
             [In, Optional] ID2D1StrokeStyle *strokeStyle 
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DrawBitmap(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DrawBitmap(
             [In] ID2D1CommandSink* This,
             [In] ID2D1Bitmap *bitmap,
-            [In, Optional] /* readonly */ D2D1_RECT_F *destinationRectangle,
-            [In] FLOAT opacity,
+            [In, Optional, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F *destinationRectangle,
+            [In, ComAliasName("FLOAT")] float opacity,
             [In] D2D1_INTERPOLATION_MODE interpolationMode,
-            [In, Optional] /* readonly */ D2D1_RECT_F *sourceRectangle,
-            [In, Optional] /* readonly */ D2D1_MATRIX_4X4_F *perspectiveTransform 
+            [In, Optional, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F *sourceRectangle,
+            [In, Optional, ComAliasName("D2D1_MATRIX_4X4_F")] /* readonly */ D2D_MATRIX_4X4_F *perspectiveTransform 
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DrawImage(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DrawImage(
             [In] ID2D1CommandSink* This,
             [In] ID2D1Image *image,
-            [In, Optional] /* readonly */ D2D1_POINT_2F *targetOffset,
-            [In, Optional] /* readonly */ D2D1_RECT_F *imageRectangle,
+            [In, Optional, ComAliasName("D2D1_POINT_2F")] /* readonly */ D2D_POINT_2F *targetOffset,
+            [In, Optional, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F *imageRectangle,
             [In] D2D1_INTERPOLATION_MODE interpolationMode,
             [In] D2D1_COMPOSITE_MODE compositeMode 
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DrawGdiMetafile(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DrawGdiMetafile(
             [In] ID2D1CommandSink* This,
             [In] ID2D1GdiMetafile *gdiMetafile,
-            [In, Optional] /* readonly */ D2D1_POINT_2F *targetOffset 
+            [In, Optional, ComAliasName("D2D1_POINT_2F")] /* readonly */ D2D_POINT_2F *targetOffset 
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT FillMesh(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int FillMesh(
             [In] ID2D1CommandSink* This,
             [In] ID2D1Mesh *mesh,
             [In] ID2D1Brush *brush 
@@ -169,17 +187,19 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT FillOpacityMask(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int FillOpacityMask(
             [In] ID2D1CommandSink* This,
             [In] ID2D1Bitmap *opacityMask,
             [In] ID2D1Brush *brush,
-            [In, Optional] /* readonly */ D2D1_RECT_F *destinationRectangle,
-            [In, Optional] /* readonly */ D2D1_RECT_F *sourceRectangle 
+            [In, Optional, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F *destinationRectangle,
+            [In, Optional, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F *sourceRectangle 
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT FillGeometry(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int FillGeometry(
             [In] ID2D1CommandSink* This,
             [In] ID2D1Geometry *geometry,
             [In] ID2D1Brush *brush,
@@ -188,23 +208,26 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT FillRectangle(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int FillRectangle(
             [In] ID2D1CommandSink* This,
-            [In] /* readonly */ D2D1_RECT_F *rect,
+            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F *rect,
             [In] ID2D1Brush *brush 
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT PushAxisAlignedClip(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int PushAxisAlignedClip(
             [In] ID2D1CommandSink* This,
-            [In] /* readonly */ D2D1_RECT_F *clipRect,
+            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F *clipRect,
             [In] D2D1_ANTIALIAS_MODE antialiasMode 
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT PushLayer(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int PushLayer(
             [In] ID2D1CommandSink* This,
             [In] /* readonly */ D2D1_LAYER_PARAMETERS1 *layerParameters1,
             [In, Optional] ID2D1Layer *layer 
@@ -212,13 +235,15 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT PopAxisAlignedClip(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int PopAxisAlignedClip(
             [In] ID2D1CommandSink* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT PopLayer(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int PopLayer(
             [In] ID2D1CommandSink* This
         );
         #endregion

@@ -3,6 +3,7 @@
 // Ported from um\d2d1_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 using static TerraFX.Interop.D2D1_COMPOSITE_MODE;
@@ -23,11 +24,12 @@ namespace TerraFX.Interop
         /// <summary>Creates a bitmap with extended bitmap properties, potentially from a block of memory.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateBitmap(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateBitmap(
             [In] ID2D1DeviceContext* This,
-            [In] D2D1_SIZE_U size,
+            [In, ComAliasName("D2D1_SIZE_U")] D2D_SIZE_U size,
             [In, Optional] /* readonly */ void* sourceData,
-            [In] UINT32 pitch,
+            [In, ComAliasName("UINT32")] uint pitch,
             [In] /* readonly */ D2D1_BITMAP_PROPERTIES1* bitmapProperties,
             [Out] ID2D1Bitmap1** bitmap
         );
@@ -35,7 +37,8 @@ namespace TerraFX.Interop
         /// <summary>Create a D2D bitmap by copying a WIC bitmap.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateBitmapFromWicBitmap(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateBitmapFromWicBitmap(
             [In] ID2D1DeviceContext* This,
             [In] IWICBitmapSource* wicBitmapSource,
             [In, Optional] /* readonly */ D2D1_BITMAP_PROPERTIES1* bitmapProperties,
@@ -45,25 +48,28 @@ namespace TerraFX.Interop
         /// <summary>Creates a color context from a color space.  If the space is Custom, the context is initialized from the profile/profileSize arguments.  Otherwise the context is initialized with the profile bytes associated with the space and profile/profileSize are ignored.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateColorContext(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateColorContext(
             [In] ID2D1DeviceContext* This,
             [In] D2D1_COLOR_SPACE space,
-            [In] /* readonly */ BYTE* profile,
-            [In] UINT32 profileSize,
+            [In, ComAliasName("BYTE")] /* readonly */ byte* profile,
+            [In, ComAliasName("UINT32")] uint profileSize,
             [Out] ID2D1ColorContext** colorContext
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateColorContextFromFilename(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateColorContextFromFilename(
             [In] ID2D1DeviceContext* This,
-            [In] PCWSTR filename,
+            [In, ComAliasName("PCWSTR")] /* readonly */ char* filename,
             [Out] ID2D1ColorContext** colorContext
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateColorContextFromWicColorContext(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateColorContextFromWicColorContext(
             [In] ID2D1DeviceContext* This,
             [In] IWICColorContext* wicColorContext,
             [Out] ID2D1ColorContext** colorContext
@@ -72,7 +78,8 @@ namespace TerraFX.Interop
         /// <summary>Creates a bitmap from a DXGI surface with a set of extended properties.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateBitmapFromDxgiSurface(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateBitmapFromDxgiSurface(
             [In] ID2D1DeviceContext* This,
             [In] IDXGISurface* surface,
             [In, Optional] /* readonly */ D2D1_BITMAP_PROPERTIES1* bitmapProperties,
@@ -82,9 +89,10 @@ namespace TerraFX.Interop
         /// <summary>Create a new effect, the effect must either be built in or previously registered through ID2D1Factory1::RegisterEffectFromStream or ID2D1Factory1::RegisterEffectFromString.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateEffect(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateEffect(
             [In] ID2D1DeviceContext* This,
-            [In] REFCLSID effectId,
+            [In, ComAliasName("REFCLSID")] /* readonly */ Guid* effectId,
             [Out] ID2D1Effect** effect
         );
 
@@ -96,10 +104,11 @@ namespace TerraFX.Interop
         /// <param name="colorInterpolationMode">Determines if colors will be interpolated in straight alpha or premultiplied alpha space.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateGradientStopCollection(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateGradientStopCollection(
             [In] ID2D1DeviceContext* This,
             [In] /* readonly */ D2D1_GRADIENT_STOP* straightAlphaGradientStops,
-            [In] UINT32 straightAlphaGradientStopsCount,
+            [In, ComAliasName("UINT32")] uint straightAlphaGradientStopsCount,
             [In] D2D1_COLOR_SPACE preInterpolationSpace,
             [In] D2D1_COLOR_SPACE postInterpolationSpace,
             [In] D2D1_BUFFER_PRECISION bufferPrecision,
@@ -111,7 +120,8 @@ namespace TerraFX.Interop
         /// <summary>Creates an image brush, the input image can be any type of image, including a bitmap, effect and a command list.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateImageBrush(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateImageBrush(
             [In] ID2D1DeviceContext* This,
             [In, Optional] ID2D1Image* image,
             [In] /* readonly */ D2D1_IMAGE_BRUSH_PROPERTIES* imageBrushProperties,
@@ -121,7 +131,8 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateBitmapBrush(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateBitmapBrush(
             [In] ID2D1DeviceContext* This,
             [In, Optional] ID2D1Bitmap* bitmap,
             [In, Optional] /* readonly */ D2D1_BITMAP_BRUSH_PROPERTIES1* bitmapBrushProperties,
@@ -132,7 +143,8 @@ namespace TerraFX.Interop
         /// <summary>Creates a new command list.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateCommandList(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateCommandList(
             [In] ID2D1DeviceContext* This,
             [Out] ID2D1CommandList** commandList
         );
@@ -140,7 +152,8 @@ namespace TerraFX.Interop
         /// <summary>Indicates whether the format is supported by D2D.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL IsDxgiFormatSupported(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int IsDxgiFormatSupported(
             [In] ID2D1DeviceContext* This,
             [In] DXGI_FORMAT format
         );
@@ -148,7 +161,8 @@ namespace TerraFX.Interop
         /// <summary>Indicates whether the buffer precision is supported by D2D.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL IsBufferPrecisionSupported(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int IsBufferPrecisionSupported(
             [In] ID2D1DeviceContext* This,
             [In] D2D1_BUFFER_PRECISION bufferPrecision
         );
@@ -156,30 +170,33 @@ namespace TerraFX.Interop
         /// <summary>This retrieves the local-space bounds in DIPs of the current image using the device context DPI.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetImageLocalBounds(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetImageLocalBounds(
             [In] ID2D1DeviceContext* This,
             [In] ID2D1Image* image,
-            [Out] D2D1_RECT_F* localBounds
+            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* localBounds
         );
 
         /// <summary>This retrieves the world-space bounds in DIPs of the current image using the device context DPI.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetImageWorldBounds(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetImageWorldBounds(
             [In] ID2D1DeviceContext* This,
             [In] ID2D1Image* image,
-            [Out] D2D1_RECT_F* worldBounds
+            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* worldBounds
         );
 
         /// <summary>Retrieves the world-space bounds in DIPs of the glyph run using the device context DPI.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetGlyphRunWorldBounds(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetGlyphRunWorldBounds(
             [In] ID2D1DeviceContext* This,
-            [In] D2D1_POINT_2F baselineOrigin,
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
             [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
             [In] DWRITE_MEASURING_MODE measuringMode,
-            [Out] D2D1_RECT_F* bounds
+            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* bounds
         );
 
         /// <summary>Retrieves the device associated with this device context.</summary>
@@ -257,7 +274,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void DrawGlyphRun(
             [In] ID2D1DeviceContext* This,
-            [In] D2D1_POINT_2F baselineOrigin,
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
             [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
             [In, Optional] /* readonly */ DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
             [In] ID2D1Brush* foregroundBrush,
@@ -270,8 +287,8 @@ namespace TerraFX.Interop
         public /* static */ delegate void DrawImage(
             [In] ID2D1DeviceContext* This,
             [In] ID2D1Image* image,
-            [In] /* readonly */ D2D1_POINT_2F* targetOffset = null,
-            [In] /* readonly */ D2D1_RECT_F* imageRectangle = null,
+            [In, ComAliasName("D2D1_POINT_2F")] /* readonly */ D2D_POINT_2F* targetOffset = null,
+            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* imageRectangle = null,
             [In] D2D1_INTERPOLATION_MODE interpolationMode = D2D1_INTERPOLATION_MODE_LINEAR,
             [In] D2D1_COMPOSITE_MODE compositeMode = D2D1_COMPOSITE_MODE_SOURCE_OVER
         );
@@ -282,7 +299,7 @@ namespace TerraFX.Interop
         public /* static */ delegate void DrawGdiMetafile(
             [In] ID2D1DeviceContext* This,
             [In] ID2D1GdiMetafile* gdiMetafile,
-            [In] /* readonly */ D2D1_POINT_2F* targetOffset = null
+            [In, ComAliasName("D2D1_POINT_2F")] /* readonly */ D2D_POINT_2F* targetOffset = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -290,11 +307,11 @@ namespace TerraFX.Interop
         public /* static */ delegate void DrawBitmap(
             [In] ID2D1DeviceContext* This,
             [In] ID2D1Bitmap* bitmap,
-            [In, Optional] /* readonly */ D2D1_RECT_F* destinationRectangle,
-            [In] FLOAT opacity,
+            [In, Optional, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangle,
+            [In, ComAliasName("FLOAT")] float opacity,
             [In] D2D1_INTERPOLATION_MODE interpolationMode,
-            [In] /* readonly */ D2D1_RECT_F* sourceRectangle = null,
-            [In] /* readonly */ D2D1_MATRIX_4X4_F* perspectiveTransform = null
+            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* sourceRectangle = null,
+            [In, ComAliasName("D2D1_MATRIX_4X4_F")] /* readonly */ D2D_MATRIX_4X4_F* perspectiveTransform = null
         );
 
         /// <summary>Push a layer on the device context.</summary>
@@ -309,42 +326,46 @@ namespace TerraFX.Interop
         /// <summary>This indicates that a portion of an effect's input is invalid. This method can be called many times.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT InvalidateEffectInputRectangle(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int InvalidateEffectInputRectangle(
             [In] ID2D1DeviceContext* This,
             [In] ID2D1Effect* effect,
-            [In] UINT32 input,
-            [In] /* readonly */ D2D1_RECT_F* inputRectangle
+            [In, ComAliasName("UINT32")] uint input,
+            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* inputRectangle
         );
 
         /// <summary>Gets the number of invalid ouptut rectangles that have accumulated at the effect.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetEffectInvalidRectangleCount(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetEffectInvalidRectangleCount(
             [In] ID2D1DeviceContext* This,
             [In] ID2D1Effect* effect,
-            [Out] UINT32* rectangleCount
+            [Out, ComAliasName("UINT32")] uint* rectangleCount
         );
 
         /// <summary>Gets the invalid rectangles that are at the output of the effect.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetEffectInvalidRectangles(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetEffectInvalidRectangles(
             [In] ID2D1DeviceContext* This,
             [In] ID2D1Effect* effect,
-            [Out] D2D1_RECT_F* rectangles,
-            [In] UINT32 rectanglesCount
+            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* rectangles,
+            [In, ComAliasName("UINT32")] uint rectanglesCount
         );
 
         /// <summary>Gets the maximum region of each specified input which would be used during a subsequent rendering operation</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetEffectRequiredInputRectangles(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetEffectRequiredInputRectangles(
             [In] ID2D1DeviceContext* This,
             [In] ID2D1Effect* renderEffect,
-            [In, Optional] /* readonly */ D2D1_RECT_F* renderImageRectangle,
+            [In, Optional, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* renderImageRectangle,
             [In] /* readonly */ D2D1_EFFECT_INPUT_DESCRIPTION* inputDescriptions,
-            [Out] D2D1_RECT_F* requiredInputRects,
-            [In] UINT32 inputCount
+            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* requiredInputRects,
+            [In, ComAliasName("UINT32")] uint inputCount
         );
 
         /// <summary>Fill using the alpha channel of the supplied opacity mask bitmap. The brush opacity will be modulated by the mask. The render target antialiasing mode must be set to aliased.</summary>
@@ -354,8 +375,8 @@ namespace TerraFX.Interop
             [In] ID2D1DeviceContext* This,
             [In] ID2D1Bitmap* opacityMask,
             [In] ID2D1Brush* brush,
-            [In] /* readonly */ D2D1_RECT_F* destinationRectangle = null,
-            [In] /* readonly */ D2D1_RECT_F* sourceRectangle = null
+            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangle = null,
+            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* sourceRectangle = null
         );
         #endregion
 

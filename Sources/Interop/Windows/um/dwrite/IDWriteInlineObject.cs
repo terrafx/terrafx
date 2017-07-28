@@ -29,14 +29,15 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Draw(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Draw(
             [In] IDWriteInlineObject* This,
             [In, Optional] void* clientDrawingContext,
             [In] IDWriteTextRenderer* renderer,
-            [In] FLOAT originX,
-            [In] FLOAT originY,
-            [In] BOOL isSideways,
-            [In] BOOL isRightToLeft,
+            [In, ComAliasName("FLOAT")] float originX,
+            [In, ComAliasName("FLOAT")] float originY,
+            [In, ComAliasName("BOOL")] int isSideways,
+            [In, ComAliasName("BOOL")] int isRightToLeft,
             [In, Optional] IUnknown* clientDrawingEffect
         );
 
@@ -45,7 +46,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetMetrics(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetMetrics(
             [In] IDWriteInlineObject* This,
             [Out] DWRITE_INLINE_OBJECT_METRICS* metrics
         );
@@ -56,7 +58,8 @@ namespace TerraFX.Interop
         /// <remarks> The overhangs should be returned relative to the reported size of the object (DWRITE_INLINE_OBJECT_METRICS::width/height), and should not be baseline adjusted. If you have an image that is actually 100x100 DIPs, but you want it slightly inset (perhaps it has a glow) by 20 DIPs on each side, you would return a width/height of 60x60 and four overhangs of 20 DIPs.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetOverhangMetrics(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetOverhangMetrics(
             [In] IDWriteInlineObject* This,
             [Out] DWRITE_OVERHANG_METRICS* overhangs
         );
@@ -67,7 +70,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetBreakConditions(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetBreakConditions(
             [In] IDWriteInlineObject* This,
             [Out] DWRITE_BREAK_CONDITION* breakConditionBefore,
             [Out] DWRITE_BREAK_CONDITION* breakConditionAfter

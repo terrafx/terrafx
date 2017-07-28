@@ -3,14 +3,18 @@
 // Ported from um\oaidl.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public  /* blittable */ struct SAFEARRAYBOUND
     {
         #region Fields
-        public ULONG cElements;
+        [ComAliasName("ULONG")]
+        public uint cElements;
 
-        public LONG lLbound;
+        [ComAliasName("LONG")]
+        public int lLbound;
         #endregion
     }
 }

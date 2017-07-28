@@ -19,50 +19,54 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RegisterHardwareContentProtectionTeardownStatusEvent(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RegisterHardwareContentProtectionTeardownStatusEvent(
             [In] IDXGIAdapter3* This,
-            [In] HANDLE hEvent,
-            [Out] DWORD* pdwCookie
+            [In, ComAliasName("HANDLE")] void* hEvent,
+            [Out, ComAliasName("DWORD")] uint* pdwCookie
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void UnregisterHardwareContentProtectionTeardownStatus(
             [In] IDXGIAdapter3* This,
-            [In] DWORD dwCookie
+            [In, ComAliasName("DWORD")] uint dwCookie
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT QueryVideoMemoryInfo(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryVideoMemoryInfo(
             [In] IDXGIAdapter3* This,
-            [In] UINT NodeIndex,
+            [In, ComAliasName("UINT")] uint NodeIndex,
             [In] DXGI_MEMORY_SEGMENT_GROUP MemorySegmentGroup,
             [Out] DXGI_QUERY_VIDEO_MEMORY_INFO* pVideoMemoryInfo
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetVideoMemoryReservation(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetVideoMemoryReservation(
             [In] IDXGIAdapter3* This,
-            [In] UINT NodeIndex,
+            [In, ComAliasName("UINT")] uint NodeIndex,
             [In] DXGI_MEMORY_SEGMENT_GROUP MemorySegmentGroup,
-            [In] UINT64 Reservation
+            [In, ComAliasName("UINT64")] ulong Reservation
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RegisterVideoMemoryBudgetChangeNotificationEvent(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RegisterVideoMemoryBudgetChangeNotificationEvent(
             [In] IDXGIAdapter3* This,
-            [In] HANDLE hEvent,
-            [Out] DWORD* pdwCookie
+            [In, ComAliasName("HANDLE")] void* hEvent,
+            [Out, ComAliasName("DWORD")] uint* pdwCookie
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void UnregisterVideoMemoryBudgetChangeNotification(
             [In] IDXGIAdapter3* This,
-            [In] DWORD dwCookie
+            [In, ComAliasName("DWORD")] uint dwCookie
         );
         #endregion
 

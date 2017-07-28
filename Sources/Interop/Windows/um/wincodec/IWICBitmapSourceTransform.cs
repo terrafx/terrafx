@@ -19,39 +19,43 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CopyPixels(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CopyPixels(
             [In] IWICBitmapSourceTransform* This,
             [In, Optional] /* readonly */ WICRect* prc,
-            [In] UINT uiWidth,
-            [In] UINT uiHeight,
-            [In, Optional] WICPixelFormatGUID* pguidDstFormat,
+            [In, ComAliasName("UINT")] uint uiWidth,
+            [In, ComAliasName("UINT")] uint uiHeight,
+            [In, Optional, ComAliasName("WICPixelFormatGUID")] Guid* pguidDstFormat,
             [In] WICBitmapTransformOptions dstTransform,
-            [In] UINT nStride,
-            [In] UINT cbBufferSize,
-            [Out] BYTE* pbBuffer
+            [In, ComAliasName("UINT")] uint nStride,
+            [In, ComAliasName("UINT")] uint cbBufferSize,
+            [Out, ComAliasName("BYTE")] byte* pbBuffer
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetClosestSize(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetClosestSize(
             [In] IWICBitmapSourceTransform* This,
-            [In, Out] UINT* puiWidth,
-            [In, Out] UINT* puiHeight
+            [In, Out, ComAliasName("UINT")] uint* puiWidth,
+            [In, Out, ComAliasName("UINT")] uint* puiHeight
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetClosestPixelFormat(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetClosestPixelFormat(
             [In] IWICBitmapSourceTransform* This,
-            [In, Out] WICPixelFormatGUID* pguidDstFormat
+            [In, Out, ComAliasName("WICPixelFormatGUID")] Guid* pguidDstFormat
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DoesSupportTransform(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DoesSupportTransform(
             [In] IWICBitmapSourceTransform* This,
             [In] WICBitmapTransformOptions dstTransform,
-            [Out] BOOL* pfIsSupported
+            [Out, ComAliasName("BOOL")] int* pfIsSupported
         );
         #endregion
 

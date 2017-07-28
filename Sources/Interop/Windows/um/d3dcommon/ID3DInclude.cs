@@ -17,20 +17,22 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Open(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Open(
             [In] ID3DInclude* This,
             [In] D3D_INCLUDE_TYPE IncludeType,
-            [In] LPCSTR pFileName,
-            [In] LPCVOID pParentData,
-            [Out] LPCVOID* ppData,
-            [Out] UINT* pBytes
+            [In, ComAliasName("LPCSTR")] /* readonly */ sbyte* pFileName,
+            [In, ComAliasName("LPCVOID")] /* readonly */ void* pParentData,
+            [Out, ComAliasName("LPCVOID")] /* readonly */ void** ppData,
+            [Out, ComAliasName("UINT")] uint* pBytes
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Close(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Close(
             [In] ID3DInclude* This,
-            [In] LPCVOID pData
+            [In, ComAliasName("LPCVOID")] /* readonly */ void* pData
         );
         #endregion
 

@@ -3,21 +3,27 @@
 // Ported from um\d2d1effectauthor.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>This defines a single element of the vertex layout.</summary>
-    public /* blittable */ struct D2D1_INPUT_ELEMENT_DESC
+    unsafe public /* blittable */ struct D2D1_INPUT_ELEMENT_DESC
     {
         #region Fields
-        public PCSTR semanticName;
+        [ComAliasName("PCSTR")]
+        public /* readonly */ sbyte* semanticName;
 
-        public UINT32 semanticIndex;
+        [ComAliasName("UINT32")]
+        public uint semanticIndex;
 
         public DXGI_FORMAT format;
 
-        public UINT32 inputSlot;
+        [ComAliasName("UINT32")]
+        public uint inputSlot;
 
-        public UINT32 alignedByteOffset;
+        [ComAliasName("UINT32")]
+        public uint alignedByteOffset;
         #endregion
     }
 }

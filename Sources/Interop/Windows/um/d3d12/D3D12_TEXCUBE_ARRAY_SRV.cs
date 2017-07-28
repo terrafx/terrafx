@@ -3,20 +3,27 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_TEXCUBE_ARRAY_SRV
     {
         #region Fields
-        public UINT MostDetailedMip;
+        [ComAliasName("UINT")]
+        public uint MostDetailedMip;
 
-        public UINT MipLevels;
+        [ComAliasName("UINT")]
+        public uint MipLevels;
 
-        public UINT First2DArrayFace;
+        [ComAliasName("UINT")]
+        public uint First2DArrayFace;
 
-        public UINT NumCubes;
+        [ComAliasName("UINT")]
+        public uint NumCubes;
 
-        public FLOAT ResourceMinLODClamp;
+        [ComAliasName("FLOAT")]
+        public float ResourceMinLODClamp;
         #endregion
     }
 }

@@ -19,29 +19,32 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL AssertResourceState(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int AssertResourceState(
             [In] ID3D12DebugCommandList1* This,
             [In] ID3D12Resource* pResource,
-            [In] UINT Subresource,
-            [In] UINT State
+            [In, ComAliasName("UINT")] uint Subresource,
+            [In, ComAliasName("UINT")] uint State
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetDebugParameter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetDebugParameter(
             [In] ID3D12DebugCommandList1* This,
             [In] D3D12_DEBUG_COMMAND_LIST_PARAMETER_TYPE Type,
             [In] /* readonly */ void* pData,
-            [In] UINT DataSize
+            [In, ComAliasName("UINT")] uint DataSize
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDebugParameter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDebugParameter(
             [In] ID3D12DebugCommandList1* This,
             [In] D3D12_DEBUG_COMMAND_LIST_PARAMETER_TYPE Type,
             [Out] void* pData,
-            [In] UINT DataSize
+            [In, ComAliasName("UINT")] uint DataSize
         );
         #endregion
 

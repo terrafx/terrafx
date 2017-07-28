@@ -19,23 +19,26 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Seek(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Seek(
             [In] IStream* This,
             [In] LARGE_INTEGER dlibMove,
-            [In] DWORD dwOrigin,
+            [In, ComAliasName("DWORD")] uint dwOrigin,
             [Out, Optional] ULARGE_INTEGER* plibNewPosition
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetSize(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetSize(
             [In] IStream* This,
             [In] ULARGE_INTEGER libNewSize
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CopyTo(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CopyTo(
             [In] IStream* This,
             [In] IStream* pstm,
             [In] ULARGE_INTEGER cb,
@@ -45,46 +48,52 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Commit(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Commit(
             [In] IStream* This,
-            [In] DWORD grfCommitFlags
+            [In, ComAliasName("DWORD")] uint grfCommitFlags
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Revert(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Revert(
             [In] IStream* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT LockRegion(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int LockRegion(
             [In] IStream* This,
             [In] ULARGE_INTEGER libOffset,
             [In] ULARGE_INTEGER cb,
-            [In] DWORD dwLockType
+            [In, ComAliasName("DWORD")] uint dwLockType
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT UnlockRegion(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int UnlockRegion(
             [In] IStream* This,
             [In] ULARGE_INTEGER libOffset,
             [In] ULARGE_INTEGER cb,
-            [In] DWORD dwLockType
+            [In, ComAliasName("DWORD")] uint dwLockType
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Stat(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Stat(
             [In] IStream* This,
             [Out] STATSTG* pstatstg,
-            [In] DWORD grfStatFlag
+            [In, ComAliasName("DWORD")] uint grfStatFlag
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Clone(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Clone(
             [In] IStream* This,
             [Out, Optional] IStream** ppstm
         );

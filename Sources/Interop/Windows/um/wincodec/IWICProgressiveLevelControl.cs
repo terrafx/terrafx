@@ -19,23 +19,26 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetLevelCount(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetLevelCount(
             [In] IWICProgressiveLevelControl* This,
-            [Out] UINT* pcLevels
+            [Out, ComAliasName("UINT")] uint* pcLevels
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetCurrentLevel(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetCurrentLevel(
             [In] IWICProgressiveLevelControl* This,
-            [Out] UINT* pnLevel
+            [Out, ComAliasName("UINT")] uint* pnLevel
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetCurrentLevel(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetCurrentLevel(
             [In] IWICProgressiveLevelControl* This,
-            [In] UINT nLevel
+            [In, ComAliasName("UINT")] uint nLevel
         );
         #endregion
 

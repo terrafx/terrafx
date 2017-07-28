@@ -3,24 +3,31 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_INPUT_ELEMENT_DESC
+    unsafe public /* blittable */ struct D3D12_INPUT_ELEMENT_DESC
     {
         #region Fields
-        public LPCSTR SemanticName;
+        [ComAliasName("LPCSTR")]
+        public /* readonly */ sbyte* SemanticName;
 
-        public UINT SemanticIndex;
+        [ComAliasName("UINT")]
+        public uint SemanticIndex;
 
         public DXGI_FORMAT Format;
 
-        public UINT InputSlot;
+        [ComAliasName("UINT")]
+        public uint InputSlot;
 
-        public UINT AlignedByteOffset;
+        [ComAliasName("UINT")]
+        public uint AlignedByteOffset;
 
         public D3D12_INPUT_CLASSIFICATION InputSlotClass;
 
-        public UINT InstanceDataStepRate;
+        [ComAliasName("UINT")]
+        public uint InstanceDataStepRate;
         #endregion
     }
 }

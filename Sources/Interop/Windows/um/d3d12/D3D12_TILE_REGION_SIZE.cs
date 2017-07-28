@@ -3,20 +3,27 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_TILE_REGION_SIZE
     {
         #region Fields
-        public UINT NumTiles;
+        [ComAliasName("UINT")]
+        public uint NumTiles;
 
-        public BOOL UseBox;
+        [ComAliasName("BOOL")]
+        public int UseBox;
 
-        public UINT Width;
+        [ComAliasName("UINT")]
+        public uint Width;
 
-        public UINT16 Height;
+        [ComAliasName("UINT16")]
+        public ushort Height;
 
-        public UINT16 Depth;
+        [ComAliasName("UINT16")]
+        public ushort Depth;
         #endregion
     }
 }

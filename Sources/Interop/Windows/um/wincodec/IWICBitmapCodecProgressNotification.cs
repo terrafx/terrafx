@@ -19,11 +19,12 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RegisterProgressNotification(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RegisterProgressNotification(
             [In] IWICBitmapCodecProgressNotification* This,
             [In, Optional] PFNProgressNotification pfnProgressNotification,
-            [In, Optional] LPVOID pvData,
-            [In] DWORD dwProgressFlags
+            [In, Optional, ComAliasName("LPVOID")] void* pvData,
+            [In, ComAliasName("DWORD")] uint dwProgressFlags
         );
         #endregion
 

@@ -11,10 +11,11 @@ namespace TerraFX.Interop
     /// <summary>Function pointer that gets a property from an effect.</summary>
     [SuppressUnmanagedCodeSecurity]
     [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-    unsafe public /* static */ delegate HRESULT PD2D1_PROPERTY_GET_FUNCTION(
+    [return: ComAliasName("HRESULT")]
+    unsafe public /* static */ delegate int PD2D1_PROPERTY_GET_FUNCTION(
         [In] /* readonly */ IUnknown* effect,
-        [Out, Optional] BYTE* data,
-        [In] UINT32 dataSize,
-        [Out, Optional] UINT32* actualSize
+        [Out, Optional, ComAliasName("BYTE")] byte* data,
+        [In, ComAliasName("UINT32")] uint dataSize,
+        [Out, Optional, ComAliasName("UINT32")] uint* actualSize
     );
 }

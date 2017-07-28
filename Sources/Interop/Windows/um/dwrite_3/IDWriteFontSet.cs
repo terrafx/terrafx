@@ -20,7 +20,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetFontCount(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetFontCount(
             [In] IDWriteFontSet* This
         );
 
@@ -30,9 +31,10 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFontFaceReference(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFontFaceReference(
             [In] IDWriteFontSet* This,
-            [In] UINT32 listIndex,
+            [In, ComAliasName("UINT32")] uint listIndex,
             [Out] IDWriteFontFaceReference** fontFaceReference
         );
 
@@ -43,11 +45,12 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT FindFontFaceReference(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int FindFontFaceReference(
             [In] IDWriteFontSet* This,
             [In] IDWriteFontFaceReference* fontFaceReference,
-            [Out] UINT32* listIndex,
-            [Out] BOOL* exists
+            [Out, ComAliasName("UINT32")] uint* listIndex,
+            [Out, ComAliasName("BOOL")] int* exists
         );
 
         /// <summary>Gets the index of the matching font face reference in the font set, with the same file, face index, and simulations.</summary>
@@ -57,11 +60,12 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT FindFontFace(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int FindFontFace(
             [In] IDWriteFontSet* This,
             [In] IDWriteFontFace* fontFace,
-            [Out] UINT32* listIndex,
-            [Out] BOOL* exists
+            [Out, ComAliasName("UINT32")] uint* listIndex,
+            [Out, ComAliasName("BOOL")] int* exists
         );
 
         /// <summary>Returns the property values of a specific font item index.</summary>
@@ -72,11 +76,12 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetPropertyValues(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPropertyValues(
             [In] IDWriteFontSet* This,
-            [In] UINT32 listIndex,
+            [In, ComAliasName("UINT32")] uint listIndex,
             [In] DWRITE_FONT_PROPERTY_ID propertyId,
-            [Out] BOOL* exists,
+            [Out, ComAliasName("BOOL")] int* exists,
             [Out] IDWriteLocalizedStrings** values
         );
 
@@ -88,10 +93,11 @@ namespace TerraFX.Interop
         /// <remarks> For example, suppose the font set includes the Meiryo family, which has both Japanese and English family names. The returned list of distinct family names would include either the Japanese name (if "ja-jp" was specified as a preferred locale) or the English name (in all other cases).</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetPropertyValues1(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPropertyValues1(
             [In] IDWriteFontSet* This,
             [In] DWRITE_FONT_PROPERTY_ID propertyID,
-            [In] /* readonly */ WCHAR* preferredLocaleNames,
+            [In, ComAliasName("WCHAR")] /* readonly */ char* preferredLocaleNames,
             [Out] IDWriteStringList** values
         );
 
@@ -102,7 +108,8 @@ namespace TerraFX.Interop
         /// <remarks> For example, suppose the font set includes the Meiryo family, which has both Japanese and English family names. The returned list of distinct family names would include both the Japanese and English names.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetPropertyValues2(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPropertyValues2(
             [In] IDWriteFontSet* This,
             [In] DWRITE_FONT_PROPERTY_ID propertyID,
             [Out] IDWriteStringList** values
@@ -115,10 +122,11 @@ namespace TerraFX.Interop
         /// <remarks> For example, the family name "Segoe UI" may return a count of 12, whereas Harrington only has 1.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetPropertyOccurrenceCount(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPropertyOccurrenceCount(
             [In] IDWriteFontSet* This,
             [In] /* readonly */ DWRITE_FONT_PROPERTY* property,
-            [Out] UINT32* propertyOccurrenceCount
+            [Out, ComAliasName("UINT32")] uint* propertyOccurrenceCount
         );
 
         /// <summary>Returns a subset of fonts filtered by the given properties.</summary>
@@ -129,10 +137,11 @@ namespace TerraFX.Interop
         /// <remarks> If no fonts matched the filter, the subset will be empty (GetFontCount returns 0), but the function does not return an error. The subset will always be equal to or less than the original set.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetMatchingFonts(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetMatchingFonts(
             [In] IDWriteFontSet* This,
             [In] /* readonly */ DWRITE_FONT_PROPERTY* properties,
-            [In] UINT32 propertyCount,
+            [In, ComAliasName("UINT32")] uint propertyCount,
             [Out] IDWriteFontSet** filteredSet
         );
 
@@ -146,9 +155,10 @@ namespace TerraFX.Interop
         /// <remarks> The returned list can include simulated bold and oblique variants, which would be useful for font fallback selection.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetMatchingFonts1(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetMatchingFonts1(
             [In] IDWriteFontSet* This,
-            [In] /* readonly */ WCHAR* familyName,
+            [In, ComAliasName("WCHAR")] /* readonly */ char* familyName,
             [In] DWRITE_FONT_WEIGHT fontWeight,
             [In] DWRITE_FONT_STRETCH fontStretch,
             [In] DWRITE_FONT_STYLE fontStyle,

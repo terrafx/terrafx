@@ -27,17 +27,19 @@ namespace TerraFX.Interop
         /// <summary>Retrieves the size of the color profile, in bytes.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetProfileSize(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetProfileSize(
             [In] ID2D1ColorContext* This
         );
 
         /// <summary>Retrieves the color profile bytes.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetProfile(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetProfile(
             [In] ID2D1ColorContext* This,
-            [Out] BYTE* profile,
-            [In] UINT32 profileSize
+            [Out, ComAliasName("BYTE")] byte* profile,
+            [In, ComAliasName("UINT32")] uint profileSize
         );
         #endregion
 

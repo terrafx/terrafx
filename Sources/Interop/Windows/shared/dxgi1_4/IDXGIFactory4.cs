@@ -19,18 +19,20 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT EnumAdapterByLuid(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int EnumAdapterByLuid(
             [In] IDXGIFactory4* This,
             [In] LUID AdapterLuid,
-            [In] REFIID riid,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out] void** ppvAdapter
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT EnumWarpAdapter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int EnumWarpAdapter(
             [In] IDXGIFactory4* This,
-            [In] REFIID riid,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out] void** ppvAdapter
         );
         #endregion

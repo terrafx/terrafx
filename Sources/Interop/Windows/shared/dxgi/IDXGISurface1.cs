@@ -19,15 +19,17 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDC(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDC(
             [In] IDXGISurface1* This,
-            [In] BOOL Discard,
-            [Out] HDC* phdc
+            [In, ComAliasName("BOOL")] int Discard,
+            [Out, ComAliasName("HDC")] void** phdc
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ReleaseDC(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ReleaseDC(
             [In] IDXGISurface1* This,
             [In, Optional] RECT* pDirtyRect
         );

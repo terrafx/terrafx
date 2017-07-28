@@ -3,6 +3,8 @@
 // Ported from um\d3d12sdklayers.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct D3D12_MESSAGE
@@ -14,9 +16,11 @@ namespace TerraFX.Interop
 
         public D3D12_MESSAGE_ID ID;
 
-        public /* readonly */ CHAR* pDescription;
+        [ComAliasName("CHAR")]
+        public /* readonly */ sbyte* pDescription;
 
-        public SIZE_T DescriptionByteLength;
+        [ComAliasName("SIZE_T")]
+        public nuint DescriptionByteLength;
         #endregion
     }
 }

@@ -19,15 +19,17 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT OfferResources(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int OfferResources(
             [In] ID2D1ImageSource* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT TryReclaimResources(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int TryReclaimResources(
             [In] ID2D1ImageSource* This,
-            [Out] BOOL* resourcesDiscarded
+            [Out, ComAliasName("BOOL")] int* resourcesDiscarded
         );
         #endregion
 

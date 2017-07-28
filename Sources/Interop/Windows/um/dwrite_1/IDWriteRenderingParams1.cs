@@ -20,7 +20,8 @@ namespace TerraFX.Interop
         /// <summary>Gets the amount of contrast enhancement to use for grayscale antialiasing. Valid values are greater than or equal to zero.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate FLOAT GetGrayscaleEnhancedContrast(
+        [return: ComAliasName("FLOAT")]
+        public /* static */ delegate float GetGrayscaleEnhancedContrast(
             [In] IDWriteRenderingParams1* This
         );
         #endregion

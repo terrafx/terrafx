@@ -19,60 +19,68 @@ namespace TerraFX.Interop.Desktop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT PresentBuffer(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int PresentBuffer(
             [In] IDXGIDecodeSwapChain* This,
-            [In] UINT BufferToPresent,
-            [In] UINT SyncInterval,
-            [In] UINT Flags
+            [In, ComAliasName("UINT")] uint BufferToPresent,
+            [In, ComAliasName("UINT")] uint SyncInterval,
+            [In, ComAliasName("UINT")] uint Flags
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetSourceRect(
-            [In] IDXGIDecodeSwapChain* This,
-            [In] /* readonly */ RECT* pRect
-        );
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetTargetRect(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetSourceRect(
             [In] IDXGIDecodeSwapChain* This,
             [In] /* readonly */ RECT* pRect
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetDestSize(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetTargetRect(
             [In] IDXGIDecodeSwapChain* This,
-            [In] UINT Width,
-            [In] UINT Height
+            [In] /* readonly */ RECT* pRect
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetSourceRect(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetDestSize(
+            [In] IDXGIDecodeSwapChain* This,
+            [In, ComAliasName("UINT")] uint Width,
+            [In, ComAliasName("UINT")] uint Height
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSourceRect(
             [In] IDXGIDecodeSwapChain* This,
             [Out] RECT* pRect
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetTargetRect(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetTargetRect(
             [In] IDXGIDecodeSwapChain* This,
             [Out] RECT* pRect
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDestSize(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDestSize(
             [In] IDXGIDecodeSwapChain* This,
-            [Out] UINT* pWidth,
-            [Out] UINT* pHeight
+            [Out, ComAliasName("UINT")] uint* pWidth,
+            [Out, ComAliasName("UINT")] uint* pHeight
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetColorSpace(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetColorSpace(
             [In] IDXGIDecodeSwapChain* This,
             [In] DXGI_MULTIPLANE_OVERLAY_YCbCr_FLAGS ColorSpace
         );

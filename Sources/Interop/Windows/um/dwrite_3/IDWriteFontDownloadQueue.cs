@@ -24,10 +24,11 @@ namespace TerraFX.Interop
         /// <remarks> An IDWriteFontDownloadListener can also be passed to BeginDownload via the context parameter, rather than globally registered to the queue.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AddListener(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddListener(
             [In] IDWriteFontDownloadQueue* This,
             [In] IDWriteFontDownloadListener* listener,
-            [Out] UINT32* token
+            [Out, ComAliasName("UINT32")] uint* token
         );
 
         /// <summary>Unregisters a notification handler that was previously registered using AddListener.</summary>
@@ -35,16 +36,18 @@ namespace TerraFX.Interop
         /// <returns> Returns S_OK if successful or E_INVALIDARG if the specified token does not correspond to a registered listener.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT RemoveListener(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int RemoveListener(
             [In] IDWriteFontDownloadQueue* This,
-            [In] UINT32 token
+            [In, ComAliasName("UINT32")] uint token
         );
 
         /// <summary>Determines whether the download queue is empty. Note that the queue does not include requests that are already being downloaded. In other words, BeginDownload clears the queue.</summary>
         /// <returns> TRUE if the queue is empty, FALSE if there are requests pending for BeginDownload.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL IsEmpty(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int IsEmpty(
             [In] IDWriteFontDownloadQueue* This
         );
 
@@ -54,7 +57,8 @@ namespace TerraFX.Interop
         /// <remarks> BeginDownload removes all download requests from the queue, transferring them to a background download operation. If any previous downloads are still ongoing when BeginDownload is called again, the new download does not complete until the previous downloads have finished. If the queue is empty and no active downloads are pending, the DownloadCompleted callback is called immediately with DWRITE_DOWNLOAD_RESULT_NONE.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT BeginDownload(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int BeginDownload(
             [In] IDWriteFontDownloadQueue* This,
             [In] IUnknown* context = null
         );
@@ -63,7 +67,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CancelDownload(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CancelDownload(
             [In] IDWriteFontDownloadQueue* This
         );
 
@@ -71,7 +76,8 @@ namespace TerraFX.Interop
         /// <returns> The number of download queue generations.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT64 GetGenerationCount(
+        [return: ComAliasName("UINT64")]
+        public /* static */ delegate ulong GetGenerationCount(
             [In] IDWriteFontDownloadQueue* This
         );
         #endregion

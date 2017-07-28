@@ -21,12 +21,13 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetOffset(
             [In] ID2D1OffsetTransform* This,
-            [In] D2D1_POINT_2L offset
+            [In, ComAliasName("D2D1_POINT_2L")] POINT offset
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_POINT_2L GetOffset(
+        [return: ComAliasName("D2D1_POINT_2L")]
+        public /* static */ delegate POINT GetOffset(
             [In] ID2D1OffsetTransform* This
         );
         #endregion

@@ -18,11 +18,12 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DrawSpriteBatch(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DrawSpriteBatch(
             [In] ID2D1CommandSink3* This,
             [In] ID2D1SpriteBatch* spriteBatch,
-            [In] UINT32 startIndex,
-            [In] UINT32 spriteCount,
+            [In, ComAliasName("UINT32")] uint startIndex,
+            [In, ComAliasName("UINT32")] uint spriteCount,
             [In] ID2D1Bitmap* bitmap,
             [In] D2D1_BITMAP_INTERPOLATION_MODE interpolationMode,
             [In] D2D1_SPRITE_OPTIONS spriteOptions

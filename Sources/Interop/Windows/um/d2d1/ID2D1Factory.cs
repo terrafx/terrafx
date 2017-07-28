@@ -21,7 +21,8 @@ namespace TerraFX.Interop
         /// <summary>Cause the factory to refresh any system metrics that it might have been snapped on factory creation.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ReloadSystemMetrics(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ReloadSystemMetrics(
             [In] ID2D1Factory* This
         );
 
@@ -30,21 +31,23 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void GetDesktopDpi(
             [In] ID2D1Factory* This,
-            [Out] FLOAT* dpiX,
-            [Out] FLOAT* dpiY
+            [Out, ComAliasName("FLOAT")] float* dpiX,
+            [Out, ComAliasName("FLOAT")] float* dpiY
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateRectangleGeometry(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateRectangleGeometry(
             [In] ID2D1Factory* This,
-            [In] /* readonly */ D2D1_RECT_F* rectangle,
+            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* rectangle,
             [Out] ID2D1RectangleGeometry** rectangleGeometry
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateRoundedRectangleGeometry(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateRoundedRectangleGeometry(
             [In] ID2D1Factory* This,
             [In] /* readonly */ D2D1_ROUNDED_RECT* roundedRectangle,
             [Out] ID2D1RoundedRectangleGeometry** roundedRectangleGeometry
@@ -52,7 +55,8 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateEllipseGeometry(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateEllipseGeometry(
             [In] ID2D1Factory* This,
             [In] /* readonly */ D2D1_ELLIPSE* ellipse,
             [Out] ID2D1EllipseGeometry** ellipseGeometry
@@ -61,27 +65,30 @@ namespace TerraFX.Interop
         /// <summary>Create a geometry which holds other geometries.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateGeometryGroup(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateGeometryGroup(
             [In] ID2D1Factory* This,
             [In] D2D1_FILL_MODE fillMode,
             [In] ID2D1Geometry** geometries,
-            [In] UINT32 geometriesCount,
+            [In, ComAliasName("UINT32")] uint geometriesCount,
             [Out] ID2D1GeometryGroup** geometryGroup
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateTransformedGeometry(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateTransformedGeometry(
             [In] ID2D1Factory* This,
             [In] ID2D1Geometry* sourceGeometry,
-            [In] /* readonly */ D2D1_MATRIX_3X2_F* transform,
+            [In, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* transform,
             [Out] ID2D1TransformedGeometry** transformedGeometry
         );
 
         /// <summary>Returns an initially empty path geometry interface. A geometry sink is created off the interface to populate it.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreatePathGeometry(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreatePathGeometry(
             [In] ID2D1Factory* This,
             [Out] ID2D1PathGeometry** pathGeometry
         );
@@ -89,18 +96,20 @@ namespace TerraFX.Interop
         /// <summary>Allows a non-default stroke style to be specified for a given geometry at draw time.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateStrokeStyle(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateStrokeStyle(
             [In] ID2D1Factory* This,
             [In] /* readonly */ D2D1_STROKE_STYLE_PROPERTIES* strokeStyleProperties,
-            [In, Optional] /* readonly */ FLOAT* dashes,
-            [In] UINT32 dashesCount,
+            [In, Optional, ComAliasName("FLOAT")] /* readonly */ float* dashes,
+            [In, ComAliasName("UINT32")] uint dashesCount,
             [Out] ID2D1StrokeStyle** strokeStyle
         );
 
         /// <summary>Creates a new drawing state block, this can be used in subsequent SaveDrawingState and RestoreDrawingState operations on the render target.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateDrawingStateBlock(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateDrawingStateBlock(
             [In] ID2D1Factory* This,
             [In, Optional] /* readonly */ D2D1_DRAWING_STATE_DESCRIPTION* drawingStateDescription,
             [In, Optional] IDWriteRenderingParams* textRenderingParams,
@@ -110,7 +119,8 @@ namespace TerraFX.Interop
         /// <summary>Creates a render target which is a source of bitmaps.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateWicBitmapRenderTarget(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateWicBitmapRenderTarget(
             [In] ID2D1Factory* This,
             [In] IWICBitmap* target,
             [In] /* readonly */ D2D1_RENDER_TARGET_PROPERTIES* renderTargetProperties,
@@ -120,7 +130,8 @@ namespace TerraFX.Interop
         /// <summary>Creates a render target that appears on the display.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateHwndRenderTarget(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateHwndRenderTarget(
             [In] ID2D1Factory* This,
             [In] /* readonly */ D2D1_RENDER_TARGET_PROPERTIES* renderTargetProperties,
             [In] /* readonly */ D2D1_HWND_RENDER_TARGET_PROPERTIES* hwndRenderTargetProperties,
@@ -130,7 +141,8 @@ namespace TerraFX.Interop
         /// <summary>Creates a render target that draws to a DXGI Surface. The device that owns the surface is used for rendering.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateDxgiSurfaceRenderTarget(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateDxgiSurfaceRenderTarget(
             [In] ID2D1Factory* This,
             [In] IDXGISurface* dxgiSurface,
             [In] /* readonly */ D2D1_RENDER_TARGET_PROPERTIES* renderTargetProperties,
@@ -140,7 +152,8 @@ namespace TerraFX.Interop
         /// <summary>Creates a render target that draws to a GDI device context.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateDCRenderTarget(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateDCRenderTarget(
             [In] ID2D1Factory* This,
             [In] /* readonly */ D2D1_RENDER_TARGET_PROPERTIES* renderTargetProperties,
             [Out] ID2D1DCRenderTarget** dcRenderTarget

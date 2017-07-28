@@ -19,21 +19,24 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT QueryInterface(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryInterface(
             [In] IUnknown* This,
-            [In] REFIID riid,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate ULONG AddRef(
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint AddRef(
             [In] IUnknown* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate ULONG Release(
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint Release(
             [In] IUnknown* This
         );
         #endregion

@@ -20,7 +20,8 @@ namespace TerraFX.Interop
         /// <summary>Initialize the effect with a context and a transform graph. The effect must populate the transform graph with a topology and can update it later.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Initialize(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Initialize(
             [In] ID2D1EffectImpl* This,
             [In] ID2D1EffectContext* effectContext,
             [In] ID2D1TransformGraph* transformGraph
@@ -29,7 +30,8 @@ namespace TerraFX.Interop
         /// <summary>Initialize the effect with a context and a transform graph. The effect must populate the transform graph with a topology and can update it later.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT PrepareForRender(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int PrepareForRender(
             [In] ID2D1EffectImpl* This,
             [In] D2D1_CHANGE_TYPE changeType
         );
@@ -37,7 +39,8 @@ namespace TerraFX.Interop
         /// <summary>Sets a new transform graph to the effect.  This happens when the number of inputs to the effect changes, if the effect support a variable number of inputs.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetGraph(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetGraph(
             [In] ID2D1EffectImpl* This,
             [In] ID2D1TransformGraph* transformGraph
         );

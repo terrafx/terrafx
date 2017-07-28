@@ -8,7 +8,7 @@ using System.Security;
 
 namespace TerraFX.Interop
 {
-    public static partial class User32
+    unsafe public static partial class User32
     {
         #region SW_* Constants
         public const int SW_HIDE = 0;
@@ -841,9 +841,10 @@ namespace TerraFX.Interop
         #region External Methods
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "SetWindowTextW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern BOOL SetWindowText(
-            [In] HWND hWnd,
-            [In, Optional] LPCWSTR lpString
+        [return: ComAliasName("BOOL")]
+        public static extern int SetWindowText(
+            [In, ComAliasName("HWND")] void* hWnd,
+            [In, Optional, ComAliasName("LPCWSTR")] /* readonly */ char* lpString
         );
         #endregion
     }

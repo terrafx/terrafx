@@ -19,22 +19,25 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDesc(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDesc(
             [In] IDXGISurface* This,
             [Out] DXGI_SURFACE_DESC* pDesc
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Map(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Map(
             [In] IDXGISurface* This,
             [Out] DXGI_MAPPED_RECT* pLockedRect,
-            [In] UINT MapFlags
+            [In, ComAliasName("UINT")] uint MapFlags
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Unmap(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Unmap(
             [In] IDXGISurface* This
         );
         #endregion

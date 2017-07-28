@@ -19,11 +19,12 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CheckFeatureSupport(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CheckFeatureSupport(
             [In] IDXGIFactory5* This,
             [In] DXGI_FEATURE Feature,
             [In, Out] void* pFeatureSupportData,
-            [In] UINT FeatureSupportDataSize
+            [In, ComAliasName("UINT")] uint FeatureSupportDataSize
         );
         #endregion
 

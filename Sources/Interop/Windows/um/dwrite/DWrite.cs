@@ -79,8 +79,6 @@ namespace TerraFX.Interop
         public static readonly Guid IID_IDWriteGlyphRunAnalysis = new Guid(0x7D97DBF7, 0xE085, 0x42D4, 0x81, 0xE3, 0x6A, 0x88, 0x3B, 0xDE, 0xD1, 0x18);
 
         public static readonly Guid IID_IDWriteFactory = new Guid(0xB859EE5A, 0xD838, 0x4B5B, 0xA2, 0xE8, 0x1A, 0xDC, 0x7D, 0x93, 0xDB, 0x48);
-
-        public static readonly Guid IID_IDWriteGeometrySink = IID_ID2D1SimplifiedGeometrySink;
         #endregion
 
         #region External Methods
@@ -92,9 +90,10 @@ namespace TerraFX.Interop
         /// <remarks>Obtains DirectWrite factory object that is used for subsequent creation of individual DirectWrite classes. DirectWrite factory contains internal state such as font loader registration and cached font data. In most cases it is recommended to use the shared factory object, because it allows multiple components that use DirectWrite to share internal DirectWrite state and reduce memory usage. However, there are cases when it is desirable to reduce the impact of a component, such as a plug-in from an untrusted source, on the rest of the process by sandboxing and isolating it from the rest of the process components. In such cases, it is recommended to use an isolated factory for the sandboxed component.</remarks>
         [DllImport("DWrite", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "DWriteCreateFactory", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern HRESULT DWriteCreateFactory(
+        [return: ComAliasName("HRESULT")]
+        public static extern int DWriteCreateFactory(
             [In] DWRITE_FACTORY_TYPE factoryType,
-            [In] REFIID iid,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* iid,
             [Out] IUnknown** factory
         );
         #endregion

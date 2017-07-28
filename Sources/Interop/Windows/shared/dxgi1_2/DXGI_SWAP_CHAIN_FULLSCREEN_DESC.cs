@@ -3,6 +3,8 @@
 // Ported from shared\dxgi1_2.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct DXGI_SWAP_CHAIN_FULLSCREEN_DESC
@@ -14,7 +16,8 @@ namespace TerraFX.Interop
 
         public DXGI_MODE_SCALING Scaling;
 
-        public BOOL Windowed;
+        [ComAliasName("BOOL")]
+        public int Windowed;
         #endregion
     }
 }

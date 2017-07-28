@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void GetRect(
             [In] ID2D1RectangleGeometry* This,
-            [Out] D2D1_RECT_F* rect
+            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* rect
         );
         #endregion
 

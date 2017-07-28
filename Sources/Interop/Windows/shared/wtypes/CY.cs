@@ -13,14 +13,17 @@ namespace TerraFX.Interop
         #region Fields
         #region struct
         [FieldOffset(0)]
-        public ULONG Lo;
+        [ComAliasName("ULONG")]
+        public uint Lo;
 
         [FieldOffset(4)]
-        public LONG Hi;
+        [ComAliasName("LONG")]
+        public int Hi;
         #endregion
 
         [FieldOffset(0)]
-        public LONGLONG int64;
+        [ComAliasName("LONGLONG")]
+        public long int64;
         #endregion
     }
 }

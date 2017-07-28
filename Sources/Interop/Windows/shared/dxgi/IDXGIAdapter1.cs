@@ -19,7 +19,8 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDesc1(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDesc1(
             [In] IDXGIAdapter1* This,
             [Out] DXGI_ADAPTER_DESC1* pDesc
         );

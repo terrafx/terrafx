@@ -19,7 +19,8 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DrawInk(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DrawInk(
             [In] ID2D1CommandSink2* This,
             [In] ID2D1Ink* ink,
             [In] ID2D1Brush* brush,
@@ -28,18 +29,20 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DrawGradientMesh(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DrawGradientMesh(
             [In] ID2D1CommandSink2* This,
             [In] ID2D1GradientMesh* gradientMesh
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DrawGdiMetafile(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DrawGdiMetafile(
             [In] ID2D1CommandSink2* This,
             [In] ID2D1GdiMetafile* gdiMetafile,
-            [In, Optional] /* readonly */ D2D1_RECT_F* destinationRectangle,
-            [In, Optional] /* readonly */ D2D1_RECT_F* sourceRectangle
+            [In, Optional, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangle,
+            [In, Optional, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* sourceRectangle
         );
         #endregion
 

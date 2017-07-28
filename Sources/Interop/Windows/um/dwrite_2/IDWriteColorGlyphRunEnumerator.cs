@@ -22,9 +22,10 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT MoveNext(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int MoveNext(
             [In] IDWriteColorGlyphRunEnumerator* This,
-            [Out] BOOL* hasRun
+            [Out, ComAliasName("BOOL")] int* hasRun
         );
 
         /// <summary>Gets the current color glyph run.</summary>
@@ -32,7 +33,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code. An error is returned if there is no current glyph run, i.e., if MoveNext has not yet been called or if the end of the sequence has been reached.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetCurrentRun(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetCurrentRun(
             [In] IDWriteColorGlyphRunEnumerator* This,
             [Out] /* readonly */ DWRITE_COLOR_GLYPH_RUN** colorGlyphRun
         );

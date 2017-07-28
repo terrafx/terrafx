@@ -10,8 +10,6 @@ namespace TerraFX.Interop
     unsafe public static partial class Windows
     {
         #region Constants
-        public const uint NULL = 0;
-
         public const int FALSE = 0;
 
         public const int TRUE = 1;

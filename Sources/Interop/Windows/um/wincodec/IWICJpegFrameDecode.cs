@@ -19,86 +19,96 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DoesSupportIndexing(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DoesSupportIndexing(
             [In] IWICJpegFrameDecode* This,
-            [Out] BOOL* pfIndexingSupported
+            [Out, ComAliasName("BOOL")] int* pfIndexingSupported
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetIndexing(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetIndexing(
             [In] IWICJpegFrameDecode* This,
             [In] WICJpegIndexingOptions options,
-            [In] UINT horizontalIntervalSize
+            [In, ComAliasName("UINT")] uint horizontalIntervalSize
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ClearIndexing(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ClearIndexing(
             [In] IWICJpegFrameDecode* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetAcHuffmanTable(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetAcHuffmanTable(
             [In] IWICJpegFrameDecode* This,
-            [In] UINT scanIndex,
-            [In] UINT tableIndex,
+            [In, ComAliasName("UINT")] uint scanIndex,
+            [In, ComAliasName("UINT")] uint tableIndex,
             [Out] DXGI_JPEG_AC_HUFFMAN_TABLE* pAcHuffmanTable
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDcHuffmanTable(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDcHuffmanTable(
             [In] IWICJpegFrameDecode* This,
-            [In] UINT scanIndex,
-            [In] UINT tableIndex,
+            [In, ComAliasName("UINT")] uint scanIndex,
+            [In, ComAliasName("UINT")] uint tableIndex,
             [Out] DXGI_JPEG_DC_HUFFMAN_TABLE* pDcHuffmanTable
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetQuantizationTable(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetQuantizationTable(
             [In] IWICJpegFrameDecode* This,
-            [In] UINT scanIndex,
-            [In] UINT tableIndex,
+            [In, ComAliasName("UINT")] uint scanIndex,
+            [In, ComAliasName("UINT")] uint tableIndex,
             [Out] DXGI_JPEG_QUANTIZATION_TABLE* pQuantizationTable
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFrameHeader(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFrameHeader(
             [In] IWICJpegFrameDecode* This,
             [Out] WICJpegFrameHeader* pFrameHeader
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetScanHeader(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetScanHeader(
             [In] IWICJpegFrameDecode* This,
-            [In] UINT scanIndex,
+            [In, ComAliasName("UINT")] uint scanIndex,
             [Out] WICJpegScanHeader* pScanHeader
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CopyScan(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CopyScan(
             [In] IWICJpegFrameDecode* This,
-            [In] UINT scanIndex,
-            [In] UINT scanOffset,
-            [In] UINT cbScanData,
-            [Out] BYTE* pbScanData,
-            [Out] UINT* pcbScanDataActual
+            [In, ComAliasName("UINT")] uint scanIndex,
+            [In, ComAliasName("UINT")] uint scanOffset,
+            [In, ComAliasName("UINT")] uint cbScanData,
+            [Out, ComAliasName("BYTE")] byte* pbScanData,
+            [Out, ComAliasName("UINT")] uint* pcbScanDataActual
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CopyMinimalStream(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CopyMinimalStream(
             [In] IWICJpegFrameDecode* This,
-            [In] UINT streamOffset,
-            [In] UINT cbStreamData,
-            [Out] BYTE* pbStreamData,
-            [Out] UINT* pcbStreamDataActual
+            [In, ComAliasName("UINT")] uint streamOffset,
+            [In, ComAliasName("UINT")] uint cbStreamData,
+            [Out, ComAliasName("BYTE")] byte* pbStreamData,
+            [Out, ComAliasName("UINT")] uint* pcbStreamDataActual
         );
         #endregion
 

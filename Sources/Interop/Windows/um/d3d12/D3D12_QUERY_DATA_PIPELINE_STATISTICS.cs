@@ -3,32 +3,45 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_QUERY_DATA_PIPELINE_STATISTICS
     {
         #region Fields
-        public UINT64 IAVertices;
+        [ComAliasName("UINT64")]
+        public ulong IAVertices;
 
-        public UINT64 IAPrimitives;
+        [ComAliasName("UINT64")]
+        public ulong IAPrimitives;
 
-        public UINT64 VSInvocations;
+        [ComAliasName("UINT64")]
+        public ulong VSInvocations;
 
-        public UINT64 GSInvocations;
+        [ComAliasName("UINT64")]
+        public ulong GSInvocations;
 
-        public UINT64 GSPrimitives;
+        [ComAliasName("UINT64")]
+        public ulong GSPrimitives;
 
-        public UINT64 CInvocations;
+        [ComAliasName("UINT64")]
+        public ulong CInvocations;
 
-        public UINT64 CPrimitives;
+        [ComAliasName("UINT64")]
+        public ulong CPrimitives;
 
-        public UINT64 PSInvocations;
+        [ComAliasName("UINT64")]
+        public ulong PSInvocations;
 
-        public UINT64 HSInvocations;
+        [ComAliasName("UINT64")]
+        public ulong HSInvocations;
 
-        public UINT64 DSInvocations;
+        [ComAliasName("UINT64")]
+        public ulong DSInvocations;
 
-        public UINT64 CSInvocations;
+        [ComAliasName("UINT64")]
+        public ulong CSInvocations;
         #endregion
     }
 }

@@ -19,12 +19,13 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Initialize(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Initialize(
             [In] IWICColorTransform* This,
             [In, Optional] IWICBitmapSource* pIBitmapSource,
             [In, Optional] IWICColorContext* pIContextSource,
             [In, Optional] IWICColorContext* pIContextDest,
-            [In] REFWICPixelFormatGUID pixelFmtDest
+            [In, ComAliasName("REFWICPixelFormatGUID")] /* readonly */ Guid* pixelFmtDest
          );
         #endregion
 

@@ -21,7 +21,8 @@ namespace TerraFX.Interop
         /// <summary>Gets the number of language/string pairs.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetCount(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetCount(
             [In] IDWriteLocalizedStrings* This
         );
 
@@ -32,11 +33,12 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code. If the specified locale name does not exist, the return value is S_OK, but *index is UINT_MAX and *exists is FALSE.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT FindLocaleName(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int FindLocaleName(
             [In] IDWriteLocalizedStrings* This,
-            [In] /* readonly */ WCHAR* localeName,
-            [Out] UINT32* index,
-            [Out] BOOL* exists
+            [In, ComAliasName("WCHAR")] /* readonly */ char* localeName,
+            [Out, ComAliasName("UINT32")] uint* index,
+            [Out, ComAliasName("BOOL")] int* exists
         );
 
         /// <summary>Gets the length in characters (not including the null terminator) of the locale name with the specified index.</summary>
@@ -45,10 +47,11 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetLocaleNameLength(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetLocaleNameLength(
             [In] IDWriteLocalizedStrings* This,
-            [In] UINT32 index,
-            [Out] UINT32* length
+            [In, ComAliasName("UINT32")] uint index,
+            [Out, ComAliasName("UINT32")] uint* length
         );
 
         /// <summary>Copies the locale name with the specified index to the specified array.</summary>
@@ -58,11 +61,12 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetLocaleName(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetLocaleName(
             [In] IDWriteLocalizedStrings* This,
-            [In] UINT32 index,
-            [Out] WCHAR* localeName,
-            [In] UINT32 size
+            [In, ComAliasName("UINT32")] uint index,
+            [Out, ComAliasName("WCHAR")] char* localeName,
+            [In, ComAliasName("UINT32")] uint size
         );
 
         /// <summary>Gets the length in characters (not including the null terminator) of the string with the specified index.</summary>
@@ -71,10 +75,11 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetStringLength(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetStringLength(
             [In] IDWriteLocalizedStrings* This,
-            [In] UINT32 index,
-            [Out] UINT32* length
+            [In, ComAliasName("UINT32")] uint index,
+            [Out, ComAliasName("UINT32")] uint* length
         );
 
         /// <summary>Copies the string with the specified index to the specified array.</summary>
@@ -84,11 +89,12 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetString(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetString(
             [In] IDWriteLocalizedStrings* This,
-            [In] UINT32 index,
-            [Out] WCHAR* stringBuffer,
-            [In] UINT32 size
+            [In, ComAliasName("UINT32")] uint index,
+            [Out, ComAliasName("WCHAR")] char* stringBuffer,
+            [In, ComAliasName("UINT32")] uint size
         );
         #endregion
 

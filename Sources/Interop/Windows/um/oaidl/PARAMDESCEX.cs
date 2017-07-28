@@ -3,14 +3,18 @@
 // Ported from um\oaidl.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public  /* blittable */ struct PARAMDESCEX
     {
         #region Fields
-        public ULONG cBytes;
+        [ComAliasName("ULONG")]
+        public uint cBytes;
 
-        public VARIANTARG varDefaultValue;
+        [ComAliasName("VARIANTARG")]
+        public VARIANT varDefaultValue;
         #endregion
     }
 }

@@ -19,25 +19,28 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetDebugParameter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetDebugParameter(
             [In] ID3D12DebugDevice1* This,
             [In] D3D12_DEBUG_DEVICE_PARAMETER_TYPE Type,
             [In] /* readonly */ void* pData,
-            [In] UINT DataSize
+            [In, ComAliasName("UINT")] uint DataSize
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDebugParameter(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDebugParameter(
             [In] ID3D12DebugDevice1* This,
             [In] D3D12_DEBUG_DEVICE_PARAMETER_TYPE Type,
             [Out] void* pData,
-            [In] UINT DataSize
+            [In, ComAliasName("UINT")] uint DataSize
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ReportLiveDeviceObjects(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ReportLiveDeviceObjects(
             [In] ID3D12DebugDevice1* This,
             [In] D3D12_RLDO_FLAGS Flags
         );

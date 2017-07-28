@@ -3,16 +3,21 @@
 // Ported from shared\dxgi.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct DXGI_FRAME_STATISTICS
     {
         #region Fields
-        public UINT PresentCount;
+        [ComAliasName("UINT")]
+        public uint PresentCount;
 
-        public UINT PresentRefreshCount;
+        [ComAliasName("UINT")]
+        public uint PresentRefreshCount;
 
-        public UINT SyncRefreshCount;
+        [ComAliasName("UINT")]
+        public uint SyncRefreshCount;
 
         public LARGE_INTEGER SyncQPCTime;
 

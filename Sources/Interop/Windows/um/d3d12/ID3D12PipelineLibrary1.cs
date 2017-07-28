@@ -19,11 +19,12 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT LoadPipeline(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int LoadPipeline(
             [In] ID3D12PipelineLibrary1* This,
-            [In] LPCWSTR pName,
+            [In, ComAliasName("LPCWSTR")] /* readonly */ char* pName,
             [In] /* readonly */ D3D12_PIPELINE_STATE_STREAM_DESC* pDesc,
-            [In] REFIID riid,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out] void** ppPipelineState
         );
         #endregion

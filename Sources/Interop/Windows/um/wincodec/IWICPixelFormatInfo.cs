@@ -19,40 +19,45 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFormatGUID(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFormatGUID(
             [In] IWICPixelFormatInfo* This,
-            [Out] GUID* pFormat
+            [Out, ComAliasName("GUID")] Guid* pFormat
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetColorContext(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetColorContext(
             [In] IWICPixelFormatInfo* This,
             [Out, Optional] IWICColorContext** ppIColorContext
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetBitsPerPixel(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetBitsPerPixel(
             [In] IWICPixelFormatInfo* This,
-            [Out] UINT* puiBitsPerPixel
+            [Out, ComAliasName("UINT")] uint* puiBitsPerPixel
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetChannelCount(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetChannelCount(
             [In] IWICPixelFormatInfo* This,
-            [Out] UINT* puiChannelCount
+            [Out, ComAliasName("UINT")] uint* puiChannelCount
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetChannelMask(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetChannelMask(
             [In] IWICPixelFormatInfo* This,
-            [In] UINT uiChannelIndex,
-            [In] UINT cbMaskBuffer,
-            [In, Out, Optional] BYTE* pbMaskBuffer,
-            [Out] UINT* pcbActual
+            [In, ComAliasName("UINT")] uint uiChannelIndex,
+            [In, ComAliasName("UINT")] uint cbMaskBuffer,
+            [In, Out, Optional, ComAliasName("BYTE")] byte* pbMaskBuffer,
+            [Out, ComAliasName("UINT")] uint* pcbActual
         );
         #endregion
 

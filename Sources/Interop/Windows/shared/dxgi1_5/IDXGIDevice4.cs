@@ -19,19 +19,21 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT OfferResources1(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int OfferResources1(
             [In] IDXGIDevice4* This,
-            [In] UINT NumResources,
+            [In, ComAliasName("UINT")] uint NumResources,
             [In] /* readonly */ IDXGIResource** ppResources,
             [In] DXGI_OFFER_RESOURCE_PRIORITY Priority,
-            [In] UINT Flags
+            [In, ComAliasName("UINT")] uint Flags
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT ReclaimResources1(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ReclaimResources1(
             [In] IDXGIDevice4* This,
-            [In] UINT NumResources,
+            [In, ComAliasName("UINT")] uint NumResources,
             [In] /* readonly */ IDXGIResource** ppResources,
             [Out] DXGI_RECLAIM_RESOURCE_RESULTS* pResults
         );

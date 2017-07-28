@@ -19,233 +19,265 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT QueryRawCapabilitiesInfo(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryRawCapabilitiesInfo(
             [In] IWICDevelopRaw* This,
             [In, Out] WICRawCapabilitiesInfo* pInfo
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT LoadParameterSet(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int LoadParameterSet(
             [In] IWICDevelopRaw* This,
             [In] WICRawParameterSet ParameterSet
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetCurrentParameterSet(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetCurrentParameterSet(
             [In] IWICDevelopRaw* This,
             [Out, Optional] IPropertyBag2** ppCurrentParameterSet
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetExposureCompensation(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetExposureCompensation(
             [In] IWICDevelopRaw* This,
             [In] double ev
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetExposureCompensation(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetExposureCompensation(
             [In] IWICDevelopRaw* This,
             [Out] double* pEV
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetWhitePointRGB(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetWhitePointRGB(
             [In] IWICDevelopRaw* This,
-            [In] UINT Red,
-            [In] UINT Green,
-            [In] UINT Blue
+            [In, ComAliasName("UINT")] uint Red,
+            [In, ComAliasName("UINT")] uint Green,
+            [In, ComAliasName("UINT")] uint Blue
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetWhitePointRGB(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetWhitePointRGB(
             [In] IWICDevelopRaw* This,
-            [Out] UINT* pRed,
-            [Out] UINT* pGreen,
-            [Out] UINT* pBlue
+            [Out, ComAliasName("UINT")] uint* pRed,
+            [Out, ComAliasName("UINT")] uint* pGreen,
+            [Out, ComAliasName("UINT")] uint* pBlue
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetNamedWhitePoint(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetNamedWhitePoint(
             [In] IWICDevelopRaw* This,
             [In] WICNamedWhitePoint WhitePoint
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetNamedWhitePoint(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetNamedWhitePoint(
             [In] IWICDevelopRaw* This,
             [Out] WICNamedWhitePoint* pWhitePoint
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetWhitePointKelvin(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetWhitePointKelvin(
             [In] IWICDevelopRaw* This,
-            [In] UINT WhitePointKelvin
+            [In, ComAliasName("UINT")] uint WhitePointKelvin
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetWhitePointKelvin(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetWhitePointKelvin(
             [In] IWICDevelopRaw* This,
-            [Out] UINT* pWhitePointKelvin
+            [Out, ComAliasName("UINT")] uint* pWhitePointKelvin
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetKelvinRangeInfo(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetKelvinRangeInfo(
             [In] IWICDevelopRaw* This,
-            [Out] UINT* pMinKelvinTemp,
-            [Out] UINT* pMaxKelvinTemp,
-            [Out] UINT* pKelvinTempStepValue
+            [Out, ComAliasName("UINT")] uint* pMinKelvinTemp,
+            [Out, ComAliasName("UINT")] uint* pMaxKelvinTemp,
+            [Out, ComAliasName("UINT")] uint* pKelvinTempStepValue
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetContrast(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetContrast(
             [In] IWICDevelopRaw* This,
             [In] double Contrast
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetContrast(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetContrast(
             [In] IWICDevelopRaw* This,
             [Out] double* pContrast
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetGamma(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetGamma(
             [In] IWICDevelopRaw* This,
             [In] double Gamma
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetGamma(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetGamma(
             [In] IWICDevelopRaw* This,
             [Out] double* pGamma
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetSharpness(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetSharpness(
             [In] IWICDevelopRaw* This,
             [In] double Sharpness
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetSharpness(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSharpness(
             [In] IWICDevelopRaw* This,
             [Out] double* pSharpness
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetSaturation(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetSaturation(
             [In] IWICDevelopRaw* This,
             [In] double Saturation
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetSaturation(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSaturation(
             [In] IWICDevelopRaw* This,
             [Out] double* pSaturation
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetTint(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetTint(
             [In] IWICDevelopRaw* This,
             [In] double Tint
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetTint(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetTint(
             [In] IWICDevelopRaw* This,
             [Out] double* pTint
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetNoiseReduction(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetNoiseReduction(
             [In] IWICDevelopRaw* This,
             [In] double NoiseReduction
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetNoiseReduction(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetNoiseReduction(
             [In] IWICDevelopRaw* This,
             [Out] double* pNoiseReduction
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetDestinationColorContext(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetDestinationColorContext(
             [In] IWICDevelopRaw* This,
             [In, Optional] IWICColorContext* pColorContext
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetToneCurve(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetToneCurve(
             [In] IWICDevelopRaw* This,
-            [In] UINT cbToneCurveSize,
+            [In, ComAliasName("UINT")] uint cbToneCurveSize,
             [In] /* readonly */ WICRawToneCurve* pToneCurve
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetToneCurve(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetToneCurve(
             [In] IWICDevelopRaw* This,
-            [In] UINT cbToneCurveBufferSize,
+            [In, ComAliasName("UINT")] uint cbToneCurveBufferSize,
             [Out, Optional] WICRawToneCurve* pToneCurve,
-            [In, Out, Optional] UINT* pcbActualToneCurveBufferSize
+            [In, Out, Optional, ComAliasName("UINT")] uint* pcbActualToneCurveBufferSize
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetRotation(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetRotation(
             [In] IWICDevelopRaw* This,
             [In] double Rotation
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetRotation(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetRotation(
             [In] IWICDevelopRaw* This,
             [Out] double* pRotation
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetRenderMode(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetRenderMode(
             [In] IWICDevelopRaw* This,
             [In] WICRawRenderMode RenderMode
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetRenderMode(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetRenderMode(
             [In] IWICDevelopRaw* This,
             [Out] WICRawRenderMode* pRenderMode
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetNotificationCallback(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetNotificationCallback(
             [In] IWICDevelopRaw* This,
             [In, Optional] IWICDevelopRawNotificationCallback* pCallback
         );

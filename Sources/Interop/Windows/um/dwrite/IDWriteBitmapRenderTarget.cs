@@ -29,14 +29,15 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT DrawGlyphRun(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int DrawGlyphRun(
             [In] IDWriteBitmapRenderTarget* This,
-            [In] FLOAT baselineOriginX,
-            [In] FLOAT baselineOriginY,
+            [In, ComAliasName("FLOAT")] float baselineOriginX,
+            [In, ComAliasName("FLOAT")] float baselineOriginY,
             [In] DWRITE_MEASURING_MODE measuringMode,
             [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
             [In] IDWriteRenderingParams* renderingParams,
-            [In] COLORREF textColor,
+            [In, ComAliasName("COLORREF")] uint textColor,
             [Out] RECT* blackBoxRect = null
         );
 
@@ -45,7 +46,8 @@ namespace TerraFX.Interop
         /// <remarks> An application can use the device context to draw using GDI functions. An application can obtain the bitmap handle (HBITMAP) by calling GetCurrentObject. An application that wants information about the underlying bitmap, including a pointer to the pixel data, can call GetObject to fill in a DIBSECTION public structure. The bitmap is always a 32-bit top-down DIB.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HDC GetMemoryDC(
+        [return: ComAliasName("HDC")]
+        public /* static */ delegate void* GetMemoryDC(
             [In] IDWriteBitmapRenderTarget* This
         );
 
@@ -53,7 +55,8 @@ namespace TerraFX.Interop
         /// <returns>Returns the number of bitmap pixels per DIP.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate FLOAT GetPixelsPerDip(
+        [return: ComAliasName("FLOAT")]
+        public /* static */ delegate float GetPixelsPerDip(
             [In] IDWriteBitmapRenderTarget* This
         );
 
@@ -62,9 +65,10 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetPixelsPerDip(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetPixelsPerDip(
             [In] IDWriteBitmapRenderTarget* This,
-            [In] FLOAT pixelsPerDip
+            [In, ComAliasName("FLOAT")] float pixelsPerDip
         );
 
         /// <summary>Gets the transform that maps abstract coordinate to DIPs. By default this is the identity transform. Note that this is unrelated to the world transform of the underlying device context.</summary>
@@ -72,7 +76,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetCurrentTransform(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetCurrentTransform(
             [In] IDWriteBitmapRenderTarget* This,
             [Out] DWRITE_MATRIX* transform
         );
@@ -82,7 +87,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetCurrentTransform(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetCurrentTransform(
             [In] IDWriteBitmapRenderTarget* This,
             [In, Optional] /* readonly */ DWRITE_MATRIX* transform
         );
@@ -92,7 +98,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetSize(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSize(
             [In] IDWriteBitmapRenderTarget* This,
             [Out] SIZE* size
         );
@@ -103,10 +110,11 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Resize(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Resize(
             [In] IDWriteBitmapRenderTarget* This,
-            [In] UINT32 width,
-            [In] UINT32 height
+            [In, ComAliasName("UINT32")] uint width,
+            [In, ComAliasName("UINT32")] uint height
         );
         #endregion
 

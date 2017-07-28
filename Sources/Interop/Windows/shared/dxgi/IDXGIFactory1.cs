@@ -19,15 +19,17 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT EnumAdapters1(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int EnumAdapters1(
             [In] IDXGIFactory1* This,
-            [In] UINT Adapter,
+            [In, ComAliasName("UINT")] uint Adapter,
             [Out] IDXGIAdapter1** ppAdapter
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate BOOL IsCurrent(
+        [return: ComAliasName("BOOL")]
+        public /* static */ delegate int IsCurrent(
             [In] IDXGIFactory1* This
         );
         #endregion

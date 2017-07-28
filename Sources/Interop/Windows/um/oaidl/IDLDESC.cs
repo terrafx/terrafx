@@ -3,14 +3,18 @@
 // Ported from um\oaidl.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct IDLDESC
     {
         #region Fields
-        public ULONG_PTR dwReserved;
+        [ComAliasName("ULONG_PTR")]
+        public nuint dwReserved;
 
-        public USHORT wIDLFlags;
+        [ComAliasName("USHORT")]
+        public ushort wIDLFlags;
         #endregion
     }
 }

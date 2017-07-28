@@ -3,6 +3,8 @@
 // Ported from um\d2d1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>Contains rendering options (hardware or software), pixel format, DPI information, remoting options, and Direct3D support requirements for a render target.</summary>
@@ -13,9 +15,11 @@ namespace TerraFX.Interop
 
         public D2D1_PIXEL_FORMAT pixelFormat;
 
-        public FLOAT dpiX;
+        [ComAliasName("FLOAT")]
+        public float dpiX;
 
-        public FLOAT dpiY;
+        [ComAliasName("FLOAT")]
+        public float dpiY;
 
         public D2D1_RENDER_TARGET_USAGE usage;
 

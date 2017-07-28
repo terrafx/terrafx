@@ -3,28 +3,39 @@
 // Ported from um\d3d12shader.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct D3D12_SHADER_VARIABLE_DESC
     {
         #region Fields
-        public LPCSTR Name;
+        [ComAliasName("LPCSTR")]
+        public /* readonly */ sbyte* Name;
 
-        public UINT StartOffset;
+        [ComAliasName("UINT")]
+        public uint StartOffset;
 
-        public UINT Size;
+        [ComAliasName("UINT")]
+        public uint Size;
 
-        public UINT uFlags;
+        [ComAliasName("UINT")]
+        public uint uFlags;
 
-        public LPVOID DefaultValue;
+        [ComAliasName("LPVOID")]
+        public void* DefaultValue;
 
-        public UINT StartTexture;
+        [ComAliasName("UINT")]
+        public uint StartTexture;
 
-        public UINT TextureSize;
+        [ComAliasName("UINT")]
+        public uint TextureSize;
 
-        public UINT StartSampler;
+        [ComAliasName("UINT")]
+        public uint StartSampler;
 
-        public UINT SamplerSize;
+        [ComAliasName("UINT")]
+        public uint SamplerSize;
         #endregion
     }
 }

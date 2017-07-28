@@ -19,11 +19,12 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetResource(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetResource(
             [In] IDXGISurface2* This,
-            [In] REFIID riid,
+            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out] void** ppParentResource,
-            [Out] UINT* pSubresourceIndex
+            [Out, ComAliasName("UINT")] uint* pSubresourceIndex
         );
         #endregion
 

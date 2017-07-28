@@ -21,7 +21,8 @@ namespace TerraFX.Interop
         /// <summary>Returns the number of stops in the gradient.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetGradientStopCount(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetGradientStopCount(
             [In] ID2D1GradientStopCollection* This
         );
 
@@ -32,7 +33,7 @@ namespace TerraFX.Interop
         public /* static */ delegate void GetGradientStops(
             [In] ID2D1GradientStopCollection* This,
             [Out] D2D1_GRADIENT_STOP* gradientStops,
-            [In] UINT32 gradientStopsCount
+            [In, ComAliasName("UINT32")] uint gradientStopsCount
         );
 
         /// <summary>Returns whether the interpolation occurs with 1.0 or 2.2 gamma.</summary>

@@ -19,20 +19,22 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT LoadEx(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int LoadEx(
             [In] IWICPersistStream* This,
             [In, Optional] IStream* pIStream,
-            [In, Optional] /* readonly */ GUID* pguidPreferredVendor,
-            [In] DWORD dwPersistOptions
+            [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* pguidPreferredVendor,
+            [In, ComAliasName("DWORD")] uint dwPersistOptions
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SaveEx(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SaveEx(
             [In] IWICPersistStream* This,
             [In, Optional] IStream* pIStream,
-            [In] DWORD dwPersistOptions,
-            [In] BOOL fClearDirty
+            [In, ComAliasName("DWORD")] uint dwPersistOptions,
+            [In, ComAliasName("BOOL")] int fClearDirty
         );
         #endregion
 

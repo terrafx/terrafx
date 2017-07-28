@@ -20,7 +20,8 @@ namespace TerraFX.Interop
         /// <summary>Sets the paint type.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetPaintType(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetPaintType(
             [In] ID2D1SvgPaint* This,
             [In] D2D1_SVG_PAINT_TYPE paintType
         );
@@ -35,9 +36,10 @@ namespace TerraFX.Interop
         /// <summary>Sets the paint color that is used if the paint type is D2D1_SVG_PAINT_TYPE_COLOR.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetColor(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetColor(
             [In] ID2D1SvgPaint* This,
-            [In] /* readonly */ D2D1_COLOR_F* color
+            [In, ComAliasName("D2D1_COLOR_F")] /* readonly */ DXGI_RGBA* color
         );
 
         /// <summary>Gets the paint color that is used if the paint type is D2D1_SVG_PAINT_TYPE_COLOR.</summary>
@@ -45,30 +47,33 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void GetColor(
             [In] ID2D1SvgPaint* This,
-            [Out] D2D1_COLOR_F* color
+            [Out, ComAliasName("D2D1_COLOR_F")] DXGI_RGBA* color
         );
 
         /// <summary>Sets the element id which acts as the paint server. This id is used if the paint type is D2D1_SVG_PAINT_TYPE_URI.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetId(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetId(
             [In] ID2D1SvgPaint* This,
-            [In] PCWSTR id
+            [In, ComAliasName("PCWSTR")] /* readonly */ char* id
         );
 
         /// <summary>Gets the element id which acts as the paint server. This id is used if the paint type is D2D1_SVG_PAINT_TYPE_URI.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetId(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetId(
             [In] ID2D1SvgPaint* This,
-            [Out] PWSTR id,
-            [In] UINT32 idCount
+            [Out, ComAliasName("PWSTR")] char* id,
+            [In, ComAliasName("UINT32")] uint idCount
         );
 
         /// <summary>Gets the string length of the element id which acts as the paint server. This id is used if the paint type is D2D1_SVG_PAINT_TYPE_URI. The returned string length does not include room for the null terminator.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetIdLength(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetIdLength(
             [In] ID2D1SvgPaint* This
         );
         #endregion

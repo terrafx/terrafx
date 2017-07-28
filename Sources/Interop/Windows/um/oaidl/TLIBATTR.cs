@@ -3,22 +3,30 @@
 // Ported from um\oaidl.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public  /* blittable */ struct TLIBATTR
     {
         #region Fields
-        public GUID guid;
+        [ComAliasName("GUID")]
+        public Guid guid;
 
-        public LCID lcid;
+        [ComAliasName("LCID")]
+        public uint lcid;
 
         public SYSKIND syskind;
 
-        public WORD wMajorVerNum;
+        [ComAliasName("WORD")]
+        public ushort wMajorVerNum;
 
-        public WORD wMinorVerNum;
+        [ComAliasName("WORD")]
+        public ushort wMinorVerNum;
 
-        public WORD wLibFlags;
+        [ComAliasName("WORD")]
+        public ushort wLibFlags;
         #endregion
     }
 }

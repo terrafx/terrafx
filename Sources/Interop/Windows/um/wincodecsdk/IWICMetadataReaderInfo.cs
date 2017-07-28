@@ -19,27 +19,30 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetPatterns(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPatterns(
             [In] IWICMetadataReaderInfo* This,
-            [In] REFGUID guidContainerFormat,
-            [In] UINT cbSize,
+            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidContainerFormat,
+            [In, ComAliasName("UINT")] uint cbSize,
             [Out, Optional] WICMetadataPattern* pPattern,
-            [Out, Optional] UINT* pcCount,
-            [Out, Optional] UINT* pcbActual
+            [Out, Optional, ComAliasName("UINT")] uint* pcCount,
+            [Out, Optional, ComAliasName("UINT")] uint* pcbActual
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT MatchesPattern(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int MatchesPattern(
             [In] IWICMetadataReaderInfo* This,
-            [In] REFGUID guidContainerFormat,
+            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidContainerFormat,
             [In, Optional] IStream* pIStream,
-            [Out] BOOL* pfMatches
+            [Out, ComAliasName("BOOL")] int* pfMatches
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateInstance(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateInstance(
             [In] IWICMetadataReaderInfo* This,
             [Out, Optional] IWICMetadataReader** ppIReader
         );

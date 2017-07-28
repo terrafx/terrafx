@@ -26,11 +26,12 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateInMemoryFontFileReference(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateInMemoryFontFileReference(
             [In] IDWriteInMemoryFontFileLoader* This,
             [In] IDWriteFactory* factory,
             [In] /* readonly */ void* fontData,
-            [In] UINT32 fontDataSize,
+            [In, ComAliasName("UINT32")] uint fontDataSize,
             [In, Optional] IUnknown* ownerObject,
             [Out] IDWriteFontFile** fontFile
         );
@@ -38,7 +39,8 @@ namespace TerraFX.Interop
         /// <summary>The GetFileCount method returns the number of font file references that have been created using this loader instance.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetFileCount(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetFileCount(
             [In] IDWriteInMemoryFontFileLoader* This
         );
         #endregion

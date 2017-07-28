@@ -3,6 +3,8 @@
 // Ported from um\dwrite_3.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>Data for a single glyph from GetGlyphImageData.</summary>
@@ -13,28 +15,36 @@ namespace TerraFX.Interop
         public /* readonly */ void* imageData;
 
         /// <summary>Size of glyph data in bytes.</summary>
-        public UINT32 imageDataSize;
+        [ComAliasName("UINT32")]
+        public uint imageDataSize;
 
         /// <summary>Unique identifier for the glyph data. Clients may use this to cache a parsed/decompressed version and tell whether a repeated call to the same font returns the same data.</summary>
-        public UINT32 uniqueDataId;
+        [ComAliasName("UINT32")]
+        public uint uniqueDataId;
 
         /// <summary>Pixels per em of the returned data. For non-scalable raster data (PNG/TIFF/JPG), this can be larger or smaller than requested from GetGlyphImageData when there isn't an exact match. For scaling intermediate sizes, use: desired pixels per em * font em size / actual pixels per em.</summary>
-        public UINT32 pixelsPerEm;
+        [ComAliasName("UINT32")]
+        public uint pixelsPerEm;
 
         /// <summary>Size of image when the format is pixel data.</summary>
-        public D2D1_SIZE_U pixelSize;
+        [ComAliasName("D2D1_SIZE_U")]
+        public D2D_SIZE_U pixelSize;
 
         /// <summary>Left origin along the horizontal Roman baseline.</summary>
-        public D2D1_POINT_2L horizontalLeftOrigin;
+        [ComAliasName("D2D1_POINT_2L")]
+        public POINT horizontalLeftOrigin;
 
         /// <summary>Right origin along the horizontal Roman baseline.</summary>
-        public D2D1_POINT_2L horizontalRightOrigin;
+        [ComAliasName("D2D1_POINT_2L")]
+        public POINT horizontalRightOrigin;
 
         /// <summary>Top origin along the vertical central baseline.</summary>
-        public D2D1_POINT_2L verticalTopOrigin;
+        [ComAliasName("D2D1_POINT_2L")]
+        public POINT verticalTopOrigin;
 
         /// <summary>Bottom origin along vertical central baseline.</summary>
-        public D2D1_POINT_2L verticalBottomOrigin;
+        [ComAliasName("D2D1_POINT_2L")]
+        public POINT verticalBottomOrigin;
         #endregion
     }
 }

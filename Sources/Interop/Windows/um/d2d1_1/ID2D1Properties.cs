@@ -20,26 +20,29 @@ namespace TerraFX.Interop
         /// <summary>Returns the total number of custom properties in this interface.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetPropertyCount(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetPropertyCount(
             [In] ID2D1Properties* This
         );
 
         /// <summary>Retrieves the property name from the given property index.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetPropertyName(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPropertyName(
             [In] ID2D1Properties* This,
-            [In] UINT32 index,
-            [Out] PWSTR name,
-            [In] UINT32 nameCount
+            [In, ComAliasName("UINT32")] uint index,
+            [Out, ComAliasName("PWSTR")] char* name,
+            [In, ComAliasName("UINT32")] uint nameCount
         );
 
         /// <summary>Returns the length of the property name from the given index.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetPropertyNameLength(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetPropertyNameLength(
             [In] ID2D1Properties* This,
-            [In] UINT32 index
+            [In, ComAliasName("UINT32")] uint index
         );
 
         /// <summary>Retrieves the type of the given property.</summary>
@@ -47,75 +50,82 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate D2D1_PROPERTY_TYPE _GetType(
             [In] ID2D1Properties* This,
-            [In] UINT32 index
+            [In, ComAliasName("UINT32")] uint index
         );
 
         /// <summary>Retrieves the property index for the given property name.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetPropertyIndex(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetPropertyIndex(
             [In] ID2D1Properties* This,
-            [In] PCWSTR name
+            [In, ComAliasName("PCWSTR")] /* readonly */ char* name
         );
 
         /// <summary>Sets the value of the given property using its name.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetValueByName(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetValueByName(
             [In] ID2D1Properties* This,
-            [In] PCWSTR name,
+            [In, ComAliasName("PCWSTR")] /* readonly */ char* name,
             [In] D2D1_PROPERTY_TYPE type,
-            [In] /* readonly */ BYTE* data,
-            [In] UINT32 dataSize
+            [In, ComAliasName("BYTE")] /* readonly */ byte* data,
+            [In, ComAliasName("UINT32")] uint dataSize
         );
 
         /// <summary>Sets the given value using the property index.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetValue(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetValue(
             [In] ID2D1Properties* This,
-            [In] UINT32 index,
+            [In, ComAliasName("UINT32")] uint index,
             [In] D2D1_PROPERTY_TYPE type,
-            [In]  /* readonly */ BYTE* data,
-            [In] UINT32 dataSize
+            [In, ComAliasName("BYTE")] /* readonly */ byte* data,
+            [In, ComAliasName("UINT32")] uint dataSize
         );
 
         /// <summary>Retrieves the given property or sub-property by name. '.' is the delimiter for sub-properties.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetValueByName(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetValueByName(
             [In] ID2D1Properties* This,
-            [In] PCWSTR name,
+            [In, ComAliasName("PCWSTR")] /* readonly */ char* name,
             [In] D2D1_PROPERTY_TYPE type,
-            [Out] BYTE* data,
-            [In] UINT32 dataSize
+            [Out, ComAliasName("BYTE")] byte* data,
+            [In, ComAliasName("UINT32")] uint dataSize
         );
 
         /// <summary>Retrieves the given value by index.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetValue(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetValue(
             [In] ID2D1Properties* This,
-            [In] UINT32 index,
+            [In, ComAliasName("UINT32")] uint index,
             [In] D2D1_PROPERTY_TYPE type,
-            [Out] BYTE* data,
-            [In] UINT32 dataSize
+            [Out, ComAliasName("BYTE")] byte* data,
+            [In, ComAliasName("UINT32")] uint dataSize
         );
 
         /// <summary>Returns the value size for the given property index.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate UINT32 GetValueSize(
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetValueSize(
             [In] ID2D1Properties* This,
-            [In] UINT32 index
+            [In, ComAliasName("UINT32")] uint index
         );
 
         /// <summary>Retrieves the sub-properties of the given property by index.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetSubProperties(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSubProperties(
             [In] ID2D1Properties* This,
-            [In] UINT32 index,
+            [In, ComAliasName("UINT32")] uint index,
             [Out] ID2D1Properties** subProperties
         );
         #endregion

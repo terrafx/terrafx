@@ -3,6 +3,8 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_SUBRESOURCE_FOOTPRINT
@@ -10,13 +12,17 @@ namespace TerraFX.Interop
         #region Fields
         public DXGI_FORMAT Format;
 
-        public UINT Width;
+        [ComAliasName("UINT")]
+        public uint Width;
 
-        public UINT Height;
+        [ComAliasName("UINT")]
+        public uint Height;
 
-        public UINT Depth;
+        [ComAliasName("UINT")]
+        public uint Depth;
 
-        public UINT RowPitch;
+        [ComAliasName("UINT")]
+        public uint RowPitch;
         #endregion
     }
 }

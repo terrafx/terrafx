@@ -25,10 +25,11 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateStreamFromKey(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateStreamFromKey(
             [In] IDWriteFontFileLoader* This,
             [In] /* readonly */ void* fontFileReferenceKey,
-            [In] UINT32 fontFileReferenceKeySize,
+            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
             [Out] IDWriteFontFileStream** fontFileStream
         );
         #endregion

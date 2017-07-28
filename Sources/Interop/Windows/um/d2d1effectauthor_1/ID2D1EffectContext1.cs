@@ -20,13 +20,14 @@ namespace TerraFX.Interop
         /// <summary>Creates a 3D lookup table for mapping a 3-channel input to a 3-channel output. The table data must be provided in 4-channel format.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateLookupTable3D(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateLookupTable3D(
             [In] ID2D1EffectContext1* This,
             [In] D2D1_BUFFER_PRECISION precision,
-            [In] /* readonly */ UINT32 *extents,
-            [In]  /* readonly */ BYTE* data,
-            [In] UINT32 dataCount,
-            [In] /* readonly */ UINT32* strides,
+            [In, ComAliasName("UINT32")] /* readonly */ uint *extents,
+            [In, ComAliasName("BYTE")] /* readonly */ byte* data,
+            [In, ComAliasName("UINT32")] uint dataCount,
+            [In, ComAliasName("UINT32")] /* readonly */ uint* strides,
             [Out] ID2D1LookupTable3D** lookupTable 
         );
         #endregion

@@ -21,7 +21,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetLineSpacing(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetLineSpacing(
             [In] IDWriteTextFormat2* This,
             [In] /* readonly */ DWRITE_LINE_SPACING* lineSpacingOptions
         );
@@ -31,7 +32,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetLineSpacing(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetLineSpacing(
             [In] IDWriteTextFormat2* This,
             [Out] DWRITE_LINE_SPACING* lineSpacingOptions
         );

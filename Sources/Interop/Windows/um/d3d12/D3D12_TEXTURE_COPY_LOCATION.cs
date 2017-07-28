@@ -26,7 +26,8 @@ namespace TerraFX.Interop
             public D3D12_PLACED_SUBRESOURCE_FOOTPRINT PlacedFootprint;
 
             [FieldOffset(0)]
-            public UINT SubresourceIndex;
+            [ComAliasName("UINT")]
+            public uint SubresourceIndex;
             #endregion
         }
         #endregion

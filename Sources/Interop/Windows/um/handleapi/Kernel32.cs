@@ -8,13 +8,14 @@ using System.Security;
 
 namespace TerraFX.Interop
 {
-    public static partial class Kernel32
+    unsafe public static partial class Kernel32
     {
         #region Extern Methods
         [DllImport("Kernel32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CloseHandle", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern BOOL CloseHandle(
-            [In] HANDLE hObject
+        [return: ComAliasName("BOOL")]
+        public static extern int CloseHandle(
+            [In, ComAliasName("HANDLE")] void* hObject
         );
         #endregion
     }

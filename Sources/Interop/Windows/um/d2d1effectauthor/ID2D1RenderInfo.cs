@@ -20,16 +20,18 @@ namespace TerraFX.Interop
         /// <summary>Sets options for sampling the specified image input</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetInputDescription(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetInputDescription(
             [In] ID2D1RenderInfo* This,
-            [In] UINT32 inputIndex,
+            [In, ComAliasName("UINT32")] uint inputIndex,
             [In] D2D1_INPUT_DESCRIPTION inputDescription
         );
 
         /// <summary>Controls the output precision and channel-depth for the associated transform.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetOutputBuffer(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetOutputBuffer(
             [In] ID2D1RenderInfo* This,
             [In] D2D1_BUFFER_PRECISION bufferPrecision,
             [In] D2D1_CHANNEL_DEPTH channelDepth
@@ -40,7 +42,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetCached(
             [In] ID2D1RenderInfo* This,
-            [In] BOOL isCached
+            [In, ComAliasName("BOOL")] int isCached
         );
 
         /// <summary>Provides a hint of the approximate shader instruction count per pixel.  If provided, it may improve performance when processing large images.  Instructions should be counted multiple times if occurring within loops.</summary>
@@ -48,7 +50,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetInstructionCountHint(
             [In] ID2D1RenderInfo* This,
-            [In] UINT32 instructionCount
+            [In, ComAliasName("UINT32")] uint instructionCount
         );
         #endregion
 

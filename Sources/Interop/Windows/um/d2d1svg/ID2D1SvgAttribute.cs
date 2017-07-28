@@ -28,7 +28,8 @@ namespace TerraFX.Interop
         /// <summary>Creates a clone of this attribute value. On creation, the cloned attribute is not set on any element.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Clone(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Clone(
             [In] ID2D1SvgAttribute* This,
             [Out] ID2D1SvgAttribute** attribute
         );

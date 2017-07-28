@@ -19,20 +19,22 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Read(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Read(
             [In] ISequentialStream* This,
             [Out] void* pv,
-            [In] ULONG cb,
-            [Out, Optional] ULONG* pcbRead
+            [In, ComAliasName("ULONG")] uint cb,
+            [Out, Optional, ComAliasName("ULONG")] uint* pcbRead
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT Write(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int Write(
             [In] ISequentialStream* This,
             [In] /* readonly */ void* pv,
-            [In] ULONG cb,
-            [Out, Optional] ULONG* pcbWritten
+            [In, ComAliasName("ULONG")] uint cb,
+            [Out, Optional, ComAliasName("ULONG")] uint* pcbWritten
         );
         #endregion
 

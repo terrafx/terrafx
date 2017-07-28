@@ -3,6 +3,7 @@
 // Ported from shared\dxgitype.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
@@ -10,8 +11,10 @@ namespace TerraFX.Interop
     public /* blittable */ struct DXGI_JPEG_AC_HUFFMAN_TABLE
     {
         #region Fields
+        [ComAliasName("BYTE[16]")]
         public _CodeCounts_e__FixedBuffer CodeCounts;
 
+        [ComAliasName("BYTE[162]")]
         public _CodeValues_e__FixedBuffer CodeValues;
         #endregion
 
@@ -19,41 +22,41 @@ namespace TerraFX.Interop
         unsafe public /* blittable */ struct _CodeCounts_e__FixedBuffer
         {
             #region Fields
-            public BYTE e0;
+            public byte e0;
 
-            public BYTE e1;
+            public byte e1;
 
-            public BYTE e2;
+            public byte e2;
 
-            public BYTE e3;
+            public byte e3;
 
-            public BYTE e4;
+            public byte e4;
 
-            public BYTE e5;
+            public byte e5;
 
-            public BYTE e6;
+            public byte e6;
 
-            public BYTE e7;
+            public byte e7;
 
-            public BYTE e8;
+            public byte e8;
 
-            public BYTE e9;
+            public byte e9;
 
-            public BYTE e10;
+            public byte e10;
 
-            public BYTE e11;
+            public byte e11;
 
-            public BYTE e12;
+            public byte e12;
 
-            public BYTE e13;
+            public byte e13;
 
-            public BYTE e14;
+            public byte e14;
 
-            public BYTE e15;
+            public byte e15;
             #endregion
 
             #region Properties
-            public BYTE this[int index]
+            public byte this[int index]
             {
                 get
                 {
@@ -62,7 +65,7 @@ namespace TerraFX.Interop
                         ThrowArgumentOutOfRangeException(nameof(index), index);
                     }
 
-                    fixed (BYTE* e = &e0)
+                    fixed (byte* e = &e0)
                     {
                         return e[index];
                     }
@@ -74,333 +77,333 @@ namespace TerraFX.Interop
         unsafe public /* blittable */ struct _CodeValues_e__FixedBuffer
         {
             #region Fields
-            public BYTE e0;
+            public byte e0;
 
-            public BYTE e1;
+            public byte e1;
 
-            public BYTE e2;
+            public byte e2;
 
-            public BYTE e3;
+            public byte e3;
 
-            public BYTE e4;
+            public byte e4;
 
-            public BYTE e5;
+            public byte e5;
 
-            public BYTE e6;
+            public byte e6;
 
-            public BYTE e7;
+            public byte e7;
 
-            public BYTE e8;
+            public byte e8;
 
-            public BYTE e9;
+            public byte e9;
 
-            public BYTE e10;
+            public byte e10;
 
-            public BYTE e11;
+            public byte e11;
 
-            public BYTE e12;
+            public byte e12;
 
-            public BYTE e13;
+            public byte e13;
 
-            public BYTE e14;
+            public byte e14;
 
-            public BYTE e15;
+            public byte e15;
 
-            public BYTE e16;
+            public byte e16;
 
-            public BYTE e17;
+            public byte e17;
 
-            public BYTE e18;
+            public byte e18;
 
-            public BYTE e19;
+            public byte e19;
 
-            public BYTE e20;
+            public byte e20;
 
-            public BYTE e21;
+            public byte e21;
 
-            public BYTE e22;
+            public byte e22;
 
-            public BYTE e23;
+            public byte e23;
 
-            public BYTE e24;
+            public byte e24;
 
-            public BYTE e25;
+            public byte e25;
 
-            public BYTE e26;
+            public byte e26;
 
-            public BYTE e27;
+            public byte e27;
 
-            public BYTE e28;
+            public byte e28;
 
-            public BYTE e29;
+            public byte e29;
 
-            public BYTE e30;
+            public byte e30;
 
-            public BYTE e31;
+            public byte e31;
 
-            public BYTE e32;
+            public byte e32;
 
-            public BYTE e33;
+            public byte e33;
 
-            public BYTE e34;
+            public byte e34;
 
-            public BYTE e35;
+            public byte e35;
 
-            public BYTE e36;
+            public byte e36;
 
-            public BYTE e37;
+            public byte e37;
 
-            public BYTE e38;
+            public byte e38;
 
-            public BYTE e39;
+            public byte e39;
 
-            public BYTE e40;
+            public byte e40;
 
-            public BYTE e41;
+            public byte e41;
 
-            public BYTE e42;
+            public byte e42;
 
-            public BYTE e43;
+            public byte e43;
 
-            public BYTE e44;
+            public byte e44;
 
-            public BYTE e45;
+            public byte e45;
 
-            public BYTE e46;
+            public byte e46;
 
-            public BYTE e47;
+            public byte e47;
 
-            public BYTE e48;
+            public byte e48;
 
-            public BYTE e49;
+            public byte e49;
 
-            public BYTE e50;
+            public byte e50;
 
-            public BYTE e51;
+            public byte e51;
 
-            public BYTE e52;
+            public byte e52;
 
-            public BYTE e53;
+            public byte e53;
 
-            public BYTE e54;
+            public byte e54;
 
-            public BYTE e55;
+            public byte e55;
 
-            public BYTE e56;
+            public byte e56;
 
-            public BYTE e57;
+            public byte e57;
 
-            public BYTE e58;
+            public byte e58;
 
-            public BYTE e59;
+            public byte e59;
 
-            public BYTE e60;
+            public byte e60;
 
-            public BYTE e61;
+            public byte e61;
 
-            public BYTE e62;
+            public byte e62;
 
-            public BYTE e63;
+            public byte e63;
 
-            public BYTE e64;
+            public byte e64;
 
-            public BYTE e65;
+            public byte e65;
 
-            public BYTE e66;
+            public byte e66;
 
-            public BYTE e67;
+            public byte e67;
 
-            public BYTE e68;
+            public byte e68;
 
-            public BYTE e69;
+            public byte e69;
 
-            public BYTE e70;
+            public byte e70;
 
-            public BYTE e71;
+            public byte e71;
 
-            public BYTE e72;
+            public byte e72;
 
-            public BYTE e73;
+            public byte e73;
 
-            public BYTE e74;
+            public byte e74;
 
-            public BYTE e75;
+            public byte e75;
 
-            public BYTE e76;
+            public byte e76;
 
-            public BYTE e77;
+            public byte e77;
 
-            public BYTE e78;
+            public byte e78;
 
-            public BYTE e79;
+            public byte e79;
 
-            public BYTE e80;
+            public byte e80;
 
-            public BYTE e81;
+            public byte e81;
 
-            public BYTE e82;
+            public byte e82;
 
-            public BYTE e83;
+            public byte e83;
 
-            public BYTE e84;
+            public byte e84;
 
-            public BYTE e85;
+            public byte e85;
 
-            public BYTE e86;
+            public byte e86;
 
-            public BYTE e87;
+            public byte e87;
 
-            public BYTE e88;
+            public byte e88;
 
-            public BYTE e89;
+            public byte e89;
 
-            public BYTE e90;
+            public byte e90;
 
-            public BYTE e91;
+            public byte e91;
 
-            public BYTE e92;
+            public byte e92;
 
-            public BYTE e93;
+            public byte e93;
 
-            public BYTE e94;
+            public byte e94;
 
-            public BYTE e95;
+            public byte e95;
 
-            public BYTE e96;
+            public byte e96;
 
-            public BYTE e97;
+            public byte e97;
 
-            public BYTE e98;
+            public byte e98;
 
-            public BYTE e99;
+            public byte e99;
 
-            public BYTE e100;
+            public byte e100;
 
-            public BYTE e101;
+            public byte e101;
 
-            public BYTE e102;
+            public byte e102;
 
-            public BYTE e103;
+            public byte e103;
 
-            public BYTE e104;
+            public byte e104;
 
-            public BYTE e105;
+            public byte e105;
 
-            public BYTE e106;
+            public byte e106;
 
-            public BYTE e107;
+            public byte e107;
 
-            public BYTE e108;
+            public byte e108;
 
-            public BYTE e109;
+            public byte e109;
 
-            public BYTE e110;
+            public byte e110;
 
-            public BYTE e111;
+            public byte e111;
 
-            public BYTE e112;
+            public byte e112;
 
-            public BYTE e113;
+            public byte e113;
 
-            public BYTE e114;
+            public byte e114;
 
-            public BYTE e115;
+            public byte e115;
 
-            public BYTE e116;
+            public byte e116;
 
-            public BYTE e117;
+            public byte e117;
 
-            public BYTE e118;
+            public byte e118;
 
-            public BYTE e119;
+            public byte e119;
 
-            public BYTE e120;
+            public byte e120;
 
-            public BYTE e121;
+            public byte e121;
 
-            public BYTE e122;
+            public byte e122;
 
-            public BYTE e123;
+            public byte e123;
 
-            public BYTE e124;
+            public byte e124;
 
-            public BYTE e125;
+            public byte e125;
 
-            public BYTE e126;
+            public byte e126;
 
-            public BYTE e127;
+            public byte e127;
 
-            public BYTE e128;
+            public byte e128;
 
-            public BYTE e129;
+            public byte e129;
 
-            public BYTE e130;
+            public byte e130;
 
-            public BYTE e131;
+            public byte e131;
 
-            public BYTE e132;
+            public byte e132;
 
-            public BYTE e133;
+            public byte e133;
 
-            public BYTE e134;
+            public byte e134;
 
-            public BYTE e135;
+            public byte e135;
 
-            public BYTE e136;
+            public byte e136;
 
-            public BYTE e137;
+            public byte e137;
 
-            public BYTE e138;
+            public byte e138;
 
-            public BYTE e139;
+            public byte e139;
 
-            public BYTE e140;
+            public byte e140;
 
-            public BYTE e141;
+            public byte e141;
 
-            public BYTE e142;
+            public byte e142;
 
-            public BYTE e143;
+            public byte e143;
 
-            public BYTE e144;
+            public byte e144;
 
-            public BYTE e145;
+            public byte e145;
 
-            public BYTE e146;
+            public byte e146;
 
-            public BYTE e147;
+            public byte e147;
 
-            public BYTE e148;
+            public byte e148;
 
-            public BYTE e149;
+            public byte e149;
 
-            public BYTE e150;
+            public byte e150;
 
-            public BYTE e151;
+            public byte e151;
 
-            public BYTE e152;
+            public byte e152;
 
-            public BYTE e153;
+            public byte e153;
 
-            public BYTE e154;
+            public byte e154;
 
-            public BYTE e155;
+            public byte e155;
 
-            public BYTE e156;
+            public byte e156;
 
-            public BYTE e157;
+            public byte e157;
 
-            public BYTE e158;
+            public byte e158;
 
-            public BYTE e159;
+            public byte e159;
 
-            public BYTE e160;
+            public byte e160;
 
-            public BYTE e161;
+            public byte e161;
             #endregion
 
             #region Properties
-            public BYTE this[int index]
+            public byte this[int index]
             {
                 get
                 {
@@ -409,7 +412,7 @@ namespace TerraFX.Interop
                         ThrowArgumentOutOfRangeException(nameof(index), index);
                     }
 
-                    fixed (BYTE* e = &e0)
+                    fixed (byte* e = &e0)
                     {
                         return e[index];
                     }

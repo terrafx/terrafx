@@ -19,37 +19,41 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetAcHuffmanTable(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetAcHuffmanTable(
             [In] IWICJpegFrameEncode* This,
-            [In] UINT scanIndex,
-            [In] UINT tableIndex,
+            [In, ComAliasName("UINT")] uint scanIndex,
+            [In, ComAliasName("UINT")] uint tableIndex,
             [Out] DXGI_JPEG_AC_HUFFMAN_TABLE* pAcHuffmanTable
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetDcHuffmanTable(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDcHuffmanTable(
             [In] IWICJpegFrameEncode* This,
-            [In] UINT scanIndex,
-            [In] UINT tableIndex,
+            [In, ComAliasName("UINT")] uint scanIndex,
+            [In, ComAliasName("UINT")] uint tableIndex,
             [Out] DXGI_JPEG_DC_HUFFMAN_TABLE* pDcHuffmanTable
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetQuantizationTable(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetQuantizationTable(
             [In] IWICJpegFrameEncode* This,
-            [In] UINT scanIndex,
-            [In] UINT tableIndex,
+            [In, ComAliasName("UINT")] uint scanIndex,
+            [In, ComAliasName("UINT")] uint tableIndex,
             [Out] DXGI_JPEG_QUANTIZATION_TABLE* pQuantizationTable
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT WriteScan(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int WriteScan(
             [In] IWICJpegFrameEncode* This,
-            [In] UINT cbScanData,
-            [In] /* readonly */ BYTE* pbScanData
+            [In, ComAliasName("UINT")] uint cbScanData,
+            [In, ComAliasName("BYTE")] /* readonly */ byte* pbScanData
         );
         #endregion
 

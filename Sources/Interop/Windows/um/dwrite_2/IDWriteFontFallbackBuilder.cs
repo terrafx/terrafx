@@ -30,16 +30,17 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AddMapping(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddMapping(
             [In] IDWriteFontFallbackBuilder* This,
             [In] /* readonly */ DWRITE_UNICODE_RANGE* ranges,
-            [In] UINT32 rangesCount,
-            [In] /* readonly */ WCHAR** targetFamilyNames,
-            [In] UINT32 targetFamilyNamesCount,
+            [In, ComAliasName("UINT32")] uint rangesCount,
+            [In, ComAliasName("WCHAR")] /* readonly */ char** targetFamilyNames,
+            [In, ComAliasName("UINT32")] uint targetFamilyNamesCount,
             [In, Optional] IDWriteFontCollection* fontCollection,
-            [In, Optional] /* readonly */ WCHAR* localeName,
-            [In, Optional] /* readonly */ WCHAR* baseFamilyName,
-            [In, DefaultParameterValue(1.0f)] FLOAT scale
+            [In, Optional, ComAliasName("WCHAR")] /* readonly */ char* localeName,
+            [In, Optional, ComAliasName("WCHAR")] /* readonly */ char* baseFamilyName,
+            [In, DefaultParameterValue(1.0f), ComAliasName("FLOAT")] float scale
         );
 
         /// <summary>Appends all the mappings from an existing font fallback object.</summary>
@@ -47,7 +48,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT AddMappings(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddMappings(
             [In] IDWriteFontFallbackBuilder* This,
             [In] IDWriteFontFallback* fontFallback
         );
@@ -57,7 +59,8 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT CreateFontFallback(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateFontFallback(
             [In] IDWriteFontFallbackBuilder* This,
             [Out] IDWriteFontFallback** fontFallback
         );

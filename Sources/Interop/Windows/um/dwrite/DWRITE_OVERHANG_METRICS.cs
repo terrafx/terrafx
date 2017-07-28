@@ -3,6 +3,8 @@
 // Ported from um\dwrite.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>The DWRITE_OVERHANG_METRICS public structure holds how much any visible pixels (in DIPs) overshoot each side of the layout or inline objects.</summary>
@@ -11,16 +13,20 @@ namespace TerraFX.Interop
     {
         #region Fields
         /// <summary>The distance from the left-most visible DIP to its left alignment edge.</summary>
-        public FLOAT left;
+        [ComAliasName("FLOAT")]
+        public float left;
 
         /// <summary>The distance from the top-most visible DIP to its top alignment edge.</summary>
-        public FLOAT top;
+        [ComAliasName("FLOAT")]
+        public float top;
 
         /// <summary>The distance from the right-most visible DIP to its right alignment edge.</summary>
-        public FLOAT right;
+        [ComAliasName("FLOAT")]
+        public float right;
 
         /// <summary>The distance from the bottom-most visible DIP to its bottom alignment edge.</summary>
-        public FLOAT bottom;
+        [ComAliasName("FLOAT")]
+        public float bottom;
         #endregion
     }
 }

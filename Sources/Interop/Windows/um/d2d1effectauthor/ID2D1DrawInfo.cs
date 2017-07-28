@@ -3,6 +3,7 @@
 // Ported from um\d2d1effectauthor.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 using static TerraFX.Interop.D2D1_PIXEL_OPTIONS;
@@ -21,49 +22,54 @@ namespace TerraFX.Interop
         /// <summary>Set the constant buffer for this transform's pixel shader.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetPixelShaderConstantBuffer(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetPixelShaderConstantBuffer(
             [In] ID2D1DrawInfo* This,
-            [In] /* readonly */ BYTE *buffer,
-            [In]UINT32 bufferCount
+            [In, ComAliasName("BYTE")] /* readonly */ byte* buffer,
+            [In, ComAliasName("UINT32")] uint bufferCount
         );
 
         /// <summary>Sets the resource texture corresponding to the given shader texture index.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetResourceTexture(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetResourceTexture(
             [In] ID2D1DrawInfo* This,
-            [In] UINT32 textureIndex,
+            [In, ComAliasName("UINT32")] uint textureIndex,
             [In] ID2D1ResourceTexture* resourceTexture
         );
 
         /// <summary>Set the constant buffer for this transform's vertex shader.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetVertexShaderConstantBuffer(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetVertexShaderConstantBuffer(
             [In] ID2D1DrawInfo* This,
-            [In] /* readonly */ BYTE *buffer,
-            [In] UINT32 bufferCount
+            [In, ComAliasName("BYTE")] /* readonly */ byte* buffer,
+            [In, ComAliasName("UINT32")] uint bufferCount
         );
 
         /// <summary>Set the shader instructions for this transform.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetPixelShader(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetPixelShader(
             [In] ID2D1DrawInfo* This,
-            [In] REFGUID shaderId,
+            [In, ComAliasName("REFGUID")] /* readonly */ Guid* shaderId,
             [In] D2D1_PIXEL_OPTIONS pixelOptions = D2D1_PIXEL_OPTIONS_NONE
         );
 
         /// <summary>Set custom vertices for the associated transform.  A blend mode if foreground-over will be used if blendDescription is NULL.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetVertexProcessing(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetVertexProcessing(
             [In] ID2D1DrawInfo* This,
             [In, Optional] ID2D1VertexBuffer* vertexBuffer,
             [In] D2D1_VERTEX_OPTIONS vertexOptions,
             [In] /* readonly */ D2D1_BLEND_DESCRIPTION* blendDescription = null,
             [In] /* readonly */ D2D1_VERTEX_RANGE* vertexRange = null,
-            [In] /* readonly */ GUID* vertexShader = null
+            [In, ComAliasName("GUID")] /* readonly */ Guid* vertexShader = null
         );
         #endregion
 

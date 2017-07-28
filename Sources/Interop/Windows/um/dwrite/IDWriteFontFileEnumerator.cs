@@ -23,9 +23,10 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT MoveNext(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int MoveNext(
             [In] IDWriteFontFileEnumerator* This,
-            [Out] BOOL* hasCurrentFile
+            [Out, ComAliasName("BOOL")] int* hasCurrentFile
         );
 
         /// <summary>Gets a reference to the current font file.</summary>
@@ -33,7 +34,8 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetCurrentFontFile(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetCurrentFontFile(
             [In] IDWriteFontFileEnumerator* This,
             [Out] IDWriteFontFile** fontFile
         );

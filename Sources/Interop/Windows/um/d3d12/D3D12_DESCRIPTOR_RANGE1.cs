@@ -3,6 +3,8 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_DESCRIPTOR_RANGE1
@@ -10,15 +12,19 @@ namespace TerraFX.Interop
         #region Fields
         public D3D12_DESCRIPTOR_RANGE_TYPE RangeType;
 
-        public UINT NumDescriptors;
+        [ComAliasName("UINT")]
+        public uint NumDescriptors;
 
-        public UINT BaseShaderRegister;
+        [ComAliasName("UINT")]
+        public uint BaseShaderRegister;
 
-        public UINT RegisterSpace;
+        [ComAliasName("UINT")]
+        public uint RegisterSpace;
 
         public D3D12_DESCRIPTOR_RANGE_FLAGS Flags;
 
-        public UINT OffsetInDescriptorsFromTableStart;
+        [ComAliasName("UINT")]
+        public uint OffsetInDescriptorsFromTableStart;
         #endregion
     }
 }

@@ -3,6 +3,8 @@
 // Ported from shared\dxgi1_2.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
@@ -10,25 +12,34 @@ namespace TerraFX.Interop
     public /* blittable */ struct DXGI_ADAPTER_DESC2
     {
         #region Fields
+        [ComAliasName("WCHAR[128]")]
         public _Description_e__FixedBuffer Description;
 
-        public UINT VendorId;
+        [ComAliasName("UINT")]
+        public uint VendorId;
 
-        public UINT DeviceId;
+        [ComAliasName("UINT")]
+        public uint DeviceId;
 
-        public UINT SubSysId;
+        [ComAliasName("UINT")]
+        public uint SubSysId;
 
-        public UINT Revision;
+        [ComAliasName("UINT")]
+        public uint Revision;
 
-        public SIZE_T DedicatedVideoMemory;
+        [ComAliasName("SIZE_T")]
+        public nuint DedicatedVideoMemory;
 
-        public SIZE_T DedicatedSystemMemory;
+        [ComAliasName("SIZE_T")]
+        public nuint DedicatedSystemMemory;
 
-        public SIZE_T SharedSystemMemory;
+        [ComAliasName("SIZE_T")]
+        public nuint SharedSystemMemory;
 
         public LUID AdapterLuid;
 
-        public UINT Flags;
+        [ComAliasName("UINT")]
+        public uint Flags;
 
         public DXGI_GRAPHICS_PREEMPTION_GRANULARITY GraphicsPreemptionGranularity;
 
@@ -36,268 +47,269 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         unsafe public /* blittable */ struct _Description_e__FixedBuffer
         {
             #region Fields
-            public WCHAR e0;
+            public char e0;
 
-            public WCHAR e1;
+            public char e1;
 
-            public WCHAR e2;
+            public char e2;
 
-            public WCHAR e3;
+            public char e3;
 
-            public WCHAR e4;
+            public char e4;
 
-            public WCHAR e5;
+            public char e5;
 
-            public WCHAR e6;
+            public char e6;
 
-            public WCHAR e7;
+            public char e7;
 
-            public WCHAR e8;
+            public char e8;
 
-            public WCHAR e9;
+            public char e9;
 
-            public WCHAR e10;
+            public char e10;
 
-            public WCHAR e11;
+            public char e11;
 
-            public WCHAR e12;
+            public char e12;
 
-            public WCHAR e13;
+            public char e13;
 
-            public WCHAR e14;
+            public char e14;
 
-            public WCHAR e15;
+            public char e15;
 
-            public WCHAR e16;
+            public char e16;
 
-            public WCHAR e17;
+            public char e17;
 
-            public WCHAR e18;
+            public char e18;
 
-            public WCHAR e19;
+            public char e19;
 
-            public WCHAR e20;
+            public char e20;
 
-            public WCHAR e21;
+            public char e21;
 
-            public WCHAR e22;
+            public char e22;
 
-            public WCHAR e23;
+            public char e23;
 
-            public WCHAR e24;
+            public char e24;
 
-            public WCHAR e25;
+            public char e25;
 
-            public WCHAR e26;
+            public char e26;
 
-            public WCHAR e27;
+            public char e27;
 
-            public WCHAR e28;
+            public char e28;
 
-            public WCHAR e29;
+            public char e29;
 
-            public WCHAR e30;
+            public char e30;
 
-            public WCHAR e31;
+            public char e31;
 
-            public WCHAR e32;
+            public char e32;
 
-            public WCHAR e33;
+            public char e33;
 
-            public WCHAR e34;
+            public char e34;
 
-            public WCHAR e35;
+            public char e35;
 
-            public WCHAR e36;
+            public char e36;
 
-            public WCHAR e37;
+            public char e37;
 
-            public WCHAR e38;
+            public char e38;
 
-            public WCHAR e39;
+            public char e39;
 
-            public WCHAR e40;
+            public char e40;
 
-            public WCHAR e41;
+            public char e41;
 
-            public WCHAR e42;
+            public char e42;
 
-            public WCHAR e43;
+            public char e43;
 
-            public WCHAR e44;
+            public char e44;
 
-            public WCHAR e45;
+            public char e45;
 
-            public WCHAR e46;
+            public char e46;
 
-            public WCHAR e47;
+            public char e47;
 
-            public WCHAR e48;
+            public char e48;
 
-            public WCHAR e49;
+            public char e49;
 
-            public WCHAR e50;
+            public char e50;
 
-            public WCHAR e51;
+            public char e51;
 
-            public WCHAR e52;
+            public char e52;
 
-            public WCHAR e53;
+            public char e53;
 
-            public WCHAR e54;
+            public char e54;
 
-            public WCHAR e55;
+            public char e55;
 
-            public WCHAR e56;
+            public char e56;
 
-            public WCHAR e57;
+            public char e57;
 
-            public WCHAR e58;
+            public char e58;
 
-            public WCHAR e59;
+            public char e59;
 
-            public WCHAR e60;
+            public char e60;
 
-            public WCHAR e61;
+            public char e61;
 
-            public WCHAR e62;
+            public char e62;
 
-            public WCHAR e63;
+            public char e63;
 
-            public WCHAR e64;
+            public char e64;
 
-            public WCHAR e65;
+            public char e65;
 
-            public WCHAR e66;
+            public char e66;
 
-            public WCHAR e67;
+            public char e67;
 
-            public WCHAR e68;
+            public char e68;
 
-            public WCHAR e69;
+            public char e69;
 
-            public WCHAR e70;
+            public char e70;
 
-            public WCHAR e71;
+            public char e71;
 
-            public WCHAR e72;
+            public char e72;
 
-            public WCHAR e73;
+            public char e73;
 
-            public WCHAR e74;
+            public char e74;
 
-            public WCHAR e75;
+            public char e75;
 
-            public WCHAR e76;
+            public char e76;
 
-            public WCHAR e77;
+            public char e77;
 
-            public WCHAR e78;
+            public char e78;
 
-            public WCHAR e79;
+            public char e79;
 
-            public WCHAR e80;
+            public char e80;
 
-            public WCHAR e81;
+            public char e81;
 
-            public WCHAR e82;
+            public char e82;
 
-            public WCHAR e83;
+            public char e83;
 
-            public WCHAR e84;
+            public char e84;
 
-            public WCHAR e85;
+            public char e85;
 
-            public WCHAR e86;
+            public char e86;
 
-            public WCHAR e87;
+            public char e87;
 
-            public WCHAR e88;
+            public char e88;
 
-            public WCHAR e89;
+            public char e89;
 
-            public WCHAR e90;
+            public char e90;
 
-            public WCHAR e91;
+            public char e91;
 
-            public WCHAR e92;
+            public char e92;
 
-            public WCHAR e93;
+            public char e93;
 
-            public WCHAR e94;
+            public char e94;
 
-            public WCHAR e95;
+            public char e95;
 
-            public WCHAR e96;
+            public char e96;
 
-            public WCHAR e97;
+            public char e97;
 
-            public WCHAR e98;
+            public char e98;
 
-            public WCHAR e99;
+            public char e99;
 
-            public WCHAR e100;
+            public char e100;
 
-            public WCHAR e101;
+            public char e101;
 
-            public WCHAR e102;
+            public char e102;
 
-            public WCHAR e103;
+            public char e103;
 
-            public WCHAR e104;
+            public char e104;
 
-            public WCHAR e105;
+            public char e105;
 
-            public WCHAR e106;
+            public char e106;
 
-            public WCHAR e107;
+            public char e107;
 
-            public WCHAR e108;
+            public char e108;
 
-            public WCHAR e109;
+            public char e109;
 
-            public WCHAR e110;
+            public char e110;
 
-            public WCHAR e111;
+            public char e111;
 
-            public WCHAR e112;
+            public char e112;
 
-            public WCHAR e113;
+            public char e113;
 
-            public WCHAR e114;
+            public char e114;
 
-            public WCHAR e115;
+            public char e115;
 
-            public WCHAR e116;
+            public char e116;
 
-            public WCHAR e117;
+            public char e117;
 
-            public WCHAR e118;
+            public char e118;
 
-            public WCHAR e119;
+            public char e119;
 
-            public WCHAR e120;
+            public char e120;
 
-            public WCHAR e121;
+            public char e121;
 
-            public WCHAR e122;
+            public char e122;
 
-            public WCHAR e123;
+            public char e123;
 
-            public WCHAR e124;
+            public char e124;
 
-            public WCHAR e125;
+            public char e125;
 
-            public WCHAR e126;
+            public char e126;
 
-            public WCHAR e127;
+            public char e127;
             #endregion
 
             #region Properties
-            public WCHAR this[int index]
+            public char this[int index]
             {
                 get
                 {
@@ -306,7 +318,7 @@ namespace TerraFX.Interop
                         ThrowArgumentOutOfRangeException(nameof(index), index);
                     }
 
-                    fixed (WCHAR* e = &e0)
+                    fixed (char* e = &e0)
                     {
                         return e[index];
                     }

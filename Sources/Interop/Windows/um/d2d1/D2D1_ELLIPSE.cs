@@ -3,17 +3,22 @@
 // Ported from um\d2d1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>Contains the center point, x-radius, and y-radius of an ellipse.</summary>
     public /* blittable */ struct D2D1_ELLIPSE
     {
         #region Fields
-        public D2D1_POINT_2F point;
+        [ComAliasName("D2D1_POINT_2F")]
+        public D2D_POINT_2F point;
 
-        public FLOAT radiusX;
+        [ComAliasName("FLOAT")]
+        public float radiusX;
 
-        public FLOAT radiusY;
+        [ComAliasName("FLOAT")]
+        public float radiusY;
         #endregion
     }
 }

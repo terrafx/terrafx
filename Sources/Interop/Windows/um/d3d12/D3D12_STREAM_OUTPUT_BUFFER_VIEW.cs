@@ -3,16 +3,21 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_STREAM_OUTPUT_BUFFER_VIEW
     {
         #region Fields
-        public D3D12_GPU_VIRTUAL_ADDRESS BufferLocation;
+        [ComAliasName("D3D12_GPU_VIRTUAL_ADDRESS")]
+        public ulong BufferLocation;
 
-        public UINT64 SizeInBytes;
+        [ComAliasName("UINT64")]
+        public ulong SizeInBytes;
 
-        public D3D12_GPU_VIRTUAL_ADDRESS BufferFilledSizeLocation;
+        [ComAliasName("D3D12_GPU_VIRTUAL_ADDRESS")]
+        public ulong BufferFilledSizeLocation;
         #endregion
     }
 }

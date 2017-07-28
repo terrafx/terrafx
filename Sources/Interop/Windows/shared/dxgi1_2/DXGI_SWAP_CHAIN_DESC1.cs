@@ -3,24 +3,31 @@
 // Ported from shared\dxgi1_2.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct DXGI_SWAP_CHAIN_DESC1
     {
         #region Fields
-        public UINT Width;
+        [ComAliasName("UINT")]
+        public uint Width;
 
-        public UINT Height;
+        [ComAliasName("UINT")]
+        public uint Height;
 
         public DXGI_FORMAT Format;
 
-        public BOOL Stereo;
+        [ComAliasName("BOOL")]
+        public int Stereo;
 
         public DXGI_SAMPLE_DESC SampleDesc;
 
-        public DXGI_USAGE BufferUsage;
+        [ComAliasName("DXGI_USAGE")]
+        public uint BufferUsage;
 
-        public UINT BufferCount;
+        [ComAliasName("UINT")]
+        public uint BufferCount;
 
         public DXGI_SCALING Scaling;
 
@@ -28,7 +35,8 @@ namespace TerraFX.Interop
 
         public DXGI_ALPHA_MODE AlphaMode;
 
-        public UINT Flags;
+        [ComAliasName("UINT")]
+        public uint Flags;
         #endregion
     }
 }

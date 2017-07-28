@@ -19,66 +19,74 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetComponentType(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetComponentType(
             [In] IWICComponentInfo* This,
             [Out] WICComponentType* pType
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetCLSID(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetCLSID(
             [In] IWICComponentInfo* This,
-            [Out] CLSID* pclsid
+            [Out, ComAliasName("CLSID")] Guid* pclsid
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetSigningStatus(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSigningStatus(
             [In] IWICComponentInfo* This,
-            [Out] DWORD* pStatus
+            [Out, ComAliasName("DWORD")] uint* pStatus
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetAuthor(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetAuthor(
             [In] IWICComponentInfo* This,
-            [In] UINT cchAuthor,
-            [In, Out, Optional] WCHAR* wzAuthor,
-            [Out] UINT* pcchActual
+            [In, ComAliasName("UINT")] uint cchAuthor,
+            [In, Out, Optional, ComAliasName("WCHAR")] char* wzAuthor,
+            [Out, ComAliasName("UINT")] uint* pcchActual
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetVendorGUID(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetVendorGUID(
             [In] IWICComponentInfo* This,
-            [Out] GUID* pguidVendor
+            [Out, ComAliasName("GUID")] Guid* pguidVendor
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetVersion(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetVersion(
             [In] IWICComponentInfo* This,
-            [In] UINT cchVersion,
-            [In, Out, Optional] WCHAR* wzVersion,
-            [Out] UINT* pcchActual
+            [In, ComAliasName("UINT")] uint cchVersion,
+            [In, Out, Optional, ComAliasName("WCHAR")] char* wzVersion,
+            [Out, ComAliasName("UINT")] uint* pcchActual
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetSpecVersion(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSpecVersion(
             [In] IWICComponentInfo* This,
-            [In] UINT cchSpecVersion,
-            [In, Out, Optional] WCHAR* wzSpecVersion,
-            [Out] UINT* pcchActual
+            [In, ComAliasName("UINT")] uint cchSpecVersion,
+            [In, Out, Optional, ComAliasName("WCHAR")] char* wzSpecVersion,
+            [Out, ComAliasName("UINT")] uint* pcchActual
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT GetFriendlyName(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFriendlyName(
             [In] IWICComponentInfo* This,
-            [In] UINT cchFriendlyName,
-            [In, Out, Optional] WCHAR* wzFriendlyName,
-            [Out] UINT* pcchActual
+            [In, ComAliasName("UINT")] uint cchFriendlyName,
+            [In, Out, Optional, ComAliasName("WCHAR")] char* wzFriendlyName,
+            [Out, ComAliasName("UINT")] uint* pcchActual
         );
         #endregion
 

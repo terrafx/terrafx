@@ -27,14 +27,15 @@ namespace TerraFX.Interop
         /// <returns> A successful code or error code to abort analysis.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT SetGlyphOrientation(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetGlyphOrientation(
             [In] IDWriteTextAnalysisSink1* This,
-            [In] UINT32 textPosition,
-            [In] UINT32 textLength,
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [In, ComAliasName("UINT32")] uint textLength,
             [In] DWRITE_GLYPH_ORIENTATION_ANGLE glyphOrientationAngle,
-            [In] UINT8 adjustedBidiLevel,
-            [In] BOOL isSideways,
-            [In] BOOL isRightToLeft
+            [In, ComAliasName("UINT8")] byte adjustedBidiLevel,
+            [In, ComAliasName("BOOL")] int isSideways,
+            [In, ComAliasName("BOOL")] int isRightToLeft
         );
         #endregion
 

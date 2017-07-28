@@ -3,12 +3,15 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct D3D12_FEATURE_DATA_FEATURE_LEVELS
     {
         #region Fields
-        public UINT NumFeatureLevels;
+        [ComAliasName("UINT")]
+        public uint NumFeatureLevels;
 
         public /* readonly */ D3D_FEATURE_LEVEL* pFeatureLevelsRequested;
 

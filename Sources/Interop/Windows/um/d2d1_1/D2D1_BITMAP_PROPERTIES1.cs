@@ -3,6 +3,8 @@
 // Ported from um\d2d1_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>Extended bitmap properties.</summary>
@@ -11,9 +13,11 @@ namespace TerraFX.Interop
         #region Fields
         public D2D1_PIXEL_FORMAT pixelFormat;
 
-        public FLOAT dpiX;
+        [ComAliasName("FLOAT")]
+        public float dpiX;
 
-        public FLOAT dpiY;
+        [ComAliasName("FLOAT")]
+        public float dpiY;
 
         /// <summary>Specifies how the bitmap can be used.</summary>
         public D2D1_BITMAP_OPTIONS bitmapOptions;

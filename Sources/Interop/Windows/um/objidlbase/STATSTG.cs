@@ -3,14 +3,20 @@
 // Ported from um\objidlbase.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
-    public  /* blittable */ struct STATSTG
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    unsafe public  /* blittable */ struct STATSTG
     {
         #region Fields
-        public LPOLESTR pwcsName;
+        [ComAliasName("LPOLESTR")]
+        public char* pwcsName;
 
-        public DWORD type;
+        [ComAliasName("DWORD")]
+        public uint type;
 
         public ULARGE_INTEGER cbSize;
 
@@ -20,15 +26,20 @@ namespace TerraFX.Interop
 
         public FILETIME atime;
 
-        public DWORD grfMode;
+        [ComAliasName("DWORD")]
+        public uint grfMode;
 
-        public DWORD grfLocksSupported;
+        [ComAliasName("DWORD")]
+        public uint grfLocksSupported;
 
-        public CLSID clsid;
+        [ComAliasName("CLSID")]
+        public Guid clsid;
 
-        public DWORD grfStateBits;
+        [ComAliasName("DWORD")]
+        public uint grfStateBits;
 
-        public DWORD reserved;
+        [ComAliasName("DWORD")]
+        public uint reserved;
         #endregion
     }
 }

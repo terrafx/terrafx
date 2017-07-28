@@ -3,26 +3,36 @@
 // Ported from um\wincodec.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct WICJpegScanHeader
     {
         #region Fields
-        public UINT cComponents;
+        [ComAliasName("UINT")]
+        public uint cComponents;
 
-        public UINT RestartInterval;
+        [ComAliasName("UINT")]
+        public uint RestartInterval;
 
-        public DWORD ComponentSelectors;
+        [ComAliasName("DWORD")]
+        public uint ComponentSelectors;
 
-        public DWORD HuffmanTableIndices;
+        [ComAliasName("DWORD")]
+        public uint HuffmanTableIndices;
 
-        public BYTE StartSpectralSelection;
+        [ComAliasName("BYTE")]
+        public byte StartSpectralSelection;
 
-        public BYTE EndSpectralSelection;
+        [ComAliasName("BYTE")]
+        public byte EndSpectralSelection;
 
-        public BYTE SuccessiveApproximationHigh;
+        [ComAliasName("BYTE")]
+        public byte SuccessiveApproximationHigh;
 
-        public BYTE SuccessiveApproximationLow;
+        [ComAliasName("BYTE")]
+        public byte SuccessiveApproximationLow;
         #endregion
     }
 }

@@ -3,22 +3,32 @@
 // Ported from um\ocidl.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct PROPBAG2
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    unsafe public /* blittable */ struct PROPBAG2
     {
         #region Fields
-        public DWORD dwType;
+        [ComAliasName("DWORD")]
+        public uint dwType;
 
-        public VARTYPE vt;
+        [ComAliasName("VARTYPE")]
+        public ushort vt;
 
-        public CLIPFORMAT cfType;
+        [ComAliasName("CLIPFORMAT")]
+        public ushort cfType;
 
-        public DWORD dwHint;
+        [ComAliasName("DWORD")]
+        public uint dwHint;
 
-        public LPOLESTR pstrName;
+        [ComAliasName("LPOLESTR")]
+        public char* pstrName;
 
-        public CLSID clsid;
+        [ComAliasName("CLSID")]
+        public Guid clsid;
         #endregion
     }
 }

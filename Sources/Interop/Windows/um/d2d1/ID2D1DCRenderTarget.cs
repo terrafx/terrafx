@@ -20,9 +20,10 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate HRESULT BindDC(
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int BindDC(
             [In] ID2D1DCRenderTarget* This,
-            [In] /* readonly */ HDC hDC,
+            [In, ComAliasName("HDC")] /* readonly */ void* hDC,
             [In] /* readonly */ RECT* pSubRect
         );
         #endregion
