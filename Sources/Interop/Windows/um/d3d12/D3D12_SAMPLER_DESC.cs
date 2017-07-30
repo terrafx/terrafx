@@ -4,11 +4,10 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_SAMPLER_DESC
+    unsafe public /* blittable */ struct D3D12_SAMPLER_DESC
     {
         #region Fields
         public D3D12_FILTER Filter;
@@ -28,46 +27,13 @@ namespace TerraFX.Interop
         public D3D12_COMPARISON_FUNC ComparisonFunc;
 
         [ComAliasName("FLOAT[4]")]
-        public _BorderColor_e__FixedBuffer BorderColor;
+        public fixed float BorderColor[4];
 
         [ComAliasName("FLOAT")]
         public float MinLOD;
 
         [ComAliasName("FLOAT")]
         public float MaxLOD;
-        #endregion
-
-        #region Structs
-        unsafe public /* blittable */ struct _BorderColor_e__FixedBuffer
-        {
-            #region Fields
-            public float e0;
-
-            public float e1;
-
-            public float e2;
-
-            public float e3;
-            #endregion
-
-            #region Properties
-            public float this[int index]
-            {
-                get
-                {
-                    if ((uint)(index) > 3) // (index < 0) || (index > 3)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (float* e = &e0)
-                    {
-                        return e[index];
-                    }
-                }
-            }
-            #endregion
-        }
         #endregion
     }
 }

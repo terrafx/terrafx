@@ -4,24 +4,23 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct DXGI_HDR_METADATA_HDR10
+    unsafe public /* blittable */ struct DXGI_HDR_METADATA_HDR10
     {
         #region Fields
         [ComAliasName("UINT16[2]")]
-        public _RedPrimary_e__FixedBuffer RedPrimary;
+        public fixed ushort RedPrimary[2];
 
         [ComAliasName("UINT16[2]")]
-        public _GreenPrimary_e__FixedBuffer GreenPrimary;
+        public fixed ushort GreenPrimary[2];
 
         [ComAliasName("UINT16[2]")]
-        public _BluePrimary_e__FixedBuffer BluePrimary;
+        public fixed ushort BluePrimary[2];
 
         [ComAliasName("UINT16[2]")]
-        public _WhitePoint_e__FixedBuffer WhitePoint;
+        public fixed ushort WhitePoint[2];
 
         [ComAliasName("UINT")]
         public uint MaxMasteringLuminance;
@@ -34,116 +33,6 @@ namespace TerraFX.Interop
 
         [ComAliasName("UINT16")]
         public ushort MaxFrameAverageLightLevel;
-        #endregion
-
-        #region Structs
-        unsafe public /* blittable */ struct _RedPrimary_e__FixedBuffer
-        {
-            #region Fields
-            public ushort e0;
-
-            public ushort e1;
-            #endregion
-
-            #region Properties
-            public ushort this[int index]
-            {
-                get
-                {
-                    if ((uint)(index) > 1) // (index < 0) || (index > 1)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (ushort* e = &e0)
-                    {
-                        return e[index];
-                    }
-                }
-            }
-            #endregion
-        }
-
-        unsafe public /* blittable */ struct _GreenPrimary_e__FixedBuffer
-        {
-            #region Fields
-            public ushort e0;
-
-            public ushort e1;
-            #endregion
-
-            #region Properties
-            public ushort this[int index]
-            {
-                get
-                {
-                    if ((uint)(index) > 1) // (index < 0) || (index > 1)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (ushort* e = &e0)
-                    {
-                        return e[index];
-                    }
-                }
-            }
-            #endregion
-        }
-
-        unsafe public /* blittable */ struct _BluePrimary_e__FixedBuffer
-        {
-            #region Fields
-            public ushort e0;
-
-            public ushort e1;
-            #endregion
-
-            #region Properties
-            public ushort this[int index]
-            {
-                get
-                {
-                    if ((uint)(index) > 1) // (index < 0) || (index > 1)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (ushort* e = &e0)
-                    {
-                        return e[index];
-                    }
-                }
-            }
-            #endregion
-        }
-
-        unsafe public /* blittable */ struct _WhitePoint_e__FixedBuffer
-        {
-            #region Fields
-            public ushort e0;
-
-            public ushort e1;
-            #endregion
-
-            #region Properties
-            public ushort this[int index]
-            {
-                get
-                {
-                    if ((uint)(index) > 1) // (index < 0) || (index > 1)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (ushort* e = &e0)
-                    {
-                        return e[index];
-                    }
-                }
-            }
-            #endregion
-        }
         #endregion
     }
 }

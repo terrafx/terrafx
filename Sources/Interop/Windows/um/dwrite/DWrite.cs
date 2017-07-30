@@ -6,7 +6,6 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
-using static TerraFX.Interop.D2D1;
 
 namespace TerraFX.Interop
 {

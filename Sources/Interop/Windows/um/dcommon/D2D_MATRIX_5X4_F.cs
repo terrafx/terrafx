@@ -4,13 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Represents a 5-by-4 matrix.</summary>
     [StructLayout(LayoutKind.Explicit)]
-    public /* blittable */ struct D2D_MATRIX_5X4_F
+    unsafe public /* blittable */ struct D2D_MATRIX_5X4_F
     {
         #region Fields
         #region struct
@@ -97,47 +96,7 @@ namespace TerraFX.Interop
 
         [FieldOffset(0)]
         [ComAliasName("FLOAT[5][4]")]
-        public _m_e__FixedBuffer m;
-        #endregion
-
-        #region Structs
-        unsafe public /* blittable */ struct _m_e__FixedBuffer
-        {
-            #region Fields
-            public float e0_0, e0_1, e0_2, e0_3;
-
-            public float e1_0, e1_1, e1_2, e1_3;
-
-            public float e2_0, e2_1, e2_2, e2_3;
-
-            public float e3_0, e3_1, e3_2, e3_3;
-
-            public float e4_0, e4_1, e4_2, e4_3;
-            #endregion
-
-            #region Properties
-            public float this[int index1, int index2]
-            {
-                get
-                {
-                    if ((uint)(index1) > 4) // (index1 < 0) || (index1 > 4)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index1), index1);
-                    }
-
-                    if ((uint)(index2) > 3) // (index2 < 0) || (index2 > 3)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index2), index2);
-                    }
-
-                    fixed (float* e = &e0_0)
-                    {
-                        return e[(index1 * 2) + index2];
-                    }
-                }
-            }
-            #endregion
-        }
+        public fixed float m[5 * 4];
         #endregion
     }
 }

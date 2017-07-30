@@ -3,7 +3,8 @@
 // Ported from shared\dxgitype.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using static TerraFX.Utilities.ExceptionUtilities;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
@@ -14,6 +15,7 @@ namespace TerraFX.Interop
 
         public DXGI_RGB Offset;
 
+        [ComAliasName("DXGI_RGB[1025]")]
         public _GammaCurve_e__FixedBuffer GammaCurve;
         #endregion
 
@@ -2073,18 +2075,13 @@ namespace TerraFX.Interop
             #endregion
 
             #region Properties
-            public DXGI_RGB this[int index]
+            public ref DXGI_RGB this[int index]
             {
                 get
                 {
-                    if ((uint)(index) > 1024) // (index < 0) || (index > 1024)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
                     fixed (DXGI_RGB* e = &e0)
                     {
-                        return e[index];
+                        return ref Unsafe.AsRef<DXGI_RGB>(e + index);
                     }
                 }
             }

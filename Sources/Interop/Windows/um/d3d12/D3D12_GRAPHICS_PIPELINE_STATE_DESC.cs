@@ -4,7 +4,6 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
@@ -43,6 +42,7 @@ namespace TerraFX.Interop
         [ComAliasName("UINT")]
         public uint NumRenderTargets;
 
+        [ComAliasName("DXGI_FORMAT[8]")]
         public _RTVFormats_e__FixedBuffer RTVFormats;
 
         public DXGI_FORMAT DSVFormat;
@@ -83,14 +83,17 @@ namespace TerraFX.Interop
             {
                 get
                 {
-                    if ((uint)(index) > 7) // (index < 0) || (index > 7)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
                     fixed (DXGI_FORMAT* e = &e0)
                     {
                         return e[index];
+                    }
+                }
+
+                set
+                {
+                    fixed (DXGI_FORMAT* e = &e0)
+                    {
+                        e[index] = value;
                     }
                 }
             }

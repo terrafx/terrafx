@@ -4,19 +4,18 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Typeface classification values, used for font selection and matching.</summary>
     /// <remarks> Note the family type (index 0) is the only stable entry in the 10-byte array, as all the following entries can change dynamically depending on context of the first field.</remarks>
     [StructLayout(LayoutKind.Explicit)]
-    public /* blittable */ struct DWRITE_PANOSE
+    unsafe public /* blittable */ struct DWRITE_PANOSE
     {
         #region Fields
         [FieldOffset(0)]
         [ComAliasName("UINT8[10]")]
-        public _values_e__FixedBuffer values;
+        public fixed byte values[10];
 
         [FieldOffset(0)]
         [ComAliasName("UINT8")]
@@ -36,49 +35,6 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        unsafe public /* blittable */ struct _values_e__FixedBuffer
-        {
-            #region Fields
-            public byte e0;
-
-            public byte e1;
-
-            public byte e2;
-
-            public byte e3;
-
-            public byte e4;
-
-            public byte e5;
-
-            public byte e6;
-
-            public byte e7;
-
-            public byte e8;
-
-            public byte e9;
-            #endregion
-
-            #region Properties
-            public byte this[int index]
-            {
-                get
-                {
-                    if ((uint)(index) > 9) // (index < 0) || (index > 9)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (byte* e = &e0)
-                    {
-                        return e[index];
-                    }
-                }
-            }
-            #endregion
-        }
-
         public /* blittable */ struct _text_e__Struct
         {
             #region Fields

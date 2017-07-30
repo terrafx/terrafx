@@ -4,13 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
     public /* blittable */ struct D3D12_RT_FORMAT_ARRAY
     {
         #region Fields
+        [ComAliasName("DXGI_FORMAT[8]")]
         public _RTFormats_e__FixedBuffer RTFormats;
 
         [ComAliasName("UINT")]
@@ -43,14 +43,17 @@ namespace TerraFX.Interop
             {
                 get
                 {
-                    if ((uint)(index) > 7) // (index < 0) || (index > 7)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
                     fixed (DXGI_FORMAT* e = &e0)
                     {
                         return e[index];
+                    }
+                }
+
+                set
+                {
+                    fixed (DXGI_FORMAT* e = &e0)
+                    {
+                        e[index] = value;
                     }
                 }
             }

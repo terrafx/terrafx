@@ -3,8 +3,8 @@
 // Ported from um\oaidl.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
@@ -16,6 +16,7 @@ namespace TerraFX.Interop
         [ComAliasName("USHORT")]
         public ushort cDims;
 
+        [ComAliasName("SAFEARRAYBOUND[1]")]
         public _rgbounds_e__FixedBuffer rgbounds;
         #endregion
 
@@ -27,18 +28,13 @@ namespace TerraFX.Interop
             #endregion
 
             #region Properties
-            public SAFEARRAYBOUND this[int index]
+            public ref SAFEARRAYBOUND this[int index]
             {
                 get
                 {
-                    if ((uint)(index) > 0) // (index1 < 0) || (index1 > 0)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
                     fixed (SAFEARRAYBOUND* e = &e0)
                     {
-                        return e[index];
+                        return ref Unsafe.AsRef<SAFEARRAYBOUND>(e + index);
                     }
                 }
             }

@@ -4,13 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Represents a 3-by-2 matrix.</summary>
     [StructLayout(LayoutKind.Explicit)]
-    public /* blittable */ struct D2D_MATRIX_3X2_F
+    unsafe public /* blittable */ struct D2D_MATRIX_3X2_F
     {
         #region Fields
         #region struct
@@ -67,43 +66,7 @@ namespace TerraFX.Interop
 
         [FieldOffset(0)]
         [ComAliasName("FLOAT[3][2]")]
-        public _m_e__FixedBuffer m;
-        #endregion
-
-        #region Structs
-        unsafe public /* blittable */ struct _m_e__FixedBuffer
-        {
-            #region Fields
-            public float e0_0, e0_1;
-
-            public float e1_0, e1_1;
-
-            public float e2_0, e2_1;
-            #endregion
-
-            #region Properties
-            public float this[int index1, int index2]
-            {
-                get
-                {
-                    if ((uint)(index1) > 2) // (index1 < 0) || (index1 > 2)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index1), index1);
-                    }
-
-                    if ((uint)(index2) > 1) // (index2 < 0) || (index2 > 1)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index2), index2);
-                    }
-
-                    fixed (float* e = &e0_0)
-                    {
-                        return e[(index1 * 2) + index2];
-                    }
-                }
-            }
-            #endregion
-        }
+        public fixed float m[3 * 2];
         #endregion
     }
 }

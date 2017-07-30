@@ -3,8 +3,8 @@
 // Ported from um\wincodec.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
@@ -14,6 +14,7 @@ namespace TerraFX.Interop
         [ComAliasName("UINT")]
         public uint cPoints;
 
+        [ComAliasName("WICRawToneCurvePoint[1]")]
         public _aPoints_e__FixedBuffer aPoints;
         #endregion
 
@@ -25,18 +26,13 @@ namespace TerraFX.Interop
             #endregion
 
             #region Properties
-            public WICRawToneCurvePoint this[int index]
+            public ref WICRawToneCurvePoint this[int index]
             {
                 get
                 {
-                    if ((uint)(index) > 0) // (index < 0) || (index > 0)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
                     fixed (WICRawToneCurvePoint* e = &e0)
                     {
-                        return e[index];
+                        return ref Unsafe.AsRef<WICRawToneCurvePoint>(e + index);
                     }
                 }
             }

@@ -4,78 +4,17 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct FONTSIGNATURE
+    unsafe public /* blittable */ struct FONTSIGNATURE
     {
         #region Fields
         [ComAliasName("DWORD[4]")]
-        public _fsUsb_e__FixedBuffer fsUsb;
+        public fixed uint fsUsb[4];
 
         [ComAliasName("DWORD[2]")]
-        public _fsCsb_e__FixedBuffer fsCsb;
-        #endregion
-
-        #region Structs
-        unsafe public /* blittable */ struct _fsUsb_e__FixedBuffer
-        {
-            #region Fields
-            public uint e0;
-
-            public uint e1;
-
-            public uint e2;
-
-            public uint e3;
-            #endregion
-
-            #region Properties
-            public uint this[int index]
-            {
-                get
-                {
-                    if ((uint)(index) > 3) // (index < 0) || (index > 3)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (uint* e = &e0)
-                    {
-                        return e[index];
-                    }
-                }
-            }
-            #endregion
-        }
-
-        unsafe public /* blittable */ struct _fsCsb_e__FixedBuffer
-        {
-            #region Fields
-            public uint e0;
-
-            public uint e1;
-            #endregion
-
-            #region Properties
-            public uint this[int index]
-            {
-                get
-                {
-                    if ((uint)(index) > 1) // (index < 0) || (index > 1)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (uint* e = &e0)
-                    {
-                        return e[index];
-                    }
-                }
-            }
-            #endregion
-        }
+        public fixed uint fsCsb[2];
         #endregion
     }
 }

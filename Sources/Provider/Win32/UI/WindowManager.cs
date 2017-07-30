@@ -5,7 +5,6 @@ using System.Collections.Concurrent;
 using System.Composition;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using TerraFX.Interop;
 using TerraFX.Interop.Desktop;
 using TerraFX.Provider.Win32.Threading;
 using TerraFX.UI;

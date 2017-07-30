@@ -3,8 +3,8 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
@@ -17,6 +17,7 @@ namespace TerraFX.Interop
         [ComAliasName("BOOL")]
         public int IndependentBlendEnable;
 
+        [ComAliasName("D3D12_RENDER_TARGET_BLEND_DESC[8]")]
         public _RenderTarget_e__FixedBuffer RenderTarget;
         #endregion
 
@@ -42,18 +43,13 @@ namespace TerraFX.Interop
             #endregion
 
             #region Properties
-            public D3D12_RENDER_TARGET_BLEND_DESC this[int index]
+            public ref D3D12_RENDER_TARGET_BLEND_DESC this[int index]
             {
                 get
                 {
-                    if ((uint)(index) > 7) // (index < 0) || (index > 7)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
                     fixed (D3D12_RENDER_TARGET_BLEND_DESC* e = &e0)
                     {
-                        return e[index];
+                        return ref Unsafe.AsRef<D3D12_RENDER_TARGET_BLEND_DESC>(e + index);
                     }
                 }
             }
