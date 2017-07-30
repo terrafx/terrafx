@@ -3,8 +3,6 @@
 // Ported from time.h in the Open Group Base Specifications: Issue 7
 // Original source is Copyright © The IEEE and The Open Group.
 
-using TerraFX.Utilities;
-
 namespace TerraFX.Interop
 {
     /// <summary>A time specification.</summary>

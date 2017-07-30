@@ -4,7 +4,6 @@
 // Original source is Copyright © The Open Group.
 
 using System;
-using TerraFX.Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop

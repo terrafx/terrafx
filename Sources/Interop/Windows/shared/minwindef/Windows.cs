@@ -4,7 +4,6 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.CompilerServices;
-using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
