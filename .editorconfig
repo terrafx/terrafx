@@ -114,9 +114,11 @@ dotnet_naming_symbols.static_readonly_declarations.required_modifiers = static, 
 
 ###############################################################################
 # Set dotnet sort options to:
+#   separate import directives into groups, and
 #   sort system directives first
 ###############################################################################
 [*.cs]
+dotnet_separate_import_directive_groups = true
 dotnet_sort_system_directives_first = true
 
 ###############################################################################
@@ -128,10 +130,12 @@ dotnet_sort_system_directives_first = true
 #   suggest object-initializers,
 #   suggest predefined-types for locals, parameters, and members,
 #   suggest predefined-types  of type names for member access,
+#   suggest 'is null' checks over '== null',
 #   don't suggest 'this.' and 'Me.' for events,
 #   don't suggest 'this.' and 'Me.' for fields,
-#   don't suggest 'this.' and 'Me.' for methods, and
-#   don't suggest 'this.' and 'Me.' for properties
+#   don't suggest 'this.' and 'Me.' for methods,
+#   don't suggest 'this.' and 'Me.' for properties, and
+#   suggest specifying accessibility modifiers
 ###############################################################################
 [*.cs]
 dotnet_style_coalesce_expression = true:suggestion
@@ -143,10 +147,14 @@ dotnet_style_object_initializer = true:suggestion
 dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
 dotnet_style_predefined_type_for_member_access = true:suggestion
 
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion
+
 dotnet_style_qualification_for_event = false:suggestion
 dotnet_style_qualification_for_field = false:suggestion
 dotnet_style_qualification_for_method = false:suggestion
 dotnet_style_qualification_for_property = false:suggestion
+
+dotnet_style_require_accessibility_modifiers = always:suggestion
 
 ###############################################################################
 # Set csharp indent options to:
@@ -251,6 +259,11 @@ csharp_space_between_square_brackets = false
 
 ###############################################################################
 # Set csharp style options to:
+#   suggest braces,
+#   suggest inferred anonymous types,
+#   suggest inferred tuple names,
+#   suggest simple default expressions,
+#   suggest a preferred modifier order,
 #   suggest conditional delegate calls,
 #   don't suggest expression-bodied accessors,
 #   don't suggest expression-bodied indexers,
@@ -259,6 +272,7 @@ csharp_space_between_square_brackets = false
 #   don't suggest expression-bodied operators,
 #   don't suggest expression-bodied properties,
 #   suggest inlined variable declarations,
+#   suggest local over anonymous functions,
 #   suggest pattern-matching over "as" with "null" check,
 #   suggest pattern-matching over "is" with "cast" check,
 #   suggest throw expressions,
@@ -267,6 +281,12 @@ csharp_space_between_square_brackets = false
 #   suggest var when the type is apparent
 ###############################################################################
 [*.cs]
+csharp_prefer_braces = true:suggestion
+csharp_prefer_inferred_anonymous_type_member_names = true:suggestion
+csharp_prefer_inferred_tuple_names = true:suggestion
+csharp_prefer_simple_default_expression = true:suggestion
+csharp_preferred_modifier_order = public,private,protected,internal,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,volatile,async:suggestion
+
 csharp_style_conditional_delegate_call = true:suggestion
 
 csharp_style_expression_bodied_accessors = false:suggestion
@@ -278,6 +298,7 @@ csharp_style_expression_bodied_properties = false:suggestion
 
 csharp_style_inlined_variable_declaration = true:suggestion
 
+csharp_style_pattern_local_over_anonymous_function = true:suggestion
 csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
 csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
 
