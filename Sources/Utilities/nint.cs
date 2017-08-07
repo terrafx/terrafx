@@ -401,6 +401,20 @@ unsafe public /* blittable */ struct nint : IComparable, IComparable<nint>, IEqu
     #endregion
 
     #region Cast Operators
+    /// <summary>Explicitly converts a <see cref="nint" /> value to a <see cref="byte" /> value.</summary>
+    /// <param name="value">The <see cref="nint" /> value to convert.</param>
+    public static explicit operator byte(nint value)
+    {
+        return (byte)(value._value);
+    }
+
+    /// <summary>Explicitly converts a <see cref="nint" /> value to a <see cref="short" /> value.</summary>
+    /// <param name="value">The <see cref="nint" /> value to convert.</param>
+    public static explicit operator short(nint value)
+    {
+        return (short)(value._value);
+    }
+
     /// <summary>Explicitly converts a <see cref="nint" /> value to a <see cref="int" /> value.</summary>
     /// <param name="value">The <see cref="nint" /> value to convert.</param>
     public static explicit operator int(nint value)
@@ -415,6 +429,48 @@ unsafe public /* blittable */ struct nint : IComparable, IComparable<nint>, IEqu
         return (long)(value._value);
     }
 
+    /// <summary>Implicitly converts a <see cref="nint" /> value to a <see cref="IntPtr" /> value.</summary>
+    /// <param name="value">The <see cref="nint" /> value to convert.</param>
+    public static implicit operator IntPtr(nint value)
+    {
+        return (IntPtr)(value._value);
+    }
+
+    /// <summary>Explicitly converts a <see cref="nint" /> value to a <see cref="sbyte" /> value.</summary>
+    /// <param name="value">The <see cref="nint" /> value to convert.</param>
+    public static explicit operator sbyte(nint value)
+    {
+        return (sbyte)(value._value);
+    }
+
+    /// <summary>Explicitly converts a <see cref="nint" /> value to a <see cref="ushort" /> value.</summary>
+    /// <param name="value">The <see cref="nint" /> value to convert.</param>
+    public static explicit operator ushort(nint value)
+    {
+        return (ushort)(value._value);
+    }
+
+    /// <summary>Explicitly converts a <see cref="nint" /> value to a <see cref="uint" /> value.</summary>
+    /// <param name="value">The <see cref="nint" /> value to convert.</param>
+    public static explicit operator uint(nint value)
+    {
+        return (uint)(value._value);
+    }
+
+    /// <summary>Explicitly converts a <see cref="nint" /> value to a <see cref="ulong" /> value.</summary>
+    /// <param name="value">The <see cref="nint" /> value to convert.</param>
+    public static explicit operator ulong(nint value)
+    {
+        return (ulong)(value._value);
+    }
+
+    /// <summary>Explicitly converts a <see cref="nint" /> value to a <see cref="UIntPtr" /> value.</summary>
+    /// <param name="value">The <see cref="nint" /> value to convert.</param>
+    public static explicit operator UIntPtr(nint value)
+    {
+        return (UIntPtr)(value._value);
+    }
+
     /// <summary>Explicitly converts a <see cref="nint" /> value to a <see cref="nuint" /> value.</summary>
     /// <param name="value">The <see cref="nuint" /> value to convert.</param>
     public static explicit operator nuint(nint value)
@@ -424,9 +480,23 @@ unsafe public /* blittable */ struct nint : IComparable, IComparable<nint>, IEqu
 
     /// <summary>Explicitly converts a <see cref="nint" /> value to a <see cref="void" />* value.</summary>
     /// <param name="value">The <see cref="nint" /> value to convert.</param>
-    public static explicit operator void*(nint value)
+    public static explicit operator void* (nint value)
     {
         return value._value;
+    }
+
+    /// <summary>Implicitly converts a <see cref="byte" /> value to a <see cref="nint" /> value.</summary>
+    /// <param name="value">The <see cref="byte" /> value to convert.</param>
+    public static implicit operator nint(byte value)
+    {
+        return new nint((void*)(value));
+    }
+
+    /// <summary>Implicitly converts a <see cref="short" /> value to a <see cref="nint" /> value.</summary>
+    /// <param name="value">The <see cref="short" /> value to convert.</param>
+    public static implicit operator nint(short value)
+    {
+        return new nint((void*)(value));
     }
 
     /// <summary>Implicitly converts a <see cref="int" /> value to a <see cref="nint" /> value.</summary>
@@ -441,6 +511,48 @@ unsafe public /* blittable */ struct nint : IComparable, IComparable<nint>, IEqu
     public static explicit operator nint(long value)
     {
         return new nint(value);
+    }
+
+    /// <summary>Implicitly converts a <see cref="IntPtr" /> value to a <see cref="nint" /> value.</summary>
+    /// <param name="value">The <see cref="IntPtr" /> value to convert.</param>
+    public static implicit operator nint(IntPtr value)
+    {
+        return new nint(value);
+    }
+
+    /// <summary>Implicitly converts a <see cref="sbyte" /> value to a <see cref="nint" /> value.</summary>
+    /// <param name="value">The <see cref="sbyte" /> value to convert.</param>
+    public static implicit operator nint(sbyte value)
+    {
+        return new nint((void*)(value));
+    }
+
+    /// <summary>Implicitly converts a <see cref="ushort" /> value to a <see cref="nint" /> value.</summary>
+    /// <param name="value">The <see cref="ushort" /> value to convert.</param>
+    public static implicit operator nint(ushort value)
+    {
+        return new nint((void*)(value));
+    }
+
+    /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="nint" /> value.</summary>
+    /// <param name="value">The <see cref="uint" /> value to convert.</param>
+    public static explicit operator nint(uint value)
+    {
+        return new nint((void*)(value));
+    }
+
+    /// <summary>Explicitly converts a <see cref="ulong" /> value to a <see cref="nint" /> value.</summary>
+    /// <param name="value">The <see cref="ulong" /> value to convert.</param>
+    public static explicit operator nint(ulong value)
+    {
+        return new nint((void*)(value));
+    }
+
+    /// <summary>Explicitly converts a <see cref="UIntPtr" /> value to a <see cref="nint" /> value.</summary>
+    /// <param name="value">The <see cref="UIntPtr" /> value to convert.</param>
+    public static explicit operator nint(UIntPtr value)
+    {
+        return new nint((void*)(value));
     }
 
     /// <summary>Explicitly converts a <see cref="void" />* value to a <see cref="nint" /> value.</summary>
