@@ -153,7 +153,7 @@ namespace TerraFX.Interop
             [In] IDWriteFactory3* This,
             [In, ComAliasName("BOOL")] int includeDownloadableFonts,
             [Out] IDWriteFontCollection1** fontCollection,
-            [In, DefaultParameterValue(FALSE), ComAliasName("BOOL")] int checkForUpdates
+            [In, ComAliasName("BOOL")] int checkForUpdates = FALSE
         );
 
         /// <summary>Gets the font download queue associated with this factory object.</summary>

@@ -25,8 +25,8 @@ namespace TerraFX.Interop
             [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidMetadataFormat,
             [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor,
             [In, ComAliasName("DWORD")] uint dwOptions,
-            [In, Optional] IStream* pIStream,
-            [Out, Optional] IWICMetadataReader** ppIReader
+            [In] IStream* pIStream = null,
+            [Out] IWICMetadataReader** ppIReader = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -37,8 +37,8 @@ namespace TerraFX.Interop
             [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidContainerFormat,
             [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor,
             [In, ComAliasName("DWORD")] uint dwOptions,
-            [In, Optional] IStream* pIStream,
-            [Out, Optional] IWICMetadataReader** ppIReader
+            [In] IStream* pIStream = null,
+            [Out] IWICMetadataReader** ppIReader = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -49,7 +49,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidMetadataFormat,
             [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor,
             [In, ComAliasName("DWORD")] uint dwMetadataOptions,
-            [Out, Optional] IWICMetadataWriter** ppIWriter
+            [Out] IWICMetadataWriter** ppIWriter = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -57,9 +57,9 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateMetadataWriterFromReader(
             [In] IWICComponentFactory* This,
-            [In, Optional] IWICMetadataReader* pIReader,
-            [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor,
-            [Out, Optional] IWICMetadataWriter** ppIWriter
+            [In] IWICMetadataReader* pIReader = null,
+            [In, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor = null,
+            [Out] IWICMetadataWriter** ppIWriter = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -67,8 +67,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateQueryReaderFromBlockReader(
             [In] IWICComponentFactory* This,
-            [In, Optional] IWICMetadataBlockReader* pIBlockReader,
-            [Out, Optional] IWICMetadataQueryReader** ppIQueryReader
+            [In] IWICMetadataBlockReader* pIBlockReader = null,
+            [Out] IWICMetadataQueryReader** ppIQueryReader = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -76,8 +76,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateQueryWriterFromBlockWriter(
             [In] IWICComponentFactory* This,
-            [In, Optional] IWICMetadataBlockWriter* pIBlockWriter,
-            [Out, Optional] IWICMetadataQueryWriter** ppIQueryWriter
+            [In] IWICMetadataBlockWriter* pIBlockWriter = null,
+            [Out] IWICMetadataQueryWriter** ppIQueryWriter = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -87,7 +87,7 @@ namespace TerraFX.Interop
             [In] IWICComponentFactory* This,
             [In, Optional] PROPBAG2* ppropOptions,
             [In, ComAliasName("UINT")] uint cCount,
-            [Out, Optional] IPropertyBag2** ppIPropertyBag
+            [Out] IPropertyBag2** ppIPropertyBag = null
         );
         #endregion
 

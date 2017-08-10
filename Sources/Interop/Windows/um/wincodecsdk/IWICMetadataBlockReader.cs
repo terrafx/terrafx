@@ -39,7 +39,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetReaderByIndex(
             [In] IWICMetadataBlockReader* This,
             [In, ComAliasName("UINT")] uint nIndex,
-            [Out, Optional] IWICMetadataReader** ppIMetadataReader
+            [Out] IWICMetadataReader** ppIMetadataReader = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -47,7 +47,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetEnumerator(
             [In] IWICMetadataBlockReader* This,
-            [Out, Optional] IEnumUnknown** ppIEnumMetadata
+            [Out] IEnumUnknown** ppIEnumMetadata = null
         );
         #endregion
 

@@ -32,7 +32,7 @@ namespace TerraFX.Interop.Desktop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int ReleaseDC(
             [In] ID2D1GdiInteropRenderTarget* This,
-            [In, Optional] /* readonly */ RECT* update
+            [In] /* readonly */ RECT* update = null
         );
         #endregion
 

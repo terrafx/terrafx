@@ -25,7 +25,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetFill(
             [In] ID2D1SvgGlyphStyle* This,
-            [In, Optional] ID2D1Brush* brush
+            [In] ID2D1Brush* brush = null
         );
 
         /// <summary>Returns the requested fill parameters.</summary>
@@ -46,11 +46,11 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetStroke(
             [In] ID2D1SvgGlyphStyle* This,
-            [In, Optional] ID2D1Brush* brush,
-            [In, DefaultParameterValue(1.0f), ComAliasName("FLOAT")] float strokeWidth,
-            [In, Optional, ComAliasName("FLOAT")] /* readonly */ float* dashes,
-            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint dashesCount,
-            [In, DefaultParameterValue(1.0f), ComAliasName("FLOAT")] float dashOffset
+            [In] ID2D1Brush* brush = null,
+            [In, ComAliasName("FLOAT")] float strokeWidth = 1.0f,
+            [In, ComAliasName("FLOAT")] /* readonly */ float* dashes = null,
+            [In, ComAliasName("UINT32")] uint dashesCount = 0,
+            [In, ComAliasName("FLOAT")] float dashOffset = 1.0f
         );
 
         /// <summary>Returns the number of dashes in the dash array.</summary>
@@ -66,11 +66,11 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void GetStroke(
             [In] ID2D1SvgGlyphStyle* This,
-            [Out, Optional] ID2D1Brush** brush,
-            [Out, Optional, ComAliasName("FLOAT")] float* strokeWidth,
-            [Out, Optional, ComAliasName("FLOAT")] float* dashes,
-            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint dashesCount,
-            [Out, Optional, ComAliasName("FLOAT")] float* dashOffset
+            [Out] ID2D1Brush** brush = null,
+            [Out, ComAliasName("FLOAT")] float* strokeWidth = null,
+            [Out, ComAliasName("FLOAT")] float* dashes = null,
+            [In, ComAliasName("UINT32")] uint dashesCount = 0,
+            [Out, ComAliasName("FLOAT")] float* dashOffset = null
         );
         #endregion
 

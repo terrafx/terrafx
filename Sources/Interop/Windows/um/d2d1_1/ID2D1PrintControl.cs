@@ -25,7 +25,7 @@ namespace TerraFX.Interop
             [In] ID2D1PrintControl* This,
             [In] ID2D1CommandList* commandList,
             [In] D2D_SIZE_F pageSize,
-            [In, Optional] IStream* pagePrintTicketStream,
+            [In] IStream* pagePrintTicketStream = null,
             [Out, ComAliasName("D2D1_TAG")] ulong* tag1 = null,
             [Out, ComAliasName("D2D1_TAG")] ulong* tag2 = null
         );

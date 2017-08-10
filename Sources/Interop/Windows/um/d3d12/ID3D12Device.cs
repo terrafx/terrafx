@@ -221,7 +221,7 @@ namespace TerraFX.Interop
             [In] D3D12_RESOURCE_STATES InitialResourceState,
             [In, Optional] /* readonly */ D3D12_CLEAR_VALUE* pOptimizedClearValue,
             [In, ComAliasName("REFIID")] /* readonly */ Guid* riidResource,
-            [Out, Optional] void** ppvResource
+            [Out] void** ppvResource = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -231,7 +231,7 @@ namespace TerraFX.Interop
             [In] ID3D12Device* This,
             [In] /* readonly */ D3D12_HEAP_DESC* pDesc,
             [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
-            [Out, Optional] void** ppvHeap
+            [Out] void** ppvHeap = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -245,7 +245,7 @@ namespace TerraFX.Interop
             [In] D3D12_RESOURCE_STATES InitialState,
             [In, Optional] /* readonly */ D3D12_CLEAR_VALUE* pOptimizedClearValue,
             [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
-            [Out, Optional] void** ppvResource
+            [Out] void** ppvResource = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -257,7 +257,7 @@ namespace TerraFX.Interop
             [In] D3D12_RESOURCE_STATES InitialState,
             [In, Optional] /* readonly */ D3D12_CLEAR_VALUE* pOptimizedClearValue,
             [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
-            [Out, Optional] void** ppvResource
+            [Out] void** ppvResource = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -279,7 +279,7 @@ namespace TerraFX.Interop
             [In] ID3D12Device* This,
             [In, ComAliasName("HANDLE")] void* NTHandle,
             [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
-            [Out, Optional] void** ppvObj
+            [Out] void** ppvObj = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -326,7 +326,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetDeviceRemovedReason(
             [In] ID3D12Device* This
-        
+
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -337,10 +337,10 @@ namespace TerraFX.Interop
             [In, ComAliasName("UINT")] uint FirstSubresource,
             [In, ComAliasName("UINT")] uint NumSubresources,
             [In, ComAliasName("UINT64")] ulong BaseOffset,
-            [Out, Optional] D3D12_PLACED_SUBRESOURCE_FOOTPRINT* pLayouts,
-            [Out, Optional, ComAliasName("UINT")] uint* pNumRows,
-            [Out, Optional, ComAliasName("UINT64")] ulong* pRowSizeInBytes,
-            [Out, Optional, ComAliasName("UINT64")] ulong* pTotalBytes
+            [Out] D3D12_PLACED_SUBRESOURCE_FOOTPRINT* pLayouts = null,
+            [Out, ComAliasName("UINT")] uint* pNumRows = null,
+            [Out, ComAliasName("UINT64")] ulong* pRowSizeInBytes = null,
+            [Out, ComAliasName("UINT64")] ulong* pTotalBytes = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -350,7 +350,7 @@ namespace TerraFX.Interop
             [In] ID3D12Device* This,
             [In] /* readonly */ D3D12_QUERY_HEAP_DESC* pDesc,
             [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
-            [Out, Optional] void** ppvHeap
+            [Out] void** ppvHeap = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -369,7 +369,7 @@ namespace TerraFX.Interop
             [In] /* readonly */ D3D12_COMMAND_SIGNATURE_DESC* pDesc,
             [In, Optional] ID3D12RootSignature* pRootSignature,
             [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
-            [Out, Optional] void** ppvCommandSignature
+            [Out] void** ppvCommandSignature = null
         );
 
         [SuppressUnmanagedCodeSecurity]

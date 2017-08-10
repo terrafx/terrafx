@@ -30,7 +30,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetTypeComp(
             [In] ITypeInfo* This,
-            [Out, Optional] ITypeComp** ppTComp
+            [Out] ITypeComp** ppTComp = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -113,7 +113,7 @@ namespace TerraFX.Interop
             [Out, Optional, ComAliasName("BSTR")] char** pBstrName,
             [Out, Optional, ComAliasName("BSTR")] char** pBstrDocString,
             [Out, ComAliasName("DWORD")] uint* pdwHelpContext,
-            [Out, Optional, ComAliasName("BSTR")] char** pBstrHelpFile
+            [Out, ComAliasName("BSTR")] char** pBstrHelpFile = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -134,7 +134,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetRefTypeInfo(
             [In] ITypeInfo* This,
             [In, ComAliasName("HREFTYPE")] uint hRefType,
-            [Out, Optional] ITypeInfo** ppTInfo
+            [Out] ITypeInfo** ppTInfo = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -163,7 +163,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetMops(
             [In] ITypeInfo* This,
             [In, ComAliasName("MEMBERID")] int memid,
-            [Out, Optional, ComAliasName("BSTR")] char** pBstrMops
+            [Out, ComAliasName("BSTR")] char** pBstrMops = null
         );
 
         [SuppressUnmanagedCodeSecurity]

@@ -100,7 +100,7 @@ namespace TerraFX.Interop
             [In] ID2D1DeviceContext2* This,
             [In] ID2D1Ink* ink,
             [In] ID2D1Brush* brush,
-            [In, Optional] ID2D1InkStyle* inkStyle
+            [In] ID2D1InkStyle* inkStyle = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -116,7 +116,7 @@ namespace TerraFX.Interop
         public /* static */ delegate void DrawGdiMetafile(
             [In] ID2D1DeviceContext2* This,
             [In] ID2D1GdiMetafile* gdiMetafile,
-            [In, Optional, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangle,
+            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangle = null,
             [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* sourceRectangle = null
         );
 

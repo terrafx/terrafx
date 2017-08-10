@@ -31,7 +31,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int ReleaseDC(
             [In] IDXGISurface1* This,
-            [In, Optional] RECT* pDirtyRect
+            [In] RECT* pDirtyRect = null
         );
         #endregion
 

@@ -41,7 +41,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetMetadataByName(
             [In] IWICMetadataQueryReader* This,
             [In, ComAliasName("LPCWSTR")] /* readonly */ char* wzName,
-            [In, Out, Optional] PROPVARIANT* pvarValue
+            [In, Out] PROPVARIANT* pvarValue = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -49,7 +49,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetEnumerator(
             [In] IWICMetadataQueryReader* This,
-            [Out, Optional] IEnumString** ppIEnumString
+            [Out] IEnumString** ppIEnumString = null
         );
         #endregion
 

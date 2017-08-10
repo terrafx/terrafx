@@ -24,7 +24,7 @@ namespace TerraFX.Interop
             [In] IWICBitmap* This,
             [In, Optional] /* readonly */ WICRect* prcLock,
             [In, ComAliasName("DWORD")] uint flags,
-            [Out, Optional] IWICBitmapLock** ppILock
+            [Out] IWICBitmapLock** ppILock = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -32,7 +32,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetPalette(
             [In] IWICBitmap* This,
-            [In, Optional] IWICPalette* pIPalette
+            [In] IWICPalette* pIPalette = null
         );
 
         [SuppressUnmanagedCodeSecurity]

@@ -38,10 +38,10 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateNewFrame(
             [In] IWICDdsEncoder* This,
-            [Out, Optional] IWICBitmapFrameEncode** ppIFrameEncode,
-            [Out, Optional, ComAliasName("UINT")] uint* pArrayIndex,
-            [Out, Optional, ComAliasName("UINT")] uint* pMipLevel,
-            [Out, Optional, ComAliasName("UINT")] uint* pSliceIndex
+            [Out] IWICBitmapFrameEncode** ppIFrameEncode = null,
+            [Out, ComAliasName("UINT")] uint* pArrayIndex = null,
+            [Out, ComAliasName("UINT")] uint* pMipLevel = null,
+            [Out, ComAliasName("UINT")] uint* pSliceIndex = null
         );
         #endregion
 

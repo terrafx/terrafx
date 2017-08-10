@@ -42,7 +42,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateInstance(
             [In] IWICBitmapDecoderInfo* This,
-            [Out, Optional] IWICBitmapDecoder** ppIBitmapDecoder
+            [Out] IWICBitmapDecoder** ppIBitmapDecoder = null
         );
         #endregion
 

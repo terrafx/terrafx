@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateInstance(
             [In] IWICBitmapEncoderInfo* This,
-            [Out, Optional] IWICBitmapEncoder** ppIBitmapEncoder
+            [Out] IWICBitmapEncoder** ppIBitmapEncoder = null
         );
         #endregion
 

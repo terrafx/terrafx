@@ -53,7 +53,7 @@ namespace TerraFX.Interop
             [In, Optional, ComAliasName("WCHAR")] /* readonly */ char* referrerUrl,
             [In, Optional, ComAliasName("WCHAR")] /* readonly */ char* extraHeaders,
             [Out] IDWriteRemoteFontFileLoader** newLoader
-            );
+        );
 
         /// <summary>The AnalyzeContainerType method analyzes the specified file data to determine whether it is a known font container format (e.g., WOFF or WOFF2).</summary>
         /// <returns> Returns the container type if recognized. DWRITE_CONTAINER_TYPE_UNKOWNN is returned for all other files, including uncompressed font files.</returns>

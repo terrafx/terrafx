@@ -24,7 +24,7 @@ namespace TerraFX.Interop
             [In] IDXGISwapChain4* This,
             [In] DXGI_HDR_METADATA_TYPE Type,
             [In, ComAliasName("UINT")] uint Size,
-            [In, Optional] void* pMetaData
+            [In] void* pMetaData = null
         );
         #endregion
 

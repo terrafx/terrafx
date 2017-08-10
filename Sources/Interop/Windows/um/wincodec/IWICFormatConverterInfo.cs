@@ -32,7 +32,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateInstance(
             [In] IWICFormatConverterInfo* This,
-            [Out, Optional] IWICFormatConverter** ppIConverter
+            [Out] IWICFormatConverter** ppIConverter = null
         );
         #endregion
 

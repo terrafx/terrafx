@@ -39,7 +39,7 @@ namespace TerraFX.Interop
             [In] ID2D1SvgStrokeDashArray* This,
             [In, ComAliasName("FLOAT")] /* readonly */ float* dashes,
             [In, ComAliasName("UINT32")] uint dashesCount,
-            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
+            [In, ComAliasName("UINT32")] uint startIndex = 0
         );
 
         /// <summary>Updates the array. Existing dashes not updated by this method are preserved. The array is resized larger if necessary to accomodate the new dashes.</summary>
@@ -53,7 +53,7 @@ namespace TerraFX.Interop
             [In] ID2D1SvgStrokeDashArray* This,
             [In] /* readonly */ D2D1_SVG_LENGTH* dashes,
             [In, ComAliasName("UINT32")] uint dashesCount,
-            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
+            [In, ComAliasName("UINT32")] uint startIndex = 0
         );
 
         /// <summary>Gets dashes from the array.</summary>
@@ -67,7 +67,7 @@ namespace TerraFX.Interop
             [In] ID2D1SvgStrokeDashArray* This,
             [Out, ComAliasName("FLOAT")] float* dashes,
             [In, ComAliasName("UINT32")] uint dashesCount,
-            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
+            [In, ComAliasName("UINT32")] uint startIndex = 0
         );
 
         /// <summary>Gets dashes from the array.</summary>
@@ -81,7 +81,7 @@ namespace TerraFX.Interop
             [In] ID2D1SvgStrokeDashArray* This,
             [Out] D2D1_SVG_LENGTH* dashes,
             [In, ComAliasName("UINT32")] uint dashesCount,
-            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
+            [In, ComAliasName("UINT32")] uint startIndex = 0
         );
 
         /// <summary>Gets the number of the dashes in the array.</summary>

@@ -42,7 +42,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int SetFullscreenState(
             [In] IDXGISwapChain* This,
             [In, ComAliasName("BOOL")] int Fullscreen,
-            [In, Optional] IDXGIOutput* pTarget
+            [In] IDXGIOutput* pTarget = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -50,8 +50,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetFullscreenState(
             [In] IDXGISwapChain* This,
-            [Out, Optional, ComAliasName("BOOL")] int* pFullscreen,
-            [Out, Optional] IDXGIOutput** ppTarget
+            [Out, ComAliasName("BOOL")] int* pFullscreen = null,
+            [Out] IDXGIOutput** ppTarget = null
         );
 
         [SuppressUnmanagedCodeSecurity]

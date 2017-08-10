@@ -29,7 +29,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetSystemFontCollection(
             [In] IDWriteFactory* This,
             [Out] IDWriteFontCollection** fontCollection,
-            [In, DefaultParameterValue(FALSE), ComAliasName("BOOL")] int checkForUpdates
+            [In, ComAliasName("BOOL")] int checkForUpdates = FALSE
         );
 
         /// <summary>Creates a font collection using a custom font collection loader.</summary>

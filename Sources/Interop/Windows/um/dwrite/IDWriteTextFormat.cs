@@ -98,7 +98,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int SetTrimming(
             [In] IDWriteTextFormat* This,
             [In] /* readonly */ DWRITE_TRIMMING* trimmingOptions,
-            [In, Optional] IDWriteInlineObject* trimmingSign
+            [In] IDWriteInlineObject* trimmingSign = null
         );
 
         /// <summary>Set line spacing.</summary>

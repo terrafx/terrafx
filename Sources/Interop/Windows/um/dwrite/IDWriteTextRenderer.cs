@@ -38,7 +38,7 @@ namespace TerraFX.Interop
             [In] DWRITE_MEASURING_MODE measuringMode,
             [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
             [In] /* readonly */ DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
-            [In, Optional] IUnknown* clientDrawingEffect
+            [In] IUnknown* clientDrawingEffect = null
         );
 
         /// <summary>IDWriteTextLayout::Draw calls this function to instruct the client to draw an underline.</summary>
@@ -58,7 +58,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("FLOAT")] float baselineOriginX,
             [In, ComAliasName("FLOAT")] float baselineOriginY,
             [In] /* readonly */ DWRITE_UNDERLINE* underline,
-            [In, Optional] IUnknown* clientDrawingEffect
+            [In] IUnknown* clientDrawingEffect = null
         );
 
         /// <summary>IDWriteTextLayout::Draw calls this function to instruct the client to draw a strikethrough.</summary>
@@ -78,7 +78,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("FLOAT")] float baselineOriginX,
             [In, ComAliasName("FLOAT")] float baselineOriginY,
             [In] /* readonly */ DWRITE_STRIKETHROUGH* strikethrough,
-            [In, Optional] IUnknown* clientDrawingEffect
+            [In] IUnknown* clientDrawingEffect = null
         );
 
         /// <summary>IDWriteTextLayout::Draw calls this application callback when it needs to draw an inline object.</summary>
@@ -102,7 +102,7 @@ namespace TerraFX.Interop
             [In] IDWriteInlineObject* inlineObject,
             [In, ComAliasName("BOOL")] int isSideways,
             [In, ComAliasName("BOOL")] int isRightToLeft,
-            [In, Optional] IUnknown* clientDrawingEffect
+            [In] IUnknown* clientDrawingEffect = null
         );
         #endregion
 

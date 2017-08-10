@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int InitializeFromBlockReader(
             [In] IWICMetadataBlockWriter* This,
-            [In, Optional] IWICMetadataBlockReader* pIMDBlockReader
+            [In] IWICMetadataBlockReader* pIMDBlockReader = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -31,7 +31,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetWriterByIndex(
             [In] IWICMetadataBlockWriter* This,
             [In, ComAliasName("UINT")] uint nIndex,
-            [Out, Optional] IWICMetadataWriter** ppIMetadataWriter
+            [Out] IWICMetadataWriter** ppIMetadataWriter = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -39,7 +39,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int AddWriter(
             [In] IWICMetadataBlockWriter* This,
-            [In, Optional] IWICMetadataWriter* pIMetadataWriter
+            [In] IWICMetadataWriter* pIMetadataWriter = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -48,7 +48,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int SetWriterByIndex(
             [In] IWICMetadataBlockWriter* This,
             [In, ComAliasName("UINT")] uint nIndex,
-            [In, Optional] IWICMetadataWriter* pIMetadataWriter
+            [In] IWICMetadataWriter* pIMetadataWriter = null
         );
 
         [SuppressUnmanagedCodeSecurity]

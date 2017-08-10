@@ -152,9 +152,9 @@ namespace TerraFX.Interop
         [return: ComAliasName("UINT")]
         public /* static */ delegate uint GetThreadGroupSize(
             [In] ID3D12ShaderReflection* This,
-            [Out, Optional, ComAliasName("UINT")] uint* pSizeX,
-            [Out, Optional, ComAliasName("UINT")] uint* pSizeY,
-            [Out, Optional, ComAliasName("UINT")] uint* pSizeZ
+            [Out, ComAliasName("UINT")] uint* pSizeX = null,
+            [Out, ComAliasName("UINT")] uint* pSizeY = null,
+            [Out, ComAliasName("UINT")] uint* pSizeZ = null
         );
 
         [SuppressUnmanagedCodeSecurity]

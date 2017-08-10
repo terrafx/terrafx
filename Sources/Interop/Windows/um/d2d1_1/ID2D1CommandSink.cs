@@ -62,7 +62,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetTextRenderingParams(
             [In] ID2D1CommandSink* This,
-            [In, Optional] IDWriteRenderingParams* textRenderingParams
+            [In] IDWriteRenderingParams* textRenderingParams = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -94,7 +94,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int Clear(
             [In] ID2D1CommandSink* This,
-            [In, Optional, ComAliasName("D2D1_COLOR_F")] /* readonly */ DXGI_RGBA* color
+            [In, ComAliasName("D2D1_COLOR_F")] /* readonly */ DXGI_RGBA* color = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -118,7 +118,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F point1,
             [In] ID2D1Brush* brush,
             [In, ComAliasName("FLOAT")] float strokeWidth,
-            [In, Optional] ID2D1StrokeStyle* strokeStyle
+            [In] ID2D1StrokeStyle* strokeStyle = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -129,7 +129,7 @@ namespace TerraFX.Interop
             [In] ID2D1Geometry* geometry,
             [In] ID2D1Brush* brush,
             [In, ComAliasName("FLOAT")] float strokeWidth,
-            [In, Optional] ID2D1StrokeStyle* strokeStyle
+            [In] ID2D1StrokeStyle* strokeStyle = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -140,7 +140,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* rect,
             [In] ID2D1Brush* brush,
             [In, ComAliasName("FLOAT")] float strokeWidth,
-            [In, Optional] ID2D1StrokeStyle* strokeStyle
+            [In] ID2D1StrokeStyle* strokeStyle = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -152,8 +152,8 @@ namespace TerraFX.Interop
             [In, Optional, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangle,
             [In, ComAliasName("FLOAT")] float opacity,
             [In] D2D1_INTERPOLATION_MODE interpolationMode,
-            [In, Optional, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* sourceRectangle,
-            [In, Optional, ComAliasName("D2D1_MATRIX_4X4_F")] /* readonly */ D2D_MATRIX_4X4_F* perspectiveTransform
+            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* sourceRectangle = null,
+            [In, ComAliasName("D2D1_MATRIX_4X4_F")] /* readonly */ D2D_MATRIX_4X4_F* perspectiveTransform = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -174,7 +174,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int DrawGdiMetafile(
             [In] ID2D1CommandSink* This,
             [In] ID2D1GdiMetafile* gdiMetafile,
-            [In, Optional, ComAliasName("D2D1_POINT_2F")] /* readonly */ D2D_POINT_2F* targetOffset
+            [In, ComAliasName("D2D1_POINT_2F")] /* readonly */ D2D_POINT_2F* targetOffset = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -193,8 +193,8 @@ namespace TerraFX.Interop
             [In] ID2D1CommandSink* This,
             [In] ID2D1Bitmap* opacityMask,
             [In] ID2D1Brush* brush,
-            [In, Optional, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangle,
-            [In, Optional, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* sourceRectangle
+            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangle = null,
+            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* sourceRectangle = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -204,7 +204,7 @@ namespace TerraFX.Interop
             [In] ID2D1CommandSink* This,
             [In] ID2D1Geometry* geometry,
             [In] ID2D1Brush* brush,
-            [In, Optional] ID2D1Brush* opacityBrush
+            [In] ID2D1Brush* opacityBrush = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -231,7 +231,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int PushLayer(
             [In] ID2D1CommandSink* This,
             [In] /* readonly */ D2D1_LAYER_PARAMETERS1* layerParameters1,
-            [In, Optional] ID2D1Layer* layer
+            [In] ID2D1Layer* layer = null
         );
 
         [SuppressUnmanagedCodeSecurity]

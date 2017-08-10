@@ -26,7 +26,7 @@ namespace TerraFX.Interop
             [In] PROPBAG2* pPropBag,
             [In, Optional] IErrorLog* pErrLog,
             [Out] VARIANT* pvarValue,
-            [In, Out, Optional, ComAliasName("HRESULT")] int* phrError
+            [In, Out, ComAliasName("HRESULT")] int* phrError = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -65,8 +65,8 @@ namespace TerraFX.Interop
             [In] IPropertyBag2* This,
             [In, ComAliasName("LPCOLESTR")] /* readonly */ char* pstrName,
             [In, ComAliasName("DWORD")] uint dwHint,
-            [In, Optional] IUnknown* pUnkObject,
-            [In, Optional] IErrorLog* pErrLog
+            [In] IUnknown* pUnkObject = null,
+            [In] IErrorLog* pErrLog = null
         );
         #endregion
 

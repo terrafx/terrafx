@@ -25,13 +25,13 @@ namespace TerraFX.Interop
             [In] ID2D1SpriteBatch* This,
             [In, ComAliasName("UINT32")] uint spriteCount,
             [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangles,
-            [In, Optional, ComAliasName("D2D1_RECT_U")] /* readonly */ D2D_RECT_U* sourceRectangles,
-            [In, Optional, ComAliasName("D2D1_COLOR_F")] /* readonly */ DXGI_RGBA* colors,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* transforms,
-            [In, DefaultParameterValue(16u /* sizeof(D2D1_RECT_F) */), ComAliasName("UINT32")] uint destinationRectanglesStride,
-            [In, DefaultParameterValue(16u /* sizeof(D2D1_RECT_U) */), ComAliasName("UINT32")] uint sourceRectanglesStride,
-            [In, DefaultParameterValue(16u /* sizeof(D2D1_COLOR_F) */), ComAliasName("UINT32")] uint colorsStride,
-            [In, DefaultParameterValue(24u /* sizeof(D2D1_MATRIX_3X2_F) */), ComAliasName("UINT32")] uint transformsStride
+            [In, ComAliasName("D2D1_RECT_U")] /* readonly */ D2D_RECT_U* sourceRectangles = null,
+            [In, ComAliasName("D2D1_COLOR_F")] /* readonly */ DXGI_RGBA* colors = null,
+            [In, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* transforms = null,
+            [In, ComAliasName("UINT32")] uint destinationRectanglesStride = 16,
+            [In, ComAliasName("UINT32")] uint sourceRectanglesStride = 16,
+            [In, ComAliasName("UINT32")] uint colorsStride = 16,
+            [In, ComAliasName("UINT32")] uint transformsStride = 24
         );
 
         /// <summary>Set properties for existing sprites. All properties not specified are unmodified.</summary>
@@ -42,14 +42,14 @@ namespace TerraFX.Interop
             [In] ID2D1SpriteBatch* This,
             [In, ComAliasName("UINT32")] uint startIndex,
             [In, ComAliasName("UINT32")] uint spriteCount,
-            [In, Optional, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangles,
-            [In, Optional, ComAliasName("D2D1_RECT_U")] /* readonly */ D2D_RECT_U* sourceRectangles,
-            [In, Optional, ComAliasName("D2D1_COLOR_F")] /* readonly */ DXGI_RGBA* colors,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* transforms,
-            [In, DefaultParameterValue(16u /* sizeof(D2D1_RECT_F) */), ComAliasName("UINT32")] uint destinationRectanglesStride,
-            [In, DefaultParameterValue(16u /* sizeof(D2D1_RECT_U) */), ComAliasName("UINT32")] uint sourceRectanglesStride,
-            [In, DefaultParameterValue(16u /* sizeof(D2D1_COLOR_F) */), ComAliasName("UINT32")] uint colorsStride,
-            [In, DefaultParameterValue(24u /* sizeof(D2D1_MATRIX_3X2_F) */), ComAliasName("UINT32")] uint transformsStride
+            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangles = null,
+            [In, ComAliasName("D2D1_RECT_U")] /* readonly */ D2D_RECT_U* sourceRectangles = null,
+            [In, ComAliasName("D2D1_COLOR_F")] /* readonly */ DXGI_RGBA* colors = null,
+            [In, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* transforms = null,
+            [In, ComAliasName("UINT32")] uint destinationRectanglesStride = 16,
+            [In, ComAliasName("UINT32")] uint sourceRectanglesStride = 16,
+            [In, ComAliasName("UINT32")] uint colorsStride = 16,
+            [In, ComAliasName("UINT32")] uint transformsStride = 24
         );
 
         /// <summary>Retrieves sprite properties.</summary>

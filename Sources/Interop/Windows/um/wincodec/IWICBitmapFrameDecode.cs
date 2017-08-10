@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetMetadataQueryReader(
             [In] IWICBitmapFrameDecode* This,
-            [Out, Optional] IWICMetadataQueryReader** ppIMetadataQueryReader
+            [Out] IWICMetadataQueryReader** ppIMetadataQueryReader = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -40,7 +40,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetThumbnail(
             [In] IWICBitmapFrameDecode* This,
-            [Out, Optional] IWICBitmapSource** ppIThumbnail
+            [Out] IWICBitmapSource** ppIThumbnail = null
          );
         #endregion
 

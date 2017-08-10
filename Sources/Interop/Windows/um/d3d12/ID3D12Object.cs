@@ -24,7 +24,7 @@ namespace TerraFX.Interop
             [In] ID3D12Object* This,
             [In, ComAliasName("REFGUID")] /* readonly */ Guid* guid,
             [In, Out, ComAliasName("UINT")] uint* pDataSize,
-            [Out, Optional] void* pData
+            [Out] void* pData = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -34,7 +34,8 @@ namespace TerraFX.Interop
             [In] ID3D12Object* This,
             [In, ComAliasName("REFGUID")] /* readonly */ Guid* guid,
             [In, ComAliasName("UINT")] uint DataSize,
-            [In, Optional] /* readonly */ void* pData);
+            [In] /* readonly */ void* pData = null
+        );
 
 
         [SuppressUnmanagedCodeSecurity]
@@ -43,7 +44,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int SetPrivateDataInterface(
             [In] ID3D12Object* This,
             [In, ComAliasName("REFGUID")] /* readonly */ Guid* guid,
-            [In, Optional] /* readonly */ IUnknown* pData
+            [In] /* readonly */ IUnknown* pData = null
         );
 
         [SuppressUnmanagedCodeSecurity]

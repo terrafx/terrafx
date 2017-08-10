@@ -25,8 +25,8 @@ namespace TerraFX.Interop
         public /* static */ delegate void SetInput(
             [In] ID2D1Effect* This,
             [In, ComAliasName("UINT32")] uint index,
-            [In, Optional] ID2D1Image* input,
-            [In, DefaultParameterValue(TRUE), ComAliasName("BOOL")] int invalidate
+            [In] ID2D1Image* input = null,
+            [In, ComAliasName("BOOL")] int invalidate = TRUE
         );
 
         /// <summary>If the effect supports a variable number of inputs, this sets the number of input that are currently active on the effect.</summary>

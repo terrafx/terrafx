@@ -25,8 +25,8 @@ namespace TerraFX.Interop
             [In, ComAliasName("ULONG")] uint celt,
             [In, Out, Optional] PROPVARIANT* rgeltSchema,
             [In, Out] PROPVARIANT* rgeltId,
-            [In, Out, Optional] PROPVARIANT* rgeltValue,
-            [Out, Optional, ComAliasName("ULONG")] uint* pceltFetched
+            [In, Out] PROPVARIANT* rgeltValue = null,
+            [Out, ComAliasName("ULONG")] uint* pceltFetched = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -49,7 +49,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int Clone(
             [In] IWICEnumMetadataItem* This,
-            [Out, Optional] IWICEnumMetadataItem** ppIEnumMetadataItem
+            [Out] IWICEnumMetadataItem** ppIEnumMetadataItem = null
         );
         #endregion
 

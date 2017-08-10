@@ -40,9 +40,9 @@ namespace TerraFX.Interop
             [In, ComAliasName("UINT32")] uint stringLength,
             [In] IDWriteTextFormat* textFormat,
             [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* layoutRect,
-            [In, Optional] ID2D1Brush* defaultFillBrush,
-            [In, Optional] ID2D1SvgGlyphStyle* svgGlyphStyle,
-            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint colorPaletteIndex,
+            [In] ID2D1Brush* defaultFillBrush = null,
+            [In] ID2D1SvgGlyphStyle* svgGlyphStyle = null,
+            [In, ComAliasName("UINT32")] uint colorPaletteIndex = 0,
             [In] D2D1_DRAW_TEXT_OPTIONS options = D2D1_DRAW_TEXT_OPTIONS_ENABLE_COLOR_FONT,
             [In] DWRITE_MEASURING_MODE measuringMode = DWRITE_MEASURING_MODE_NATURAL
         );
@@ -57,9 +57,9 @@ namespace TerraFX.Interop
             [In] ID2D1DeviceContext4* This,
             [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F origin,
             [In] IDWriteTextLayout* textLayout,
-            [In, Optional] ID2D1Brush* defaultFillBrush,
-            [In, Optional] ID2D1SvgGlyphStyle* svgGlyphStyle,
-            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint colorPaletteIndex,
+            [In] ID2D1Brush* defaultFillBrush = null,
+            [In] ID2D1SvgGlyphStyle* svgGlyphStyle = null,
+            [In, ComAliasName("UINT32")] uint colorPaletteIndex = 0,
             [In] D2D1_DRAW_TEXT_OPTIONS options = D2D1_DRAW_TEXT_OPTIONS_ENABLE_COLOR_FONT
         );
 
@@ -84,9 +84,9 @@ namespace TerraFX.Interop
             [In] ID2D1DeviceContext4* This,
             [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
             [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
-            [In, Optional] ID2D1Brush* defaultFillBrush,
-            [In, Optional] ID2D1SvgGlyphStyle* svgGlyphStyle,
-            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint colorPaletteIndex,
+            [In] ID2D1Brush* defaultFillBrush = null,
+            [In] ID2D1SvgGlyphStyle* svgGlyphStyle = null,
+            [In, ComAliasName("UINT32")] uint colorPaletteIndex = 0,
             [In] DWRITE_MEASURING_MODE measuringMode = DWRITE_MEASURING_MODE_NATURAL
         );
 

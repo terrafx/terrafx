@@ -23,7 +23,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetPackageTargetTypes(
             [In] IPrintDocumentPackageTarget* This,
             [Out, ComAliasName("UINT32")] uint* targetCount,
-            [Out, Optional, ComAliasName("GUID")] Guid **targetTypes
+            [Out, ComAliasName("GUID")] Guid** targetTypes = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -33,9 +33,9 @@ namespace TerraFX.Interop
             [In] IPrintDocumentPackageTarget* This,
             [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidTargetType,
             [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
-            [Out, Optional] void** ppvTarget
+            [Out] void** ppvTarget = null
         );
-        
+
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]

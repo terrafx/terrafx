@@ -93,7 +93,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("UINT32")] uint glyphCount,
             [In, ComAliasName("UINT16")] /* readonly */ ushort* glyphIndices,
             [Out, ComAliasName("INT32")] int* glyphAdvances,
-            [In, DefaultParameterValue(FALSE), ComAliasName("BOOL")] int isSideways
+            [In, ComAliasName("BOOL")] int isSideways = FALSE
         );
 
         /// <summary>Returns the pixel-aligned advances for a sequences of glyphs, the same as GetGdiCompatibleGlyphMetrics would return.</summary>

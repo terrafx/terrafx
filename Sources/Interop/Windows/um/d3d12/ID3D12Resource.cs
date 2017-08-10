@@ -23,8 +23,8 @@ namespace TerraFX.Interop
         public /* static */ delegate int Map(
             [In] ID3D12Resource* This,
             [In, ComAliasName("UINT")] uint Subresource,
-            [In, Optional] /* readonly */ D3D12_RANGE* pReadRange,
-            [Out, Optional] void** ppData
+            [In] /* readonly */ D3D12_RANGE* pReadRange = null,
+            [Out] void** ppData = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -32,7 +32,7 @@ namespace TerraFX.Interop
         public /* static */ delegate void Unmap(
             [In] ID3D12Resource* This,
             [In, ComAliasName("UINT")] uint Subresource,
-            [In, Optional] /* readonly */ D3D12_RANGE* pWrittenRange
+            [In] /* readonly */ D3D12_RANGE* pWrittenRange = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -69,7 +69,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("UINT")] uint DstRowPitch,
             [In, ComAliasName("UINT")] uint DstDepthPitch,
             [In, ComAliasName("UINT")] uint SrcSubresource,
-            [In, Optional] /* readonly */ D3D12_BOX* pSrcBox
+            [In] /* readonly */ D3D12_BOX* pSrcBox = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -77,8 +77,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetHeapProperties(
             [In] ID3D12Resource* This,
-            [Out, Optional] D3D12_HEAP_PROPERTIES* pHeapProperties,
-            [Out, Optional] D3D12_HEAP_FLAGS* pHeapFlags
+            [Out] D3D12_HEAP_PROPERTIES* pHeapProperties = null,
+            [Out] D3D12_HEAP_FLAGS* pHeapFlags = null
         );
         #endregion
 

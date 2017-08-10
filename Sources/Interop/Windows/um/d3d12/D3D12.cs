@@ -891,7 +891,7 @@ namespace TerraFX.Interop
             [In] /* readonly */ D3D12_ROOT_SIGNATURE_DESC* pRootSignature,
             [In] D3D_ROOT_SIGNATURE_VERSION Version,
             [Out] ID3DBlob** ppBlob,
-            [Out, Optional] ID3DBlob** ppErrorBlob
+            [Out] ID3DBlob** ppErrorBlob = null
         );
 
         [DllImport("D3D12", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D3D12CreateRootSignatureDeserializer", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -910,7 +910,7 @@ namespace TerraFX.Interop
         public static extern int D3D12SerializeVersionedRootSignature(
             [In] /* readonly */ D3D12_VERSIONED_ROOT_SIGNATURE_DESC* pRootSignature,
             [Out] ID3DBlob** ppBlob,
-            [Out, Optional] ID3DBlob** ppErrorBlob
+            [Out] ID3DBlob** ppErrorBlob = null
         );
 
         [DllImport("D3D12", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D3D12CreateVersionedRootSignatureDeserializer", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -930,7 +930,7 @@ namespace TerraFX.Interop
             [In, Optional] IUnknown* pAdapter,
             [In] D3D_FEATURE_LEVEL MinimumFeatureLevel,
             [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
-            [Out, Optional] void** ppDevice
+            [Out] void** ppDevice = null
         );
 
         [DllImport("D3D12", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D3D12GetDebugInterface", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -938,7 +938,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public static extern int D3D12GetDebugInterface(
             [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
-            [Out, Optional] void** ppvDebug
+            [Out] void** ppvDebug = null
         );
 
         [DllImport("D3D12", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D3D12EnableExperimentalFeatures", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -947,8 +947,8 @@ namespace TerraFX.Interop
         public static extern int D3D12EnableExperimentalFeatures(
             [In, ComAliasName("UINT")] uint NumFeatures,
             [In, ComAliasName("IID")] /* readonly */ Guid* pIIDs,
-            [In, Optional] void* pConfigurationStructs,
-            [In, Optional, ComAliasName("UINT")] uint* pConfigurationStructSizes
+            [In] void* pConfigurationStructs = null,
+            [In, ComAliasName("UINT")] uint* pConfigurationStructSizes = null
         );
         #endregion
     }

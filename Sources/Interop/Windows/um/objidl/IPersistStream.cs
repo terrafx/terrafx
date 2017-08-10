@@ -29,7 +29,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int Load(
             [In] IPersistStream* This,
-            [In, Optional] IStream* pStm
+            [In] IStream* pStm = null
         );
 
         [SuppressUnmanagedCodeSecurity]

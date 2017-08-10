@@ -212,7 +212,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetTarget(
             [In] ID2D1DeviceContext* This,
-            [In, Optional] ID2D1Image* image
+            [In] ID2D1Image* image = null
         );
 
         /// <summary>Gets the target that this device context is currently pointing to.</summary>
@@ -320,7 +320,7 @@ namespace TerraFX.Interop
         public /* static */ delegate void PushLayer(
             [In] ID2D1DeviceContext* This,
             [In] /* readonly */ D2D1_LAYER_PARAMETERS1* layerParameters,
-            [In, Optional] ID2D1Layer* layer
+            [In] ID2D1Layer* layer = null
         );
 
         /// <summary>This indicates that a portion of an effect's input is invalid. This method can be called many times.</summary>

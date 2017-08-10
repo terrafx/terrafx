@@ -15,7 +15,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HMODULE")]
         public static extern void* GetModuleHandle(
-            [In, Optional, ComAliasName("LPCWSTR")] /* readonly */ char* lpModuleName
+            [In, ComAliasName("LPCWSTR")] /* readonly */ char* lpModuleName = null
         );
         #endregion
     }

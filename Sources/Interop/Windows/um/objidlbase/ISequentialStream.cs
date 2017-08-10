@@ -24,7 +24,7 @@ namespace TerraFX.Interop
             [In] ISequentialStream* This,
             [Out] void* pv,
             [In, ComAliasName("ULONG")] uint cb,
-            [Out, Optional, ComAliasName("ULONG")] uint* pcbRead
+            [Out, ComAliasName("ULONG")] uint* pcbRead = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -34,7 +34,7 @@ namespace TerraFX.Interop
             [In] ISequentialStream* This,
             [In] /* readonly */ void* pv,
             [In, ComAliasName("ULONG")] uint cb,
-            [Out, Optional, ComAliasName("ULONG")] uint* pcbWritten
+            [Out, ComAliasName("ULONG")] uint* pcbWritten = null
         );
         #endregion
 

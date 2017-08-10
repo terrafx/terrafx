@@ -24,7 +24,7 @@ namespace TerraFX.Interop
             [In] IEnumSTATSTG* This,
             [In, ComAliasName("ULONG")] uint celt,
             [Out] STATSTG* rgelt,
-            [Out, Optional, ComAliasName("ULONG")] uint* pceltFetched
+            [Out, ComAliasName("ULONG")] uint* pceltFetched = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -47,7 +47,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int Clone(
             [In] IEnumSTATSTG* This,
-            [Out, Optional] IEnumSTATSTG** ppenum
+            [Out] IEnumSTATSTG** ppenum = null
         );
         #endregion
 

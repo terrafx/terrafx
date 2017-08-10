@@ -157,8 +157,8 @@ namespace TerraFX.Interop
             [In, ComAliasName("FLOAT")] float length,
             [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
             [In, ComAliasName("FLOAT")] float flatteningTolerance,
-            [Out, Optional, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* point,
-            [Out, Optional, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* unitTangentVector
+            [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* point = null,
+            [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* unitTangentVector = null
         );
 
         /// <summary>Get the geometry and widen it as well as apply an optional pen style.</summary>

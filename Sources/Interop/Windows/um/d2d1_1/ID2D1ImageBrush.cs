@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetImage(
             [In] ID2D1ImageBrush* This,
-            [In, Optional] ID2D1Image* image
+            [In] ID2D1Image* image = null
         );
 
         [SuppressUnmanagedCodeSecurity]

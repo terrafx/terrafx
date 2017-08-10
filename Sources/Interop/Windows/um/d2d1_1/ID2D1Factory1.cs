@@ -115,8 +115,8 @@ namespace TerraFX.Interop
             [In] ID2D1Factory1* This,
             [Out, Optional, ComAliasName("CLSID")] Guid* effects,
             [In, ComAliasName("UINT32")] uint effectsCount,
-            [Out, Optional, ComAliasName("UINT32")] uint* effectsReturned,
-            [Out, Optional, ComAliasName("UINT32")] uint* effectsRegistered
+            [Out, ComAliasName("UINT32")] uint* effectsReturned = null,
+            [Out, ComAliasName("UINT32")] uint* effectsRegistered = null
         );
 
         /// <summary>This retrieves the effect properties for the given effect, all of the effect properties will be set to a default value since an effect is not instantiated to implement the returned property interface.</summary>

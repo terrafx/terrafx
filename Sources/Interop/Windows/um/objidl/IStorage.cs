@@ -26,7 +26,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("DWORD")] uint grfMode,
             [In, ComAliasName("DWORD")] uint reserved1,
             [In, ComAliasName("DWORD")] uint reserved2,
-            [Out, Optional] IStream** ppstm
+            [Out] IStream** ppstm = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -50,7 +50,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("DWORD")] uint grfMode,
             [In, ComAliasName("DWORD")] uint reserved1,
             [In, ComAliasName("DWORD")] uint reserved2,
-            [Out, Optional] IStorage** ppstg
+            [Out] IStorage** ppstg = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -63,7 +63,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("DWORD")] uint grfMode,
             [In, Optional, ComAliasName("SNB")] char** snbExclude,
             [In, ComAliasName("DWORD")] uint reserved,
-            [Out, Optional] IStorage** ppstg
+            [Out] IStorage** ppstg = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -136,10 +136,10 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetElementTimes(
             [In] IStorage* This,
-            [In, Optional, ComAliasName("OLECHAR")] /* readonly */ char* pwcsName,
-            [In, Optional] /* readonly */ FILETIME* pctime,
-            [In, Optional] /* readonly */ FILETIME* patime,
-            [In, Optional] /* readonly */ FILETIME* pmtime
+            [In, ComAliasName("OLECHAR")] /* readonly */ char* pwcsName = null,
+            [In] /* readonly */ FILETIME* pctime = null,
+            [In] /* readonly */ FILETIME* patime = null,
+            [In] /* readonly */ FILETIME* pmtime = null
         );
 
         [SuppressUnmanagedCodeSecurity]

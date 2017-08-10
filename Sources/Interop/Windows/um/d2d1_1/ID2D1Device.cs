@@ -61,7 +61,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void ClearResources(
             [In] ID2D1Device* This,
-            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint millisecondsSinceUse
+            [In, ComAliasName("UINT32")] uint millisecondsSinceUse = 0
         );
         #endregion
 

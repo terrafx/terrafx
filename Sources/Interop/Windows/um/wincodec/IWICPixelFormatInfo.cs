@@ -30,7 +30,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetColorContext(
             [In] IWICPixelFormatInfo* This,
-            [Out, Optional] IWICColorContext** ppIColorContext
+            [Out] IWICColorContext** ppIColorContext = null
         );
 
         [SuppressUnmanagedCodeSecurity]

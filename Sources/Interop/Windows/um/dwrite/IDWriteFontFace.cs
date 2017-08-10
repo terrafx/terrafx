@@ -36,7 +36,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetFiles(
             [In] IDWriteFontFace* This,
             [In, Out, ComAliasName("UINT32")] uint* numberOfFiles,
-            [Out, Optional] IDWriteFontFile** fontFiles
+            [Out] IDWriteFontFile** fontFiles = null
         );
 
         /// <summary>Obtains the zero-based index of the font face in its font file or files. If the font files contain a single face, the return value is zero.</summary>
@@ -93,7 +93,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("UINT16")] /* readonly */ ushort* glyphIndices,
             [In, ComAliasName("UINT32")] uint glyphCount,
             [Out] DWRITE_GLYPH_METRICS* glyphMetrics,
-            [In, DefaultParameterValue(FALSE), ComAliasName("BOOL")] int isSideways
+            [In, ComAliasName("BOOL")] int isSideways = FALSE
         );
 
         /// <summary>Returns the nominal mapping of UTF-32 Unicode code points to glyph indices as defined by the font 'cmap' table. Note that this mapping is primarily provided for line layout engines built on top of the physical font API. Because of OpenType glyph substitution and line layout character substitution, the nominal conversion does not always correspond to how a Unicode string will map to glyph indices when rendering using a particular font face. Also, note that Unicode Variation Selectors provide for alternate mappings for character to glyph. This call will always return the default variant.</summary>
@@ -222,7 +222,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("UINT16")] /* readonly */ ushort* glyphIndices,
             [In, ComAliasName("UINT32")] uint glyphCount,
             [Out] DWRITE_GLYPH_METRICS* glyphMetrics,
-            [In, DefaultParameterValue(FALSE), ComAliasName("BOOL")] int isSideways
+            [In, ComAliasName("BOOL")] int isSideways = FALSE
         );
         #endregion
 

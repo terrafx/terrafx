@@ -57,7 +57,7 @@ namespace TerraFX.Interop
             [In] ID2D1Bitmap* This,
             [In, Optional, ComAliasName("D2D1_POINT_2U")] /* readonly */ D2D_POINT_2U* destPoint,
             [In] ID2D1Bitmap* bitmap,
-            [In, Optional, ComAliasName("D2D1_RECT_U")] /* readonly */ D2D_RECT_U* srcRect
+            [In, ComAliasName("D2D1_RECT_U")] /* readonly */ D2D_RECT_U* srcRect = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -67,7 +67,7 @@ namespace TerraFX.Interop
             [In] ID2D1Bitmap* This,
             [In, Optional, ComAliasName("D2D1_POINT_2U")] /* readonly */ D2D_POINT_2U* destPoint,
             [In] ID2D1RenderTarget* renderTarget,
-            [In, Optional, ComAliasName("D2D1_RECT_U")] /* readonly */ D2D_RECT_U* srcRect
+            [In, ComAliasName("D2D1_RECT_U")] /* readonly */ D2D_RECT_U* srcRect = null
         );
 
         [SuppressUnmanagedCodeSecurity]

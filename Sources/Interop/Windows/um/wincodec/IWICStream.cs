@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int InitializeFromIStream(
             [In] IWICStream* This,
-            [In, Optional] IStream* pIStream
+            [In] IStream* pIStream = null
         );
 
         [SuppressUnmanagedCodeSecurity]

@@ -39,7 +39,7 @@ namespace TerraFX.Interop
             [In] ID2D1SvgPathData* This,
             [In, ComAliasName("FLOAT")] /* readonly */ float* data,
             [In, ComAliasName("UINT32")] uint dataCount,
-            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
+            [In, ComAliasName("UINT32")] uint startIndex = 0
         );
 
         /// <summary>Gets data from the segment data array.</summary>
@@ -53,7 +53,7 @@ namespace TerraFX.Interop
             [In] ID2D1SvgPathData* This,
             [Out, ComAliasName("FLOAT")] float* data,
             [In, ComAliasName("UINT32")] uint dataCount,
-            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
+            [In, ComAliasName("UINT32")] uint startIndex = 0
         );
 
         /// <summary>Gets the size of the segment data array.</summary>
@@ -85,7 +85,7 @@ namespace TerraFX.Interop
             [In] ID2D1SvgPathData* This,
             [In] /* readonly */ D2D1_SVG_PATH_COMMAND* commands,
             [In, ComAliasName("UINT32")] uint commandsCount,
-            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
+            [In, ComAliasName("UINT32")] uint startIndex = 0
         );
 
         /// <summary>Gets commands from the commands array.</summary>
@@ -99,7 +99,7 @@ namespace TerraFX.Interop
             [In] ID2D1SvgPathData* This,
             [Out] D2D1_SVG_PATH_COMMAND* commands,
             [In, ComAliasName("UINT32")] uint commandsCount,
-            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
+            [In, ComAliasName("UINT32")] uint startIndex = 0
         );
 
         /// <summary>Gets the size of the commands array.</summary>

@@ -48,7 +48,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CopyPalette(
             [In] IWICBitmapSource* This,
-            [In, Optional] IWICPalette* pIPalette
+            [In] IWICPalette* pIPalette = null
         );
 
         [SuppressUnmanagedCodeSecurity]

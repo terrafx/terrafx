@@ -40,7 +40,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetDataPointer(
             [In] IWICBitmapLock* This,
             [Out, ComAliasName("UINT")] uint* pcbBufferSize,
-            [Out, Optional, ComAliasName("WICInProcPointer")] byte** ppbData
+            [Out, ComAliasName("WICInProcPointer")] byte** ppbData = null
         );
 
         [SuppressUnmanagedCodeSecurity]

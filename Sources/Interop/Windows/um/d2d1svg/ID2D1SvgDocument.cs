@@ -40,7 +40,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetRoot(
             [In] ID2D1SvgDocument* This,
-            [In, Optional] ID2D1SvgElement* root
+            [In] ID2D1SvgElement* root = null
         );
 
         /// <summary>Gets the root element of the document.</summary>

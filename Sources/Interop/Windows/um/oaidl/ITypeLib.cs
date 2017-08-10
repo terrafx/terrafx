@@ -29,7 +29,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetTypeInfo(
             [In] ITypeLib* This,
             [In, ComAliasName("UINT")] uint index,
-            [Out, Optional] ITypeInfo** ppTInfo
+            [Out] ITypeInfo** ppTInfo = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -47,7 +47,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetTypeInfoOfGuid(
             [In] ITypeLib* This,
             [In, ComAliasName("REFGUID")] /* readonly */ Guid* guid,
-            [Out, Optional] ITypeInfo** ppTinfo
+            [Out] ITypeInfo** ppTinfo = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -63,7 +63,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetTypeComp(
             [In] ITypeLib* This,
-            [Out, Optional] ITypeComp** ppTComp
+            [Out] ITypeComp** ppTComp = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -75,7 +75,7 @@ namespace TerraFX.Interop
             [Out, Optional, ComAliasName("BSTR")] char** pBstrName,
             [Out, Optional, ComAliasName("BSTR")] char** pBstrDocString,
             [Out, ComAliasName("DWORD")] uint* pdwHelpContext,
-            [Out, Optional, ComAliasName("BSTR")] char** pBstrHelpFile
+            [Out, ComAliasName("BSTR")] char** pBstrHelpFile = null
         );
 
         [SuppressUnmanagedCodeSecurity]

@@ -50,7 +50,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int InitializeFromPalette(
             [In] IWICPalette* This,
-            [In, Optional] IWICPalette* pIPalette
+            [In] IWICPalette* pIPalette = null
         );
 
         [SuppressUnmanagedCodeSecurity]

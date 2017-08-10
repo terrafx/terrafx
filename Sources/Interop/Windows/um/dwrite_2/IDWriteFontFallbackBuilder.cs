@@ -38,10 +38,10 @@ namespace TerraFX.Interop
             [In, ComAliasName("UINT32")] uint rangesCount,
             [In, ComAliasName("WCHAR")] /* readonly */ char** targetFamilyNames,
             [In, ComAliasName("UINT32")] uint targetFamilyNamesCount,
-            [In, Optional] IDWriteFontCollection* fontCollection,
-            [In, Optional, ComAliasName("WCHAR")] /* readonly */ char* localeName,
-            [In, Optional, ComAliasName("WCHAR")] /* readonly */ char* baseFamilyName,
-            [In, DefaultParameterValue(1.0f), ComAliasName("FLOAT")] float scale
+            [In] IDWriteFontCollection* fontCollection = null,
+            [In, ComAliasName("WCHAR")] /* readonly */ char* localeName = null,
+            [In, ComAliasName("WCHAR")] /* readonly */ char* baseFamilyName = null,
+            [In, ComAliasName("FLOAT")] float scale = 1.0f
         );
 
         /// <summary>Appends all the mappings from an existing font fallback object.</summary>

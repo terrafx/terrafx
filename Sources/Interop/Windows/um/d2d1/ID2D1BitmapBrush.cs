@@ -47,7 +47,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetBitmap(
             [In] ID2D1BitmapBrush* This,
-            [In, Optional] ID2D1Bitmap* bitmap
+            [In] ID2D1Bitmap* bitmap = null
         );
 
         [SuppressUnmanagedCodeSecurity]

@@ -24,7 +24,7 @@ namespace TerraFX.Interop
             [In] IStream* This,
             [In] LARGE_INTEGER dlibMove,
             [In, ComAliasName("DWORD")] uint dwOrigin,
-            [Out, Optional] ULARGE_INTEGER* plibNewPosition
+            [Out] ULARGE_INTEGER* plibNewPosition = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -42,8 +42,8 @@ namespace TerraFX.Interop
             [In] IStream* This,
             [In] IStream* pstm,
             [In] ULARGE_INTEGER cb,
-            [Out, Optional] ULARGE_INTEGER* pcbRead,
-            [Out, Optional] ULARGE_INTEGER* pcbWritten
+            [Out] ULARGE_INTEGER* pcbRead = null,
+            [Out] ULARGE_INTEGER* pcbWritten = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -95,7 +95,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int Clone(
             [In] IStream* This,
-            [Out, Optional] IStream** ppstm
+            [Out] IStream** ppstm = null
         );
         #endregion
 

@@ -55,7 +55,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetName(
             [In] IRecordInfo* This,
-            [Out, Optional, ComAliasName("BSTR")] char** pbstrName
+            [Out, ComAliasName("BSTR")] char** pbstrName = null
         );
 
         [SuppressUnmanagedCodeSecurity]

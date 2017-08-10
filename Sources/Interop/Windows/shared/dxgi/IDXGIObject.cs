@@ -33,7 +33,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int SetPrivateDataInterface(
             [In] IDXGIObject* This,
             [In, ComAliasName("REFGUID")] /* readonly */ Guid* Name,
-            [In, Optional] /* readonly */ IUnknown* pUnknown
+            [In] /* readonly */ IUnknown* pUnknown = null
         );
 
         [SuppressUnmanagedCodeSecurity]

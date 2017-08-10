@@ -31,7 +31,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetEudcFontCollection(
             [In] IDWriteFactory1* This,
             [Out] IDWriteFontCollection** fontCollection,
-            [In, DefaultParameterValue(FALSE), ComAliasName("BOOL")] int checkForUpdates
+            [In, ComAliasName("BOOL")] int checkForUpdates = FALSE
     );
 
         /// <summary>Creates a rendering parameters object with the specified properties.</summary>

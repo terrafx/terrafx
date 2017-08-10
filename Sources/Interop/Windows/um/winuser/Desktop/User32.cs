@@ -172,7 +172,7 @@ namespace TerraFX.Interop.Desktop
         [return: ComAliasName("BOOL")]
         public static extern int UnregisterClass(
             [In, ComAliasName("LPCWSTR")] /* readonly */ char* lpClassName,
-            [In, Optional, ComAliasName("HINSTANCE")] void* hInstance
+            [In, ComAliasName("HINSTANCE")] void* hInstance = null
         );
         #endregion
     }

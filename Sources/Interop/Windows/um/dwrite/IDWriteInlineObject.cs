@@ -38,7 +38,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("FLOAT")] float originY,
             [In, ComAliasName("BOOL")] int isSideways,
             [In, ComAliasName("BOOL")] int isRightToLeft,
-            [In, Optional] IUnknown* clientDrawingEffect
+            [In] IUnknown* clientDrawingEffect = null
         );
 
         /// <summary>TextLayout calls this callback function to get the measurement of the inline object.</summary>

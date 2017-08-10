@@ -26,7 +26,7 @@ namespace TerraFX.Interop
             [In, Optional, ComAliasName("GUID")] Guid* pguidVendor,
             [In, ComAliasName("DWORD")] uint dwDesiredAccess,
             [In] WICDecodeOptions metadataOptions,
-            [Out, Optional] IWICBitmapDecoder** ppIDecoder
+            [Out] IWICBitmapDecoder** ppIDecoder = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -37,7 +37,7 @@ namespace TerraFX.Interop
             [In, Optional] IStream* pIStream,
             [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor,
             [In] WICDecodeOptions metadataOptions,
-            [Out, Optional] IWICBitmapDecoder** ppIDecoder
+            [Out] IWICBitmapDecoder** ppIDecoder = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -48,7 +48,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("ULONG_PTR")] nuint hFile,
             [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor,
             [In] WICDecodeOptions metadataOptions,
-            [Out, Optional] IWICBitmapDecoder** ppIDecoder
+            [Out] IWICBitmapDecoder** ppIDecoder = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -57,7 +57,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateComponentInfo(
             [In] IWICImagingFactory* This,
             [In, ComAliasName("REFCLSID")] /* readonly */ Guid* clsidComponent,
-            [Out, Optional] IWICComponentInfo** ppIInfo
+            [Out] IWICComponentInfo** ppIInfo = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -66,8 +66,8 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateDecoder(
             [In] IWICImagingFactory* This,
             [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidContainerFormat,
-            [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor,
-            [Out, Optional] IWICBitmapDecoder** ppIDecoder
+            [In, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor = null,
+            [Out] IWICBitmapDecoder** ppIDecoder = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -76,8 +76,8 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateEncoder(
             [In] IWICImagingFactory* This,
             [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidContainerFormat,
-            [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor,
-            [Out, Optional] IWICBitmapEncoder** ppIEncoder
+            [In, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor = null,
+            [Out] IWICBitmapEncoder** ppIEncoder = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -85,7 +85,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreatePalette(
             [In] IWICImagingFactory* This,
-            [Out, Optional] IWICPalette** ppIPalette
+            [Out] IWICPalette** ppIPalette = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -93,7 +93,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateFormatConverter(
             [In] IWICImagingFactory* This,
-            [Out, Optional] IWICFormatConverter** ppIFormatConverter
+            [Out] IWICFormatConverter** ppIFormatConverter = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -101,7 +101,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateBitmapScaler(
             [In] IWICImagingFactory* This,
-            [Out, Optional] IWICBitmapScaler** ppIBitmapScaler
+            [Out] IWICBitmapScaler** ppIBitmapScaler = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -109,7 +109,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateBitmapClipper(
             [In] IWICImagingFactory* This,
-            [Out, Optional] IWICBitmapClipper** ppIBitmapClipper
+            [Out] IWICBitmapClipper** ppIBitmapClipper = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -117,7 +117,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateBitmapFlipRotator(
             [In] IWICImagingFactory* This,
-            [Out, Optional] IWICBitmapFlipRotator** ppIBitmapFlipRotator
+            [Out] IWICBitmapFlipRotator** ppIBitmapFlipRotator = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -125,7 +125,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateStream(
             [In] IWICImagingFactory* This,
-            [Out, Optional] IWICStream** ppIWICStream
+            [Out] IWICStream** ppIWICStream = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -133,7 +133,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateColorContext(
             [In] IWICImagingFactory* This,
-            [Out, Optional] IWICColorContext** ppIWICColorContext
+            [Out] IWICColorContext** ppIWICColorContext = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -141,7 +141,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateColorTransformer(
             [In] IWICImagingFactory* This,
-            [Out, Optional] IWICColorTransform** ppIWICColorTransform
+            [Out] IWICColorTransform** ppIWICColorTransform = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -153,7 +153,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("UINT")] uint uiHeight,
             [In, ComAliasName("REFWICPixelFormatGUID")] /* readonly */ Guid* pixelFormat,
             [In] WICBitmapCreateCacheOption option,
-            [Out, Optional] IWICBitmap** ppIBitmap
+            [Out] IWICBitmap** ppIBitmap = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -163,7 +163,7 @@ namespace TerraFX.Interop
             [In] IWICImagingFactory* This,
             [In, Optional] IWICBitmapSource* pIBitmapSource,
             [In] WICBitmapCreateCacheOption option,
-            [Out, Optional] IWICBitmap** ppIBitmap
+            [Out] IWICBitmap** ppIBitmap = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -176,7 +176,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("UINT")] uint y,
             [In, ComAliasName("UINT")] uint width,
             [In, ComAliasName("UINT")] uint height,
-            [Out, Optional] IWICBitmap** ppIBitmap
+            [Out] IWICBitmap** ppIBitmap = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -190,7 +190,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("UINT")] uint cbStride,
             [In, ComAliasName("UINT")] uint cbBufferSize,
             [In, ComAliasName("BYTE")] byte* pbBuffer,
-            [Out, Optional] IWICBitmap** ppIBitmap
+            [Out] IWICBitmap** ppIBitmap = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -201,7 +201,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("HBITMAP")] void* hBitmap,
             [In, Optional, ComAliasName("HPALETTE")] void* hPalette,
             [In] WICBitmapAlphaChannelOption options,
-            [Out, Optional] IWICBitmap** ppIBitmap
+            [Out] IWICBitmap** ppIBitmap = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -210,7 +210,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateBitmapFromHICON(
             [In] IWICImagingFactory* This,
             [In, ComAliasName("HICON")] void* hIcon,
-            [Out, Optional] IWICBitmap** ppIBitmap
+            [Out] IWICBitmap** ppIBitmap = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -220,7 +220,7 @@ namespace TerraFX.Interop
             [In] IWICImagingFactory* This,
             [In, ComAliasName("DWORD")] uint componentTypes,
             [In, ComAliasName("DWORD")] uint options,
-            [Out, Optional] IEnumUnknown** ppIEnumUnknown
+            [Out] IEnumUnknown** ppIEnumUnknown = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -228,8 +228,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateFastMetadataEncoderFromDecoder(
             [In] IWICImagingFactory* This,
-            [In, Optional] IWICBitmapDecoder* pIDecoder,
-            [Out, Optional] IWICFastMetadataEncoder** ppIFastEncoder
+            [In] IWICBitmapDecoder* pIDecoder = null,
+            [Out] IWICFastMetadataEncoder** ppIFastEncoder = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -237,8 +237,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateFastMetadataEncoderFromFrameDecode(
             [In] IWICImagingFactory* This,
-            [In, Optional] IWICBitmapFrameDecode* pIFrameDecoder,
-            [Out, Optional] IWICFastMetadataEncoder** ppIFastEncoder
+            [In] IWICBitmapFrameDecode* pIFrameDecoder = null,
+            [Out] IWICFastMetadataEncoder** ppIFastEncoder = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -247,8 +247,8 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateQueryWriter(
             [In] IWICImagingFactory* This,
             [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidMetadataFormat,
-            [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor,
-            [Out, Optional] IWICMetadataQueryWriter** ppIQueryWriter
+            [In, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor = null,
+            [Out] IWICMetadataQueryWriter** ppIQueryWriter = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -256,9 +256,9 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateQueryWriterFromReader(
             [In] IWICImagingFactory* This,
-            [In, Optional] IWICMetadataQueryReader* pIQueryReader,
-            [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor,
-            [Out, Optional] IWICMetadataQueryWriter** ppIQueryWriter
+            [In] IWICMetadataQueryReader* pIQueryReader = null,
+            [In, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor = null,
+            [Out] IWICMetadataQueryWriter** ppIQueryWriter = null
         );
         #endregion
 

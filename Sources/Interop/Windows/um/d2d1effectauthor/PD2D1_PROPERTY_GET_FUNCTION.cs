@@ -16,6 +16,6 @@ namespace TerraFX.Interop
         [In] /* readonly */ IUnknown* effect,
         [Out, Optional, ComAliasName("BYTE")] byte* data,
         [In, ComAliasName("UINT32")] uint dataSize,
-        [Out, Optional, ComAliasName("UINT32")] uint* actualSize
+        [Out, ComAliasName("UINT32")] uint* actualSize = null
     );
 }

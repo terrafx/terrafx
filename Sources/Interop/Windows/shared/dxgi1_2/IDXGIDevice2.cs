@@ -34,7 +34,7 @@ namespace TerraFX.Interop
             [In] IDXGIDevice2* This,
             [In, ComAliasName("UINT")] uint NumResources,
             [In] /* readonly */ IDXGIResource** ppResources,
-            [Out, Optional, ComAliasName("BOOL")] int* pDiscarded
+            [Out, ComAliasName("BOOL")] int* pDiscarded = null
         );
 
         [SuppressUnmanagedCodeSecurity]

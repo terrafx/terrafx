@@ -38,7 +38,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetCurrentParameterSet(
             [In] IWICDevelopRaw* This,
-            [Out, Optional] IPropertyBag2** ppCurrentParameterSet
+            [Out] IPropertyBag2** ppCurrentParameterSet = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -220,7 +220,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetDestinationColorContext(
             [In] IWICDevelopRaw* This,
-            [In, Optional] IWICColorContext* pColorContext
+            [In] IWICColorContext* pColorContext = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -238,8 +238,8 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetToneCurve(
             [In] IWICDevelopRaw* This,
             [In, ComAliasName("UINT")] uint cbToneCurveBufferSize,
-            [Out, Optional] WICRawToneCurve* pToneCurve,
-            [In, Out, Optional, ComAliasName("UINT")] uint* pcbActualToneCurveBufferSize
+            [Out] WICRawToneCurve* pToneCurve = null,
+            [In, Out, ComAliasName("UINT")] uint* pcbActualToneCurveBufferSize = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -279,7 +279,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetNotificationCallback(
             [In] IWICDevelopRaw* This,
-            [In, Optional] IWICDevelopRawNotificationCallback* pCallback
+            [In] IWICDevelopRawNotificationCallback* pCallback = null
         );
         #endregion
 

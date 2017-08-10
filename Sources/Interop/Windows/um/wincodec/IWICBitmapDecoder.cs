@@ -48,7 +48,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetDecoderInfo(
             [In] IWICBitmapDecoder* This,
-            [Out, Optional] IWICBitmapDecoderInfo** ppIDecoderInfo
+            [Out] IWICBitmapDecoderInfo** ppIDecoderInfo = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -56,7 +56,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CopyPalette(
             [In] IWICBitmapDecoder* This,
-            [In, Optional] IWICPalette* pIPalette
+            [In] IWICPalette* pIPalette = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -64,7 +64,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetMetadataQueryReader(
             [In] IWICBitmapDecoder* This,
-            [Out, Optional] IWICMetadataQueryReader** ppIMetadataQueryReader
+            [Out] IWICMetadataQueryReader** ppIMetadataQueryReader = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -72,7 +72,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetPreview(
             [In] IWICBitmapDecoder* This,
-            [Out, Optional] IWICBitmapSource** ppIBitmapSource
+            [Out] IWICBitmapSource** ppIBitmapSource = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -90,7 +90,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetThumbnail(
             [In] IWICBitmapDecoder* This,
-            [Out, Optional] IWICBitmapSource** ppIThumbnail
+            [Out] IWICBitmapSource** ppIThumbnail = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -107,7 +107,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetFrame(
             [In] IWICBitmapDecoder* This,
             [In, ComAliasName("UINT")] uint index,
-            [Out, Optional] IWICBitmapFrameDecode** ppIBitmapFrame
+            [Out] IWICBitmapFrameDecode** ppIBitmapFrame = null
         );
         #endregion
 

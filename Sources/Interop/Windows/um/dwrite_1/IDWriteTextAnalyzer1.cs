@@ -142,7 +142,7 @@ namespace TerraFX.Interop
             [In] IDWriteFontFace* fontFace,
             [Out, ComAliasName("BOOL")] int* isTextSimple,
             [Out, ComAliasName("UINT32")] uint* textLengthRead,
-            [Out, Optional, ComAliasName("UINT16")] ushort* glyphIndices
+            [Out, ComAliasName("UINT16")] ushort* glyphIndices = null
         );
 
         /// <summary>Retrieves justification opportunity information for each of the glyphs given the text and shaping glyph properties.</summary>
@@ -194,7 +194,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("FLOAT")] /* readonly */ float* glyphAdvances,
             [In] /* readonly */ DWRITE_GLYPH_OFFSET* glyphOffsets,
             [Out, ComAliasName("FLOAT")] float* justifiedGlyphAdvances,
-            [Out, Optional] DWRITE_GLYPH_OFFSET* justifiedGlyphOffsets
+            [Out] DWRITE_GLYPH_OFFSET* justifiedGlyphOffsets = null
         );
 
         /// <summary>Fills in new glyphs for complex scripts where justification increased the advances of glyphs, such as Arabic with kashida.</summary>

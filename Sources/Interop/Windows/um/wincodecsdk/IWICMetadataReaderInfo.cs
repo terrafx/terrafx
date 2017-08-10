@@ -24,9 +24,9 @@ namespace TerraFX.Interop
             [In] IWICMetadataReaderInfo* This,
             [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidContainerFormat,
             [In, ComAliasName("UINT")] uint cbSize,
-            [Out, Optional] WICMetadataPattern* pPattern,
-            [Out, Optional, ComAliasName("UINT")] uint* pcCount,
-            [Out, Optional, ComAliasName("UINT")] uint* pcbActual
+            [Out] WICMetadataPattern* pPattern = null,
+            [Out, ComAliasName("UINT")] uint* pcCount = null,
+            [Out, ComAliasName("UINT")] uint* pcbActual = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -44,7 +44,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateInstance(
             [In] IWICMetadataReaderInfo* This,
-            [Out, Optional] IWICMetadataReader** ppIReader
+            [Out] IWICMetadataReader** ppIReader = null
         );
         #endregion
 

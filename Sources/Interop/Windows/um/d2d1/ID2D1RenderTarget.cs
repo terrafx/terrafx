@@ -171,7 +171,7 @@ namespace TerraFX.Interop
             [In] ID2D1RenderTarget* This,
             [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* rect,
             [In] ID2D1Brush* brush,
-            [In, DefaultParameterValue(1.0f), ComAliasName("FLOAT")] float strokeWidth,
+            [In, ComAliasName("FLOAT")] float strokeWidth = 1.0f,
             [In] ID2D1StrokeStyle* strokeStyle = null
         );
 
@@ -189,7 +189,7 @@ namespace TerraFX.Interop
             [In] ID2D1RenderTarget* This,
             [In] /* readonly */ D2D1_ROUNDED_RECT* roundedRect,
             [In] ID2D1Brush* brush,
-            [In, DefaultParameterValue(1.0f), ComAliasName("FLOAT")] float strokeWidth,
+            [In, ComAliasName("FLOAT")] float strokeWidth = 1.0f,
             [In] ID2D1StrokeStyle* strokeStyle = null
         );
 
@@ -207,7 +207,7 @@ namespace TerraFX.Interop
             [In] ID2D1RenderTarget* This,
             [In] /* readonly */ D2D1_ELLIPSE* ellipse,
             [In] ID2D1Brush* brush,
-            [In, DefaultParameterValue(1.0f), ComAliasName("FLOAT")] float strokeWidth,
+            [In, ComAliasName("FLOAT")] float strokeWidth = 1.0f,
             [In] ID2D1StrokeStyle* strokeStyle = null
         );
 
@@ -225,7 +225,7 @@ namespace TerraFX.Interop
             [In] ID2D1RenderTarget* This,
             [In] ID2D1Geometry* geometry,
             [In] ID2D1Brush* brush,
-            [In, DefaultParameterValue(1.0f), ComAliasName("FLOAT")] float strokeWidth,
+            [In, ComAliasName("FLOAT")] float strokeWidth = 1.0f,
             [In] ID2D1StrokeStyle* strokeStyle = null
         );
 
@@ -266,7 +266,7 @@ namespace TerraFX.Interop
             [In] ID2D1RenderTarget* This,
             [In] ID2D1Bitmap* bitmap,
             [In, Optional, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangle,
-            [In, DefaultParameterValue(1.0f), ComAliasName("FLOAT")] float opacity,
+            [In, ComAliasName("FLOAT")] float opacity = 1.0f,
             [In] D2D1_BITMAP_INTERPOLATION_MODE interpolationMode = D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
             [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* sourceRectangle = null
         );
@@ -386,7 +386,7 @@ namespace TerraFX.Interop
         public /* static */ delegate void PushLayer(
             [In] ID2D1RenderTarget* This,
             [In] /* readonly */ D2D1_LAYER_PARAMETERS* layerParameters,
-            [In, Optional] ID2D1Layer* layer
+            [In] ID2D1Layer* layer = null
         );
 
         /// <summary>Ends a layer that was defined with particular layer resources.</summary>

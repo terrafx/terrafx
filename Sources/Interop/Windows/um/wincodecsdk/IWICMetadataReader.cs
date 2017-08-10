@@ -30,7 +30,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetMetadataHandlerInfo(
             [In] IWICMetadataReader* This,
-            [Out, Optional] IWICMetadataHandlerInfo** ppIHandler
+            [Out] IWICMetadataHandlerInfo** ppIHandler = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -47,9 +47,9 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetValueByIndex(
             [In] IWICMetadataReader* This,
             [In, ComAliasName("UINT")] uint nIndex,
-            [In, Out, Optional] PROPVARIANT* pvarSchema,
-            [In, Out, Optional] PROPVARIANT* pvarId,
-            [In, Out, Optional] PROPVARIANT* pvarValue
+            [In, Out] PROPVARIANT* pvarSchema = null,
+            [In, Out] PROPVARIANT* pvarId = null,
+            [In, Out] PROPVARIANT* pvarValue = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -59,7 +59,7 @@ namespace TerraFX.Interop
             [In] IWICMetadataReader* This,
             [In, Optional] /* readonly */ PROPVARIANT* pvarSchema,
             [In] /* readonly */ PROPVARIANT* pvarId,
-            [In, Out, Optional] PROPVARIANT* pvarValue
+            [In, Out] PROPVARIANT* pvarValue = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -67,7 +67,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetEnumerator(
             [In] IWICMetadataReader* This,
-            [Out, Optional] IWICEnumMetadataItem** ppIEnumMetadata
+            [Out] IWICEnumMetadataItem** ppIEnumMetadata = null
         );
         #endregion
 

@@ -39,7 +39,7 @@ namespace TerraFX.Interop
             [In] ID2D1SvgPointCollection* This,
             [In, ComAliasName("D2D1_POINT_2F")] /* readonly */ D2D_POINT_2F* points,
             [In, ComAliasName("UINT32")] uint pointsCount,
-            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
+            [In, ComAliasName("UINT32")] uint startIndex = 0
         );
 
         /// <summary>Gets points from the points array.</summary>
@@ -53,7 +53,7 @@ namespace TerraFX.Interop
             [In] ID2D1SvgPointCollection* This,
             [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* points,
             [In, ComAliasName("UINT32")] uint pointsCount,
-            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
+            [In, ComAliasName("UINT32")] uint startIndex = 0
         );
 
         /// <summary>Gets the number of points in the array.</summary>

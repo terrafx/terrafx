@@ -23,7 +23,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetDevice(
             [In] ID3D12DeviceChild* This,
             [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
-            [Out, Optional] void** ppvDevice
+            [Out] void** ppvDevice = null
         );
         #endregion
 

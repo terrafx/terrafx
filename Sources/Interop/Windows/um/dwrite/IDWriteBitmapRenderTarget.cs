@@ -90,7 +90,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetCurrentTransform(
             [In] IDWriteBitmapRenderTarget* This,
-            [In, Optional] /* readonly */ DWRITE_MATRIX* transform
+            [In] /* readonly */ DWRITE_MATRIX* transform = null
         );
 
         /// <summary>Gets the dimensions of the bitmap.</summary>

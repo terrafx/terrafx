@@ -34,7 +34,7 @@ namespace TerraFX.Interop
             [In] IWICPlanarBitmapFrameEncode* This,
             [In] IWICBitmapSource** ppPlanes,
             [In, ComAliasName("UINT")] uint cPlanes,
-            [In, Optional] WICRect* prcSource
+            [In] WICRect* prcSource = null
         );
         #endregion
 

@@ -33,7 +33,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("UINT")] uint arrayIndex,
             [In, ComAliasName("UINT")] uint mipLevel,
             [In, ComAliasName("UINT")] uint sliceIndex,
-            [Out, Optional] IWICBitmapFrameDecode** ppIBitmapFrame
+            [Out] IWICBitmapFrameDecode** ppIBitmapFrame = null
         );
         #endregion
 

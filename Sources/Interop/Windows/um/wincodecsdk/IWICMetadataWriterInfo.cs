@@ -25,8 +25,8 @@ namespace TerraFX.Interop
             [In] IWICMetadataWriterInfo* This,
             [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidContainerFormat,
             [In, ComAliasName("UINT")] uint cbSize,
-            [Out, Optional] WICMetadataHeader* pHeader,
-            [Out, Optional, ComAliasName("UINT")] uint* pcbActual
+            [Out] WICMetadataHeader* pHeader = null,
+            [Out, ComAliasName("UINT")] uint* pcbActual = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -34,7 +34,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateInstance(
             [In] IWICMetadataWriterInfo* This,
-            [Out, Optional] IWICMetadataWriter** ppIWriter
+            [Out] IWICMetadataWriter** ppIWriter = null
         );
         #endregion
 

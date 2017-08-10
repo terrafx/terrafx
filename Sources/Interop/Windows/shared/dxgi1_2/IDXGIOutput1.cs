@@ -26,7 +26,7 @@ namespace TerraFX.Interop
             [In] DXGI_FORMAT EnumFormat,
             [In, ComAliasName("UINT")] uint Flags,
             [In, Out, ComAliasName("UINT")] uint* pNumModes,
-            [Out, Optional] DXGI_MODE_DESC1* pDesc
+            [Out] DXGI_MODE_DESC1* pDesc = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -36,7 +36,7 @@ namespace TerraFX.Interop
             [In] IDXGIOutput1* This,
             [In] /* readonly */ DXGI_MODE_DESC1* pModeToMatch,
             [Out] DXGI_MODE_DESC1* pClosestMatch,
-            [In, Optional] IUnknown* pConcernedDevice
+            [In] IUnknown* pConcernedDevice = null
         );
 
         [SuppressUnmanagedCodeSecurity]

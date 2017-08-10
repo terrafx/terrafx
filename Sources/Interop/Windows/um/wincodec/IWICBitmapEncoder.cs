@@ -39,7 +39,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetEncoderInfo(
             [In] IWICBitmapEncoder* This,
-            [Out, Optional] IWICBitmapEncoderInfo** ppIEncoderInfo
+            [Out] IWICBitmapEncoderInfo** ppIEncoderInfo = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -56,7 +56,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetPalette(
             [In] IWICBitmapEncoder* This,
-            [In, Optional] IWICPalette* pIPalette
+            [In] IWICPalette* pIPalette = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -64,7 +64,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetThumbnail(
             [In] IWICBitmapEncoder* This,
-            [In, Optional] IWICBitmapSource* pIThumbnail
+            [In] IWICBitmapSource* pIThumbnail = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -72,7 +72,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetPreview(
             [In] IWICBitmapEncoder* This,
-            [In, Optional] IWICBitmapSource* pIPreview
+            [In] IWICBitmapSource* pIPreview = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -80,8 +80,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateNewFrame(
             [In] IWICBitmapEncoder* This,
-            [Out, Optional] IWICBitmapFrameEncode** ppIFrameEncode,
-            [In, Out, Optional] IPropertyBag2** ppIEncoderOptions
+            [Out] IWICBitmapFrameEncode** ppIFrameEncode = null,
+            [In, Out] IPropertyBag2** ppIEncoderOptions = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -96,7 +96,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetMetadataQueryWriter(
             [In] IWICBitmapEncoder* This,
-            [Out, Optional] IWICMetadataQueryWriter** ppIMetadataQueryWriter
+            [Out] IWICMetadataQueryWriter** ppIMetadataQueryWriter = null
         );
         #endregion
 

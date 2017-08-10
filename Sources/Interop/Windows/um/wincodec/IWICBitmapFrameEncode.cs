@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int Initialize(
             [In] IWICBitmapFrameEncode* This,
-            [In, Optional] IPropertyBag2* pIEncoderOptions
+            [In] IPropertyBag2* pIEncoderOptions = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -65,7 +65,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetPalette(
             [In] IWICBitmapFrameEncode* This,
-            [In, Optional] IWICPalette* pIPalette
+            [In] IWICPalette* pIPalette = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -92,8 +92,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int WriteSource(
             [In] IWICBitmapFrameEncode* This,
-            [In, Optional] IWICBitmapSource* pIBitmapSource,
-            [In, Optional] WICRect* prc
+            [In] IWICBitmapSource* pIBitmapSource = null,
+            [In] WICRect* prc = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -108,7 +108,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetMetadataQueryWriter(
             [In] IWICBitmapFrameEncode* This,
-            [Out, Optional] IWICMetadataQueryWriter** ppIMetadataQueryWriter
+            [Out] IWICMetadataQueryWriter** ppIMetadataQueryWriter = null
         );
         #endregion
 

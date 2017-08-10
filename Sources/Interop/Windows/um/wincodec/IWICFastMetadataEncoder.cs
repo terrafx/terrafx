@@ -29,7 +29,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetMetadataQueryWriter(
             [In] IWICFastMetadataEncoder* This,
-            [Out, Optional] IWICMetadataQueryWriter** ppIMetadataQueryWriter
+            [Out] IWICMetadataQueryWriter** ppIMetadataQueryWriter = null
         );
         #endregion
 

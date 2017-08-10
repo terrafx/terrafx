@@ -32,7 +32,7 @@ namespace TerraFX.Interop
             [In] IDispatch* This,
             [In, ComAliasName("UINT")] uint iTInfo,
             [In, ComAliasName("LCID")] uint lcid,
-            [Out, Optional] ITypeInfo** ppTInfo
+            [Out] ITypeInfo** ppTInfo = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -57,9 +57,9 @@ namespace TerraFX.Interop
             [In, ComAliasName("LCID")] uint lcid,
             [In, ComAliasName("WORD")] ushort wFlags,
             [In] DISPPARAMS* pDispParams,
-            [Out, Optional] VARIANT* pVarResult,
-            [Out, Optional] EXCEPINFO* pExcepInfo,
-            [Out, Optional, ComAliasName("UINT")] uint* puArgErr
+            [Out] VARIANT* pVarResult = null,
+            [Out] EXCEPINFO* pExcepInfo = null,
+            [Out, ComAliasName("UINT")] uint* puArgErr = null
         );
         #endregion
 
