@@ -30,7 +30,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public  /* blittable */ struct _u__e__Struct
+        public /* blittable */ struct _u__e__Struct
         {
             #region Fields
             [ComAliasName("DWORD")]

@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public  /* blittable */ struct PARAMDESCEX
+    public /* blittable */ struct PARAMDESCEX
     {
         #region Fields
         [ComAliasName("ULONG")]

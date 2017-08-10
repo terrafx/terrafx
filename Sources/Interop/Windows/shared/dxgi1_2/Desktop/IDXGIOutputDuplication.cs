@@ -13,7 +13,7 @@ namespace TerraFX.Interop.Desktop
     unsafe public /* blittable */ struct IDXGIOutputDuplication
     {
         #region Fields
-        public readonly void* /* Vtbl* */ lpVtbl;
+        public readonly Vtbl* lpVtbl;
         #endregion
 
         #region Delegates

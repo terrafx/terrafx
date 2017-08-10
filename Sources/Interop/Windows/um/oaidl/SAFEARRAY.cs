@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    unsafe public  /* blittable */ struct SAFEARRAY
+    unsafe public /* blittable */ struct SAFEARRAY
     {
         #region Fields
         [ComAliasName("USHORT")]

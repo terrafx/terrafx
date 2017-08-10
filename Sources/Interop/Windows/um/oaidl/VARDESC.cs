@@ -29,7 +29,7 @@ namespace TerraFX.Interop
 
         #region Structs
         [StructLayout(LayoutKind.Explicit)]
-        public  /* blittable */ struct _u_e__Union
+        public /* blittable */ struct _u_e__Union
         {
             #region Fields
             [FieldOffset(0)]

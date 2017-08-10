@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    unsafe public  /* blittable */ struct PARAMDESC
+    unsafe public /* blittable */ struct PARAMDESC
     {
         #region Fields
         [ComAliasName("LPPARAMDESCEX")]

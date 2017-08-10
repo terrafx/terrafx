@@ -14,7 +14,7 @@ namespace TerraFX.Interop.Desktop
     unsafe public /* blittable */ struct ID2D1GdiInteropRenderTarget
     {
         #region Fields
-        public readonly void* /* Vtbl* */ lpVtbl;
+        public readonly Vtbl* lpVtbl;
         #endregion
 
         #region Delegates

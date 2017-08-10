@@ -13,7 +13,7 @@ namespace TerraFX.Interop
     unsafe public /* blittable */ struct IDXGISurface
     {
         #region Fields
-        public readonly void* /* Vtbl* */ lpVtbl;
+        public readonly Vtbl* lpVtbl;
         #endregion
 
         #region Delegates

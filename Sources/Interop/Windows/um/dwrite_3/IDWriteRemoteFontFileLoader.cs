@@ -15,7 +15,7 @@ namespace TerraFX.Interop
     unsafe public /* blittable */ struct IDWriteRemoteFontFileLoader
     {
         #region Fields
-        public readonly void* /* Vtbl* */ lpVtbl;
+        public readonly Vtbl* lpVtbl;
         #endregion
 
         #region Delegates

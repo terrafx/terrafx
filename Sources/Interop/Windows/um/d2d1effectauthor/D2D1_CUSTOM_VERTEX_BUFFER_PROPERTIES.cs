@@ -12,7 +12,7 @@ namespace TerraFX.Interop
     {
         #region Fields
         [ComAliasName("BYTE")]
-        public  /* readonly */ byte* shaderBufferWithInputSignature;
+        public /* readonly */ byte* shaderBufferWithInputSignature;
 
         [ComAliasName("UINT32")]
         public uint shaderBufferSize;

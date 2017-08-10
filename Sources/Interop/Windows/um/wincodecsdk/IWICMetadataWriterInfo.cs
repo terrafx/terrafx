@@ -14,7 +14,7 @@ namespace TerraFX.Interop
     {
 
         #region Fields
-        public readonly void* /* Vtbl* */ lpVtbl;
+        public readonly Vtbl* lpVtbl;
         #endregion
 
         #region Delegates

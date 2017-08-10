@@ -17,7 +17,7 @@ namespace TerraFX.Interop
     unsafe public /* blittable */ struct ID2D1DeviceContext
     {
         #region Fields
-        public readonly void* /* Vtbl* */ lpVtbl;
+        public readonly Vtbl* lpVtbl;
         #endregion
 
         #region Delegates

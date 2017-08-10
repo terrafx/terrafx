@@ -14,7 +14,7 @@ namespace TerraFX.Interop
     unsafe public /* blittable */ struct ID2D1BorderTransform
     {
         #region Fields
-        public readonly void* /* Vtbl* */ lpVtbl;
+        public readonly Vtbl* lpVtbl;
         #endregion
 
         #region Delegates

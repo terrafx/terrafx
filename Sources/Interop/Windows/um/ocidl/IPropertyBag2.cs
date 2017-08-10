@@ -10,10 +10,10 @@ using System.Security;
 namespace TerraFX.Interop
 {
     [Guid("22F55882-280B-11d0-A8A9-00A0C90C2004")]
-    unsafe public  /* blittable */ struct IPropertyBag2
+    unsafe public /* blittable */ struct IPropertyBag2
     {
         #region Fields
-        public readonly void* /* Vtbl* */ lpVtbl;
+        public readonly Vtbl* lpVtbl;
         #endregion
 
         #region Delegates
@@ -71,7 +71,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public  /* blittable */ struct Vtbl
+        public /* blittable */ struct Vtbl
         {
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
