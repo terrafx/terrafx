@@ -69,13 +69,13 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetTypeInfoCount GetTypeInfoCount;
+            public IntPtr GetTypeInfoCount;
 
-            public GetTypeInfo GetTypeInfo;
+            public IntPtr GetTypeInfo;
 
-            public GetIDsOfNames GetIDsOfNames;
+            public IntPtr GetIDsOfNames;
 
-            public Invoke Invoke;
+            public IntPtr Invoke;
             #endregion
         }
         #endregion

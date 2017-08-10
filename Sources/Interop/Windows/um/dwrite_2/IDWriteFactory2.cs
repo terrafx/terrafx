@@ -3,6 +3,7 @@
 // Ported from um\dwrite_2.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -121,15 +122,15 @@ namespace TerraFX.Interop
             #region Fields
             public IDWriteFactory1.Vtbl BaseVtbl;
 
-            public GetSystemFontFallback GetSystemFontFallback;
+            public IntPtr GetSystemFontFallback;
 
-            public CreateFontFallbackBuilder CreateFontFallbackBuilder;
+            public IntPtr CreateFontFallbackBuilder;
 
-            public TranslateColorGlyphRun TranslateColorGlyphRun;
+            public IntPtr TranslateColorGlyphRun;
 
-            public CreateCustomRenderingParams CreateCustomRenderingParams;
+            public IntPtr CreateCustomRenderingParams;
 
-            public CreateGlyphRunAnalysis CreateGlyphRunAnalysis;
+            public IntPtr CreateGlyphRunAnalysis;
             #endregion
         }
         #endregion

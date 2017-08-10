@@ -35,7 +35,7 @@ namespace TerraFX.Interop
             #region Fields
             public ID3D12PipelineLibrary.Vtbl BaseVtbl;
 
-            public LoadPipeline LoadPipeline;
+            public IntPtr LoadPipeline;
             #endregion
         }
         #endregion

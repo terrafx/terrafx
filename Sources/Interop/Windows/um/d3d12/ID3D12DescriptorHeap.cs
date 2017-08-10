@@ -42,11 +42,11 @@ namespace TerraFX.Interop
             #region Fields
             public ID3D12Pageable.Vtbl BaseVtbl;
 
-            public GetDesc GetDesc;
+            public IntPtr GetDesc;
 
-            public GetCPUDescriptorHandleForHeapStart GetCPUDescriptorHandleForHeapStart;
+            public IntPtr GetCPUDescriptorHandleForHeapStart;
 
-            public GetGPUDescriptorHandleForHeapStart GetGPUDescriptorHandleForHeapStart;
+            public IntPtr GetGPUDescriptorHandleForHeapStart;
             #endregion
         }
         #endregion

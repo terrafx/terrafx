@@ -30,7 +30,7 @@ namespace TerraFX.Interop
             #region Fields
             public ID3D12Pageable.Vtbl BaseVtbl;
 
-            public GetDesc GetDesc;
+            public IntPtr GetDesc;
             #endregion
         }
         #endregion

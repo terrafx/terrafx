@@ -3,6 +3,7 @@
 // Ported from um\d2d1_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -66,15 +67,15 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Bitmap.Vtbl BaseVtbl;
 
-            public GetColorContext GetColorContext;
+            public IntPtr GetColorContext;
 
-            public GetOptions GetOptions;
+            public IntPtr GetOptions;
 
-            public GetSurface GetSurface;
+            public IntPtr GetSurface;
 
-            public Map Map;
+            public IntPtr Map;
 
-            public Unmap Unmap;
+            public IntPtr Unmap;
             #endregion
         }
         #endregion

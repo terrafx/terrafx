@@ -40,9 +40,9 @@ namespace TerraFX.Interop
             #region Fields
             public IWICPixelFormatInfo.Vtbl BaseVtbl;
 
-            public SupportsTransparency SupportsTransparency;
+            public IntPtr SupportsTransparency;
 
-            public GetNumericRepresentation GetNumericRepresentation;
+            public IntPtr GetNumericRepresentation;
             #endregion
         }
         #endregion

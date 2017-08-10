@@ -62,13 +62,13 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGISwapChain2.Vtbl BaseVtbl;
 
-            public GetCurrentBackBufferIndex GetCurrentBackBufferIndex;
+            public IntPtr GetCurrentBackBufferIndex;
 
-            public CheckColorSpaceSupport CheckColorSpaceSupport;
+            public IntPtr CheckColorSpaceSupport;
 
-            public SetColorSpace1 SetColorSpace1;
+            public IntPtr SetColorSpace1;
 
-            public ResizeBuffers1 ResizeBuffers1;
+            public IntPtr ResizeBuffers1;
             #endregion
         }
         #endregion

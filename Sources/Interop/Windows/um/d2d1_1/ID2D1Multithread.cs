@@ -3,6 +3,7 @@
 // Ported from um\d2d1_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -46,11 +47,11 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetMultithreadProtected GetMultithreadProtected;
+            public IntPtr GetMultithreadProtected;
 
-            public Enter Enter;
+            public IntPtr Enter;
 
-            public Leave Leave;
+            public IntPtr Leave;
             #endregion
         }
         #endregion

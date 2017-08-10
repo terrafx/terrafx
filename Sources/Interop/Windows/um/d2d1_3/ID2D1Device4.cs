@@ -3,6 +3,7 @@
 // Ported from um\d2d1_3.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -49,11 +50,11 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Device3.Vtbl BaseVtbl;
 
-            public CreateDeviceContext CreateDeviceContext;
+            public IntPtr CreateDeviceContext;
 
-            public SetMaximumColorGlyphCacheMemory SetMaximumColorGlyphCacheMemory;
+            public IntPtr SetMaximumColorGlyphCacheMemory;
 
-            public GetMaximumColorGlyphCacheMemory GetMaximumColorGlyphCacheMemory;
+            public IntPtr GetMaximumColorGlyphCacheMemory;
             #endregion
         }
         #endregion

@@ -34,7 +34,7 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIOutput2.Vtbl BaseVtbl;
 
-            public CheckOverlaySupport CheckOverlaySupport;
+            public IntPtr CheckOverlaySupport;
             #endregion
         }
         #endregion

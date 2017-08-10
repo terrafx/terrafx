@@ -47,11 +47,11 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1RenderTarget.Vtbl BaseVtbl;
 
-            public CheckWindowState CheckWindowState;
+            public IntPtr CheckWindowState;
 
-            public Resize Resize;
+            public IntPtr Resize;
 
-            public GetHwnd GetHwnd;
+            public IntPtr GetHwnd;
             #endregion
         }
         #endregion

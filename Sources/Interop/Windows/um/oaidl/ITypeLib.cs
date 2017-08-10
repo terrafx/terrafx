@@ -114,25 +114,25 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetTypeInfoCount GetTypeInfoCount;
+            public IntPtr GetTypeInfoCount;
 
-            public GetTypeInfo GetTypeInfo;
+            public IntPtr GetTypeInfo;
 
-            public GetTypeInfoType GetTypeInfoType;
+            public IntPtr GetTypeInfoType;
 
-            public GetTypeInfoOfGuid GetTypeInfoOfGuid;
+            public IntPtr GetTypeInfoOfGuid;
 
-            public GetLibAttr GetLibAttr;
+            public IntPtr GetLibAttr;
 
-            public GetTypeComp GetTypeComp;
+            public IntPtr GetTypeComp;
 
-            public GetDocumentation GetDocumentation;
+            public IntPtr GetDocumentation;
 
-            public IsName IsName;
+            public IntPtr IsName;
 
-            public FindName FindName;
+            public IntPtr FindName;
 
-            public ReleaseTLibAttr ReleaseTLibAttr;
+            public IntPtr ReleaseTLibAttr;
             #endregion
         }
         #endregion

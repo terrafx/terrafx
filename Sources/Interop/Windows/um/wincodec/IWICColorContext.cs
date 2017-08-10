@@ -75,17 +75,17 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public InitializeFromFilename InitializeFromFilename;
+            public IntPtr InitializeFromFilename;
 
-            public InitializeFromMemory InitializeFromMemory;
+            public IntPtr InitializeFromMemory;
 
-            public InitializeFromExifColorSpace InitializeFromExifColorSpace;
+            public IntPtr InitializeFromExifColorSpace;
 
-            public _GetType _GetType;
+            public IntPtr _GetType;
 
-            public GetProfileBytes GetProfileBytes;
+            public IntPtr GetProfileBytes;
 
-            public GetExifColorSpace GetExifColorSpace;
+            public IntPtr GetExifColorSpace;
             #endregion
         }
         #endregion

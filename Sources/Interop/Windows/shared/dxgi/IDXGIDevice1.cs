@@ -40,9 +40,9 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIDevice.Vtbl BaseVtbl;
 
-            public SetMaximumFrameLatency SetMaximumFrameLatency;
+            public IntPtr SetMaximumFrameLatency;
 
-            public GetMaximumFrameLatency GetMaximumFrameLatency;
+            public IntPtr GetMaximumFrameLatency;
             #endregion
         }
         #endregion

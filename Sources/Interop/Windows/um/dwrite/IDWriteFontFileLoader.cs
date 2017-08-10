@@ -40,7 +40,7 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public CreateStreamFromKey CreateStreamFromKey;
+            public IntPtr CreateStreamFromKey;
             #endregion
         }
         #endregion

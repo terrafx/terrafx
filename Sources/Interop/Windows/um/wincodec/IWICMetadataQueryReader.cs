@@ -59,13 +59,13 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetContainerFormat GetContainerFormat;
+            public IntPtr GetContainerFormat;
 
-            public GetLocation GetLocation;
+            public IntPtr GetLocation;
 
-            public GetMetadataByName GetMetadataByName;
+            public IntPtr GetMetadataByName;
 
-            public GetEnumerator GetEnumerator;
+            public IntPtr GetEnumerator;
             #endregion
         }
         #endregion

@@ -43,9 +43,9 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIFactory3.Vtbl BaseVtbl;
 
-            public EnumAdapterByLuid EnumAdapterByLuid;
+            public IntPtr EnumAdapterByLuid;
 
-            public EnumWarpAdapter EnumWarpAdapter;
+            public IntPtr EnumWarpAdapter;
             #endregion
         }
         #endregion

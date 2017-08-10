@@ -104,17 +104,17 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetCount GetCount;
+            public IntPtr GetCount;
 
-            public FindLocaleName FindLocaleName;
+            public IntPtr FindLocaleName;
 
-            public GetLocaleNameLength GetLocaleNameLength;
+            public IntPtr GetLocaleNameLength;
 
-            public GetLocaleName GetLocaleName;
+            public IntPtr GetLocaleName;
 
-            public GetStringLength GetStringLength;
+            public IntPtr GetStringLength;
 
-            public GetString GetString;
+            public IntPtr GetString;
             #endregion
         }
         #endregion

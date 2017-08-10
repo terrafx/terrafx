@@ -77,19 +77,19 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public SetFillMode SetFillMode;
+            public IntPtr SetFillMode;
 
-            public SetSegmentFlags SetSegmentFlags;
+            public IntPtr SetSegmentFlags;
 
-            public BeginFigure BeginFigure;
+            public IntPtr BeginFigure;
 
-            public AddLines AddLines;
+            public IntPtr AddLines;
 
-            public AddBeziers AddBeziers;
+            public IntPtr AddBeziers;
 
-            public EndFigure EndFigure;
+            public IntPtr EndFigure;
 
-            public Close Close;
+            public IntPtr Close;
             #endregion
         }
         #endregion

@@ -50,11 +50,11 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIObject.Vtbl BaseVtbl;
 
-            public EnumOutputs EnumOutputs;
+            public IntPtr EnumOutputs;
 
-            public GetDesc GetDesc;
+            public IntPtr GetDesc;
 
-            public CheckInterfaceSupport CheckInterfaceSupport;
+            public IntPtr CheckInterfaceSupport;
             #endregion
         }
         #endregion

@@ -47,9 +47,9 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public MoveNext MoveNext;
+            public IntPtr MoveNext;
 
-            public GetCurrentFontFile GetCurrentFontFile;
+            public IntPtr GetCurrentFontFile;
             #endregion
         }
         #endregion

@@ -47,9 +47,9 @@ namespace TerraFX.Interop
             #region Fields
             public IWICBitmapSource.Vtbl BaseVtbl;
 
-            public Initialize Initialize;
+            public IntPtr Initialize;
 
-            public CanConvert CanConvert;
+            public IntPtr CanConvert;
             #endregion
         }
         #endregion

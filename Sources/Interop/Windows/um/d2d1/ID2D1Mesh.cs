@@ -34,7 +34,7 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Resource.Vtbl BaseVtbl;
 
-            public Open Open;
+            public IntPtr Open;
             #endregion
         }
         #endregion

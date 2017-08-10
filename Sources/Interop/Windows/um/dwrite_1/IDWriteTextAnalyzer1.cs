@@ -3,6 +3,7 @@
 // Ported from um\dwrite_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -247,23 +248,23 @@ namespace TerraFX.Interop
             #region Fields
             public IDWriteTextAnalyzer.Vtbl BaseVtbl;
 
-            public ApplyCharacterSpacing ApplyCharacterSpacing;
+            public IntPtr ApplyCharacterSpacing;
 
-            public GetBaseline GetBaseline;
+            public IntPtr GetBaseline;
 
-            public AnalyzeVerticalGlyphOrientation AnalyzeVerticalGlyphOrientation;
+            public IntPtr AnalyzeVerticalGlyphOrientation;
 
-            public GetGlyphOrientationTransform GetGlyphOrientationTransform;
+            public IntPtr GetGlyphOrientationTransform;
 
-            public GetScriptProperties GetScriptProperties;
+            public IntPtr GetScriptProperties;
 
-            public GetTextComplexity GetTextComplexity;
+            public IntPtr GetTextComplexity;
 
-            public GetJustificationOpportunities GetJustificationOpportunities;
+            public IntPtr GetJustificationOpportunities;
 
-            public JustifyGlyphAdvances JustifyGlyphAdvances;
+            public IntPtr JustifyGlyphAdvances;
 
-            public GetJustifiedGlyphs GetJustifiedGlyphs;
+            public IntPtr GetJustifiedGlyphs;
             #endregion
         }
         #endregion

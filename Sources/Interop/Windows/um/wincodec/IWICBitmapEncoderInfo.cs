@@ -32,7 +32,7 @@ namespace TerraFX.Interop
             #region Fields
             public IWICBitmapCodecInfo.Vtbl BaseVtbl;
 
-            public CreateInstance CreateInstance;
+            public IntPtr CreateInstance;
             #endregion
         }
         #endregion

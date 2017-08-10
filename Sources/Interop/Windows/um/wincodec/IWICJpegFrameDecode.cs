@@ -118,25 +118,25 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public DoesSupportIndexing DoesSupportIndexing;
+            public IntPtr DoesSupportIndexing;
 
-            public SetIndexing SetIndexing;
+            public IntPtr SetIndexing;
 
-            public ClearIndexing ClearIndexing;
+            public IntPtr ClearIndexing;
 
-            public GetAcHuffmanTable GetAcHuffmanTable;
+            public IntPtr GetAcHuffmanTable;
 
-            public GetDcHuffmanTable GetDcHuffmanTable;
+            public IntPtr GetDcHuffmanTable;
 
-            public GetQuantizationTable GetQuantizationTable;
+            public IntPtr GetQuantizationTable;
 
-            public GetFrameHeader GetFrameHeader;
+            public IntPtr GetFrameHeader;
 
-            public GetScanHeader GetScanHeader;
+            public IntPtr GetScanHeader;
 
-            public CopyScan CopyScan;
+            public IntPtr CopyScan;
 
-            public CopyMinimalStream CopyMinimalStream;
+            public IntPtr CopyMinimalStream;
             #endregion
         }
         #endregion

@@ -46,11 +46,11 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Geometry.Vtbl BaseVtbl;
 
-            public GetFillMode GetFillMode;
+            public IntPtr GetFillMode;
 
-            public GetSourceGeometryCount GetSourceGeometryCount;
+            public IntPtr GetSourceGeometryCount;
 
-            public GetSourceGeometries GetSourceGeometries;
+            public IntPtr GetSourceGeometries;
             #endregion
         }
         #endregion

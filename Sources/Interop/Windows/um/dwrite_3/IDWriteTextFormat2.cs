@@ -3,6 +3,7 @@
 // Ported from um\dwrite_3.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -45,9 +46,9 @@ namespace TerraFX.Interop
             #region Fields
             public IDWriteTextFormat1.Vtbl BaseVtbl;
 
-            public SetLineSpacing SetLineSpacing;
+            public IntPtr SetLineSpacing;
 
-            public GetLineSpacing GetLineSpacing;
+            public IntPtr GetLineSpacing;
             #endregion
         }
         #endregion

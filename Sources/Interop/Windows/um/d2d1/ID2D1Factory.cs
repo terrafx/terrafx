@@ -166,33 +166,33 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public ReloadSystemMetrics ReloadSystemMetrics;
+            public IntPtr ReloadSystemMetrics;
 
-            public GetDesktopDpi GetDesktopDpi;
+            public IntPtr GetDesktopDpi;
 
-            public CreateRectangleGeometry CreateRectangleGeometry;
+            public IntPtr CreateRectangleGeometry;
 
-            public CreateRoundedRectangleGeometry CreateRoundedRectangleGeometry;
+            public IntPtr CreateRoundedRectangleGeometry;
 
-            public CreateEllipseGeometry CreateEllipseGeometry;
+            public IntPtr CreateEllipseGeometry;
 
-            public CreateGeometryGroup CreateGeometryGroup;
+            public IntPtr CreateGeometryGroup;
 
-            public CreateTransformedGeometry CreateTransformedGeometry;
+            public IntPtr CreateTransformedGeometry;
 
-            public CreatePathGeometry CreatePathGeometry;
+            public IntPtr CreatePathGeometry;
 
-            public CreateStrokeStyle CreateStrokeStyle;
+            public IntPtr CreateStrokeStyle;
 
-            public CreateDrawingStateBlock CreateDrawingStateBlock;
+            public IntPtr CreateDrawingStateBlock;
 
-            public CreateWicBitmapRenderTarget CreateWicBitmapRenderTarget;
+            public IntPtr CreateWicBitmapRenderTarget;
 
-            public CreateHwndRenderTarget CreateHwndRenderTarget;
+            public IntPtr CreateHwndRenderTarget;
 
-            public CreateDxgiSurfaceRenderTarget CreateDxgiSurfaceRenderTarget;
+            public IntPtr CreateDxgiSurfaceRenderTarget;
 
-            public CreateDCRenderTarget CreateDCRenderTarget;
+            public IntPtr CreateDCRenderTarget;
             #endregion
         }
         #endregion

@@ -3,6 +3,7 @@
 // Ported from um\d2d1effectauthor.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -60,13 +61,13 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public SetInputDescription SetInputDescription;
+            public IntPtr SetInputDescription;
 
-            public SetOutputBuffer SetOutputBuffer;
+            public IntPtr SetOutputBuffer;
 
-            public SetCached SetCached;
+            public IntPtr SetCached;
 
-            public SetInstructionCountHint SetInstructionCountHint;
+            public IntPtr SetInstructionCountHint;
             #endregion
         }
         #endregion

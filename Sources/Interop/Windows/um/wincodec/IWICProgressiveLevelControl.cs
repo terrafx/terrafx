@@ -48,11 +48,11 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetLevelCount GetLevelCount;
+            public IntPtr GetLevelCount;
 
-            public GetCurrentLevel GetCurrentLevel;
+            public IntPtr GetCurrentLevel;
 
-            public SetCurrentLevel SetCurrentLevel;
+            public IntPtr SetCurrentLevel;
             #endregion
         }
         #endregion

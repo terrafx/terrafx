@@ -31,7 +31,7 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public SetGPUBasedValidationFlags SetGPUBasedValidationFlags;
+            public IntPtr SetGPUBasedValidationFlags;
             #endregion
         }
         #endregion

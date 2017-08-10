@@ -76,17 +76,17 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIAdapter2.Vtbl BaseVtbl;
 
-            public RegisterHardwareContentProtectionTeardownStatusEvent RegisterHardwareContentProtectionTeardownStatusEvent;
+            public IntPtr RegisterHardwareContentProtectionTeardownStatusEvent;
 
-            public UnregisterHardwareContentProtectionTeardownStatus UnregisterHardwareContentProtectionTeardownStatus;
+            public IntPtr UnregisterHardwareContentProtectionTeardownStatus;
 
-            public QueryVideoMemoryInfo QueryVideoMemoryInfo;
+            public IntPtr QueryVideoMemoryInfo;
 
-            public SetVideoMemoryReservation SetVideoMemoryReservation;
+            public IntPtr SetVideoMemoryReservation;
 
-            public RegisterVideoMemoryBudgetChangeNotificationEvent RegisterVideoMemoryBudgetChangeNotificationEvent;
+            public IntPtr RegisterVideoMemoryBudgetChangeNotificationEvent;
 
-            public UnregisterVideoMemoryBudgetChangeNotification UnregisterVideoMemoryBudgetChangeNotification;
+            public IntPtr UnregisterVideoMemoryBudgetChangeNotification;
             #endregion
         }
         #endregion

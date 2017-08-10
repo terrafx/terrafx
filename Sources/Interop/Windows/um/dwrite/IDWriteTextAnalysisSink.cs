@@ -88,13 +88,13 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public SetScriptAnalysis SetScriptAnalysis;
+            public IntPtr SetScriptAnalysis;
 
-            public SetLineBreakpoints SetLineBreakpoints;
+            public IntPtr SetLineBreakpoints;
 
-            public SetBidiLevel SetBidiLevel;
+            public IntPtr SetBidiLevel;
 
-            public SetNumberSubstitution SetNumberSubstitution;
+            public IntPtr SetNumberSubstitution;
             #endregion
         }
         #endregion

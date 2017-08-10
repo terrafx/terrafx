@@ -48,11 +48,11 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIDeviceSubObject.Vtbl BaseVtbl;
 
-            public GetDesc GetDesc;
+            public IntPtr GetDesc;
 
-            public Map Map;
+            public IntPtr Map;
 
-            public Unmap Unmap;
+            public IntPtr Unmap;
             #endregion
         }
         #endregion

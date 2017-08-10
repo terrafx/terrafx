@@ -3,6 +3,7 @@
 // Ported from um\d2d1effectauthor_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -44,9 +45,9 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1EffectContext1.Vtbl BaseVtbl;
 
-            public CreateColorContextFromDxgiColorSpace CreateColorContextFromDxgiColorSpace;
+            public IntPtr CreateColorContextFromDxgiColorSpace;
 
-            public CreateColorContextFromSimpleColorProfile CreateColorContextFromSimpleColorProfile;
+            public IntPtr CreateColorContextFromSimpleColorProfile;
             #endregion
         }
         #endregion

@@ -114,27 +114,27 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGISwapChain.Vtbl BaseVtbl;
 
-            public GetDesc1 GetDesc1;
+            public IntPtr GetDesc1;
 
-            public GetFullscreenDesc GetFullscreenDesc;
+            public IntPtr GetFullscreenDesc;
 
-            public GetHwnd GetHwnd;
+            public IntPtr GetHwnd;
 
-            public GetCoreWindow GetCoreWindow;
+            public IntPtr GetCoreWindow;
 
-            public Present1 Present1;
+            public IntPtr Present1;
 
-            public IsTemporaryMonoSupported IsTemporaryMonoSupported;
+            public IntPtr IsTemporaryMonoSupported;
 
-            public GetRestrictToOutput GetRestrictToOutput;
+            public IntPtr GetRestrictToOutput;
 
-            public SetBackgroundColor SetBackgroundColor;
+            public IntPtr SetBackgroundColor;
 
-            public GetBackgroundColor GetBackgroundColor;
+            public IntPtr GetBackgroundColor;
 
-            public SetRotation SetRotation;
+            public IntPtr SetRotation;
 
-            public GetRotation GetRotation;
+            public IntPtr GetRotation;
             #endregion
         }
         #endregion

@@ -136,25 +136,25 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Factory.Vtbl BaseVtbl;
 
-            public CreateDevice CreateDevice;
+            public IntPtr CreateDevice;
 
-            public CreateStrokeStyle CreateStrokeStyle;
+            public IntPtr CreateStrokeStyle;
 
-            public CreatePathGeometry CreatePathGeometry;
+            public IntPtr CreatePathGeometry;
 
-            public CreateDrawingStateBlock CreateDrawingStateBlock;
+            public IntPtr CreateDrawingStateBlock;
 
-            public CreateGdiMetafile CreateGdiMetafile;
+            public IntPtr CreateGdiMetafile;
 
-            public RegisterEffectFromStream RegisterEffectFromStream;
+            public IntPtr RegisterEffectFromStream;
 
-            public RegisterEffectFromString RegisterEffectFromString;
+            public IntPtr RegisterEffectFromString;
 
-            public UnregisterEffect UnregisterEffect;
+            public IntPtr UnregisterEffect;
 
-            public GetRegisteredEffects GetRegisteredEffects;
+            public IntPtr GetRegisteredEffects;
 
-            public GetEffectProperties GetEffectProperties;
+            public IntPtr GetEffectProperties;
             #endregion
         }
         #endregion

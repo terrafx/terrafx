@@ -44,11 +44,11 @@ namespace TerraFX.Interop
         public /* blittable */ struct Vtbl
         {
             #region Fields
-            public GetDesc GetDesc;
+            public IntPtr GetDesc;
 
-            public GetVariableByIndex GetVariableByIndex;
+            public IntPtr GetVariableByIndex;
 
-            public GetVariableByName GetVariableByName;
+            public IntPtr GetVariableByName;
             #endregion
         }
         #endregion

@@ -30,7 +30,7 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetRootSignatureDesc GetRootSignatureDesc;
+            public IntPtr GetRootSignatureDesc;
             #endregion
         }
         #endregion

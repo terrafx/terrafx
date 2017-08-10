@@ -175,35 +175,35 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public CreateStream CreateStream;
+            public IntPtr CreateStream;
 
-            public OpenStream OpenStream;
+            public IntPtr OpenStream;
 
-            public CreateStorage CreateStorage;
+            public IntPtr CreateStorage;
 
-            public OpenStorage OpenStorage;
+            public IntPtr OpenStorage;
 
-            public CopyTo CopyTo;
+            public IntPtr CopyTo;
 
-            public MoveElementTo MoveElementTo;
+            public IntPtr MoveElementTo;
 
-            public Commit Commit;
+            public IntPtr Commit;
 
-            public Revert Revert;
+            public IntPtr Revert;
 
-            public EnumElements EnumElements;
+            public IntPtr EnumElements;
 
-            public DestroyElement DestroyElement;
+            public IntPtr DestroyElement;
 
-            public RenameElement RenameElement;
+            public IntPtr RenameElement;
 
-            public SetElementTimes SetElementTimes;
+            public IntPtr SetElementTimes;
 
-            public SetClass SetClass;
+            public IntPtr SetClass;
 
-            public SetStateBits SetStateBits;
+            public IntPtr SetStateBits;
 
-            public Stat Stat;
+            public IntPtr Stat;
             #endregion
         }
         #endregion

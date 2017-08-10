@@ -52,11 +52,11 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetSizeInBlocks GetSizeInBlocks;
+            public IntPtr GetSizeInBlocks;
 
-            public GetFormatInfo GetFormatInfo;
+            public IntPtr GetFormatInfo;
 
-            public CopyBlocks CopyBlocks;
+            public IntPtr CopyBlocks;
             #endregion
         }
         #endregion

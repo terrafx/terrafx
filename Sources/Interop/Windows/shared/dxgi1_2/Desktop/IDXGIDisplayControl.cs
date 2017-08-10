@@ -38,9 +38,9 @@ namespace TerraFX.Interop.Desktop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public IsStereoEnabled IsStereoEnabled;
+            public IntPtr IsStereoEnabled;
 
-            public SetStereoEnabled SetStereoEnabled;
+            public IntPtr SetStereoEnabled;
             #endregion
         }
         #endregion

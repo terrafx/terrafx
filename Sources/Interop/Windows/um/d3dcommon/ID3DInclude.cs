@@ -3,6 +3,7 @@
 // Ported from um\d3dcommon.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -40,9 +41,9 @@ namespace TerraFX.Interop
         public /* blittable */ struct Vtbl
         {
             #region Fields
-            public Open Open;
+            public IntPtr Open;
 
-            public Close Close;
+            public IntPtr Close;
             #endregion
         }
         #endregion

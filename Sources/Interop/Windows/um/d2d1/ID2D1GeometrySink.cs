@@ -61,15 +61,15 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1SimplifiedGeometrySink.Vtbl BaseVtbl;
 
-            public AddLine AddLine;
+            public IntPtr AddLine;
 
-            public AddBezier AddBezier;
+            public IntPtr AddBezier;
 
-            public AddQuadraticBezier AddQuadraticBezier;
+            public IntPtr AddQuadraticBezier;
 
-            public AddQuadraticBeziers AddQuadraticBeziers;
+            public IntPtr AddQuadraticBeziers;
 
-            public AddArc AddArc;
+            public IntPtr AddArc;
             #endregion
         }
         #endregion

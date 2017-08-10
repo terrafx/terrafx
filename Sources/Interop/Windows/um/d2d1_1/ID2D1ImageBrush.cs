@@ -3,6 +3,7 @@
 // Ported from um\d2d1_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -91,25 +92,25 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Brush.Vtbl BaseVtbl;
 
-            public SetImage SetImage;
+            public IntPtr SetImage;
 
-            public SetExtendModeX SetExtendModeX;
+            public IntPtr SetExtendModeX;
 
-            public SetExtendModeY SetExtendModeY;
+            public IntPtr SetExtendModeY;
 
-            public SetInterpolationMode SetInterpolationMode;
+            public IntPtr SetInterpolationMode;
 
-            public SetSourceRectangle SetSourceRectangle;
+            public IntPtr SetSourceRectangle;
 
-            public GetImage GetImage;
+            public IntPtr GetImage;
 
-            public GetExtendModeX GetExtendModeX;
+            public IntPtr GetExtendModeX;
 
-            public GetExtendModeY GetExtendModeY;
+            public IntPtr GetExtendModeY;
 
-            public GetInterpolationMode GetInterpolationMode;
+            public IntPtr GetInterpolationMode;
 
-            public GetSourceRectangle GetSourceRectangle;
+            public IntPtr GetSourceRectangle;
             #endregion
         }
         #endregion

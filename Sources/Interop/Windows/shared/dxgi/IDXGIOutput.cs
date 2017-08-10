@@ -123,29 +123,29 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIObject.Vtbl BaseVtbl;
 
-            public GetDesc GetDesc;
+            public IntPtr GetDesc;
 
-            public GetDisplayModeList GetDisplayModeList;
+            public IntPtr GetDisplayModeList;
 
-            public FindClosestMatchingMode FindClosestMatchingMode;
+            public IntPtr FindClosestMatchingMode;
 
-            public WaitForVBlank WaitForVBlank;
+            public IntPtr WaitForVBlank;
 
-            public TakeOwnership TakeOwnership;
+            public IntPtr TakeOwnership;
 
-            public ReleaseOwnership ReleaseOwnership;
+            public IntPtr ReleaseOwnership;
 
-            public GetGammaControlCapabilities GetGammaControlCapabilities;
+            public IntPtr GetGammaControlCapabilities;
 
-            public SetGammaControl SetGammaControl;
+            public IntPtr SetGammaControl;
 
-            public GetGammaControl GetGammaControl;
+            public IntPtr GetGammaControl;
 
-            public SetDisplaySurface SetDisplaySurface;
+            public IntPtr SetDisplaySurface;
 
-            public GetDisplaySurfaceData GetDisplaySurfaceData;
+            public IntPtr GetDisplaySurfaceData;
 
-            public GetFrameStatistics GetFrameStatistics;
+            public IntPtr GetFrameStatistics;
             #endregion
         }
         #endregion

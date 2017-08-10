@@ -30,7 +30,7 @@ namespace TerraFX.Interop
         public /* blittable */ struct Vtbl
         {
             #region Fields
-            public GetDesc GetDesc;
+            public IntPtr GetDesc;
             #endregion
         }
         #endregion

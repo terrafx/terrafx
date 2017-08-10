@@ -33,7 +33,7 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public AddError AddError;
+            public IntPtr AddError;
             #endregion
         }
         #endregion

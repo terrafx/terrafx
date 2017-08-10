@@ -113,25 +113,25 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIDeviceSubObject.Vtbl BaseVtbl;
 
-            public Present Present;
+            public IntPtr Present;
 
-            public GetBuffer GetBuffer;
+            public IntPtr GetBuffer;
 
-            public SetFullscreenState SetFullscreenState;
+            public IntPtr SetFullscreenState;
 
-            public GetFullscreenState GetFullscreenState;
+            public IntPtr GetFullscreenState;
 
-            public GetDesc GetDesc;
+            public IntPtr GetDesc;
 
-            public ResizeBuffers ResizeBuffers;
+            public IntPtr ResizeBuffers;
 
-            public ResizeTarget ResizeTarget;
+            public IntPtr ResizeTarget;
 
-            public GetContainingOutput GetContainingOutput;
+            public IntPtr GetContainingOutput;
 
-            public GetFrameStatistics GetFrameStatistics;
+            public IntPtr GetFrameStatistics;
 
-            public GetLastPresentCount GetLastPresentCount;
+            public IntPtr GetLastPresentCount;
             #endregion
         }
         #endregion

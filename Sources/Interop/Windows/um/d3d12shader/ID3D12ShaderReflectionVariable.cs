@@ -49,13 +49,13 @@ namespace TerraFX.Interop
         public /* blittable */ struct Vtbl
         {
             #region Fields
-            public GetDesc GetDesc;
+            public IntPtr GetDesc;
 
-            public _GetType _GetType;
+            public IntPtr _GetType;
 
-            public GetBuffer GetBuffer;
+            public IntPtr GetBuffer;
 
-            public GetInterfaceSlot GetInterfaceSlot;
+            public IntPtr GetInterfaceSlot;
             #endregion
         }
         #endregion

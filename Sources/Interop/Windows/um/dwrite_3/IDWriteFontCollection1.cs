@@ -3,6 +3,7 @@
 // Ported from um\dwrite_3.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -47,9 +48,9 @@ namespace TerraFX.Interop
             #region Fields
             public IDWriteFontCollection.Vtbl BaseVtbl;
 
-            public GetFontSet GetFontSet;
+            public IntPtr GetFontSet;
 
-            public GetFontFamily GetFontFamily;
+            public IntPtr GetFontFamily;
             #endregion
         }
         #endregion

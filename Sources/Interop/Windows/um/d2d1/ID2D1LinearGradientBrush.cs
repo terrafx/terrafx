@@ -62,15 +62,15 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Brush.Vtbl BaseVtbl;
 
-            public SetStartPoint SetStartPoint;
+            public IntPtr SetStartPoint;
 
-            public SetEndPoint SetEndPoint;
+            public IntPtr SetEndPoint;
 
-            public GetStartPoint GetStartPoint;
+            public IntPtr GetStartPoint;
 
-            public GetEndPoint GetEndPoint;
+            public IntPtr GetEndPoint;
 
-            public GetGradientStopCollection GetGradientStopCollection;
+            public IntPtr GetGradientStopCollection;
             #endregion
         }
         #endregion

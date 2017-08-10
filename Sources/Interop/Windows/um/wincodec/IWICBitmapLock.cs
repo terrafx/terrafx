@@ -58,13 +58,13 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetSize GetSize;
+            public IntPtr GetSize;
 
-            public GetStride GetStride;
+            public IntPtr GetStride;
 
-            public GetDataPointer GetDataPointer;
+            public IntPtr GetDataPointer;
 
-            public GetPixelFormat GetPixelFormat;
+            public IntPtr GetPixelFormat;
             #endregion
         }
         #endregion

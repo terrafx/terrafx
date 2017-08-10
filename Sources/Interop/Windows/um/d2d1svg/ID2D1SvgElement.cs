@@ -337,65 +337,65 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Resource.Vtbl BaseVtbl;
 
-            public GetDocument GetDocument;
+            public IntPtr GetDocument;
 
-            public GetTagName GetTagName;
+            public IntPtr GetTagName;
 
-            public GetTagNameLength GetTagNameLength;
+            public IntPtr GetTagNameLength;
 
-            public IsTextContent IsTextContent;
+            public IntPtr IsTextContent;
 
-            public GetParent GetParent;
+            public IntPtr GetParent;
 
-            public HasChildren HasChildren;
+            public IntPtr HasChildren;
 
-            public GetFirstChild GetFirstChild;
+            public IntPtr GetFirstChild;
 
-            public GetLastChild GetLastChild;
+            public IntPtr GetLastChild;
 
-            public GetPreviousChild GetPreviousChild;
+            public IntPtr GetPreviousChild;
 
-            public GetNextChild GetNextChild;
+            public IntPtr GetNextChild;
 
-            public InsertChildBefore InsertChildBefore;
+            public IntPtr InsertChildBefore;
 
-            public AppendChild AppendChild;
+            public IntPtr AppendChild;
 
-            public ReplaceChild ReplaceChild;
+            public IntPtr ReplaceChild;
 
-            public RemoveChild RemoveChild;
+            public IntPtr RemoveChild;
 
-            public CreateChild CreateChild;
+            public IntPtr CreateChild;
 
-            public IsAttributeSpecified IsAttributeSpecified;
+            public IntPtr IsAttributeSpecified;
 
-            public GetSpecifiedAttributeCount GetSpecifiedAttributeCount;
+            public IntPtr GetSpecifiedAttributeCount;
 
-            public GetSpecifiedAttributeName GetSpecifiedAttributeName;
+            public IntPtr GetSpecifiedAttributeName;
 
-            public GetSpecifiedAttributeNameLength GetSpecifiedAttributeNameLength;
+            public IntPtr GetSpecifiedAttributeNameLength;
 
-            public RemoveAttribute RemoveAttribute;
+            public IntPtr RemoveAttribute;
 
-            public SetTextValue SetTextValue;
+            public IntPtr SetTextValue;
 
-            public GetTextValue GetTextValue;
+            public IntPtr GetTextValue;
 
-            public GetTextValueLength GetTextValueLength;
+            public IntPtr GetTextValueLength;
 
-            public SetAttributeValue SetAttributeValue;
+            public IntPtr SetAttributeValue;
 
-            public GetAttributeValue GetAttributeValue;
+            public IntPtr GetAttributeValue;
 
-            public GetAttributeValueLength GetAttributeValueLength;
+            public IntPtr GetAttributeValueLength;
 
-            public SetAttributeValue1 SetAttributeValue1;
+            public IntPtr SetAttributeValue1;
 
-            public GetAttributeValue1 GetAttributeValue1;
+            public IntPtr GetAttributeValue1;
 
-            public SetAttributeValue2 SetAttributeValue2;
+            public IntPtr SetAttributeValue2;
 
-            public GetAttributeValue2 GetAttributeValue2;
+            public IntPtr GetAttributeValue2;
             #endregion
         }
         #endregion

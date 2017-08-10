@@ -41,9 +41,9 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIDeviceSubObject.Vtbl BaseVtbl;
 
-            public AcquireSync AcquireSync;
+            public IntPtr AcquireSync;
 
-            public ReleaseSync ReleaseSync;
+            public IntPtr ReleaseSync;
             #endregion
         }
         #endregion

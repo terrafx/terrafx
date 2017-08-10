@@ -3,6 +3,7 @@
 // Ported from um\dwrite_3.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -75,15 +76,15 @@ namespace TerraFX.Interop
             #region Fields
             public IDWriteFont2.Vtbl BaseVtbl;
 
-            public CreateFontFace CreateFontFace;
+            public IntPtr CreateFontFace;
 
-            public _Equals _Equals;
+            public IntPtr _Equals;
 
-            public GetFontFaceReference GetFontFaceReference;
+            public IntPtr GetFontFaceReference;
 
-            public HasCharacter HasCharacter;
+            public IntPtr HasCharacter;
 
-            public GetLocality GetLocality;
+            public IntPtr GetLocality;
             #endregion
         }
         #endregion

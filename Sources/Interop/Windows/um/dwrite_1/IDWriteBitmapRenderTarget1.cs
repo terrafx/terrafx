@@ -3,6 +3,7 @@
 // Ported from um\dwrite_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -43,9 +44,9 @@ namespace TerraFX.Interop
             #region Fields
             public IDWriteBitmapRenderTarget.Vtbl BaseVtbl;
 
-            public GetTextAntialiasMode GetTextAntialiasMode;
+            public IntPtr GetTextAntialiasMode;
 
-            public SetTextAntialiasMode SetTextAntialiasMode;
+            public IntPtr SetTextAntialiasMode;
             #endregion
         }
         #endregion

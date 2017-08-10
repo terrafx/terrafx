@@ -128,27 +128,27 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIFactory1.Vtbl BaseVtbl;
 
-            public IsWindowedStereoEnabled IsWindowedStereoEnabled;
+            public IntPtr IsWindowedStereoEnabled;
 
-            public CreateSwapChainForHwnd CreateSwapChainForHwnd;
+            public IntPtr CreateSwapChainForHwnd;
 
-            public CreateSwapChainForCoreWindow CreateSwapChainForCoreWindow;
+            public IntPtr CreateSwapChainForCoreWindow;
 
-            public GetSharedResourceAdapterLuid GetSharedResourceAdapterLuid;
+            public IntPtr GetSharedResourceAdapterLuid;
 
-            public RegisterStereoStatusWindow RegisterStereoStatusWindow;
+            public IntPtr RegisterStereoStatusWindow;
 
-            public RegisterStereoStatusEvent RegisterStereoStatusEvent;
+            public IntPtr RegisterStereoStatusEvent;
 
-            public UnregisterStereoStatus UnregisterStereoStatus;
+            public IntPtr UnregisterStereoStatus;
 
-            public RegisterOcclusionStatusWindow RegisterOcclusionStatusWindow;
+            public IntPtr RegisterOcclusionStatusWindow;
 
-            public RegisterOcclusionStatusEvent RegisterOcclusionStatusEvent;
+            public IntPtr RegisterOcclusionStatusEvent;
 
-            public UnregisterOcclusionStatus UnregisterOcclusionStatus;
+            public IntPtr UnregisterOcclusionStatus;
 
-            public CreateSwapChainForComposition CreateSwapChainForComposition;
+            public IntPtr CreateSwapChainForComposition;
             #endregion
         }
         #endregion

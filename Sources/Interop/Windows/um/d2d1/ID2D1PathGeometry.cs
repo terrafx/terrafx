@@ -60,13 +60,13 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Geometry.Vtbl BaseVtbl;
 
-            public Open Open;
+            public IntPtr Open;
 
-            public Stream Stream;
+            public IntPtr Stream;
 
-            public GetSegmentCount GetSegmentCount;
+            public IntPtr GetSegmentCount;
 
-            public GetFigureCount GetFigureCount;
+            public IntPtr GetFigureCount;
             #endregion
         }
         #endregion

@@ -81,19 +81,19 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGISwapChain1.Vtbl BaseVtbl;
 
-            public SetSourceSize SetSourceSize;
+            public IntPtr SetSourceSize;
 
-            public GetSourceSize GetSourceSize;
+            public IntPtr GetSourceSize;
 
-            public SetMaximumFrameLatency SetMaximumFrameLatency;
+            public IntPtr SetMaximumFrameLatency;
 
-            public GetMaximumFrameLatency GetMaximumFrameLatency;
+            public IntPtr GetMaximumFrameLatency;
 
-            public GetFrameLatencyWaitableObject GetFrameLatencyWaitableObject;
+            public IntPtr GetFrameLatencyWaitableObject;
 
-            public SetMatrixTransform SetMatrixTransform;
+            public IntPtr SetMatrixTransform;
 
-            public GetMatrixTransform GetMatrixTransform;
+            public IntPtr GetMatrixTransform;
             #endregion
         }
         #endregion

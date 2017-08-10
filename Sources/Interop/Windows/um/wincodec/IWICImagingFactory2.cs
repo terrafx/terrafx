@@ -33,7 +33,7 @@ namespace TerraFX.Interop
             #region Fields
             public IWICImagingFactory.Vtbl BaseVtbl;
 
-            public CreateImageEncoder CreateImageEncoder;
+            public IntPtr CreateImageEncoder;
             #endregion
         }
         #endregion

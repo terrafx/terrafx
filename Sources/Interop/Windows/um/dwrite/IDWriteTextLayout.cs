@@ -582,83 +582,83 @@ namespace TerraFX.Interop
             #region Fields
             public IDWriteTextFormat.Vtbl BaseVtbl;
 
-            public SetMaxWidth SetMaxWidth;
+            public IntPtr SetMaxWidth;
 
-            public SetMaxHeight SetMaxHeight;
+            public IntPtr SetMaxHeight;
 
-            public SetFontCollection SetFontCollection;
+            public IntPtr SetFontCollection;
 
-            public SetFontFamilyName SetFontFamilyName;
+            public IntPtr SetFontFamilyName;
 
-            public SetFontWeight SetFontWeight;
+            public IntPtr SetFontWeight;
 
-            public SetFontStyle SetFontStyle;
+            public IntPtr SetFontStyle;
 
-            public SetFontStretch SetFontStretch;
+            public IntPtr SetFontStretch;
 
-            public SetFontSize SetFontSize;
+            public IntPtr SetFontSize;
 
-            public SetUnderline SetUnderline;
+            public IntPtr SetUnderline;
 
-            public SetStrikethrough SetStrikethrough;
+            public IntPtr SetStrikethrough;
 
-            public SetDrawingEffect SetDrawingEffect;
+            public IntPtr SetDrawingEffect;
 
-            public SetInlineObject SetInlineObject;
+            public IntPtr SetInlineObject;
 
-            public SetTypography SetTypography;
+            public IntPtr SetTypography;
 
-            public SetLocaleName SetLocaleName;
+            public IntPtr SetLocaleName;
 
-            public GetMaxWidth GetMaxWidth;
+            public IntPtr GetMaxWidth;
 
-            public GetMaxHeight GetMaxHeight;
+            public IntPtr GetMaxHeight;
 
-            public GetFontCollection GetFontCollection;
+            public IntPtr GetFontCollection;
 
-            public GetFontFamilyNameLength GetFontFamilyNameLength;
+            public IntPtr GetFontFamilyNameLength;
 
-            public GetFontFamilyName GetFontFamilyName;
+            public IntPtr GetFontFamilyName;
 
-            public GetFontWeight GetFontWeight;
+            public IntPtr GetFontWeight;
 
-            public GetFontStyle GetFontStyle;
+            public IntPtr GetFontStyle;
 
-            public GetFontStretch GetFontStretch;
+            public IntPtr GetFontStretch;
 
-            public GetFontSize GetFontSize;
+            public IntPtr GetFontSize;
 
-            public GetUnderline GetUnderline;
+            public IntPtr GetUnderline;
 
-            public GetStrikethrough GetStrikethrough;
+            public IntPtr GetStrikethrough;
 
-            public GetDrawingEffect GetDrawingEffect;
+            public IntPtr GetDrawingEffect;
 
-            public GetInlineObject GetInlineObject;
+            public IntPtr GetInlineObject;
 
-            public GetTypography GetTypography;
+            public IntPtr GetTypography;
 
-            public GetLocaleNameLength GetLocaleNameLength;
+            public IntPtr GetLocaleNameLength;
 
-            public GetLocaleName GetLocaleName;
+            public IntPtr GetLocaleName;
 
-            public Draw Draw;
+            public IntPtr Draw;
 
-            public GetLineMetrics GetLineMetrics;
+            public IntPtr GetLineMetrics;
 
-            public GetMetrics GetMetrics;
+            public IntPtr GetMetrics;
 
-            public GetOverhangMetrics GetOverhangMetrics;
+            public IntPtr GetOverhangMetrics;
 
-            public GetClusterMetrics GetClusterMetrics;
+            public IntPtr GetClusterMetrics;
 
-            public DetermineMinWidth DetermineMinWidth;
+            public IntPtr DetermineMinWidth;
 
-            public HitTestPoint HitTestPoint;
+            public IntPtr HitTestPoint;
 
-            public HitTestTextPosition HitTestTextPosition;
+            public IntPtr HitTestTextPosition;
 
-            public HitTestTextRange HitTestTextRange;
+            public IntPtr HitTestTextRange;
             #endregion
         }
         #endregion

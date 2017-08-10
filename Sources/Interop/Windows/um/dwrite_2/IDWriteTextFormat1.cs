@@ -3,6 +3,7 @@
 // Ported from um\dwrite_2.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -100,21 +101,21 @@ namespace TerraFX.Interop
             #region Fields
             public IDWriteTextFormat.Vtbl BaseVtbl;
 
-            public SetVerticalGlyphOrientation SetVerticalGlyphOrientation;
+            public IntPtr SetVerticalGlyphOrientation;
 
-            public GetVerticalGlyphOrientation GetVerticalGlyphOrientation;
+            public IntPtr GetVerticalGlyphOrientation;
 
-            public SetLastLineWrapping SetLastLineWrapping;
+            public IntPtr SetLastLineWrapping;
 
-            public GetLastLineWrapping GetLastLineWrapping;
+            public IntPtr GetLastLineWrapping;
 
-            public SetOpticalAlignment SetOpticalAlignment;
+            public IntPtr SetOpticalAlignment;
 
-            public GetOpticalAlignment GetOpticalAlignment;
+            public IntPtr GetOpticalAlignment;
 
-            public SetFontFallback SetFontFallback;
+            public IntPtr SetFontFallback;
 
-            public GetFontFallback GetFontFallback;
+            public IntPtr GetFontFallback;
             #endregion
         }
         #endregion

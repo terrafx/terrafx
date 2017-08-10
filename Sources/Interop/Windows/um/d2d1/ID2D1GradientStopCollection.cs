@@ -56,13 +56,13 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Resource.Vtbl BaseVtbl;
 
-            public GetGradientStopCount GetGradientStopCount;
+            public IntPtr GetGradientStopCount;
 
-            public GetGradientStops GetGradientStops;
+            public IntPtr GetGradientStops;
 
-            public GetColorInterpolationGamma GetColorInterpolationGamma;
+            public IntPtr GetColorInterpolationGamma;
 
-            public GetExtendMode GetExtendMode;
+            public IntPtr GetExtendMode;
             #endregion
         }
         #endregion

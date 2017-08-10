@@ -3,6 +3,7 @@
 // Ported from um\d2d1effectauthor.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -22,7 +23,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int Map(
             [In] ID2D1VertexBuffer* This,
-            [Out, ComAliasName("BYTE")] byte **data,
+            [Out, ComAliasName("BYTE")] byte** data,
             [In, ComAliasName("UINT32")] uint bufferSize
         );
 
@@ -40,9 +41,9 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public Map Map;
+            public IntPtr Map;
 
-            public Unmap Unmap;
+            public IntPtr Unmap;
             #endregion
         }
         #endregion

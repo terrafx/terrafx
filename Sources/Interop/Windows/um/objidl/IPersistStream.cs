@@ -56,13 +56,13 @@ namespace TerraFX.Interop
             #region Fields
             public IPersist.Vtbl BaseVtbl;
 
-            public IsDirty IsDirty;
+            public IntPtr IsDirty;
 
-            public Load Load;
+            public IntPtr Load;
 
-            public Save Save;
+            public IntPtr Save;
 
-            public GetSizeMax GetSizeMax;
+            public IntPtr GetSizeMax;
             #endregion
         }
         #endregion

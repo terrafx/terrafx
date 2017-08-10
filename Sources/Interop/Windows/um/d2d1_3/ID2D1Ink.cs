@@ -3,6 +3,7 @@
 // Ported from um\d2d1_3.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -120,25 +121,25 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Resource.Vtbl BaseVtbl;
 
-            public SetStartPoint SetStartPoint;
+            public IntPtr SetStartPoint;
 
-            public GetStartPoint GetStartPoint;
+            public IntPtr GetStartPoint;
 
-            public AddSegments AddSegments;
+            public IntPtr AddSegments;
 
-            public RemoveSegmentsAtEnd RemoveSegmentsAtEnd;
+            public IntPtr RemoveSegmentsAtEnd;
 
-            public SetSegments SetSegments;
+            public IntPtr SetSegments;
 
-            public SetSegmentAtEnd SetSegmentAtEnd;
+            public IntPtr SetSegmentAtEnd;
 
-            public GetSegmentCount GetSegmentCount;
+            public IntPtr GetSegmentCount;
 
-            public GetSegments GetSegments;
+            public IntPtr GetSegments;
 
-            public StreamAsGeometry StreamAsGeometry;
+            public IntPtr StreamAsGeometry;
 
-            public GetBounds GetBounds;
+            public IntPtr GetBounds;
             #endregion
         }
         #endregion

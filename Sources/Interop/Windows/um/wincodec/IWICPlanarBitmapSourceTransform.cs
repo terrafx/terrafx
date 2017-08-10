@@ -53,9 +53,9 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public DoesSupportTransform DoesSupportTransform;
+            public IntPtr DoesSupportTransform;
 
-            public CopyPixels CopyPixels;
+            public IntPtr CopyPixels;
             #endregion
         }
         #endregion

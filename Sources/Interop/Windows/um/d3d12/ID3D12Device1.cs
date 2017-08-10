@@ -57,11 +57,11 @@ namespace TerraFX.Interop
             #region Fields
             public ID3D12Device.Vtbl BaseVtbl;
 
-            public CreatePipelineLibrary CreatePipelineLibrary;
+            public IntPtr CreatePipelineLibrary;
 
-            public SetEventOnMultipleFenceCompletion SetEventOnMultipleFenceCompletion;
+            public IntPtr SetEventOnMultipleFenceCompletion;
 
-            public SetResidencyPriority SetResidencyPriority;
+            public IntPtr SetResidencyPriority;
             #endregion
         }
         #endregion

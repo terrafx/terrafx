@@ -239,19 +239,19 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public AnalyzeScript AnalyzeScript;
+            public IntPtr AnalyzeScript;
 
-            public AnalyzeBidi AnalyzeBidi;
+            public IntPtr AnalyzeBidi;
 
-            public AnalyzeNumberSubstitution AnalyzeNumberSubstitution;
+            public IntPtr AnalyzeNumberSubstitution;
 
-            public AnalyzeLineBreakpoints AnalyzeLineBreakpoints;
+            public IntPtr AnalyzeLineBreakpoints;
 
-            public GetGlyphs GetGlyphs;
+            public IntPtr GetGlyphs;
 
-            public GetGlyphPlacements GetGlyphPlacements;
+            public IntPtr GetGlyphPlacements;
 
-            public GetGdiCompatibleGlyphPlacements GetGdiCompatibleGlyphPlacements;
+            public IntPtr GetGdiCompatibleGlyphPlacements;
             #endregion
         }
         #endregion

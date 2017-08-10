@@ -47,11 +47,11 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public AssertResourceState AssertResourceState;
+            public IntPtr AssertResourceState;
 
-            public SetFeatureMask SetFeatureMask;
+            public IntPtr SetFeatureMask;
 
-            public GetFeatureMask GetFeatureMask;
+            public IntPtr GetFeatureMask;
             #endregion
         }
         #endregion

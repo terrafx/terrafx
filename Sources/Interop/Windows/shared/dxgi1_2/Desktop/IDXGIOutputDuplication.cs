@@ -94,21 +94,21 @@ namespace TerraFX.Interop.Desktop
             #region Fields
             public IDXGIObject.Vtbl BaseVtbl;
 
-            public GetDesc GetDesc;
+            public IntPtr GetDesc;
 
-            public AcquireNextFrame AcquireNextFrame;
+            public IntPtr AcquireNextFrame;
 
-            public GetFrameDirtyRects GetFrameDirtyRects;
+            public IntPtr GetFrameDirtyRects;
 
-            public GetFrameMoveRects GetFrameMoveRects;
+            public IntPtr GetFrameMoveRects;
 
-            public GetFramePointerShape GetFramePointerShape;
+            public IntPtr GetFramePointerShape;
 
-            public MapDesktopSurface MapDesktopSurface;
+            public IntPtr MapDesktopSurface;
 
-            public UnMapDesktopSurface UnMapDesktopSurface;
+            public IntPtr UnMapDesktopSurface;
 
-            public ReleaseFrame ReleaseFrame;
+            public IntPtr ReleaseFrame;
             #endregion
         }
         #endregion

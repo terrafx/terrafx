@@ -49,9 +49,9 @@ namespace TerraFX.Interop.Desktop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public CreateSwapChainForCompositionSurfaceHandle CreateSwapChainForCompositionSurfaceHandle;
+            public IntPtr CreateSwapChainForCompositionSurfaceHandle;
 
-            public CreateDecodeSwapChainForCompositionSurfaceHandle CreateDecodeSwapChainForCompositionSurfaceHandle;
+            public IntPtr CreateDecodeSwapChainForCompositionSurfaceHandle;
             #endregion
         }
         #endregion

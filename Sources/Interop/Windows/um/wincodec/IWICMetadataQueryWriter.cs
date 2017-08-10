@@ -41,9 +41,9 @@ namespace TerraFX.Interop
             #region Fields
             public IWICMetadataQueryReader.Vtbl BaseVtbl;
 
-            public SetMetadataByName SetMetadataByName;
+            public IntPtr SetMetadataByName;
 
-            public RemoveMetadataByName RemoveMetadataByName;
+            public IntPtr RemoveMetadataByName;
             #endregion
         }
         #endregion

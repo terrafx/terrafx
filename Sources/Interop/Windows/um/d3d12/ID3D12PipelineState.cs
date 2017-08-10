@@ -32,7 +32,7 @@ namespace TerraFX.Interop
             #region Fields
             public ID3D12Pageable.Vtbl BaseVtbl;
 
-            public GetCachedBlob GetCachedBlob;
+            public IntPtr GetCachedBlob;
             #endregion
         }
         #endregion

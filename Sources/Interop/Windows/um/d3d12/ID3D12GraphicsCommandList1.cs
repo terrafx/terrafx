@@ -82,15 +82,15 @@ namespace TerraFX.Interop
             #region Fields
             public ID3D12GraphicsCommandList.Vtbl BaseVtbl;
 
-            public AtomicCopyBufferUINT AtomicCopyBufferUINT;
+            public IntPtr AtomicCopyBufferUINT;
 
-            public AtomicCopyBufferUINT64 AtomicCopyBufferUINT64;
+            public IntPtr AtomicCopyBufferUINT64;
 
-            public OMSetDepthBounds OMSetDepthBounds;
+            public IntPtr OMSetDepthBounds;
 
-            public SetSamplePositions SetSamplePositions;
+            public IntPtr SetSamplePositions;
 
-            public ResolveSubresourceRegion ResolveSubresourceRegion;
+            public IntPtr ResolveSubresourceRegion;
             #endregion
         }
         #endregion

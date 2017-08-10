@@ -3,6 +3,7 @@
 // Ported from um\d2d1svg.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -64,7 +65,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetDashes(
             [In] ID2D1SvgStrokeDashArray* This,
-            [Out, ComAliasName("FLOAT")] float *dashes,
+            [Out, ComAliasName("FLOAT")] float* dashes,
             [In, ComAliasName("UINT32")] uint dashesCount,
             [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
         );
@@ -78,7 +79,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetDashes1(
             [In] ID2D1SvgStrokeDashArray* This,
-            [Out] D2D1_SVG_LENGTH *dashes,
+            [Out] D2D1_SVG_LENGTH* dashes,
             [In, ComAliasName("UINT32")] uint dashesCount,
             [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
         );
@@ -98,17 +99,17 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1SvgAttribute.Vtbl BaseVtbl;
 
-            public RemoveDashesAtEnd RemoveDashesAtEnd;
+            public IntPtr RemoveDashesAtEnd;
 
-            public UpdateDashes UpdateDashes;
+            public IntPtr UpdateDashes;
 
-            public UpdateDashes1 UpdateDashes1;
+            public IntPtr UpdateDashes1;
 
-            public GetDashes GetDashes;
+            public IntPtr GetDashes;
 
-            public GetDashes1 GetDashes1;
+            public IntPtr GetDashes1;
 
-            public GetDashesCount GetDashesCount;
+            public IntPtr GetDashesCount;
             #endregion
         }
         #endregion

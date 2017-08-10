@@ -70,15 +70,15 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIObject.Vtbl BaseVtbl;
 
-            public GetAdapter GetAdapter;
+            public IntPtr GetAdapter;
 
-            public CreateSurface CreateSurface;
+            public IntPtr CreateSurface;
 
-            public QueryResourceResidency QueryResourceResidency;
+            public IntPtr QueryResourceResidency;
 
-            public SetGPUThreadPriority SetGPUThreadPriority;
+            public IntPtr SetGPUThreadPriority;
 
-            public GetGPUThreadPriority GetGPUThreadPriority;
+            public IntPtr GetGPUThreadPriority;
             #endregion
         }
         #endregion

@@ -3,6 +3,7 @@
 // Ported from um\dwrite_3.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -88,17 +89,17 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public AddListener AddListener;
+            public IntPtr AddListener;
 
-            public RemoveListener RemoveListener;
+            public IntPtr RemoveListener;
 
-            public IsEmpty IsEmpty;
+            public IntPtr IsEmpty;
 
-            public BeginDownload BeginDownload;
+            public IntPtr BeginDownload;
 
-            public CancelDownload CancelDownload;
+            public IntPtr CancelDownload;
 
-            public GetGenerationCount GetGenerationCount;
+            public IntPtr GetGenerationCount;
             #endregion
         }
         #endregion

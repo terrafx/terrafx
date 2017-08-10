@@ -72,11 +72,11 @@ namespace TerraFX.Interop
             #region Fields
             public IDWriteFontFileLoader.Vtbl BaseVtbl;
 
-            public GetFilePathLengthFromKey GetFilePathLengthFromKey;
+            public IntPtr GetFilePathLengthFromKey;
 
-            public GetFilePathFromKey GetFilePathFromKey;
+            public IntPtr GetFilePathFromKey;
 
-            public GetLastWriteTimeFromKey GetLastWriteTimeFromKey;
+            public IntPtr GetLastWriteTimeFromKey;
             #endregion
         }
         #endregion

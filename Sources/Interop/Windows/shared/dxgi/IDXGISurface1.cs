@@ -41,9 +41,9 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGISurface.Vtbl BaseVtbl;
 
-            public GetDC GetDC;
+            public IntPtr GetDC;
 
-            public ReleaseDC ReleaseDC;
+            public IntPtr ReleaseDC;
             #endregion
         }
         #endregion

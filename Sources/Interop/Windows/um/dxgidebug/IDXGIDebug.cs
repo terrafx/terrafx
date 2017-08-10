@@ -33,7 +33,7 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public ReportLiveObjects ReportLiveObjects;
+            public IntPtr ReportLiveObjects;
             #endregion
         }
         #endregion

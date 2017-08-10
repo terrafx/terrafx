@@ -34,7 +34,7 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGISurface1.Vtbl BaseVtbl;
 
-            public GetResource GetResource;
+            public IntPtr GetResource;
             #endregion
         }
         #endregion

@@ -54,11 +54,11 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public AssertResourceState AssertResourceState;
+            public IntPtr AssertResourceState;
 
-            public SetDebugParameter SetDebugParameter;
+            public IntPtr SetDebugParameter;
 
-            public GetDebugParameter GetDebugParameter;
+            public IntPtr GetDebugParameter;
             #endregion
         }
         #endregion

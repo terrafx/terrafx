@@ -3,6 +3,7 @@
 // Ported from um\d2d1_3.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -34,7 +35,7 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Factory3.Vtbl BaseVtbl;
 
-            public CreateDevice CreateDevice;
+            public IntPtr CreateDevice;
             #endregion
         }
         #endregion

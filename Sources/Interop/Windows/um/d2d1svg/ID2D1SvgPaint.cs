@@ -3,6 +3,7 @@
 // Ported from um\d2d1svg.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -84,19 +85,19 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1SvgAttribute.Vtbl BaseVtbl;
 
-            public SetPaintType SetPaintType;
+            public IntPtr SetPaintType;
 
-            public GetPaintType GetPaintType;
+            public IntPtr GetPaintType;
 
-            public SetColor SetColor;
+            public IntPtr SetColor;
 
-            public GetColor GetColor;
+            public IntPtr GetColor;
 
-            public SetId SetId;
+            public IntPtr SetId;
 
-            public GetId GetId;
+            public IntPtr GetId;
 
-            public GetIdLength GetIdLength;
+            public IntPtr GetIdLength;
             #endregion
         }
         #endregion

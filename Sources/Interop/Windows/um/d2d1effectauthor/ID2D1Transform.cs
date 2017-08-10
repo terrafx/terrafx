@@ -3,6 +3,7 @@
 // Ported from um\d2d1effectauthor.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -23,7 +24,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int MapOutputRectToInputRects(
             [In] ID2D1Transform* This,
             [In, ComAliasName("D2D1_RECT_L")] /* readonly */ RECT* outputRect,
-            [Out, ComAliasName("D2D1_RECT_L")] RECT *inputRects,
+            [Out, ComAliasName("D2D1_RECT_L")] RECT* inputRects,
             [In, ComAliasName("UINT32")] uint inputRectsCount
         );
 
@@ -56,11 +57,11 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1TransformNode.Vtbl BaseVtbl;
 
-            public MapOutputRectToInputRects MapOutputRectToInputRects;
+            public IntPtr MapOutputRectToInputRects;
 
-            public MapInputRectsToOutputRect MapInputRectsToOutputRect;
+            public IntPtr MapInputRectsToOutputRect;
 
-            public MapInvalidRect MapInvalidRect;
+            public IntPtr MapInvalidRect;
             #endregion
         }
         #endregion

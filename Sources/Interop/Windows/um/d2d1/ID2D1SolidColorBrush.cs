@@ -39,9 +39,9 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Brush.Vtbl BaseVtbl;
 
-            public SetColor SetColor;
+            public IntPtr SetColor;
 
-            public GetColor GetColor;
+            public IntPtr GetColor;
             #endregion
         }
         #endregion

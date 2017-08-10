@@ -69,15 +69,15 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIObject.Vtbl BaseVtbl;
 
-            public EnumAdapters EnumAdapters;
+            public IntPtr EnumAdapters;
 
-            public MakeWindowAssociation MakeWindowAssociation;
+            public IntPtr MakeWindowAssociation;
 
-            public GetWindowAssociation GetWindowAssociation;
+            public IntPtr GetWindowAssociation;
 
-            public CreateSwapChain CreateSwapChain;
+            public IntPtr CreateSwapChain;
 
-            public CreateSoftwareAdapter CreateSoftwareAdapter;
+            public IntPtr CreateSoftwareAdapter;
             #endregion
         }
         #endregion

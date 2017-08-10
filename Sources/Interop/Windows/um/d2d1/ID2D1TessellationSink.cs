@@ -40,9 +40,9 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public AddTriangles AddTriangles;
+            public IntPtr AddTriangles;
 
-            public Close Close;
+            public IntPtr Close;
             #endregion
         }
         #endregion

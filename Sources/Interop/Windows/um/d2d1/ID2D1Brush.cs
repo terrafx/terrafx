@@ -55,13 +55,13 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Resource.Vtbl BaseVtbl;
 
-            public SetOpacity SetOpacity;
+            public IntPtr SetOpacity;
 
-            public SetTransform SetTransform;
+            public IntPtr SetTransform;
 
-            public GetOpacity GetOpacity;
+            public IntPtr GetOpacity;
 
-            public GetTransform GetTransform;
+            public IntPtr GetTransform;
             #endregion
         }
         #endregion

@@ -85,23 +85,23 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Resource.Vtbl BaseVtbl;
 
-            public GetStartCap GetStartCap;
+            public IntPtr GetStartCap;
 
-            public GetEndCap GetEndCap;
+            public IntPtr GetEndCap;
 
-            public GetDashCap GetDashCap;
+            public IntPtr GetDashCap;
 
-            public GetMiterLimit GetMiterLimit;
+            public IntPtr GetMiterLimit;
 
-            public GetLineJoin GetLineJoin;
+            public IntPtr GetLineJoin;
 
-            public GetDashOffset GetDashOffset;
+            public IntPtr GetDashOffset;
 
-            public GetDashStyle GetDashStyle;
+            public IntPtr GetDashStyle;
 
-            public GetDashesCount GetDashesCount;
+            public IntPtr GetDashesCount;
 
-            public GetDashes GetDashes;
+            public IntPtr GetDashes;
             #endregion
         }
         #endregion

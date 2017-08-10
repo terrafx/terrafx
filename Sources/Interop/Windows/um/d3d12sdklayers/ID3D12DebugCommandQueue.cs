@@ -34,7 +34,7 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public AssertResourceState AssertResourceState;
+            public IntPtr AssertResourceState;
             #endregion
         }
         #endregion

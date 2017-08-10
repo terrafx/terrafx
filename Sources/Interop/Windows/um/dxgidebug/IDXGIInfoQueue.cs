@@ -342,79 +342,79 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public SetMessageCountLimit SetMessageCountLimit;
+            public IntPtr SetMessageCountLimit;
 
-            public ClearStoredMessages ClearStoredMessages;
+            public IntPtr ClearStoredMessages;
 
-            public GetMessage GetMessage;
+            public IntPtr GetMessage;
 
-            public GetNumStoredMessagesAllowedByRetrievalFilters GetNumStoredMessagesAllowedByRetrievalFilters;
+            public IntPtr GetNumStoredMessagesAllowedByRetrievalFilters;
 
-            public GetNumStoredMessages GetNumStoredMessages;
+            public IntPtr GetNumStoredMessages;
 
-            public GetNumMessagesDiscardedByMessageCountLimit GetNumMessagesDiscardedByMessageCountLimit;
+            public IntPtr GetNumMessagesDiscardedByMessageCountLimit;
 
-            public GetMessageCountLimit GetMessageCountLimit;
+            public IntPtr GetMessageCountLimit;
 
-            public GetNumMessagesAllowedByStorageFilter GetNumMessagesAllowedByStorageFilter;
+            public IntPtr GetNumMessagesAllowedByStorageFilter;
 
-            public GetNumMessagesDeniedByStorageFilter GetNumMessagesDeniedByStorageFilter;
+            public IntPtr GetNumMessagesDeniedByStorageFilter;
 
-            public AddStorageFilterEntries AddStorageFilterEntries;
+            public IntPtr AddStorageFilterEntries;
 
-            public GetStorageFilter GetStorageFilter;
+            public IntPtr GetStorageFilter;
 
-            public ClearStorageFilter ClearStorageFilter;
+            public IntPtr ClearStorageFilter;
 
-            public PushEmptyStorageFilter PushEmptyStorageFilter;
+            public IntPtr PushEmptyStorageFilter;
 
-            public PushDenyAllStorageFilter PushDenyAllStorageFilter;
+            public IntPtr PushDenyAllStorageFilter;
 
-            public PushCopyOfStorageFilter PushCopyOfStorageFilter;
+            public IntPtr PushCopyOfStorageFilter;
 
-            public PushStorageFilter PushStorageFilter;
+            public IntPtr PushStorageFilter;
 
-            public PopStorageFilter PopStorageFilter;
+            public IntPtr PopStorageFilter;
 
-            public GetStorageFilterStackSize GetStorageFilterStackSize;
+            public IntPtr GetStorageFilterStackSize;
 
-            public AddRetrievalFilterEntries AddRetrievalFilterEntries;
+            public IntPtr AddRetrievalFilterEntries;
 
-            public GetRetrievalFilter GetRetrievalFilter;
+            public IntPtr GetRetrievalFilter;
 
-            public ClearRetrievalFilter ClearRetrievalFilter;
+            public IntPtr ClearRetrievalFilter;
 
-            public PushEmptyRetrievalFilter PushEmptyRetrievalFilter;
+            public IntPtr PushEmptyRetrievalFilter;
 
-            public PushDenyAllRetrievalFilter PushDenyAllRetrievalFilter;
+            public IntPtr PushDenyAllRetrievalFilter;
 
-            public PushCopyOfRetrievalFilter PushCopyOfRetrievalFilter;
+            public IntPtr PushCopyOfRetrievalFilter;
 
-            public PushRetrievalFilter PushRetrievalFilter;
+            public IntPtr PushRetrievalFilter;
 
-            public PopRetrievalFilter PopRetrievalFilter;
+            public IntPtr PopRetrievalFilter;
 
-            public GetRetrievalFilterStackSize GetRetrievalFilterStackSize;
+            public IntPtr GetRetrievalFilterStackSize;
 
-            public AddMessage AddMessage;
+            public IntPtr AddMessage;
 
-            public AddApplicationMessage AddApplicationMessage;
+            public IntPtr AddApplicationMessage;
 
-            public SetBreakOnCategory SetBreakOnCategory;
+            public IntPtr SetBreakOnCategory;
 
-            public SetBreakOnSeverity SetBreakOnSeverity;
+            public IntPtr SetBreakOnSeverity;
 
-            public SetBreakOnID SetBreakOnID;
+            public IntPtr SetBreakOnID;
 
-            public GetBreakOnCategory GetBreakOnCategory;
+            public IntPtr GetBreakOnCategory;
 
-            public GetBreakOnSeverity GetBreakOnSeverity;
+            public IntPtr GetBreakOnSeverity;
 
-            public GetBreakOnID GetBreakOnID;
+            public IntPtr GetBreakOnID;
 
-            public SetMuteDebugOutput SetMuteDebugOutput;
+            public IntPtr SetMuteDebugOutput;
 
-            public GetMuteDebugOutput GetMuteDebugOutput;
+            public IntPtr GetMuteDebugOutput;
             #endregion
         }
         #endregion

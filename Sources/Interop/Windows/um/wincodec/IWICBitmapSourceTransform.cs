@@ -65,13 +65,13 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public CopyPixels CopyPixels;
+            public IntPtr CopyPixels;
 
-            public GetClosestSize GetClosestSize;
+            public IntPtr GetClosestSize;
 
-            public GetClosestPixelFormat GetClosestPixelFormat;
+            public IntPtr GetClosestPixelFormat;
 
-            public DoesSupportTransform DoesSupportTransform;
+            public IntPtr DoesSupportTransform;
             #endregion
         }
         #endregion

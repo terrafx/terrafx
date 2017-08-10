@@ -3,6 +3,7 @@
 // Ported from um\d2d1_3.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -87,15 +88,15 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Resource.Vtbl BaseVtbl;
 
-            public AddSprites AddSprites;
+            public IntPtr AddSprites;
 
-            public SetSprites SetSprites;
+            public IntPtr SetSprites;
 
-            public GetSprites GetSprites;
+            public IntPtr GetSprites;
 
-            public GetSpriteCount GetSpriteCount;
+            public IntPtr GetSpriteCount;
 
-            public Clear Clear;
+            public IntPtr Clear;
             #endregion
         }
         #endregion

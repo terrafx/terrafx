@@ -77,17 +77,17 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetMetadataFormat GetMetadataFormat;
+            public IntPtr GetMetadataFormat;
 
-            public GetMetadataHandlerInfo GetMetadataHandlerInfo;
+            public IntPtr GetMetadataHandlerInfo;
 
-            public GetCount GetCount;
+            public IntPtr GetCount;
 
-            public GetValueByIndex GetValueByIndex;
+            public IntPtr GetValueByIndex;
 
-            public GetValue GetValue;
+            public IntPtr GetValue;
 
-            public GetEnumerator GetEnumerator;
+            public IntPtr GetEnumerator;
             #endregion
         }
         #endregion

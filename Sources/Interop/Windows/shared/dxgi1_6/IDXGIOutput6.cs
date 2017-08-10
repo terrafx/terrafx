@@ -40,9 +40,9 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIOutput5.Vtbl BaseVtbl;
 
-            public GetDesc1 GetDesc1;
+            public IntPtr GetDesc1;
 
-            public CheckHardwareCompositionSupport CheckHardwareCompositionSupport;
+            public IntPtr CheckHardwareCompositionSupport;
             #endregion
         }
         #endregion

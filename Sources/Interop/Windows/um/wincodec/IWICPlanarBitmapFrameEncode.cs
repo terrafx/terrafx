@@ -44,9 +44,9 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public WritePixels WritePixels;
+            public IntPtr WritePixels;
 
-            public WriteSource WriteSource;
+            public IntPtr WriteSource;
             #endregion
         }
         #endregion

@@ -90,23 +90,23 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Brush.Vtbl BaseVtbl;
 
-            public SetCenter SetCenter;
+            public IntPtr SetCenter;
 
-            public SetGradientOriginOffset SetGradientOriginOffset;
+            public IntPtr SetGradientOriginOffset;
 
-            public SetRadiusX SetRadiusX;
+            public IntPtr SetRadiusX;
 
-            public SetRadiusY SetRadiusY;
+            public IntPtr SetRadiusY;
 
-            public GetCenter GetCenter;
+            public IntPtr GetCenter;
 
-            public GetGradientOriginOffset GetGradientOriginOffset;
+            public IntPtr GetGradientOriginOffset;
 
-            public GetRadiusX GetRadiusX;
+            public IntPtr GetRadiusX;
 
-            public GetRadiusY GetRadiusY;
+            public IntPtr GetRadiusY;
 
-            public GetGradientStopCollection GetGradientStopCollection;
+            public IntPtr GetGradientStopCollection;
             #endregion
         }
         #endregion

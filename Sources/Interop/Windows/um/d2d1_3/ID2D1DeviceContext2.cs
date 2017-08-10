@@ -3,6 +3,7 @@
 // Ported from um\d2d1_3.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -137,27 +138,27 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1DeviceContext1.Vtbl BaseVtbl;
 
-            public CreateInk CreateInk;
+            public IntPtr CreateInk;
 
-            public CreateInkStyle CreateInkStyle;
+            public IntPtr CreateInkStyle;
 
-            public CreateGradientMesh CreateGradientMesh;
+            public IntPtr CreateGradientMesh;
 
-            public CreateImageSourceFromWic CreateImageSourceFromWic;
+            public IntPtr CreateImageSourceFromWic;
 
-            public CreateLookupTable3D CreateLookupTable3D;
+            public IntPtr CreateLookupTable3D;
 
-            public CreateImageSourceFromDxgi CreateImageSourceFromDxgi;
+            public IntPtr CreateImageSourceFromDxgi;
 
-            public GetGradientMeshWorldBounds GetGradientMeshWorldBounds;
+            public IntPtr GetGradientMeshWorldBounds;
 
-            public DrawInk DrawInk;
+            public IntPtr DrawInk;
 
-            public DrawGradientMesh DrawGradientMesh;
+            public IntPtr DrawGradientMesh;
 
-            public DrawGdiMetafile DrawGdiMetafile;
+            public IntPtr DrawGdiMetafile;
 
-            public CreateTransformedImageSource CreateTransformedImageSource;
+            public IntPtr CreateTransformedImageSource;
             #endregion
         }
         #endregion

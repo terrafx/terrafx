@@ -61,13 +61,13 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetPrivateData GetPrivateData;
+            public IntPtr GetPrivateData;
 
-            public SetPrivateData SetPrivateData;
+            public IntPtr SetPrivateData;
 
-            public SetPrivateDataInterface SetPrivateDataInterface;
+            public IntPtr SetPrivateDataInterface;
 
-            public SetName SetName;
+            public IntPtr SetName;
             #endregion
         }
         #endregion

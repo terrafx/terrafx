@@ -268,55 +268,55 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public CreateDecoderFromFilename CreateDecoderFromFilename;
+            public IntPtr CreateDecoderFromFilename;
 
-            public CreateDecoderFromStream CreateDecoderFromStream;
+            public IntPtr CreateDecoderFromStream;
 
-            public CreateDecoderFromFileHandle CreateDecoderFromFileHandle;
+            public IntPtr CreateDecoderFromFileHandle;
 
-            public CreateComponentInfo CreateComponentInfo;
+            public IntPtr CreateComponentInfo;
 
-            public CreateDecoder CreateDecoder;
+            public IntPtr CreateDecoder;
 
-            public CreateEncoder CreateEncoder;
+            public IntPtr CreateEncoder;
 
-            public CreatePalette CreatePalette;
+            public IntPtr CreatePalette;
 
-            public CreateFormatConverter CreateFormatConverter;
+            public IntPtr CreateFormatConverter;
 
-            public CreateBitmapScaler CreateBitmapScaler;
+            public IntPtr CreateBitmapScaler;
 
-            public CreateBitmapClipper CreateBitmapClipper;
+            public IntPtr CreateBitmapClipper;
 
-            public CreateBitmapFlipRotator CreateBitmapFlipRotator;
+            public IntPtr CreateBitmapFlipRotator;
 
-            public CreateStream CreateStream;
+            public IntPtr CreateStream;
 
-            public CreateColorContext CreateColorContext;
+            public IntPtr CreateColorContext;
 
-            public CreateColorTransformer CreateColorTransformer;
+            public IntPtr CreateColorTransformer;
 
-            public CreateBitmap CreateBitmap;
+            public IntPtr CreateBitmap;
 
-            public CreateBitmapFromSource CreateBitmapFromSource;
+            public IntPtr CreateBitmapFromSource;
 
-            public CreateBitmapFromSourceRect CreateBitmapFromSourceRect;
+            public IntPtr CreateBitmapFromSourceRect;
 
-            public CreateBitmapFromMemory CreateBitmapFromMemory;
+            public IntPtr CreateBitmapFromMemory;
 
-            public CreateBitmapFromHBITMAP CreateBitmapFromHBITMAP;
+            public IntPtr CreateBitmapFromHBITMAP;
 
-            public CreateBitmapFromHICON CreateBitmapFromHICON;
+            public IntPtr CreateBitmapFromHICON;
 
-            public CreateComponentEnumerator CreateComponentEnumerator;
+            public IntPtr CreateComponentEnumerator;
 
-            public CreateFastMetadataEncoderFromDecoder CreateFastMetadataEncoderFromDecoder;
+            public IntPtr CreateFastMetadataEncoderFromDecoder;
 
-            public CreateFastMetadataEncoderFromFrameDecode CreateFastMetadataEncoderFromFrameDecode;
+            public IntPtr CreateFastMetadataEncoderFromFrameDecode;
 
-            public CreateQueryWriter CreateQueryWriter;
+            public IntPtr CreateQueryWriter;
 
-            public CreateQueryWriterFromReader CreateQueryWriterFromReader;
+            public IntPtr CreateQueryWriterFromReader;
             #endregion
         }
         #endregion

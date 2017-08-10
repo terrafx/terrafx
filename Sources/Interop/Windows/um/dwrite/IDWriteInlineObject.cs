@@ -84,13 +84,13 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public Draw Draw;
+            public IntPtr Draw;
 
-            public GetMetrics GetMetrics;
+            public IntPtr GetMetrics;
 
-            public GetOverhangMetrics GetOverhangMetrics;
+            public IntPtr GetOverhangMetrics;
 
-            public GetBreakConditions GetBreakConditions;
+            public IntPtr GetBreakConditions;
             #endregion
         }
         #endregion

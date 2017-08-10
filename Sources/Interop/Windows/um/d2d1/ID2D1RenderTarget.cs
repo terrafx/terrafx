@@ -524,111 +524,111 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Resource.Vtbl BaseVtbl;
 
-            public CreateBitmap CreateBitmap;
+            public IntPtr CreateBitmap;
 
-            public CreateBitmapFromWicBitmap CreateBitmapFromWicBitmap;
+            public IntPtr CreateBitmapFromWicBitmap;
 
-            public CreateSharedBitmap CreateSharedBitmap;
+            public IntPtr CreateSharedBitmap;
 
-            public CreateBitmapBrush CreateBitmapBrush;
+            public IntPtr CreateBitmapBrush;
 
-            public CreateSolidColorBrush CreateSolidColorBrush;
+            public IntPtr CreateSolidColorBrush;
 
-            public CreateGradientStopCollection CreateGradientStopCollection;
+            public IntPtr CreateGradientStopCollection;
 
-            public CreateLinearGradientBrush CreateLinearGradientBrush;
+            public IntPtr CreateLinearGradientBrush;
 
-            public CreateRadialGradientBrush CreateRadialGradientBrush;
+            public IntPtr CreateRadialGradientBrush;
 
-            public CreateCompatibleRenderTarget CreateCompatibleRenderTarget;
+            public IntPtr CreateCompatibleRenderTarget;
 
-            public CreateLayer CreateLayer;
+            public IntPtr CreateLayer;
 
-            public CreateMesh CreateMesh;
+            public IntPtr CreateMesh;
 
-            public DrawLine DrawLine;
+            public IntPtr DrawLine;
 
-            public DrawRectangle DrawRectangle;
+            public IntPtr DrawRectangle;
 
-            public FillRectangle FillRectangle;
+            public IntPtr FillRectangle;
 
-            public DrawRoundedRectangle DrawRoundedRectangle;
+            public IntPtr DrawRoundedRectangle;
 
-            public FillRoundedRectangle FillRoundedRectangle;
+            public IntPtr FillRoundedRectangle;
 
-            public DrawEllipse DrawEllipse;
+            public IntPtr DrawEllipse;
 
-            public FillEllipse FillEllipse;
+            public IntPtr FillEllipse;
 
-            public DrawGeometry DrawGeometry;
+            public IntPtr DrawGeometry;
 
-            public FillGeometry FillGeometry;
+            public IntPtr FillGeometry;
 
-            public FillMesh FillMesh;
+            public IntPtr FillMesh;
 
-            public FillOpacityMask FillOpacityMask;
+            public IntPtr FillOpacityMask;
 
-            public DrawBitmap DrawBitmap;
+            public IntPtr DrawBitmap;
 
-            public DrawText DrawText;
+            public IntPtr DrawText;
 
-            public DrawTextLayout DrawTextLayout;
+            public IntPtr DrawTextLayout;
 
-            public DrawGlyphRun DrawGlyphRun;
+            public IntPtr DrawGlyphRun;
 
-            public SetTransform SetTransform;
+            public IntPtr SetTransform;
 
-            public GetTransform GetTransform;
+            public IntPtr GetTransform;
 
-            public SetAntialiasMode SetAntialiasMode;
+            public IntPtr SetAntialiasMode;
 
-            public GetAntialiasMode GetAntialiasMode;
+            public IntPtr GetAntialiasMode;
 
-            public SetTextAntialiasMode SetTextAntialiasMode;
+            public IntPtr SetTextAntialiasMode;
 
-            public GetTextAntialiasMode GetTextAntialiasMode;
+            public IntPtr GetTextAntialiasMode;
 
-            public SetTextRenderingParams SetTextRenderingParameters;
+            public IntPtr SetTextRenderingParameters;
 
-            public GetTextRenderingParams GetTextRenderingParams;
+            public IntPtr GetTextRenderingParams;
 
-            public SetTags SetTags;
+            public IntPtr SetTags;
 
-            public GetTags GetTags;
+            public IntPtr GetTags;
 
-            public PushLayer PushLayer;
+            public IntPtr PushLayer;
 
-            public PopLayer PopLayer;
+            public IntPtr PopLayer;
 
-            public Flush Flush;
+            public IntPtr Flush;
 
-            public SaveDrawingState SaveDrawingState;
+            public IntPtr SaveDrawingState;
 
-            public RestoreDrawingState RestoreDrawingState;
+            public IntPtr RestoreDrawingState;
 
-            public PushAxisAlignedClip PushAxisAlignedClip;
+            public IntPtr PushAxisAlignedClip;
 
-            public PopAxisAlignedClip PopAxisAlignedClip;
+            public IntPtr PopAxisAlignedClip;
 
-            public Clear Clear;
+            public IntPtr Clear;
 
-            public BeginDraw BeginDraw;
+            public IntPtr BeginDraw;
 
-            public EndDraw EndDraw;
+            public IntPtr EndDraw;
 
-            public GetPixelFormat GetPixelFormat;
+            public IntPtr GetPixelFormat;
 
-            public SetDpi SetDpi;
+            public IntPtr SetDpi;
 
-            public GetDpi GetDpi;
+            public IntPtr GetDpi;
 
-            public GetSize GetSize;
+            public IntPtr GetSize;
 
-            public GetPixelSize GetPixelSize;
+            public IntPtr GetPixelSize;
 
-            public GetMaximumBitmapSize GetMaximumBitmapSize;
+            public IntPtr GetMaximumBitmapSize;
 
-            public IsSupported IsSupported;
+            public IntPtr IsSupported;
             #endregion
         }
         #endregion

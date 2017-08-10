@@ -70,11 +70,11 @@ namespace TerraFX.Interop
             #region Fields
             public IDWriteFontList.Vtbl BaseVtbl;
 
-            public GetFamilyNames GetFamilyNames;
+            public IntPtr GetFamilyNames;
 
-            public GetFirstMatchingFont GetFirstMatchingFont;
+            public IntPtr GetFirstMatchingFont;
 
-            public GetMatchingFonts GetMatchingFonts;
+            public IntPtr GetMatchingFonts;
             #endregion
         }
         #endregion

@@ -232,35 +232,35 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public _GetType _GetType;
+            public IntPtr _GetType;
 
-            public GetFiles GetFiles;
+            public IntPtr GetFiles;
 
-            public GetIndex GetIndex;
+            public IntPtr GetIndex;
 
-            public GetSimulations GetSimulations;
+            public IntPtr GetSimulations;
 
-            public IsSymbolFont IsSymbolFont;
+            public IntPtr IsSymbolFont;
 
-            public GetMetrics GetMetrics;
+            public IntPtr GetMetrics;
 
-            public GetGlyphCount GetGlyphCount;
+            public IntPtr GetGlyphCount;
 
-            public GetDesignGlyphMetrics GetDesignGlyphMetrics;
+            public IntPtr GetDesignGlyphMetrics;
 
-            public GetGlyphIndices GetGlyphIndices;
+            public IntPtr GetGlyphIndices;
 
-            public TryGetFontTable TryGetFontTable;
+            public IntPtr TryGetFontTable;
 
-            public ReleaseFontTable ReleaseFontTable;
+            public IntPtr ReleaseFontTable;
 
-            public GetGlyphRunOutline GetGlyphRunOutline;
+            public IntPtr GetGlyphRunOutline;
 
-            public GetRecommendedRenderingMode GetRecommendedRenderingMode;
+            public IntPtr GetRecommendedRenderingMode;
 
-            public GetGdiCompatibleMetrics GetGdiCompatibleMetrics;
+            public IntPtr GetGdiCompatibleMetrics;
 
-            public GetGdiCompatibleGlyphMetrics GetGdiCompatibleGlyphMetrics;
+            public IntPtr GetGdiCompatibleGlyphMetrics;
             #endregion
         }
         #endregion

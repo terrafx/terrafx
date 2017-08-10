@@ -42,9 +42,9 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public RegisterDestructionCallback RegisterDestructionCallback;
+            public IntPtr RegisterDestructionCallback;
 
-            public UnregisterDestructionCallback UnregisterDestructionCallback;
+            public IntPtr UnregisterDestructionCallback;
             #endregion
         }
         #endregion

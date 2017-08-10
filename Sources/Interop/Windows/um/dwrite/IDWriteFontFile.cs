@@ -67,11 +67,11 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetReferenceKey GetReferenceKey;
+            public IntPtr GetReferenceKey;
 
-            public GetLoader GetLoader;
+            public IntPtr GetLoader;
 
-            public Analyze Analyze;
+            public IntPtr Analyze;
             #endregion
         }
         #endregion

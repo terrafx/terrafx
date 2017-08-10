@@ -132,29 +132,29 @@ namespace TerraFX.Interop
             #region Fields
             public IWICComponentInfo.Vtbl BaseVtbl;
 
-            public GetContainerFormat GetContainerFormat;
+            public IntPtr GetContainerFormat;
 
-            public GetPixelFormats GetPixelFormats;
+            public IntPtr GetPixelFormats;
 
-            public GetColorManagementVersion GetColorManagementVersion;
+            public IntPtr GetColorManagementVersion;
 
-            public GetDeviceManufacturer GetDeviceManufacturer;
+            public IntPtr GetDeviceManufacturer;
 
-            public GetDeviceModels GetDeviceModels;
+            public IntPtr GetDeviceModels;
 
-            public GetMimeTypes GetMimeTypes;
+            public IntPtr GetMimeTypes;
 
-            public GetFileExtensions GetFileExtensions;
+            public IntPtr GetFileExtensions;
 
-            public DoesSupportAnimation DoesSupportAnimation;
+            public IntPtr DoesSupportAnimation;
 
-            public DoesSupportChromakey DoesSupportChromakey;
+            public IntPtr DoesSupportChromakey;
 
-            public DoesSupportLossless DoesSupportLossless;
+            public IntPtr DoesSupportLossless;
 
-            public DoesSupportMultiframe DoesSupportMultiframe;
+            public IntPtr DoesSupportMultiframe;
 
-            public MatchesMimeType MatchesMimeType;
+            public IntPtr MatchesMimeType;
             #endregion
         }
         #endregion

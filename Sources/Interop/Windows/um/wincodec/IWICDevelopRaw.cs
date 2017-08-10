@@ -289,69 +289,69 @@ namespace TerraFX.Interop
             #region Fields
             public IWICBitmapFrameDecode.Vtbl BaseVtbl;
 
-            public QueryRawCapabilitiesInfo QueryRawCapabilitiesInfo;
+            public IntPtr QueryRawCapabilitiesInfo;
 
-            public LoadParameterSet LoadParameterSet;
+            public IntPtr LoadParameterSet;
 
-            public GetCurrentParameterSet GetCurrentParameterSet;
+            public IntPtr GetCurrentParameterSet;
 
-            public SetExposureCompensation SetExposureCompensation;
+            public IntPtr SetExposureCompensation;
 
-            public GetExposureCompensation GetExposureCompensation;
+            public IntPtr GetExposureCompensation;
 
-            public SetWhitePointRGB SetWhitePointRGB;
+            public IntPtr SetWhitePointRGB;
 
-            public GetWhitePointRGB GetWhitePointRGB;
+            public IntPtr GetWhitePointRGB;
 
-            public SetNamedWhitePoint SetNamedWhitePoint;
+            public IntPtr SetNamedWhitePoint;
 
-            public GetNamedWhitePoint GetNamedWhitePoint;
+            public IntPtr GetNamedWhitePoint;
 
-            public SetWhitePointKelvin SetWhitePointKelvin;
+            public IntPtr SetWhitePointKelvin;
 
-            public GetWhitePointKelvin GetWhitePointKelvin;
+            public IntPtr GetWhitePointKelvin;
 
-            public GetKelvinRangeInfo GetKelvinRangeInfo;
+            public IntPtr GetKelvinRangeInfo;
 
-            public SetContrast SetContrast;
+            public IntPtr SetContrast;
 
-            public GetContrast GetContrast;
+            public IntPtr GetContrast;
 
-            public SetGamma SetGamma;
+            public IntPtr SetGamma;
 
-            public GetGamma GetGamma;
+            public IntPtr GetGamma;
 
-            public SetSharpness SetSharpness;
+            public IntPtr SetSharpness;
 
-            public GetSharpness GetSharpness;
+            public IntPtr GetSharpness;
 
-            public SetSaturation SetSaturation;
+            public IntPtr SetSaturation;
 
-            public GetSaturation GetSaturation;
+            public IntPtr GetSaturation;
 
-            public SetTint SetTint;
+            public IntPtr SetTint;
 
-            public GetTint GetTint;
+            public IntPtr GetTint;
 
-            public SetNoiseReduction SetNoiseReduction;
+            public IntPtr SetNoiseReduction;
 
-            public GetNoiseReduction GetNoiseReduction;
+            public IntPtr GetNoiseReduction;
 
-            public SetDestinationColorContext SetDestinationColorContext;
+            public IntPtr SetDestinationColorContext;
 
-            public SetToneCurve SetToneCurve;
+            public IntPtr SetToneCurve;
 
-            public GetToneCurve GetToneCurve;
+            public IntPtr GetToneCurve;
 
-            public SetRotation SetRotation;
+            public IntPtr SetRotation;
 
-            public GetRotation GetRotation;
+            public IntPtr GetRotation;
 
-            public SetRenderMode SetRenderMode;
+            public IntPtr SetRenderMode;
 
-            public GetRenderMode GetRenderMode;
+            public IntPtr GetRenderMode;
 
-            public SetNotificationCallback SetNotificationCallback;
+            public IntPtr SetNotificationCallback;
             #endregion
         }
         #endregion

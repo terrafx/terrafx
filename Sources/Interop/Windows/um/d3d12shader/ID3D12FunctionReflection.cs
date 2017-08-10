@@ -76,19 +76,19 @@ namespace TerraFX.Interop
         public /* blittable */ struct Vtbl
         {
             #region Fields
-            public GetDesc GetDesc;
+            public IntPtr GetDesc;
 
-            public GetConstantBufferByIndex GetConstantBufferByIndex;
+            public IntPtr GetConstantBufferByIndex;
 
-            public GetConstantBufferByName GetConstantBufferByName;
+            public IntPtr GetConstantBufferByName;
 
-            public GetResourceBindingDesc GetResourceBindingDesc;
+            public IntPtr GetResourceBindingDesc;
 
-            public GetVariableByName GetVariableByName;
+            public IntPtr GetVariableByName;
 
-            public GetResourceBindingDescByName GetResourceBindingDescByName;
+            public IntPtr GetResourceBindingDescByName;
 
-            public GetFunctionParameter GetFunctionParameter;
+            public IntPtr GetFunctionParameter;
             #endregion
         }
         #endregion

@@ -3,6 +3,7 @@
 // Ported from um\d2d1svg.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -140,27 +141,27 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Resource.Vtbl BaseVtbl;
 
-            public SetViewportSize SetViewportSize;
+            public IntPtr SetViewportSize;
 
-            public GetViewportSize GetViewportSize;
+            public IntPtr GetViewportSize;
 
-            public SetRoot SetRoot;
+            public IntPtr SetRoot;
 
-            public GetRoot GetRoot;
+            public IntPtr GetRoot;
 
-            public FindElementById FindElementById;
+            public IntPtr FindElementById;
 
-            public Serialize Serialize;
+            public IntPtr Serialize;
 
-            public Deserialize Deserialize;
+            public IntPtr Deserialize;
 
-            public CreatePaint CreatePaint;
+            public IntPtr CreatePaint;
 
-            public CreateStrokeDashArray CreateStrokeDashArray;
+            public IntPtr CreateStrokeDashArray;
 
-            public CreatePointCollection CreatePointCollection;
+            public IntPtr CreatePointCollection;
 
-            public CreatePathData CreatePathData;
+            public IntPtr CreatePathData;
             #endregion
         }
         #endregion

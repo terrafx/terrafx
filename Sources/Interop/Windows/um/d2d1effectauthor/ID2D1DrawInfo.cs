@@ -79,15 +79,15 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1RenderInfo.Vtbl BaseVtbl;
 
-            public SetPixelShaderConstantBuffer SetPixelShaderConstantBuffer;
+            public IntPtr SetPixelShaderConstantBuffer;
 
-            public SetResourceTexture SetResourceTexture;
+            public IntPtr SetResourceTexture;
 
-            public SetVertexShaderConstantBuffer SetVertexShaderConstantBuffer;
+            public IntPtr SetVertexShaderConstantBuffer;
 
-            public SetPixelShader SetPixelShader;
+            public IntPtr SetPixelShader;
 
-            public SetVertexProcessing SetVertexProcessing;
+            public IntPtr SetVertexProcessing;
             #endregion
         }
         #endregion

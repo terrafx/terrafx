@@ -32,7 +32,7 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIAdapter.Vtbl BaseVtbl;
 
-            public GetDesc1 GetDesc1;
+            public IntPtr GetDesc1;
             #endregion
         }
         #endregion

@@ -48,11 +48,11 @@ namespace TerraFX.Interop
             #region Fields
             public ID3D12Pageable.Vtbl BaseVtbl;
 
-            public GetCompletedValue GetCompletedValue;
+            public IntPtr GetCompletedValue;
 
-            public SetEventOnCompletion SetEventOnCompletion;
+            public IntPtr SetEventOnCompletion;
 
-            public Signal Signal;
+            public IntPtr Signal;
             #endregion
         }
         #endregion

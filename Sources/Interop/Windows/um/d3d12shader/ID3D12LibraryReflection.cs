@@ -39,9 +39,9 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetDesc GetDesc;
+            public IntPtr GetDesc;
 
-            public GetFunctionByIndex GetFunctionByIndex;
+            public IntPtr GetFunctionByIndex;
             #endregion
         }
         #endregion

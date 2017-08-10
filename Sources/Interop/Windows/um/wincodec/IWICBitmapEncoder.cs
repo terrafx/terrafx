@@ -106,25 +106,25 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public Initialize Initialize;
+            public IntPtr Initialize;
 
-            public GetContainerFormat GetContainerFormat;
+            public IntPtr GetContainerFormat;
 
-            public GetEncoderInfo GetEncoderInfo;
+            public IntPtr GetEncoderInfo;
 
-            public SetColorContexts SetColorContexts;
+            public IntPtr SetColorContexts;
 
-            public SetPalette SetPalette;
+            public IntPtr SetPalette;
 
-            public SetThumbnail SetThumbnail;
+            public IntPtr SetThumbnail;
 
-            public SetPreview SetPreview;
+            public IntPtr SetPreview;
 
-            public CreateNewFrame CreateNewFrame;
+            public IntPtr CreateNewFrame;
 
-            public Commit Commit;
+            public IntPtr Commit;
 
-            public GetMetadataQueryWriter GetMetadataQueryWriter;
+            public IntPtr GetMetadataQueryWriter;
             #endregion
         }
         #endregion

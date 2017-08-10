@@ -57,11 +57,11 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetFontCollection GetFontCollection;
+            public IntPtr GetFontCollection;
 
-            public GetFontCount GetFontCount;
+            public IntPtr GetFontCount;
 
-            public GetFont GetFont;
+            public IntPtr GetFont;
             #endregion
         }
         #endregion

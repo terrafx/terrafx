@@ -62,13 +62,13 @@ namespace TerraFX.Interop
             #region Fields
             public IWICMetadataReader.Vtbl BaseVtbl;
 
-            public SetValue SetValue;
+            public IntPtr SetValue;
 
-            public SetValueByIndex SetValueByIndex;
+            public IntPtr SetValueByIndex;
 
-            public RemoveValue RemoveValue;
+            public IntPtr RemoveValue;
 
-            public RemoveValueByIndex RemoveValueByIndex;
+            public IntPtr RemoveValueByIndex;
             #endregion
         }
         #endregion

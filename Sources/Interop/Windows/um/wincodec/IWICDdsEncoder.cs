@@ -51,11 +51,11 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public SetParameters SetParameters;
+            public IntPtr SetParameters;
 
-            public GetParameters GetParameters;
+            public IntPtr GetParameters;
 
-            public CreateNewFrame CreateNewFrame;
+            public IntPtr CreateNewFrame;
             #endregion
         }
         #endregion

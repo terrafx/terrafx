@@ -125,27 +125,27 @@ namespace TerraFX.Interop
             #region Fields
             public ID3D12Pageable.Vtbl BaseVtbl;
 
-            public UpdateTileMappings UpdateTileMappings;
+            public IntPtr UpdateTileMappings;
 
-            public CopyTileMappings CopyTileMappings;
+            public IntPtr CopyTileMappings;
 
-            public ExecuteCommandLists ExecuteCommandLists;
+            public IntPtr ExecuteCommandLists;
 
-            public SetMarker SetMarker;
+            public IntPtr SetMarker;
 
-            public BeginEvent BeginEvent;
+            public IntPtr BeginEvent;
 
-            public EndEvent EndEvent;
+            public IntPtr EndEvent;
 
-            public Signal Signal;
+            public IntPtr Signal;
 
-            public Wait Wait;
+            public IntPtr Wait;
 
-            public GetTimestampFrequency GetTimestampFrequency;
+            public IntPtr GetTimestampFrequency;
 
-            public GetClockCalibration GetClockCalibration;
+            public IntPtr GetClockCalibration;
 
-            public GetDesc GetDesc;
+            public IntPtr GetDesc;
             #endregion
         }
         #endregion

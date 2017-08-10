@@ -96,21 +96,21 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetComponentType GetComponentType;
+            public IntPtr GetComponentType;
 
-            public GetCLSID GetCLSID;
+            public IntPtr GetCLSID;
 
-            public GetSigningStatus GetSigningStatus;
+            public IntPtr GetSigningStatus;
 
-            public GetAuthor GetAuthor;
+            public IntPtr GetAuthor;
 
-            public GetVendorGUID GetVendorGUID;
+            public IntPtr GetVendorGUID;
 
-            public GetVersion GetVersion;
+            public IntPtr GetVersion;
 
-            public GetSpecVersion GetSpecVersion;
+            public IntPtr GetSpecVersion;
 
-            public GetFriendlyName GetFriendlyName;
+            public IntPtr GetFriendlyName;
             #endregion
         }
         #endregion

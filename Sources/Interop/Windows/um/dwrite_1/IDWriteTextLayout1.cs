@@ -3,6 +3,7 @@
 // Ported from um\dwrite_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -89,13 +90,13 @@ namespace TerraFX.Interop
             #region Fields
             public IDWriteTextLayout.Vtbl BaseVtbl;
 
-            public SetPairKerning SetPairKerning;
+            public IntPtr SetPairKerning;
 
-            public GetPairKerning GetPairKerning;
+            public IntPtr GetPairKerning;
 
-            public SetCharacterSpacing SetCharacterSpacing;
+            public IntPtr SetCharacterSpacing;
 
-            public GetCharacterSpacing GetCharacterSpacing;
+            public IntPtr GetCharacterSpacing;
             #endregion
         }
         #endregion

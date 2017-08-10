@@ -39,9 +39,9 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public Commit Commit;
+            public IntPtr Commit;
 
-            public GetMetadataQueryWriter GetMetadataQueryWriter;
+            public IntPtr GetMetadataQueryWriter;
             #endregion
         }
         #endregion

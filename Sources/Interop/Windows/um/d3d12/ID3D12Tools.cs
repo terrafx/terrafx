@@ -38,9 +38,9 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public EnableShaderInstrumentation EnableShaderInstrumentation;
+            public IntPtr EnableShaderInstrumentation;
 
-            public ShaderInstrumentationEnabled ShaderInstrumentationEnabled;
+            public IntPtr ShaderInstrumentationEnabled;
             #endregion
         }
         #endregion

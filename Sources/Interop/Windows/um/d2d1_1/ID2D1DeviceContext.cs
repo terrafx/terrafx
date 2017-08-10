@@ -386,75 +386,75 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1RenderTarget.Vtbl BaseVtbl;
 
-            public CreateBitmap CreateBitmap;
+            public IntPtr CreateBitmap;
 
-            public CreateBitmapFromWicBitmap CreateBitmapFromWicBitmap;
+            public IntPtr CreateBitmapFromWicBitmap;
 
-            public CreateColorContext CreateColorContext;
+            public IntPtr CreateColorContext;
 
-            public CreateColorContextFromFilename CreateColorContextFromFilename;
+            public IntPtr CreateColorContextFromFilename;
 
-            public CreateColorContextFromWicColorContext CreateColorContextFromWicColorContext;
+            public IntPtr CreateColorContextFromWicColorContext;
 
-            public CreateBitmapFromDxgiSurface CreateBitmapFromDxgiSurface;
+            public IntPtr CreateBitmapFromDxgiSurface;
 
-            public CreateEffect CreateEffect;
+            public IntPtr CreateEffect;
 
-            public CreateGradientStopCollection CreateGradientStopCollection;
+            public IntPtr CreateGradientStopCollection;
 
-            public CreateImageBrush CreateImageBrush;
+            public IntPtr CreateImageBrush;
 
-            public CreateBitmapBrush CreateBitmapBrush;
+            public IntPtr CreateBitmapBrush;
 
-            public CreateCommandList CreateCommandList;
+            public IntPtr CreateCommandList;
 
-            public IsDxgiFormatSupported IsDxgiFormatSupported;
+            public IntPtr IsDxgiFormatSupported;
 
-            public IsBufferPrecisionSupported IsBufferPrecisionSupported;
+            public IntPtr IsBufferPrecisionSupported;
 
-            public GetImageLocalBounds GetImageLocalBounds;
+            public IntPtr GetImageLocalBounds;
 
-            public GetImageWorldBounds GetImageWorldBounds;
+            public IntPtr GetImageWorldBounds;
 
-            public GetGlyphRunWorldBounds GetGlyphRunWorldBounds;
+            public IntPtr GetGlyphRunWorldBounds;
 
-            public GetDevice GetDevice;
+            public IntPtr GetDevice;
 
-            public SetTarget SetTarget;
+            public IntPtr SetTarget;
 
-            public GetTarget GetTarget;
+            public IntPtr GetTarget;
 
-            public SetRenderingControls SetRenderingControls;
+            public IntPtr SetRenderingControls;
 
-            public GetRenderingControls GetRenderingControls;
+            public IntPtr GetRenderingControls;
 
-            public SetPrimitiveBlend SetPrimitiveBlend;
+            public IntPtr SetPrimitiveBlend;
 
-            public GetPrimitiveBlend GetPrimitiveBlend;
+            public IntPtr GetPrimitiveBlend;
 
-            public SetUnitMode SetUnitMode;
+            public IntPtr SetUnitMode;
 
-            public GetUnitMode GetUnitMode;
+            public IntPtr GetUnitMode;
 
-            public DrawGlyphRun DrawGlyphRun;
+            public IntPtr DrawGlyphRun;
 
-            public DrawImage DrawImage;
+            public IntPtr DrawImage;
 
-            public DrawGdiMetafile DrawGdiMetafile;
+            public IntPtr DrawGdiMetafile;
 
-            public DrawBitmap DrawBitmap;
+            public IntPtr DrawBitmap;
 
-            public PushLayer PushLayer;
+            public IntPtr PushLayer;
 
-            public InvalidateEffectInputRectangle InvalidateEffectInputRectangle;
+            public IntPtr InvalidateEffectInputRectangle;
 
-            public GetEffectInvalidRectangleCount GetEffectInvalidRectangleCount;
+            public IntPtr GetEffectInvalidRectangleCount;
 
-            public GetEffectInvalidRectangles GetEffectInvalidRectangles;
+            public IntPtr GetEffectInvalidRectangles;
 
-            public GetEffectRequiredInputRectangles GetEffectRequiredInputRectangles;
+            public IntPtr GetEffectRequiredInputRectangles;
 
-            public FillOpacityMask FillOpacityMask;
+            public IntPtr FillOpacityMask;
             #endregion
         }
         #endregion

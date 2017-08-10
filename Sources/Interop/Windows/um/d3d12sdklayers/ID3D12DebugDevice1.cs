@@ -52,11 +52,11 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public SetDebugParameter SetDebugParameter;
+            public IntPtr SetDebugParameter;
 
-            public GetDebugParameter GetDebugParameter;
+            public IntPtr GetDebugParameter;
 
-            public ReportLiveDeviceObjects ReportLiveDeviceObjects;
+            public IntPtr ReportLiveDeviceObjects;
             #endregion
         }
         #endregion

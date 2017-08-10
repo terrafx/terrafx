@@ -3,6 +3,7 @@
 // Ported from um\d2d1_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -61,15 +62,15 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1GradientStopCollection.Vtbl BaseVtbl;
 
-            public GetGradientStops1 GetGradientStops1;
+            public IntPtr GetGradientStops1;
 
-            public GetPreInterpolationSpace GetPreInterpolationSpace;
+            public IntPtr GetPreInterpolationSpace;
 
-            public GetPostInterpolationSpace GetPostInterpolationSpace;
+            public IntPtr GetPostInterpolationSpace;
 
-            public GetBufferPrecision GetBufferPrecision;
+            public IntPtr GetBufferPrecision;
 
-            public GetColorInterpolationMode GetColorInterpolationMode;
+            public IntPtr GetColorInterpolationMode;
             #endregion
         }
         #endregion

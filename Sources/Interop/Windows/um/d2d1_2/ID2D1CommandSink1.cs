@@ -3,6 +3,7 @@
 // Ported from um\d2d1_2.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -33,7 +34,7 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1CommandSink.Vtbl BaseVtbl;
 
-            public SetPrimitiveBlend1 SetPrimitiveBlend1;
+            public IntPtr SetPrimitiveBlend1;
             #endregion
         }
         #endregion

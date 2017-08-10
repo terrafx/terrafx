@@ -87,19 +87,19 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Image.Vtbl BaseVtbl;
 
-            public GetSize GetSize;
+            public IntPtr GetSize;
 
-            public GetPixelSize GetPixelSize;
+            public IntPtr GetPixelSize;
 
-            public GetPixelFormat GetPixelFormat;
+            public IntPtr GetPixelFormat;
 
-            public GetDpi GetDpi;
+            public IntPtr GetDpi;
 
-            public CopyFromBitmap CopyFromBitmap;
+            public IntPtr CopyFromBitmap;
 
-            public CopyFromRenderTarget CopyFromRenderTarget;
+            public IntPtr CopyFromRenderTarget;
 
-            public CopyFromMemory CopyFromMemory;
+            public IntPtr CopyFromMemory;
             #endregion
         }
         #endregion

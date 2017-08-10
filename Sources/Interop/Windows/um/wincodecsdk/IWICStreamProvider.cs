@@ -55,13 +55,13 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetStream GetStream;
+            public IntPtr GetStream;
 
-            public GetPersistOptions GetPersistOptions;
+            public IntPtr GetPersistOptions;
 
-            public GetPreferredVendorGUID GetPreferredVendorGUID;
+            public IntPtr GetPreferredVendorGUID;
 
-            public RefreshStream RefreshStream;
+            public IntPtr RefreshStream;
             #endregion
         }
         #endregion

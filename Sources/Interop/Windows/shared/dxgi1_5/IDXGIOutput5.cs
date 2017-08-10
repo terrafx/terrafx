@@ -37,7 +37,7 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIOutput4.Vtbl BaseVtbl;
 
-            public DuplicateOutput1 DuplicateOutput1;
+            public IntPtr DuplicateOutput1;
             #endregion
         }
         #endregion

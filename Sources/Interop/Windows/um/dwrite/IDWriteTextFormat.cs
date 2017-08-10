@@ -277,55 +277,55 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public SetTextAlignment SetTextAlignment;
+            public IntPtr SetTextAlignment;
 
-            public SetParagraphAlignment SetParagraphAlignment;
+            public IntPtr SetParagraphAlignment;
 
-            public SetWordWrapping SetWordWrapping;
+            public IntPtr SetWordWrapping;
 
-            public SetReadingDirection SetReadingDirection;
+            public IntPtr SetReadingDirection;
 
-            public SetFlowDirection SetFlowDirection;
+            public IntPtr SetFlowDirection;
 
-            public SetIncrementalTabStop SetIncrementalTabStop;
+            public IntPtr SetIncrementalTabStop;
 
-            public SetTrimming SetTrimming;
+            public IntPtr SetTrimming;
 
-            public SetLineSpacing SetLineSpacing;
+            public IntPtr SetLineSpacing;
 
-            public GetTextAlignment GetTextAlignment;
+            public IntPtr GetTextAlignment;
 
-            public GetParagraphAlignment GetParagraphAlignment;
+            public IntPtr GetParagraphAlignment;
 
-            public GetWordWrapping GetWordWrapping;
+            public IntPtr GetWordWrapping;
 
-            public GetReadingDirection GetReadingDirection;
+            public IntPtr GetReadingDirection;
 
-            public GetFlowDirection GetFlowDirection;
+            public IntPtr GetFlowDirection;
 
-            public GetIncrementalTabStop GetIncrementalTabStop;
+            public IntPtr GetIncrementalTabStop;
 
-            public GetTrimming GetTrimming;
+            public IntPtr GetTrimming;
 
-            public GetLineSpacing GetLineSpacing;
+            public IntPtr GetLineSpacing;
 
-            public GetFontCollection GetFontCollection;
+            public IntPtr GetFontCollection;
 
-            public GetFontFamilyNameLength GetFontFamilyNameLength;
+            public IntPtr GetFontFamilyNameLength;
 
-            public GetFontFamilyName GetFontFamilyName;
+            public IntPtr GetFontFamilyName;
 
-            public GetFontWeight GetFontWeight;
+            public IntPtr GetFontWeight;
 
-            public GetFontStyle GetFontStyle;
+            public IntPtr GetFontStyle;
 
-            public GetFontStretch GetFontStretch;
+            public IntPtr GetFontStretch;
 
-            public GetFontSize GetFontSize;
+            public IntPtr GetFontSize;
 
-            public GetLocaleNameLength GetLocaleNameLength;
+            public IntPtr GetLocaleNameLength;
 
-            public GetLocaleName GetLocaleName;
+            public IntPtr GetLocaleName;
             #endregion
         }
         #endregion

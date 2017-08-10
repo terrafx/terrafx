@@ -50,11 +50,11 @@ namespace TerraFX.Interop.Desktop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetFrameStatisticsMedia GetFrameStatisticsMedia;
+            public IntPtr GetFrameStatisticsMedia;
 
-            public SetPresentDuration SetPresentDuration;
+            public IntPtr SetPresentDuration;
 
-            public CheckPresentDurationSupport CheckPresentDurationSupport;
+            public IntPtr CheckPresentDurationSupport;
             #endregion
         }
         #endregion

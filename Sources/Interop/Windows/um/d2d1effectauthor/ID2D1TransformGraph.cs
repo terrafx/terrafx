@@ -3,6 +3,7 @@
 // Ported from um\d2d1effectauthor.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -106,23 +107,23 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetInputCount GetInputCount;
+            public IntPtr GetInputCount;
 
-            public SetSingleTransformNode SetSingleTransformNode;
+            public IntPtr SetSingleTransformNode;
 
-            public AddNode AddNode;
+            public IntPtr AddNode;
 
-            public RemoveNode RemoveNode;
+            public IntPtr RemoveNode;
 
-            public SetOutputNode SetOutputNode;
+            public IntPtr SetOutputNode;
 
-            public ConnectNode ConnectNode;
+            public IntPtr ConnectNode;
 
-            public ConnectToEffectInput ConnectToEffectInput;
+            public IntPtr ConnectToEffectInput;
 
-            public Clear Clear;
+            public IntPtr Clear;
 
-            public SetPassthroughGraph SetPassthroughGraph;
+            public IntPtr SetPassthroughGraph;
             #endregion
         }
         #endregion

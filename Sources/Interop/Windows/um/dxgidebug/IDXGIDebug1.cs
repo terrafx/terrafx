@@ -43,11 +43,11 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIDebug.Vtbl BaseVtbl;
 
-            public EnableLeakTrackingForThread EnableLeakTrackingForThread;
+            public IntPtr EnableLeakTrackingForThread;
 
-            public DisableLeakTrackingForThread DisableLeakTrackingForThread;
+            public IntPtr DisableLeakTrackingForThread;
 
-            public IsLeakTrackingEnabledForThread IsLeakTrackingEnabledForThread;
+            public IntPtr IsLeakTrackingEnabledForThread;
             #endregion
         }
         #endregion

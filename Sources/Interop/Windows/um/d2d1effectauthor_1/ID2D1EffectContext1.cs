@@ -3,6 +3,7 @@
 // Ported from um\d2d1effectauthor_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -24,11 +25,11 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateLookupTable3D(
             [In] ID2D1EffectContext1* This,
             [In] D2D1_BUFFER_PRECISION precision,
-            [In, ComAliasName("UINT32")] /* readonly */ uint *extents,
+            [In, ComAliasName("UINT32")] /* readonly */ uint* extents,
             [In, ComAliasName("BYTE")] /* readonly */ byte* data,
             [In, ComAliasName("UINT32")] uint dataCount,
             [In, ComAliasName("UINT32")] /* readonly */ uint* strides,
-            [Out] ID2D1LookupTable3D** lookupTable 
+            [Out] ID2D1LookupTable3D** lookupTable
         );
         #endregion
 
@@ -38,7 +39,7 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1EffectContext.Vtbl BaseVtbl;
 
-            public CreateLookupTable3D CreateLookupTable3D;
+            public IntPtr CreateLookupTable3D;
             #endregion
         }
         #endregion

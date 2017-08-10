@@ -131,27 +131,27 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetFontFamily GetFontFamily;
+            public IntPtr GetFontFamily;
 
-            public GetWeight GetWeight;
+            public IntPtr GetWeight;
 
-            public GetStretch GetStretch;
+            public IntPtr GetStretch;
 
-            public GetStyle GetStyle;
+            public IntPtr GetStyle;
 
-            public IsSymbolFont IsSymbolFont;
+            public IntPtr IsSymbolFont;
 
-            public GetFaceNames GetFaceNames;
+            public IntPtr GetFaceNames;
 
-            public GetInformationalStrings GetInformationalStrings;
+            public IntPtr GetInformationalStrings;
 
-            public GetSimulations GetSimulations;
+            public IntPtr GetSimulations;
 
-            public GetMetrics GetMetrics;
+            public IntPtr GetMetrics;
 
-            public HasCharacter HasCharacter;
+            public IntPtr HasCharacter;
 
-            public CreateFontFace CreateFontFace;
+            public IntPtr CreateFontFace;
             #endregion
         }
         #endregion

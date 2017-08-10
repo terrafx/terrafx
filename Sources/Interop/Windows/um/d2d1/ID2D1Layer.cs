@@ -32,7 +32,7 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Resource.Vtbl BaseVtbl;
 
-            public GetSize GetSize;
+            public IntPtr GetSize;
             #endregion
         }
         #endregion

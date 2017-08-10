@@ -3,6 +3,7 @@
 // Ported from um\dwrite_3.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -88,15 +89,15 @@ namespace TerraFX.Interop
             #region Fields
             public IDWriteFactory4.Vtbl BaseVtbl;
 
-            public CreateFontSetBuilder CreateFontSetBuilder;
+            public IntPtr CreateFontSetBuilder;
 
-            public CreateInMemoryFontFileLoader CreateInMemoryFontFileLoader;
+            public IntPtr CreateInMemoryFontFileLoader;
 
-            public CreateHttpFontFileLoader CreateHttpFontFileLoader;
+            public IntPtr CreateHttpFontFileLoader;
 
-            public AnalyzeContainerType AnalyzeContainerType;
+            public IntPtr AnalyzeContainerType;
 
-            public UnpackFontFile UnpackFontFile;
+            public IntPtr UnpackFontFile;
             #endregion
         }
         #endregion

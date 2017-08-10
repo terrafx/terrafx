@@ -34,7 +34,7 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public RegisterProgressNotification RegisterProgressNotification;
+            public IntPtr RegisterProgressNotification;
             #endregion
         }
         #endregion

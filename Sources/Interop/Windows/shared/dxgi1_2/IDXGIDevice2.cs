@@ -52,11 +52,11 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIDevice1.Vtbl BaseVtbl;
 
-            public OfferResources OfferResources;
+            public IntPtr OfferResources;
 
-            public ReclaimResources ReclaimResources;
+            public IntPtr ReclaimResources;
 
-            public EnqueueSetEvent EnqueueSetEvent;
+            public IntPtr EnqueueSetEvent;
             #endregion
         }
         #endregion

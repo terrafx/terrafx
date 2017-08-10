@@ -32,7 +32,7 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Geometry.Vtbl BaseVtbl;
 
-            public GetRoundedRect GetRoundedRect;
+            public IntPtr GetRoundedRect;
             #endregion
         }
         #endregion

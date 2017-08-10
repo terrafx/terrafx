@@ -51,11 +51,11 @@ namespace TerraFX.Interop
             #region Fields
             public IWICBitmapSource.Vtbl BaseVtbl;
 
-            public Lock Lock;
+            public IntPtr Lock;
 
-            public SetPalette SetPalette;
+            public IntPtr SetPalette;
 
-            public SetResolution SetResolution;
+            public IntPtr SetResolution;
             #endregion
         }
         #endregion

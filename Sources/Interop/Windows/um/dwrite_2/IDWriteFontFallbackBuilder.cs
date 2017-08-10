@@ -3,6 +3,7 @@
 // Ported from um\dwrite_2.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -72,11 +73,11 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public AddMapping AddMapping;
+            public IntPtr AddMapping;
 
-            public AddMappings AddMappings;
+            public IntPtr AddMappings;
 
-            public CreateFontFallback CreateFontFallback;
+            public IntPtr CreateFontFallback;
             #endregion
         }
         #endregion

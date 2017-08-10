@@ -50,11 +50,11 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetPackageTargetTypes GetPackageTargetTypes;
+            public IntPtr GetPackageTargetTypes;
 
-            public GetPackageTarget GetPackageTarget;
+            public IntPtr GetPackageTarget;
 
-            public Cancel Cancel;
+            public IntPtr Cancel;
             #endregion
         }
         #endregion

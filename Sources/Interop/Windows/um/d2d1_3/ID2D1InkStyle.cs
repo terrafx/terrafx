@@ -3,6 +3,7 @@
 // Ported from um\d2d1_3.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -51,13 +52,13 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Resource.Vtbl BaseVtbl;
 
-            public SetNibTransform SetNibTransform;
+            public IntPtr SetNibTransform;
 
-            public GetNibTransform GetNibTransform;
+            public IntPtr GetNibTransform;
 
-            public SetNibShape SetNibShape;
+            public IntPtr SetNibShape;
 
-            public GetNibShape GetNibShape;
+            public IntPtr GetNibShape;
             #endregion
         }
         #endregion

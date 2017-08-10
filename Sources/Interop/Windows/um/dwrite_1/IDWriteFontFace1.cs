@@ -3,6 +3,7 @@
 // Ported from um\dwrite_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 using static TerraFX.Interop.Windows;
@@ -206,29 +207,29 @@ namespace TerraFX.Interop
             #region Fields
             public IDWriteFontFace.Vtbl BaseVtbl;
 
-            public GetMetrics GetMetrics;
+            public IntPtr GetMetrics;
 
-            public GetGdiCompatibleMetrics GetGdiCompatibleMetrics;
+            public IntPtr GetGdiCompatibleMetrics;
 
-            public GetCaretMetrics GetCaretMetrics;
+            public IntPtr GetCaretMetrics;
 
-            public GetUnicodeRanges GetUnicodeRanges;
+            public IntPtr GetUnicodeRanges;
 
-            public IsMonospacedFont IsMonospacedFont;
+            public IntPtr IsMonospacedFont;
 
-            public GetDesignGlyphAdvances GetDesignGlyphAdvances;
+            public IntPtr GetDesignGlyphAdvances;
 
-            public GetGdiCompatibleGlyphAdvances GetGdiCompatibleGlyphAdvances;
+            public IntPtr GetGdiCompatibleGlyphAdvances;
 
-            public GetKerningPairAdjustments GetKerningPairAdjustments;
+            public IntPtr GetKerningPairAdjustments;
 
-            public HasKerningPairs HasKerningPairs;
+            public IntPtr HasKerningPairs;
 
-            public GetRecommendedRenderingMode GetRecommendedRenderingMode;
+            public IntPtr GetRecommendedRenderingMode;
 
-            public GetVerticalGlyphVariants GetVerticalGlyphVariants;
+            public IntPtr GetVerticalGlyphVariants;
 
-            public HasVerticalGlyphVariants HasVerticalGlyphVariants;
+            public IntPtr HasVerticalGlyphVariants;
             #endregion
         }
         #endregion

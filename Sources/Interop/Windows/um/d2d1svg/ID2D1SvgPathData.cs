@@ -3,6 +3,7 @@
 // Ported from um\d2d1svg.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -50,7 +51,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetSegmentData(
             [In] ID2D1SvgPathData* This,
-            [Out, ComAliasName("FLOAT")] float *data,
+            [Out, ComAliasName("FLOAT")] float* data,
             [In, ComAliasName("UINT32")] uint dataCount,
             [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
         );
@@ -96,7 +97,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetCommands(
             [In] ID2D1SvgPathData* This,
-            [Out] D2D1_SVG_PATH_COMMAND *commands,
+            [Out] D2D1_SVG_PATH_COMMAND* commands,
             [In, ComAliasName("UINT32")] uint commandsCount,
             [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
         );
@@ -126,23 +127,23 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1SvgAttribute.Vtbl BaseVtbl;
 
-            public RemoveSegmentDataAtEnd RemoveSegmentDataAtEnd;
+            public IntPtr RemoveSegmentDataAtEnd;
 
-            public UpdateSegmentData UpdateSegmentData;
+            public IntPtr UpdateSegmentData;
 
-            public GetSegmentData GetSegmentData;
+            public IntPtr GetSegmentData;
 
-            public GetSegmentDataCount GetSegmentDataCount;
+            public IntPtr GetSegmentDataCount;
 
-            public RemoveCommandsAtEnd RemoveCommandsAtEnd;
+            public IntPtr RemoveCommandsAtEnd;
 
-            public UpdateCommands UpdateCommands;
+            public IntPtr UpdateCommands;
 
-            public GetCommands GetCommands;
+            public IntPtr GetCommands;
 
-            public GetCommandsCount GetCommandsCount;
+            public IntPtr GetCommandsCount;
 
-            public CreatePathGeometry CreatePathGeometry;
+            public IntPtr CreatePathGeometry;
             #endregion
         }
         #endregion

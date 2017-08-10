@@ -95,15 +95,15 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public CreateFontFromLOGFONT CreateFontFromLOGFONT;
+            public IntPtr CreateFontFromLOGFONT;
 
-            public ConvertFontToLOGFONT ConvertFontToLOGFONT;
+            public IntPtr ConvertFontToLOGFONT;
 
-            public ConvertFontFaceToLOGFONT ConvertFontFaceToLOGFONT;
+            public IntPtr ConvertFontFaceToLOGFONT;
 
-            public CreateFontFaceFromHdc CreateFontFaceFromHdc;
+            public IntPtr CreateFontFaceFromHdc;
 
-            public CreateBitmapRenderTarget CreateBitmapRenderTarget;
+            public IntPtr CreateBitmapRenderTarget;
             #endregion
         }
         #endregion

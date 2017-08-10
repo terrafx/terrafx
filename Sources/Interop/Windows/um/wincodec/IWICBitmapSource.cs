@@ -69,15 +69,15 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetSize GetSize;
+            public IntPtr GetSize;
 
-            public GetPixelFormat GetPixelFormat;
+            public IntPtr GetPixelFormat;
 
-            public GetResolution GetResolution;
+            public IntPtr GetResolution;
 
-            public CopyPalette CopyPalette;
+            public IntPtr CopyPalette;
 
-            public CopyPixels CopyPixels;
+            public IntPtr CopyPixels;
             #endregion
         }
         #endregion

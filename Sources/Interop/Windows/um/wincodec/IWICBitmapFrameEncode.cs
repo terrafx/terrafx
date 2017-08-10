@@ -118,27 +118,27 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public Initialize Initialize;
+            public IntPtr Initialize;
 
-            public SetSize SetSize;
+            public IntPtr SetSize;
 
-            public SetResolution SetResolution;
+            public IntPtr SetResolution;
 
-            public SetPixelFormat SetPixelFormat;
+            public IntPtr SetPixelFormat;
 
-            public SetColorContexts SetColorContexts;
+            public IntPtr SetColorContexts;
 
-            public SetPalette SetPalette;
+            public IntPtr SetPalette;
 
-            public SetThumbnail SetThumbnail;
+            public IntPtr SetThumbnail;
 
-            public WritePixels WritePixels;
+            public IntPtr WritePixels;
 
-            public WriteSource WriteSource;
+            public IntPtr WriteSource;
 
-            public Commit Commit;
+            public IntPtr Commit;
 
-            public GetMetadataQueryWriter GetMetadataQueryWriter;
+            public IntPtr GetMetadataQueryWriter;
             #endregion
         }
         #endregion

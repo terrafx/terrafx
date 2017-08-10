@@ -67,15 +67,15 @@ namespace TerraFX.Interop
             #region Fields
             public IWICComponentInfo.Vtbl BaseVtbl;
 
-            public GetFormatGUID GetFormatGUID;
+            public IntPtr GetFormatGUID;
 
-            public GetColorContext GetColorContext;
+            public IntPtr GetColorContext;
 
-            public GetBitsPerPixel GetBitsPerPixel;
+            public IntPtr GetBitsPerPixel;
 
-            public GetChannelCount GetChannelCount;
+            public IntPtr GetChannelCount;
 
-            public GetChannelMask GetChannelMask;
+            public IntPtr GetChannelMask;
             #endregion
         }
         #endregion

@@ -66,15 +66,15 @@ namespace TerraFX.Interop
             #region Fields
             public IWICMetadataBlockReader.Vtbl BaseVtbl;
 
-            public InitializeFromBlockReader InitializeFromBlockReader;
+            public IntPtr InitializeFromBlockReader;
 
-            public GetWriterByIndex GetWriterByIndex;
+            public IntPtr GetWriterByIndex;
 
-            public AddWriter AddWriter;
+            public IntPtr AddWriter;
 
-            public SetWriterByIndex SetWriterByIndex;
+            public IntPtr SetWriterByIndex;
 
-            public RemoveWriterByIndex RemoveWriterByIndex;
+            public IntPtr RemoveWriterByIndex;
             #endregion
         }
         #endregion

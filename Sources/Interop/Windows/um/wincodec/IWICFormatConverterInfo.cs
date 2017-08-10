@@ -42,9 +42,9 @@ namespace TerraFX.Interop
             #region Fields
             public IWICComponentInfo.Vtbl BaseVtbl;
 
-            public GetPixelFormats GetPixelFormats;
+            public IntPtr GetPixelFormats;
 
-            public CreateInstance CreateInstance;
+            public IntPtr CreateInstance;
             #endregion
         }
         #endregion

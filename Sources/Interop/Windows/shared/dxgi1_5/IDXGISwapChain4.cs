@@ -34,7 +34,7 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGISwapChain3.Vtbl BaseVtbl;
 
-            public SetHDRMetaData SetHDRMetaData;
+            public IntPtr SetHDRMetaData;
             #endregion
         }
         #endregion

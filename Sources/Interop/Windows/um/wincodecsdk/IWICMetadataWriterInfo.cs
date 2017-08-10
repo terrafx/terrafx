@@ -44,9 +44,9 @@ namespace TerraFX.Interop
             #region Fields
             public IWICMetadataHandlerInfo.Vtbl BaseVtbl;
 
-            public GetHeader GetHeader;
+            public IntPtr GetHeader;
 
-            public CreateInstance CreateInstance;
+            public IntPtr CreateInstance;
             #endregion
         }
         #endregion

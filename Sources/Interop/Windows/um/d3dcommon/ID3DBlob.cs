@@ -38,9 +38,9 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetBufferPointer GetBufferPointer;
+            public IntPtr GetBufferPointer;
 
-            public GetBufferSize GetBufferSize;
+            public IntPtr GetBufferSize;
             #endregion
         }
         #endregion

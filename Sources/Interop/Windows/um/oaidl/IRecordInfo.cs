@@ -164,37 +164,37 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public RecordInit RecordInit;
+            public IntPtr RecordInit;
 
-            public RecordClear RecordClear;
+            public IntPtr RecordClear;
 
-            public RecordCopy RecordCopy;
+            public IntPtr RecordCopy;
 
-            public GetGuid GetGuid;
+            public IntPtr GetGuid;
 
-            public GetName GetName;
+            public IntPtr GetName;
 
-            public GetSize GetSize;
+            public IntPtr GetSize;
 
-            public GetTypeInfo GetTypeInfo;
+            public IntPtr GetTypeInfo;
 
-            public GetField GetField;
+            public IntPtr GetField;
 
-            public GetFieldNoCopy GetFieldNoCopy;
+            public IntPtr GetFieldNoCopy;
 
-            public PutField PutField;
+            public IntPtr PutField;
 
-            public PutFieldNoCopy PutFieldNoCopy;
+            public IntPtr PutFieldNoCopy;
 
-            public GetFieldNames GetFieldNames;
+            public IntPtr GetFieldNames;
 
-            public IsMatchingType IsMatchingType;
+            public IntPtr IsMatchingType;
 
-            public RecordCreate RecordCreate;
+            public IntPtr RecordCreate;
 
-            public RecordCreateCopy RecordCreateCopy;
+            public IntPtr RecordCreateCopy;
 
-            public RecordDestroy RecordDestroy;
+            public IntPtr RecordDestroy;
             #endregion
         }
         #endregion

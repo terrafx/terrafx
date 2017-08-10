@@ -60,13 +60,13 @@ namespace TerraFX.Interop
             #region Fields
             public IStream.Vtbl BaseVtbl;
 
-            public InitializeFromIStream InitializeFromIStream;
+            public IntPtr InitializeFromIStream;
 
-            public InitializeFromFilename InitializeFromFilename;
+            public IntPtr InitializeFromFilename;
 
-            public InitializeFromMemory InitializeFromMemory;
+            public IntPtr InitializeFromMemory;
 
-            public InitializeFromIStreamRegion InitializeFromIStreamRegion;
+            public IntPtr InitializeFromIStreamRegion;
             #endregion
         }
         #endregion

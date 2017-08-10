@@ -101,27 +101,27 @@ namespace TerraFX.Interop
         public /* blittable */ struct Vtbl
         {
             #region Fields
-            public GetDesc GetDesc;
+            public IntPtr GetDesc;
 
-            public GetMemberTypeByIndex GetMemberTypeByIndex;
+            public IntPtr GetMemberTypeByIndex;
 
-            public GetMemberTypeByName GetMemberTypeByName;
+            public IntPtr GetMemberTypeByName;
 
-            public GetMemberTypeName GetMemberTypeName;
+            public IntPtr GetMemberTypeName;
 
-            public IsEqual IsEqual;
+            public IntPtr IsEqual;
 
-            public GetSubType GetSubType;
+            public IntPtr GetSubType;
 
-            public GetBaseClass GetBaseClass;
+            public IntPtr GetBaseClass;
 
-            public GetNumInterfaces GetNumInterfaces;
+            public IntPtr GetNumInterfaces;
 
-            public GetInterfaceByIndex GetInterfaceByIndex;
+            public IntPtr GetInterfaceByIndex;
 
-            public IsOfType IsOfType;
+            public IntPtr IsOfType;
 
-            public ImplementsInterface ImplementsInterface;
+            public IntPtr ImplementsInterface;
             #endregion
         }
         #endregion

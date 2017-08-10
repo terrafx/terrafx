@@ -110,25 +110,25 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public InitializePredefined InitializePredefined;
+            public IntPtr InitializePredefined;
 
-            public InitializeCustom InitializeCustom;
+            public IntPtr InitializeCustom;
 
-            public InitializeFromBitmap InitializeFromBitmap;
+            public IntPtr InitializeFromBitmap;
 
-            public InitializeFromPalette InitializeFromPalette;
+            public IntPtr InitializeFromPalette;
 
-            public _GetType _GetType;
+            public IntPtr _GetType;
 
-            public GetColorCount GetColorCount;
+            public IntPtr GetColorCount;
 
-            public GetColors GetColors;
+            public IntPtr GetColors;
 
-            public IsBlackWhite IsBlackWhite;
+            public IntPtr IsBlackWhite;
 
-            public IsGrayscale IsGrayscale;
+            public IntPtr IsGrayscale;
 
-            public HasAlpha HasAlpha;
+            public IntPtr HasAlpha;
             #endregion
         }
         #endregion

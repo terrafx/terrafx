@@ -82,21 +82,21 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Brush.Vtbl BaseVtbl;
 
-            public SetExtendModeX SetExtendModeX;
+            public IntPtr SetExtendModeX;
 
-            public SetExtendModeY SetExtendModeY;
+            public IntPtr SetExtendModeY;
 
-            public SetInterpolationMode SetInterpolationMode;
+            public IntPtr SetInterpolationMode;
 
-            public SetBitmap SetBitmap;
+            public IntPtr SetBitmap;
 
-            public GetExtendModeX GetExtendModeX;
+            public IntPtr GetExtendModeX;
 
-            public GetExtendModeY GetExtendModeY;
+            public IntPtr GetExtendModeY;
 
-            public GetInterpolationMode GetInterpolationMode;
+            public IntPtr GetInterpolationMode;
 
-            public GetBitmap GetBitmap;
+            public IntPtr GetBitmap;
             #endregion
         }
         #endregion

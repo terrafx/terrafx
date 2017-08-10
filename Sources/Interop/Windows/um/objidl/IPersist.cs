@@ -31,7 +31,7 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetClassID GetClassID;
+            public IntPtr GetClassID;
             #endregion
         }
         #endregion

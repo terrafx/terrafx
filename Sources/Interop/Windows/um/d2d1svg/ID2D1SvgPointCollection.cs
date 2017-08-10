@@ -3,6 +3,7 @@
 // Ported from um\d2d1svg.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -50,7 +51,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetPoints(
             [In] ID2D1SvgPointCollection* This,
-            [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F *points,
+            [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* points,
             [In, ComAliasName("UINT32")] uint pointsCount,
             [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint startIndex
         );
@@ -70,13 +71,13 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1SvgAttribute.Vtbl BaseVtbl;
 
-            public RemovePointsAtEnd RemovePointsAtEnd;
+            public IntPtr RemovePointsAtEnd;
 
-            public UpdatePoints UpdatePoints;
+            public IntPtr UpdatePoints;
 
-            public GetPoints GetPoints;
+            public IntPtr GetPoints;
 
-            public GetPointsCount GetPointsCount;
+            public IntPtr GetPointsCount;
             #endregion
         }
         #endregion

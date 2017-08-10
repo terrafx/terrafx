@@ -31,7 +31,7 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIFactory2.Vtbl BaseVtbl;
 
-            public GetCreationFlags GetCreationFlags;
+            public IntPtr GetCreationFlags;
             #endregion
         }
         #endregion

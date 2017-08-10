@@ -181,31 +181,31 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Resource.Vtbl BaseVtbl;
 
-            public GetBounds GetBounds;
+            public IntPtr GetBounds;
 
-            public GetWidenedBounds GetWidenedBounds;
+            public IntPtr GetWidenedBounds;
 
-            public StrokeContainsPoint StrokeContainsPoint;
+            public IntPtr StrokeContainsPoint;
 
-            public FillContainsPoint FillContainsPoint;
+            public IntPtr FillContainsPoint;
 
-            public CompareWithGeometry CompareWithGeometry;
+            public IntPtr CompareWithGeometry;
 
-            public Simplify Simplify;
+            public IntPtr Simplify;
 
-            public Tessellate Tessellate;
+            public IntPtr Tessellate;
 
-            public CombineWithGeometry CombineWithGeometry;
+            public IntPtr CombineWithGeometry;
 
-            public Outline Outline;
+            public IntPtr Outline;
 
-            public ComputeArea ComputeArea;
+            public IntPtr ComputeArea;
 
-            public ComputeLength ComputeLength;
+            public IntPtr ComputeLength;
 
-            public ComputePointAtLength ComputePointAtLength;
+            public IntPtr ComputePointAtLength;
 
-            public Widen Widen;
+            public IntPtr Widen;
             #endregion
         }
         #endregion

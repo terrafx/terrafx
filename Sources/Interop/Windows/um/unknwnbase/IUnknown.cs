@@ -45,11 +45,11 @@ namespace TerraFX.Interop
         public  /* blittable */ struct Vtbl
         {
             #region Fields
-            public QueryInterface QueryInterface;
+            public IntPtr QueryInterface;
 
-            public AddRef AddRef;
+            public IntPtr AddRef;
 
-            public Release Release;
+            public IntPtr Release;
             #endregion
         }
         #endregion

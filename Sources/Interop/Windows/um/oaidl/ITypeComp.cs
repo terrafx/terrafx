@@ -48,9 +48,9 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public Bind Bind;
+            public IntPtr Bind;
 
-            public BindType BindType;
+            public IntPtr BindType;
             #endregion
         }
         #endregion

@@ -56,13 +56,13 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIDeviceSubObject.Vtbl BaseVtbl;
 
-            public GetSharedHandle GetSharedHandle;
+            public IntPtr GetSharedHandle;
 
-            public GetUsage GetUsage;
+            public IntPtr GetUsage;
 
-            public SetEvictionPriority SetEvictionPriority;
+            public IntPtr SetEvictionPriority;
 
-            public GetEvictionPriority GetEvictionPriority;
+            public IntPtr GetEvictionPriority;
             #endregion
         }
         #endregion

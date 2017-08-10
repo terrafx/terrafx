@@ -34,7 +34,7 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1RenderTarget.Vtbl BaseVtbl;
 
-            public BindDC BindDC;
+            public IntPtr BindDC;
             #endregion
         }
         #endregion

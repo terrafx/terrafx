@@ -3,6 +3,7 @@
 // Ported from um\d2d1_3.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 using static TerraFX.Interop.D2D1_COLOR_BITMAP_GLYPH_SNAP_OPTION;
@@ -58,7 +59,7 @@ namespace TerraFX.Interop
             [In] IDWriteTextLayout* textLayout,
             [In, Optional] ID2D1Brush* defaultFillBrush,
             [In, Optional] ID2D1SvgGlyphStyle* svgGlyphStyle,
-            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint colorPaletteIndex ,
+            [In, DefaultParameterValue(0u), ComAliasName("UINT32")] uint colorPaletteIndex,
             [In] D2D1_DRAW_TEXT_OPTIONS options = D2D1_DRAW_TEXT_OPTIONS_ENABLE_COLOR_FONT
         );
 
@@ -140,19 +141,19 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1DeviceContext3.Vtbl BaseVtbl;
 
-            public CreateSvgGlyphStyle CreateSvgGlyphStyle;
+            public IntPtr CreateSvgGlyphStyle;
 
-            public DrawText DrawText;
+            public IntPtr DrawText;
 
-            public DrawTextLayout DrawTextLayout;
+            public IntPtr DrawTextLayout;
 
-            public DrawColorBitmapGlyphRun DrawColorBitmapGlyphRun;
+            public IntPtr DrawColorBitmapGlyphRun;
 
-            public DrawSvgGlyphRun DrawSvgGlyphRun;
+            public IntPtr DrawSvgGlyphRun;
 
-            public GetColorBitmapGlyphImage GetColorBitmapGlyphImage;
+            public IntPtr GetColorBitmapGlyphImage;
 
-            public GetSvgGlyphImage GetSvgGlyphImage;
+            public IntPtr GetSvgGlyphImage;
             #endregion
         }
         #endregion

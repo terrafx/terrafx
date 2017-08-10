@@ -76,15 +76,15 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public Read Read;
+            public IntPtr Read;
 
-            public Write Write;
+            public IntPtr Write;
 
-            public CountProperties CountProperties;
+            public IntPtr CountProperties;
 
-            public GetPropertyInfo GetPropertyInfo;
+            public IntPtr GetPropertyInfo;
 
-            public LoadObject LoadObject;
+            public IntPtr LoadObject;
             #endregion
         }
         #endregion

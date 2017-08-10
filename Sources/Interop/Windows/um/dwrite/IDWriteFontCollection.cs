@@ -74,13 +74,13 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetFontFamilyCount GetFontFamilyCount;
+            public IntPtr GetFontFamilyCount;
 
-            public GetFontFamily GetFontFamily;
+            public IntPtr GetFontFamily;
 
-            public FindFamilyName FindFamilyName;
+            public IntPtr FindFamilyName;
 
-            public GetFontFromFontFace GetFontFromFontFace;
+            public IntPtr GetFontFromFontFace;
             #endregion
         }
         #endregion

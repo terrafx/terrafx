@@ -33,7 +33,7 @@ namespace TerraFX.Interop
             #region Fields
             public IWICBitmapSource.Vtbl BaseVtbl;
 
-            public Initialize Initialize;
+            public IntPtr Initialize;
             #endregion
         }
         #endregion

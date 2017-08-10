@@ -230,47 +230,47 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetDpi GetDpi;
+            public IntPtr GetDpi;
 
-            public CreateEffect CreateEffect;
+            public IntPtr CreateEffect;
 
-            public GetMaximumSupportedFeatureLevel GetMaximumSupportedFeatureLevel;
+            public IntPtr GetMaximumSupportedFeatureLevel;
 
-            public CreateTransformNodeFromEffect CreateTransformNodeFromEffect;
+            public IntPtr CreateTransformNodeFromEffect;
 
-            public CreateBlendTransform CreateBlendTransform;
+            public IntPtr CreateBlendTransform;
 
-            public CreateBorderTransform CreateBorderTransform;
+            public IntPtr CreateBorderTransform;
 
-            public CreateOffsetTransform CreateOffsetTransform;
+            public IntPtr CreateOffsetTransform;
 
-            public CreateBoundsAdjustmentTransform CreateBoundsAdjustmentTransform;
+            public IntPtr CreateBoundsAdjustmentTransform;
 
-            public LoadPixelShader LoadPixelShader;
+            public IntPtr LoadPixelShader;
 
-            public LoadVertexShader LoadVertexShader;
+            public IntPtr LoadVertexShader;
 
-            public LoadComputeShader LoadComputeShader;
+            public IntPtr LoadComputeShader;
 
-            public IsShaderLoaded IsShaderLoaded;
+            public IntPtr IsShaderLoaded;
 
-            public CreateResourceTexture CreateResourceTexture;
+            public IntPtr CreateResourceTexture;
 
-            public FindResourceTexture FindResourceTexture;
+            public IntPtr FindResourceTexture;
 
-            public CreateVertexBuffer CreateVertexBuffer;
+            public IntPtr CreateVertexBuffer;
 
-            public FindVertexBuffer FindVertexBuffer;
+            public IntPtr FindVertexBuffer;
 
-            public CreateColorContext CreateColorContext;
+            public IntPtr CreateColorContext;
 
-            public CreateColorContextFromFilename CreateColorContextFromFilename;
+            public IntPtr CreateColorContextFromFilename;
 
-            public CreateColorContextFromWicColorContext CreateColorContextFromWicColorContext;
+            public IntPtr CreateColorContextFromWicColorContext;
 
-            public CheckFeatureSupport CheckFeatureSupport;
+            public IntPtr CheckFeatureSupport;
 
-            public IsBufferPrecisionSupported IsBufferPrecisionSupported;
+            public IntPtr IsBufferPrecisionSupported;
             #endregion
         }
         #endregion

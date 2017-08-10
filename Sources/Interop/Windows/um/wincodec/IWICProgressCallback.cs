@@ -34,7 +34,7 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public Notify Notify;
+            public IntPtr Notify;
             #endregion
         }
         #endregion

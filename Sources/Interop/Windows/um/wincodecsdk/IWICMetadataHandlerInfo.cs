@@ -87,19 +87,19 @@ namespace TerraFX.Interop
             #region Fields
             public IWICComponentInfo.Vtbl BaseVtbl;
 
-            public GetMetadataFormat GetMetadataFormat;
+            public IntPtr GetMetadataFormat;
 
-            public GetContainerFormats GetContainerFormats;
+            public IntPtr GetContainerFormats;
 
-            public GetDeviceManufacturer GetDeviceManufacturer;
+            public IntPtr GetDeviceManufacturer;
 
-            public GetDeviceModels GetDeviceModels;
+            public IntPtr GetDeviceModels;
 
-            public DoesRequireFullStream DoesRequireFullStream;
+            public IntPtr DoesRequireFullStream;
 
-            public DoesSupportPadding DoesSupportPadding;
+            public IntPtr DoesSupportPadding;
 
-            public DoesRequireFixedSize DoesRequireFixedSize;
+            public IntPtr DoesRequireFixedSize;
             #endregion
         }
         #endregion

@@ -44,9 +44,9 @@ namespace TerraFX.Interop
             #region Fields
             public IPersistStream.Vtbl BaseVtbl;
 
-            public LoadEx LoadEx;
+            public IntPtr LoadEx;
 
-            public SaveEx SaveEx;
+            public IntPtr SaveEx;
             #endregion
         }
         #endregion

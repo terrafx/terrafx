@@ -46,11 +46,11 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public SetFeatureMask SetFeatureMask;
+            public IntPtr SetFeatureMask;
 
-            public GetFeatureMask GetFeatureMask;
+            public IntPtr GetFeatureMask;
 
-            public ReportLiveDeviceObjects ReportLiveDeviceObjects;
+            public IntPtr ReportLiveDeviceObjects;
             #endregion
         }
         #endregion

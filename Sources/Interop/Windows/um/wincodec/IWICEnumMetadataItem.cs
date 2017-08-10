@@ -59,13 +59,13 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public Next Next;
+            public IntPtr Next;
 
-            public Skip Skip;
+            public IntPtr Skip;
 
-            public Reset Reset;
+            public IntPtr Reset;
 
-            public Clone Clone;
+            public IntPtr Clone;
             #endregion
         }
         #endregion

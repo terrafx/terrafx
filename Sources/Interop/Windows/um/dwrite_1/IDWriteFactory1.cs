@@ -3,6 +3,7 @@
 // Ported from um\dwrite_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 using static TerraFX.Interop.Windows;
@@ -31,7 +32,7 @@ namespace TerraFX.Interop
             [In] IDWriteFactory1* This,
             [Out] IDWriteFontCollection** fontCollection,
             [In, DefaultParameterValue(FALSE), ComAliasName("BOOL")] int checkForUpdates
-    )   ;
+    );
 
         /// <summary>Creates a rendering parameters object with the specified properties.</summary>
         /// <param name="gamma">The gamma value used for gamma correction, which must be greater than zero and cannot exceed 256.</param>
@@ -63,9 +64,9 @@ namespace TerraFX.Interop
             #region Fields
             public IDWriteFactory.Vtbl BaseVtbl;
 
-            public GetEudcFontCollection GetEudcFontCollection;
+            public IntPtr GetEudcFontCollection;
 
-            public CreateCustomRenderingParams CreateCustomRenderingParams;
+            public IntPtr CreateCustomRenderingParams;
             #endregion
         }
         #endregion

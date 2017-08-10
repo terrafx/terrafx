@@ -171,43 +171,43 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetDesc GetDesc;
+            public IntPtr GetDesc;
 
-            public GetConstantBufferByIndex GetConstantBufferByIndex;
+            public IntPtr GetConstantBufferByIndex;
 
-            public GetConstantBufferByName GetConstantBufferByName;
+            public IntPtr GetConstantBufferByName;
 
-            public GetResourceBindingDesc GetResourceBindingDesc;
+            public IntPtr GetResourceBindingDesc;
 
-            public GetInputParameterDesc GetInputParameterDesc;
+            public IntPtr GetInputParameterDesc;
 
-            public GetOutputParameterDesc GetOutputParameterDesc;
+            public IntPtr GetOutputParameterDesc;
 
-            public GetPatchConstantParameterDesc GetPatchConstantParameterDesc;
+            public IntPtr GetPatchConstantParameterDesc;
 
-            public GetVariableByName GetVariableByName;
+            public IntPtr GetVariableByName;
 
-            public GetResourceBindingDescByName GetResourceBindingDescByName;
+            public IntPtr GetResourceBindingDescByName;
 
-            public GetMovInstructionCount GetMovInstructionCount;
+            public IntPtr GetMovInstructionCount;
 
-            public GetMovcInstructionCount GetMovcInstructionCount;
+            public IntPtr GetMovcInstructionCount;
 
-            public GetConversionInstructionCount GetConversionInstructionCount;
+            public IntPtr GetConversionInstructionCount;
 
-            public GetBitwiseInstructionCount GetBitwiseInstructionCount;
+            public IntPtr GetBitwiseInstructionCount;
 
-            public GetGSInputPrimitive GetGSInputPrimitive;
+            public IntPtr GetGSInputPrimitive;
 
-            public IsSampleFrequencyShader IsSampleFrequencyShader;
+            public IntPtr IsSampleFrequencyShader;
 
-            public GetNumInterfaceSlots GetNumInterfaceSlots;
+            public IntPtr GetNumInterfaceSlots;
 
-            public GetMinFeatureLevel GetMinFeatureLevel;
+            public IntPtr GetMinFeatureLevel;
 
-            public GetThreadGroupSize GetThreadGroupSize;
+            public IntPtr GetThreadGroupSize;
 
-            public GetRequiresFlags GetRequiresFlags;
+            public IntPtr GetRequiresFlags;
             #endregion
         }
         #endregion

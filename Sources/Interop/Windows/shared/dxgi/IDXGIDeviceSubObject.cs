@@ -33,7 +33,7 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIObject.Vtbl BaseVtbl;
 
-            public GetDevice GetDevice;
+            public IntPtr GetDevice;
             #endregion
         }
         #endregion

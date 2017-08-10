@@ -3,6 +3,7 @@
 // Ported from um\dwrite_3.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -168,33 +169,33 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public CreateFontFace CreateFontFace;
+            public IntPtr CreateFontFace;
 
-            public CreateFontFaceWithSimulations CreateFontFaceWithSimulations;
+            public IntPtr CreateFontFaceWithSimulations;
 
-            public _Equals _Equals;
+            public IntPtr _Equals;
 
-            public GetFontFaceIndex GetFontFaceIndex;
+            public IntPtr GetFontFaceIndex;
 
-            public GetSimulations GetSimulations;
+            public IntPtr GetSimulations;
 
-            public GetFontFile GetFontFile;
+            public IntPtr GetFontFile;
 
-            public GetLocalFileSize GetLocalFileSize;
+            public IntPtr GetLocalFileSize;
 
-            public GetFileSize GetFileSize;
+            public IntPtr GetFileSize;
 
-            public GetFileTime GetFileTime;
+            public IntPtr GetFileTime;
 
-            public GetLocality GetLocality;
+            public IntPtr GetLocality;
 
-            public EnqueueFontDownloadRequest EnqueueFontDownloadRequest;
+            public IntPtr EnqueueFontDownloadRequest;
 
-            public EnqueueCharacterDownloadRequest EnqueueCharacterDownloadRequest;
+            public IntPtr EnqueueCharacterDownloadRequest;
 
-            public EnqueueGlyphDownloadRequest EnqueueGlyphDownloadRequest;
+            public IntPtr EnqueueGlyphDownloadRequest;
 
-            public EnqueueFileFragmentDownloadRequest EnqueueFileFragmentDownloadRequest;
+            public IntPtr EnqueueFileFragmentDownloadRequest;
             #endregion
         }
         #endregion

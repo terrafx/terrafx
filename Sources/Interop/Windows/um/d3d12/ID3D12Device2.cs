@@ -34,7 +34,7 @@ namespace TerraFX.Interop
             #region Fields
             public ID3D12Device1.Vtbl BaseVtbl;
 
-            public CreatePipelineState CreatePipelineState;
+            public IntPtr CreatePipelineState;
             #endregion
         }
         #endregion

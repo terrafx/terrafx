@@ -71,11 +71,11 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetAlphaTextureBounds GetAlphaTextureBounds;
+            public IntPtr GetAlphaTextureBounds;
 
-            public CreateAlphaTexture CreateAlphaTexture;
+            public IntPtr CreateAlphaTexture;
 
-            public GetAlphaBlendParams GetAlphaBlendParams;
+            public IntPtr GetAlphaBlendParams;
             #endregion
         }
         #endregion

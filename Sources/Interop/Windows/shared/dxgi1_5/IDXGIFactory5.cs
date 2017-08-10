@@ -34,7 +34,7 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIFactory4.Vtbl BaseVtbl;
 
-            public CheckFeatureSupport CheckFeatureSupport;
+            public IntPtr CheckFeatureSupport;
             #endregion
         }
         #endregion

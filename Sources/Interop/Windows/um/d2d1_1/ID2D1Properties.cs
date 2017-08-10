@@ -3,6 +3,7 @@
 // Ported from um\d2d1_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -136,27 +137,27 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetPropertyCount GetPropertyCount;
+            public IntPtr GetPropertyCount;
 
-            public GetPropertyName GetPropertyName;
+            public IntPtr GetPropertyName;
 
-            public GetPropertyNameLength GetPropertyNameLength;
+            public IntPtr GetPropertyNameLength;
 
-            public _GetType _GetType;
+            public IntPtr _GetType;
 
-            public GetPropertyIndex GetPropertyIndex;
+            public IntPtr GetPropertyIndex;
 
-            public SetValueByName SetValueByName;
+            public IntPtr SetValueByName;
 
-            public SetValue SetValue;
+            public IntPtr SetValue;
 
-            public GetValueByName GetValueByName;
+            public IntPtr GetValueByName;
 
-            public GetValue GetValue;
+            public IntPtr GetValue;
 
-            public GetValueSize GetValueSize;
+            public IntPtr GetValueSize;
 
-            public GetSubProperties GetSubProperties;
+            public IntPtr GetSubProperties;
             #endregion
         }
         #endregion

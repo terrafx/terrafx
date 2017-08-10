@@ -63,13 +63,13 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIOutput.Vtbl BaseVtbl;
 
-            public GetDisplayModeList1 GetDisplayModeList1;
+            public IntPtr GetDisplayModeList1;
 
-            public FindClosestMatchingMode1 FindClosestMatchingMode1;
+            public IntPtr FindClosestMatchingMode1;
 
-            public GetDisplaySurfaceData1 GetDisplaySurfaceData1;
+            public IntPtr GetDisplaySurfaceData1;
 
-            public DuplicateOutput DuplicateOutput;
+            public IntPtr DuplicateOutput;
             #endregion
         }
         #endregion

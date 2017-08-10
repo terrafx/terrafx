@@ -105,23 +105,23 @@ namespace TerraFX.Interop
             #region Fields
             public ISequentialStream.Vtbl BaseVtbl;
 
-            public Seek Seek;
+            public IntPtr Seek;
 
-            public SetSize SetSize;
+            public IntPtr SetSize;
 
-            public CopyTo CopyTo;
+            public IntPtr CopyTo;
 
-            public Commit Commit;
+            public IntPtr Commit;
 
-            public Revert Revert;
+            public IntPtr Revert;
 
-            public LockRegion LockRegion;
+            public IntPtr LockRegion;
 
-            public UnlockRegion UnlockRegion;
+            public IntPtr UnlockRegion;
 
-            public Stat Stat;
+            public IntPtr Stat;
 
-            public Clone Clone;
+            public IntPtr Clone;
             #endregion
         }
         #endregion

@@ -74,13 +74,13 @@ namespace TerraFX.Interop
             #region Fields
             public IDWriteFontFileStream.Vtbl BaseVtbl;
 
-            public GetLocalFileSize GetLocalFileSize;
+            public IntPtr GetLocalFileSize;
 
-            public GetFileFragmentLocality GetFileFragmentLocality;
+            public IntPtr GetFileFragmentLocality;
 
-            public GetLocality GetLocality;
+            public IntPtr GetLocality;
 
-            public BeginDownload BeginDownload;
+            public IntPtr BeginDownload;
             #endregion
         }
         #endregion

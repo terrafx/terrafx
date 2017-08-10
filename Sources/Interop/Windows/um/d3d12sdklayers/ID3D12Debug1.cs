@@ -44,11 +44,11 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public EnableDebugLayer EnableDebugLayer;
+            public IntPtr EnableDebugLayer;
 
-            public SetEnableGPUBasedValidation SetEnableGPUBasedValidation;
+            public IntPtr SetEnableGPUBasedValidation;
 
-            public SetEnableSynchronizedCommandQueueValidation SetEnableSynchronizedCommandQueueValidation;
+            public IntPtr SetEnableSynchronizedCommandQueueValidation;
             #endregion
         }
         #endregion

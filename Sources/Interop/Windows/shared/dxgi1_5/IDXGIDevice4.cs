@@ -45,9 +45,9 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIDevice3.Vtbl BaseVtbl;
 
-            public OfferResources1 OfferResources1;
+            public IntPtr OfferResources1;
 
-            public ReclaimResources1 ReclaimResources1;
+            public IntPtr ReclaimResources1;
             #endregion
         }
         #endregion

@@ -54,11 +54,11 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public WriteFrame WriteFrame;
+            public IntPtr WriteFrame;
 
-            public WriteFrameThumbnail WriteFrameThumbnail;
+            public IntPtr WriteFrameThumbnail;
 
-            public WriteThumbnail WriteThumbnail;
+            public IntPtr WriteThumbnail;
             #endregion
         }
         #endregion

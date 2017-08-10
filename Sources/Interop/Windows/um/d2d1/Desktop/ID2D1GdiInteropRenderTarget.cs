@@ -42,9 +42,9 @@ namespace TerraFX.Interop.Desktop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetDC GetDC;
+            public IntPtr GetDC;
 
-            public ReleaseDC ReleaseDC;
+            public IntPtr ReleaseDC;
             #endregion
         }
         #endregion

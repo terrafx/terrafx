@@ -3,6 +3,7 @@
 // Ported from um\dwrite_3.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -88,15 +89,15 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetCount GetCount;
+            public IntPtr GetCount;
 
-            public GetLocaleNameLength GetLocaleNameLength;
+            public IntPtr GetLocaleNameLength;
 
-            public GetLocaleName GetLocaleName;
+            public IntPtr GetLocaleName;
 
-            public GetStringLength GetStringLength;
+            public IntPtr GetStringLength;
 
-            public GetString GetString;
+            public IntPtr GetString;
             #endregion
         }
         #endregion

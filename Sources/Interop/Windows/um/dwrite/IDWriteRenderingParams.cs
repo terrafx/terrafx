@@ -62,15 +62,15 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetGamma GetGamma;
+            public IntPtr GetGamma;
 
-            public GetEnhancedContrast GetEnhancedContrast;
+            public IntPtr GetEnhancedContrast;
 
-            public GetClearTypeLevel GetClearTypeLevel;
+            public IntPtr GetClearTypeLevel;
 
-            public GetPixelGeometry GetPixelGeometry;
+            public IntPtr GetPixelGeometry;
 
-            public GetRenderingMode GetRenderingMode;
+            public IntPtr GetRenderingMode;
             #endregion
         }
         #endregion

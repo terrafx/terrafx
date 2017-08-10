@@ -44,9 +44,9 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIResource.Vtbl BaseVtbl;
 
-            public CreateSubresourceSurface CreateSubresourceSurface;
+            public IntPtr CreateSubresourceSurface;
 
-            public CreateSharedHandle CreateSharedHandle;
+            public IntPtr CreateSharedHandle;
             #endregion
         }
         #endregion

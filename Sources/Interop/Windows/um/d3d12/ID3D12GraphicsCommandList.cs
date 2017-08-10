@@ -478,107 +478,107 @@ namespace TerraFX.Interop
             #region Fields
             public ID3D12CommandList.Vtbl BaseVtbl;
 
-            public Close Close;
+            public IntPtr Close;
 
-            public Reset Reset;
+            public IntPtr Reset;
 
-            public ClearState ClearState;
+            public IntPtr ClearState;
 
-            public DrawInstanced DrawInstanced;
+            public IntPtr DrawInstanced;
 
-            public DrawIndexedInstanced DrawIndexedInstanced;
+            public IntPtr DrawIndexedInstanced;
 
-            public Dispatch Dispatch;
+            public IntPtr Dispatch;
 
-            public CopyBufferRegion CopyBufferRegion;
+            public IntPtr CopyBufferRegion;
 
-            public CopyTextureRegion CopyTextureRegion;
+            public IntPtr CopyTextureRegion;
 
-            public CopyResource CopyResource;
+            public IntPtr CopyResource;
 
-            public CopyTiles CopyTiles;
+            public IntPtr CopyTiles;
 
-            public ResolveSubresource ResolveSubresource;
+            public IntPtr ResolveSubresource;
 
-            public IASetPrimitiveTopology IASetPrimitiveTopology;
+            public IntPtr IASetPrimitiveTopology;
 
-            public RSSetViewports RSSetViewports;
+            public IntPtr RSSetViewports;
 
-            public RSSetScissorRects RSSetScissorRects;
+            public IntPtr RSSetScissorRects;
 
-            public OMSetBlendFactor OMSetBlendFactor;
+            public IntPtr OMSetBlendFactor;
 
-            public OMSetStencilRef OMSetStencilRef;
+            public IntPtr OMSetStencilRef;
 
-            public SetPipelineState SetPipelineState;
+            public IntPtr SetPipelineState;
 
-            public ResourceBarrier ResourceBarrier;
+            public IntPtr ResourceBarrier;
 
-            public ExecuteBundle ExecuteBundle;
+            public IntPtr ExecuteBundle;
 
-            public SetDescriptorHeaps SetDescriptorHeaps;
+            public IntPtr SetDescriptorHeaps;
 
-            public SetComputeRootSignature SetComputeRootSignature;
+            public IntPtr SetComputeRootSignature;
 
-            public SetGraphicsRootSignature SetGraphicsRootSignature;
+            public IntPtr SetGraphicsRootSignature;
 
-            public SetComputeRootDescriptorTable SetComputeRootDescriptorTable;
+            public IntPtr SetComputeRootDescriptorTable;
 
-            public SetGraphicsRootDescriptorTable SetGraphicsRootDescriptorTable;
+            public IntPtr SetGraphicsRootDescriptorTable;
 
-            public SetComputeRoot32BitConstant SetComputeRoot32BitConstant;
+            public IntPtr SetComputeRoot32BitConstant;
 
-            public SetGraphicsRoot32BitConstant SetGraphicsRoot32BitConstant;
+            public IntPtr SetGraphicsRoot32BitConstant;
 
-            public SetComputeRoot32BitConstants SetComputeRoot32BitConstants;
+            public IntPtr SetComputeRoot32BitConstants;
 
-            public SetGraphicsRoot32BitConstants SetGraphicsRoot32BitConstants;
+            public IntPtr SetGraphicsRoot32BitConstants;
 
-            public SetComputeRootConstantBufferView SetComputeRootConstantBufferView;
+            public IntPtr SetComputeRootConstantBufferView;
 
-            public SetGraphicsRootConstantBufferView SetGraphicsRootConstantBufferView;
+            public IntPtr SetGraphicsRootConstantBufferView;
 
-            public SetComputeRootShaderResourceView SetComputeRootShaderResourceView;
+            public IntPtr SetComputeRootShaderResourceView;
 
-            public SetGraphicsRootShaderResourceView SetGraphicsRootShaderResourceView;
+            public IntPtr SetGraphicsRootShaderResourceView;
 
-            public SetComputeRootUnorderedAccessView SetComputeRootUnorderedAccessView;
+            public IntPtr SetComputeRootUnorderedAccessView;
 
-            public SetGraphicsRootUnorderedAccessView SetGraphicsRootUnorderedAccessView;
+            public IntPtr SetGraphicsRootUnorderedAccessView;
 
-            public IASetIndexBuffer IASetIndexBuffer;
+            public IntPtr IASetIndexBuffer;
 
-            public IASetVertexBuffers IASetVertexBuffers;
+            public IntPtr IASetVertexBuffers;
 
-            public SOSetTargets SOSetTargets;
+            public IntPtr SOSetTargets;
 
-            public OMSetRenderTargets OMSetRenderTargets;
+            public IntPtr OMSetRenderTargets;
 
-            public ClearDepthStencilView ClearDepthStencilView;
+            public IntPtr ClearDepthStencilView;
 
-            public ClearRenderTargetView ClearRenderTargetView;
+            public IntPtr ClearRenderTargetView;
 
-            public ClearUnorderedAccessViewUint ClearUnorderedAccessViewUint;
+            public IntPtr ClearUnorderedAccessViewUint;
 
-            public ClearUnorderedAccessViewFloat ClearUnorderedAccessViewFloat;
+            public IntPtr ClearUnorderedAccessViewFloat;
 
-            public DiscardResource DiscardResource;
+            public IntPtr DiscardResource;
 
-            public BeginQuery BeginQuery;
+            public IntPtr BeginQuery;
 
-            public EndQuery EndQuery;
+            public IntPtr EndQuery;
 
-            public ResolveQueryData ResolveQueryData;
+            public IntPtr ResolveQueryData;
 
-            public SetPredication SetPredication;
+            public IntPtr SetPredication;
 
-            public SetMarker SetMarker;
+            public IntPtr SetMarker;
 
-            public BeginEvent BeginEvent;
+            public IntPtr BeginEvent;
 
-            public EndEvent EndEvent;
+            public IntPtr EndEvent;
 
-            public ExecuteIndirect ExecuteIndirect;
+            public IntPtr ExecuteIndirect;
             #endregion
         }
         #endregion

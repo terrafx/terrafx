@@ -44,9 +44,9 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public Read Read;
+            public IntPtr Read;
 
-            public Write Write;
+            public IntPtr Write;
             #endregion
         }
         #endregion

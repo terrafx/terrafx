@@ -124,21 +124,21 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public DrawGlyphRun DrawGlyphRun;
+            public IntPtr DrawGlyphRun;
 
-            public GetMemoryDC GetMemoryDC;
+            public IntPtr GetMemoryDC;
 
-            public GetPixelsPerDip GetPixelsPerDip;
+            public IntPtr GetPixelsPerDip;
 
-            public SetPixelsPerDip SetPixelsPerDip;
+            public IntPtr SetPixelsPerDip;
 
-            public GetCurrentTransform GetCurrentTransform;
+            public IntPtr GetCurrentTransform;
 
-            public SetCurrentTransform SetCurrentTransform;
+            public IntPtr SetCurrentTransform;
 
-            public GetSize GetSize;
+            public IntPtr GetSize;
 
-            public Resize Resize;
+            public IntPtr Resize;
             #endregion
         }
         #endregion

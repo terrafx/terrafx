@@ -63,13 +63,13 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetAcHuffmanTable GetAcHuffmanTable;
+            public IntPtr GetAcHuffmanTable;
 
-            public GetDcHuffmanTable GetDcHuffmanTable;
+            public IntPtr GetDcHuffmanTable;
 
-            public GetQuantizationTable GetQuantizationTable;
+            public IntPtr GetQuantizationTable;
 
-            public WriteScan WriteScan;
+            public IntPtr WriteScan;
             #endregion
         }
         #endregion

@@ -398,79 +398,79 @@ namespace TerraFX.Interop
             #region Fields
             public ID3D12Object.Vtbl BaseVtbl;
 
-            public GetNodeCount GetNodeCount;
+            public IntPtr GetNodeCount;
 
-            public CreateCommandQueue CreateCommandQueue;
+            public IntPtr CreateCommandQueue;
 
-            public CreateCommandAllocator CreateCommandAllocator;
+            public IntPtr CreateCommandAllocator;
 
-            public CreateGraphicsPipelineState CreateGraphicsPipelineState;
+            public IntPtr CreateGraphicsPipelineState;
 
-            public CreateComputePipelineState CreateComputePipelineState;
+            public IntPtr CreateComputePipelineState;
 
-            public CreateCommandList CreateCommandList;
+            public IntPtr CreateCommandList;
 
-            public CheckFeatureSupport CheckFeatureSupport;
+            public IntPtr CheckFeatureSupport;
 
-            public CreateDescriptorHeap CreateDescriptorHeap;
+            public IntPtr CreateDescriptorHeap;
 
-            public GetDescriptorHandleIncrementSize GetDescriptorHandleIncrementSize;
+            public IntPtr GetDescriptorHandleIncrementSize;
 
-            public CreateRootSignature CreateRootSignature;
+            public IntPtr CreateRootSignature;
 
-            public CreateConstantBufferView CreateConstantBufferView;
+            public IntPtr CreateConstantBufferView;
 
-            public CreateShaderResourceView CreateShaderResourceView;
+            public IntPtr CreateShaderResourceView;
 
-            public CreateUnorderedAccessView CreateUnorderedAccessView;
+            public IntPtr CreateUnorderedAccessView;
 
-            public CreateRenderTargetView CreateRenderTargetView;
+            public IntPtr CreateRenderTargetView;
 
-            public CreateDepthStencilView CreateDepthStencilView;
+            public IntPtr CreateDepthStencilView;
 
-            public CreateSampler CreateSampler;
+            public IntPtr CreateSampler;
 
-            public CopyDescriptors CopyDescriptors;
+            public IntPtr CopyDescriptors;
 
-            public CopyDescriptorsSimple CopyDescriptorsSimple;
+            public IntPtr CopyDescriptorsSimple;
 
-            public GetResourceAllocationInfo GetResourceAllocationInfo;
+            public IntPtr GetResourceAllocationInfo;
 
-            public GetCustomHeapProperties GetCustomHeapProperties;
+            public IntPtr GetCustomHeapProperties;
 
-            public CreateCommittedResource CreateCommittedResource;
+            public IntPtr CreateCommittedResource;
 
-            public CreateHeap CreateHeap;
+            public IntPtr CreateHeap;
 
-            public CreatePlacedResource CreatePlacedResource;
+            public IntPtr CreatePlacedResource;
 
-            public CreateReservedResource CreateReservedResource;
+            public IntPtr CreateReservedResource;
 
-            public CreateSharedHandle CreateSharedHandle;
+            public IntPtr CreateSharedHandle;
 
-            public OpenSharedHandle OpenSharedHandle;
+            public IntPtr OpenSharedHandle;
 
-            public OpenSharedHandleByName OpenSharedHandleByName;
+            public IntPtr OpenSharedHandleByName;
 
-            public MakeResident MakeResident;
+            public IntPtr MakeResident;
 
-            public Evict Evict;
+            public IntPtr Evict;
 
-            public CreateFence CreateFence;
+            public IntPtr CreateFence;
 
-            public GetDeviceRemovedReason GetDeviceRemovedReason;
+            public IntPtr GetDeviceRemovedReason;
 
-            public GetCopyableFootprints GetCopyableFootprints;
+            public IntPtr GetCopyableFootprints;
 
-            public CreateQueryHeap CreateQueryHeap;
+            public IntPtr CreateQueryHeap;
 
-            public SetStablePowerState SetStablePowerState;
+            public IntPtr SetStablePowerState;
 
-            public CreateCommandSignature CreateCommandSignature;
+            public IntPtr CreateCommandSignature;
 
-            public GetResourceTiling GetResourceTiling;
+            public IntPtr GetResourceTiling;
 
-            public GetAdapterLuid GetAdapterLuid;
+            public IntPtr GetAdapterLuid;
             #endregion
         }
         #endregion

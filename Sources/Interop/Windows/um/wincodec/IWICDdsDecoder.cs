@@ -43,9 +43,9 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetParameters GetParameters;
+            public IntPtr GetParameters;
 
-            public GetFrame GetFrame;
+            public IntPtr GetFrame;
             #endregion
         }
         #endregion

@@ -98,23 +98,23 @@ namespace TerraFX.Interop.Desktop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public PresentBuffer PresentBuffer;
+            public IntPtr PresentBuffer;
 
-            public SetSourceRect SetSourceRect;
+            public IntPtr SetSourceRect;
 
-            public SetTargetRect SetTargetRect;
+            public IntPtr SetTargetRect;
 
-            public SetDestSize SetDestSize;
+            public IntPtr SetDestSize;
 
-            public GetSourceRect GetSourceRect;
+            public IntPtr GetSourceRect;
 
-            public GetTargetRect GetTargetRect;
+            public IntPtr GetTargetRect;
 
-            public GetDestSize GetDestSize;
+            public IntPtr GetDestSize;
 
-            public SetColorSpace SetColorSpace;
+            public IntPtr SetColorSpace;
 
-            public GetColorSpace GetColorSpace;
+            public IntPtr GetColorSpace;
             #endregion
         }
         #endregion

@@ -361,47 +361,47 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetSystemFontCollection GetSystemFontCollection;
+            public IntPtr GetSystemFontCollection;
 
-            public CreateCustomFontCollection CreateCustomFontCollection;
+            public IntPtr CreateCustomFontCollection;
 
-            public RegisterFontCollectionLoader RegisterFontCollectionLoader;
+            public IntPtr RegisterFontCollectionLoader;
 
-            public UnregisterFontCollectionLoader UnregisterFontCollectionLoader;
+            public IntPtr UnregisterFontCollectionLoader;
 
-            public CreateFontFileReference CreateFontFileReference;
+            public IntPtr CreateFontFileReference;
 
-            public CreateCustomFontFileReference CreateCustomFontFileReference;
+            public IntPtr CreateCustomFontFileReference;
 
-            public CreateFontFace CreateFontFace;
+            public IntPtr CreateFontFace;
 
-            public CreateRenderingParams CreateRenderingParams;
+            public IntPtr CreateRenderingParams;
 
-            public CreateMonitorRenderingParams CreateMonitorRenderingParams;
+            public IntPtr CreateMonitorRenderingParams;
 
-            public CreateCustomRenderingParams CreateCustomRenderingParams;
+            public IntPtr CreateCustomRenderingParams;
 
-            public RegisterFontFileLoader RegisterFontFileLoader;
+            public IntPtr RegisterFontFileLoader;
 
-            public UnregisterFontFileLoader UnregisterFontFileLoader;
+            public IntPtr UnregisterFontFileLoader;
 
-            public CreateTextFormat CreateTextFormat;
+            public IntPtr CreateTextFormat;
 
-            public CreateTypography CreateTypography;
+            public IntPtr CreateTypography;
 
-            public GetGdiInterop GetGdiInterop;
+            public IntPtr GetGdiInterop;
 
-            public CreateTextLayout CreateTextLayout;
+            public IntPtr CreateTextLayout;
 
-            public CreateGdiCompatibleTextLayout CreateGdiCompatibleTextLayout;
+            public IntPtr CreateGdiCompatibleTextLayout;
 
-            public CreateEllipsisTrimmingSign CreateEllipsisTrimmingSign;
+            public IntPtr CreateEllipsisTrimmingSign;
 
-            public CreateTextAnalyzer CreateTextAnalyzer;
+            public IntPtr CreateTextAnalyzer;
 
-            public CreateNumberSubstitution CreateNumberSubstitution;
+            public IntPtr CreateNumberSubstitution;
 
-            public CreateGlyphRunAnalysis CreateGlyphRunAnalysis;
+            public IntPtr CreateGlyphRunAnalysis;
             #endregion
         }
         #endregion

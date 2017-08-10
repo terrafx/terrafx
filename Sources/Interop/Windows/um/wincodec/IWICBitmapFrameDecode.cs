@@ -50,11 +50,11 @@ namespace TerraFX.Interop
             #region Fields
             public IWICBitmapSource.Vtbl BaseVtbl;
 
-            public GetMetadataQueryReader GetMetadataQueryReader;
+            public IntPtr GetMetadataQueryReader;
 
-            public GetColorContexts GetColorContexts;
+            public IntPtr GetColorContexts;
 
-            public GetThumbnail GetThumbnail;
+            public IntPtr GetThumbnail;
             #endregion
         }
         #endregion

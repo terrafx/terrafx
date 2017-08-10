@@ -54,11 +54,11 @@ namespace TerraFX.Interop
             #region Fields
             public IWICMetadataHandlerInfo.Vtbl BaseVtbl;
 
-            public GetPatterns GetPatterns;
+            public IntPtr GetPatterns;
 
-            public MatchesPattern MatchesPattern;
+            public IntPtr MatchesPattern;
 
-            public CreateInstance CreateInstance;
+            public IntPtr CreateInstance;
             #endregion
         }
         #endregion

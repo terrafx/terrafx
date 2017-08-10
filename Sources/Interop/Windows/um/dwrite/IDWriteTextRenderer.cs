@@ -112,13 +112,13 @@ namespace TerraFX.Interop
             #region Fields
             public IDWritePixelSnapping.Vtbl BaseVtbl;
 
-            public DrawGlyphRun DrawGlyphRun;
+            public IntPtr DrawGlyphRun;
 
-            public DrawUnderline DrawUnderline;
+            public IntPtr DrawUnderline;
 
-            public DrawStrikethrough DrawStrikethrough;
+            public IntPtr DrawStrikethrough;
 
-            public DrawInlineObject DrawInlineObject;
+            public IntPtr DrawInlineObject;
             #endregion
         }
         #endregion

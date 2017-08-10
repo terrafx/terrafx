@@ -97,19 +97,19 @@ namespace TerraFX.Interop
             #region Fields
             public IWICImagingFactory.Vtbl BaseVtbl;
 
-            public CreateMetadataReader CreateMetadataReader;
+            public IntPtr CreateMetadataReader;
 
-            public CreateMetadataReaderFromContainer CreateMetadataReaderFromContainer;
+            public IntPtr CreateMetadataReaderFromContainer;
 
-            public CreateMetadataWriter CreateMetadataWriter;
+            public IntPtr CreateMetadataWriter;
 
-            public CreateMetadataWriterFromReader CreateMetadataWriterFromReader;
+            public IntPtr CreateMetadataWriterFromReader;
 
-            public CreateQueryReaderFromBlockReader CreateQueryReaderFromBlockReader;
+            public IntPtr CreateQueryReaderFromBlockReader;
 
-            public CreateQueryWriterFromBlockWriter CreateQueryWriterFromBlockWriter;
+            public IntPtr CreateQueryWriterFromBlockWriter;
 
-            public CreateEncoderPropertyBag CreateEncoderPropertyBag;
+            public IntPtr CreateEncoderPropertyBag;
             #endregion
         }
         #endregion

@@ -33,7 +33,7 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1RenderTarget.Vtbl BaseVtbl;
 
-            public GetBitmap GetBitmap;
+            public IntPtr GetBitmap;
             #endregion
         }
         #endregion

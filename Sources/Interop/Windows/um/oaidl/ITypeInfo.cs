@@ -203,43 +203,43 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetTypeAttr GetTypeAttr;
+            public IntPtr GetTypeAttr;
 
-            public GetTypeComp GetTypeComp;
+            public IntPtr GetTypeComp;
 
-            public GetFuncDesc GetFuncDesc;
+            public IntPtr GetFuncDesc;
 
-            public GetVarDesc GetVarDesc;
+            public IntPtr GetVarDesc;
 
-            public GetNames GetNames;
+            public IntPtr GetNames;
 
-            public GetRefTypeOfImplType GetRefTypeOfImplType;
+            public IntPtr GetRefTypeOfImplType;
 
-            public GetImplTypeFlags GetImplTypeFlags;
+            public IntPtr GetImplTypeFlags;
 
-            public GetIDsOfNames GetIDsOfNames;
+            public IntPtr GetIDsOfNames;
 
-            public Invoke Invoke;
+            public IntPtr Invoke;
 
-            public GetDocumentation GetDocumentation;
+            public IntPtr GetDocumentation;
 
-            public GetDllEntry GetDllEntry;
+            public IntPtr GetDllEntry;
 
-            public GetRefTypeInfo GetRefTypeInfo;
+            public IntPtr GetRefTypeInfo;
 
-            public AddressOfMember AddressOfMember;
+            public IntPtr AddressOfMember;
 
-            public CreateInstance CreateInstance;
+            public IntPtr CreateInstance;
 
-            public GetMops GetMops;
+            public IntPtr GetMops;
 
-            public GetContainingTypeLib GetContainingTypeLib;
+            public IntPtr GetContainingTypeLib;
 
-            public ReleaseTypeAttr ReleaseTypeAttr;
+            public IntPtr ReleaseTypeAttr;
 
-            public ReleaseFuncDesc ReleaseFuncDesc;
+            public IntPtr ReleaseFuncDesc;
 
-            public ReleaseVarDesc ReleaseVarDesc;
+            public IntPtr ReleaseVarDesc;
             #endregion
         }
         #endregion

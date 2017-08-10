@@ -3,6 +3,7 @@
 // Ported from um\d2d1_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 using static TerraFX.Interop.Windows;
@@ -69,15 +70,15 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Properties.Vtbl BaseVtbl;
 
-            public SetInput SetInput;
+            public IntPtr SetInput;
 
-            public SetInputCount SetInputCount;
+            public IntPtr SetInputCount;
 
-            public GetInput GetInput;
+            public IntPtr GetInput;
 
-            public GetInputCount GetInputCount;
+            public IntPtr GetInputCount;
 
-            public GetOutput GetOutput;
+            public IntPtr GetOutput;
             #endregion
         }
         #endregion

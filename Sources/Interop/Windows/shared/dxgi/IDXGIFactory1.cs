@@ -40,9 +40,9 @@ namespace TerraFX.Interop
             #region Fields
             public IDXGIFactory.Vtbl BaseVtbl;
 
-            public EnumAdapters1 EnumAdapters1;
+            public IntPtr EnumAdapters1;
 
-            public IsCurrent IsCurrent;
+            public IntPtr IsCurrent;
             #endregion
         }
         #endregion

@@ -71,15 +71,15 @@ namespace TerraFX.Interop
             #region Fields
             public ID3D12DeviceChild.Vtbl BaseVtbl;
 
-            public StorePipeline StorePipeline;
+            public IntPtr StorePipeline;
 
-            public LoadGraphicsPipeline LoadGraphicsPipeline;
+            public IntPtr LoadGraphicsPipeline;
 
-            public LoadComputePipeline LoadComputePipeline;
+            public IntPtr LoadComputePipeline;
 
-            public GetSerializedSize GetSerializedSize;
+            public IntPtr GetSerializedSize;
 
-            public Serialize Serialize;
+            public IntPtr Serialize;
             #endregion
         }
         #endregion

@@ -57,13 +57,13 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetContainerFormat GetContainerFormat;
+            public IntPtr GetContainerFormat;
 
-            public GetCount GetCount;
+            public IntPtr GetCount;
 
-            public GetReaderByIndex GetReaderByIndex;
+            public IntPtr GetReaderByIndex;
 
-            public GetEnumerator GetEnumerator;
+            public IntPtr GetEnumerator;
             #endregion
         }
         #endregion

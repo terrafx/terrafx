@@ -42,7 +42,7 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public CreateEnumeratorFromKey CreateEnumeratorFromKey;
+            public IntPtr CreateEnumeratorFromKey;
             #endregion
         }
         #endregion

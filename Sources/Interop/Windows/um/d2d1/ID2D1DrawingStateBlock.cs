@@ -57,13 +57,13 @@ namespace TerraFX.Interop
             #region Fields
             public ID2D1Resource.Vtbl BaseVtbl;
 
-            public GetDescription GetDescription;
+            public IntPtr GetDescription;
 
-            public SetDescription SetDescription;
+            public IntPtr SetDescription;
 
-            public SetTextRenderingParams SetTextRenderingParams;
+            public IntPtr SetTextRenderingParams;
 
-            public GetTextRenderingParams GetTextRenderingParams;
+            public IntPtr GetTextRenderingParams;
             #endregion
         }
         #endregion

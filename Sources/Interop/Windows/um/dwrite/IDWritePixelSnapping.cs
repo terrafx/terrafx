@@ -64,11 +64,11 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public IsPixelSnappingDisabled IsPixelSnappingDisabled;
+            public IntPtr IsPixelSnappingDisabled;
 
-            public GetCurrentTransform GetCurrentTransform;
+            public IntPtr GetCurrentTransform;
 
-            public GetPixelsPerDip GetPixelsPerDip;
+            public IntPtr GetPixelsPerDip;
             #endregion
         }
         #endregion

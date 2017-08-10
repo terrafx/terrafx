@@ -30,7 +30,7 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public EnableDebugLayer EnableDebugLayer;
+            public IntPtr EnableDebugLayer;
             #endregion
         }
         #endregion

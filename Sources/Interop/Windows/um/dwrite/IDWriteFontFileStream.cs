@@ -75,13 +75,13 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public ReadFileFragment ReadFileFragment;
+            public IntPtr ReadFileFragment;
 
-            public ReleaseFileFragment ReleaseFileFragment;
+            public IntPtr ReleaseFileFragment;
 
-            public GetFileSize GetFileSize;
+            public IntPtr GetFileSize;
 
-            public GetLastWriteTime GetLastWriteTime;
+            public IntPtr GetLastWriteTime;
             #endregion
         }
         #endregion

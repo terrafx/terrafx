@@ -88,19 +88,19 @@ namespace TerraFX.Interop
             #region Fields
             public ID3D12Pageable.Vtbl BaseVtbl;
 
-            public Map Map;
+            public IntPtr Map;
 
-            public Unmap Unmap;
+            public IntPtr Unmap;
 
-            public GetDesc GetDesc;
+            public IntPtr GetDesc;
 
-            public GetGPUVirtualAddress GetGPUVirtualAddress;
+            public IntPtr GetGPUVirtualAddress;
 
-            public WriteToSubresource WriteToSubresource;
+            public IntPtr WriteToSubresource;
 
-            public ReadFromSubresource ReadFromSubresource;
+            public IntPtr ReadFromSubresource;
 
-            public GetHeapProperties GetHeapProperties;
+            public IntPtr GetHeapProperties;
             #endregion
         }
         #endregion

@@ -94,15 +94,15 @@ namespace TerraFX.Interop
             #region Fields
             public IUnknown.Vtbl BaseVtbl;
 
-            public GetTextAtPosition GetTextAtPosition;
+            public IntPtr GetTextAtPosition;
 
-            public GetTextBeforePosition GetTextBeforePosition;
+            public IntPtr GetTextBeforePosition;
 
-            public GetParagraphReadingDirection GetParagraphReadingDirection;
+            public IntPtr GetParagraphReadingDirection;
 
-            public GetLocaleName GetLocaleName;
+            public IntPtr GetLocaleName;
 
-            public GetNumberSubstitution GetNumberSubstitution;
+            public IntPtr GetNumberSubstitution;
             #endregion
         }
         #endregion
