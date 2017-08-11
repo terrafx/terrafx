@@ -36,7 +36,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HWND")]
-        public /* static */ delegate void* GetHwnd(
+        public /* static */ delegate IntPtr GetHwnd(
             [In] ID2D1HwndRenderTarget* This
         );
         #endregion

@@ -26,16 +26,16 @@ namespace TerraFX.Interop.Desktop
         public int cbWndExtra;
 
         [ComAliasName("HINSTANCE")]
-        public void* hInstance;
+        public IntPtr hInstance;
 
         [ComAliasName("HICON")]
-        public void* hIcon;
+        public IntPtr hIcon;
 
         [ComAliasName("HCURSOR")]
-        public void* hCursor;
+        public IntPtr hCursor;
 
         [ComAliasName("HBRUSH")]
-        public void* hbrBackground;
+        public IntPtr hbrBackground;
 
         [ComAliasName("LPCWSTR")]
         public char* lpszMenuName;
@@ -44,7 +44,7 @@ namespace TerraFX.Interop.Desktop
         public char* lpszClassName;
 
         [ComAliasName("HICON")]
-        public void* hIconSm;
+        public IntPtr hIconSm;
         #endregion
     }
 }

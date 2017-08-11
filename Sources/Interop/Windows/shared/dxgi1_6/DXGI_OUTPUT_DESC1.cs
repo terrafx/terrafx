@@ -3,6 +3,7 @@
 // Ported from shared\dxgi1_6.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
@@ -22,7 +23,7 @@ namespace TerraFX.Interop
         public DXGI_MODE_ROTATION Rotation;
 
         [ComAliasName("HMONITOR")]
-        public void* Monitor;
+        public IntPtr Monitor;
 
         [ComAliasName("UINT")]
         public uint BitsPerColor;

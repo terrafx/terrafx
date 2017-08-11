@@ -30,7 +30,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int SetEventOnCompletion(
             [In] ID3D12Fence* This,
             [In, ComAliasName("UINT64")] ulong Value,
-            [In, ComAliasName("HANDLE")] void* hEvent
+            [In, ComAliasName("HANDLE")] IntPtr hEvent
         );
 
         [SuppressUnmanagedCodeSecurity]

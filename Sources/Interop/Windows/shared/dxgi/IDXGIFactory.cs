@@ -31,7 +31,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int MakeWindowAssociation(
             [In] IDXGIFactory* This,
-            [In, ComAliasName("HWND")] void* WindowHandle,
+            [In, ComAliasName("HWND")] IntPtr WindowHandle,
             [In, ComAliasName("UINT")] uint Flags
         );
 
@@ -40,7 +40,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetWindowAssociation(
             [In] IDXGIFactory* This,
-            [Out, ComAliasName("HWND")] void** pWindowHandle
+            [Out, ComAliasName("HWND")] out IntPtr pWindowHandle
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -58,7 +58,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateSoftwareAdapter(
             [In] IDXGIFactory* This,
-            [In, ComAliasName("HMODULE")] void* Module,
+            [In, ComAliasName("HMODULE")] IntPtr Module,
             [Out] IDXGIAdapter** ppAdapter
         );
         #endregion

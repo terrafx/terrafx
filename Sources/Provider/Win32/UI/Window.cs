@@ -42,7 +42,7 @@ namespace TerraFX.Provider.Win32.UI
         internal readonly WindowManager _windowManager;
 
         /// <summary>The native window handle for the instance.</summary>
-        internal void* _handle;
+        internal IntPtr _handle;
 
         /// <summary>A <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
         internal Rectangle _bounds;
@@ -71,12 +71,12 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Initializes a new instance of the <see cref="Window" /> class.</summary>
         /// <param name="windowManager">The <see cref="WindowManager" /> for the instance.</param>
         /// <param name="dispatchManager">The <see cref="DispatchManager" /> for the instance.</param>
-        /// <param name="entryModuleHandle">The <see cref="void" />* for the entry module.</param>
-        internal Window(WindowManager windowManager, DispatchManager dispatchManager, void* entryModuleHandle)
+        /// <param name="entryModuleHandle">The <see cref="IntPtr" /> for the entry module.</param>
+        internal Window(WindowManager windowManager, DispatchManager dispatchManager, IntPtr entryModuleHandle)
         {
             Debug.Assert(windowManager != null);
             Debug.Assert(dispatchManager != null);
-            Debug.Assert(entryModuleHandle != null);
+            Debug.Assert(entryModuleHandle != IntPtr.Zero);
 
             _dispatcher = (Dispatcher)(dispatchManager.DispatcherForCurrentThread);
             _properties = new PropertySet();
@@ -182,8 +182,8 @@ namespace TerraFX.Provider.Win32.UI
         /// <param name="windowTitle">The title that will be given to the created native window.</param>
         /// <param name="instanceHandle">A handle to the instance that the created native window will be associated with.</param>
         /// <returns>A HWND for the created native window.</returns>
-        /// <exception cref="ExternalException">The call to <see cref="CreateWindowEx(uint, char*, char*, uint, int, int, int, int, void*, void*, void*, void*)" /> failed.</exception>
-        internal static void* CreateWindowHandle(char* className, char* windowTitle, void* instanceHandle)
+        /// <exception cref="ExternalException">The call to <see cref="CreateWindowEx(uint, char*, char*, uint, int, int, int, int, IntPtr, IntPtr, IntPtr, void*)" /> failed.</exception>
+        internal static IntPtr CreateWindowHandle(char* className, char* windowTitle, IntPtr instanceHandle)
         {
             var hWnd = CreateWindowEx(
                 WS_EX_OVERLAPPEDWINDOW,
@@ -194,13 +194,13 @@ namespace TerraFX.Provider.Win32.UI
                 Y: CW_USEDEFAULT,
                 nWidth: CW_USEDEFAULT,
                 nHeight: CW_USEDEFAULT,
-                hWndParent: null,
-                hMenu: null,
+                hWndParent: default,
+                hMenu: default,
                 hInstance: instanceHandle,
                 lpParam: null
             );
 
-            if (hWnd == null)
+            if (hWnd == IntPtr.Zero)
             {
                 ThrowExternalExceptionForLastError(nameof(CreateWindowEx));
             }
@@ -226,8 +226,8 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of a native window.</summary>
         /// <param name="handle">A handle to the native window to get the bounds for.</param>
         /// <returns>A <see cref="Rectangle" /> that represents the bounds of <paramref name="handle" />.</returns>
-        /// <exception cref="ExternalException">The call to <see cref="GetWindowRect(void*, RECT*)" /> failed.</exception>
-        internal static Rectangle GetWindowBounds(void* handle)
+        /// <exception cref="ExternalException">The call to <see cref="GetWindowRect(IntPtr, RECT*)" /> failed.</exception>
+        internal static Rectangle GetWindowBounds(IntPtr handle)
         {
             RECT rect;
 
@@ -244,7 +244,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Geta a value that indicates whether a native window is active.</summary>
         /// <param name="handle">A handle to the native window to check.</param>
         /// <returns>A value that indicates whether <paramref name="handle" /> is active.</returns>
-        internal static bool IsWindowActive(void* handle)
+        internal static bool IsWindowActive(IntPtr handle)
         {
             var activeWindow = GetActiveWindow();
             return (activeWindow == handle);
@@ -264,7 +264,7 @@ namespace TerraFX.Provider.Win32.UI
         #region Methods
         /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
         /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
-        /// <exception cref="ExternalException">The call to <see cref="DestroyWindow(void*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="DestroyWindow(IntPtr)" /> failed.</exception>
         internal void Dispose(bool isDisposing)
         {
             var previousState = Exchange(ref _state, Disposing);
@@ -274,18 +274,18 @@ namespace TerraFX.Provider.Win32.UI
                 DisposeWindowHandle();
             }
 
-            Debug.Assert(_handle == null);
+            Debug.Assert(_handle == IntPtr.Zero);
 
             _state = Disposed;
         }
 
         /// <summary>Disposes of the HWND for the instance.</summary>
-        /// <exception cref="ExternalException">The call to <see cref="DestroyWindow(void*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="DestroyWindow(IntPtr)" /> failed.</exception>
         internal void DisposeWindowHandle()
         {
             Debug.Assert(_state == Disposing);
 
-            if (_handle != null)
+            if (_handle != IntPtr.Zero)
             {
                 _windowManager.RemoveWindow(this);
 
@@ -296,7 +296,7 @@ namespace TerraFX.Provider.Win32.UI
                     ThrowExternalExceptionForLastError(nameof(DestroyWindow));
                 }
 
-                _handle = null;
+                _handle = IntPtr.Zero;
             }
         }
 
@@ -411,7 +411,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Activates the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="Dispatcher.ParentThread" />.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="SetForegroundWindow(void*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="SetForegroundWindow(IntPtr)" /> failed.</exception>
         public void Activate()
         {
             ThrowIfDisposed(_state);
@@ -440,7 +440,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Hides the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="Dispatcher.ParentThread" />.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="ShowWindow(void*, int)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="ShowWindow(IntPtr, int)" /> failed.</exception>
         public void Hide()
         {
             ThrowIfDisposed(_state);
@@ -460,7 +460,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Shows the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="Dispatcher.ParentThread" />.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="ShowWindow(void*, int)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="ShowWindow(IntPtr, int)" /> failed.</exception>
         public void Show()
         {
             ThrowIfDisposed(_state);

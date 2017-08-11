@@ -3,6 +3,7 @@
 // Ported from shared\dxgi.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         public uint BufferCount;
 
         [ComAliasName("HWND")]
-        public void* OutputWindow;
+        public IntPtr OutputWindow;
 
         [ComAliasName("BOOL")]
         public int Windowed;

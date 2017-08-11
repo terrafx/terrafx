@@ -3,6 +3,7 @@
 // Ported from um\winuser.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -843,7 +844,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("BOOL")]
         public static extern int SetWindowText(
-            [In, ComAliasName("HWND")] void* hWnd,
+            [In, ComAliasName("HWND")] IntPtr hWnd,
             [In, Optional, ComAliasName("LPCWSTR")] /* readonly */ char* lpString
         );
         #endregion

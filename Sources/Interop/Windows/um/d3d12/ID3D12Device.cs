@@ -269,7 +269,7 @@ namespace TerraFX.Interop
             [In, Optional] /* readonly */ SECURITY_ATTRIBUTES* pAttributes,
             [In, ComAliasName("DWORD")] uint Access,
             [In, Optional, ComAliasName("LPCWSTR")] /* readonly */ char* Name,
-            [Out, ComAliasName("HANDLE")] void** pHandle
+            [Out, ComAliasName("HANDLE")] out IntPtr pHandle
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -277,7 +277,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int OpenSharedHandle(
             [In] ID3D12Device* This,
-            [In, ComAliasName("HANDLE")] void* NTHandle,
+            [In, ComAliasName("HANDLE")] IntPtr NTHandle,
             [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
             [Out] void** ppvObj = null
         );
@@ -289,7 +289,7 @@ namespace TerraFX.Interop
             [In] ID3D12Device* This,
             [In, ComAliasName("LPCWSTR")] /* readonly */ char* Name,
             [In, ComAliasName("DWORD")] uint Access,
-            [Out, ComAliasName("HANDLE")] void** pNTHandle
+            [Out, ComAliasName("HANDLE")] out IntPtr pNTHandle
         );
 
         [SuppressUnmanagedCodeSecurity]

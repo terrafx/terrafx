@@ -34,7 +34,7 @@ namespace TerraFX.Interop
             [In, Optional] /* readonly */ SECURITY_ATTRIBUTES* pAttributes,
             [In, ComAliasName("DWORD")] uint dwAccess,
             [In, Optional, ComAliasName("LPCWSTR")] /* readonly */ char* lpName,
-            [Out, ComAliasName("HANDLE")] void* pHandle
+            [Out, ComAliasName("HANDLE")] out IntPtr pHandle
         );
         #endregion
 

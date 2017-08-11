@@ -3,6 +3,7 @@
 // Ported from um\libloaderapi.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -14,7 +15,7 @@ namespace TerraFX.Interop
         [DllImport("Kernel32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "GetModuleHandleW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HMODULE")]
-        public static extern void* GetModuleHandle(
+        public static extern IntPtr GetModuleHandle(
             [In, ComAliasName("LPCWSTR")] /* readonly */ char* lpModuleName = null
         );
         #endregion

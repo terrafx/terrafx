@@ -23,7 +23,7 @@ namespace TerraFX.Interop.Desktop
         public /* static */ delegate int CreateSwapChainForCompositionSurfaceHandle(
             [In] IDXGIFactoryMedia* This,
             [In] IUnknown* pDevice,
-            [In, Optional, ComAliasName("HANDLE")] void* hSurface,
+            [In, Optional, ComAliasName("HANDLE")] IntPtr hSurface,
             [In] /* readonly */ DXGI_SWAP_CHAIN_DESC1* pDesc,
             [In, Optional] IDXGIOutput* pRestrictToOutput,
             [Out] IDXGISwapChain1** ppSwapChain
@@ -35,7 +35,7 @@ namespace TerraFX.Interop.Desktop
         public /* static */ delegate int CreateDecodeSwapChainForCompositionSurfaceHandle(
             [In] IDXGIFactoryMedia* This,
             [In] IUnknown* pDevice,
-            [In, Optional, ComAliasName("HANDLE")] void* hSurface,
+            [In, Optional, ComAliasName("HANDLE")] IntPtr hSurface,
             [In] DXGI_DECODE_SWAP_CHAIN_DESC* pDesc,
             [In] IDXGIResource* pYuvDecodeBuffers,
             [In, Optional] IDXGIOutput* pRestrictToOutput,

@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int RegisterHardwareContentProtectionTeardownStatusEvent(
             [In] IDXGIAdapter3* This,
-            [In, ComAliasName("HANDLE")] void* hEvent,
+            [In, ComAliasName("HANDLE")] IntPtr hEvent,
             [Out, ComAliasName("DWORD")] uint* pdwCookie
         );
 
@@ -58,7 +58,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int RegisterVideoMemoryBudgetChangeNotificationEvent(
             [In] IDXGIAdapter3* This,
-            [In, ComAliasName("HANDLE")] void* hEvent,
+            [In, ComAliasName("HANDLE")] IntPtr hEvent,
             [Out, ComAliasName("DWORD")] uint* pdwCookie
         );
 

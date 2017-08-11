@@ -24,7 +24,7 @@ namespace TerraFX.Interop.Desktop
         public /* static */ delegate int GetDC(
             [In] ID2D1GdiInteropRenderTarget* This,
             [In] D2D1_DC_INITIALIZE_MODE mode,
-            [Out, ComAliasName("HDC")] void** hdc
+            [Out, ComAliasName("HDC")] out IntPtr hdc
         );
 
         [SuppressUnmanagedCodeSecurity]

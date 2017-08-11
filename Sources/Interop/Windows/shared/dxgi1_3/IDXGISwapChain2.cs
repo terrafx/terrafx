@@ -54,7 +54,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HANDLE")]
-        public /* static */ delegate void* GetFrameLatencyWaitableObject(
+        public /* static */ delegate IntPtr GetFrameLatencyWaitableObject(
             [In] IDXGISwapChain2* This
         );
 

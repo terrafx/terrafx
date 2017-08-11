@@ -68,7 +68,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateFontFaceFromHdc(
             [In] IDWriteGdiInterop* This,
-            [In, ComAliasName("HDC")] void* hdc,
+            [In, ComAliasName("HDC")] IntPtr hdc,
             [Out] IDWriteFontFace** fontFace
         );
 
@@ -82,7 +82,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateBitmapRenderTarget(
             [In] IDWriteGdiInterop* This,
-            [In, Optional, ComAliasName("HDC")] void* hdc,
+            [In, Optional, ComAliasName("HDC")] IntPtr hdc,
             [In, ComAliasName("UINT32")] uint width,
             [In, ComAliasName("UINT32")] uint height,
             [Out] IDWriteBitmapRenderTarget** renderTarget

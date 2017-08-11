@@ -477,7 +477,7 @@ namespace TerraFX.Interop
              [In, ComAliasName("UINT")] uint width,
              [In, ComAliasName("UINT")] uint height,
              [In, ComAliasName("REFWICPixelFormatGUID")] /* readonly */ Guid* pixelFormat,
-             [In, ComAliasName("HANDLE")] void* hSection,
+             [In, ComAliasName("HANDLE")] IntPtr hSection,
              [In, ComAliasName("UINT")] uint stride,
              [In, ComAliasName("UINT")] uint offset,
              [Out] IWICBitmap** ppIBitmap
@@ -490,7 +490,7 @@ namespace TerraFX.Interop
              [In, ComAliasName("UINT")] uint width,
              [In, ComAliasName("UINT")] uint height,
              [In, ComAliasName("REFWICPixelFormatGUID")] /* readonly */ Guid* pixelFormat,
-             [In, ComAliasName("HANDLE")] void* hSection,
+             [In, ComAliasName("HANDLE")] IntPtr hSection,
              [In, ComAliasName("UINT")] uint stride,
              [In, ComAliasName("UINT")] uint offset,
              [In] WICSectionAccessLevel desiredAccessLevel,

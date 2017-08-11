@@ -198,8 +198,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateBitmapFromHBITMAP(
             [In] IWICImagingFactory* This,
-            [In, ComAliasName("HBITMAP")] void* hBitmap,
-            [In, Optional, ComAliasName("HPALETTE")] void* hPalette,
+            [In, ComAliasName("HBITMAP")] IntPtr hBitmap,
+            [In, Optional, ComAliasName("HPALETTE")] IntPtr hPalette,
             [In] WICBitmapAlphaChannelOption options,
             [Out] IWICBitmap** ppIBitmap = null
         );
@@ -209,7 +209,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateBitmapFromHICON(
             [In] IWICImagingFactory* This,
-            [In, ComAliasName("HICON")] void* hIcon,
+            [In, ComAliasName("HICON")] IntPtr hIcon,
             [Out] IWICBitmap** ppIBitmap = null
         );
 

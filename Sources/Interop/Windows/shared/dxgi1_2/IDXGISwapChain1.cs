@@ -38,7 +38,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetHwnd(
             [In] IDXGISwapChain1* This,
-            [Out, ComAliasName("HWND")] void** pHwnd
+            [Out, ComAliasName("HWND")] out IntPtr pHwnd
         );
 
         [SuppressUnmanagedCodeSecurity]

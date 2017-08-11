@@ -30,7 +30,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateSwapChainForHwnd(
             [In] IDXGIFactory2* This,
             [In] IUnknown* pDevice,
-            [In, ComAliasName("HWND")] void* hWnd,
+            [In, ComAliasName("HWND")] IntPtr hWnd,
             [In] /* readonly */ DXGI_SWAP_CHAIN_DESC1* pDesc,
             [In, Optional] /* readonly */ DXGI_SWAP_CHAIN_FULLSCREEN_DESC* pFullscreenDesc,
             [In, Optional] IDXGIOutput* pRestrictToOutput,
@@ -54,7 +54,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetSharedResourceAdapterLuid(
             [In] IDXGIFactory2* This,
-            [In, ComAliasName("HANDLE")] void* hResource,
+            [In, ComAliasName("HANDLE")] IntPtr hResource,
             [Out] LUID* pLuid
         );
 
@@ -63,7 +63,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int RegisterStereoStatusWindow(
             [In] IDXGIFactory2* This,
-            [In, ComAliasName("HWND")] void* WindowHandle,
+            [In, ComAliasName("HWND")] IntPtr WindowHandle,
             [In, ComAliasName("UINT")] uint wMsg,
             [Out, ComAliasName("DWORD")] uint* pdwCookie
         );
@@ -73,7 +73,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int RegisterStereoStatusEvent(
             [In] IDXGIFactory2* This,
-            [In, ComAliasName("HANDLE")] void* hEvent,
+            [In, ComAliasName("HANDLE")] IntPtr hEvent,
             [Out, ComAliasName("DWORD")] uint* pdwCookie
         );
 
@@ -89,7 +89,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int RegisterOcclusionStatusWindow(
             [In] IDXGIFactory2* This,
-            [In, ComAliasName("HWND")] void* WindowHandle,
+            [In, ComAliasName("HWND")] IntPtr WindowHandle,
             [In, ComAliasName("UINT")] uint wMsg,
             [Out, ComAliasName("DWORD")] uint* pdwCookie
         );
@@ -99,7 +99,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int RegisterOcclusionStatusEvent(
             [In] IDXGIFactory2* This,
-            [In, ComAliasName("HANDLE")] void* hEvent,
+            [In, ComAliasName("HANDLE")] IntPtr hEvent,
             [Out, ComAliasName("DWORD")] uint* pdwCookie
         );
 

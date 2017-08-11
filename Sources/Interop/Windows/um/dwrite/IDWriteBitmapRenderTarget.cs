@@ -47,7 +47,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HDC")]
-        public /* static */ delegate void* GetMemoryDC(
+        public /* static */ delegate IntPtr GetMemoryDC(
             [In] IDWriteBitmapRenderTarget* This
         );
 

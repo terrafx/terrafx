@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HANDLE")]
-        public /* static */ delegate void* GetWaitHandle(
+        public /* static */ delegate IntPtr GetWaitHandle(
             [In] IDWriteAsyncResult* This
         );
 

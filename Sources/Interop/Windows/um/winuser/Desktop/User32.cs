@@ -3,6 +3,7 @@
 // Ported from um\winuser.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -15,13 +16,13 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("BOOL")]
         public static extern int CloseWindow(
-            [In, ComAliasName("HWND")] void* hWnd
+            [In, ComAliasName("HWND")] IntPtr hWnd
         );
 
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CreateWindowExW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HWND")]
-        public static extern void* CreateWindowEx(
+        public static extern IntPtr CreateWindowEx(
             [In, ComAliasName("DWORD")] uint dwExStyle,
             [In, Optional, ComAliasName("LPCWSTR")] /* readonly */ char* lpClassName,
             [In, Optional, ComAliasName("LPCWSTR")] /* readonly */ char* lpWindowName,
@@ -30,9 +31,9 @@ namespace TerraFX.Interop.Desktop
             [In] int Y,
             [In] int nWidth,
             [In] int nHeight,
-            [In, Optional, ComAliasName("HWND")] void* hWndParent,
-            [In, Optional, ComAliasName("HMENU")] void* hMenu,
-            [In, Optional, ComAliasName("HINSTANCE")] void* hInstance,
+            [In, Optional, ComAliasName("HWND")] IntPtr hWndParent,
+            [In, Optional, ComAliasName("HMENU")] IntPtr hMenu,
+            [In, Optional, ComAliasName("HINSTANCE")] IntPtr hInstance,
             [In, ComAliasName("LPVOID")] void* lpParam
         );
 
@@ -40,7 +41,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("LRESULT")]
         public static extern nint DefWindowProc(
-            [In, ComAliasName("HWND")] void* hWnd,
+            [In, ComAliasName("HWND")] IntPtr hWnd,
             [In, ComAliasName("UINT")] uint Msg,
             [In, ComAliasName("WPARAM")] nuint wParam,
             [In, ComAliasName("LPARAM")] nint lParam
@@ -50,7 +51,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("BOOL")]
         public static extern int DestroyWindow(
-            [In, ComAliasName("HWND")] void* hWnd
+            [In, ComAliasName("HWND")] IntPtr hWnd
         );
 
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "DispatchMessageW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
@@ -63,14 +64,14 @@ namespace TerraFX.Interop.Desktop
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "GetActiveWindow", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HWND")]
-        public static extern void* GetActiveWindow(
+        public static extern IntPtr GetActiveWindow(
         );
 
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "GetClassInfoExW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("BOOL")]
         public static extern int GetClassInfoEx(
-            [In, Optional, ComAliasName("HINSTANCE")] void* hInstance,
+            [In, Optional, ComAliasName("HINSTANCE")] IntPtr hInstance,
             [In, ComAliasName("LPCWSTR")] /* readonly */ char* lpszClass,
             [Out, ComAliasName("LPWNDCLASSEX")] WNDCLASSEX* lpwcx
         );
@@ -78,7 +79,7 @@ namespace TerraFX.Interop.Desktop
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "GetClassNameW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int GetClassName(
-            [In, ComAliasName("HWND")] void* hWnd,
+            [In, ComAliasName("HWND")] IntPtr hWnd,
             [Out, ComAliasName("LPWSTR")] char* lpClassName,
             [In] int nMaxCount
         );
@@ -86,14 +87,14 @@ namespace TerraFX.Interop.Desktop
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "GetDesktopWindow", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HWND")]
-        public static extern void* GetDesktopWindow(
+        public static extern IntPtr GetDesktopWindow(
         );
 
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "GetWindowRect", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("BOOL")]
         public static extern int GetWindowRect(
-            [In, ComAliasName("HWND")] void* hWnd,
+            [In, ComAliasName("HWND")] IntPtr hWnd,
             [Out, ComAliasName("LPRECT")] RECT* lpRect
         );
 
@@ -101,7 +102,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("BOOL")]
         public static extern int IsWindowVisible(
-            [In, ComAliasName("HWND")] void* hWnd
+            [In, ComAliasName("HWND")] IntPtr hWnd
         );
 
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "PeekMessageW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
@@ -109,7 +110,7 @@ namespace TerraFX.Interop.Desktop
         [return: ComAliasName("BOOL")]
         public static extern int PeekMessage(
             [Out, ComAliasName("LPMSG")] MSG* lpMsg,
-            [In, Optional, ComAliasName("HWND")] void* hWnd,
+            [In, Optional, ComAliasName("HWND")] IntPtr hWnd,
             [In, ComAliasName("UINT")] uint wMsgFilterMin,
             [In, ComAliasName("UINT")] uint wMsgFilterMax,
             [In, ComAliasName("UINT")] uint wRemoveMsg
@@ -132,7 +133,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("LRESULT")]
         public static extern nint SendMessage(
-            [In, ComAliasName("HWND")] void* hWnd,
+            [In, ComAliasName("HWND")] IntPtr hWnd,
             [In, ComAliasName("UINT")] uint Msg,
             [In, ComAliasName("WPARAM")] nuint wParam,
             [In, ComAliasName("LPARAM")] nint lParam
@@ -141,22 +142,22 @@ namespace TerraFX.Interop.Desktop
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "SetActiveWindow", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HWND")]
-        public static extern void* SetActiveWindow(
-            [In, ComAliasName("HWND")] void* hWnd
+        public static extern IntPtr SetActiveWindow(
+            [In, ComAliasName("HWND")] IntPtr hWnd
         );
 
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "SetForegroundWindow", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("BOOL")]
         public static extern int SetForegroundWindow(
-            [In, ComAliasName("HWND")] void* hWnd
+            [In, ComAliasName("HWND")] IntPtr hWnd
         );
 
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "ShowWindow", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("BOOL")]
         public static extern int ShowWindow(
-            [In, ComAliasName("HWND")] void* hWnd,
+            [In, ComAliasName("HWND")] IntPtr hWnd,
             [In] int nCmdShow
         );
 
@@ -172,7 +173,7 @@ namespace TerraFX.Interop.Desktop
         [return: ComAliasName("BOOL")]
         public static extern int UnregisterClass(
             [In, ComAliasName("LPCWSTR")] /* readonly */ char* lpClassName,
-            [In, ComAliasName("HINSTANCE")] void* hInstance = null
+            [In, ComAliasName("HINSTANCE")] IntPtr hInstance = default
         );
         #endregion
     }

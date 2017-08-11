@@ -3,6 +3,7 @@
 // Ported from um\d2d1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
@@ -12,7 +13,7 @@ namespace TerraFX.Interop
     {
         #region Fields
         [ComAliasName("HWND")]
-        public void* hwnd;
+        public IntPtr hwnd;
 
         [ComAliasName("D2D1_SIZE_U")]
         public D2D_SIZE_U pixelSize;

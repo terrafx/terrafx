@@ -145,7 +145,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateMonitorRenderingParams(
             [In] IDWriteFactory* This,
-            [In, ComAliasName("HMONITOR")] void* monitor,
+            [In, ComAliasName("HMONITOR")] IntPtr monitor,
             [Out] IDWriteRenderingParams** renderingParams
         );
 

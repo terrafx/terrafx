@@ -42,7 +42,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int EnqueueSetEvent(
             [In] IDXGIDevice2* This,
-            [In, ComAliasName("HANDLE")] void* hEvent
+            [In, ComAliasName("HANDLE")] IntPtr hEvent
         );
         #endregion
 

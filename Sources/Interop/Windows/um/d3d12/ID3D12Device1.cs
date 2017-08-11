@@ -37,7 +37,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("UINT64")] /* readonly */ ulong* pFenceValues,
             [In, ComAliasName("UINT")] uint NumFences,
             [In] D3D12_MULTIPLE_FENCE_WAIT_FLAGS Flags,
-            [In, ComAliasName("HANDLE")] void* hEvent
+            [In, ComAliasName("HANDLE")] IntPtr hEvent
         );
 
         [SuppressUnmanagedCodeSecurity]

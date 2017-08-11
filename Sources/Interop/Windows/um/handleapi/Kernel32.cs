@@ -3,6 +3,7 @@
 // Ported from um\handleapi.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -15,7 +16,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("BOOL")]
         public static extern int CloseHandle(
-            [In, ComAliasName("HANDLE")] void* hObject
+            [In, ComAliasName("HANDLE")] IntPtr hObject
         );
         #endregion
     }
