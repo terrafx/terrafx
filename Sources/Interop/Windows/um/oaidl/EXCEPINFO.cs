@@ -33,7 +33,8 @@ namespace TerraFX.Interop
         [ComAliasName("PVOID")]
         public void* pvReserved;
 
-        public IntPtr /* pfnDeferredFillIn */ pfnDeferredFillIn;
+        [ComAliasName("pfnDeferredFillIn")]
+        public IntPtr pfnDeferredFillIn;
 
         [ComAliasName("SCODE")]
         public int scode;

@@ -18,7 +18,8 @@ namespace TerraFX.Interop.Desktop
         [ComAliasName("UINT")]
         public uint style;
 
-        public IntPtr /* WNDPROC */ lpfnWndProc;
+        [ComAliasName("WNDPROC")]
+        public IntPtr lpfnWndProc;
 
         public int cbClsExtra;
 

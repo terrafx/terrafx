@@ -18,10 +18,12 @@ namespace TerraFX.Interop
         public /* readonly */ char* propertyName;
 
         /// <summary>The function that will receive the data to set.</summary>
-        public IntPtr /* PD2D1_PROPERTY_SET_FUNCTION */ setFunction;
+        [ComAliasName("PD2D1_PROPERTY_SET_FUNCTION")]
+        public IntPtr setFunction;
 
         /// <summary>The function that will be asked to write the output data.</summary>
-        public IntPtr /* PD2D1_PROPERTY_GET_FUNCTION */ getFunction;
+        [ComAliasName("PD2D1_PROPERTY_GET_FUNCTION")]
+        public IntPtr getFunction;
         #endregion
     }
 }

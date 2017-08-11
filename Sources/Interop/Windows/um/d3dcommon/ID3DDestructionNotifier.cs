@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int RegisterDestructionCallback(
             [In] ID3DDestructionNotifier* This,
-            [In] IntPtr /* PFN_DESTRUCTION_CALLBACK */ callbackFn,
+            [In, ComAliasName("PFN_DESTRUCTION_CALLBACK")] IntPtr callbackFn,
             [In] void* pData,
             [Out, ComAliasName("UINT")] uint* pCallbackID
         );
