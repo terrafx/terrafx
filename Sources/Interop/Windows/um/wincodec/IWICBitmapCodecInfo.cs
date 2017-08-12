@@ -32,7 +32,8 @@ namespace TerraFX.Interop
             [In] IWICBitmapCodecInfo* This,
             [In, ComAliasName("UINT")] uint cFormats,
             [In, Out, Optional, ComAliasName("GUID")] Guid* pguidPixelFormats,
-            [Out, ComAliasName("UINT")] uint* pcActual);
+            [Out, ComAliasName("UINT")] uint* pcActual
+        );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]

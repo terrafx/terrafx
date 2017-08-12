@@ -41,7 +41,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetThumbnail(
             [In] IWICBitmapFrameDecode* This,
             [Out] IWICBitmapSource** ppIThumbnail = null
-         );
+        );
         #endregion
 
         #region Structs

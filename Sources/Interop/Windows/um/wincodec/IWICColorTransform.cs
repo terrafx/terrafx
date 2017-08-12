@@ -26,7 +26,7 @@ namespace TerraFX.Interop
             [In, Optional] IWICColorContext* pIContextSource,
             [In, Optional] IWICColorContext* pIContextDest,
             [In, ComAliasName("REFWICPixelFormatGUID")] /* readonly */ Guid* pixelFmtDest
-         );
+        );
         #endregion
 
         #region Structs

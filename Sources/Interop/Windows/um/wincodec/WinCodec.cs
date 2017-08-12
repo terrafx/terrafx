@@ -481,7 +481,7 @@ namespace TerraFX.Interop
              [In, ComAliasName("UINT")] uint stride,
              [In, ComAliasName("UINT")] uint offset,
              [Out] IWICBitmap** ppIBitmap
-            );
+        );
 
         [DllImport("WinCodec", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "WICCreateBitmapFromSectionEx", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
@@ -495,7 +495,7 @@ namespace TerraFX.Interop
              [In, ComAliasName("UINT")] uint offset,
              [In] WICSectionAccessLevel desiredAccessLevel,
              [Out] IWICBitmap** ppIBitmap
-            );
+        );
 
         [DllImport("WinCodec", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "WICMapGuidToShortName", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
