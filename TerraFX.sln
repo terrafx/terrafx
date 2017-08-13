@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26711.1
+VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2F337CB6-0B9E-4765-A277-487E429DE9F1}"
 	ProjectSection(SolutionItems) = preProject
@@ -160,6 +160,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "D3D12", "D3D12", "{D414B38B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Provider.D3D12.UnitTests", "Tests\Provider\D3D12\TerraFX.Provider.D3D12.UnitTests.csproj", "{C6BBAE3F-D090-4A07-936E-D17EB6B47621}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Vulkan", "Vulkan", "{2C55CF73-8B6F-45B9-86B6-EA697E814DBD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Provider.Vulkan", "Sources\Provider\Vulkan\TerraFX.Provider.Vulkan.csproj", "{13612087-8E41-4871-BD02-01FA7803962D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Vulkan", "Vulkan", "{DAF6EF03-5297-4579-B25F-531A579DF0EF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Provider.Vulkan.UnitTests", "Tests\Provider\Vulkan\TerraFX.Provider.Vulkan.UnitTests.csproj", "{3562CC13-F8C0-47DB-9741-2D5BC1229FA9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -278,6 +286,14 @@ Global
 		{C6BBAE3F-D090-4A07-936E-D17EB6B47621}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6BBAE3F-D090-4A07-936E-D17EB6B47621}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6BBAE3F-D090-4A07-936E-D17EB6B47621}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13612087-8E41-4871-BD02-01FA7803962D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13612087-8E41-4871-BD02-01FA7803962D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13612087-8E41-4871-BD02-01FA7803962D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13612087-8E41-4871-BD02-01FA7803962D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3562CC13-F8C0-47DB-9741-2D5BC1229FA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3562CC13-F8C0-47DB-9741-2D5BC1229FA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3562CC13-F8C0-47DB-9741-2D5BC1229FA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3562CC13-F8C0-47DB-9741-2D5BC1229FA9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -346,6 +362,10 @@ Global
 		{F6E8BDBC-D102-4BB0-9563-984032A1E8E9} = {F39F35AF-8F8D-4515-99D3-BBB9B21F1077}
 		{D414B38B-CFAC-44AD-951E-68EA5F7BF409} = {041652D1-304F-4FB9-881A-F0A370D5472B}
 		{C6BBAE3F-D090-4A07-936E-D17EB6B47621} = {D414B38B-CFAC-44AD-951E-68EA5F7BF409}
+		{2C55CF73-8B6F-45B9-86B6-EA697E814DBD} = {1E3A071E-418D-46C8-9064-CC625EC2408D}
+		{13612087-8E41-4871-BD02-01FA7803962D} = {2C55CF73-8B6F-45B9-86B6-EA697E814DBD}
+		{DAF6EF03-5297-4579-B25F-531A579DF0EF} = {041652D1-304F-4FB9-881A-F0A370D5472B}
+		{3562CC13-F8C0-47DB-9741-2D5BC1229FA9} = {DAF6EF03-5297-4579-B25F-531A579DF0EF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2FE36DF8-2D9C-4F20-8787-45DC74B57461}
