@@ -3,6 +3,7 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -13,7 +14,7 @@ namespace TerraFX.Interop
         #region Constants
         public const int VK_VERSION_1_0 = 1;
 
-        public const int VK_HEADER_VERSION = 51;
+        public const int VK_HEADER_VERSION = 54;
 
         public const int VK_NULL_HANDLE = 0;
 
@@ -46,7 +47,9 @@ namespace TerraFX.Interop
         public const int VK_MAX_EXTENSION_NAME_SIZE = 256;
 
         public const int VK_MAX_DESCRIPTION_SIZE = 256;
+        #endregion
 
+        #region Static Fields
         public static readonly uint VK_API_VERSION_1_0 = VK_MAKE_VERSION(1, 0, 0);
         #endregion
 
@@ -78,35 +81,35 @@ namespace TerraFX.Interop
         public static extern VkResult vkCreateInstance(
             VkInstanceCreateInfo* pCreateInfo,
             VkAllocationCallbacks* pAllocator,
-            VkInstance* pInstance
+            [ComAliasName("VkInstance")] IntPtr* pInstance
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDestroyInstance", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkDestroyInstance(
-            VkInstance instance,
+            [ComAliasName("VkInstance")] IntPtr instance,
             VkAllocationCallbacks* pAllocator
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkEnumeratePhysicalDevices", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkEnumeratePhysicalDevices(
-            VkInstance instance,
+            [ComAliasName("VkInstance")] IntPtr instance,
             uint* pPhysicalDeviceCount,
-            VkPhysicalDevice* pPhysicalDevices
+            [ComAliasName("VkPhysicalDevice")] IntPtr* pPhysicalDevices
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetPhysicalDeviceFeatures", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkGetPhysicalDeviceFeatures(
-            VkPhysicalDevice physicalDevice,
+            [ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
             VkPhysicalDeviceFeatures* pFeatures
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetPhysicalDeviceFormatProperties", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkGetPhysicalDeviceFormatProperties(
-            VkPhysicalDevice physicalDevice,
+            [ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
             VkFormat format,
             VkFormatProperties* pFormatProperties
         );
@@ -114,26 +117,26 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetPhysicalDeviceImageFormatProperties", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkGetPhysicalDeviceImageFormatProperties(
-            VkPhysicalDevice physicalDevice,
+            [ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
             VkFormat format,
             VkImageType type,
             VkImageTiling tiling,
-            VkImageUsageFlags usage,
-            VkImageCreateFlags flags,
+            [ComAliasName("VkImageUsageFlags")] uint usage,
+            [ComAliasName("VkImageCreateFlags")] uint flags,
             VkImageFormatProperties* pImageFormatProperties
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetPhysicalDeviceProperties", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkGetPhysicalDeviceProperties(
-            VkPhysicalDevice physicalDevice,
+            [ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
             VkPhysicalDeviceProperties* pProperties
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetPhysicalDeviceQueueFamilyProperties", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkGetPhysicalDeviceQueueFamilyProperties(
-            VkPhysicalDevice physicalDevice,
+            [ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
             uint* pQueueFamilyPropertyCount,
             VkQueueFamilyProperties* pQueueFamilyProperties
         );
@@ -141,37 +144,37 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetPhysicalDeviceMemoryProperties", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkGetPhysicalDeviceMemoryProperties(
-            VkPhysicalDevice physicalDevice,
+            [ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
             VkPhysicalDeviceMemoryProperties* pMemoryProperties
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetInstanceProcAddr", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern PFN_vkVoidFunction vkGetInstanceProcAddr(
-            VkInstance instance,
+            [ComAliasName("VkInstance")] IntPtr instance,
             sbyte* pName
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetDeviceProcAddr", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern PFN_vkVoidFunction vkGetDeviceProcAddr(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             sbyte* pName
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateDevice", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateDevice(
-            VkPhysicalDevice physicalDevice,
+            [ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
             VkDeviceCreateInfo* pCreateInfo,
             VkAllocationCallbacks* pAllocator,
-            VkDevice* pDevice
+            [ComAliasName("VkDevice")] IntPtr* pDevice
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDestroyDevice", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkDestroyDevice(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             VkAllocationCallbacks* pAllocator
         );
 
@@ -186,7 +189,7 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkEnumerateDeviceExtensionProperties", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkEnumerateDeviceExtensionProperties(
-            VkPhysicalDevice physicalDevice,
+            [ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
             sbyte* pLayerName,
             uint* pPropertyCount,
             VkExtensionProperties* pProperties
@@ -202,7 +205,7 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkEnumerateDeviceLayerProperties", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkEnumerateDeviceLayerProperties(
-            VkPhysicalDevice physicalDevice,
+            [ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
             uint* pPropertyCount,
             VkLayerProperties* pProperties
         );
@@ -210,72 +213,72 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetDeviceQueue", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkGetDeviceQueue(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             uint queueFamilyIndex,
             uint queueIndex,
-            VkQueue* pQueue
+            [ComAliasName("VkQueue")] IntPtr* pQueue
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkQueueSubmit", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkQueueSubmit(
-            VkQueue queue,
+            [ComAliasName("VkQueue")] IntPtr queue,
             uint submitCount,
             VkSubmitInfo* pSubmits,
-            VkFence fence
+            [ComAliasName("VkFence")] ulong fence
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkQueueWaitIdle", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkQueueWaitIdle(
-            VkQueue queue
+            [ComAliasName("VkQueue")] IntPtr queue
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDeviceWaitIdle", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkDeviceWaitIdle(
-            VkDevice device
+            [ComAliasName("VkDevice")] IntPtr device
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkAllocateMemory", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkAllocateMemory(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             VkMemoryAllocateInfo* pAllocateInfo,
             VkAllocationCallbacks* pAllocator,
-            VkDeviceMemory* pMemory
+            [ComAliasName("VkDeviceMemory")] ulong* pMemory
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkFreeMemory", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkFreeMemory(
-            VkDevice device,
-            VkDeviceMemory memory,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkDeviceMemory")] ulong memory,
             VkAllocationCallbacks* pAllocator
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkMapMemory", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkMapMemory(
-            VkDevice device,
-            VkDeviceMemory memory,
-            VkDeviceSize offset,
-            VkDeviceSize size,
-            VkMemoryMapFlags flags,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkDeviceMemory")] ulong memory,
+            [ComAliasName("VkDeviceSize")] ulong offset,
+            [ComAliasName("VkDeviceSize")] ulong size,
+            [ComAliasName("VkMemoryMapFlags")] uint flags,
             void** ppData
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkUnmapMemory", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkUnmapMemory(
-            VkDevice device,
-            VkDeviceMemory memory
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkDeviceMemory")] ulong memory
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkFlushMappedMemoryRanges", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkFlushMappedMemoryRanges(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             uint memoryRangeCount,
             VkMappedMemoryRange* pMemoryRanges
         );
@@ -283,7 +286,7 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkInvalidateMappedMemoryRanges", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkInvalidateMappedMemoryRanges(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             uint memoryRangeCount,
             VkMappedMemoryRange* pMemoryRanges
         );
@@ -291,50 +294,50 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetDeviceMemoryCommitment", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkGetDeviceMemoryCommitment(
-            VkDevice device,
-            VkDeviceMemory memory,
-            VkDeviceSize* pCommittedMemoryInBytes
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkDeviceMemory")] ulong memory,
+            [ComAliasName("VkDeviceSize")] ulong* pCommittedMemoryInBytes
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkBindBufferMemory", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkBindBufferMemory(
-            VkDevice device,
-            VkBuffer buffer,
-            VkDeviceMemory memory,
-            VkDeviceSize memoryOffset
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkBuffer")] ulong buffer,
+            [ComAliasName("VkDeviceMemory")] ulong memory,
+            [ComAliasName("VkDeviceSize")] ulong memoryOffset
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkBindImageMemory", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkBindImageMemory(
-            VkDevice device,
-            VkImage image,
-            VkDeviceMemory memory,
-            VkDeviceSize memoryOffset
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkImage")] ulong image,
+            [ComAliasName("VkDeviceMemory")] ulong memory,
+            [ComAliasName("VkDeviceSize")] ulong memoryOffset
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetBufferMemoryRequirements", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkGetBufferMemoryRequirements(
-            VkDevice device,
-            VkBuffer buffer,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkBuffer")] ulong buffer,
             VkMemoryRequirements* pMemoryRequirements
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetImageMemoryRequirements", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkGetImageMemoryRequirements(
-            VkDevice device,
-            VkImage image,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkImage")] ulong image,
             VkMemoryRequirements* pMemoryRequirements
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetImageSparseMemoryRequirements", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkGetImageSparseMemoryRequirements(
-            VkDevice device,
-            VkImage image,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkImage")] ulong image,
             uint* pSparseMemoryRequirementCount,
             VkSparseImageMemoryRequirements* pSparseMemoryRequirements
         );
@@ -342,11 +345,11 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetPhysicalDeviceSparseImageFormatProperties", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkGetPhysicalDeviceSparseImageFormatProperties(
-            VkPhysicalDevice physicalDevice,
+            [ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
             VkFormat format,
             VkImageType type,
             VkSampleCountFlagBits samples,
-            VkImageUsageFlags usage,
+            [ComAliasName("VkImageUsageFlags")] uint usage,
             VkImageTiling tiling,
             uint* pPropertyCount,
             VkSparseImageFormatProperties* pProperties
@@ -355,195 +358,195 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkQueueBindSparse", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkQueueBindSparse(
-            VkQueue queue,
+            [ComAliasName("VkQueue")] IntPtr queue,
             uint bindInfoCount,
             VkBindSparseInfo* pBindInfo,
-            VkFence fence
+            [ComAliasName("VkFence")] ulong fence
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateFence", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateFence(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             VkFenceCreateInfo* pCreateInfo,
             VkAllocationCallbacks* pAllocator,
-            VkFence* pFence
+            [ComAliasName("VkFence")] ulong* pFence
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDestroyFence", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkDestroyFence(
-            VkDevice device,
-            VkFence fence,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkFence")] ulong fence,
             VkAllocationCallbacks* pAllocator
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkResetFences", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkResetFences(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             uint fenceCount,
-            VkFence* pFences
+            [ComAliasName("VkFence")] ulong* pFences
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetFenceStatus", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkGetFenceStatus(
-            VkDevice device,
-            VkFence fence
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkFence")] ulong fence
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkWaitForFences", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkWaitForFences(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             uint fenceCount,
-            VkFence* pFences,
-            VkBool32 waitAll,
+            [ComAliasName("VkFence")] ulong* pFences,
+            [ComAliasName("VkBool32")] uint waitAll,
             ulong timeout
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateSemaphore", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateSemaphore(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             VkSemaphoreCreateInfo* pCreateInfo,
             VkAllocationCallbacks* pAllocator,
-            VkSemaphore* pSemaphore
+            [ComAliasName("VkSemaphore")] ulong* pSemaphore
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDestroySemaphore", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkDestroySemaphore(
-            VkDevice device,
-            VkSemaphore semaphore,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkSemaphore")] ulong semaphore,
             VkAllocationCallbacks* pAllocator
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateEvent", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateEvent(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             VkEventCreateInfo* pCreateInfo,
             VkAllocationCallbacks* pAllocator,
-            VkEvent* pEvent
+            [ComAliasName("VkEvent")] ulong* pEvent
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDestroyEvent", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkDestroyEvent(
-            VkDevice device,
-            VkEvent @event,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkEvent")] ulong @event,
             VkAllocationCallbacks* pAllocator
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetEventStatus", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkGetEventStatus(
-            VkDevice device,
-            VkEvent @event
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkEvent")] ulong @event
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkSetEvent", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkSetEvent(
-            VkDevice device,
-            VkEvent @event
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkEvent")] ulong @event
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkResetEvent", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkResetEvent(
-            VkDevice device,
-            VkEvent @event
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkEvent")] ulong @event
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateQueryPool", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateQueryPool(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             VkQueryPoolCreateInfo* pCreateInfo,
             VkAllocationCallbacks* pAllocator,
-            VkQueryPool* pQueryPool
+            [ComAliasName("VkQueryPool")] ulong* pQueryPool
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDestroyQueryPool", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkDestroyQueryPool(
-            VkDevice device,
-            VkQueryPool queryPool,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkQueryPool")] ulong queryPool,
             VkAllocationCallbacks* pAllocator
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetQueryPoolResults", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkGetQueryPoolResults(
-            VkDevice device,
-            VkQueryPool queryPool,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkQueryPool")] ulong queryPool,
             uint firstQuery,
             uint queryCount,
             nuint dataSize,
             void* pData,
-            VkDeviceSize stride,
-            VkQueryResultFlags flags
+            [ComAliasName("VkDeviceSize")] ulong stride,
+            [ComAliasName("VkQueryResultFlags")] uint flags
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateBuffer", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateBuffer(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             VkBufferCreateInfo* pCreateInfo,
             VkAllocationCallbacks* pAllocator,
-            VkBuffer* pBuffer
+            [ComAliasName("VkBuffer")] ulong* pBuffer
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDestroyBuffer", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkDestroyBuffer(
-            VkDevice device,
-            VkBuffer buffer,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkBuffer")] ulong buffer,
             VkAllocationCallbacks* pAllocator
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateBufferView", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateBufferView(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             VkBufferViewCreateInfo* pCreateInfo,
             VkAllocationCallbacks* pAllocator,
-            VkBufferView* pView
+            [ComAliasName("VkBufferView")] ulong* pView
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDestroyBufferView", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkDestroyBufferView(
-            VkDevice device,
-            VkBufferView bufferView,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkBufferView")] ulong bufferView,
             VkAllocationCallbacks* pAllocator
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateImage", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateImage(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             VkImageCreateInfo* pCreateInfo,
             VkAllocationCallbacks* pAllocator,
-            VkImage* pImage
+            [ComAliasName("VkImage")] ulong* pImage
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDestroyImage", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkDestroyImage(
-            VkDevice device,
-            VkImage image,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkImage")] ulong image,
             VkAllocationCallbacks* pAllocator
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetImageSubresourceLayout", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkGetImageSubresourceLayout(
-            VkDevice device,
-            VkImage image,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkImage")] ulong image,
             VkImageSubresource* pSubresource,
             VkSubresourceLayout* pLayout
         );
@@ -551,59 +554,59 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateImageView", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateImageView(
-            VkDevice device,
-             VkImageViewCreateInfo* pCreateInfo,
-             VkAllocationCallbacks* pAllocator,
-            VkImageView* pView
+            [ComAliasName("VkDevice")] IntPtr device,
+            VkImageViewCreateInfo* pCreateInfo,
+            VkAllocationCallbacks* pAllocator,
+            [ComAliasName("VkImageView")] ulong* pView
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDestroyImageView", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkDestroyImageView(
-            VkDevice device,
-            VkImageView imageView,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkImageView")] ulong imageView,
             VkAllocationCallbacks* pAllocator
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateShaderModule", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateShaderModule(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             VkShaderModuleCreateInfo* pCreateInfo,
             VkAllocationCallbacks* pAllocator,
-            VkShaderModule* pShaderModule
+            [ComAliasName("VkShaderModule")] ulong* pShaderModule
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDestroyShaderModule", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkDestroyShaderModule(
-            VkDevice device,
-            VkShaderModule shaderModule,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkShaderModule")] ulong shaderModule,
             VkAllocationCallbacks* pAllocator
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreatePipelineCache", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreatePipelineCache(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             VkPipelineCacheCreateInfo* pCreateInfo,
             VkAllocationCallbacks* pAllocator,
-            VkPipelineCache* pPipelineCache
+            [ComAliasName("VkPipelineCache")] ulong* pPipelineCache
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDestroyPipelineCache", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkDestroyPipelineCache(
-            VkDevice device,
-            VkPipelineCache pipelineCache,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkPipelineCache")] ulong pipelineCache,
             VkAllocationCallbacks* pAllocator
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetPipelineCacheData", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkGetPipelineCacheData(
-            VkDevice device,
-            VkPipelineCache pipelineCache,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkPipelineCache")] ulong pipelineCache,
             nuint* pDataSize,
             void* pData
         );
@@ -611,139 +614,139 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkMergePipelineCaches", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkMergePipelineCaches(
-            VkDevice device,
-            VkPipelineCache dstCache,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkPipelineCache")] ulong dstCache,
             uint srcCacheCount,
-            VkPipelineCache* pSrcCaches
+            [ComAliasName("VkPipelineCache")] ulong* pSrcCaches
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateGraphicsPipelines", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateGraphicsPipelines(
-            VkDevice device,
-            VkPipelineCache pipelineCache,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkPipelineCache")] ulong pipelineCache,
             uint createInfoCount,
             VkGraphicsPipelineCreateInfo* pCreateInfos,
             VkAllocationCallbacks* pAllocator,
-            VkPipeline* pPipelines
+            [ComAliasName("VkPipeline")] ulong* pPipelines
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateComputePipelines", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateComputePipelines(
-            VkDevice device,
-            VkPipelineCache pipelineCache,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkPipelineCache")] ulong pipelineCache,
             uint createInfoCount,
             VkComputePipelineCreateInfo* pCreateInfos,
             VkAllocationCallbacks* pAllocator,
-            VkPipeline* pPipelines
+            [ComAliasName("VkPipeline")] ulong* pPipelines
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDestroyPipeline", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkDestroyPipeline(
-            VkDevice device,
-            VkPipeline pipeline,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkPipeline")] ulong pipeline,
             VkAllocationCallbacks* pAllocator
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreatePipelineLayout", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreatePipelineLayout(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             VkPipelineLayoutCreateInfo* pCreateInfo,
             VkAllocationCallbacks* pAllocator,
-            VkPipelineLayout* pPipelineLayout
+            [ComAliasName("VkPipelineLayout")] ulong* pPipelineLayout
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDestroyPipelineLayout", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkDestroyPipelineLayout(
-            VkDevice device,
-            VkPipelineLayout pipelineLayout,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkPipelineLayout")] ulong pipelineLayout,
             VkAllocationCallbacks* pAllocator
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateSampler", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateSampler(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             VkSamplerCreateInfo* pCreateInfo,
             VkAllocationCallbacks* pAllocator,
-            VkSampler* pSampler
+            [ComAliasName("VkSampler")] ulong* pSampler
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDestroySampler", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkDestroySampler(
-            VkDevice device,
-            VkSampler sampler,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkSampler")] ulong sampler,
             VkAllocationCallbacks* pAllocator
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateDescriptorSetLayout", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateDescriptorSetLayout(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             VkDescriptorSetLayoutCreateInfo* pCreateInfo,
             VkAllocationCallbacks* pAllocator,
-            VkDescriptorSetLayout* pSetLayout
+            [ComAliasName("VkDescriptorSetLayout")] ulong* pSetLayout
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDestroyDescriptorSetLayout", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkDestroyDescriptorSetLayout(
-            VkDevice device,
-            VkDescriptorSetLayout descriptorSetLayout,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkDescriptorSetLayout")] ulong descriptorSetLayout,
             VkAllocationCallbacks* pAllocator
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateDescriptorPool", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateDescriptorPool(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             VkDescriptorPoolCreateInfo* pCreateInfo,
             VkAllocationCallbacks* pAllocator,
-            VkDescriptorPool* pDescriptorPool
+            [ComAliasName("VkDescriptorPool")] ulong* pDescriptorPool
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDestroyDescriptorPool", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkDestroyDescriptorPool(
-            VkDevice device,
-            VkDescriptorPool descriptorPool,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkDescriptorPool")] ulong descriptorPool,
             VkAllocationCallbacks* pAllocator
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkResetDescriptorPool", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkResetDescriptorPool(
-            VkDevice device,
-            VkDescriptorPool descriptorPool,
-            VkDescriptorPoolResetFlags flags
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkDescriptorPool")] ulong descriptorPool,
+            [ComAliasName("VkDescriptorPoolResetFlags")] uint flags
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkAllocateDescriptorSets", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkAllocateDescriptorSets(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             VkDescriptorSetAllocateInfo* pAllocateInfo,
-            VkDescriptorSet* pDescriptorSets
+            [ComAliasName("VkDescriptorSet")] ulong* pDescriptorSets
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkFreeDescriptorSets", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkFreeDescriptorSets(
-            VkDevice device,
-            VkDescriptorPool descriptorPool,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkDescriptorPool")] ulong descriptorPool,
             uint descriptorSetCount,
-            VkDescriptorSet* pDescriptorSets
+            [ComAliasName("VkDescriptorSet")] ulong* pDescriptorSets
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkUpdateDescriptorSets", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkUpdateDescriptorSets(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             uint descriptorWriteCount,
             VkWriteDescriptorSet* pDescriptorWrites,
             uint descriptorCopyCount,
@@ -753,119 +756,119 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateFramebuffer", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateFramebuffer(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             VkFramebufferCreateInfo* pCreateInfo,
             VkAllocationCallbacks* pAllocator,
-            VkFramebuffer* pFramebuffer
+            [ComAliasName("VkFramebuffer")] ulong* pFramebuffer
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDestroyFramebuffer", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkDestroyFramebuffer(
-            VkDevice device,
-            VkFramebuffer framebuffer,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkFramebuffer")] ulong framebuffer,
             VkAllocationCallbacks* pAllocator
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateRenderPass", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateRenderPass(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             VkRenderPassCreateInfo* pCreateInfo,
             VkAllocationCallbacks* pAllocator,
-            VkRenderPass* pRenderPass
+            [ComAliasName("VkRenderPass")] ulong* pRenderPass
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDestroyRenderPass", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkDestroyRenderPass(
-            VkDevice device,
-            VkRenderPass renderPass,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkRenderPass")] ulong renderPass,
             VkAllocationCallbacks* pAllocator
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetRenderAreaGranularity", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkGetRenderAreaGranularity(
-            VkDevice device,
-            VkRenderPass renderPass,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkRenderPass")] ulong renderPass,
             VkExtent2D* pGranularity
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateCommandPool", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateCommandPool(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             VkCommandPoolCreateInfo* pCreateInfo,
             VkAllocationCallbacks* pAllocator,
-            VkCommandPool* pCommandPool
+            [ComAliasName("VkCommandPool")] ulong* pCommandPool
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDestroyCommandPool", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkDestroyCommandPool(
-            VkDevice device,
-            VkCommandPool commandPool,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkCommandPool")] ulong commandPool,
             VkAllocationCallbacks* pAllocator
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkResetCommandPool", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkResetCommandPool(
-            VkDevice device,
-            VkCommandPool commandPool,
-            VkCommandPoolResetFlags flags
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkCommandPool")] ulong commandPool,
+            [ComAliasName("VkCommandPoolResetFlags")] uint flags
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkAllocateCommandBuffers", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkAllocateCommandBuffers(
-            VkDevice device,
+            [ComAliasName("VkDevice")] IntPtr device,
             VkCommandBufferAllocateInfo* pAllocateInfo,
-            VkCommandBuffer* pCommandBuffers
+            [ComAliasName("VkCommandBuffer")] IntPtr* pCommandBuffers
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkFreeCommandBuffers", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkFreeCommandBuffers(
-            VkDevice device,
-            VkCommandPool commandPool,
+            [ComAliasName("VkDevice")] IntPtr device,
+            [ComAliasName("VkCommandPool")] ulong commandPool,
             uint commandBufferCount,
-            VkCommandBuffer* pCommandBuffers
+            [ComAliasName("VkCommandBuffer")] IntPtr* pCommandBuffers
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkBeginCommandBuffer", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkBeginCommandBuffer(
-            VkCommandBuffer commandBuffer,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
             VkCommandBufferBeginInfo* pBeginInfo
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkEndCommandBuffer", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkEndCommandBuffer(
-            VkCommandBuffer commandBuffer
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkResetCommandBuffer", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkResetCommandBuffer(
-            VkCommandBuffer commandBuffer,
-            VkCommandBufferResetFlags flags
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkCommandBufferResetFlags")] uint flags
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdBindPipeline", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdBindPipeline(
-            VkCommandBuffer commandBuffer,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
             VkPipelineBindPoint pipelineBindPoint,
-            VkPipeline pipeline
+            [ComAliasName("VkPipeline")] ulong pipeline
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdSetViewport", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdSetViewport(
-            VkCommandBuffer commandBuffer,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
             uint firstViewport,
             uint viewportCount,
             VkViewport* pViewports
@@ -874,7 +877,7 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdSetScissor", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdSetScissor(
-            VkCommandBuffer commandBuffer,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
             uint firstScissor,
             uint scissorCount,
             VkRect2D* pScissors
@@ -883,14 +886,14 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdSetLineWidth", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdSetLineWidth(
-            VkCommandBuffer commandBuffer,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
             float lineWidth
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdSetDepthBias", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdSetDepthBias(
-            VkCommandBuffer commandBuffer,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
             float depthBiasConstantFactor,
             float depthBiasClamp,
             float depthBiasSlopeFactor
@@ -899,14 +902,14 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdSetBlendConstants", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdSetBlendConstants(
-            VkCommandBuffer commandBuffer,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
             float* blendConstants
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdSetDepthBounds", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdSetDepthBounds(
-            VkCommandBuffer commandBuffer,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
             float minDepthBounds,
             float maxDepthBounds
         );
@@ -914,36 +917,36 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdSetStencilCompareMask", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdSetStencilCompareMask(
-            VkCommandBuffer commandBuffer,
-            VkStencilFaceFlags faceMask,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkStencilFaceFlags")] uint faceMask,
             uint compareMask
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdSetStencilWriteMask", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdSetStencilWriteMask(
-            VkCommandBuffer commandBuffer,
-            VkStencilFaceFlags faceMask,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkStencilFaceFlags")] uint faceMask,
             uint writeMask
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdSetStencilReference", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdSetStencilReference(
-            VkCommandBuffer commandBuffer,
-            VkStencilFaceFlags faceMask,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkStencilFaceFlags")] uint faceMask,
             uint reference
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdBindDescriptorSets", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdBindDescriptorSets(
-            VkCommandBuffer commandBuffer,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
             VkPipelineBindPoint pipelineBindPoint,
-            VkPipelineLayout layout,
+            [ComAliasName("VkPipelineLayout")] ulong layout,
             uint firstSet,
             uint descriptorSetCount,
-            VkDescriptorSet* pDescriptorSets,
+            [ComAliasName("VkDescriptorSet")] ulong* pDescriptorSets,
             uint dynamicOffsetCount,
             uint* pDynamicOffsets
         );
@@ -951,26 +954,26 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdBindIndexBuffer", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdBindIndexBuffer(
-            VkCommandBuffer commandBuffer,
-            VkBuffer buffer,
-            VkDeviceSize offset,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkBuffer")] ulong buffer,
+            [ComAliasName("VkDeviceSize")] ulong offset,
             VkIndexType indexType
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdBindVertexBuffers", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdBindVertexBuffers(
-            VkCommandBuffer commandBuffer,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
             uint firstBinding,
             uint bindingCount,
-            VkBuffer* pBuffers,
-            VkDeviceSize* pOffsets
+            [ComAliasName("VkBuffer")] ulong* pBuffers,
+            [ComAliasName("VkDeviceSize")] ulong* pOffsets
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdDraw", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdDraw(
-            VkCommandBuffer commandBuffer,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
             uint vertexCount,
             uint instanceCount,
             uint firstVertex,
@@ -980,7 +983,7 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdDrawIndexed", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdDrawIndexed(
-            VkCommandBuffer commandBuffer,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
             uint indexCount,
             uint instanceCount,
             uint firstIndex,
@@ -991,9 +994,9 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdDrawIndirect", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdDrawIndirect(
-            VkCommandBuffer commandBuffer,
-            VkBuffer buffer,
-            VkDeviceSize offset,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkBuffer")] ulong buffer,
+            [ComAliasName("VkDeviceSize")] ulong offset,
             uint drawCount,
             uint stride
         );
@@ -1001,9 +1004,9 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdDrawIndexedIndirect", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdDrawIndexedIndirect(
-            VkCommandBuffer commandBuffer,
-            VkBuffer buffer,
-            VkDeviceSize offset,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkBuffer")] ulong buffer,
+            [ComAliasName("VkDeviceSize")] ulong offset,
             uint drawCount,
             uint stride
         );
@@ -1011,7 +1014,7 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdDispatch", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdDispatch(
-            VkCommandBuffer commandBuffer,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
             uint groupCountX,
             uint groupCountY,
             uint groupCountZ
@@ -1020,17 +1023,17 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdDispatchIndirect", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdDispatchIndirect(
-            VkCommandBuffer commandBuffer,
-            VkBuffer buffer,
-            VkDeviceSize offset
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkBuffer")] ulong buffer,
+            [ComAliasName("VkDeviceSize")] ulong offset
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdCopyBuffer", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdCopyBuffer(
-            VkCommandBuffer commandBuffer,
-            VkBuffer srcBuffer,
-            VkBuffer dstBuffer,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkBuffer")] ulong srcBuffer,
+            [ComAliasName("VkBuffer")] ulong dstBuffer,
             uint regionCount,
             VkBufferCopy* pRegions
         );
@@ -1038,10 +1041,10 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdCopyImage", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdCopyImage(
-            VkCommandBuffer commandBuffer,
-            VkImage srcImage,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkImage")] ulong srcImage,
             VkImageLayout srcImageLayout,
-            VkImage dstImage,
+            [ComAliasName("VkImage")] ulong dstImage,
             VkImageLayout dstImageLayout,
             uint regionCount,
             VkImageCopy* pRegions
@@ -1050,10 +1053,10 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdBlitImage", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdBlitImage(
-            VkCommandBuffer commandBuffer,
-            VkImage srcImage,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkImage")] ulong srcImage,
             VkImageLayout srcImageLayout,
-            VkImage dstImage,
+            [ComAliasName("VkImage")] ulong dstImage,
             VkImageLayout dstImageLayout,
             uint regionCount,
             VkImageBlit* pRegions,
@@ -1063,9 +1066,9 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdCopyBufferToImage", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdCopyBufferToImage(
-            VkCommandBuffer commandBuffer,
-            VkBuffer srcBuffer,
-            VkImage dstImage,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkBuffer")] ulong srcBuffer,
+            [ComAliasName("VkImage")] ulong dstImage,
             VkImageLayout dstImageLayout,
             uint regionCount,
             VkBufferImageCopy* pRegions
@@ -1074,10 +1077,10 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdCopyImageToBuffer", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdCopyImageToBuffer(
-            VkCommandBuffer commandBuffer,
-            VkImage srcImage,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkImage")] ulong srcImage,
             VkImageLayout srcImageLayout,
-            VkBuffer dstBuffer,
+            [ComAliasName("VkBuffer")] ulong dstBuffer,
             uint regionCount,
             VkBufferImageCopy* pRegions
         );
@@ -1085,28 +1088,28 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdUpdateBuffer", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdUpdateBuffer(
-            VkCommandBuffer commandBuffer,
-            VkBuffer dstBuffer,
-            VkDeviceSize dstOffset,
-            VkDeviceSize dataSize,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkBuffer")] ulong dstBuffer,
+            [ComAliasName("VkDeviceSize")] ulong dstOffset,
+            [ComAliasName("VkDeviceSize")] ulong dataSize,
             void* pData
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdFillBuffer", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdFillBuffer(
-            VkCommandBuffer commandBuffer,
-            VkBuffer dstBuffer,
-            VkDeviceSize dstOffset,
-            VkDeviceSize size,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkBuffer")] ulong dstBuffer,
+            [ComAliasName("VkDeviceSize")] ulong dstOffset,
+            [ComAliasName("VkDeviceSize")] ulong size,
             uint data
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdClearColorImage", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdClearColorImage(
-            VkCommandBuffer commandBuffer,
-            VkImage image,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkImage")] ulong image,
             VkImageLayout imageLayout,
             VkClearColorValue* pColor,
             uint rangeCount,
@@ -1116,8 +1119,8 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdClearDepthStencilImage", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdClearDepthStencilImage(
-            VkCommandBuffer commandBuffer,
-            VkImage image,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkImage")] ulong image,
             VkImageLayout imageLayout,
             VkClearDepthStencilValue* pDepthStencil,
             uint rangeCount,
@@ -1127,7 +1130,7 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdClearAttachments", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdClearAttachments(
-            VkCommandBuffer commandBuffer,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
             uint attachmentCount,
             VkClearAttachment* pAttachments,
             uint rectCount,
@@ -1137,10 +1140,10 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdResolveImage", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdResolveImage(
-            VkCommandBuffer commandBuffer,
-            VkImage srcImage,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkImage")] ulong srcImage,
             VkImageLayout srcImageLayout,
-            VkImage dstImage,
+            [ComAliasName("VkImage")] ulong dstImage,
             VkImageLayout dstImageLayout,
             uint regionCount,
             VkImageResolve* pRegions
@@ -1149,27 +1152,27 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdSetEvent", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdSetEvent(
-            VkCommandBuffer commandBuffer,
-            VkEvent @event,
-            VkPipelineStageFlags stageMask
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkEvent")] ulong @event,
+            [ComAliasName("VkPipelineStageFlags")] uint stageMask
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdResetEvent", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdResetEvent(
-            VkCommandBuffer commandBuffer,
-            VkEvent @event,
-            VkPipelineStageFlags stageMask
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkEvent")] ulong @event,
+            [ComAliasName("VkPipelineStageFlags")] uint stageMask
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdWaitEvents", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdWaitEvents(
-            VkCommandBuffer commandBuffer,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
             uint eventCount,
-            VkEvent* pEvents,
-            VkPipelineStageFlags srcStageMask,
-            VkPipelineStageFlags dstStageMask,
+            [ComAliasName("VkEvent")] ulong* pEvents,
+            [ComAliasName("VkPipelineStageFlags")] uint srcStageMask,
+            [ComAliasName("VkPipelineStageFlags")] uint dstStageMask,
             uint memoryBarrierCount,
             VkMemoryBarrier* pMemoryBarriers,
             uint bufferMemoryBarrierCount,
@@ -1181,10 +1184,10 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdPipelineBarrier", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdPipelineBarrier(
-            VkCommandBuffer commandBuffer,
-            VkPipelineStageFlags srcStageMask,
-            VkPipelineStageFlags dstStageMask,
-            VkDependencyFlags dependencyFlags,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkPipelineStageFlags")] uint srcStageMask,
+            [ComAliasName("VkPipelineStageFlags")] uint dstStageMask,
+            [ComAliasName("VkDependencyFlags")] uint dependencyFlags,
             uint memoryBarrierCount,
             VkMemoryBarrier* pMemoryBarriers,
             uint bufferMemoryBarrierCount,
@@ -1196,25 +1199,25 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdBeginQuery", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdBeginQuery(
-            VkCommandBuffer commandBuffer,
-            VkQueryPool queryPool,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkQueryPool")] ulong queryPool,
             uint query,
-            VkQueryControlFlags flags
+            [ComAliasName("VkQueryControlFlags")] uint flags
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdEndQuery", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdEndQuery(
-            VkCommandBuffer commandBuffer,
-            VkQueryPool queryPool,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkQueryPool")] ulong queryPool,
             uint query
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdResetQueryPool", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdResetQueryPool(
-            VkCommandBuffer commandBuffer,
-            VkQueryPool queryPool,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkQueryPool")] ulong queryPool,
             uint firstQuery,
             uint queryCount
         );
@@ -1222,31 +1225,31 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdWriteTimestamp", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdWriteTimestamp(
-            VkCommandBuffer commandBuffer,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
             VkPipelineStageFlagBits pipelineStage,
-            VkQueryPool queryPool,
+            [ComAliasName("VkQueryPool")] ulong queryPool,
             uint query
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdCopyQueryPoolResults", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdCopyQueryPoolResults(
-            VkCommandBuffer commandBuffer,
-            VkQueryPool queryPool,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkQueryPool")] ulong queryPool,
             uint firstQuery,
             uint queryCount,
-            VkBuffer dstBuffer,
-            VkDeviceSize dstOffset,
-            VkDeviceSize stride,
-            VkQueryResultFlags flags
+            [ComAliasName("VkBuffer")] ulong dstBuffer,
+            [ComAliasName("VkDeviceSize")] ulong dstOffset,
+            [ComAliasName("VkDeviceSize")] ulong stride,
+            [ComAliasName("VkQueryResultFlags")] uint flags
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdPushConstants", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdPushConstants(
-            VkCommandBuffer commandBuffer,
-            VkPipelineLayout layout,
-            VkShaderStageFlags stageFlags,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
+            [ComAliasName("VkPipelineLayout")] ulong layout,
+            [ComAliasName("VkShaderStageFlags")] uint stageFlags,
             uint offset,
             uint size,
             void* pValues
@@ -1255,7 +1258,7 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdBeginRenderPass", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdBeginRenderPass(
-            VkCommandBuffer commandBuffer,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
             VkRenderPassBeginInfo* pRenderPassBegin,
             VkSubpassContents contents
         );
@@ -1263,22 +1266,22 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdNextSubpass", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdNextSubpass(
-            VkCommandBuffer commandBuffer,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
             VkSubpassContents contents
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdEndRenderPass", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdEndRenderPass(
-            VkCommandBuffer commandBuffer
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCmdExecuteCommands", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkCmdExecuteCommands(
-            VkCommandBuffer commandBuffer,
+            [ComAliasName("VkCommandBuffer")] IntPtr commandBuffer,
             uint commandBufferCount,
-            VkCommandBuffer* pCommandBuffers
+            [ComAliasName("VkCommandBuffer")] IntPtr* pCommandBuffers
         );
         #endregion
     }

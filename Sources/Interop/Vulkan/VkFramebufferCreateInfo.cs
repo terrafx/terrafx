@@ -3,6 +3,8 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct VkFramebufferCreateInfo
@@ -12,13 +14,16 @@ namespace TerraFX.Interop
 
         public void* pNext;
 
-        public VkFramebufferCreateFlags flags;
+        [ComAliasName("VkFramebufferCreateFlags")]
+        public uint flags;
 
-        public VkRenderPass renderPass;
+        [ComAliasName("VkRenderPass")]
+        public ulong renderPass;
 
         public uint attachmentCount;
 
-        public VkImageView* pAttachments;
+        [ComAliasName("VkImageView")]
+        public ulong* pAttachments;
 
         public uint width;
 

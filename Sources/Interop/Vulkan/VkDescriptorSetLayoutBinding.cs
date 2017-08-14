@@ -3,6 +3,8 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct VkDescriptorSetLayoutBinding
@@ -14,9 +16,11 @@ namespace TerraFX.Interop
 
         public uint descriptorCount;
 
-        public VkShaderStageFlags stageFlags;
+        [ComAliasName("VkShaderStageFlags")]
+        public uint stageFlags;
 
-        public VkSampler* pImmutableSamplers;
+        [ComAliasName("VkSampler")]
+        public ulong* pImmutableSamplers;
         #endregion
     }
 }

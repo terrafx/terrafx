@@ -3,16 +3,21 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct VkFormatProperties
     {
         #region Fields
-        public VkFormatFeatureFlags linearTilingFeatures;
+        [ComAliasName("VkFormatFeatureFlags")]
+        public uint linearTilingFeatures;
 
-        public VkFormatFeatureFlags optimalTilingFeatures;
+        [ComAliasName("VkFormatFeatureFlags")]
+        public uint optimalTilingFeatures;
 
-        public VkFormatFeatureFlags bufferFeatures;
+        [ComAliasName("VkFormatFeatureFlags")]
+        public uint bufferFeatures;
         #endregion
     }
 }

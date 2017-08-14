@@ -3,6 +3,8 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct VkMemoryBarrier
@@ -12,9 +14,11 @@ namespace TerraFX.Interop
 
         public void* pNext;
 
-        public VkAccessFlags srcAccessMask;
+        [ComAliasName("VkAccessFlags")]
+        public uint srcAccessMask;
 
-        public VkAccessFlags dstAccessMask;
+        [ComAliasName("VkAccessFlags")]
+        public uint dstAccessMask;
         #endregion
     }
 }

@@ -3,6 +3,8 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct VkPipelineLayoutCreateInfo
@@ -12,11 +14,13 @@ namespace TerraFX.Interop
 
         public void* pNext;
 
-        public VkPipelineLayoutCreateFlags flags;
+        [ComAliasName("VkPipelineLayoutCreateFlags")]
+        public uint flags;
 
         public uint setLayoutCount;
 
-        public VkDescriptorSetLayout* pSetLayouts;
+        [ComAliasName("VkDescriptorSetLayout")]
+        public ulong* pSetLayouts;
 
         public uint pushConstantRangeCount;
 

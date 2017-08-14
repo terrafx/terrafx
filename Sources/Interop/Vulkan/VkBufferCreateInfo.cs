@@ -3,6 +3,8 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct VkBufferCreateInfo
@@ -12,11 +14,14 @@ namespace TerraFX.Interop
 
         public void* pNext;
 
-        public VkBufferCreateFlags flags;
+        [ComAliasName("VkBufferCreateFlags")]
+        public uint flags;
 
-        public VkDeviceSize size;
+        [ComAliasName("VkDeviceSize")]
+        public ulong size;
 
-        public VkBufferUsageFlags usage;
+        [ComAliasName("VkBufferUsageFlags")]
+        public uint usage;
 
         public VkSharingMode sharingMode;
 

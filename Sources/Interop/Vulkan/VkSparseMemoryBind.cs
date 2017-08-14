@@ -3,20 +3,27 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct VkSparseMemoryBind
     {
         #region Fields
-        public VkDeviceSize resourceOffset;
+        [ComAliasName("VkDeviceSize")]
+        public ulong resourceOffset;
 
-        public VkDeviceSize size;
+        [ComAliasName("VkDeviceSize")]
+        public ulong size;
 
-        public VkDeviceMemory memory;
+        [ComAliasName("VkDeviceMemory")]
+        public ulong memory;
 
-        public VkDeviceSize memoryOffset;
+        [ComAliasName("VkDeviceSize")]
+        public ulong memoryOffset;
 
-        public VkSparseMemoryBindFlags flags;
+        [ComAliasName("VkSparseMemoryBindFlags")]
+        public uint flags;
         #endregion
     }
 }

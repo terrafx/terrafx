@@ -3,120 +3,177 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct VkPhysicalDeviceFeatures
     {
         #region Fields
-        public VkBool32 robustBufferAccess;
+        [ComAliasName("VkBool32")]
+        public uint robustBufferAccess;
 
-        public VkBool32 fullDrawIndexUint32;
+        [ComAliasName("VkBool32")]
+        public uint fullDrawIndexUint32;
 
-        public VkBool32 imageCubeArray;
+        [ComAliasName("VkBool32")]
+        public uint imageCubeArray;
 
-        public VkBool32 independentBlend;
+        [ComAliasName("VkBool32")]
+        public uint independentBlend;
 
-        public VkBool32 geometryShader;
+        [ComAliasName("VkBool32")]
+        public uint geometryShader;
 
-        public VkBool32 tessellationShader;
+        [ComAliasName("VkBool32")]
+        public uint tessellationShader;
 
-        public VkBool32 sampleRateShading;
+        [ComAliasName("VkBool32")]
+        public uint sampleRateShading;
 
-        public VkBool32 dualSrcBlend;
+        [ComAliasName("VkBool32")]
+        public uint dualSrcBlend;
 
-        public VkBool32 logicOp;
+        [ComAliasName("VkBool32")]
+        public uint logicOp;
 
-        public VkBool32 multiDrawIndirect;
+        [ComAliasName("VkBool32")]
+        public uint multiDrawIndirect;
 
-        public VkBool32 drawIndirectFirstInstance;
+        [ComAliasName("VkBool32")]
+        public uint drawIndirectFirstInstance;
 
-        public VkBool32 depthClamp;
+        [ComAliasName("VkBool32")]
+        public uint depthClamp;
 
-        public VkBool32 depthBiasClamp;
+        [ComAliasName("VkBool32")]
+        public uint depthBiasClamp;
 
-        public VkBool32 fillModeNonSolid;
+        [ComAliasName("VkBool32")]
+        public uint fillModeNonSolid;
 
-        public VkBool32 depthBounds;
+        [ComAliasName("VkBool32")]
+        public uint depthBounds;
 
-        public VkBool32 wideLines;
+        [ComAliasName("VkBool32")]
+        public uint wideLines;
 
-        public VkBool32 largePoints;
+        [ComAliasName("VkBool32")]
+        public uint largePoints;
 
-        public VkBool32 alphaToOne;
+        [ComAliasName("VkBool32")]
+        public uint alphaToOne;
 
-        public VkBool32 multiViewport;
+        [ComAliasName("VkBool32")]
+        public uint multiViewport;
 
-        public VkBool32 samplerAnisotropy;
+        [ComAliasName("VkBool32")]
+        public uint samplerAnisotropy;
 
-        public VkBool32 textureCompressionETC2;
+        [ComAliasName("VkBool32")]
+        public uint textureCompressionETC2;
 
-        public VkBool32 textureCompressionASTC_LDR;
+        [ComAliasName("VkBool32")]
+        public uint textureCompressionASTC_LDR;
 
-        public VkBool32 textureCompressionBC;
+        [ComAliasName("VkBool32")]
+        public uint textureCompressionBC;
 
-        public VkBool32 occlusionQueryPrecise;
+        [ComAliasName("VkBool32")]
+        public uint occlusionQueryPrecise;
 
-        public VkBool32 pipelineStatisticsQuery;
+        [ComAliasName("VkBool32")]
+        public uint pipelineStatisticsQuery;
 
-        public VkBool32 vertexPipelineStoresAndAtomics;
+        [ComAliasName("VkBool32")]
+        public uint vertexPipelineStoresAndAtomics;
 
-        public VkBool32 fragmentStoresAndAtomics;
+        [ComAliasName("VkBool32")]
+        public uint fragmentStoresAndAtomics;
 
-        public VkBool32 shaderTessellationAndGeometryPointSize;
+        [ComAliasName("VkBool32")]
+        public uint shaderTessellationAndGeometryPointSize;
 
-        public VkBool32 shaderImageGatherExtended;
+        [ComAliasName("VkBool32")]
+        public uint shaderImageGatherExtended;
 
-        public VkBool32 shaderStorageImageExtendedFormats;
+        [ComAliasName("VkBool32")]
+        public uint shaderStorageImageExtendedFormats;
 
-        public VkBool32 shaderStorageImageMultisample;
+        [ComAliasName("VkBool32")]
+        public uint shaderStorageImageMultisample;
 
-        public VkBool32 shaderStorageImageReadWithoutFormat;
+        [ComAliasName("VkBool32")]
+        public uint shaderStorageImageReadWithoutFormat;
 
-        public VkBool32 shaderStorageImageWriteWithoutFormat;
+        [ComAliasName("VkBool32")]
+        public uint shaderStorageImageWriteWithoutFormat;
 
-        public VkBool32 shaderUniformBufferArrayDynamicIndexing;
+        [ComAliasName("VkBool32")]
+        public uint shaderUniformBufferArrayDynamicIndexing;
 
-        public VkBool32 shaderSampledImageArrayDynamicIndexing;
+        [ComAliasName("VkBool32")]
+        public uint shaderSampledImageArrayDynamicIndexing;
 
-        public VkBool32 shaderStorageBufferArrayDynamicIndexing;
+        [ComAliasName("VkBool32")]
+        public uint shaderStorageBufferArrayDynamicIndexing;
 
-        public VkBool32 shaderStorageImageArrayDynamicIndexing;
+        [ComAliasName("VkBool32")]
+        public uint shaderStorageImageArrayDynamicIndexing;
 
-        public VkBool32 shaderClipDistance;
+        [ComAliasName("VkBool32")]
+        public uint shaderClipDistance;
 
-        public VkBool32 shaderCullDistance;
+        [ComAliasName("VkBool32")]
+        public uint shaderCullDistance;
 
-        public VkBool32 shaderFloat64;
+        [ComAliasName("VkBool32")]
+        public uint shaderFloat64;
 
-        public VkBool32 shaderInt64;
+        [ComAliasName("VkBool32")]
+        public uint shaderInt64;
 
-        public VkBool32 shaderInt16;
+        [ComAliasName("VkBool32")]
+        public uint shaderInt16;
 
-        public VkBool32 shaderResourceResidency;
+        [ComAliasName("VkBool32")]
+        public uint shaderResourceResidency;
 
-        public VkBool32 shaderResourceMinLod;
+        [ComAliasName("VkBool32")]
+        public uint shaderResourceMinLod;
 
-        public VkBool32 sparseBinding;
+        [ComAliasName("VkBool32")]
+        public uint sparseBinding;
 
-        public VkBool32 sparseResidencyBuffer;
+        [ComAliasName("VkBool32")]
+        public uint sparseResidencyBuffer;
 
-        public VkBool32 sparseResidencyImage2D;
+        [ComAliasName("VkBool32")]
+        public uint sparseResidencyImage2D;
 
-        public VkBool32 sparseResidencyImage3D;
+        [ComAliasName("VkBool32")]
+        public uint sparseResidencyImage3D;
 
-        public VkBool32 sparseResidency2Samples;
+        [ComAliasName("VkBool32")]
+        public uint sparseResidency2Samples;
 
-        public VkBool32 sparseResidency4Samples;
+        [ComAliasName("VkBool32")]
+        public uint sparseResidency4Samples;
 
-        public VkBool32 sparseResidency8Samples;
+        [ComAliasName("VkBool32")]
+        public uint sparseResidency8Samples;
 
-        public VkBool32 sparseResidency16Samples;
+        [ComAliasName("VkBool32")]
+        public uint sparseResidency16Samples;
 
-        public VkBool32 sparseResidencyAliased;
+        [ComAliasName("VkBool32")]
+        public uint sparseResidencyAliased;
 
-        public VkBool32 variableMultisampleRate;
+        [ComAliasName("VkBool32")]
+        public uint variableMultisampleRate;
 
-        public VkBool32 inheritedQueries;
+        [ComAliasName("VkBool32")]
+        public uint inheritedQueries;
         #endregion
     }
 }

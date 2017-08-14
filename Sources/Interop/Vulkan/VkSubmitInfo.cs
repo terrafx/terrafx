@@ -3,6 +3,9 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
+using System;
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct VkSubmitInfo
@@ -14,17 +17,21 @@ namespace TerraFX.Interop
 
         public uint waitSemaphoreCount;
 
-        public VkSemaphore* pWaitSemaphores;
+        [ComAliasName("VkSemaphore")]
+        public ulong* pWaitSemaphores;
 
-        public VkPipelineStageFlags* pWaitDstStageMask;
+        [ComAliasName("VkPipelineStageFlags")]
+        public uint* pWaitDstStageMask;
 
         public uint commandBufferCount;
 
-        public VkCommandBuffer* pCommandBuffers;
+        [ComAliasName("VkCommandBuffer")]
+        public IntPtr* pCommandBuffers;
 
         public uint signalSemaphoreCount;
 
-        public VkSemaphore* pSignalSemaphores;
+        [ComAliasName("VkSemaphore")]
+        public ulong* pSignalSemaphores;
         #endregion
     }
 }

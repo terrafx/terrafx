@@ -3,6 +3,8 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct VkPipelineDepthStencilStateCreateInfo
@@ -12,17 +14,22 @@ namespace TerraFX.Interop
 
         public void* pNext;
 
-        public VkPipelineDepthStencilStateCreateFlags flags;
+        [ComAliasName("VkPipelineDepthStencilStateCreateFlags")]
+        public uint flags;
 
-        public VkBool32 depthTestEnable;
+        [ComAliasName("VkBool32")]
+        public uint depthTestEnable;
 
-        public VkBool32 depthWriteEnable;
+        [ComAliasName("VkBool32")]
+        public uint depthWriteEnable;
 
         public VkCompareOp depthCompareOp;
 
-        public VkBool32 depthBoundsTestEnable;
+        [ComAliasName("VkBool32")]
+        public uint depthBoundsTestEnable;
 
-        public VkBool32 stencilTestEnable;
+        [ComAliasName("VkBool32")]
+        public uint stencilTestEnable;
 
         public VkStencilOpState front;
 

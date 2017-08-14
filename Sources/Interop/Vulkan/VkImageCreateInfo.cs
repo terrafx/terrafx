@@ -3,6 +3,8 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct VkImageCreateInfo
@@ -12,7 +14,8 @@ namespace TerraFX.Interop
 
         public void* pNext;
 
-        public VkImageCreateFlags flags;
+        [ComAliasName("VkImageCreateFlags")]
+        public uint flags;
 
         public VkImageType imageType;
 
@@ -28,7 +31,8 @@ namespace TerraFX.Interop
 
         public VkImageTiling tiling;
 
-        public VkImageUsageFlags usage;
+        [ComAliasName("VkImageUsageFlags")]
+        public uint usage;
 
         public VkSharingMode sharingMode;
 

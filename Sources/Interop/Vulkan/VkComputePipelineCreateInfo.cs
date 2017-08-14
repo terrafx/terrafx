@@ -3,6 +3,8 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct VkComputePipelineCreateInfo
@@ -12,13 +14,16 @@ namespace TerraFX.Interop
 
         public void* pNext;
 
-        public VkPipelineCreateFlags flags;
+        [ComAliasName("VkPipelineCreateFlags")]
+        public uint flags;
 
         public VkPipelineShaderStageCreateInfo stage;
 
-        public VkPipelineLayout layout;
+        [ComAliasName("VkPipelineLayout")]
+        public ulong layout;
 
-        public VkPipeline basePipelineHandle;
+        [ComAliasName("VkPipeline")]
+        public ulong basePipelineHandle;
 
         public int basePipelineIndex;
         #endregion

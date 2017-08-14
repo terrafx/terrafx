@@ -3,6 +3,8 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct VkBindSparseInfo
@@ -14,7 +16,8 @@ namespace TerraFX.Interop
 
         public uint waitSemaphoreCount;
 
-        public VkSemaphore* pWaitSemaphores;
+        [ComAliasName("VkSemaphore")]
+        public ulong* pWaitSemaphores;
 
         public uint bufferBindCount;
 
@@ -30,7 +33,8 @@ namespace TerraFX.Interop
 
         public uint signalSemaphoreCount;
 
-        public VkSemaphore* pSignalSemaphores;
+        [ComAliasName("VkSemaphore")]
+        public ulong* pSignalSemaphores;
         #endregion
     }
 }

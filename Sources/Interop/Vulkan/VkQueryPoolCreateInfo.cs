@@ -3,6 +3,8 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct VkQueryPoolCreateInfo
@@ -12,13 +14,15 @@ namespace TerraFX.Interop
 
         public void* pNext;
 
-        public VkQueryPoolCreateFlags flags;
+        [ComAliasName("VkQueryPoolCreateFlags")]
+        public uint flags;
 
         public VkQueryType queryType;
 
         public uint queryCount;
 
-        public VkQueryPipelineStatisticFlags pipelineStatistics;
+        [ComAliasName("VkQueryPipelineStatisticFlags")]
+        public uint pipelineStatistics;
         #endregion
     }
 }

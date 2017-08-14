@@ -3,6 +3,8 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct VkMappedMemoryRange
@@ -12,11 +14,14 @@ namespace TerraFX.Interop
 
         public void* pNext;
 
-        public VkDeviceMemory memory;
+        [ComAliasName("VkDeviceMemory")]
+        public ulong memory;
 
-        public VkDeviceSize offset;
+        [ComAliasName("VkDeviceSize")]
+        public ulong offset;
 
-        public VkDeviceSize size;
+        [ComAliasName("VkDeviceSize")]
+        public ulong size;
         #endregion
     }
 }

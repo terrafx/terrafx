@@ -3,6 +3,8 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct VkSparseImageMemoryRequirements
@@ -12,11 +14,14 @@ namespace TerraFX.Interop
 
         public uint imageMipTailFirstLod;
 
-        public VkDeviceSize imageMipTailSize;
+        [ComAliasName("VkDeviceSize")]
+        public ulong imageMipTailSize;
 
-        public VkDeviceSize imageMipTailOffset;
+        [ComAliasName("VkDeviceSize")]
+        public ulong imageMipTailOffset;
 
-        public VkDeviceSize imageMipTailStride;
+        [ComAliasName("VkDeviceSize")]
+        public ulong imageMipTailStride;
         #endregion
     }
 }

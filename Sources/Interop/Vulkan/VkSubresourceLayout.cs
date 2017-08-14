@@ -3,20 +3,27 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct VkSubresourceLayout
     {
         #region Fields
-        public VkDeviceSize offset;
+        [ComAliasName("VkDeviceSize")]
+        public ulong offset;
 
-        public VkDeviceSize size;
+        [ComAliasName("VkDeviceSize")]
+        public ulong size;
 
-        public VkDeviceSize rowPitch;
+        [ComAliasName("VkDeviceSize")]
+        public ulong rowPitch;
 
-        public VkDeviceSize arrayPitch;
+        [ComAliasName("VkDeviceSize")]
+        public ulong arrayPitch;
 
-        public VkDeviceSize depthPitch;
+        [ComAliasName("VkDeviceSize")]
+        public ulong depthPitch;
         #endregion
     }
 }

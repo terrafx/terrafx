@@ -3,6 +3,8 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     unsafe public /* blittable */ struct VkPipelineMultisampleStateCreateInfo
@@ -12,19 +14,24 @@ namespace TerraFX.Interop
 
         public void* pNext;
 
-        public VkPipelineMultisampleStateCreateFlags flags;
+        [ComAliasName("VkPipelineMultisampleStateCreateFlags")]
+        public uint flags;
 
         public VkSampleCountFlagBits rasterizationSamples;
 
-        public VkBool32 sampleShadingEnable;
+        [ComAliasName("VkBool32")]
+        public uint sampleShadingEnable;
 
         public float minSampleShading;
 
-        public VkSampleMask* pSampleMask;
+        [ComAliasName("VkSampleMask")]
+        public uint* pSampleMask;
 
-        public VkBool32 alphaToCoverageEnable;
+        [ComAliasName("VkBool32")]
+        public uint alphaToCoverageEnable;
 
-        public VkBool32 alphaToOneEnable;
+        [ComAliasName("VkBool32")]
+        public uint alphaToOneEnable;
         #endregion
     }
 }

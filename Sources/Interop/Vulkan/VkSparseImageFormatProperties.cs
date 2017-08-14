@@ -3,16 +3,20 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ struct VkSparseImageFormatProperties
     {
         #region Fields
-        public VkImageAspectFlags aspectMask;
+        [ComAliasName("VkImageAspectFlags")]
+        public uint aspectMask;
 
         public VkExtent3D imageGranularity;
 
-        public VkSparseImageFormatFlags flags;
+        [ComAliasName("VkSparseImageFormatFlags")]
+        public uint flags;
         #endregion
     }
 }
