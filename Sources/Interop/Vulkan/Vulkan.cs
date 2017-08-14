@@ -9,7 +9,7 @@ using System.Security;
 
 namespace TerraFX.Interop
 {
-    unsafe public static class Vulkan
+    unsafe public static partial class Vulkan
     {
         #region Constants
         public const int VK_VERSION_1_0 = 1;
