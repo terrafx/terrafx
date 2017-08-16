@@ -3,6 +3,8 @@
 // Ported from time.h in the Open Group Base Specifications: Issue 7
 // Original source is Copyright © The IEEE and The Open Group.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     /// <summary>A time specification.</summary>
@@ -10,7 +12,8 @@ namespace TerraFX.Interop
     {
         #region Fields
         /// <summary>Seconds.</summary>
-        public time_t tv_sec;
+        [ComAliasName("time_t")]
+        public nint tv_sec;
 
         /// <summary>Nanoseconds.</summary>
         public nint tv_nsec;

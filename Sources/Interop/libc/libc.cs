@@ -11,6 +11,21 @@ namespace TerraFX.Interop
     /// <summary>Exposes methods exported by <c>libc</c>.</summary>
     public static unsafe partial class libc
     {
+        #region CLOCK_* Constants
+        /// <summary>The identifier of the system-wide clock measuring real time.</summary>
+        public const int CLOCK_REALTIME = 0;
+
+        /// <summary>The identifier for the system-wide monotonic clock, which is defined as a clock measuring real time, whose value cannot be set via <see cref="libc.clock_settime(int, timespec*)" /> and which cannot have negative clock jumps.</summary>
+        /// <remarks>The maximum possible clock jump shall be implementation-defined.</remarks>
+        public const int CLOCK_MONOTONIC = 1;
+
+        /// <summary>The identifier of the CPU-time clock associated with the process making a <c>clock</c> or <c>timer</c> function call.</summary>
+        public const int CLOCK_PROCESS_CPUTIME_ID = 2;
+
+        /// <summary>The identifier of the CPU-time clock associated with the thread making a <c>clock</c> or <c>timer</c> function call.</summary>
+        public const int CLOCK_THREAD_CPUTIME_ID = 3;
+        #endregion
+
         #region External Methods
         /// <summary>Gets the resolution of a clock.</summary>
         /// <param name="clock_id">The clock for which to get the resolution.</param>
@@ -20,7 +35,7 @@ namespace TerraFX.Interop
         [DllImport("libc", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "clock_getres", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int clock_getres(
-            [In] clockid_t clock_id,
+            [In, ComAliasName("clockid_t")] int clock_id,
             [Out] timespec* res
         );
 
@@ -31,7 +46,7 @@ namespace TerraFX.Interop
         [DllImport("libc", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "clock_gettime", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int clock_gettime(
-            [In] clockid_t clock_id,
+            [In, ComAliasName("clockid_t")] int clock_id,
             [Out] timespec* tp
         );
 
@@ -42,8 +57,8 @@ namespace TerraFX.Interop
         [DllImport("libc", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "clock_settime", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int clock_settime(
-            [In] clockid_t clock_id,
-            [In] /* readonly */ timespec* tp
+            [In, ComAliasName("clockid_t")] int clock_id,
+            [In] timespec* tp
         );
         #endregion
     }
