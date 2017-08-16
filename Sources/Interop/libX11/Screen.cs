@@ -3,6 +3,9 @@
 // Ported from X11\xlib.h in the Xlib - C Language X Interface: X Version 11, Release 7.7
 // Original source is Copyright © The Open Group.
 
+using System;
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ unsafe struct Screen
@@ -10,9 +13,11 @@ namespace TerraFX.Interop
         #region Fields
         public XExtData* ext_data;
 
-        public Display* display;
+        [ComAliasName("Display")]
+        public IntPtr display;
 
-        public Window root;
+        [ComAliasName("Window")]
+        public nuint root;
 
         public int width, height;
 
@@ -20,15 +25,18 @@ namespace TerraFX.Interop
 
         public int ndepths;
 
+        [ComAliasName("Depth[]")]
         public Depth* depths;
 
         public int root_depth;
 
         public Visual* root_visual;
 
-        public GC default_gc;
+        [ComAliasName("GC")]
+        public IntPtr default_gc;
 
-        public Colormap cmap;
+        [ComAliasName("Colormap")]
+        public nuint cmap;
 
         public nuint white_pixel;
 
@@ -38,7 +46,8 @@ namespace TerraFX.Interop
 
         public int backing_store;
 
-        public Bool save_unders;
+        [ComAliasName("Bool")]
+        public int save_unders;
 
         public nint root_input_mask;
         #endregion

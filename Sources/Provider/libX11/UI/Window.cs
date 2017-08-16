@@ -8,7 +8,7 @@ using TerraFX.Provider.libX11.Threading;
 using TerraFX.Threading;
 using TerraFX.UI;
 using GC = System.GC;
-using XWindow = TerraFX.Interop.Window;
+using static System.Runtime.CompilerServices.Unsafe;
 using static TerraFX.Interop.libX11;
 using static TerraFX.Utilities.ExceptionUtilities;
 
@@ -18,7 +18,7 @@ namespace TerraFX.Provider.libX11.UI
     public sealed unsafe class Window : IDisposable, IWindow
     {
         #region Fields
-        internal readonly Display* _display;
+        internal readonly IntPtr _display;
 
         internal readonly Dispatcher _dispatcher;
 
@@ -26,7 +26,7 @@ namespace TerraFX.Provider.libX11.UI
 
         internal readonly WindowManager _windowManager;
 
-        internal XWindow _handle;
+        internal nuint _handle;
 
         internal Rectangle _bounds;
 
@@ -155,7 +155,7 @@ namespace TerraFX.Provider.libX11.UI
         #endregion
 
         #region Static Methods
-        internal static XWindow CreateWindowHandle(Display* display)
+        internal static nuint CreateWindowHandle(IntPtr display)
         {
             var defaultScreen = XDefaultScreenOfDisplay(display);
             var rootWindow = XRootWindowOfScreen(defaultScreen);

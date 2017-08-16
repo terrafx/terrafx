@@ -3,6 +3,7 @@
 // Ported from X11\xlib.h in the Xlib - C Language X Interface: X Version 11, Release 7.7
 // Original source is Copyright © The Open Group.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -12,8 +13,8 @@ namespace TerraFX.Interop
     [UnmanagedFunctionPointer(CallingConvention.Cdecl, BestFitMapping = false, CharSet = CharSet.Ansi, SetLastError = false, ThrowOnUnmappableChar = false)]
     [return: ComAliasName("Bool")]
     public /* static */ unsafe delegate int predicate(
-        [In] Display* display,
+        [In, ComAliasName("Display")] IntPtr display,
         [In] XEvent* @event,
-        [In] XPointer arg
+        [In, ComAliasName("XPointer")] sbyte* arg
     );
 }

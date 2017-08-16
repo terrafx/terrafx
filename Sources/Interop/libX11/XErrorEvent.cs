@@ -3,6 +3,9 @@
 // Ported from X11\xlib.h in the Xlib - C Language X Interface: X Version 11, Release 7.7
 // Original source is Copyright © The Open Group.
 
+using System;
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ unsafe struct XErrorEvent
@@ -10,9 +13,11 @@ namespace TerraFX.Interop
         #region Fields
         public int type;
 
-        public Display* display;
+        [ComAliasName("Display")]
+        public IntPtr display;
 
-        public XID resourceid;
+        [ComAliasName("XID")]
+        public nuint resourceid;
 
         public nuint serial;
 

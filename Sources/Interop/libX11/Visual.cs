@@ -3,6 +3,8 @@
 // Ported from X11\xlib.h in the Xlib - C Language X Interface: X Version 11, Release 7.7
 // Original source is Copyright © The Open Group.
 
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ unsafe struct Visual
@@ -10,7 +12,8 @@ namespace TerraFX.Interop
         #region Fields
         public XExtData* ext_data;
 
-        public VisualID visualid;
+        [ComAliasName("VisualID")]
+        public nuint visualid;
 
         public int @class;
 

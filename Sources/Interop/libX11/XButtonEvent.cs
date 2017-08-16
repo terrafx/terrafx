@@ -3,6 +3,9 @@
 // Ported from X11\xlib.h in the Xlib - C Language X Interface: X Version 11, Release 7.7
 // Original source is Copyright © The Open Group.
 
+using System;
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ unsafe struct XButtonEvent
@@ -12,17 +15,23 @@ namespace TerraFX.Interop
 
         public nuint serial;
 
-        public Bool send_event;
+        [ComAliasName("Bool")]
+        public int send_event;
 
-        public Display* display;
+        [ComAliasName("Display")]
+        public IntPtr display;
 
-        public Window window;
+        [ComAliasName("Window")]
+        public nuint window;
 
-        public Window root;
+        [ComAliasName("Window")]
+        public nuint root;
 
-        public Window subwindow;
+        [ComAliasName("Window")]
+        public nuint subwindow;
 
-        public Time time;
+        [ComAliasName("Time")]
+        public nuint time;
 
         public int x, y;
 
@@ -32,7 +41,8 @@ namespace TerraFX.Interop
 
         public uint button;
 
-        public Bool same_screen;
+        [ComAliasName("Bool")]
+        public int same_screen;
         #endregion
     }
 }

@@ -3,6 +3,9 @@
 // Ported from X11\xlib.h in the Xlib - C Language X Interface: X Version 11, Release 7.7
 // Original source is Copyright © The Open Group.
 
+using System;
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ unsafe struct XSelectionRequestEvent
@@ -12,21 +15,29 @@ namespace TerraFX.Interop
 
         public nuint serial;
 
-        public Bool send_event;
+        [ComAliasName("Bool")]
+        public int send_event;
 
-        public Display* display;
+        [ComAliasName("Display")]
+        public IntPtr display;
 
-        public Window owner;
+        [ComAliasName("Window")]
+        public nuint owner;
 
-        public Window requestor;
+        [ComAliasName("Window")]
+        public nuint requestor;
 
-        public Atom selection;
+        [ComAliasName("Atom")]
+        public nuint selection;
 
-        public Atom target;
+        [ComAliasName("Atom")]
+        public nuint target;
 
-        public Atom property;
+        [ComAliasName("Atom")]
+        public nuint property;
 
-        public Time time;
+        [ComAliasName("Time")]
+        public nuint time;
         #endregion
     }
 }

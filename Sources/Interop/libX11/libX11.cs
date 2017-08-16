@@ -549,265 +549,14 @@ namespace TerraFX.Interop
         public const int True = 1;
         #endregion
 
-        #region Static Methods
-        public static nuint AllPlanes()
-        {
-            return ~((nuint)(0));
-        }
-
-        public static int BitmapBitOrder(Display* display)
-        {
-            return display->bitmap_bit_order;
-        }
-
-        public static int BitmapPad(Display* display)
-        {
-            return display->bitmap_pad;
-        }
-
-        public static int BitmapUnit(Display* display)
-        {
-            return display->bitmap_unit;
-        }
-
-        public static nuint BlackPixel(Display* display, int screen_number)
-        {
-            return ScreenOfDisplay(display, screen_number)->black_pixel;
-        }
-
-        public static nuint BlackPixelOfScreen(Screen* screen)
-        {
-            return screen->black_pixel;
-        }
-
-        public static int CellsOfScreen(Screen* screen)
-        {
-            return DefaultVisualOfScreen(screen)->map_entries;
-        }
-
-        public static int ConnectionNumber(Display* display)
-        {
-            return display->fd;
-        }
-
-        public static Colormap DefaultColormap(Display* display, int screen_number)
-        {
-            return ScreenOfDisplay(display, screen_number)->cmap;
-        }
-
-        public static Colormap DefaultColormapOfScreen(Screen* screen)
-        {
-            return screen->cmap;
-        }
-
-        public static int DefaultDepth(Display* display, int screen_number)
-        {
-            return ScreenOfDisplay(display, screen_number)->root_depth;
-        }
-
-        public static int DefaultDepthOfScreen(Screen* screen)
-        {
-            return screen->root_depth;
-        }
-
-        public static GC DefaultGC(Display* display, int screen_number)
-        {
-            return ScreenOfDisplay(display, screen_number)->default_gc;
-        }
-
-        public static GC DefaultGCOfScreen(Screen* screen)
-        {
-            return screen->default_gc;
-        }
-
-        public static Window DefaultRootWindow(Display* display)
-        {
-            return ScreenOfDisplay(display, DefaultScreen(display))->root;
-        }
-
-        public static int DefaultScreen(Display* display)
-        {
-            return display->default_screen;
-        }
-
-        public static Screen* DefaultScreenOfDisplay(Display* display)
-        {
-            return ScreenOfDisplay(display, DefaultScreen(display));
-        }
-
-        public static Visual* DefaultVisual(Display* display, int screen_number)
-        {
-            return ScreenOfDisplay(display, screen_number)->root_visual;
-        }
-
-        public static Visual* DefaultVisualOfScreen(Screen* screen)
-        {
-            return screen->root_visual;
-        }
-
-        public static int DisplayCells(Display* display, int screen_number)
-        {
-            return DefaultVisual(display, screen_number)->map_entries;
-        }
-
-        public static int DisplayHeight(Display* display, int screen_number)
-        {
-            return ScreenOfDisplay(display, screen_number)->width;
-        }
-
-        public static int DisplayHeightMM(Display* display, int screen_number)
-        {
-            return ScreenOfDisplay(display, screen_number)->mheight;
-        }
-
-        public static Display* DisplayOfScreen(Screen* screen)
-        {
-            return screen->display;
-        }
-
-        public static int DisplayPlanes(Display* display, int screen_number)
-        {
-            return ScreenOfDisplay(display, screen_number)->root_depth;
-        }
-
-        public static int DisplayWidth(Display* display, int screen_number)
-        {
-            return ScreenOfDisplay(display, screen_number)->width;
-        }
-
-        public static int DisplayWidthMM(Display* display, int screen_number)
-        {
-            return ScreenOfDisplay(display, screen_number)->mwidth;
-        }
-
-        public static int DoesBackingStore(Screen* screen)
-        {
-            return screen->backing_store;
-        }
-
-        public static Bool DoesSaveUnders(Screen* screen)
-        {
-            return screen->save_unders;
-        }
-
-        public static nint EventMaskOfScreen(Screen* screen)
-        {
-            return screen->root_input_mask;
-        }
-
-        public static int HeightOfScreen(Screen* screen)
-        {
-            return screen->height;
-        }
-
-        public static int HeightMMOfScreen(Screen* screen)
-        {
-            return screen->mheight;
-        }
-
-        public static int ImageByteOrder(Display* display)
-        {
-            return display->byte_order;
-        }
-
-        public static nuint LastKnownRequestProcessed(Display* display)
-        {
-            return display->last_request_read;
-        }
-
-        public static int MaxCmapsOfScreen(Screen* screen)
-        {
-            return screen->max_maps;
-        }
-
-        public static int MinCmapsOfScreen(Screen* screen)
-        {
-            return screen->min_maps;
-        }
-
-        public static nuint NextRequest(Display* display)
-        {
-            return (display->request + 1);
-        }
-
-        public static int PlanesOfScreen(Screen* screen)
-        {
-            return screen->root_depth;
-        }
-
-        public static int ProtocolRevision(Display* display)
-        {
-            return display->proto_minor_version;
-        }
-
-        public static int ProtocolVersion(Display* display)
-        {
-            return display->proto_major_version;
-        }
-
-        public static int QLength(Display* display)
-        {
-            return display->qlen;
-        }
-
-        public static Window RootWindow(Display* display, int screen_number)
-        {
-            return ScreenOfDisplay(display, screen_number)->root;
-        }
-
-        public static Window RootWindowOfScreen(Screen* screen)
-        {
-            return screen->root;
-        }
-
-        public static int ScreenCount(Display* display)
-        {
-            return display->nscreens;
-        }
-
-        public static Screen* ScreenOfDisplay(Display* display, int screen_number)
-        {
-            return &(display->screens[screen_number]);
-        }
-
-        public static sbyte* ServerVendor(Display* display)
-        {
-            return display->vendor;
-        }
-
-        public static int VendorRelease(Display* display)
-        {
-            return display->release;
-        }
-
-        public static nuint WhitePixel(Display* display, int screen_number)
-        {
-            return ScreenOfDisplay(display, screen_number)->white_pixel;
-        }
-
-        public static nuint WhitePixelOfScreen(Screen* screen)
-        {
-            return screen->white_pixel;
-        }
-
-        public static int WidthOfScreen(Screen* screen)
-        {
-            return screen->width;
-        }
-
-        public static int WidthMMOfScreen(Screen* screen)
-        {
-            return screen->mwidth;
-        }
-        #endregion
-
         #region External Methods
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XAddConnectionWatch", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern Status XAddConnectionWatch(
-            [In] Display* display,
-            [In] IntPtr /* XConnectionWatchProc */ procedure,
-            [In] XPointer client_data
+        [return: ComAliasName("int")]
+        public static extern int XAddConnectionWatch(
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("XConnectionWatchProc")] IntPtr procedure,
+            [In, ComAliasName("XPointer")] sbyte* client_data
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XAllPlanes", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -818,25 +567,25 @@ namespace TerraFX.Interop
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XBitmapOrder", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XBitmapBitOrder(
-            [In] Display* display
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XBitmapPad", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XBitmapPad(
-            [In] Display* display
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XBitmapUnit", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XBitmapUnit(
-            [In] Display* display
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XBlackPixel", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern nuint XBlackPixel(
-            [In] Display* display,
+            [In, ComAliasName("Display")] IntPtr display,
             [In] int screen_number
         );
 
@@ -854,20 +603,21 @@ namespace TerraFX.Interop
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XCheckIfEvent", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern Bool XCheckIfEvent(
-            [In] Display* display,
+        [return: ComAliasName("Bool")]
+        public static extern int XCheckIfEvent(
+            [In, ComAliasName("Display")] IntPtr display,
             [Out] XEvent* event_return,
-            [In] IntPtr /* predicate */ predicate,
-            [In] XPointer arg
+            [In, ComAliasName("predicate")] IntPtr predicate,
+            [In, ComAliasName("XPointer")] sbyte* arg
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XChangeProperty", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XChangeProperty(
-            [In] Display* display,
-            [In] Window w,
-            [In] Atom property,
-            [In] Atom type,
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w,
+            [In, ComAliasName("Atom")] nuint property,
+            [In, ComAliasName("Atom")] nuint type,
             [In] int format,
             [In] int mode,
             [In] byte* data,
@@ -877,8 +627,8 @@ namespace TerraFX.Interop
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XChangeWindowAttributes", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XChangeWindowAttributes(
-            [In] Display* display,
-            [In] Window w,
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w,
             [In] nuint valuemask,
             [In] XSetWindowAttributes* attributes
         );
@@ -886,36 +636,36 @@ namespace TerraFX.Interop
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XCirculateSubwindows", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XCirculateSubwindows(
-            [In] Display* display,
-            [In] Window w,
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w,
             [In] int direction
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XCirculateSubwindowsDown", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XCirculateSubwindowsDown(
-            [In] Display* display,
-            [In] Window w
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XCirculateSubwindowsUp", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XCirculateSubwindowsUp(
-            [In] Display* display,
-            [In] Window w
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XCloseDisplay", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XCloseDisplay(
-            [In] Display* display
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XConfigureWindow", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XConfigureWindow(
-            [In] Display* display,
-            [In] Window w,
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w,
             [In] uint value_mask,
             [In] XWindowChanges* values
         );
@@ -923,25 +673,26 @@ namespace TerraFX.Interop
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XConnectionNumber", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XConnectionNumber(
-            [In] Display* display
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XConvertSelection", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XConvertSelection(
-            [In] Display* display,
-            [In] Atom selection,
-            [In] Atom target,
-            [In] Atom property,
-            [In] Window requestor,
-            [In] Time time
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Atom")] nuint selection,
+            [In, ComAliasName("Atom")] nuint target,
+            [In, ComAliasName("Atom")] nuint property,
+            [In, ComAliasName("Window")] nuint requestor,
+            [In, ComAliasName("Time")] nuint time
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XCreateWindow", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern Window XCreateWindow(
-            [In] Display* display,
-            [In] Window parent,
+        [return: ComAliasName("Window")]
+        public static extern nuint XCreateWindow(
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint parent,
             [In] int x,
             [In] int y,
             [In] uint width,
@@ -956,9 +707,10 @@ namespace TerraFX.Interop
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XCreateSimpleWindow", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern Window XCreateSimpleWindow(
-            [In] Display* display,
-            [In] Window parent,
+        [return: ComAliasName("Window")]
+        public static extern nuint XCreateSimpleWindow(
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint parent,
             [In] int x,
             [In] int y,
             [In] uint width,
@@ -970,21 +722,23 @@ namespace TerraFX.Interop
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDefaultColormap", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern Colormap XDefaultColormap(
-            [In] Display* display,
+        [return: ComAliasName("Colormap")]
+        public static extern nuint XDefaultColormap(
+            [In, ComAliasName("Display")] IntPtr display,
             [In] int screen_number
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDefaultColormapOfScreen", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern Colormap XDefaultColormapOfScreen(
+        [return: ComAliasName("Colormap")]
+        public static extern nuint XDefaultColormapOfScreen(
             [In] Screen* screen
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDefaultDepth", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XDefaultDepth(
-            [In] Display* display,
+            [In, ComAliasName("Display")] IntPtr display,
             [In] int screen_number
         );
 
@@ -996,39 +750,42 @@ namespace TerraFX.Interop
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDefaultGC", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern GC XDefaultGC(
-            [In] Display* display,
+        [return: ComAliasName("GC")]
+        public static extern IntPtr XDefaultGC(
+            [In, ComAliasName("Display")] IntPtr display,
             [In] int screen_number
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDefaultGCOfScreen", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern GC XDefaultGCOfScreen(
+        [return: ComAliasName("GC")]
+        public static extern IntPtr XDefaultGCOfScreen(
             [In] Screen* screen
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDefaultRootWindow", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern Window XDefaultRootWindow(
-            [In] Display* display
+        [return: ComAliasName("Window")]
+        public static extern nuint XDefaultRootWindow(
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDefaultScreen", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XDefaultScreen(
-            [In] Display* display
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDefaultScreenOfDisplay", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern Screen* XDefaultScreenOfDisplay(
-            [In] Display* display
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDefaultVisual", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern Visual* XDefaultVisual(
-            [In] Display* display,
+            [In, ComAliasName("Display")] IntPtr display,
             [In] int screen_number
         );
 
@@ -1041,84 +798,85 @@ namespace TerraFX.Interop
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDefineCursor", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XDefineCursor(
-            [In] Display* display,
-            [In] Window w,
-            [In] Cursor cursor
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w,
+            [In, ComAliasName("Cursor")] nuint cursor
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDeleteProperty", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XDeleteProperty(
-            [In] Display* display,
-            [In] Window w,
-            [In] Atom property
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w,
+            [In, ComAliasName("Atom")] nuint property
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDestroySubwindows", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XDestroySubwindows(
-            [In] Display* display,
-            [In] Window w
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDestroyWindow", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XDestroyWindow(
-            [In] Display* display,
-            [In] Window w
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDisplayCells", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XDisplayCells(
-            [In] Display* display,
+            [In, ComAliasName("Display")] IntPtr display,
             [In] int screen_number
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDisplayHeight", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XDisplayHeight(
-            [In] Display* display,
+            [In, ComAliasName("Display")] IntPtr display,
             [In] int screen_number
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDisplayHeightMM", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XDisplayHeightMM(
-            [In] Display* display,
+            [In, ComAliasName("Display")] IntPtr display,
             [In] int screen_number
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDisplayOfScreen", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern Display* XDisplayOfScreen(
+        [return: ComAliasName("Display")]
+        public static extern IntPtr XDisplayOfScreen(
             [In] Screen* screen
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDisplayPlanes", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XDisplayPlanes(
-            [In] Display* display,
+            [In, ComAliasName("Display")] IntPtr display,
             [In] int screen_number
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDisplayString", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern sbyte* XDisplayString(
-            [In] Display* display
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDisplayWidth", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XDisplayWidth(
-            [In] Display* display,
+            [In, ComAliasName("Display")] IntPtr display,
             [In] int screen_number
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDisplayWidthMM", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XDisplayWidthMM(
-            [In] Display* display,
+            [In, ComAliasName("Display")] IntPtr display,
             [In] int screen_number
         );
 
@@ -1130,7 +888,8 @@ namespace TerraFX.Interop
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XDoesSaveUnders", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern Bool XDoesSaveUnders(
+        [return: ComAliasName("Bool")]
+        public static extern int XDoesSaveUnders(
             [In] Screen* screen
         );
 
@@ -1143,14 +902,14 @@ namespace TerraFX.Interop
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XEventsQueued", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XEventsQueued(
-            [In] Display* display,
+            [In, ComAliasName("Display")] IntPtr display,
             [In] int mode
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XExtendedMaxRequestSize", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern nint XExtendedMaxRequestSize(
-            [In] Display* display
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XFree", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -1162,31 +921,33 @@ namespace TerraFX.Interop
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XFlush", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XFlush(
-            [In] Display* display
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XGetAtomName", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern sbyte* XGetAtomName(
-            [In] Display* display,
-            [In] Atom atom
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Atom")] nuint atom
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XGetAtomNames", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern Status XGetAtomNames(
-            [In] Display* display,
-            [In] Atom* atoms,
+        [return: ComAliasName("int")]
+        public static extern int XGetAtomNames(
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Atom")] nuint* atoms,
             [In] int count,
             [Out] sbyte** names_return
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XGetGeometry", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern Status XGetGeometry(
-            [In] Display* display,
-            [In] Drawable d,
-            [Out] Window* root_return,
+        [return: ComAliasName("int")]
+        public static extern int XGetGeometry(
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Drawable")] nuint d,
+            [Out, ComAliasName("Window")] nuint* root_return,
             [Out] int* x_return,
             [Out] int* y_return,
             [Out] uint* width_return,
@@ -1197,30 +958,32 @@ namespace TerraFX.Interop
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XGetSelectionOwner", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern Window XGetSelectionOwner(
-            [In] Display* display,
-            [In] Atom selection
+        [return: ComAliasName("Window")]
+        public static extern nuint XGetSelectionOwner(
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Atom")] nuint selection
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XGetWindowAttributes", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern Status XGetWindowAttributes(
-            [In] Display* display,
-            [In] Window w,
+        [return: ComAliasName("int")]
+        public static extern int XGetWindowAttributes(
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w,
             [Out] XWindowAttributes* window_attributes_return
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XGetWindowProperty", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XGetWindowProperty(
-            [In] Display* display,
-            [In] Window w,
-            [In] Atom property,
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w,
+            [In, ComAliasName("Atom")] nuint property,
             [In] nint long_offset,
             [In] nint long_length,
-            [In] Bool delete,
-            [In] Atom req_type,
-            [Out] Atom* actual_type_return,
+            [In, ComAliasName("Bool")] int delete,
+            [In, ComAliasName("Atom")] nuint req_type,
+            [Out, ComAliasName("Atom")] nuint* actual_type_return,
             [Out] int* actual_format_return,
             [Out] nuint* nitems_return,
             [Out] nuint* bytes_after_return,
@@ -1242,59 +1005,63 @@ namespace TerraFX.Interop
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XIfEvent", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XIfEvent(
-            [In] Display* display,
+            [In, ComAliasName("Display")] IntPtr display,
             [Out] XEvent* event_return,
-            [In] IntPtr /* predicate */ predicate,
-            [In] XPointer arg
+            [In, ComAliasName("predicate")] IntPtr predicate,
+            [In, ComAliasName("XPointer")] sbyte* arg
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XImageByteOrder", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XImageByteOrder(
-            [In] Display* display
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XInitThreads", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern Status XInitThreads(
+        [return: ComAliasName("int")]
+        public static extern int XInitThreads(
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XInternalConnectionNumbers", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern Status XInternalConnectionNumbers(
-            [In] Display display,
+        [return: ComAliasName("int")]
+        public static extern int XInternalConnectionNumbers(
+            [In, ComAliasName("Display")] IntPtr display,
             [Out] int** fd,
             [Out] int* count_return
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XInternAtom", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern Atom XInternAtom(
-            [In] Display* display,
+        [return: ComAliasName("Atom")]
+        public static extern nuint XInternAtom(
+            [In, ComAliasName("Display")] IntPtr display,
             [In] sbyte* atom_name,
-            [In] Bool only_if_exists
+            [In, ComAliasName("Bool")] int only_if_exists
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XInternAtoms", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern Status XInternAtoms(
-            [In] Display* display,
-            [In] sbyte** names,
+        [return: ComAliasName("int")]
+        public static extern int XInternAtoms(
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("string[]")] sbyte** names,
             [In] int count,
-            [In] Bool only_if_exists,
-            [Out] Atom* atoms_return
+            [In, ComAliasName("Bool")] int only_if_exists,
+            [Out, ComAliasName("Atom")] nuint* atoms_return
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XLastKnownRequestProcessed", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern nuint XLastKnownRequestProcessed(
-            [In] Display* display
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XListDepths", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int* XListDepths(
-            [In] Display* display,
+            [In, ComAliasName("Display")] IntPtr display,
             [In] int screen_number,
             [Out] int* count_return
         );
@@ -1302,50 +1069,51 @@ namespace TerraFX.Interop
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XLockDisplay", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern XPixmapFormatValues* XListPixmapFormats(
-            [In] Display* display,
+            [In, ComAliasName("Display")] IntPtr display,
             [Out] int* count_return
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XListProperties", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern Atom* XListProperties(
-            [In] Display* display,
-            [In] Window w,
+        [return: ComAliasName("Atom")]
+        public static extern nuint* XListProperties(
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w,
             [Out] int* num_prop_return
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XLockDisplay", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void XLockDisplay(
-            [In] Display* display
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XLowerWindow", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XLowerWindow(
-            [In] Display* display,
-            [In] Window w
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XMapRaised", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XMapRaised(
-            [In] Display* display,
-            [In] Window w
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XMapSubwindows", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XMapSubwindows(
-            [In] Display* display,
-            [In] Window w
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XMapWindow", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XMapWindow(
-            [In] Display* display,
-            [In] Window w
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XMaxCmapsOfScreen", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -1357,7 +1125,7 @@ namespace TerraFX.Interop
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XMaxRequestSize", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern nint XMaxRequestSize(
-            [In] Display* display
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XMinCmapsOfScreen", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -1369,8 +1137,8 @@ namespace TerraFX.Interop
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XMoveWindow", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XMoveWindow(
-            [In] Display* display,
-            [In] Window w,
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w,
             [In] int x,
             [In] int y
         );
@@ -1378,8 +1146,8 @@ namespace TerraFX.Interop
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XMoveResizeWindow", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XMoveResizeWindow(
-            [In] Display* display,
-            [In] Window w,
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w,
             [In] int x,
             [In] int y,
             [In] uint width,
@@ -1389,48 +1157,49 @@ namespace TerraFX.Interop
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XNextEvent", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XNextEvent(
-            [In] Display* display,
+            [In, ComAliasName("Display")] IntPtr display,
             [Out] XEvent* event_return
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XNextRequest", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern nuint XNextRequest(
-            [In] Display* display
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XNoOp", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XNoOp(
-            [In] Display* display
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XOpenDisplay", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern Display* XOpenDisplay(
+        [return: ComAliasName("Display")]
+        public static extern IntPtr XOpenDisplay(
             [In] byte* display_name
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XPeekEvent", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void XPeekEvent(
-            [In] Display* display,
+            [In, ComAliasName("Display")] IntPtr display,
             [Out] XEvent* event_Return
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XPeekIfEvent", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XPeekIfEvent(
-            [In] Display* display,
+            [In, ComAliasName("Display")] IntPtr display,
             [Out] XEvent* event_return,
-            [In] IntPtr /* predicate */ predicate,
-            [In] XPointer arg
+            [In, ComAliasName("predicate")] IntPtr predicate,
+            [In, ComAliasName("XPointer")] sbyte* arg
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XPending", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XPending(
-            [In] Display* display
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XPlanesOfScreen", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -1442,35 +1211,36 @@ namespace TerraFX.Interop
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XProcessInternalConnection", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void XProcessInternalConnection(
-            [In] Display* display,
+            [In, ComAliasName("Display")] IntPtr display,
             [In] int fd
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XProtocolRevision", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XProtocolRevision(
-            [In] Display* display
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XProtocolVersion", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XProtocolVersion(
-            [In] Display* display
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XQLength", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XQLength(
-            [In] Display* display
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XQueryPointer", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern Bool XQueryPointer(
-            [In] Display* display,
-            [In] Window w,
-            [Out] Window* root_return,
-            [Out] Window* child_return,
+        [return: ComAliasName("Bool")]
+        public static extern int XQueryPointer(
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w,
+            [Out, ComAliasName("Window")] nuint* root_return,
+            [Out, ComAliasName("Window")] nuint* child_return,
             [Out] int* root_x_return,
             [Out] int* root_y_return,
             [Out] int* win_x_return,
@@ -1480,35 +1250,36 @@ namespace TerraFX.Interop
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XQueryTree", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern Status XQueryTree(
-            [In] Display* display,
-            [In] Window w,
-            [Out] Window* root_return,
-            [Out] Window* parent_return,
-            [Out] Window** children_return,
+        [return: ComAliasName("int")]
+        public static extern int XQueryTree(
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w,
+            [Out, ComAliasName("Window")] nuint* root_return,
+            [Out, ComAliasName("Window")] nuint* parent_return,
+            [Out, ComAliasName("Window")] nuint** children_return,
             [Out] uint* nchildren_return
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XRaiseWindow", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XRaiseWindow(
-            [In] Display* display,
-            [In] Window w
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XRemoveConnectionWatch", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void XRemoveConnectionWatch(
-            [In] Display* display,
-            [In] IntPtr /* XConnectionWatchProc */ procedure,
-            [In] XPointer client_data
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("XConnectionWatchProc")] IntPtr procedure,
+            [In, ComAliasName("XPointer")] sbyte* client_data
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XResizeWindow", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XResizeWindow(
-            [In] Display* display,
-            [In] Window w,
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w,
             [In] uint width,
             [In] uint height
         );
@@ -1516,30 +1287,32 @@ namespace TerraFX.Interop
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XRestackWindows", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XRestackWindows(
-            [In] Display* display,
-            [In] Window* windows,
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint* windows,
             [In] int nwindows
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XRootWindow", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern Window XRootWindow(
-            [In] Display* display,
+        [return: ComAliasName("Window")]
+        public static extern nuint XRootWindow(
+            [In, ComAliasName("Display")] IntPtr display,
             [In] int screen_number
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XRootWindowOfScreen", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern Window XRootWindowOfScreen(
+        [return: ComAliasName("Window")]
+        public static extern nuint XRootWindowOfScreen(
             [In] Screen* screen
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XRotateWindowProperties", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XRotateWindowProperties(
-            [In] Display* display,
-            [In] Window w,
-            [In] Atom* properties,
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w,
+            [In, ComAliasName("Atom")] nuint* properties,
             [In] int num_prop,
             [In] int npositions
         );
@@ -1547,7 +1320,7 @@ namespace TerraFX.Interop
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XScreenCount", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XScreenCount(
-            [In] Display* display
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XScreenNumberOfScreen", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -1559,151 +1332,153 @@ namespace TerraFX.Interop
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XScreenOfDisplay", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern Screen* XScreenOfDisplay(
-            [In] Display* display,
+            [In, ComAliasName("Display")] IntPtr display,
             [In] int screen_number
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XSelectInput", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XSelectInput(
-            [In] Display* display,
-            [In] Window w,
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w,
             [In] nint event_mask
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XServerVendor", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern sbyte* XServerVendor(
-            [In] Display* display
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XSetCloseDownMode", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XSetCloseDownMode(
-            [In] Display* display,
+            [In, ComAliasName("Display")] IntPtr display,
             [In] int close_mode
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XSetSelectionOwner", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XSetSelectionOwner(
-            [In] Display* display,
-            [In] Atom selection,
-            [In] Window owner,
-            [In] Time time
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Atom")] nuint selection,
+            [In, ComAliasName("Window")] nuint owner,
+            [In, ComAliasName("Time")] nuint time
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XSetWindowBackground", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XSetWindowBackground(
-            [In] Display* display,
-            [In] Window w,
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w,
             [In] nuint background_pixel
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XSetWindowBackgroundPixmap", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XSetWindowBackgroundPixmap(
-            [In] Display* display,
-            [In] Window w,
-            [In] Pixmap background_pixmap
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w,
+            [In, ComAliasName("Pixmap")] nuint background_pixmap
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XSetWindowBorder", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XSetWindowBorder(
-            [In] Display* display,
-            [In] Window w,
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w,
             [In] nuint border_pixel
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XSetWindowBorderPixmap", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XSetWindowBorderPixmap(
-            [In] Display* display,
-            [In] Window w,
-            [In] Pixmap border_pixmap
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w,
+            [In, ComAliasName("Pixmap")] nuint border_pixmap
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XSetWindowBorderWidth", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XSetWindowBorderWidth(
-            [In] Display* display,
-            [In] Window w,
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w,
             [In] uint width
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XSetWindowColormap", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XSetWindowColormap(
-            [In] Display* display,
-            [In] Window w,
-            [In] Colormap colormap
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w,
+            [In, ComAliasName("Colormap")] nuint colormap
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XSync", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XSync(
-            [In] Display* display,
-            [In] Bool discard
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Bool")] int discard
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XTranslateCoordinates", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern Bool XTranslateCoordinates(
-            [In] Display* display,
-            [In] Window src_w,
-            [In] Window dest_w,
+        [return: ComAliasName("Bool")]
+        public static extern int XTranslateCoordinates(
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint src_w,
+            [In, ComAliasName("Window")] nuint dest_w,
             [In] int src_x,
             [In] int src_y,
             [Out] int* dest_x_return,
             [Out] int* dest_y_return,
-            [Out] Window* child_return
+            [Out, ComAliasName("Window")] nuint* child_return
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XUndefineCursor", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XUndefineCursor(
-            [In] Display* display,
-            [In] Window w
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XUnlockDisplay", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void XUnlockDisplay(
-            [In] Display* display
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XUnmapSubwindows", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XUnmapSubwindows(
-            [In] Display* display,
-            [In] Window w
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XUnmapWindow", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XUnmapWindow(
-            [In] Display* display,
-            [In] Window w
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XVendorRelease", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int XVendorRelease(
-            [In] Display* display
+            [In, ComAliasName("Display")] IntPtr display
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XVisualIDFromVisual", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        public static extern VisualID XVisualIDFromVisual(
+        [return: ComAliasName("VisualID")]
+        public static extern nuint XVisualIDFromVisual(
             [In] Visual* visual
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XWhitePixel", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern nuint XWhitePixel(
-            [In] Display* display,
+            [In, ComAliasName("Display")] IntPtr display,
             [In] int screen_number
         );
 

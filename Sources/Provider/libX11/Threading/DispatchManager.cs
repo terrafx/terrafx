@@ -21,7 +21,7 @@ namespace TerraFX.Provider.libX11.Threading
     public sealed unsafe class DispatchManager : IDisposable, IDispatchManager
     {
         #region Fields
-        internal Display* _display;
+        internal IntPtr _display;
 
         internal readonly ConcurrentDictionary<Thread, Dispatcher> _dispatchers;
         #endregion
@@ -46,7 +46,7 @@ namespace TerraFX.Provider.libX11.Threading
 
         #region Properties
         /// <summary>Gets a pointer to the <see cref="Display" /> instance.</summary>
-        public Display* Display
+        public IntPtr Display
         {
             get
             {
@@ -95,11 +95,11 @@ namespace TerraFX.Provider.libX11.Threading
         #endregion
 
         #region Static Methods
-        internal static Display* CreateDisplay()
+        internal static IntPtr CreateDisplay()
         {
             var display = XOpenDisplay(display_name: null);
 
-            if (display == null)
+            if (display == IntPtr.Zero)
             {
                 ThrowExternalExceptionForLastError(nameof(XOpenDisplay));
             }
@@ -111,10 +111,10 @@ namespace TerraFX.Provider.libX11.Threading
         #region Methods
         internal void Dispose(bool isDisposing)
         {
-            if (_display != null)
+            if (_display != IntPtr.Zero)
             {
                 XCloseDisplay(_display);
-                _display = null;
+                _display = IntPtr.Zero;
             }
         }
         #endregion

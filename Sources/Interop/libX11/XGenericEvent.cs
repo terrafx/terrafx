@@ -3,6 +3,9 @@
 // Ported from X11\xlib.h in the Xlib - C Language X Interface: X Version 11, Release 7.7
 // Original source is Copyright © The Open Group.
 
+using System;
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ unsafe struct XGenericEvent
@@ -12,9 +15,11 @@ namespace TerraFX.Interop
 
         public nuint serial;
 
-        public Bool send_event;
+        [ComAliasName("Bool")]
+        public int send_event;
 
-        public Display* display;
+        [ComAliasName("Display")]
+        public IntPtr display;
 
         public int extension;
 

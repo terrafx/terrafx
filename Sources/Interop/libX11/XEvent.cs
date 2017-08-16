@@ -4,7 +4,6 @@
 // Original source is Copyright © The Open Group.
 
 using System.Runtime.InteropServices;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
@@ -176,11 +175,6 @@ namespace TerraFX.Interop
             {
                 get
                 {
-                    if ((uint)(index) > 23) // (index < 0) || (index > 23)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
                     fixed (nint* e = &e0)
                     {
                         return e[index];
@@ -189,11 +183,6 @@ namespace TerraFX.Interop
 
                 set
                 {
-                    if ((uint)(index) > 23) // (index < 0) || (index > 23)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
                     fixed (nint* e = &e0)
                     {
                         e[index] = value;

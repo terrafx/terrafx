@@ -3,6 +3,9 @@
 // Ported from X11\xlib.h in the Xlib - C Language X Interface: X Version 11, Release 7.7
 // Original source is Copyright © The Open Group.
 
+using System;
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ unsafe struct XColormapEvent
@@ -12,15 +15,20 @@ namespace TerraFX.Interop
 
         public nuint serial;
 
-        public Bool send_event;
+        [ComAliasName("Bool")]
+        public int send_event;
 
-        public Display* display;
+        [ComAliasName("Display")]
+        public IntPtr display;
 
-        public Window window;
+        [ComAliasName("Window")]
+        public nuint window;
 
-        public Colormap colormap;
+        [ComAliasName("Colormap")]
+        public nuint colormap;
 
-        public Bool @new;
+        [ComAliasName("Bool")]
+        public int @new;
 
         public int state;
         #endregion

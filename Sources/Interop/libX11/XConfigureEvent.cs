@@ -3,6 +3,9 @@
 // Ported from X11\xlib.h in the Xlib - C Language X Interface: X Version 11, Release 7.7
 // Original source is Copyright © The Open Group.
 
+using System;
+using System.Runtime.InteropServices;
+
 namespace TerraFX.Interop
 {
     public /* blittable */ unsafe struct XConfigureEvent
@@ -12,13 +15,17 @@ namespace TerraFX.Interop
 
         public nuint serial;
 
-        public Bool send_event;
+        [ComAliasName("Bool")]
+        public int send_event;
 
-        public Display* display;
+        [ComAliasName("Display")]
+        public IntPtr display;
 
-        public Window @event;
+        [ComAliasName("Window")]
+        public nuint @event;
 
-        public Window window;
+        [ComAliasName("Window")]
+        public nuint window;
 
         public int x, y;
 
@@ -26,9 +33,11 @@ namespace TerraFX.Interop
 
         public int border_width;
 
-        public Window above;
+        [ComAliasName("Window")]
+        public nuint above;
 
-        public Bool override_redirect;
+        [ComAliasName("Bool")]
+        public int override_redirect;
         #endregion
     }
 }

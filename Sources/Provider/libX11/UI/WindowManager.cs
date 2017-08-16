@@ -6,8 +6,6 @@ using System.Composition;
 using System.Diagnostics;
 using TerraFX.Provider.libX11.Threading;
 using TerraFX.UI;
-using GC = System.GC;
-using XWindow = TerraFX.Interop.Window;
 
 namespace TerraFX.Provider.libX11.UI
 {
@@ -18,7 +16,7 @@ namespace TerraFX.Provider.libX11.UI
     public sealed unsafe class WindowManager : IDisposable, IWindowManager
     {
         #region Static Fields
-        internal static readonly ConcurrentDictionary<XWindow, Window> CreatedWindows = new ConcurrentDictionary<XWindow, Window>();
+        internal static readonly ConcurrentDictionary<nuint, Window> CreatedWindows = new ConcurrentDictionary<nuint, Window>();
         #endregion
 
         #region Fields
@@ -58,7 +56,7 @@ namespace TerraFX.Provider.libX11.UI
         #endregion
 
         #region Methods
-        internal void DestroyWindow(XWindow windowHandle)
+        internal void DestroyWindow(nuint windowHandle)
         {
             CreatedWindows.TryRemove(windowHandle, out _);
         }
