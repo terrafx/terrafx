@@ -17,20 +17,20 @@ namespace TerraFX.Interop
 
         public uint waitSemaphoreCount;
 
-        [ComAliasName("VkSemaphore")]
+        [ComAliasName("VkSemaphore[]")]
         public ulong* pWaitSemaphores;
 
-        [ComAliasName("VkPipelineStageFlags")]
+        [ComAliasName("VkPipelineStageFlags[]")]
         public uint* pWaitDstStageMask;
 
         public uint commandBufferCount;
 
-        [ComAliasName("VkCommandBuffer")]
+        [ComAliasName("VkCommandBuffer[]")]
         public IntPtr* pCommandBuffers;
 
         public uint signalSemaphoreCount;
 
-        [ComAliasName("VkSemaphore")]
+        [ComAliasName("VkSemaphore[]")]
         public ulong* pSignalSemaphores;
         #endregion
     }

@@ -17,16 +17,18 @@ namespace TerraFX.Interop
 
         public uint waitSemaphoreCount;
 
-        [ComAliasName("VkSemaphore")]
+        [ComAliasName("VkSemaphore[]")]
         public IntPtr* pWaitSemaphores;
 
         public uint swapchainCount;
 
-        [ComAliasName("VkSwapchainKHR")]
+        [ComAliasName("VkSwapchainKHR[]")]
         public IntPtr* pSwapchains;
 
+        [ComAliasName("uint[]")]
         public uint* pImageIndices;
 
+        [ComAliasName("VkResult[]")]
         public VkResult* pResults;
         #endregion
     }

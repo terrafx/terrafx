@@ -22,7 +22,7 @@ namespace TerraFX.Interop
 
         public uint attachmentCount;
 
-        [ComAliasName("VkImageView")]
+        [ComAliasName("VkImageView[]")]
         public ulong* pAttachments;
 
         public uint width;

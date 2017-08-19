@@ -19,6 +19,7 @@ namespace TerraFX.Interop
 
         public uint stageCount;
 
+        [ComAliasName("VkPipelineShaderStageCreateInfo[]")]
         public VkPipelineShaderStageCreateInfo* pStages;
 
         public VkPipelineVertexInputStateCreateInfo* pVertexInputState;

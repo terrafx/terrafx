@@ -23,10 +23,10 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateAndroidSurfaceKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateAndroidSurfaceKHR(
-            [ComAliasName("VkInstance")] IntPtr instance,
-            VkAndroidSurfaceCreateInfoKHR* pCreateInfo,
-            VkAllocationCallbacks* pAllocator,
-            [ComAliasName("VkSurfaceKHR")] IntPtr* pSurface
+            [In, ComAliasName("VkInstance")] IntPtr instance,
+            [In] VkAndroidSurfaceCreateInfoKHR* pCreateInfo,
+            [In, Optional] VkAllocationCallbacks* pAllocator,
+            [Out, ComAliasName("VkSurfaceKHR")] IntPtr* pSurface
         );
         #endregion
     }

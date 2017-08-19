@@ -17,18 +17,22 @@ namespace TerraFX.Interop
 
         public uint inputAttachmentCount;
 
+        [ComAliasName("VkAttachmentReference[]")]
         public VkAttachmentReference* pInputAttachments;
 
         public uint colorAttachmentCount;
 
+        [ComAliasName("VkAttachmentReference[]")]
         public VkAttachmentReference* pColorAttachments;
 
+        [ComAliasName("VkAttachmentReference[]")]
         public VkAttachmentReference* pResolveAttachments;
 
         public VkAttachmentReference* pDepthStencilAttachment;
 
         public uint preserveAttachmentCount;
 
+        [ComAliasName("uint[]")]
         public uint* pPreserveAttachments;
         #endregion
     }

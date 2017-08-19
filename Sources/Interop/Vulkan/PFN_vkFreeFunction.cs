@@ -12,6 +12,6 @@ namespace TerraFX.Interop
     [UnmanagedFunctionPointer(CallingConvention.Cdecl, BestFitMapping = false, CharSet = CharSet.Ansi, SetLastError = false, ThrowOnUnmappableChar = false)]
     public /* static */ unsafe delegate void* PFN_vkFreeFunction(
         [In] void* pUserData,
-        [In] void* pMemory
+        [In] void* pMemory = null
     );
 }

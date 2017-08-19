@@ -14,6 +14,7 @@ namespace TerraFX.Interop
         [ComAliasName("VkDisplayKHR")]
         public IntPtr display;
 
+        [ComAliasName("string")]
         public sbyte* displayName;
 
         public VkExtent2D physicalDimensions;

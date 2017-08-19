@@ -4,6 +4,7 @@
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
 using System;
+using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
@@ -12,15 +13,20 @@ namespace TerraFX.Interop
         #region Fields
         public void* pUserData;
 
-        public IntPtr /* PFN_vkAllocationFunction */ pfnAllocation;
+        [ComAliasName("PFN_vkAllocationFunction")]
+        public IntPtr pfnAllocation;
 
-        public IntPtr /* PFN_vkReallocationFunction */ pfnReallocation;
+        [ComAliasName("PFN_vkReallocationFunction")]
+        public IntPtr pfnReallocation;
 
-        public IntPtr /* PFN_vkFreeFunction */ pfnFree;
+        [ComAliasName("PFN_vkFreeFunction")]
+        public IntPtr pfnFree;
 
-        public IntPtr /* PFN_vkInternalAllocationNotification */ pfnInternalAllocation;
+        [ComAliasName("PFN_vkInternalAllocationNotification")]
+        public IntPtr pfnInternalAllocation;
 
-        public IntPtr /* PFN_vkInternalFreeNotification */ pfnInternalFree;
+        [ComAliasName("PFN_vkInternalFreeNotification")]
+        public IntPtr pfnInternalFree;
         #endregion
     }
 }

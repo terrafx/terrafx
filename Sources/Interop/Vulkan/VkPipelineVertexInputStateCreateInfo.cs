@@ -19,10 +19,12 @@ namespace TerraFX.Interop
 
         public uint vertexBindingDescriptionCount;
 
+        [ComAliasName("VkVertexInputBindingDescription[]")]
         public VkVertexInputBindingDescription* pVertexBindingDescriptions;
 
         public uint vertexAttributeDescriptionCount;
 
+        [ComAliasName("VkVertexInputAttributeDescription[]")]
         public VkVertexInputAttributeDescription* pVertexAttributeDescriptions;
         #endregion
     }

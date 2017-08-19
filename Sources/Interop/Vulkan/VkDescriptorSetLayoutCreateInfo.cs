@@ -19,6 +19,7 @@ namespace TerraFX.Interop
 
         public uint bindingCount;
 
+        [ComAliasName("VkDescriptorSetLayoutBinding[]")]
         public VkDescriptorSetLayoutBinding* pBindings;
         #endregion
     }

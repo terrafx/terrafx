@@ -16,24 +16,27 @@ namespace TerraFX.Interop
 
         public uint waitSemaphoreCount;
 
-        [ComAliasName("VkSemaphore")]
+        [ComAliasName("VkSemaphore[]")]
         public ulong* pWaitSemaphores;
 
         public uint bufferBindCount;
 
+        [ComAliasName("VkSparseBufferMemoryBindInfo[]")]
         public VkSparseBufferMemoryBindInfo* pBufferBinds;
 
         public uint imageOpaqueBindCount;
 
+        [ComAliasName("VkSparseImageOpaqueMemoryBindInfo[]")]
         public VkSparseImageOpaqueMemoryBindInfo* pImageOpaqueBinds;
 
         public uint imageBindCount;
 
+        [ComAliasName("VkSparseImageMemoryBindInfo[]")]
         public VkSparseImageMemoryBindInfo* pImageBinds;
 
         public uint signalSemaphoreCount;
 
-        [ComAliasName("VkSemaphore")]
+        [ComAliasName("VkSemaphore[]")]
         public ulong* pSignalSemaphores;
         #endregion
     }

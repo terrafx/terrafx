@@ -21,6 +21,7 @@ namespace TerraFX.Interop
 
         public uint poolSizeCount;
 
+        [ComAliasName("VkDescriptorPoolSize[]")]
         public VkDescriptorPoolSize* pPoolSizes;
         #endregion
     }

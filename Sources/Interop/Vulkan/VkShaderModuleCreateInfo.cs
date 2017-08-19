@@ -19,6 +19,7 @@ namespace TerraFX.Interop
 
         public nuint codeSize;
 
+        [ComAliasName("uint[]")]
         public uint* pCode;
         #endregion
     }

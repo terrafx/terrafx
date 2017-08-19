@@ -19,14 +19,17 @@ namespace TerraFX.Interop
 
         public uint attachmentCount;
 
+        [ComAliasName("VkAttachmentDescription[]")]
         public VkAttachmentDescription* pAttachments;
 
         public uint subpassCount;
 
+        [ComAliasName("VkSubpassDescription[]")]
         public VkSubpassDescription* pSubpasses;
 
         public uint dependencyCount;
 
+        [ComAliasName("VkSubpassDependency[]")]
         public VkSubpassDependency* pDependencies;
         #endregion
     }

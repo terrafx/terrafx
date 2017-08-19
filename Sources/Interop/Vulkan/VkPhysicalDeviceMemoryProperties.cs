@@ -3,7 +3,7 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
-using static TerraFX.Utilities.ExceptionUtilities;
+using static System.Runtime.CompilerServices.Unsafe;
 
 namespace TerraFX.Interop
 {
@@ -89,31 +89,13 @@ namespace TerraFX.Interop
             #endregion
 
             #region Properties
-            public VkMemoryType this[int index]
+            public ref VkMemoryType this[int index]
             {
                 get
                 {
-                    if ((uint)(index) > 31) // (index < 0) || (index > 31)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
                     fixed (VkMemoryType* e = &e0)
                     {
-                        return e[index];
-                    }
-                }
-
-                set
-                {
-                    if ((uint)(index) > 31) // (index < 0) || (index > 31)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (VkMemoryType* e = &e0)
-                    {
-                        e[index] = value;
+                        return ref AsRef<VkMemoryType>(e + index);
                     }
                 }
             }
@@ -157,31 +139,13 @@ namespace TerraFX.Interop
             #endregion
 
             #region Properties
-            public VkMemoryHeap this[int index]
+            public ref VkMemoryHeap this[int index]
             {
                 get
                 {
-                    if ((uint)(index) > 15) // (index < 0) || (index > 15)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
                     fixed (VkMemoryHeap* e = &e0)
                     {
-                        return e[index];
-                    }
-                }
-
-                set
-                {
-                    if ((uint)(index) > 15) // (index < 0) || (index > 15)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (VkMemoryHeap* e = &e0)
-                    {
-                        e[index] = value;
+                        return ref AsRef<VkMemoryHeap>(e + index);
                     }
                 }
             }

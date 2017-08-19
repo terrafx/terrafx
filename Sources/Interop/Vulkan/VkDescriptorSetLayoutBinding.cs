@@ -19,7 +19,7 @@ namespace TerraFX.Interop
         [ComAliasName("VkShaderStageFlags")]
         public uint stageFlags;
 
-        [ComAliasName("VkSampler")]
+        [ComAliasName("VkSampler[]")]
         public ulong* pImmutableSamplers;
         #endregion
     }

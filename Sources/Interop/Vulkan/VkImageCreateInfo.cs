@@ -38,6 +38,7 @@ namespace TerraFX.Interop
 
         public uint queueFamilyIndexCount;
 
+        [ComAliasName("uint[]")]
         public uint* pQueueFamilyIndices;
 
         public VkImageLayout initialLayout;

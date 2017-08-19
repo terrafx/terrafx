@@ -19,10 +19,12 @@ namespace TerraFX.Interop
 
         public uint viewportCount;
 
+        [ComAliasName("VkViewport[]")]
         public VkViewport* pViewports;
 
         public uint scissorCount;
 
+        [ComAliasName("VkRect2D[]")]
         public VkRect2D* pScissors;
         #endregion
     }

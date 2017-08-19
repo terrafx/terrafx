@@ -21,6 +21,7 @@ namespace TerraFX.Interop
 
         public uint queueCount;
 
+        [ComAliasName("float[]")]
         public float* pQueuePriorities;
         #endregion
     }

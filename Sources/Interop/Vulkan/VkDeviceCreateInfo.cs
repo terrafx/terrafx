@@ -19,14 +19,17 @@ namespace TerraFX.Interop
 
         public uint queueCreateInfoCount;
 
+        [ComAliasName("VkDeviceQueueCreateInfo[]")]
         public VkDeviceQueueCreateInfo* pQueueCreateInfos;
 
         public uint enabledLayerCount;
 
+        [ComAliasName("string[]")]
         public sbyte** ppEnabledLayerNames;
 
         public uint enabledExtensionCount;
 
+        [ComAliasName("string[]")]
         public sbyte** ppEnabledExtensionNames;
 
         public VkPhysicalDeviceFeatures* pEnabledFeatures;

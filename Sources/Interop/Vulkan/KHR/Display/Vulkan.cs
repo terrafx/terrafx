@@ -23,63 +23,63 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetPhysicalDeviceDisplayPropertiesKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkGetPhysicalDeviceDisplayPropertiesKHR(
-            [ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
-            uint* pPropertyCount,
-            VkDisplayPropertiesKHR* pProperties
+            [In, ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
+            [In, Out] uint* pPropertyCount,
+            [Out, Optional, ComAliasName("VkDisplayPropertiesKHR[]")] VkDisplayPropertiesKHR* pProperties
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetPhysicalDeviceDisplayPlanePropertiesKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkGetPhysicalDeviceDisplayPlanePropertiesKHR(
-            [ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
-            uint* pPropertyCount,
-            VkDisplayPlanePropertiesKHR* pProperties
+            [In, ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
+            [In, Out] uint* pPropertyCount,
+            [Out, Optional, ComAliasName("VkDisplayPlanePropertiesKHR[]")] VkDisplayPlanePropertiesKHR* pProperties
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetDisplayPlaneSupportedDisplaysKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkGetDisplayPlaneSupportedDisplaysKHR(
-            [ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
-            uint planeIndex,
-            uint* pDisplayCount,
-            [ComAliasName("VkDisplayKHR")] IntPtr* pDisplays
+            [In, ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
+            [In] uint planeIndex,
+            [In, Out] uint* pDisplayCount,
+            [Out, Optional, ComAliasName("VkDisplayKHR[]")] IntPtr* pDisplays
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetDisplayModePropertiesKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkGetDisplayModePropertiesKHR(
-            [ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
-            [ComAliasName("VkDisplayKHR")] IntPtr display,
-            uint* pPropertyCount,
-            VkDisplayModePropertiesKHR* pProperties
+            [In, ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
+            [In, ComAliasName("VkDisplayKHR")] IntPtr display,
+            [In, Out] uint* pPropertyCount,
+            [Out, Optional, ComAliasName("VkDisplayModePropertiesKHR[]")] VkDisplayModePropertiesKHR* pProperties
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateDisplayModeKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateDisplayModeKHR(
-            [ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
-            [ComAliasName("VkDisplayKHR")] IntPtr display,
-            VkDisplayModeCreateInfoKHR* pCreateInfo,
-            VkAllocationCallbacks* pAllocator,
-            [ComAliasName("VkDisplayModeKHR")] IntPtr* pMode
+            [In, ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
+            [In, ComAliasName("VkDisplayKHR")] IntPtr display,
+            [In] VkDisplayModeCreateInfoKHR* pCreateInfo,
+            [In, Optional] VkAllocationCallbacks* pAllocator,
+            [Out, ComAliasName("VkDisplayModeKHR")] IntPtr* pMode
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetDisplayPlaneCapabilitiesKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkGetDisplayPlaneCapabilitiesKHR(
-            [ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
-            [ComAliasName("VkDisplayModeKHR")] IntPtr mode,
-            uint planeIndex,
-            VkDisplayPlaneCapabilitiesKHR* pCapabilities
+            [In, ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
+            [In, ComAliasName("VkDisplayModeKHR")] IntPtr mode,
+            [In] uint planeIndex,
+            [Out] VkDisplayPlaneCapabilitiesKHR* pCapabilities
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateDisplayPlaneSurfaceKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateDisplayPlaneSurfaceKHR(
-            [ComAliasName("VkInstance")] IntPtr instance,
-            VkDisplaySurfaceCreateInfoKHR* pCreateInfo,
-            VkAllocationCallbacks* pAllocator,
-            [ComAliasName("VkSurfaceKHR")] IntPtr* pSurface
+            [In, ComAliasName("VkInstance")] IntPtr instance,
+            [In] VkDisplaySurfaceCreateInfoKHR* pCreateInfo,
+            [In, Optional] VkAllocationCallbacks* pAllocator,
+            [Out, ComAliasName("VkSurfaceKHR")] IntPtr* pSurface
         );
         #endregion
     }

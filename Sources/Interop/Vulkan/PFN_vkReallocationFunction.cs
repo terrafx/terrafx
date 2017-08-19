@@ -12,7 +12,7 @@ namespace TerraFX.Interop
     [UnmanagedFunctionPointer(CallingConvention.Cdecl, BestFitMapping = false, CharSet = CharSet.Ansi, SetLastError = false, ThrowOnUnmappableChar = false)]
     public /* static */ unsafe delegate void* PFN_vkReallocationFunction(
         [In] void* pUserData,
-        [In] void* pOriginal,
+        [In, Optional] void* pOriginal,
         [In] nuint size,
         [In] nuint alignment,
         [In] VkSystemAllocationScope allocationScope

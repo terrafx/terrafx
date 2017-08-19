@@ -23,19 +23,19 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateWaylandSurfaceKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateWaylandSurfaceKHR(
-            [ComAliasName("VkInstance")] IntPtr instance,
-            VkWaylandSurfaceCreateInfoKHR* pCreateInfo,
-            VkAllocationCallbacks* pAllocator,
-            [ComAliasName("VkSurfaceKHR")] IntPtr* pSurface
+            [In, ComAliasName("VkInstance")] IntPtr instance,
+            [In] VkWaylandSurfaceCreateInfoKHR* pCreateInfo,
+            [In, Optional] VkAllocationCallbacks* pAllocator,
+            [Out, ComAliasName("VkSurfaceKHR")] IntPtr* pSurface
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetPhysicalDeviceWaylandPresentationSupportKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("VkBool32")]
         public static extern uint vkGetPhysicalDeviceWaylandPresentationSupportKHR(
-            [ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
-            uint queueFamilyIndex,
-            [ComAliasName("wl_display")] IntPtr display
+            [In, ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
+            [In] uint queueFamilyIndex,
+            [In, ComAliasName("wl_display")] IntPtr display
         );
         #endregion
     }

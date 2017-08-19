@@ -25,11 +25,13 @@ namespace TerraFX.Interop
 
         public VkDescriptorType descriptorType;
 
+        [ComAliasName("VkDescriptorImageInfo[]")]
         public VkDescriptorImageInfo* pImageInfo;
 
+        [ComAliasName("VkDescriptorBufferInfo[]")]
         public VkDescriptorBufferInfo* pBufferInfo;
 
-        [ComAliasName("VkBufferView")]
+        [ComAliasName("VkBufferView[]")]
         public ulong* pTexelBufferView;
         #endregion
     }

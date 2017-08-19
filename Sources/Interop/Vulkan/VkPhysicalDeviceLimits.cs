@@ -4,11 +4,10 @@
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
 using System.Runtime.InteropServices;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkPhysicalDeviceLimits
+    public /* blittable */ unsafe struct VkPhysicalDeviceLimits
     {
         #region Fields
         public uint maxImageDimension1D;
@@ -117,11 +116,11 @@ namespace TerraFX.Interop
 
         public uint maxComputeSharedMemorySize;
 
-        public _maxComputeWorkGroupCount_e__FixedBuffer maxComputeWorkGroupCount;
+        public fixed uint maxComputeWorkGroupCount[3];
 
         public uint maxComputeWorkGroupInvocations;
 
-        public _maxComputeWorkGroupSize_e__FixedBuffer maxComputeWorkGroupSize;
+        public fixed uint maxComputeWorkGroupSize[3];
 
         public uint subPixelPrecisionBits;
 
@@ -139,9 +138,9 @@ namespace TerraFX.Interop
 
         public uint maxViewports;
 
-        public _maxViewportDimensions_e__FixedBuffer maxViewportDimensions;
+        public fixed uint maxViewportDimensions[2];
 
-        public _viewportBoundsRange_e__FixedBuffer viewportBoundsRange;
+        public fixed float viewportBoundsRange[2];
 
         public uint viewportSubPixelBits;
 
@@ -220,9 +219,9 @@ namespace TerraFX.Interop
 
         public uint discreteQueuePriorities;
 
-        public _pointSizeRange_e__FixedBuffer pointSizeRange;
+        public fixed float pointSizeRange[2];
 
-        public _lineWidthRange_e__FixedBuffer lineWidthRange;
+        public fixed float lineWidthRange[2];
 
         public float pointSizeGranularity;
 
@@ -242,252 +241,6 @@ namespace TerraFX.Interop
 
         [ComAliasName("VkDeviceSize")]
         public ulong nonCoherentAtomSize;
-        #endregion
-
-        #region Structs
-        public /* blittable */ unsafe struct _maxComputeWorkGroupCount_e__FixedBuffer
-        {
-            #region Fields
-            public uint e0;
-
-            public uint e1;
-
-            public uint e2;
-            #endregion
-
-            #region Properties
-            public uint this[int index]
-            {
-                get
-                {
-                    if ((uint)(index) > 2) // (index < 0) || (index > 2)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (uint* e = &e0)
-                    {
-                        return e[index];
-                    }
-                }
-
-                set
-                {
-                    if ((uint)(index) > 2) // (index < 0) || (index > 2)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (uint* e = &e0)
-                    {
-                        e[index] = value;
-                    }
-                }
-            }
-            #endregion
-        }
-
-        public /* blittable */ unsafe struct _maxComputeWorkGroupSize_e__FixedBuffer
-        {
-            #region Fields
-            public uint e0;
-
-            public uint e1;
-
-            public uint e2;
-            #endregion
-
-            #region Properties
-            public uint this[int index]
-            {
-                get
-                {
-                    if ((uint)(index) > 2) // (index < 0) || (index > 2)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (uint* e = &e0)
-                    {
-                        return e[index];
-                    }
-                }
-
-                set
-                {
-                    if ((uint)(index) > 2) // (index < 0) || (index > 2)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (uint* e = &e0)
-                    {
-                        e[index] = value;
-                    }
-                }
-            }
-            #endregion
-        }
-
-        public /* blittable */ unsafe struct _maxViewportDimensions_e__FixedBuffer
-        {
-            #region Fields
-            public uint e0;
-
-            public uint e1;
-            #endregion
-
-            #region Properties
-            public uint this[int index]
-            {
-                get
-                {
-                    if ((uint)(index) > 1) // (index < 0) || (index > 1)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (uint* e = &e0)
-                    {
-                        return e[index];
-                    }
-                }
-
-                set
-                {
-                    if ((uint)(index) > 1) // (index < 0) || (index > 1)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (uint* e = &e0)
-                    {
-                        e[index] = value;
-                    }
-                }
-            }
-            #endregion
-        }
-
-        public /* blittable */ unsafe struct _viewportBoundsRange_e__FixedBuffer
-        {
-            #region Fields
-            public float e0;
-
-            public float e1;
-            #endregion
-
-            #region Properties
-            public float this[int index]
-            {
-                get
-                {
-                    if ((float)(index) > 1) // (index < 0) || (index > 1)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (float* e = &e0)
-                    {
-                        return e[index];
-                    }
-                }
-
-                set
-                {
-                    if ((float)(index) > 1) // (index < 0) || (index > 1)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (float* e = &e0)
-                    {
-                        e[index] = value;
-                    }
-                }
-            }
-            #endregion
-        }
-
-        public /* blittable */ unsafe struct _pointSizeRange_e__FixedBuffer
-        {
-            #region Fields
-            public float e0;
-
-            public float e1;
-            #endregion
-
-            #region Properties
-            public float this[int index]
-            {
-                get
-                {
-                    if ((float)(index) > 1) // (index < 0) || (index > 1)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (float* e = &e0)
-                    {
-                        return e[index];
-                    }
-                }
-
-                set
-                {
-                    if ((float)(index) > 1) // (index < 0) || (index > 1)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (float* e = &e0)
-                    {
-                        e[index] = value;
-                    }
-                }
-            }
-            #endregion
-        }
-
-        public /* blittable */ unsafe struct _lineWidthRange_e__FixedBuffer
-        {
-            #region Fields
-            public float e0;
-
-            public float e1;
-            #endregion
-
-            #region Properties
-            public float this[int index]
-            {
-                get
-                {
-                    if ((float)(index) > 1) // (index < 0) || (index > 1)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (float* e = &e0)
-                    {
-                        return e[index];
-                    }
-                }
-
-                set
-                {
-                    if ((float)(index) > 1) // (index < 0) || (index > 1)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (float* e = &e0)
-                    {
-                        e[index] = value;
-                    }
-                }
-            }
-            #endregion
-        }
         #endregion
     }
 }

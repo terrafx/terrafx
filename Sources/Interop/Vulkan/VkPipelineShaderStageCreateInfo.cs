@@ -22,6 +22,7 @@ namespace TerraFX.Interop
         [ComAliasName("VkShaderModule")]
         public ulong module;
 
+        [ComAliasName("string")]
         public sbyte* pName;
 
         public VkSpecializationInfo* pSpecializationInfo;

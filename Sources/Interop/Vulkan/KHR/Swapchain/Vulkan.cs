@@ -23,45 +23,45 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateSwapchainKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateSwapchainKHR(
-            [ComAliasName("VkDevice")] IntPtr device,
-            VkSwapchainCreateInfoKHR* pCreateInfo,
-            VkAllocationCallbacks* pAllocator,
-            [ComAliasName("VkSwapchainKHR")] IntPtr* pSwapchain
+            [In, ComAliasName("VkDevice")] IntPtr device,
+            [In] VkSwapchainCreateInfoKHR* pCreateInfo,
+            [In, Optional] VkAllocationCallbacks* pAllocator,
+            [Out, ComAliasName("VkSwapchainKHR")] IntPtr* pSwapchain
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDestroySwapchainKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkDestroySwapchainKHR(
-            [ComAliasName("VkDevice")] IntPtr device,
-            [ComAliasName("VkSwapchainKHR")] IntPtr swapchain,
-            VkAllocationCallbacks* pAllocator
+            [In, ComAliasName("VkDevice")] IntPtr device,
+            [In, ComAliasName("VkSwapchainKHR")] IntPtr swapchain,
+            [In, Optional] VkAllocationCallbacks* pAllocator
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetSwapchainImagesKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkGetSwapchainImagesKHR(
-            [ComAliasName("VkDevice")] IntPtr device,
-            [ComAliasName("VkSwapchainKHR")] IntPtr swapchain,
-            uint* pSwapchainImageCount,
-            [ComAliasName("VkImage")] IntPtr* pSwapchainImages
+            [In, ComAliasName("VkDevice")] IntPtr device,
+            [In, ComAliasName("VkSwapchainKHR")] IntPtr swapchain,
+            [In, Out] uint* pSwapchainImageCount,
+            [Out, ComAliasName("VkImage[]")] IntPtr* pSwapchainImages
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkAcquireNextImageKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkAcquireNextImageKHR(
-            [ComAliasName("VkDevice")] IntPtr device,
-            [ComAliasName("VkSwapchainKHR")] IntPtr swapchain,
-            ulong timeout,
-            [ComAliasName("VkSemaphore")] IntPtr semaphore,
-            [ComAliasName("VkFence")] IntPtr fence,
-            uint* pImageIndex
+            [In, ComAliasName("VkDevice")] IntPtr device,
+            [In, ComAliasName("VkSwapchainKHR")] IntPtr swapchain,
+            [In] ulong timeout,
+            [In, ComAliasName("VkSemaphore")] IntPtr semaphore,
+            [In, ComAliasName("VkFence")] IntPtr fence,
+            [Out] uint* pImageIndex
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkQueuePresentKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkQueuePresentKHR(
-            [ComAliasName("VkQueue")] IntPtr queue,
-            VkPresentInfoKHR* pPresentInfo
+            [In, ComAliasName("VkQueue")] IntPtr queue,
+            [In] VkPresentInfoKHR* pPresentInfo
         );
         #endregion
     }

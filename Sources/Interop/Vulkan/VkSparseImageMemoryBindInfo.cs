@@ -15,6 +15,7 @@ namespace TerraFX.Interop
 
         public uint bindCount;
 
+        [ComAliasName("VkSparseImageMemoryBindInfo.cs[]")]
         public VkSparseImageMemoryBind* pBinds;
         #endregion
     }

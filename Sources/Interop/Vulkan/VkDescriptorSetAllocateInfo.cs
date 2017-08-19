@@ -19,7 +19,7 @@ namespace TerraFX.Interop
 
         public uint descriptorSetCount;
 
-        [ComAliasName("VkDescriptorSetLayout")]
+        [ComAliasName("VkDescriptorSetLayout[]")]
         public ulong* pSetLayouts;
         #endregion
     }

@@ -24,6 +24,7 @@ namespace TerraFX.Interop
 
         public uint clearValueCount;
 
+        [ComAliasName("VkClearValue[]")]
         public VkClearValue* pClearValues;
         #endregion
     }

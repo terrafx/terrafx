@@ -4,7 +4,6 @@
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
 using System.Runtime.InteropServices;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
@@ -25,55 +24,10 @@ namespace TerraFX.Interop
 
         public uint attachmentCount;
 
+        [ComAliasName("VkPipelineColorBlendAttachmentState[]")]
         public VkPipelineColorBlendAttachmentState* pAttachments;
 
-        public _blendConstants_e__FixedBuffer blendConstants;
-        #endregion
-
-        #region Structs
-        unsafe public /* blittable */ struct _blendConstants_e__FixedBuffer
-        {
-            #region Fields
-            public float e0;
-
-            public float e1;
-
-            public float e2;
-
-            public float e3;
-            #endregion
-
-            #region Properties
-            public float this[int index]
-            {
-                get
-                {
-                    if ((uint)(index) > 3) // (index < 0) || (index > 3)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (float* e = &e0)
-                    {
-                        return e[index];
-                    }
-                }
-
-                set
-                {
-                    if ((uint)(index) > 3) // (index < 0) || (index > 3)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (float* e = &e0)
-                    {
-                        e[index] = value;
-                    }
-                }
-            }
-            #endregion
-        }
+        public fixed float blendConstants[4];
         #endregion
     }
 }

@@ -3,7 +3,7 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
-using static TerraFX.Utilities.ExceptionUtilities;
+using static System.Runtime.CompilerServices.Unsafe;
 
 namespace TerraFX.Interop
 {
@@ -29,31 +29,13 @@ namespace TerraFX.Interop
             #endregion
 
             #region Properties
-            public VkOffset3D this[int index]
+            public ref VkOffset3D this[int index]
             {
                 get
                 {
-                    if ((uint)(index) > 1) // (index < 0) || (index > 1)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
                     fixed (VkOffset3D* e = &e0)
                     {
-                        return e[index];
-                    }
-                }
-
-                set
-                {
-                    if ((uint)(index) > 1) // (index < 0) || (index > 1)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (VkOffset3D* e = &e0)
-                    {
-                        e[index] = value;
+                        return ref AsRef<VkOffset3D>(e + index);
                     }
                 }
             }
@@ -69,31 +51,13 @@ namespace TerraFX.Interop
             #endregion
 
             #region Properties
-            public VkOffset3D this[int index]
+            public ref VkOffset3D this[int index]
             {
                 get
                 {
-                    if ((uint)(index) > 1) // (index < 0) || (index > 1)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
                     fixed (VkOffset3D* e = &e0)
                     {
-                        return e[index];
-                    }
-                }
-
-                set
-                {
-                    if ((uint)(index) > 1) // (index < 0) || (index > 1)
-                    {
-                        ThrowArgumentOutOfRangeException(nameof(index), index);
-                    }
-
-                    fixed (VkOffset3D* e = &e0)
-                    {
-                        e[index] = value;
+                        return ref AsRef<VkOffset3D>(e + index);
                     }
                 }
             }

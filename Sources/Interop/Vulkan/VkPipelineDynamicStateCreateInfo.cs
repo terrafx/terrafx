@@ -19,6 +19,7 @@ namespace TerraFX.Interop
 
         public uint dynamicStateCount;
 
+        [ComAliasName("VkDynamicState[]")]
         public VkDynamicState* pDynamicStates;
         #endregion
     }

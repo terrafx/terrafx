@@ -23,11 +23,11 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateSharedSwapchainsKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateSharedSwapchainsKHR(
-            [ComAliasName("VkDevice")] IntPtr device,
-            uint swapchainCount,
-            VkSwapchainCreateInfoKHR* pCreateInfos,
-            VkAllocationCallbacks* pAllocator,
-            [ComAliasName("VkSwapchainKHR")] IntPtr* pSwapchains
+            [In, ComAliasName("VkDevice")] IntPtr device,
+            [In] uint swapchainCount,
+            [In, ComAliasName("VkSwapchainCreateInfoKHR[]")] VkSwapchainCreateInfoKHR* pCreateInfos,
+            [In, Optional] VkAllocationCallbacks* pAllocator,
+            [Out, ComAliasName("VkSwapchainKHR[]")] IntPtr* pSwapchains
         );
         #endregion
     }

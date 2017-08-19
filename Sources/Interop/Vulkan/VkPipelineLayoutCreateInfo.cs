@@ -19,11 +19,12 @@ namespace TerraFX.Interop
 
         public uint setLayoutCount;
 
-        [ComAliasName("VkDescriptorSetLayout")]
+        [ComAliasName("VkDescriptorSetLayout[]")]
         public ulong* pSetLayouts;
 
         public uint pushConstantRangeCount;
 
+        [ComAliasName("VkPushConstantRange[]")]
         public VkPushConstantRange* pPushConstantRanges;
         #endregion
     }

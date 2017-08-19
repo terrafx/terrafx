@@ -21,10 +21,12 @@ namespace TerraFX.Interop
 
         public uint enabledLayerCount;
 
+        [ComAliasName("string[]")]
         public sbyte** ppEnabledLayerNames;
 
         public uint enabledExtensionCount;
 
+        [ComAliasName("string[]")]
         public sbyte** ppEnabledExtensionNames;
         #endregion
     }
