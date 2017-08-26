@@ -3,8 +3,8 @@
 // Ported from um\oaidl.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -44,7 +44,7 @@ namespace TerraFX.Interop
                 {
                     fixed (SAFEARRAYBOUND* e = &e0)
                     {
-                        return ref Unsafe.AsRef<SAFEARRAYBOUND>(e + index);
+                        return ref AsRef<SAFEARRAYBOUND>(e + index);
                     }
                 }
             }

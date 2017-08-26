@@ -3,8 +3,8 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -49,7 +49,7 @@ namespace TerraFX.Interop
                 {
                     fixed (D3D12_RENDER_TARGET_BLEND_DESC* e = &e0)
                     {
-                        return ref Unsafe.AsRef<D3D12_RENDER_TARGET_BLEND_DESC>(e + index);
+                        return ref AsRef<D3D12_RENDER_TARGET_BLEND_DESC>(e + index);
                     }
                 }
             }

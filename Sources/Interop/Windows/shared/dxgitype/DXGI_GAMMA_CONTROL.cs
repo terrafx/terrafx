@@ -3,8 +3,8 @@
 // Ported from shared\dxgitype.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -2081,7 +2081,7 @@ namespace TerraFX.Interop
                 {
                     fixed (DXGI_RGB* e = &e0)
                     {
-                        return ref Unsafe.AsRef<DXGI_RGB>(e + index);
+                        return ref AsRef<DXGI_RGB>(e + index);
                     }
                 }
             }

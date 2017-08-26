@@ -3,8 +3,8 @@
 // Ported from um\wincodec.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -32,7 +32,7 @@ namespace TerraFX.Interop
                 {
                     fixed (WICRawToneCurvePoint* e = &e0)
                     {
-                        return ref Unsafe.AsRef<WICRawToneCurvePoint>(e + index);
+                        return ref AsRef<WICRawToneCurvePoint>(e + index);
                     }
                 }
             }
