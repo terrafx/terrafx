@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct D3D12_RESOURCE_TRANSITION_BARRIER
+    public /* blittable */ unsafe struct D3D12_RESOURCE_TRANSITION_BARRIER
     {
         #region Fields
         public ID3D12Resource* pResource;

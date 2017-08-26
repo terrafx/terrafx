@@ -7,7 +7,7 @@ using System;
 
 namespace TerraFX.Interop
 {
-    unsafe public static class D3DCommon
+    public static unsafe class D3DCommon
     {
         #region D3D_FL9_* Constants
         public const int D3D_FL9_1_REQ_TEXTURE1D_U_DIMENSION = 2048;

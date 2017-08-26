@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Represents a set of run-time bindable and discoverable properties that allow a data-driven application to modify the state of a Direct2D effect.</summary>
     [Guid("483473D7-CD46-4F9D-9D3A-3112AA80159D")]
-    unsafe public /* blittable */ struct ID2D1Properties
+    public /* blittable */ unsafe struct ID2D1Properties
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Provides a brush that can take any effect, command list or bitmap and use it to fill a 2D shape.</summary>
     [Guid("FE9E984D-3F95-407C-B5DB-CB94D4E8F87C")]
-    unsafe public /* blittable */ struct ID2D1ImageBrush
+    public /* blittable */ unsafe struct ID2D1ImageBrush
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

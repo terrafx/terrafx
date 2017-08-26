@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Utilities
 {
     /// <summary>Provides a set of methods for simplifying interop code.</summary>
-    unsafe public static class InteropUtilities
+    public static unsafe class InteropUtilities
     {
         #region Static Methods
         /// <summary>Gets a reference of <typeparamref name="T" /> from a given <see cref="int" />.</summary>

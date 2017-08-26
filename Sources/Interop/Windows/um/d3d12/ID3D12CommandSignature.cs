@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     [Guid("C36A797C-EC80-4F0A-8985-A7B2475082D1")]
-    unsafe public /* blittable */ struct ID3D12CommandSignature
+    public /* blittable */ unsafe struct ID3D12CommandSignature
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

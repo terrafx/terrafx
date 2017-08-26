@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Represents a collection of style properties to be used by methods like ID2D1DeviceContext2::DrawInk when rendering ink. The ink style defines the nib (pen tip) shape and transform.</summary>
     [Guid("BAE8B344-23FC-4071-8CB5-D05D6F073848")]
-    unsafe public /* blittable */ struct ID2D1InkStyle
+    public /* blittable */ unsafe struct ID2D1InkStyle
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

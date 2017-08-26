@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The interface implemented by a transform author to provide a GPU-based effect.</summary>
     [Guid("36BFDCB6-9739-435D-A30D-A653BEFF6A6F")]
-    unsafe public /* blittable */ struct ID2D1DrawTransform
+    public /* blittable */ unsafe struct ID2D1DrawTransform
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

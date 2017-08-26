@@ -9,7 +9,7 @@ using System.Security;
 
 namespace TerraFX.Interop
 {
-    unsafe public static class DXGIDebug
+    public static unsafe class DXGIDebug
     {
         #region DXGI_DEBUG_* Constants
         public static readonly Guid ALL = new Guid(0xE48AE283, 0xDA80, 0x490B, 0x87, 0xE6, 0x43, 0xE9, 0xA9, 0xCF, 0xDA, 0x08);

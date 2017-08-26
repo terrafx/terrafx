@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>The DWRITE_GLYPH_RUN public structure contains the information needed by renderers to draw glyph runs. All coordinates are in device independent pixels (DIPs).</summary>
-    unsafe public /* blittable */ struct DWRITE_GLYPH_RUN
+    public /* blittable */ unsafe struct DWRITE_GLYPH_RUN
     {
         #region Fields
         /// <summary>The physical font face to draw with.</summary>

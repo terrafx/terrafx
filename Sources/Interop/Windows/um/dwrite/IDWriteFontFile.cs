@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The interface that represents a reference to a font file.</summary>
     [Guid("739D886A-CEF5-47DC-8769-1A8B41BEBBB0")]
-    unsafe public /* blittable */ struct IDWriteFontFile
+    public /* blittable */ unsafe struct IDWriteFontFile
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

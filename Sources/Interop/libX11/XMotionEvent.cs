@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct XMotionEvent
+    public /* blittable */ unsafe struct XMotionEvent
     {
         #region Fields
         public int type;

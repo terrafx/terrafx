@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The internal context handed to effect authors to create transforms from effects and any other operation tied to context which is not useful to the application facing API.</summary>
     [Guid("84AB595A-FC81-4546-BACD-E8EF4D8ABE7A")]
-    unsafe public /* blittable */ struct ID2D1EffectContext1
+    public /* blittable */ unsafe struct ID2D1EffectContext1
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

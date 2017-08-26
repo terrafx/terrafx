@@ -9,7 +9,7 @@ using System.Security;
 namespace TerraFX.Interop
 {
     /// <summary>Exposes methods exported by <c>libc</c>.</summary>
-    unsafe public static partial class libc
+    public static unsafe partial class libc
     {
         #region External Methods
         /// <summary>Gets the resolution of a clock.</summary>

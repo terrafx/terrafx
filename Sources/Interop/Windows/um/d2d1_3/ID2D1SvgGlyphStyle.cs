@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>This object supplies the values for context-fill, context-stroke, and context-value that are used when rendering SVG glyphs.</summary>
     [Guid("AF671749-D241-4DB8-8E41-DCC2E5C1A438")]
-    unsafe public /* blittable */ struct ID2D1SvgGlyphStyle
+    public /* blittable */ unsafe struct ID2D1SvgGlyphStyle
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

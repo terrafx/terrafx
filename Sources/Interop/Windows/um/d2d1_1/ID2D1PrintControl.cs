@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Converts Direct2D primitives stored in an ID2D1CommandList into a fixed page representation. The print sub-system then consumes the primitives.</summary>
     [Guid("2C1D867D-C290-41C8-AE7E-34A98702E9A5")]
-    unsafe public /* blittable */ struct ID2D1PrintControl
+    public /* blittable */ unsafe struct ID2D1PrintControl
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

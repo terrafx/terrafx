@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    unsafe public /* blittable */ struct DXGI_ADAPTER_DESC
+    public /* blittable */ unsafe struct DXGI_ADAPTER_DESC
     {
         #region Fields
         [ComAliasName("WCHAR[128]")]

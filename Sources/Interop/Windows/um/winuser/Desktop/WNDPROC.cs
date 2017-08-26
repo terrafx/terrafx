@@ -12,7 +12,7 @@ namespace TerraFX.Interop.Desktop
     [SuppressUnmanagedCodeSecurity]
     [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
     [return: ComAliasName("LRESULT")]
-    unsafe public /* static */ delegate nint WNDPROC(
+    public /* static */ unsafe delegate nint WNDPROC(
         [In, ComAliasName("HWND")] IntPtr hWnd,
         [In, ComAliasName("UINT")] uint Msg,
         [In, ComAliasName("WPARAM")] nuint wParam,

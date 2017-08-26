@@ -20,7 +20,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        unsafe public /* blittable */ struct _memoryTypes_e__FixedBuffer
+        public /* blittable */ unsafe struct _memoryTypes_e__FixedBuffer
         {
             #region Fields
             public VkMemoryType e0;
@@ -120,7 +120,7 @@ namespace TerraFX.Interop
             #endregion
         }
 
-        unsafe public /* blittable */ struct _memoryHeaps_e__FixedBuffer
+        public /* blittable */ unsafe struct _memoryHeaps_e__FixedBuffer
         {
             #region Fields
             public VkMemoryHeap e0;

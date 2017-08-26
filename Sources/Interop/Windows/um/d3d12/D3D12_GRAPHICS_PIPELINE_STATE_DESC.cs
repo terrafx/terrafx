@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct D3D12_GRAPHICS_PIPELINE_STATE_DESC
+    public /* blittable */ unsafe struct D3D12_GRAPHICS_PIPELINE_STATE_DESC
     {
         #region Fields
         public ID3D12RootSignature* pRootSignature;

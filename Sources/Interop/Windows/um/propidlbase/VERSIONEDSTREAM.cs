@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct VERSIONEDSTREAM
+    public /* blittable */ unsafe struct VERSIONEDSTREAM
     {
         #region Fields
         [ComAliasName("GUID")]

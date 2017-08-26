@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Renders drawing instructions to a window.</summary>
     [Guid("2CD90698-12E2-11DC-9FED-001143A055F9")]
-    unsafe public /* blittable */ struct ID2D1HwndRenderTarget
+    public /* blittable */ unsafe struct ID2D1HwndRenderTarget
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

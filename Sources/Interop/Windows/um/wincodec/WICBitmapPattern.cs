@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct WICBitmapPattern
+    public /* blittable */ unsafe struct WICBitmapPattern
     {
         #region Fields
         public ULARGE_INTEGER Position;

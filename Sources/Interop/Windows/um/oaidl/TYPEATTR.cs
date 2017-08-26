@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    unsafe public /* blittable */ struct TYPEATTR
+    public /* blittable */ unsafe struct TYPEATTR
     {
         #region Fields
         [ComAliasName("GUID")]

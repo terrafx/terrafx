@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The effect interface. Properties control how the effect is rendered. The effect is Drawn with the DrawImage call.</summary>
     [Guid("28211A43-7D89-476F-8181-2D6159B220AD")]
-    unsafe public /* blittable */ struct ID2D1Effect
+    public /* blittable */ unsafe struct ID2D1Effect
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

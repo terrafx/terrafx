@@ -10,7 +10,7 @@ namespace TerraFX.Interop
 {
     [SuppressUnmanagedCodeSecurity]
     [UnmanagedFunctionPointer(CallingConvention.Cdecl, BestFitMapping = false, CharSet = CharSet.Ansi, SetLastError = false, ThrowOnUnmappableChar = false)]
-    unsafe public /* static */ delegate int free_private(
+    public /* static */ unsafe delegate int free_private(
         [In] XExtData* extension
     );
 }

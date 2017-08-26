@@ -21,7 +21,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        unsafe public /* blittable */ struct _rgbounds_e__FixedBuffer
+        public /* blittable */ unsafe struct _rgbounds_e__FixedBuffer
         {
             #region Fields
             public SAFEARRAYBOUND e0;

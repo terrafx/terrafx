@@ -30,7 +30,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        unsafe public /* blittable */ struct _deviceName_e__FixedBuffer
+        public /* blittable */ unsafe struct _deviceName_e__FixedBuffer
         {
             #region Fields
             public sbyte e0;
@@ -578,7 +578,7 @@ namespace TerraFX.Interop
             #endregion
         }
 
-        unsafe public /* blittable */ struct _pipelineCacheUUID_e__FixedBuffer
+        public /* blittable */ unsafe struct _pipelineCacheUUID_e__FixedBuffer
         {
             #region Fields
             public byte e0;

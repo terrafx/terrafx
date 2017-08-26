@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Produces 2D pixel data that has been sourced from WIC.</summary>
     [Guid("77395441-1C8F-4555-8683-F50DAB0FE792")]
-    unsafe public /* blittable */ struct ID2D1ImageSourceFromWic
+    public /* blittable */ unsafe struct ID2D1ImageSourceFromWic
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

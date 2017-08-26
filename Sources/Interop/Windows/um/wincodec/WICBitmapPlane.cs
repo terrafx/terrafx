@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct WICBitmapPlane
+    public /* blittable */ unsafe struct WICBitmapPlane
     {
         #region Fields
         [ComAliasName("WICPixelFormatGUID")]

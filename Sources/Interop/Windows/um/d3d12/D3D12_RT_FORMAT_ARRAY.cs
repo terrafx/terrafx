@@ -18,7 +18,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        unsafe public /* blittable */ struct _RTFormats_e__FixedBuffer
+        public /* blittable */ unsafe struct _RTFormats_e__FixedBuffer
         {
             #region Fields
             public DXGI_FORMAT e0;

@@ -9,7 +9,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit)]
-    unsafe public /* blittable */ struct VkClearColorValue
+    public /* blittable */ unsafe struct VkClearColorValue
     {
         #region Fields
         [FieldOffset(0)]

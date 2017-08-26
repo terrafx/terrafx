@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>An effect uses this interface to configure border generation.</summary>
     [Guid("4998735C-3A19-473C-9781-656847E3A347")]
-    unsafe public /* blittable */ struct ID2D1BorderTransform
+    public /* blittable */ unsafe struct ID2D1BorderTransform
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

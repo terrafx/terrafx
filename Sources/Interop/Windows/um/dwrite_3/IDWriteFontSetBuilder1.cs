@@ -10,7 +10,7 @@ using System.Security;
 namespace TerraFX.Interop
 {
     [Guid("3FF7715F-3CDC-4DC6-9B72-EC5621DCCAFD")]
-    unsafe public /* blittable */ struct IDWriteFontSetBuilder1
+    public /* blittable */ unsafe struct IDWriteFontSetBuilder1
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

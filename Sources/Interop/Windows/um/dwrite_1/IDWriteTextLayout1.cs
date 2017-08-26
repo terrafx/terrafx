@@ -12,7 +12,7 @@ namespace TerraFX.Interop
     /// <summary>The IDWriteTextLayout1 interface represents a block of text after it has been fully analyzed and formatted.
     /// All coordinates are in device independent pixels (DIPs).</summary>
     [Guid("9064D822-80A7-465C-A986-DF65F78B8FEB")]
-    unsafe public /* blittable */ struct IDWriteTextLayout1
+    public /* blittable */ unsafe struct IDWriteTextLayout1
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

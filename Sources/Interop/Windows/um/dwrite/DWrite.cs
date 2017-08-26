@@ -9,7 +9,7 @@ using System.Security;
 
 namespace TerraFX.Interop
 {
-    unsafe public static partial class DWrite
+    public static unsafe partial class DWrite
     {
         #region Constants
         /// <summary>Maximum alpha value in a texture returned by IDWriteGlyphRunAnalysis::CreateAlphaTexture.</summary>

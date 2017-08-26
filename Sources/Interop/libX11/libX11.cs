@@ -9,7 +9,7 @@ using System.Security;
 
 namespace TerraFX.Interop
 {
-    unsafe public static partial class libX11
+    public static unsafe partial class libX11
     {
         #region XID Constants
         public const uint None = 0;

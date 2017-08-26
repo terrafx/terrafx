@@ -13,7 +13,7 @@ using static TerraFX.Interop.DWRITE_MEASURING_MODE;
 namespace TerraFX.Interop
 {
     [Guid("8C427831-3D90-4476-B647-C4FAE349E4DB")]
-    unsafe public /* blittable */ struct ID2D1DeviceContext4
+    public /* blittable */ unsafe struct ID2D1DeviceContext4
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

@@ -10,7 +10,8 @@ namespace TerraFX.Interop
 {
     [SuppressUnmanagedCodeSecurity]
     [UnmanagedFunctionPointer(CallingConvention.Cdecl, BestFitMapping = false, CharSet = CharSet.Ansi, SetLastError = false, ThrowOnUnmappableChar = false)]
-    unsafe public /* static */ delegate Bool predicate(
+    [return: ComAliasName("Bool")]
+    public /* static */ unsafe delegate int predicate(
         [In] Display* display,
         [In] XEvent* @event,
         [In] XPointer arg

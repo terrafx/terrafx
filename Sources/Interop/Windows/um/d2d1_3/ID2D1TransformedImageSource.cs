@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Represents an image source which shares resources with an original image source.</summary>
     [Guid("7F1F79E5-2796-416C-8F55-700F911445E5")]
-    unsafe public /* blittable */ struct ID2D1TransformedImageSource
+    public /* blittable */ unsafe struct ID2D1TransformedImageSource
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

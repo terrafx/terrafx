@@ -18,7 +18,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Provider.Win32.UI
 {
     /// <summary>Defines a window.</summary>
-    unsafe public sealed class Window : IDisposable, IWindow
+    public sealed unsafe class Window : IDisposable, IWindow
     {
         #region State Constants
         /// <summary>Indicates the window manager is not disposing or disposed..</summary>

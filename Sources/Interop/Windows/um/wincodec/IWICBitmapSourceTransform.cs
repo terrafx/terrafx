@@ -10,7 +10,7 @@ using System.Security;
 namespace TerraFX.Interop
 {
     [Guid("3B16811B-6A43-4EC9-B713-3D5A0C13B940")]
-    unsafe public /* blittable */ struct IWICBitmapSourceTransform
+    public /* blittable */ unsafe struct IWICBitmapSourceTransform
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

@@ -12,7 +12,7 @@ namespace TerraFX.Interop
     [SuppressUnmanagedCodeSecurity]
     [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
     [return: ComAliasName("HRESULT")]
-    unsafe public /* static */ delegate int PD2D1_EFFECT_FACTORY(
+    public /* static */ unsafe delegate int PD2D1_EFFECT_FACTORY(
         [Out] IUnknown** effectImpl
     );
 }

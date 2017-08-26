@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Represents a producer of pixels that can fill an arbitrary 2D plane.</summary>
     [Guid("C9B664E5-74A1-4378-9AC2-EEFC37A3F4D8")]
-    unsafe public /* blittable */ struct ID2D1ImageSource
+    public /* blittable */ unsafe struct ID2D1ImageSource
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

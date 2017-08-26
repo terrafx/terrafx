@@ -7,7 +7,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct XKeymapEvent
+    public /* blittable */ unsafe struct XKeymapEvent
     {
         #region Fields
         public int type;

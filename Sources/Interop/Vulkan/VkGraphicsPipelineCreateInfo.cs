@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct VkGraphicsPipelineCreateInfo
+    public /* blittable */ unsafe struct VkGraphicsPipelineCreateInfo
     {
         #region Fields
         public VkStructureType sType;

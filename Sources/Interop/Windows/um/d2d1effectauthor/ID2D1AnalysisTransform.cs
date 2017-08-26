@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The interface implemented by a transform author to indicate that it should receive an analysis result callback.</summary>
     [Guid("0359DC30-95E6-4568-9055-27720D130E93")]
-    unsafe public /* blittable */ struct ID2D1AnalysisTransform
+    public /* blittable */ unsafe struct ID2D1AnalysisTransform
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

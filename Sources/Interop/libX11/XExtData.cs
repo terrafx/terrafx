@@ -7,7 +7,7 @@ using System;
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct XExtData
+    public /* blittable */ unsafe struct XExtData
     {
         #region Fields
         public int number;

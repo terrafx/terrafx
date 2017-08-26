@@ -9,7 +9,7 @@ using System.Security;
 
 namespace TerraFX.Interop
 {
-    unsafe public static partial class DXGI
+    public static unsafe partial class DXGI
     {
         #region Constants
         public const uint DXGI_MAX_SWAP_CHAIN_BUFFERS = 16;

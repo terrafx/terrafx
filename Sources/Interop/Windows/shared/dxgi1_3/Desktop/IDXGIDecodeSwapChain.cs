@@ -10,7 +10,7 @@ using System.Security;
 namespace TerraFX.Interop.Desktop
 {
     [Guid("2633066B-4514-4C7A-8FD8-12EA98059D18")]
-    unsafe public /* blittable */ struct IDXGIDecodeSwapChain
+    public /* blittable */ unsafe struct IDXGIDecodeSwapChain
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

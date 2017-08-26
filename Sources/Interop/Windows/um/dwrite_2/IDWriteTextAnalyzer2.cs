@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The text analyzer interface represents a set of application-defined callbacks that perform rendering of text, inline objects, and decorations such as underlines.</summary>
     [Guid("553A9FF3-5693-4DF7-B52B-74806F7F2EB9")]
-    unsafe public /* blittable */ struct IDWriteTextAnalyzer2
+    public /* blittable */ unsafe struct IDWriteTextAnalyzer2
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

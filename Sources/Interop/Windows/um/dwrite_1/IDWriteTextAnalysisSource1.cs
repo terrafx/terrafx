@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The interface implemented by the client to provide needed information to the text analyzer, such as the text and associated text properties. If any of these callbacks returns an error, the analysis functions will stop prematurely and return a callback error.</summary>
     [Guid("639CFAD8-0FB4-4B21-A58A-067920120009")]
-    unsafe public /* blittable */ struct IDWriteTextAnalysisSource1
+    public /* blittable */ unsafe struct IDWriteTextAnalysisSource1
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

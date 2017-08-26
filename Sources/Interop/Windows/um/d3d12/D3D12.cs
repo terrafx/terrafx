@@ -9,7 +9,7 @@ using System.Security;
 
 namespace TerraFX.Interop
 {
-    unsafe public static partial class D3D12
+    public static unsafe partial class D3D12
     {
         #region Constants
         public const int D3D12_ANISOTROPIC_FILTERING_BIT = 0x40;

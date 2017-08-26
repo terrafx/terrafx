@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct D3D12_RESOURCE_ALIASING_BARRIER
+    public /* blittable */ unsafe struct D3D12_RESOURCE_ALIASING_BARRIER
     {
         #region Fields
         public ID3D12Resource* pResourceBefore;

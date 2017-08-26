@@ -9,7 +9,7 @@ using System.Security;
 
 namespace TerraFX.Interop
 {
-    unsafe public static partial class D2D1
+    public static unsafe partial class D2D1
     {
         #region Constants
         public const uint D2D1_INVALID_PROPERTY_INDEX = uint.MaxValue;

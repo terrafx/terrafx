@@ -9,7 +9,7 @@ using static TerraFX.Utilities.IntegerUtilities;
 namespace TerraFX.Utilities
 {
     /// <summary>Provides a set of methods related to computing hashcodes.</summary>
-    unsafe public static class HashUtilities
+    public static unsafe class HashUtilities
     {
         #region Static Methods
         /// <summary>Combines a value with a seed to produce an unfinalized hashcode.</summary>

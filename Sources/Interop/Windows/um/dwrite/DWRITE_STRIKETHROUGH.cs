@@ -9,7 +9,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The DWRITE_STRIKETHROUGH public structure contains information about the size and placement of strikethroughs. All coordinates are in device independent pixels (DIPs).</summary>
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    unsafe public /* blittable */ struct DWRITE_STRIKETHROUGH
+    public /* blittable */ unsafe struct DWRITE_STRIKETHROUGH
     {
         #region Fields
         /// <summary>Width of the strikethrough, measured parallel to the baseline.</summary>

@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Paints an area with a solid color.</summary>
     [Guid("2CD906A9-12E2-11DC-9FED-001143A055F9")]
-    unsafe public /* blittable */ struct ID2D1SolidColorBrush
+    public /* blittable */ unsafe struct ID2D1SolidColorBrush
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

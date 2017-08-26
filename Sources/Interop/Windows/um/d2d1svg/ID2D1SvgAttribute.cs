@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Interface describing an SVG attribute.</summary>
     [Guid("C9CDB0DD-F8C9-4E70-B7C2-301C80292C5E")]
-    unsafe public /* blittable */ struct ID2D1SvgAttribute
+    public /* blittable */ unsafe struct ID2D1SvgAttribute
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

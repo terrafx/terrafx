@@ -19,7 +19,7 @@ namespace TerraFX.Provider.libX11.Threading
     [Export(typeof(IDispatchManager))]
     [Export(typeof(DispatchManager))]
     [Shared]
-    unsafe public sealed class DispatchManager : IDisposable, IDispatchManager
+    public sealed unsafe class DispatchManager : IDisposable, IDispatchManager
     {
         #region Fields
         internal Display* _display;

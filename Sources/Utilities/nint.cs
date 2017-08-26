@@ -7,7 +7,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 #pragma warning disable IDE1006
 
 /// <summary>Defines a native-sized signed integer.</summary>
-unsafe public /* blittable */ struct nint : IComparable, IComparable<nint>, IEquatable<nint>, IFormattable
+public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEquatable<nint>, IFormattable
 {
     #region Fields
     internal readonly void* _value;

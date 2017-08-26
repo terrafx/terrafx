@@ -12,7 +12,7 @@ namespace TerraFX.Interop
     [SuppressUnmanagedCodeSecurity]
     [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
     [return: ComAliasName("HRESULT")]
-    unsafe public /* static */ delegate int PD2D1_PROPERTY_GET_FUNCTION(
+    public /* static */ unsafe delegate int PD2D1_PROPERTY_GET_FUNCTION(
         [In] /* readonly */ IUnknown* effect,
         [Out, Optional, ComAliasName("BYTE")] byte* data,
         [In, ComAliasName("UINT32")] uint dataSize,

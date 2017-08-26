@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    unsafe public /* blittable */ struct CABSTR
+    public /* blittable */ unsafe struct CABSTR
     {
         #region Fields
         [ComAliasName("ULONG")]

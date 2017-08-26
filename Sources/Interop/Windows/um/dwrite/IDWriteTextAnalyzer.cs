@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Analyzes various text properties for complex script processing.</summary>
     [Guid("B7E6163E-7F46-43B4-84B3-E4E6249C365D")]
-    unsafe public /* blittable */ struct IDWriteTextAnalyzer
+    public /* blittable */ unsafe struct IDWriteTextAnalyzer
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

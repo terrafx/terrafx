@@ -10,7 +10,7 @@ using static TerraFX.Interop.Windows;
 
 namespace TerraFX.Interop
 {
-    unsafe public static partial class WinCodec
+    public static unsafe partial class WinCodec
     {
         #region CLSID_* Constants
         public static readonly Guid CLSID_WICImagingFactory = CLSID_WICImagingFactory2; // Prior to Win8 = new Guid(0xCACAF262, 0x9370, 0x4615, 0xA1, 0x3B, 0x9F, 0x55, 0x39, 0xDA, 0x4C, 0x0A)

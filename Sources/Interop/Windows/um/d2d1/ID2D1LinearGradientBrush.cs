@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Paints an area with a linear gradient.</summary>
     [Guid("2CD906AB-12E2-11DC-9FED-001143A055F9")]
-    unsafe public /* blittable */ struct ID2D1LinearGradientBrush
+    public /* blittable */ unsafe struct ID2D1LinearGradientBrush
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

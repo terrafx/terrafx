@@ -10,7 +10,7 @@ namespace TerraFX.Interop
 {
     [SuppressUnmanagedCodeSecurity]
     [UnmanagedFunctionPointer(CallingConvention.Cdecl, BestFitMapping = false, CharSet = CharSet.Ansi, SetLastError = false, ThrowOnUnmappableChar = false)]
-    unsafe public /* static */ delegate void XConnectionWatchProc(
+    public /* static */ unsafe delegate void XConnectionWatchProc(
         [In] Display* display,
         [In] XPointer client_data,
         [In] int fx,

@@ -11,7 +11,7 @@ namespace TerraFX.Interop.Desktop
 {
     /// <summary>Provides access to an device context that can accept GDI drawing commands.</summary>
     [Guid("E0DB51C3-6F77-4BAE-B3D5-E47509B35838")]
-    unsafe public /* blittable */ struct ID2D1GdiInteropRenderTarget
+    public /* blittable */ unsafe struct ID2D1GdiInteropRenderTarget
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

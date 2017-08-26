@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Interface encapsulating a GDI/GDI+ metafile.</summary>
     [Guid("2F543DC3-CFC1-4211-864F-CFD91C6F3395")]
-    unsafe public /* blittable */ struct ID2D1GdiMetafile
+    public /* blittable */ unsafe struct ID2D1GdiMetafile
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

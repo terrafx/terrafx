@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>A base object which can be inserted into a transform graph.</summary>
     [Guid("B2EFE1E7-729F-4102-949F-505FA21BF666")]
-    unsafe public /* blittable */ struct ID2D1TransformNode
+    public /* blittable */ unsafe struct ID2D1TransformNode
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

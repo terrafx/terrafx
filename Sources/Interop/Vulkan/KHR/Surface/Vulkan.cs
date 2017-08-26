@@ -10,7 +10,7 @@ using static TerraFX.Interop.VkColorSpaceKHR;
 
 namespace TerraFX.Interop
 {
-    unsafe public static partial class Vulkan
+    public static unsafe partial class Vulkan
     {
         #region Constants
         public const uint VK_KHR_surface = 1;

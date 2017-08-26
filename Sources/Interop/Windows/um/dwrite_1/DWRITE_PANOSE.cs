@@ -10,7 +10,7 @@ namespace TerraFX.Interop
     /// <summary>Typeface classification values, used for font selection and matching.</summary>
     /// <remarks> Note the family type (index 0) is the only stable entry in the 10-byte array, as all the following entries can change dynamically depending on context of the first field.</remarks>
     [StructLayout(LayoutKind.Explicit)]
-    unsafe public /* blittable */ struct DWRITE_PANOSE
+    public /* blittable */ unsafe struct DWRITE_PANOSE
     {
         #region Fields
         [FieldOffset(0)]

@@ -11,7 +11,7 @@ using TerraFX.Interop.Desktop;
 namespace TerraFX.Interop
 {
     [Guid("00CDDEA8-939B-4B83-A340-A685226666CC")]
-    unsafe public /* blittable */ struct IDXGIOutput1
+    public /* blittable */ unsafe struct IDXGIOutput1
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

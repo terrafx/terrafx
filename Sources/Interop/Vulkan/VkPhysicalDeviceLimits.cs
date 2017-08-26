@@ -245,7 +245,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        unsafe public /* blittable */ struct _maxComputeWorkGroupCount_e__FixedBuffer
+        public /* blittable */ unsafe struct _maxComputeWorkGroupCount_e__FixedBuffer
         {
             #region Fields
             public uint e0;
@@ -287,7 +287,7 @@ namespace TerraFX.Interop
             #endregion
         }
 
-        unsafe public /* blittable */ struct _maxComputeWorkGroupSize_e__FixedBuffer
+        public /* blittable */ unsafe struct _maxComputeWorkGroupSize_e__FixedBuffer
         {
             #region Fields
             public uint e0;
@@ -329,7 +329,7 @@ namespace TerraFX.Interop
             #endregion
         }
 
-        unsafe public /* blittable */ struct _maxViewportDimensions_e__FixedBuffer
+        public /* blittable */ unsafe struct _maxViewportDimensions_e__FixedBuffer
         {
             #region Fields
             public uint e0;
@@ -369,7 +369,7 @@ namespace TerraFX.Interop
             #endregion
         }
 
-        unsafe public /* blittable */ struct _viewportBoundsRange_e__FixedBuffer
+        public /* blittable */ unsafe struct _viewportBoundsRange_e__FixedBuffer
         {
             #region Fields
             public float e0;
@@ -409,7 +409,7 @@ namespace TerraFX.Interop
             #endregion
         }
 
-        unsafe public /* blittable */ struct _pointSizeRange_e__FixedBuffer
+        public /* blittable */ unsafe struct _pointSizeRange_e__FixedBuffer
         {
             #region Fields
             public float e0;
@@ -449,7 +449,7 @@ namespace TerraFX.Interop
             #endregion
         }
 
-        unsafe public /* blittable */ struct _lineWidthRange_e__FixedBuffer
+        public /* blittable */ unsafe struct _lineWidthRange_e__FixedBuffer
         {
             #region Fields
             public float e0;

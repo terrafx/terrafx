@@ -10,7 +10,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Holds the appropriate digits and numeric punctuation for a given locale.</summary>
     [Guid("14885CC9-BAB0-4F90-B6ED-5C366A2CD03D")]
-    unsafe public /* blittable */ struct IDWriteNumberSubstitution
+    public /* blittable */ unsafe struct IDWriteNumberSubstitution
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

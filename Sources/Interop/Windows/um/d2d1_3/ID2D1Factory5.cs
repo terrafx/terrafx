@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Creates Direct2D resources. This interface also enables the creation of ID2D1Device4 objects.</summary>
     [Guid("C4349994-838E-4B0F-8CAB-44997D9EEACC")]
-    unsafe public /* blittable */ struct ID2D1Factory5
+    public /* blittable */ unsafe struct ID2D1Factory5
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct VkSparseImageMemoryBindInfo
+    public /* blittable */ unsafe struct VkSparseImageMemoryBindInfo
     {
         #region Fields
         [ComAliasName("VkImage")]

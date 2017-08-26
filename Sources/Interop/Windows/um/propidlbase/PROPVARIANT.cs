@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Unicode)]
-    unsafe public /* blittable */ struct PROPVARIANT
+    public /* blittable */ unsafe struct PROPVARIANT
     {
         #region Fields
         #region struct

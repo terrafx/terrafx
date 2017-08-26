@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     [Guid("63EE58FB-1268-4835-86DA-F008CE62F0D6")]
-    unsafe public /* blittable */ struct ID3D12Pageable
+    public /* blittable */ unsafe struct ID3D12Pageable
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

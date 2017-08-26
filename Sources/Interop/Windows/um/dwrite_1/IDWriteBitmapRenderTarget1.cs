@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Encapsulates a 32-bit device independent bitmap and device context, which can be used for rendering glyphs.</summary>
     [Guid("791E8298-3EF3-4230-9880-C9BDECC42064")]
-    unsafe public /* blittable */ struct IDWriteBitmapRenderTarget1
+    public /* blittable */ unsafe struct IDWriteBitmapRenderTarget1
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

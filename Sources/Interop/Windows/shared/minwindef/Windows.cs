@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace TerraFX.Interop
 {
-    unsafe public static partial class Windows
+    public static unsafe partial class Windows
     {
         #region Constants
         public const int FALSE = 0;

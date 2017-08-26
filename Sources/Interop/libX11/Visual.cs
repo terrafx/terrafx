@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct Visual
+    public /* blittable */ unsafe struct Visual
     {
         #region Fields
         public XExtData* ext_data;

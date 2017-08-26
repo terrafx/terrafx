@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct DXGI_SHARED_RESOURCE
+    public /* blittable */ unsafe struct DXGI_SHARED_RESOURCE
     {
         #region Fields
         [ComAliasName("HANDLE")]

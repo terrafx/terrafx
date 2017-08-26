@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     // <summary>Represents a collection of strings indexed by locale name.</summary>
     [Guid("08256209-099A-4B34-B86D-C22B110E7771")]
-    unsafe public /* blittable */ struct IDWriteLocalizedStrings
+    public /* blittable */ unsafe struct IDWriteLocalizedStrings
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    unsafe public /* blittable */ struct STATSTG
+    public /* blittable */ unsafe struct STATSTG
     {
         #region Fields
         [ComAliasName("LPOLESTR")]

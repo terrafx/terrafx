@@ -15,7 +15,7 @@ namespace TerraFX.Provider.libX11.UI
     [Export(typeof(IWindowManager))]
     [Export(typeof(WindowManager))]
     [Shared]
-    unsafe public sealed class WindowManager : IDisposable, IWindowManager
+    public sealed unsafe class WindowManager : IDisposable, IWindowManager
     {
         #region Static Fields
         internal static readonly ConcurrentDictionary<XWindow, Window> CreatedWindows = new ConcurrentDictionary<XWindow, Window>();

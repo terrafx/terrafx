@@ -9,7 +9,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The DWRITE_UNDERLINE public structure contains information about the size and placement of underlines. All coordinates are in device independent pixels (DIPs).</summary>
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    unsafe public /* blittable */ struct DWRITE_UNDERLINE
+    public /* blittable */ unsafe struct DWRITE_UNDERLINE
     {
         #region Fields
         /// <summary>Width of the underline, measured parallel to the baseline.</summary>

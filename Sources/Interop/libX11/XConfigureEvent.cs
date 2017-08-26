@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct XConfigureEvent
+    public /* blittable */ unsafe struct XConfigureEvent
     {
         #region Fields
         public int type;

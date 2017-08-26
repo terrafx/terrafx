@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Extends a stroke style to allow nominal width strokes.</summary>
     [Guid("10A72A66-E91C-43F4-993F-DDF4B82B0B4A")]
-    unsafe public /* blittable */ struct ID2D1StrokeStyle1
+    public /* blittable */ unsafe struct ID2D1StrokeStyle1
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

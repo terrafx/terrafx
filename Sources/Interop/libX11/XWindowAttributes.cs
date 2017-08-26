@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct XWindowAttributes
+    public /* blittable */ unsafe struct XWindowAttributes
     {
         #region Fields
         public int x, y;

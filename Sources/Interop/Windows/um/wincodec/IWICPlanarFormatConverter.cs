@@ -10,7 +10,7 @@ using System.Security;
 namespace TerraFX.Interop
 {
     [Guid("BEBEE9CB-83B0-4DCC-8132-B0AAA55EAC96")]
-    unsafe public /* blittable */ struct IWICPlanarFormatConverter
+    public /* blittable */ unsafe struct IWICPlanarFormatConverter
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

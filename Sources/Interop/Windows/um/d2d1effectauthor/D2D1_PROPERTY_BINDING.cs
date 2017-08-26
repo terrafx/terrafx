@@ -10,7 +10,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Defines a property binding to a function. The name must match the property defined in the registration schema.</summary>
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    unsafe public /* blittable */ struct D2D1_PROPERTY_BINDING
+    public /* blittable */ unsafe struct D2D1_PROPERTY_BINDING
     {
         #region Fields
         /// <summary>The name of the property.</summary>

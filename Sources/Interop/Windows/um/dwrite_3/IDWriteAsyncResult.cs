@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The IDWriteAsyncResult interface represents the result of an asynchronous operation. A client can use the interface to wait for the operation to complete and to get the result.</summary>
     [Guid("CE25F8FD-863B-4D13-9651-C1F88DC73FE2")]
-    unsafe public /* blittable */ struct IDWriteAsyncResult
+    public /* blittable */ unsafe struct IDWriteAsyncResult
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

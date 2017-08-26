@@ -10,7 +10,7 @@ using System.Security;
 namespace TerraFX.Interop
 {
     [Guid("09E0BF36-54AC-484F-8847-4BAEEAB6053A")]
-    unsafe public /* blittable */ struct ID3D12DebugCommandQueue
+    public /* blittable */ unsafe struct ID3D12DebugCommandQueue
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct D3D12_SUBRESOURCE_DATA
+    public /* blittable */ unsafe struct D3D12_SUBRESOURCE_DATA
     {
         #region Fields
         public /* readonly */ void* pData;

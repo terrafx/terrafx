@@ -11,7 +11,7 @@ namespace TerraFX.Interop
     [SuppressUnmanagedCodeSecurity]
     [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
     [return: ComAliasName("HRESULT")]
-    unsafe public /* static */ delegate int pfnDeferredFillIn(
+    public /* static */ unsafe delegate int pfnDeferredFillIn(
         [In] EXCEPINFO* pExcepInfo
     );
 }

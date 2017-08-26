@@ -10,7 +10,7 @@ namespace TerraFX.Interop
 {
     [SuppressUnmanagedCodeSecurity]
     [UnmanagedFunctionPointer(CallingConvention.Cdecl, BestFitMapping = false, CharSet = CharSet.Ansi, SetLastError = false, ThrowOnUnmappableChar = false)]
-    unsafe public /* static */ delegate void* PFN_vkInternalAllocationNotification(
+    public /* static */ unsafe delegate void* PFN_vkInternalAllocationNotification(
         [In] void* pUserData,
         [In] nuint size,
         [In] VkInternalAllocationType allocationType,

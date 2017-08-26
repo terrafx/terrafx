@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Font typography setting.</summary>
     [Guid("55F1112B-1DC2-4B3C-9541-F46894ED85B6")]
-    unsafe public /* blittable */ struct IDWriteTypography
+    public /* blittable */ unsafe struct IDWriteTypography
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

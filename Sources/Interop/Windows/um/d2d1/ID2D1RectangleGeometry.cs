@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Describes a two-dimensional rectangle.</summary>
     [Guid("2CD906A2-12E2-11DC-9FED-001143A055F9")]
-    unsafe public /* blittable */ struct ID2D1RectangleGeometry
+    public /* blittable */ unsafe struct ID2D1RectangleGeometry
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

@@ -9,7 +9,7 @@ using System.Security;
 
 namespace TerraFX.Interop
 {
-    unsafe public static partial class WinCodec
+    public static unsafe partial class WinCodec
     {
         #region Constants
         public static readonly Guid GUID_MetadataFormatUnknown = new Guid(0xA45E592F, 0x9078, 0x4A7C, 0xAD, 0xB5, 0x4E, 0xDC, 0x4F, 0xD6, 0x1B, 0x1F);

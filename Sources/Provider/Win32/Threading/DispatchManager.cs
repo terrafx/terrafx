@@ -17,7 +17,7 @@ namespace TerraFX.Provider.Win32.Threading
     [Export(typeof(IDispatchManager))]
     [Export(typeof(DispatchManager))]
     [Shared]
-    unsafe public sealed class DispatchManager : IDispatchManager
+    public sealed unsafe class DispatchManager : IDispatchManager
     {
         #region Fields
         /// <summary>The tick frequency for the system's monotonic timer.</summary>

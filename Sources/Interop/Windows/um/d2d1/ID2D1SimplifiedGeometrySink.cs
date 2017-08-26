@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Describes a geometric path that does not contain quadratic bezier curves or arcs.</summary>
     [Guid("2CD9069E-12E2-11DC-9FED-001143A055F9")]
-    unsafe public /* blittable */ struct ID2D1SimplifiedGeometrySink
+    public /* blittable */ unsafe struct ID2D1SimplifiedGeometrySink
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>A transform uses this interface to specify how to render a particular pass using pixel and vertex shaders.</summary>
     [Guid("693CE632-7F2F-45DE-93FE-18D88B37AA21")]
-    unsafe public /* blittable */ struct ID2D1DrawInfo
+    public /* blittable */ unsafe struct ID2D1DrawInfo
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

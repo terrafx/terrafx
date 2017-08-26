@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The interface that represents an absolute reference to a font face. It contains font face type, appropriate file references and face identification data. Various font data such as metrics, names and glyph outlines is obtained from IDWriteFontFace.</summary>
     [Guid("5F49804D-7024-4D43-BFA9-D25984F53849")]
-    unsafe public /* blittable */ struct IDWriteFontFace
+    public /* blittable */ unsafe struct IDWriteFontFace
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

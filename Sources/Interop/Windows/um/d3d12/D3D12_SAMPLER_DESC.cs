@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct D3D12_SAMPLER_DESC
+    public /* blittable */ unsafe struct D3D12_SAMPLER_DESC
     {
         #region Fields
         public D3D12_FILTER Filter;

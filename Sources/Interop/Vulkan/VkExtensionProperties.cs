@@ -16,7 +16,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        unsafe public /* blittable */ struct _extensionName_e__FixedBuffer
+        public /* blittable */ unsafe struct _extensionName_e__FixedBuffer
         {
             #region Fields
             public sbyte e0;

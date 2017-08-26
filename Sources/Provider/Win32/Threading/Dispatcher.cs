@@ -13,7 +13,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Provider.Win32.Threading
 {
     /// <summary>Provides a means of dispatching events for a thread.</summary>
-    unsafe public sealed class Dispatcher : IDispatcher
+    public sealed unsafe class Dispatcher : IDispatcher
     {
         #region Fields
         /// <summary>The <see cref="DispatchManager" /> for the instance.</summary>

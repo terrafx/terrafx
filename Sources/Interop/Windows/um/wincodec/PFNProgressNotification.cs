@@ -11,7 +11,7 @@ namespace TerraFX.Interop
     [SuppressUnmanagedCodeSecurity]
     [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
     [return: ComAliasName("HRESULT")]
-    unsafe public /* static */ delegate int PFNProgressNotification(
+    public /* static */ unsafe delegate int PFNProgressNotification(
         [In, ComAliasName("LPVOID")] void* pvData,
         [In, ComAliasName("ULONG")] uint uFrameNum,
         [In] WICProgressOperation operation,

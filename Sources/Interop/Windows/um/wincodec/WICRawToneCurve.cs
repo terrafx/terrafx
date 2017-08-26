@@ -19,7 +19,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        unsafe public /* blittable */ struct _aPoints_e__FixedBuffer
+        public /* blittable */ unsafe struct _aPoints_e__FixedBuffer
         {
             #region Fields
             public WICRawToneCurvePoint e0;

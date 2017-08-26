@@ -9,7 +9,7 @@ namespace TerraFX.Interop
 {
     /// <summary>A container for 3D lookup table data that can be passed to the LookupTable3D effect.</summary>
     [Guid("53DD9855-A3B0-4D5B-82E1-26E25C5E5797")]
-    unsafe public /* blittable */ struct ID2D1LookupTable3D
+    public /* blittable */ unsafe struct ID2D1LookupTable3D
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

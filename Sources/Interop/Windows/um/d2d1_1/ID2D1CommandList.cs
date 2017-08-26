@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The commandList interface.</summary>
     [Guid("B4F34A19-2383-4D76-94F6-EC343657C3DC")]
-    unsafe public /* blittable */ struct ID2D1CommandList
+    public /* blittable */ unsafe struct ID2D1CommandList
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Represents a color context that can be used with an ID2D1Bitmap1 object.</summary>
     [Guid("1C4820BB-5771-4518-A581-2FE4DD0EC657")]
-    unsafe public /* blittable */ struct ID2D1ColorContext
+    public /* blittable */ unsafe struct ID2D1ColorContext
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

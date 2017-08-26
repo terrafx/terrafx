@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct DXGI_HDR_METADATA_HDR10
+    public /* blittable */ unsafe struct DXGI_HDR_METADATA_HDR10
     {
         #region Fields
         [ComAliasName("UINT16[2]")]

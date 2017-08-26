@@ -9,7 +9,7 @@ using System.Security;
 
 namespace TerraFX.Interop.Desktop
 {
-    unsafe public static partial class User32
+    public static unsafe partial class User32
     {
         #region External Methods
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CloseWindow", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]

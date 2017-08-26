@@ -10,7 +10,7 @@ using System.Security;
 namespace TerraFX.Interop
 {
     [Guid("4B0B5BD3-0797-4549-8AC5-FE915CC53856")]
-    unsafe public /* blittable */ struct IDWriteFactory4
+    public /* blittable */ unsafe struct IDWriteFactory4
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

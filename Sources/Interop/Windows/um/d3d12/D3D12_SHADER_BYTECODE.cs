@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct D3D12_SHADER_BYTECODE
+    public /* blittable */ unsafe struct D3D12_SHADER_BYTECODE
     {
         #region Fields
         public /* readonly */ void* pShaderBytecode;

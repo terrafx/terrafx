@@ -119,7 +119,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        unsafe public /* blittable */ struct _pad_e__FixedBuffer
+        public /* blittable */ unsafe struct _pad_e__FixedBuffer
         {
             #region Fields
             public nint e0;

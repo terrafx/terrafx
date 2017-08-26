@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>This defines the input layout of vertices and the vertex shader which processes them.</summary>
-    unsafe public /* blittable */ struct D2D1_CUSTOM_VERTEX_BUFFER_PROPERTIES
+    public /* blittable */ unsafe struct D2D1_CUSTOM_VERTEX_BUFFER_PROPERTIES
     {
         #region Fields
         [ComAliasName("BYTE")]

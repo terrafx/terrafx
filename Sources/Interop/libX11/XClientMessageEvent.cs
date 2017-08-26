@@ -8,7 +8,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct XClientMessageEvent
+    public /* blittable */ unsafe struct XClientMessageEvent
     {
         #region Fields
         public int type;

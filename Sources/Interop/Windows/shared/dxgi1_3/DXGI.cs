@@ -9,7 +9,7 @@ using System.Security;
 
 namespace TerraFX.Interop
 {
-    unsafe public static partial class DXGI
+    public static unsafe partial class DXGI
     {
         #region DXGI_CREATE_FACTORY_* Constants
         public const uint DXGI_CREATE_FACTORY_DEBUG = 0x00000001;

@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The GDI interop interface provides interoperability with GDI.</summary>
     [Guid("4556BE70-3ABD-4F70-90BE-421780A6F515")]
-    unsafe public /* blittable */ struct IDWriteGdiInterop1
+    public /* blittable */ unsafe struct IDWriteGdiInterop1
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

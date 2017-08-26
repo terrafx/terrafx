@@ -12,7 +12,7 @@ using static TerraFX.Interop.D2D1_SPRITE_OPTIONS;
 namespace TerraFX.Interop
 {
     [Guid("235A7496-8351-414C-BCD4-6672AB2D8E00")]
-    unsafe public /* blittable */ struct ID2D1DeviceContext3
+    public /* blittable */ unsafe struct ID2D1DeviceContext3
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

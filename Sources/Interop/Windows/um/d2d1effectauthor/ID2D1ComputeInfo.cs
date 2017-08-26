@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>A transform uses this interface to specify how to render a particular pass using compute shader.</summary>
     [Guid("5598B14B-9FD7-48B7-9BDB-8F0964EB38BC")]
-    unsafe public /* blittable */ struct ID2D1ComputeInfo
+    public /* blittable */ unsafe struct ID2D1ComputeInfo
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

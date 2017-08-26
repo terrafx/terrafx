@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct D3D12_TEXTURE_COPY_LOCATION
+    public /* blittable */ unsafe struct D3D12_TEXTURE_COPY_LOCATION
     {
         #region Fields
         public ID3D12Resource* pResource;

@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Represents an ellipse.</summary>
     [Guid("2CD906A4-12E2-11DC-9FED-001143A055F9")]
-    unsafe public /* blittable */ struct ID2D1EllipseGeometry
+    public /* blittable */ unsafe struct ID2D1EllipseGeometry
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

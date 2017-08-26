@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct VkDescriptorSetLayoutBinding
+    public /* blittable */ unsafe struct VkDescriptorSetLayoutBinding
     {
         #region Fields
         public uint binding;

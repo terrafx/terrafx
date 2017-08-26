@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The root interface for all resources in D2D.</summary>
     [Guid("2CD90691-12E2-11DC-9FED-001143A055F9")]
-    unsafe public /* blittable */ struct ID2D1Resource
+    public /* blittable */ unsafe struct ID2D1Resource
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

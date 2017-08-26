@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Represents a single continuous stroke of variable-width ink, as defined by a series of Bezier segments and widths.</summary>
     [Guid("B499923B-7029-478F-A8B3-432C7C5F5312")]
-    unsafe public /* blittable */ struct ID2D1Ink
+    public /* blittable */ unsafe struct ID2D1Ink
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

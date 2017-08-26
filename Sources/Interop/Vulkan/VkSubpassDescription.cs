@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct VkSubpassDescription
+    public /* blittable */ unsafe struct VkSubpassDescription
     {
         #region Fields
         [ComAliasName("VkSubpassDescriptionFlags")]

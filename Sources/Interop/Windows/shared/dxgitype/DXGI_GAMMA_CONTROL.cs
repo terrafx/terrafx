@@ -20,7 +20,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        unsafe public /* blittable */ struct _GammaCurve_e__FixedBuffer
+        public /* blittable */ unsafe struct _GammaCurve_e__FixedBuffer
         {
             #region Fields
             public DXGI_RGB e0;

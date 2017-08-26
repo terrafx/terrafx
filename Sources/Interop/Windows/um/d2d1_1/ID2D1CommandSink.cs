@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Caller-supplied implementation of an interface to receive the recorded command list.</summary>
     [Guid("54D7898A-A061-40A7-BEC7-E465BCBA2C4F")]
-    unsafe public /* blittable */ struct ID2D1CommandSink
+    public /* blittable */ unsafe struct ID2D1CommandSink
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

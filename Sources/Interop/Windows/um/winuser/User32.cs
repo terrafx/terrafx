@@ -9,7 +9,7 @@ using System.Security;
 
 namespace TerraFX.Interop
 {
-    unsafe public static partial class User32
+    public static unsafe partial class User32
     {
         #region SW_* Constants
         public const int SW_HIDE = 0;

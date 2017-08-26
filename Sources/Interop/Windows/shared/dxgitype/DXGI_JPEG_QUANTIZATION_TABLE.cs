@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct DXGI_JPEG_QUANTIZATION_TABLE
+    public /* blittable */ unsafe struct DXGI_JPEG_QUANTIZATION_TABLE
     {
         #region Fields
         [ComAliasName("BYTE[64]")]

@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>A bitmap brush allows a bitmap to be used to fill a geometry.</summary>
     [Guid("2CD906AA-12E2-11DC-9FED-001143A055F9")]
-    unsafe public /* blittable */ struct ID2D1BitmapBrush
+    public /* blittable */ unsafe struct ID2D1BitmapBrush
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

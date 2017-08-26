@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Represents the backing store required to render a layer.</summary>
     [Guid("2CD9069B-12E2-11DC-9FED-001143A055F9")]
-    unsafe public /* blittable */ struct ID2D1Layer
+    public /* blittable */ unsafe struct ID2D1Layer
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

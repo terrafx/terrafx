@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct D3D12_PIPELINE_STATE_STREAM_DESC
+    public /* blittable */ unsafe struct D3D12_PIPELINE_STATE_STREAM_DESC
     {
         #region Fields
         [ComAliasName("SIZE_T")]

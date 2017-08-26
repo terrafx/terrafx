@@ -12,7 +12,7 @@ namespace TerraFX.Interop
     /// <summary>IDWriteRemoteFontFileStream represents a font file stream parts of which may be non-local. Non-local data must be downloaded before it can be accessed using ReadFragment. The interface exposes methods to download font data and query the locality of font data.</summary>
     /// <remarks> For more information, see the description of IDWriteRemoteFontFileLoader.</remarks>
     [Guid("4DB3757A-2C72-4ED9-B2B6-1ABABE1AFF9C")]
-    unsafe public /* blittable */ struct IDWriteRemoteFontFileStream
+    public /* blittable */ unsafe struct IDWriteRemoteFontFileStream
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

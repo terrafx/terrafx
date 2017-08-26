@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The device defines a resource domain whose objects and device contexts can be used together.</summary>
     [Guid("47DD575D-AC05-4CDD-8049-9B02CD16F44C")]
-    unsafe public /* blittable */ struct ID2D1Device
+    public /* blittable */ unsafe struct ID2D1Device
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

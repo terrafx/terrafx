@@ -8,7 +8,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct VkPipelineColorBlendStateCreateInfo
+    public /* blittable */ unsafe struct VkPipelineColorBlendStateCreateInfo
     {
         #region Fields
         public VkStructureType sType;

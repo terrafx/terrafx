@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit)]
-    unsafe public /* blittable */ struct BINDPTR
+    public /* blittable */ unsafe struct BINDPTR
     {
         #region Fields
         [FieldOffset(0)]

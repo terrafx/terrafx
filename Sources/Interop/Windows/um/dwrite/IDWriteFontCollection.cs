@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The IDWriteFontCollection encapsulates a collection of fonts.</summary>
     [Guid("A84CEE02-3EEA-4EEE-A827-87C1A02A0FCC")]
-    unsafe public /* blittable */ struct IDWriteFontCollection
+    public /* blittable */ unsafe struct IDWriteFontCollection
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

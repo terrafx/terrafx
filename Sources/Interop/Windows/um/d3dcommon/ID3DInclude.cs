@@ -9,7 +9,7 @@ using System.Security;
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct ID3DInclude
+    public /* blittable */ unsafe struct ID3DInclude
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

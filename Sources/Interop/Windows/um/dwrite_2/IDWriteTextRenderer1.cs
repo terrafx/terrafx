@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The text renderer interface represents a set of application-defined callbacks that perform rendering of text, inline objects, and decorations such as underlines.</summary>
     [Guid("D3E0E934-22A0-427E-AAE4-7D9574B59DB1")]
-    unsafe public /* blittable */ struct IDWriteTextRenderer1
+    public /* blittable */ unsafe struct IDWriteTextRenderer1
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

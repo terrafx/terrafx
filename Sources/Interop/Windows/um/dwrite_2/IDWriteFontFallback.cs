@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>A font fallback definition used for mapping characters to fonts capable of supporting them.</summary>
     [Guid("EFA008F9-F7A1-48BF-B05C-F224713CC0FF")]
-    unsafe public /* blittable */ struct IDWriteFontFallback
+    public /* blittable */ unsafe struct IDWriteFontFallback
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

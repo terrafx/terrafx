@@ -10,7 +10,7 @@ namespace TerraFX.Interop
 {
     [SuppressUnmanagedCodeSecurity]
     [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-    unsafe public /* static */ delegate void PFN_DESTRUCTION_CALLBACK(
+    public /* static */ unsafe delegate void PFN_DESTRUCTION_CALLBACK(
         [In] void* pData
     );
 }

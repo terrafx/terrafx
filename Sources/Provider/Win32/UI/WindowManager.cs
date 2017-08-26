@@ -23,7 +23,7 @@ namespace TerraFX.Provider.Win32.UI
     [Export(typeof(IWindowManager))]
     [Export(typeof(WindowManager))]
     [Shared]
-    unsafe public sealed class WindowManager : IDisposable, IWindowManager
+    public sealed unsafe class WindowManager : IDisposable, IWindowManager
     {
         #region State Constants
         /// <summary>Indicates the window manager is not disposing or disposed..</summary>

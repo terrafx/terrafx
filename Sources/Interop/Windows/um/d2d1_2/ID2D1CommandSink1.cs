@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>This interface performs all the same functions as the existing ID2D1CommandSink interface. It also enables access to the new primitive blend modes, MIN and ADD, through its SetPrimitiveBlend1 method.</summary>
     [Guid("9EB767FD-4269-4467-B8C2-EB30CB305743")]
-    unsafe public /* blittable */ struct ID2D1CommandSink1
+    public /* blittable */ unsafe struct ID2D1CommandSink1
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

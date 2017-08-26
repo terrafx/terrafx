@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Describes mapped memory from the ID2D1Bitmap1::Map API.</summary>
-    unsafe public /* blittable */ struct D2D1_MAPPED_RECT
+    public /* blittable */ unsafe struct D2D1_MAPPED_RECT
     {
         #region Fields
         [ComAliasName("UINT32")]

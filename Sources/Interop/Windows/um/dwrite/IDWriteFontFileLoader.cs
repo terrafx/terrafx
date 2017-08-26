@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Font file loader interface handles loading font file resources of a particular type from a key. The font file loader interface is recommended to be implemented by a singleton object. IMPORTANT: font file loader implementations must not register themselves with DirectWrite factory inside their conpublic /* blittable */ structors and must not unregister themselves in their depublic /* blittable */ structors, because registration and unregistration operations increment and decrement the object reference count respectively. Instead, registration and unregistration of font file loaders with DirectWrite factory should be performed outside of the font file loader implementation as a separate step.</summary>
     [Guid("727CAD4E-D6AF-4C9E-8A08-D695B11CAA49")]
-    unsafe public /* blittable */ struct IDWriteFontFileLoader
+    public /* blittable */ unsafe struct IDWriteFontFileLoader
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

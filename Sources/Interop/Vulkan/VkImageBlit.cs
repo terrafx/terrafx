@@ -20,7 +20,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        unsafe public /* blittable */ struct _srcOffsets_e__FixedBuffer
+        public /* blittable */ unsafe struct _srcOffsets_e__FixedBuffer
         {
             #region Fields
             public VkOffset3D e0;
@@ -60,7 +60,7 @@ namespace TerraFX.Interop
             #endregion
         }
 
-        unsafe public /* blittable */ struct _dstOffsets_e__FixedBuffer
+        public /* blittable */ unsafe struct _dstOffsets_e__FixedBuffer
         {
             #region Fields
             public VkOffset3D e0;

@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        unsafe public /* blittable */ struct _RenderTarget_e__FixedBuffer
+        public /* blittable */ unsafe struct _RenderTarget_e__FixedBuffer
         {
             #region Fields
             public D3D12_RENDER_TARGET_BLEND_DESC e0;

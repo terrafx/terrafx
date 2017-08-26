@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Represents drawing state.</summary>
     [Guid("689F1F85-C72E-4E33-8F19-85754EFD5ACE")]
-    unsafe public /* blittable */ struct ID2D1DrawingStateBlock1
+    public /* blittable */ unsafe struct ID2D1DrawingStateBlock1
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

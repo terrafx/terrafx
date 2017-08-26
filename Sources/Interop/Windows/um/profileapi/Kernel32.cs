@@ -8,7 +8,7 @@ using System.Security;
 
 namespace TerraFX.Interop
 {
-    unsafe public static partial class Kernel32
+    public static unsafe partial class Kernel32
     {
         #region External Methods
         [DllImport("Kernel32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "QueryPerformanceCounter", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]

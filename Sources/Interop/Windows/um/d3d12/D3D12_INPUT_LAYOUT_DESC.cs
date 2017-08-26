@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct D3D12_INPUT_LAYOUT_DESC
+    public /* blittable */ unsafe struct D3D12_INPUT_LAYOUT_DESC
     {
         #region Fields
         public /* readonly */ D3D12_INPUT_ELEMENT_DESC* pInputElementDescs;

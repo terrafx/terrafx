@@ -10,7 +10,7 @@ using System.Security;
 namespace TerraFX.Interop
 {
     [Guid("C4FEC28F-7966-4E95-9F94-F431CB56C3B8")]
-    unsafe public /* blittable */ struct ID3D12Object
+    public /* blittable */ unsafe struct ID3D12Object
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

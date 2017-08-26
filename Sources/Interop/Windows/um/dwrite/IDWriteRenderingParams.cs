@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The interface that represents text rendering settings for glyph rasterization and filtering.</summary>
     [Guid("2F0DA53A-2ADD-47CD-82EE-D9EC34688E75")]
-    unsafe public /* blittable */ struct IDWriteRenderingParams
+    public /* blittable */ unsafe struct IDWriteRenderingParams
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

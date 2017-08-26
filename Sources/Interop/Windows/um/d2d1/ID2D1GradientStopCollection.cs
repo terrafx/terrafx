@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Represents an collection of gradient stops that can then be the source resource for either a linear or radial gradient brush.</summary>
     [Guid("2CD906A7-12E2-11DC-9FED-001143A055F9")]
-    unsafe public /* blittable */ struct ID2D1GradientStopCollection
+    public /* blittable */ unsafe struct ID2D1GradientStopCollection
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

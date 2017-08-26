@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The root factory interface for all DWrite objects.</summary>
     [Guid("958DB99A-BE2A-4F09-AF7D-65189803D1D3")]
-    unsafe public /* blittable */ struct IDWriteFactory5
+    public /* blittable */ unsafe struct IDWriteFactory5
     {
         #region Fields
         public readonly Vtbl* lpVtbl;

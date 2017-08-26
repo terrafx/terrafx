@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct VkSpecializationMapEntry
+    public /* blittable */ unsafe struct VkSpecializationMapEntry
     {
         #region Fields
         public uint constantID;

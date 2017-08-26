@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    unsafe public /* blittable */ struct VkAttachmentReference
+    public /* blittable */ unsafe struct VkAttachmentReference
     {
         #region Fields
         public uint attachment;

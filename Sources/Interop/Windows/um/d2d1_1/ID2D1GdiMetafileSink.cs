@@ -11,7 +11,7 @@ namespace TerraFX.Interop
 {
     /// <summary>User-implementable interface for introspecting on a metafile.</summary>
     [Guid("82237326-8111-4F7C-BCF4-B5C1175564FE")]
-    unsafe public /* blittable */ struct ID2D1GdiMetafileSink
+    public /* blittable */ unsafe struct ID2D1GdiMetafileSink
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
