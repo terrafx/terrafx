@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Composition" Version="1.1.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Interop\Vulkan\TerraFX.Interop.Vulkan.csproj" />
     <ProjectReference Include="..\..\Graphics\TerraFX.Graphics.csproj" />
   </ItemGroup>
