@@ -4,7 +4,6 @@
 // Original source is Copyright © Microsoft. All rights reserved. Licensed under the MIT License (MIT).
 
 using System;
-using System.Runtime.InteropServices;
 using TerraFX.Interop;
 using static TerraFX.Interop.D3D_FEATURE_LEVEL;
 using static TerraFX.Interop.D3D12;
@@ -22,6 +21,8 @@ using static TerraFX.Interop.DXGI_SWAP_EFFECT;
 using static TerraFX.Interop.Kernel32;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Samples.DirectX.D3D12.DXSampleHelper;
+using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Samples.DirectX.D3D12
 {
@@ -82,12 +83,12 @@ namespace TerraFX.Samples.DirectX.D3D12
             var ppCommandLists = stackalloc ID3D12CommandList*[1];
             ppCommandLists[0] = (ID3D12CommandList*)(_commandList);
 
-            var ExecuteCommandList = Marshal.GetDelegateForFunctionPointer<ID3D12CommandQueue.ExecuteCommandLists>(_commandQueue->lpVtbl->ExecuteCommandLists);
+            var ExecuteCommandList = MarshalFunction<ID3D12CommandQueue.ExecuteCommandLists>(_commandQueue->lpVtbl->ExecuteCommandLists);
             ExecuteCommandList(_commandQueue, 1, ppCommandLists);
 
             // Present the frame.
-            var Present = Marshal.GetDelegateForFunctionPointer<IDXGISwapChain.Present>(_swapChain->lpVtbl->BaseVtbl.BaseVtbl.BaseVtbl.Present);
-            ThrowIfFailed(Present((IDXGISwapChain*)(_swapChain), 1, 0));
+            var Present = MarshalFunction<IDXGISwapChain.Present>(_swapChain->lpVtbl->BaseVtbl.BaseVtbl.BaseVtbl.Present);
+            ThrowIfFailed(nameof(IDXGISwapChain.Present), Present((IDXGISwapChain*)(_swapChain), 1, 0));
 
             WaitForPreviousFrame();
         }
@@ -121,7 +122,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                 iid = IID_ID3D12Debug;
                 if (SUCCEEDED(D3D12GetDebugInterface(&iid, (void**)(&debugController))))
                 {
-                    var EnableDebugLayer = Marshal.GetDelegateForFunctionPointer<ID3D12Debug.EnableDebugLayer>(debugController->lpVtbl->EnableDebugLayer);
+                    var EnableDebugLayer = MarshalFunction<ID3D12Debug.EnableDebugLayer>(debugController->lpVtbl->EnableDebugLayer);
                     EnableDebugLayer(debugController);
 
                     // Enable additional debug layers.
@@ -130,14 +131,14 @@ namespace TerraFX.Samples.DirectX.D3D12
 #endif
 
                 iid = IID_IDXGIFactory4;
-                ThrowIfFailed(CreateDXGIFactory2(dxgiFactoryFlags, &iid, (void**)(&factory)));
+                ThrowIfFailed(nameof(CreateDXGIFactory2), CreateDXGIFactory2(dxgiFactoryFlags, &iid, (void**)(&factory)));
 
                 if (_useWarpDevice)
                 {
-                    var EnumWarpAdapter = Marshal.GetDelegateForFunctionPointer<IDXGIFactory4.EnumWarpAdapter>(factory->lpVtbl->EnumWarpAdapter);
+                    var EnumWarpAdapter = MarshalFunction<IDXGIFactory4.EnumWarpAdapter>(factory->lpVtbl->EnumWarpAdapter);
 
                     iid = IID_IDXGIAdapter;
-                    ThrowIfFailed(EnumWarpAdapter(factory, &iid, (void**)(&adapter)));
+                    ThrowIfFailed(nameof(IDXGIFactory4.EnumWarpAdapter), EnumWarpAdapter(factory, &iid, (void**)(&adapter)));
                 }
                 else
                 {
@@ -145,7 +146,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                 }
 
                 iid = IID_ID3D12Device;
-                ThrowIfFailed(D3D12CreateDevice((IUnknown*)(adapter), D3D_FEATURE_LEVEL_11_0, &iid, (void**)(&device)));
+                ThrowIfFailed(nameof(D3D12CreateDevice), D3D12CreateDevice((IUnknown*)(adapter), D3D_FEATURE_LEVEL_11_0, &iid, (void**)(&device)));
                 _device = device;
 
                 // Describe and create the command queue.
@@ -154,12 +155,12 @@ namespace TerraFX.Samples.DirectX.D3D12
                     Type = D3D12_COMMAND_LIST_TYPE_DIRECT
                 };
 
-                var CreateCommandQueue = Marshal.GetDelegateForFunctionPointer<ID3D12Device.CreateCommandQueue>(_device->lpVtbl->CreateCommandQueue);
+                var CreateCommandQueue = MarshalFunction<ID3D12Device.CreateCommandQueue>(_device->lpVtbl->CreateCommandQueue);
 
                 iid = IID_ID3D12CommandQueue;
                 ID3D12CommandQueue* commandQueue;
 
-                ThrowIfFailed(CreateCommandQueue(_device, &queueDesc, &iid, (void**)(&commandQueue)));
+                ThrowIfFailed(nameof(ID3D12Device.CreateCommandQueue), CreateCommandQueue(_device, &queueDesc, &iid, (void**)(&commandQueue)));
                 _commandQueue = commandQueue;
 
                 // Describe and create the swap chain.
@@ -173,8 +174,8 @@ namespace TerraFX.Samples.DirectX.D3D12
                 };
                 swapChainDesc.SampleDesc.Count = 1;
 
-                var CreateSwapChainForHwnd = Marshal.GetDelegateForFunctionPointer<IDXGIFactory2.CreateSwapChainForHwnd>(factory->lpVtbl->BaseVtbl.BaseVtbl.CreateSwapChainForHwnd);
-                ThrowIfFailed(CreateSwapChainForHwnd(
+                var CreateSwapChainForHwnd = MarshalFunction<IDXGIFactory2.CreateSwapChainForHwnd>(factory->lpVtbl->BaseVtbl.BaseVtbl.CreateSwapChainForHwnd);
+                ThrowIfFailed(nameof(IDXGIFactory2.CreateSwapChainForHwnd), CreateSwapChainForHwnd(
                     (IDXGIFactory2*)(factory),
                     (IUnknown*)(_commandQueue),         // Swap chain needs the queue so that it can force a flush on it.
                     Win32Application.Hwnd,
@@ -185,18 +186,18 @@ namespace TerraFX.Samples.DirectX.D3D12
                 ));
 
                 // This sample does not support fullscreen transitions.
-                var MakeWindowAssociation = Marshal.GetDelegateForFunctionPointer<IDXGIFactory.MakeWindowAssociation>(factory->lpVtbl->BaseVtbl.BaseVtbl.BaseVtbl.BaseVtbl.MakeWindowAssociation);
-                ThrowIfFailed(MakeWindowAssociation((IDXGIFactory*)(factory), Win32Application.Hwnd, DXGI_MWA_NO_ALT_ENTER));
+                var MakeWindowAssociation = MarshalFunction<IDXGIFactory.MakeWindowAssociation>(factory->lpVtbl->BaseVtbl.BaseVtbl.BaseVtbl.BaseVtbl.MakeWindowAssociation);
+                ThrowIfFailed(nameof(IDXGIFactory.MakeWindowAssociation), MakeWindowAssociation((IDXGIFactory*)(factory), Win32Application.Hwnd, DXGI_MWA_NO_ALT_ENTER));
 
-                var QueryInterface = Marshal.GetDelegateForFunctionPointer<IUnknown.QueryInterface>(swapChain->lpVtbl->BaseVtbl.BaseVtbl.BaseVtbl.BaseVtbl.QueryInterface);
+                var QueryInterface = MarshalFunction<IUnknown.QueryInterface>(swapChain->lpVtbl->BaseVtbl.BaseVtbl.BaseVtbl.BaseVtbl.QueryInterface);
 
                 iid = IID_IDXGISwapChain3;
                 IDXGISwapChain3* pvObject;
 
-                ThrowIfFailed(QueryInterface((IUnknown*)(swapChain), &iid, (void**)(&pvObject)));
+                ThrowIfFailed(nameof(IUnknown.QueryInterface), QueryInterface((IUnknown*)(swapChain), &iid, (void**)(&pvObject)));
                 _swapChain = pvObject;
 
-                var GetCurrentBackBufferIndex = Marshal.GetDelegateForFunctionPointer<IDXGISwapChain3.GetCurrentBackBufferIndex>(_swapChain->lpVtbl->GetCurrentBackBufferIndex);
+                var GetCurrentBackBufferIndex = MarshalFunction<IDXGISwapChain3.GetCurrentBackBufferIndex>(_swapChain->lpVtbl->GetCurrentBackBufferIndex);
                 _frameIndex = GetCurrentBackBufferIndex(_swapChain);
 
                 // Create descriptor heaps.
@@ -208,27 +209,27 @@ namespace TerraFX.Samples.DirectX.D3D12
                         Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE
                     };
 
-                    var CreateDescriptorHeap = Marshal.GetDelegateForFunctionPointer<ID3D12Device.CreateDescriptorHeap>(_device->lpVtbl->CreateDescriptorHeap);
+                    var CreateDescriptorHeap = MarshalFunction<ID3D12Device.CreateDescriptorHeap>(_device->lpVtbl->CreateDescriptorHeap);
 
                     iid = IID_ID3D12DescriptorHeap;
                     ID3D12DescriptorHeap* pvHeap;
 
-                    ThrowIfFailed(CreateDescriptorHeap(_device, &rtvHeapDesc, &iid, (void**)(&pvHeap)));
+                    ThrowIfFailed(nameof(ID3D12Device.CreateDescriptorHeap), CreateDescriptorHeap(_device, &rtvHeapDesc, &iid, (void**)(&pvHeap)));
                     _rtvHeap = pvHeap;
 
-                    var GetDescriptorHandleIncrementSize = Marshal.GetDelegateForFunctionPointer<ID3D12Device.GetDescriptorHandleIncrementSize>(_device->lpVtbl->GetDescriptorHandleIncrementSize);
+                    var GetDescriptorHandleIncrementSize = MarshalFunction<ID3D12Device.GetDescriptorHandleIncrementSize>(_device->lpVtbl->GetDescriptorHandleIncrementSize);
                     _rtvDescriptorSize = GetDescriptorHandleIncrementSize(_device, D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
                 }
 
                 // Create frame resources.
                 {
-                    var GetCPUDescriptorHandleForHeapStart = Marshal.GetDelegateForFunctionPointer<ID3D12DescriptorHeap.GetCPUDescriptorHandleForHeapStart>(_rtvHeap->lpVtbl->GetCPUDescriptorHandleForHeapStart);
+                    var GetCPUDescriptorHandleForHeapStart = MarshalFunction<ID3D12DescriptorHeap.GetCPUDescriptorHandleForHeapStart>(_rtvHeap->lpVtbl->GetCPUDescriptorHandleForHeapStart);
 
                     D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
                     GetCPUDescriptorHandleForHeapStart(_rtvHeap, &rtvHandle);
 
-                    var GetBuffer = Marshal.GetDelegateForFunctionPointer<IDXGISwapChain.GetBuffer>(_swapChain->lpVtbl->BaseVtbl.BaseVtbl.BaseVtbl.GetBuffer);
-                    var CreateRenderTargetView = Marshal.GetDelegateForFunctionPointer<ID3D12Device.CreateRenderTargetView>(_device->lpVtbl->CreateRenderTargetView);
+                    var GetBuffer = MarshalFunction<IDXGISwapChain.GetBuffer>(_swapChain->lpVtbl->BaseVtbl.BaseVtbl.BaseVtbl.GetBuffer);
+                    var CreateRenderTargetView = MarshalFunction<ID3D12Device.CreateRenderTargetView>(_device->lpVtbl->CreateRenderTargetView);
 
                     iid = IID_ID3D12Resource;
 
@@ -236,7 +237,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                     for (var n = 0u; n < FrameCount; n++)
                     {
                         ID3D12Resource* pSurface;
-                        ThrowIfFailed(GetBuffer((IDXGISwapChain*)(_swapChain), n, &iid, (void**)(&pSurface)));
+                        ThrowIfFailed(nameof(IDXGISwapChain.GetBuffer), GetBuffer((IDXGISwapChain*)(_swapChain), n, &iid, (void**)(&pSurface)));
                         _renderTargets[unchecked((int)(n))] = pSurface;
 
                         CreateRenderTargetView(_device, _renderTargets[unchecked((int)(n))], null, rtvHandle);
@@ -244,12 +245,12 @@ namespace TerraFX.Samples.DirectX.D3D12
                     }
                 }
 
-                var CreateCommandAllocator = Marshal.GetDelegateForFunctionPointer<ID3D12Device.CreateCommandAllocator>(_device->lpVtbl->CreateCommandAllocator);
+                var CreateCommandAllocator = MarshalFunction<ID3D12Device.CreateCommandAllocator>(_device->lpVtbl->CreateCommandAllocator);
 
                 iid = IID_ID3D12CommandAllocator;
                 ID3D12CommandAllocator* pCommandAllocator;
 
-                ThrowIfFailed(CreateCommandAllocator(_device, D3D12_COMMAND_LIST_TYPE_DIRECT, &iid, (void**)(&pCommandAllocator)));
+                ThrowIfFailed(nameof(ID3D12Device.CreateRenderTargetView), CreateCommandAllocator(_device, D3D12_COMMAND_LIST_TYPE_DIRECT, &iid, (void**)(&pCommandAllocator)));
                 _commandAllocator = pCommandAllocator;
             }
             finally
@@ -262,27 +263,27 @@ namespace TerraFX.Samples.DirectX.D3D12
         private void LoadAssets()
         {
             // Create the command list.
-            var CreateCommandList = Marshal.GetDelegateForFunctionPointer<ID3D12Device.CreateCommandList>(_device->lpVtbl->CreateCommandList);
+            var CreateCommandList = MarshalFunction<ID3D12Device.CreateCommandList>(_device->lpVtbl->CreateCommandList);
 
             var iid = IID_ID3D12GraphicsCommandList;
             ID3D12GraphicsCommandList* pCommandList;
 
-            ThrowIfFailed(CreateCommandList(_device, 0, D3D12_COMMAND_LIST_TYPE_DIRECT, _commandAllocator, null, &iid, (void**)(&pCommandList)));
+            ThrowIfFailed(nameof(ID3D12Device.CreateCommandList), CreateCommandList(_device, 0, D3D12_COMMAND_LIST_TYPE_DIRECT, _commandAllocator, null, &iid, (void**)(&pCommandList)));
             _commandList = pCommandList;
 
             // Command lists are created in the recording state, but there is nothing
             // to record yet. The main loop expects it to be closed, so close it now.
-            var Close = Marshal.GetDelegateForFunctionPointer<ID3D12GraphicsCommandList.Close>(_commandList->lpVtbl->Close);
-            ThrowIfFailed(Close(_commandList));
+            var Close = MarshalFunction<ID3D12GraphicsCommandList.Close>(_commandList->lpVtbl->Close);
+            ThrowIfFailed(nameof(ID3D12GraphicsCommandList.Close), Close(_commandList));
 
             // Create synchronization objects.
             {
-                var CreateFence = Marshal.GetDelegateForFunctionPointer<ID3D12Device.CreateFence>(_device->lpVtbl->CreateFence);
+                var CreateFence = MarshalFunction<ID3D12Device.CreateFence>(_device->lpVtbl->CreateFence);
 
                 iid = IID_ID3D12Fence;
                 ID3D12Fence* pFence;
 
-                ThrowIfFailed(CreateFence(_device, 0, D3D12_FENCE_FLAG_NONE, &iid, (void**)(&pFence)));
+                ThrowIfFailed(nameof(ID3D12Device.CreateFence), CreateFence(_device, 0, D3D12_FENCE_FLAG_NONE, &iid, (void**)(&pFence)));
                 _fence = pFence;
 
                 _fenceValue = 1;
@@ -291,7 +292,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                 _fenceEvent = CreateEvent(null, FALSE, FALSE, null);
                 if (_fenceEvent == IntPtr.Zero)
                 {
-                    ThrowIfFailed(Marshal.GetHRForLastWin32Error());
+                    ThrowExternalExceptionForLastHRESULT(nameof(CreateEvent));
                 }
             }
         }
@@ -301,17 +302,17 @@ namespace TerraFX.Samples.DirectX.D3D12
             // Command list allocators can only be reset when the associated 
             // command lists have finished execution on the GPU; apps should use 
             // fences to determine GPU execution progress.
-            var CommandAllocatorReset = Marshal.GetDelegateForFunctionPointer<ID3D12CommandAllocator.Reset>(_commandAllocator->lpVtbl->Reset);
-            ThrowIfFailed(CommandAllocatorReset(_commandAllocator));
+            var CommandAllocatorReset = MarshalFunction<ID3D12CommandAllocator.Reset>(_commandAllocator->lpVtbl->Reset);
+            ThrowIfFailed(nameof(ID3D12CommandAllocator.Reset), CommandAllocatorReset(_commandAllocator));
 
             // However, when ExecuteCommandList() is called on a particular command 
             // list, that command list can then be reset at any time and must be before 
             // re-recording.
-            var CommandListReset = Marshal.GetDelegateForFunctionPointer<ID3D12GraphicsCommandList.Reset>(_commandList->lpVtbl->Reset);
-            ThrowIfFailed(CommandListReset(_commandList, _commandAllocator, _pipelineState));
+            var CommandListReset = MarshalFunction<ID3D12GraphicsCommandList.Reset>(_commandList->lpVtbl->Reset);
+            ThrowIfFailed(nameof(ID3D12GraphicsCommandList.Reset), CommandListReset(_commandList, _commandAllocator, _pipelineState));
 
             // Indicate that the back buffer will be used as a render target.
-            var ResourceBarrier = Marshal.GetDelegateForFunctionPointer<ID3D12GraphicsCommandList.ResourceBarrier>(_commandList->lpVtbl->ResourceBarrier);
+            var ResourceBarrier = MarshalFunction<ID3D12GraphicsCommandList.ResourceBarrier>(_commandList->lpVtbl->ResourceBarrier);
 
             var barrier = new D3D12_RESOURCE_BARRIER {
                 Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION,
@@ -325,7 +326,7 @@ namespace TerraFX.Samples.DirectX.D3D12
 
             ResourceBarrier(_commandList, 1, &barrier);
 
-            var GetCPUDescriptorHandleForHeapStart = Marshal.GetDelegateForFunctionPointer<ID3D12DescriptorHeap.GetCPUDescriptorHandleForHeapStart>(_rtvHeap->lpVtbl->GetCPUDescriptorHandleForHeapStart);
+            var GetCPUDescriptorHandleForHeapStart = MarshalFunction<ID3D12DescriptorHeap.GetCPUDescriptorHandleForHeapStart>(_rtvHeap->lpVtbl->GetCPUDescriptorHandleForHeapStart);
 
             D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
             GetCPUDescriptorHandleForHeapStart(_rtvHeap, &rtvHandle);
@@ -339,7 +340,7 @@ namespace TerraFX.Samples.DirectX.D3D12
             clearColor[2] = 0.4f;
             clearColor[3] = 1.0f;
 
-            var ClearRenderTargetView = Marshal.GetDelegateForFunctionPointer<ID3D12GraphicsCommandList.ClearRenderTargetView>(_commandList->lpVtbl->ClearRenderTargetView);
+            var ClearRenderTargetView = MarshalFunction<ID3D12GraphicsCommandList.ClearRenderTargetView>(_commandList->lpVtbl->ClearRenderTargetView);
             ClearRenderTargetView(_commandList, rtvHandle, clearColor, 0, null);
 
             // Indicate that the back buffer will now be used to present.
@@ -350,8 +351,8 @@ namespace TerraFX.Samples.DirectX.D3D12
 
             ResourceBarrier(_commandList, 1, &barrier);
 
-            var Close = Marshal.GetDelegateForFunctionPointer<ID3D12GraphicsCommandList.Close>(_commandList->lpVtbl->Close);
-            ThrowIfFailed(Close(_commandList));
+            var Close = MarshalFunction<ID3D12GraphicsCommandList.Close>(_commandList->lpVtbl->Close);
+            ThrowIfFailed(nameof(ID3D12GraphicsCommandList.Close), Close(_commandList));
         }
 
         private void WaitForPreviousFrame()
@@ -364,21 +365,21 @@ namespace TerraFX.Samples.DirectX.D3D12
             // Signal and increment the fence value.
             var fence = _fenceValue;
 
-            var Signal = Marshal.GetDelegateForFunctionPointer<ID3D12CommandQueue.Signal>(_commandQueue->lpVtbl->Signal);
-            ThrowIfFailed(Signal(_commandQueue, _fence, fence));
+            var Signal = MarshalFunction<ID3D12CommandQueue.Signal>(_commandQueue->lpVtbl->Signal);
+            ThrowIfFailed(nameof(ID3D12CommandQueue.Signal), Signal(_commandQueue, _fence, fence));
 
             _fenceValue++;
 
             // Wait until the previous frame is finished.
-            var GetCompletedValue = Marshal.GetDelegateForFunctionPointer<ID3D12Fence.GetCompletedValue>(_fence->lpVtbl->GetCompletedValue);
+            var GetCompletedValue = MarshalFunction<ID3D12Fence.GetCompletedValue>(_fence->lpVtbl->GetCompletedValue);
             if (GetCompletedValue(_fence) < fence)
             {
-                var SetEventOnCompletion = Marshal.GetDelegateForFunctionPointer<ID3D12Fence.SetEventOnCompletion>(_fence->lpVtbl->SetEventOnCompletion);
-                ThrowIfFailed(SetEventOnCompletion(_fence, fence, _fenceEvent));
+                var SetEventOnCompletion = MarshalFunction<ID3D12Fence.SetEventOnCompletion>(_fence->lpVtbl->SetEventOnCompletion);
+                ThrowIfFailed(nameof(ID3D12Fence.SetEventOnCompletion), SetEventOnCompletion(_fence, fence, _fenceEvent));
                 WaitForSingleObject(_fenceEvent, INFINITE);
             }
 
-            var GetCurrentBackBufferIndex = Marshal.GetDelegateForFunctionPointer<IDXGISwapChain3.GetCurrentBackBufferIndex>(_swapChain->lpVtbl->GetCurrentBackBufferIndex);
+            var GetCurrentBackBufferIndex = MarshalFunction<IDXGISwapChain3.GetCurrentBackBufferIndex>(_swapChain->lpVtbl->GetCurrentBackBufferIndex);
             _frameIndex = GetCurrentBackBufferIndex(_swapChain);
         }
         #endregion

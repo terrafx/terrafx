@@ -5,7 +5,6 @@
 
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using TerraFX.Interop;
 using static TerraFX.Interop.D3D_FEATURE_LEVEL;
 using static TerraFX.Interop.D3D12;
@@ -13,6 +12,7 @@ using static TerraFX.Interop.DXGI_ADAPTER_FLAG;
 using static TerraFX.Interop.User32;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Samples.DirectX.D3D12.DXSampleHelper;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Samples.DirectX.D3D12
 {
@@ -128,11 +128,11 @@ namespace TerraFX.Samples.DirectX.D3D12
         protected IDXGIAdapter1* GetHardwareAdapter(IDXGIFactory2* pFactory)
         {
             IDXGIAdapter1* adapter;
-            var EnumAdapters1 = Marshal.GetDelegateForFunctionPointer<IDXGIFactory1.EnumAdapters1>(pFactory->lpVtbl->BaseVtbl.EnumAdapters1);
+            var EnumAdapters1 = MarshalFunction<IDXGIFactory1.EnumAdapters1>(pFactory->lpVtbl->BaseVtbl.EnumAdapters1);
 
             for (var adapterIndex = 0u; DXGI_ERROR_NOT_FOUND != EnumAdapters1((IDXGIFactory1*)(pFactory), adapterIndex, &adapter); ++adapterIndex)
             {
-                var GetDesc1 = Marshal.GetDelegateForFunctionPointer<IDXGIAdapter1.GetDesc1>(adapter->lpVtbl->GetDesc1);
+                var GetDesc1 = MarshalFunction<IDXGIAdapter1.GetDesc1>(adapter->lpVtbl->GetDesc1);
 
                 DXGI_ADAPTER_DESC1 desc;
                 GetDesc1(adapter, &desc);

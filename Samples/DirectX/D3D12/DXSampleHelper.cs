@@ -7,19 +7,20 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using TerraFX.Interop;
 using static TerraFX.Interop.Windows;
+using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Samples.DirectX.D3D12
 {
     public static unsafe class DXSampleHelper
     {
-        public static void ThrowIfFailed(int hr)
+        public static void ThrowIfFailed(string methodName, int hr)
         {
             if (FAILED(hr))
             {
-                throw new Exception();
+                ThrowExternalException(methodName, hr);
             }
         }
 
@@ -56,7 +57,7 @@ namespace TerraFX.Samples.DirectX.D3D12
         {
             fixed (char* pName = name)
             {
-                var SetName = Marshal.GetDelegateForFunctionPointer<ID3D12Object.SetName>(pObject->lpVtbl->SetName);
+                var SetName = MarshalFunction<ID3D12Object.SetName>(pObject->lpVtbl->SetName);
                 SetName(pObject, pName);
             }
         }
