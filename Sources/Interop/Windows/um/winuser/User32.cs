@@ -43,6 +43,34 @@ namespace TerraFX.Interop
         public const int SW_MAX = 11;
         #endregion
 
+        #region GWL_* Constants
+        public const int GWL_WNDPROC = -4;
+
+        public const int GWL_HINSTANCE = -6;
+
+        public const int GWL_HWNDPARENT = -8;
+
+        public const int GWL_STYLE = -16;
+
+        public const int GWL_EXSTYLE = -20;
+
+        public const int GWL_USERDATA = -21;
+
+        public const int GWL_ID = -12;
+        #endregion
+
+        #region GWLP_* Constants
+        public const int GWLP_WNDPROC = -4;
+
+        public const int GWLP_HINSTANCE = -6;
+
+        public const int GWLP_HWNDPARENT = -8;
+
+        public const int GWLP_USERDATA = -21;
+
+        public const int GWLP_ID = -12;
+        #endregion
+
         #region WM_* Constants
         public const uint WM_NULL = 0x0000;
 
@@ -837,6 +865,40 @@ namespace TerraFX.Interop
         public const int COLOR_3DHILIGHT = COLOR_BTNHIGHLIGHT;
 
         public const int COLOR_BTNHILIGHT = COLOR_BTNHIGHLIGHT;
+        #endregion
+
+        #region IDC_* Constants
+        public const ushort IDC_ARROW = 32512;
+
+        public const ushort IDC_IBEAM = 32513;
+
+        public const ushort IDC_WAIT = 32514;
+
+        public const ushort IDC_CROSS = 32515;
+
+        public const ushort IDC_UPARROW = 32516;
+
+        public const ushort IDC_SIZE = 32640;
+
+        public const ushort IDC_ICON = 32641;
+
+        public const ushort IDC_SIZENWSE = 32642;
+
+        public const ushort IDC_SIZENESW = 32643;
+
+        public const ushort IDC_SIZEWE = 32644;
+
+        public const ushort IDC_SIZENS = 32645;
+
+        public const ushort IDC_SIZEALL = 32646;
+
+        public const ushort IDC_NO = 32648;
+
+        public const ushort IDC_HAND = 32649;
+
+        public const ushort IDC_APPSTARTING = 32650;
+
+        public const ushort IDC_HELP = 32651;
         #endregion
 
         #region External Methods

@@ -12,6 +12,15 @@ namespace TerraFX.Interop.Desktop
     public static unsafe partial class User32
     {
         #region External Methods
+        [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "AdjustWindowRect", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        [SuppressUnmanagedCodeSecurity]
+        [return: ComAliasName("BOOL")]
+        public static extern int AdjustWindowRect(
+            [In, Out, ComAliasName("LPRECT")] RECT* lpRect,
+            [In, ComAliasName("DWORD")] uint dwStyle,
+            [In, ComAliasName("BOOL")] int bMenu
+        );
+        
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CloseWindow", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("BOOL")]
@@ -90,6 +99,14 @@ namespace TerraFX.Interop.Desktop
         public static extern IntPtr GetDesktopWindow(
         );
 
+        [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "GetWindowLongPtrW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        [SuppressUnmanagedCodeSecurity]
+        [return: ComAliasName("LONG_PTR")]
+        public static extern nint GetWindowLongPtr(
+            [In, ComAliasName("HWND")] IntPtr hWnd,
+            [In] int nIndex
+        );
+
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "GetWindowRect", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("BOOL")]
@@ -103,6 +120,14 @@ namespace TerraFX.Interop.Desktop
         [return: ComAliasName("BOOL")]
         public static extern int IsWindowVisible(
             [In, ComAliasName("HWND")] IntPtr hWnd
+        );
+
+        [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "LoadCursorW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        [SuppressUnmanagedCodeSecurity]
+        [return: ComAliasName("HCURSOR")]
+        public static extern IntPtr LoadCursor(
+            [In, Optional, ComAliasName("HINSTANCE")] IntPtr hInstance,
+            [In, ComAliasName("LPCWSTR")] char* lpCursorName
         );
 
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "PeekMessageW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
@@ -151,6 +176,15 @@ namespace TerraFX.Interop.Desktop
         [return: ComAliasName("BOOL")]
         public static extern int SetForegroundWindow(
             [In, ComAliasName("HWND")] IntPtr hWnd
+        );
+
+        [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "SetWindowLongPtrW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        [SuppressUnmanagedCodeSecurity]
+        [return: ComAliasName("LONG_PTR")]
+        public static extern nint SetWindowLongPtr(
+            [In, ComAliasName("HWND")] IntPtr hWnd,
+            [In] int nIndex,
+            [In, ComAliasName("LONG_PTR")] nint dwNewLong
         );
 
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "ShowWindow", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
