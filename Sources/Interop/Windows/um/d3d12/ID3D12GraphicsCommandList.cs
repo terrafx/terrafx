@@ -370,7 +370,7 @@ namespace TerraFX.Interop
             [In] ID3D12GraphicsCommandList* This,
             [In] D3D12_GPU_DESCRIPTOR_HANDLE ViewGPUHandleInCurrentHeap,
             [In] D3D12_CPU_DESCRIPTOR_HANDLE ViewCPUHandle,
-            [In] [MarshalAs(UnmanagedType.Interface)] ID3D12Resource pResource,
+            [In] ID3D12Resource* pResource,
             [In, ComAliasName("UINT")] uint* Values,
             [In, ComAliasName("UINT")] uint NumRects,
             [In, ComAliasName("D3D12_RECT[]")] RECT* pRects
