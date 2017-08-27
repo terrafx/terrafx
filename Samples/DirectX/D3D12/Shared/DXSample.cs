@@ -99,12 +99,7 @@ namespace TerraFX.Samples.DirectX.D3D12
         {
             foreach (var arg in args)
             {
-                if (string.IsNullOrEmpty(arg) || ((arg[0] != '-') && (arg[0] != '/')))
-                {
-                    continue;
-                }
-
-                if ((arg.Length == 5) && (string.Compare(arg, 1, " (WARP)", 2, 4, StringComparison.OrdinalIgnoreCase) == 0))
+                if (Program.Matches(arg, "warp"))
                 {
                     _useWarpDevice = true;
                     _title += " (WARP)";
