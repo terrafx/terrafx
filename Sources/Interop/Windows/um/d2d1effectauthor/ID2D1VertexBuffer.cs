@@ -23,7 +23,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int Map(
             [In] ID2D1VertexBuffer* This,
-            [Out, ComAliasName("BYTE")] byte** data,
+            [Out, ComAliasName("BYTE[]")] byte** data,
             [In, ComAliasName("UINT32")] uint bufferSize
         );
 

@@ -23,7 +23,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetPatterns(
             [In] IWICBitmapDecoderInfo* This,
             [In, ComAliasName("UINT")] uint cbSizePatterns,
-            [Out, Optional] WICBitmapPattern* pPatterns,
+            [Out, Optional, ComAliasName("WICBitmapPattern[]")] WICBitmapPattern* pPatterns,
             [Out, Optional, ComAliasName("UINT")] uint* pcPatterns,
             [Out, ComAliasName("UINT")] uint* pcbPatternsActual
         );

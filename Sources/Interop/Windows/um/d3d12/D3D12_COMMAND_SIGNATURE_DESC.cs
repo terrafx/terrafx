@@ -16,7 +16,8 @@ namespace TerraFX.Interop
         [ComAliasName("UINT")]
         public uint NumArgumentDescs;
 
-        public /* readonly */ D3D12_INDIRECT_ARGUMENT_DESC* pArgumentDescs;
+        [ComAliasName("D3D12_INDIRECT_ARGUMENT_DESC[]")]
+        public D3D12_INDIRECT_ARGUMENT_DESC* pArgumentDescs;
 
         [ComAliasName("UINT")]
         public uint NodeMask;

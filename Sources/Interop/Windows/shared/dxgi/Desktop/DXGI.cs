@@ -16,7 +16,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HRESULT")]
         public static extern int CreateDXGIFactory(
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
+            [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppFactory
         );
         #endregion

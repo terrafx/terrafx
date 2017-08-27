@@ -23,12 +23,12 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetRootSignatureDescAtVersion(
             [In] ID3D12VersionedRootSignatureDeserializer* This,
             [In] D3D_ROOT_SIGNATURE_VERSION convertToVersion,
-            [Out] /* readonly */ D3D12_VERSIONED_ROOT_SIGNATURE_DESC** ppDesc
+            [Out] D3D12_VERSIONED_ROOT_SIGNATURE_DESC** ppDesc
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate /* readonly */ D3D12_VERSIONED_ROOT_SIGNATURE_DESC* GetUnconvertedRootSignatureDesc(
+        public /* static */ delegate D3D12_VERSIONED_ROOT_SIGNATURE_DESC* GetUnconvertedRootSignatureDesc(
             [In] ID3D12VersionedRootSignatureDeserializer* This
         );
         #endregion

@@ -10,7 +10,7 @@ namespace TerraFX.Interop
     public /* blittable */ unsafe struct D3D12_SUBRESOURCE_DATA
     {
         #region Fields
-        public /* readonly */ void* pData;
+        public void* pData;
 
         [ComAliasName("LONG_PTR")]
         public nint RowPitch;

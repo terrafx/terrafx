@@ -24,10 +24,10 @@ namespace TerraFX.Interop
         public /* static */ delegate int AddSprites(
             [In] ID2D1SpriteBatch* This,
             [In, ComAliasName("UINT32")] uint spriteCount,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangles,
-            [In, ComAliasName("D2D1_RECT_U")] /* readonly */ D2D_RECT_U* sourceRectangles = null,
-            [In, ComAliasName("D2D1_COLOR_F")] /* readonly */ DXGI_RGBA* colors = null,
-            [In, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* transforms = null,
+            [In, ComAliasName("D2D1_RECT_F[]")] D2D_RECT_F* destinationRectangles,
+            [In, ComAliasName("D2D1_RECT_U[]")] D2D_RECT_U* sourceRectangles = null,
+            [In, ComAliasName("D2D1_COLOR_F[]")] DXGI_RGBA* colors = null,
+            [In, ComAliasName("D2D1_MATRIX_3X2_F[]")] D2D_MATRIX_3X2_F* transforms = null,
             [In, ComAliasName("UINT32")] uint destinationRectanglesStride = 16,
             [In, ComAliasName("UINT32")] uint sourceRectanglesStride = 16,
             [In, ComAliasName("UINT32")] uint colorsStride = 16,
@@ -42,10 +42,10 @@ namespace TerraFX.Interop
             [In] ID2D1SpriteBatch* This,
             [In, ComAliasName("UINT32")] uint startIndex,
             [In, ComAliasName("UINT32")] uint spriteCount,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangles = null,
-            [In, ComAliasName("D2D1_RECT_U")] /* readonly */ D2D_RECT_U* sourceRectangles = null,
-            [In, ComAliasName("D2D1_COLOR_F")] /* readonly */ DXGI_RGBA* colors = null,
-            [In, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* transforms = null,
+            [In, ComAliasName("D2D1_RECT_F[]")] D2D_RECT_F* destinationRectangles = null,
+            [In, ComAliasName("D2D1_RECT_U[]")] D2D_RECT_U* sourceRectangles = null,
+            [In, ComAliasName("D2D1_COLOR_F[]")] DXGI_RGBA* colors = null,
+            [In, ComAliasName("D2D1_MATRIX_3X2_F[]")] D2D_MATRIX_3X2_F* transforms = null,
             [In, ComAliasName("UINT32")] uint destinationRectanglesStride = 16,
             [In, ComAliasName("UINT32")] uint sourceRectanglesStride = 16,
             [In, ComAliasName("UINT32")] uint colorsStride = 16,
@@ -60,10 +60,10 @@ namespace TerraFX.Interop
             [In] ID2D1SpriteBatch* This,
             [In, ComAliasName("UINT32")] uint startIndex,
             [In, ComAliasName("UINT32")] uint spriteCount,
-            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* destinationRectangles = null,
-            [Out, ComAliasName("D2D1_RECT_U")] D2D_RECT_U* sourceRectangles = null,
-            [Out, ComAliasName("D2D1_COLOR_F")] DXGI_RGBA* colors = null,
-            [Out, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transforms = null
+            [Out, ComAliasName("D2D1_RECT_F[]")] D2D_RECT_F* destinationRectangles = null,
+            [Out, ComAliasName("D2D1_RECT_U[]")] D2D_RECT_U* sourceRectangles = null,
+            [Out, ComAliasName("D2D1_COLOR_F[]")] DXGI_RGBA* colors = null,
+            [Out, ComAliasName("D2D1_MATRIX_3X2_F[]")] D2D_MATRIX_3X2_F* transforms = null
         );
 
         /// <summary>Retrieves the number of sprites in the sprite batch.</summary>

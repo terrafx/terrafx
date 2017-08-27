@@ -40,7 +40,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetWindowAssociation(
             [In] IDXGIFactory* This,
-            [Out, ComAliasName("HWND")] out IntPtr pWindowHandle
+            [Out, ComAliasName("HWND")] IntPtr* pWindowHandle
         );
 
         [SuppressUnmanagedCodeSecurity]

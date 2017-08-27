@@ -128,7 +128,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("FLOAT")] float fontEmSize,
             [In, ComAliasName("FLOAT")] float dpiX,
             [In, ComAliasName("FLOAT")] float dpiY,
-            [In, Optional] /* readonly */ DWRITE_MATRIX* transform,
+            [In, Optional] DWRITE_MATRIX* transform,
             [In, ComAliasName("BOOL")] int isSideways,
             [In] DWRITE_OUTLINE_THRESHOLD outlineThreshold,
             [In] DWRITE_MEASURING_MODE measuringMode,
@@ -170,7 +170,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int AreCharactersLocal(
             [In] IDWriteFontFace3* This,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* characters,
+            [In, ComAliasName("WCHAR[]")] char* characters,
             [In, ComAliasName("UINT32")] uint characterCount,
             [In, ComAliasName("BOOL")] int enqueueIfNotLocal,
             [Out, ComAliasName("BOOL")] int* isLocal
@@ -187,7 +187,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int AreGlyphsLocal(
             [In] IDWriteFontFace3* This,
-            [In, ComAliasName("UINT16")] /* readonly */ ushort* glyphIndices,
+            [In, ComAliasName("UINT16[]")] ushort* glyphIndices,
             [In, ComAliasName("UINT32")] uint glyphCount,
             [In, ComAliasName("BOOL")] int enqueueIfNotLocal,
             [Out, ComAliasName("BOOL")] int* isLocal

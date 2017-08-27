@@ -53,7 +53,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int WriteScan(
             [In] IWICJpegFrameEncode* This,
             [In, ComAliasName("UINT")] uint cbScanData,
-            [In, ComAliasName("BYTE")] /* readonly */ byte* pbScanData
+            [In, ComAliasName("BYTE[]")] byte* pbScanData
         );
         #endregion
 

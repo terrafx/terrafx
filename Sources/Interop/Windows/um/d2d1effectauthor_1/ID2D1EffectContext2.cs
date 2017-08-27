@@ -34,7 +34,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateColorContextFromSimpleColorProfile(
             [In] ID2D1EffectContext2* This,
-            [In] /* readonly */ D2D1_SIMPLE_COLOR_PROFILE* simpleProfile,
+            [In] D2D1_SIMPLE_COLOR_PROFILE* simpleProfile,
             [Out] ID2D1ColorContext1** colorContext
         );
         #endregion

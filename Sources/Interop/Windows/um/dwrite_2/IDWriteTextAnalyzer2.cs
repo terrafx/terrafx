@@ -53,10 +53,10 @@ namespace TerraFX.Interop
             [In] IDWriteTextAnalyzer2* This,
             [In] IDWriteFontFace* fontFace,
             [In] DWRITE_SCRIPT_ANALYSIS scriptAnalysis,
-            [In, Optional, ComAliasName("WCHAR")] /* readonly */ char* localeName,
+            [In, Optional, ComAliasName("WCHAR[]")] char* localeName,
             [In, ComAliasName("UINT32")] uint maxTagCount,
             [Out, ComAliasName("UINT32")] uint* actualTagCount,
-            [Out] DWRITE_FONT_FEATURE_TAG* tags
+            [Out, ComAliasName("DWRITE_FONT_FEATURE_TAG[]")] DWRITE_FONT_FEATURE_TAG* tags
         );
 
         /// <summary>Returns an array of which glyphs are affected by a given feature.</summary>
@@ -75,11 +75,11 @@ namespace TerraFX.Interop
             [In] IDWriteTextAnalyzer2* This,
             [In] IDWriteFontFace* fontFace,
             [In] DWRITE_SCRIPT_ANALYSIS scriptAnalysis,
-            [In, Optional, ComAliasName("WCHAR")] /* readonly */ char* localeName,
+            [In, Optional, ComAliasName("WCHAR[]")] char* localeName,
             [In] DWRITE_FONT_FEATURE_TAG featureTag,
             [In, ComAliasName("UINT32")] uint glyphCount,
-            [In, ComAliasName("UINT16")] /* readonly */ ushort* glyphIndices,
-            [Out, ComAliasName("UINT8")] byte* featureApplies
+            [In, ComAliasName("UINT16[]")] ushort* glyphIndices,
+            [Out, ComAliasName("UINT8[]")] byte* featureApplies
         );
         #endregion
 

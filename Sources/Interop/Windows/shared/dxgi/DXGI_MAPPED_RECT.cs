@@ -12,7 +12,7 @@ namespace TerraFX.Interop
         [ComAliasName("INT")]
         public int Pitch;
 
-        [ComAliasName("BYTE")]
+        [ComAliasName("BYTE[]")]
         public byte* pBits;
         #endregion
     }

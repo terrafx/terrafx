@@ -10,7 +10,7 @@ namespace TerraFX.Interop
     public /* blittable */ unsafe struct D3D12_SHADER_BYTECODE
     {
         #region Fields
-        public /* readonly */ void* pShaderBytecode;
+        public void* pShaderBytecode;
 
         [ComAliasName("SIZE_T")]
         public nuint BytecodeLength;

@@ -13,6 +13,7 @@ namespace TerraFX.Interop
         [ComAliasName("ULONG")]
         public uint cElems;
 
+        [ComAliasName("ULARGE_INTEGER[]")]
         public ULARGE_INTEGER* pElems;
         #endregion
     }

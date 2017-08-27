@@ -14,7 +14,7 @@ namespace TerraFX.Interop
         [ComAliasName("WICPixelFormatGUID")]
         public Guid Format;
 
-        [ComAliasName("BYTE")]
+        [ComAliasName("BYTE[]")]
         public byte* pbBuffer;
 
         [ComAliasName("UINT")]

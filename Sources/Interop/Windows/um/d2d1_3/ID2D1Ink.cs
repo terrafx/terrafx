@@ -23,14 +23,15 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetStartPoint(
             [In] ID2D1Ink* This,
-            [In] /* readonly */ D2D1_INK_POINT* startPoint
+            [In] D2D1_INK_POINT* startPoint
         );
 
         /// <summary>Retrieve the start point with which the ink was initialized.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_INK_POINT GetStartPoint(
-            [In] ID2D1Ink* This
+        public /* static */ delegate void GetStartPoint(
+            [In] ID2D1Ink* This,
+            [Out] D2D1_INK_POINT* pStartPoint
         );
 
         /// <summary>Add one or more segments to the end of the ink.</summary>
@@ -39,7 +40,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int AddSegments(
             [In] ID2D1Ink* This,
-            [In] /* readonly */ D2D1_INK_BEZIER_SEGMENT* segments,
+            [In, ComAliasName("D2D1_INK_BEZIER_SEGMENT[]")] D2D1_INK_BEZIER_SEGMENT* segments,
             [In, ComAliasName("UINT32")] uint segmentsCount
         );
 
@@ -59,7 +60,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int SetSegments(
             [In] ID2D1Ink* This,
             [In, ComAliasName("UINT32")] uint startSegment,
-            [In] /* readonly */ D2D1_INK_BEZIER_SEGMENT* segments,
+            [In, ComAliasName("D2D1_INK_BEZIER_SEGMENT[]")] D2D1_INK_BEZIER_SEGMENT* segments,
             [In, ComAliasName("UINT32")] uint segmentsCount
         );
 
@@ -69,7 +70,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetSegmentAtEnd(
             [In] ID2D1Ink* This,
-            [In] /* readonly */ D2D1_INK_BEZIER_SEGMENT* segment
+            [In] D2D1_INK_BEZIER_SEGMENT* segment
         );
 
         /// <summary>Returns the number of segments the ink is composed of.</summary>
@@ -87,7 +88,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetSegments(
             [In] ID2D1Ink* This,
             [In, ComAliasName("UINT32")] uint startSegment,
-            [Out] D2D1_INK_BEZIER_SEGMENT* segments,
+            [Out, ComAliasName("D2D1_INK_BEZIER_SEGMENT[]")] D2D1_INK_BEZIER_SEGMENT* segments,
             [In, ComAliasName("UINT32")] uint segmentsCount
         );
 
@@ -98,7 +99,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int StreamAsGeometry(
             [In] ID2D1Ink* This,
             [In, Optional] ID2D1InkStyle* inkStyle,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
             [In, ComAliasName("FLOAT")] float flatteningTolerance,
             [In] ID2D1SimplifiedGeometrySink* geometrySink
         );
@@ -110,7 +111,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetBounds(
             [In] ID2D1Ink* This,
             [In, Optional] ID2D1InkStyle* inkStyle,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
             [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* bounds
         );
         #endregion

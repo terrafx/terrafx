@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetPatterns(
             [In] IWICMetadataReaderInfo* This,
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidContainerFormat,
+            [In, ComAliasName("REFGUID")] Guid* guidContainerFormat,
             [In, ComAliasName("UINT")] uint cbSize,
             [Out] WICMetadataPattern* pPattern = null,
             [Out, ComAliasName("UINT")] uint* pcCount = null,
@@ -34,7 +34,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int MatchesPattern(
             [In] IWICMetadataReaderInfo* This,
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidContainerFormat,
+            [In, ComAliasName("REFGUID")] Guid* guidContainerFormat,
             [In, Optional] IStream* pIStream,
             [Out, ComAliasName("BOOL")] int* pfMatches
         );

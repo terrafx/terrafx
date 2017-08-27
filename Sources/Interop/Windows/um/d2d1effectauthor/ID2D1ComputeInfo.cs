@@ -24,7 +24,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetComputeShaderConstantBuffer(
             [In] ID2D1ComputeInfo* This,
-            [In, ComAliasName("BYTE")] /* readonly */ byte *buffer,
+            [In, ComAliasName("BYTE[]")] byte *buffer,
             [In, ComAliasName("UINT32")] uint bufferCount
         );
 
@@ -34,7 +34,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetComputeShader(
             [In] ID2D1ComputeInfo* This,
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* shaderId
+            [In, ComAliasName("REFGUID")] Guid* shaderId
         );
 
         /// <summary>Sets the resource texture corresponding to the given shader texture index.</summary>

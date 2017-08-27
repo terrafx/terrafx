@@ -17,7 +17,7 @@ namespace TerraFX.Interop
         public D3D12_MESSAGE_ID ID;
 
         [ComAliasName("CHAR")]
-        public /* readonly */ sbyte* pDescription;
+        public sbyte* pDescription;
 
         [ComAliasName("SIZE_T")]
         public nuint DescriptionByteLength;

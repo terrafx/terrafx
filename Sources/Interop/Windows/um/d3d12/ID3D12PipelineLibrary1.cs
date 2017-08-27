@@ -22,9 +22,9 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int LoadPipeline(
             [In] ID3D12PipelineLibrary1* This,
-            [In, ComAliasName("LPCWSTR")] /* readonly */ char* pName,
-            [In] /* readonly */ D3D12_PIPELINE_STATE_STREAM_DESC* pDesc,
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
+            [In, ComAliasName("LPCWSTR")] char* pName,
+            [In] D3D12_PIPELINE_STATE_STREAM_DESC* pDesc,
+            [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppPipelineState
         );
         #endregion

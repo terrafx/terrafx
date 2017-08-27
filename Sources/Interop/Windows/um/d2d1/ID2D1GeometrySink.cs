@@ -29,21 +29,21 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void AddBezier(
             [In] ID2D1GeometrySink* This,
-            [In] /* readonly */ D2D1_BEZIER_SEGMENT* bezier
+            [In] D2D1_BEZIER_SEGMENT* bezier
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void AddQuadraticBezier(
             [In] ID2D1GeometrySink* This,
-            [In] /* readonly */ D2D1_QUADRATIC_BEZIER_SEGMENT* bezier
+            [In] D2D1_QUADRATIC_BEZIER_SEGMENT* bezier
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void AddQuadraticBeziers(
             [In] ID2D1GeometrySink* This,
-            [In] /* readonly */ D2D1_QUADRATIC_BEZIER_SEGMENT* beziers,
+            [In, ComAliasName("D2D1_QUADRATIC_BEZIER_SEGMENT[]")] D2D1_QUADRATIC_BEZIER_SEGMENT* beziers,
             [In, ComAliasName("UINT32")] uint beziersCount
         );
 
@@ -51,7 +51,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void AddArc(
             [In] ID2D1GeometrySink* This,
-            [In] /* readonly */ D2D1_ARC_SEGMENT* arc
+            [In] D2D1_ARC_SEGMENT* arc
         );
         #endregion
 

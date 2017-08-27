@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetDevice(
             [In] IDXGIDeviceSubObject* This,
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
+            [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppDevice
         );
         #endregion

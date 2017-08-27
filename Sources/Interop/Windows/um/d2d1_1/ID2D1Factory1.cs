@@ -34,8 +34,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateStrokeStyle(
             [In] ID2D1Factory1* This,
-            [In] /* readonly */ D2D1_STROKE_STYLE_PROPERTIES1* strokeStyleProperties,
-            [In, Optional, ComAliasName("FLOAT")] /* readonly */ float* dashes,
+            [In] D2D1_STROKE_STYLE_PROPERTIES1* strokeStyleProperties,
+            [In, Optional, ComAliasName("FLOAT[]")] float* dashes,
             [In, ComAliasName("UINT32")] uint dashesCount,
             [Out] ID2D1StrokeStyle1** strokeStyle
         );
@@ -55,7 +55,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateDrawingStateBlock(
             [In] ID2D1Factory1* This,
-            [In, Optional] /* readonly */ D2D1_DRAWING_STATE_DESCRIPTION1* drawingStateDescription,
+            [In, Optional] D2D1_DRAWING_STATE_DESCRIPTION1* drawingStateDescription,
             [In, Optional] IDWriteRenderingParams* textRenderingParams,
             [Out] ID2D1DrawingStateBlock1** drawingStateBlock
         );
@@ -76,11 +76,11 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int RegisterEffectFromStream(
             [In] ID2D1Factory1* This,
-            [In, ComAliasName("REFCLSID")] /* readonly */ Guid* classId,
+            [In, ComAliasName("REFCLSID")] Guid* classId,
             [In] IStream* propertyXml,
-            [In, Optional] /* readonly */ D2D1_PROPERTY_BINDING* bindings,
+            [In, Optional] D2D1_PROPERTY_BINDING* bindings,
             [In, ComAliasName("UINT32")] uint bindingsCount,
-            [In] /* readonly */ PD2D1_EFFECT_FACTORY effectFactory
+            [In] PD2D1_EFFECT_FACTORY effectFactory
         );
 
         /// <summary>This globally registers the given effect. The effect can later be instantiated by using the registered class id. The effect registration is reference counted.</summary>
@@ -89,11 +89,11 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int RegisterEffectFromString(
             [In] ID2D1Factory1* This,
-            [In, ComAliasName("REFCLSID")] /* readonly */ Guid* classId,
-            [In, ComAliasName("PCWSTR")] /* readonly */ char* propertyXml,
-            [In, Optional] /* readonly */ D2D1_PROPERTY_BINDING* bindings,
+            [In, ComAliasName("REFCLSID")] Guid* classId,
+            [In, ComAliasName("PCWSTR")] char* propertyXml,
+            [In, Optional, ComAliasName("D2D1_PROPERTY_BINDING[]")] D2D1_PROPERTY_BINDING* bindings,
             [In, ComAliasName("UINT32")] uint bindingsCount,
-            [In] /* readonly */ PD2D1_EFFECT_FACTORY effectFactory
+            [In] PD2D1_EFFECT_FACTORY effectFactory
         );
 
         /// <summary>This unregisters the given effect by its class id, you need to call UnregisterEffect for every call to ID2D1Factory1::RegisterEffectFromStream and ID2D1Factory1::RegisterEffectFromString to completely unregister it.</summary>
@@ -102,7 +102,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int UnregisterEffect(
             [In] ID2D1Factory1* This,
-            [In, ComAliasName("REFCLSID")] /* readonly */ Guid* classId
+            [In, ComAliasName("REFCLSID")] Guid* classId
         );
 
         /// <summary>This returns all of the registered effects in the process, including any built-in effects.</summary>
@@ -113,7 +113,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetRegisteredEffects(
             [In] ID2D1Factory1* This,
-            [Out, Optional, ComAliasName("CLSID")] Guid* effects,
+            [Out, Optional, ComAliasName("CLSID[]")] Guid* effects,
             [In, ComAliasName("UINT32")] uint effectsCount,
             [Out, ComAliasName("UINT32")] uint* effectsReturned = null,
             [Out, ComAliasName("UINT32")] uint* effectsRegistered = null
@@ -125,7 +125,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetEffectProperties(
             [In] ID2D1Factory1* This,
-            [In, ComAliasName("REFCLSID")] /* readonly */ Guid* effectId,
+            [In, ComAliasName("REFCLSID")] Guid* effectId,
             [Out] ID2D1Properties** properties
         );
         #endregion

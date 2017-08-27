@@ -14,7 +14,7 @@ namespace TerraFX.Interop
         public uint Stream;
 
         [ComAliasName("LPCSTR")]
-        public /* readonly */ sbyte* SemanticName;
+        public sbyte* SemanticName;
 
         [ComAliasName("UINT")]
         public uint SemanticIndex;

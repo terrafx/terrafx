@@ -16,14 +16,14 @@ namespace TerraFX.Interop
         public DWRITE_FONT_PROPERTY_ID propertyId;
 
         /// <summary>Specifies the property value, such as "Segoe UI".</summary>
-        [ComAliasName("WCHAR")]
-        public /* readonly */ char* propertyValue;
+        [ComAliasName("WCHAR[]")]
+        public char* propertyValue;
 
         /// <summary>Specifies the language / locale to use, such as "en-US". </summary>
         /// <remarks> When passing property information to AddFontFaceReference, localeName indicates the language of the property value. BCP 47 language tags should be used. If a property value is inherently non-linguistic, this can be left empty.
         /// When used for font set filtering, leave this empty: a match will be found regardless of language associated with property values.</remarks>
-        [ComAliasName("WCHAR")]
-        public /* readonly */ char* localeName;
+        [ComAliasName("WCHAR[]")]
+        public char* localeName;
         #endregion
     }
 }

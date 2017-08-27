@@ -38,7 +38,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetHwnd(
             [In] IDXGISwapChain1* This,
-            [Out, ComAliasName("HWND")] out IntPtr pHwnd
+            [Out, ComAliasName("HWND")] IntPtr* pHwnd
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -46,7 +46,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetCoreWindow(
             [In] IDXGISwapChain1* This,
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* refiid,
+            [In, ComAliasName("REFIID")] Guid* refiid,
             [Out] void** ppUnk
         );
 
@@ -57,7 +57,7 @@ namespace TerraFX.Interop
             [In] IDXGISwapChain1* This,
             [In, ComAliasName("UINT")] uint SyncInterval,
             [In, ComAliasName("UINT")] uint PresentFlags,
-            [In] /* readonly */ DXGI_PRESENT_PARAMETERS* pPresentParameters
+            [In] DXGI_PRESENT_PARAMETERS* pPresentParameters
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -80,7 +80,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetBackgroundColor(
             [In] IDXGISwapChain1* This,
-            [In] /* readonly */ DXGI_RGBA* pColor
+            [In] DXGI_RGBA* pColor
         );
 
         [SuppressUnmanagedCodeSecurity]

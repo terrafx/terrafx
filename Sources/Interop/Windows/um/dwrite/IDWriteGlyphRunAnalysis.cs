@@ -43,8 +43,8 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateAlphaTexture(
             [In] IDWriteGlyphRunAnalysis* This,
             [In] DWRITE_TEXTURE_TYPE textureType,
-            [In] /* readonly */ RECT* textureBounds,
-            [Out, ComAliasName("BYTE")] byte* alphaValues,
+            [In] RECT* textureBounds,
+            [Out, ComAliasName("BYTE[]")] byte* alphaValues,
             [In, ComAliasName("UINT32")] uint bufferSize
         );
 

@@ -13,7 +13,7 @@ namespace TerraFX.Interop
         [ComAliasName("ULONG")]
         public uint cElems;
 
-        [ComAliasName("LPSTR")]
+        [ComAliasName("LPSTR[]")]
         public sbyte** pElems;
         #endregion
     }

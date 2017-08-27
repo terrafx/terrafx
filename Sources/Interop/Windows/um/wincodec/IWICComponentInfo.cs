@@ -47,7 +47,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetAuthor(
             [In] IWICComponentInfo* This,
             [In, ComAliasName("UINT")] uint cchAuthor,
-            [In, Out, Optional, ComAliasName("WCHAR")] char* wzAuthor,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzAuthor,
             [Out, ComAliasName("UINT")] uint* pcchActual
         );
 
@@ -65,7 +65,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetVersion(
             [In] IWICComponentInfo* This,
             [In, ComAliasName("UINT")] uint cchVersion,
-            [In, Out, Optional, ComAliasName("WCHAR")] char* wzVersion,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzVersion,
             [Out, ComAliasName("UINT")] uint* pcchActual
         );
 
@@ -75,7 +75,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetSpecVersion(
             [In] IWICComponentInfo* This,
             [In, ComAliasName("UINT")] uint cchSpecVersion,
-            [In, Out, Optional, ComAliasName("WCHAR")] char* wzSpecVersion,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzSpecVersion,
             [Out, ComAliasName("UINT")] uint* pcchActual
         );
 
@@ -85,7 +85,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetFriendlyName(
             [In] IWICComponentInfo* This,
             [In, ComAliasName("UINT")] uint cchFriendlyName,
-            [In, Out, Optional, ComAliasName("WCHAR")] char* wzFriendlyName,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzFriendlyName,
             [Out, ComAliasName("UINT")] uint* pcchActual
         );
         #endregion

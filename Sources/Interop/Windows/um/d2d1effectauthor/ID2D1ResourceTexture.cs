@@ -23,11 +23,11 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int Update(
             [In] ID2D1ResourceTexture* This,
-            [In, Optional, ComAliasName("UINT32")] /* readonly */ uint* minimumExtents,
-            [In, Optional, ComAliasName("UINT32")] /* readonly */ uint* maximimumExtents,
-            [In, Optional, ComAliasName("UINT32")] /* readonly */ uint* strides,
+            [In, Optional, ComAliasName("UINT32[]")] uint* minimumExtents,
+            [In, Optional, ComAliasName("UINT32[]")] uint* maximimumExtents,
+            [In, Optional, ComAliasName("UINT32[]")] uint* strides,
             [In, ComAliasName("UINT32")] uint dimensions,
-            [In, ComAliasName("BYTE")]  /* readonly */ byte* data,
+            [In, ComAliasName("BYTE[]")]  byte* data,
             [In, ComAliasName("UINT32")] uint dataCount
         );
         #endregion

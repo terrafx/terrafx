@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetSharedHandle(
             [In] IDXGIResource* This,
-            [Out, ComAliasName("HANDLE")] out IntPtr pSharedHandle
+            [Out, ComAliasName("HANDLE")] IntPtr* pSharedHandle
         );
 
         [SuppressUnmanagedCodeSecurity]

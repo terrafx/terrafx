@@ -22,8 +22,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateMetadataReader(
             [In] IWICComponentFactory* This,
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidMetadataFormat,
-            [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor,
+            [In, ComAliasName("REFGUID")] Guid* guidMetadataFormat,
+            [In, Optional, ComAliasName("GUID")] Guid* pguidVendor,
             [In, ComAliasName("DWORD")] uint dwOptions,
             [In] IStream* pIStream = null,
             [Out] IWICMetadataReader** ppIReader = null
@@ -34,8 +34,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateMetadataReaderFromContainer(
             [In] IWICComponentFactory* This,
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidContainerFormat,
-            [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor,
+            [In, ComAliasName("REFGUID")] Guid* guidContainerFormat,
+            [In, Optional, ComAliasName("GUID")] Guid* pguidVendor,
             [In, ComAliasName("DWORD")] uint dwOptions,
             [In] IStream* pIStream = null,
             [Out] IWICMetadataReader** ppIReader = null
@@ -46,8 +46,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateMetadataWriter(
             [In] IWICComponentFactory* This,
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidMetadataFormat,
-            [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor,
+            [In, ComAliasName("REFGUID")] Guid* guidMetadataFormat,
+            [In, Optional, ComAliasName("GUID")] Guid* pguidVendor,
             [In, ComAliasName("DWORD")] uint dwMetadataOptions,
             [Out] IWICMetadataWriter** ppIWriter = null
         );
@@ -58,7 +58,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateMetadataWriterFromReader(
             [In] IWICComponentFactory* This,
             [In] IWICMetadataReader* pIReader = null,
-            [In, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor = null,
+            [In, ComAliasName("GUID")] Guid* pguidVendor = null,
             [Out] IWICMetadataWriter** ppIWriter = null
         );
 

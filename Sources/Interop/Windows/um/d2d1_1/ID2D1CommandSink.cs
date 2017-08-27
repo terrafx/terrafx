@@ -70,7 +70,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetTransform(
             [In] ID2D1CommandSink* This,
-            [In, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* transform
+            [In, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -94,7 +94,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int Clear(
             [In] ID2D1CommandSink* This,
-            [In, ComAliasName("D2D1_COLOR_F")] /* readonly */ DXGI_RGBA* color = null
+            [In, ComAliasName("D2D1_COLOR_F")] DXGI_RGBA* color = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -103,8 +103,8 @@ namespace TerraFX.Interop
         public /* static */ delegate int DrawGlyphRun(
             [In] ID2D1CommandSink* This,
             [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
-            [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
-            [In, Optional] /* readonly */ DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
+            [In] DWRITE_GLYPH_RUN* glyphRun,
+            [In, Optional] DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
             [In] ID2D1Brush* foregroundBrush,
             [In] DWRITE_MEASURING_MODE measuringMode
         );
@@ -137,7 +137,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int DrawRectangle(
             [In] ID2D1CommandSink* This,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* rect,
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* rect,
             [In] ID2D1Brush* brush,
             [In, ComAliasName("FLOAT")] float strokeWidth,
             [In] ID2D1StrokeStyle* strokeStyle = null
@@ -149,11 +149,11 @@ namespace TerraFX.Interop
         public /* static */ delegate int DrawBitmap(
             [In] ID2D1CommandSink* This,
             [In] ID2D1Bitmap* bitmap,
-            [In, Optional, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangle,
+            [In, Optional, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* destinationRectangle,
             [In, ComAliasName("FLOAT")] float opacity,
             [In] D2D1_INTERPOLATION_MODE interpolationMode,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* sourceRectangle = null,
-            [In, ComAliasName("D2D1_MATRIX_4X4_F")] /* readonly */ D2D_MATRIX_4X4_F* perspectiveTransform = null
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* sourceRectangle = null,
+            [In, ComAliasName("D2D1_MATRIX_4X4_F")] D2D_MATRIX_4X4_F* perspectiveTransform = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -162,8 +162,8 @@ namespace TerraFX.Interop
         public /* static */ delegate int DrawImage(
             [In] ID2D1CommandSink* This,
             [In] ID2D1Image* image,
-            [In, Optional, ComAliasName("D2D1_POINT_2F")] /* readonly */ D2D_POINT_2F* targetOffset,
-            [In, Optional, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* imageRectangle,
+            [In, Optional, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* targetOffset,
+            [In, Optional, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* imageRectangle,
             [In] D2D1_INTERPOLATION_MODE interpolationMode,
             [In] D2D1_COMPOSITE_MODE compositeMode
         );
@@ -174,7 +174,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int DrawGdiMetafile(
             [In] ID2D1CommandSink* This,
             [In] ID2D1GdiMetafile* gdiMetafile,
-            [In, ComAliasName("D2D1_POINT_2F")] /* readonly */ D2D_POINT_2F* targetOffset = null
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* targetOffset = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -193,8 +193,8 @@ namespace TerraFX.Interop
             [In] ID2D1CommandSink* This,
             [In] ID2D1Bitmap* opacityMask,
             [In] ID2D1Brush* brush,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangle = null,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* sourceRectangle = null
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* destinationRectangle = null,
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* sourceRectangle = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -212,7 +212,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int FillRectangle(
             [In] ID2D1CommandSink* This,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* rect,
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* rect,
             [In] ID2D1Brush* brush
         );
 
@@ -221,7 +221,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int PushAxisAlignedClip(
             [In] ID2D1CommandSink* This,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* clipRect,
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* clipRect,
             [In] D2D1_ANTIALIAS_MODE antialiasMode
         );
 
@@ -230,7 +230,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int PushLayer(
             [In] ID2D1CommandSink* This,
-            [In] /* readonly */ D2D1_LAYER_PARAMETERS1* layerParameters1,
+            [In] D2D1_LAYER_PARAMETERS1* layerParameters1,
             [In] ID2D1Layer* layer = null
         );
 

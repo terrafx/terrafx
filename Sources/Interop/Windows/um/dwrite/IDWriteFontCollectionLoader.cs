@@ -30,7 +30,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateEnumeratorFromKey(
             [In] IDWriteFontCollectionLoader* This,
             [In] IDWriteFactory* factory,
-            [In] /* readonly */ void* collectionKey,
+            [In] void* collectionKey,
             [In, ComAliasName("UINT32")] uint collectionKeySize,
             [Out] IDWriteFontFileEnumerator** fontFileEnumerator
         );

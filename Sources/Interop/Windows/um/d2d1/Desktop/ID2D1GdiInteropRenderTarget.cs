@@ -24,7 +24,7 @@ namespace TerraFX.Interop.Desktop
         public /* static */ delegate int GetDC(
             [In] ID2D1GdiInteropRenderTarget* This,
             [In] D2D1_DC_INITIALIZE_MODE mode,
-            [Out, ComAliasName("HDC")] out IntPtr hdc
+            [Out, ComAliasName("HDC")] IntPtr* hdc
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -32,7 +32,7 @@ namespace TerraFX.Interop.Desktop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int ReleaseDC(
             [In] ID2D1GdiInteropRenderTarget* This,
-            [In] /* readonly */ RECT* update = null
+            [In] RECT* update = null
         );
         #endregion
 

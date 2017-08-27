@@ -62,7 +62,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetFontFamilyName(
             [In] IDWriteTextLayout* This,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* fontFamilyName,
+            [In, ComAliasName("WCHAR[]")] char* fontFamilyName,
             [In] DWRITE_TEXT_RANGE textRange
         );
 
@@ -194,7 +194,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetLocaleName(
             [In] IDWriteTextLayout* This,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* localeName,
+            [In, ComAliasName("WCHAR[]")] char* localeName,
             [In] DWRITE_TEXT_RANGE textRange
         );
 
@@ -256,7 +256,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetFontFamilyName(
             [In] IDWriteTextLayout* This,
             [In, ComAliasName("UINT32")] uint currentPosition,
-            [Out, ComAliasName("WCHAR")] char* fontFamilyName,
+            [Out, ComAliasName("WCHAR[]")] char* fontFamilyName,
             [In, ComAliasName("UINT32")] uint nameSize,
             [Out] DWRITE_TEXT_RANGE* textRange = null
         );
@@ -423,7 +423,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetLocaleName(
             [In] IDWriteTextLayout* This,
             [In, ComAliasName("UINT32")] uint currentPosition,
-            [Out, ComAliasName("WCHAR")] char* localeName,
+            [Out, ComAliasName("WCHAR[]")] char* localeName,
             [In, ComAliasName("UINT32")] uint nameSize,
             [Out] DWRITE_TEXT_RANGE* textRange = null
         );
@@ -456,7 +456,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetLineMetrics(
             [In] IDWriteTextLayout* This,
-            [Out, Optional] DWRITE_LINE_METRICS* lineMetrics,
+            [Out, Optional, ComAliasName("DWRITE_LINE_METRICS[]")] DWRITE_LINE_METRICS* lineMetrics,
             [In, ComAliasName("UINT32")] uint maxLineCount,
             [Out, ComAliasName("UINT32")] uint* actualLineCount
         );
@@ -496,7 +496,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetClusterMetrics(
             [In] IDWriteTextLayout* This,
-            [Out, Optional] DWRITE_CLUSTER_METRICS* clusterMetrics,
+            [Out, Optional, ComAliasName("DWRITE_CLUSTER_METRICS[]")] DWRITE_CLUSTER_METRICS* clusterMetrics,
             [In, ComAliasName("UINT32")] uint maxClusterCount,
             [Out, ComAliasName("UINT32")] uint* actualClusterCount
         );
@@ -570,7 +570,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("UINT32")] uint textLength,
             [In, ComAliasName("FLOAT")] float originX,
             [In, ComAliasName("FLOAT")] float originY,
-            [Out, Optional] DWRITE_HIT_TEST_METRICS* hitTestMetrics,
+            [Out, Optional, ComAliasName("DWRITE_HIT_TEST_METRICS[]")] DWRITE_HIT_TEST_METRICS* hitTestMetrics,
             [In, ComAliasName("UINT32")] uint maxHitTestMetricsCount,
             [Out, ComAliasName("UINT32")] uint* actualHitTestMetricsCount
         );

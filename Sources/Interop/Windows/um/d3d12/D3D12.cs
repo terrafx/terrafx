@@ -888,7 +888,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HRESULT")]
         public static extern int D3D12SerializeRootSignature(
-            [In] /* readonly */ D3D12_ROOT_SIGNATURE_DESC* pRootSignature,
+            [In] D3D12_ROOT_SIGNATURE_DESC* pRootSignature,
             [In] D3D_ROOT_SIGNATURE_VERSION Version,
             [Out] ID3DBlob** ppBlob,
             [Out] ID3DBlob** ppErrorBlob = null
@@ -898,9 +898,9 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HRESULT")]
         public static extern int D3D12CreateRootSignatureDeserializer(
-            [In, ComAliasName("LPCVOID")] /* readonly */ void* pSrcData,
+            [In, ComAliasName("LPCVOID")] void* pSrcData,
             [In, ComAliasName("SIZE_T")] nuint SrcDataSizeInBytes,
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* pRootSignatureDeserializerInterface,
+            [In, ComAliasName("REFIID")] Guid* pRootSignatureDeserializerInterface,
             [Out] void** ppRootSignatureDeserializer
         );
 
@@ -908,7 +908,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HRESULT")]
         public static extern int D3D12SerializeVersionedRootSignature(
-            [In] /* readonly */ D3D12_VERSIONED_ROOT_SIGNATURE_DESC* pRootSignature,
+            [In] D3D12_VERSIONED_ROOT_SIGNATURE_DESC* pRootSignature,
             [Out] ID3DBlob** ppBlob,
             [Out] ID3DBlob** ppErrorBlob = null
         );
@@ -917,9 +917,9 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HRESULT")]
         public static extern int D3D12CreateVersionedRootSignatureDeserializer(
-            [In, ComAliasName("LPCVOID")] /* readonly */ void* pSrcData,
+            [In, ComAliasName("LPCVOID")] void* pSrcData,
             [In, ComAliasName("SIZE_T")] nuint SrcDataSizeInBytes,
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* pRootSignatureDeserializerInterface,
+            [In, ComAliasName("REFIID")] Guid* pRootSignatureDeserializerInterface,
             [Out] void** ppRootSignatureDeserializer
         );
 
@@ -929,7 +929,7 @@ namespace TerraFX.Interop
         public static extern int D3D12CreateDevice(
             [In, Optional] IUnknown* pAdapter,
             [In] D3D_FEATURE_LEVEL MinimumFeatureLevel,
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
+            [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppDevice = null
         );
 
@@ -937,7 +937,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HRESULT")]
         public static extern int D3D12GetDebugInterface(
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
+            [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvDebug = null
         );
 
@@ -946,9 +946,9 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public static extern int D3D12EnableExperimentalFeatures(
             [In, ComAliasName("UINT")] uint NumFeatures,
-            [In, ComAliasName("IID")] /* readonly */ Guid* pIIDs,
+            [In, ComAliasName("IID[]")] Guid* pIIDs,
             [In] void* pConfigurationStructs = null,
-            [In, ComAliasName("UINT")] uint* pConfigurationStructSizes = null
+            [In, ComAliasName("UINT[]")] uint* pConfigurationStructSizes = null
         );
         #endregion
     }

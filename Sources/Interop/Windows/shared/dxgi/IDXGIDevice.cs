@@ -30,11 +30,11 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateSurface(
             [In] IDXGIDevice* This,
-            [In] /* readonly */ DXGI_SURFACE_DESC* pDesc,
+            [In] DXGI_SURFACE_DESC* pDesc,
             [In, ComAliasName("UINT")] uint NumSurfaces,
             [In, ComAliasName("DXGI_USAGE")] uint Usage,
-            [In, Optional] /* readonly */ DXGI_SHARED_RESOURCE* pSharedResource,
-            [Out] IDXGISurface** ppSurface
+            [In, Optional] DXGI_SHARED_RESOURCE* pSharedResource,
+            [Out, ComAliasName("IDXGISurface*[]")] IDXGISurface** ppSurface
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -42,8 +42,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int QueryResourceResidency(
             [In] IDXGIDevice* This,
-            [In] /* readonly */ IUnknown** ppResources,
-            [Out] DXGI_RESIDENCY* pResidencyStatus,
+            [In, ComAliasName("IUnknown*[]")] IUnknown** ppResources,
+            [Out, ComAliasName("DXGI_RESIDENCY[]")] DXGI_RESIDENCY* pResidencyStatus,
             [In, ComAliasName("UINT")] uint NumResources
         );
 

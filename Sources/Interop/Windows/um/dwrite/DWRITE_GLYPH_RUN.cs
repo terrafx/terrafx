@@ -23,15 +23,16 @@ namespace TerraFX.Interop
         public uint glyphCount;
 
         /// <summary>The indices to render.</summary>
-        [ComAliasName("UINT16")]
-        public /* readonly */ ushort* glyphIndices;
+        [ComAliasName("UINT16[]")]
+        public ushort* glyphIndices;
 
         /// <summary>Glyph advance widths.</summary>
-        [ComAliasName("FLOAT")]
-        public /* readonly */ float* glyphAdvances;
+        [ComAliasName("FLOAT[]")]
+        public float* glyphAdvances;
 
         /// <summary>Glyph offsets.</summary>
-        public /* readonly */ DWRITE_GLYPH_OFFSET* glyphOffsets;
+        [ComAliasName("D3D12_MESSAGE_ID[]")]
+        public DWRITE_GLYPH_OFFSET* glyphOffsets;
 
         /// <summary>If true, specifies that glyphs are rotated 90 degrees to the left and vertical metrics are used. Vertical writing is achieved by specifying isSideways = true and rotating the entire run 90 degrees to the right via a rotate transform.</summary>
         [ComAliasName("BOOL")]

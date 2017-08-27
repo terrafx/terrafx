@@ -30,7 +30,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int ReadFileFragment(
             [In] IDWriteFontFileStream* This,
-            [Out] /* readonly */ void** fragmentStart,
+            [Out] void** fragmentStart,
             [In, ComAliasName("UINT64")] ulong fileOffset,
             [In, ComAliasName("UINT64")] ulong fragmentSize,
             [Out] void** fragmentContext

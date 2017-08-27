@@ -32,7 +32,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetContainerFormats(
             [In] IWICMetadataHandlerInfo* This,
             [In, ComAliasName("UINT")] uint cContainerFormats,
-            [In, Out, Optional, ComAliasName("GUID")] Guid* pguidContainerFormats,
+            [In, Out, Optional, ComAliasName("GUID[]")] Guid* pguidContainerFormats,
             [Out, ComAliasName("UINT")] uint* pcchActual
         );
 
@@ -42,7 +42,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetDeviceManufacturer(
             [In] IWICMetadataHandlerInfo* This,
             [In, ComAliasName("UINT")] uint cchDeviceManufacturer,
-            [In, Out, Optional, ComAliasName("WCHAR")] char* wzDeviceManufacturer,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzDeviceManufacturer,
             [Out, ComAliasName("UINT")] uint* pcchActual
         );
 
@@ -52,7 +52,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetDeviceModels(
             [In] IWICMetadataHandlerInfo* This,
             [In, ComAliasName("UINT")] uint cchDeviceModels,
-            [In, Out, Optional, ComAliasName("WCHAR")] char* wzDeviceModels,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzDeviceModels,
             [Out, ComAliasName("UINT")] uint* pcchActual
         );
 

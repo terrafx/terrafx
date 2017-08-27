@@ -39,8 +39,8 @@ namespace TerraFX.Interop
             [In, ComAliasName("FLOAT")] float baselineOriginY,
             [In] DWRITE_GLYPH_ORIENTATION_ANGLE orientationAngle,
             [In] DWRITE_MEASURING_MODE measuringMode,
-            [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
-            [In] /* readonly */ DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
+            [In] DWRITE_GLYPH_RUN* glyphRun,
+            [In] DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
             [In] IUnknown* clientDrawingEffect = null
         );
 
@@ -63,7 +63,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("FLOAT")] float baselineOriginX,
             [In, ComAliasName("FLOAT")] float baselineOriginY,
             [In] DWRITE_GLYPH_ORIENTATION_ANGLE orientationAngle,
-            [In] /* readonly */ DWRITE_UNDERLINE* underline,
+            [In] DWRITE_UNDERLINE* underline,
             [In] IUnknown* clientDrawingEffect = null
         );
 
@@ -85,7 +85,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("FLOAT")] float baselineOriginX,
             [In, ComAliasName("FLOAT")] float baselineOriginY,
             [In] DWRITE_GLYPH_ORIENTATION_ANGLE orientationAngle,
-            [In] /* readonly */ DWRITE_STRIKETHROUGH* strikethrough,
+            [In] DWRITE_STRIKETHROUGH* strikethrough,
             [In] IUnknown* clientDrawingEffect = null
         );
 

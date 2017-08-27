@@ -32,7 +32,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateEffect(
             [In] ID2D1EffectContext* This,
-            [In, ComAliasName("REFCLSID")] /* readonly */ Guid* effectId,
+            [In, ComAliasName("REFCLSID")] Guid* effectId,
             [Out] ID2D1Effect** effect
         );
 
@@ -41,7 +41,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetMaximumSupportedFeatureLevel(
             [In] ID2D1EffectContext* This,
-            [In] /* readonly */ D3D_FEATURE_LEVEL* featureLevels,
+            [In, ComAliasName("D3D_FEATURE_LEVEL[]")] D3D_FEATURE_LEVEL* featureLevels,
             [In, ComAliasName("UINT32")] uint featureLevelsCount,
             [Out] D3D_FEATURE_LEVEL* maximumSupportedFeatureLevel
         );
@@ -62,7 +62,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateBlendTransform(
             [In] ID2D1EffectContext* This,
             [In, ComAliasName("UINT32")] uint numInputs,
-            [In] /* readonly */ D2D1_BLEND_DESCRIPTION* blendDescription,
+            [In] D2D1_BLEND_DESCRIPTION* blendDescription,
             [Out] ID2D1BlendTransform** transform
         );
 
@@ -90,7 +90,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateBoundsAdjustmentTransform(
             [In] ID2D1EffectContext* This,
-            [In, ComAliasName("D2D1_RECT_L")] /* readonly */ RECT* outputRectangle,
+            [In, ComAliasName("D2D1_RECT_L")] RECT* outputRectangle,
             [Out] ID2D1BoundsAdjustmentTransform** transform
         );
 
@@ -99,8 +99,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int LoadPixelShader(
             [In] ID2D1EffectContext* This,
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* shaderId,
-            [In, ComAliasName("BYTE")] /* readonly */ byte* shaderBuffer,
+            [In, ComAliasName("REFGUID")] Guid* shaderId,
+            [In, ComAliasName("BYTE[]")] byte* shaderBuffer,
             [In, ComAliasName("UINT32")] uint shaderBufferCount
         );
 
@@ -109,8 +109,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int LoadVertexShader(
             [In] ID2D1EffectContext* This,
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* resourceId,
-            [In, ComAliasName("BYTE")] /* readonly */ byte* shaderBuffer,
+            [In, ComAliasName("REFGUID")] Guid* resourceId,
+            [In, ComAliasName("BYTE[]")] byte* shaderBuffer,
             [In, ComAliasName("UINT32")] uint shaderBufferCount
         );
 
@@ -119,8 +119,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int LoadComputeShader(
             [In] ID2D1EffectContext* This,
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* resourceId,
-            [In, ComAliasName("BYTE")]  /* readonly */ byte* shaderBuffer,
+            [In, ComAliasName("REFGUID")] Guid* resourceId,
+            [In, ComAliasName("BYTE[]")]  byte* shaderBuffer,
             [In, ComAliasName("UINT32")] uint shaderBufferCount
         );
 
@@ -129,7 +129,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("BOOL")]
         public /* static */ delegate int IsShaderLoaded(
             [In] ID2D1EffectContext* This,
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* shaderId
+            [In, ComAliasName("REFGUID")] Guid* shaderId
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -137,10 +137,10 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateResourceTexture(
             [In] ID2D1EffectContext* This,
-            [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* resourceId,
-            [In] /* readonly */ D2D1_RESOURCE_TEXTURE_PROPERTIES* resourceTextureProperties,
-            [In, Optional, ComAliasName("BYTE")] /* readonly */ byte* data,
-            [In, Optional, ComAliasName("UINT32")] /* readonly */ uint* strides,
+            [In, Optional, ComAliasName("GUID")] Guid* resourceId,
+            [In] D2D1_RESOURCE_TEXTURE_PROPERTIES* resourceTextureProperties,
+            [In, Optional, ComAliasName("BYTE[]")] byte* data,
+            [In, Optional, ComAliasName("UINT32[]")] uint* strides,
             [In, ComAliasName("UINT32")] uint dataSize,
             [Out] ID2D1ResourceTexture** resourceTexture
         );
@@ -150,7 +150,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int FindResourceTexture(
             [In] ID2D1EffectContext* This,
-            [In, ComAliasName("GUID")] /* readonly */ Guid* resourceId,
+            [In, ComAliasName("GUID")] Guid* resourceId,
             [Out] ID2D1ResourceTexture** resourceTexture
         );
 
@@ -159,9 +159,9 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateVertexBuffer(
             [In] ID2D1EffectContext* This,
-            [In] /* readonly */ D2D1_VERTEX_BUFFER_PROPERTIES* vertexBufferProperties,
-            [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* resourceId,
-            [In, Optional] /* readonly */ D2D1_CUSTOM_VERTEX_BUFFER_PROPERTIES* customVertexBufferProperties,
+            [In] D2D1_VERTEX_BUFFER_PROPERTIES* vertexBufferProperties,
+            [In, Optional, ComAliasName("GUID")] Guid* resourceId,
+            [In, Optional] D2D1_CUSTOM_VERTEX_BUFFER_PROPERTIES* customVertexBufferProperties,
             [Out] ID2D1VertexBuffer** buffer
         );
 
@@ -170,7 +170,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int FindVertexBuffer(
             [In] ID2D1EffectContext* This,
-            [In, ComAliasName("GUID")] /* readonly */ Guid* resourceId,
+            [In, ComAliasName("GUID")] Guid* resourceId,
             [Out] ID2D1VertexBuffer** buffer
         );
 
@@ -181,7 +181,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateColorContext(
             [In] ID2D1EffectContext* This,
             [In] D2D1_COLOR_SPACE space,
-            [In, Optional, ComAliasName("BYTE")] /* readonly */ byte* profile,
+            [In, Optional, ComAliasName("BYTE[]")] byte* profile,
             [In, ComAliasName("UINT32")] uint profileSize,
             [Out] ID2D1ColorContext** colorContext
         );
@@ -191,7 +191,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateColorContextFromFilename(
             [In] ID2D1EffectContext* This,
-            [In, ComAliasName("PCWSTR")] /* readonly */ char* filename,
+            [In, ComAliasName("PCWSTR")] char* filename,
             [Out] ID2D1ColorContext** colorContext
         );
 

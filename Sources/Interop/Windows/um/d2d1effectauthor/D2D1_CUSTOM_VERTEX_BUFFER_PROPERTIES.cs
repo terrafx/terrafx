@@ -11,13 +11,14 @@ namespace TerraFX.Interop
     public /* blittable */ unsafe struct D2D1_CUSTOM_VERTEX_BUFFER_PROPERTIES
     {
         #region Fields
-        [ComAliasName("BYTE")]
-        public /* readonly */ byte* shaderBufferWithInputSignature;
+        [ComAliasName("BYTE[]")]
+        public byte* shaderBufferWithInputSignature;
 
         [ComAliasName("UINT32")]
         public uint shaderBufferSize;
 
-        public /* readonly */ D2D1_INPUT_ELEMENT_DESC* inputElements;
+        [ComAliasName("D2D1_INPUT_ELEMENT_DESC[]")]
+        public D2D1_INPUT_ELEMENT_DESC* inputElements;
 
         [ComAliasName("UINT32")]
         public uint elementCount;

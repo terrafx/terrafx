@@ -22,9 +22,9 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreatePipelineLibrary(
             [In] ID3D12Device1* This,
-            [In] /* readonly */ void* pLibraryBlob,
+            [In] void* pLibraryBlob,
             [In, ComAliasName("SIZE_T")] nuint BlobLength,
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
+            [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppPipelineLibrary
         );
 
@@ -33,8 +33,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetEventOnMultipleFenceCompletion(
             [In] ID3D12Device1* This,
-            [In] /* readonly */ ID3D12Fence** ppFences,
-            [In, ComAliasName("UINT64")] /* readonly */ ulong* pFenceValues,
+            [In, ComAliasName("ID3D12Fence*[]")] ID3D12Fence** ppFences,
+            [In, ComAliasName("UINT64[]")] ulong* pFenceValues,
             [In, ComAliasName("UINT")] uint NumFences,
             [In] D3D12_MULTIPLE_FENCE_WAIT_FLAGS Flags,
             [In, ComAliasName("HANDLE")] IntPtr hEvent
@@ -46,8 +46,8 @@ namespace TerraFX.Interop
         public /* static */ delegate int SetResidencyPriority(
             [In] ID3D12Device1* This,
             [In, ComAliasName("UINT")] uint NumObjects,
-            [In] /* readonly */ ID3D12Pageable** ppObjects,
-            [In] /* readonly */ D3D12_RESIDENCY_PRIORITY* pPriorities
+            [In, ComAliasName("ID3D12Pageable*[]")] ID3D12Pageable** ppObjects,
+            [In, ComAliasName("D3D12_RESIDENCY_PRIORITY[]")] D3D12_RESIDENCY_PRIORITY* pPriorities
         );
         #endregion
 

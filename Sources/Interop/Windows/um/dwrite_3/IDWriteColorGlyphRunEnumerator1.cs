@@ -26,7 +26,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetCurrentRun(
             [In] IDWriteColorGlyphRunEnumerator1* This,
-            [Out] /* readonly */ DWRITE_COLOR_GLYPH_RUN1** colorGlyphRun
+            [Out] DWRITE_COLOR_GLYPH_RUN1** colorGlyphRun
         );
         #endregion
 

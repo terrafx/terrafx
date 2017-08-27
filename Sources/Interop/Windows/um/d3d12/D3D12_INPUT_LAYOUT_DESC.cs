@@ -10,7 +10,8 @@ namespace TerraFX.Interop
     public /* blittable */ unsafe struct D3D12_INPUT_LAYOUT_DESC
     {
         #region Fields
-        public /* readonly */ D3D12_INPUT_ELEMENT_DESC* pInputElementDescs;
+        [ComAliasName("D3D12_INPUT_ELEMENT_DESC[]")]
+        public D3D12_INPUT_ELEMENT_DESC* pInputElementDescs;
 
         [ComAliasName("UINT")]
         public uint NumElements;

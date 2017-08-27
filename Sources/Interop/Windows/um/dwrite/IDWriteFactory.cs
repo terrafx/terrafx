@@ -44,7 +44,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateCustomFontCollection(
             [In] IDWriteFactory* This,
             [In] IDWriteFontCollectionLoader* collectionLoader,
-            [In] /* readonly */ void* collectionKey,
+            [In] void* collectionKey,
             [In, ComAliasName("UINT32")] uint collectionKeySize,
             [Out] IDWriteFontCollection** fontCollection
         );
@@ -81,8 +81,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateFontFileReference(
             [In] IDWriteFactory* This,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* filePath,
-            [In, Optional] /* readonly */ FILETIME* lastWriteTime,
+            [In, ComAliasName("WCHAR[]")] char* filePath,
+            [In, Optional] FILETIME* lastWriteTime,
             [Out] IDWriteFontFile** fontFile
         );
 
@@ -98,7 +98,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateCustomFontFileReference(
             [In] IDWriteFactory* This,
-            [In] /* readonly */ void* fontFileReferenceKey,
+            [In] void* fontFileReferenceKey,
             [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
             [In] IDWriteFontFileLoader* fontFileLoader,
             [Out] IDWriteFontFile** fontFile
@@ -119,7 +119,7 @@ namespace TerraFX.Interop
             [In] IDWriteFactory* This,
             [In] DWRITE_FONT_FACE_TYPE fontFaceType,
             [In, ComAliasName("UINT32")] uint numberOfFiles,
-            [In] /* readonly */ IDWriteFontFile** fontFiles,
+            [In, ComAliasName("IDWriteFontFile*[]")] IDWriteFontFile** fontFiles,
             [In, ComAliasName("UINT32")] uint faceIndex,
             [In] DWRITE_FONT_SIMULATIONS fontFaceSimulationFlags,
             [Out] IDWriteFontFace** fontFace
@@ -209,13 +209,13 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateTextFormat(
             [In] IDWriteFactory* This,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* fontFamilyName,
+            [In, ComAliasName("WCHAR[]")] char* fontFamilyName,
             [In, Optional] IDWriteFontCollection* fontCollection,
             [In] DWRITE_FONT_WEIGHT fontWeight,
             [In] DWRITE_FONT_STYLE fontStyle,
             [In] DWRITE_FONT_STRETCH fontStretch,
             [In, ComAliasName("FLOAT")] float fontSize,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* localeName,
+            [In, ComAliasName("WCHAR[]")] char* localeName,
             [Out] IDWriteTextFormat** textFormat
         );
 
@@ -254,7 +254,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateTextLayout(
             [In] IDWriteFactory* This,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* @string,
+            [In, ComAliasName("WCHAR[]")] char* @string,
             [In, ComAliasName("UINT32")] uint stringLength,
             [In] IDWriteTextFormat* textFormat,
             [In, ComAliasName("FLOAT")] float maxWidth,
@@ -278,13 +278,13 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateGdiCompatibleTextLayout(
             [In] IDWriteFactory* This,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* @string,
+            [In, ComAliasName("WCHAR[]")] char* @string,
             [In, ComAliasName("UINT32")] uint stringLength,
             [In] IDWriteTextFormat* textFormat,
             [In, ComAliasName("FLOAT")] float layoutWidth,
             [In, ComAliasName("FLOAT")] float layoutHeight,
             [In, ComAliasName("FLOAT")] float pixelsPerDip,
-            [In, Optional] /* readonly */ DWRITE_MATRIX* transform,
+            [In, Optional] DWRITE_MATRIX* transform,
             [In, ComAliasName("BOOL")] int useGdiNatural,
             [Out] IDWriteTextLayout** textLayout
         );
@@ -324,7 +324,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateNumberSubstitution(
             [In] IDWriteFactory* This,
             [In] DWRITE_NUMBER_SUBSTITUTION_METHOD substitutionMethod,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* localeName,
+            [In, ComAliasName("WCHAR[]")] char* localeName,
             [In, ComAliasName("BOOL")] int ignoreUserOverride,
             [Out] IDWriteNumberSubstitution** numberSubstitution
         );
@@ -344,9 +344,9 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateGlyphRunAnalysis(
             [In] IDWriteFactory* This,
-            [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
+            [In] DWRITE_GLYPH_RUN* glyphRun,
             [In, ComAliasName("FLOAT")] float pixelsPerDip,
-            [In, Optional] /* readonly */ DWRITE_MATRIX* transform,
+            [In, Optional] DWRITE_MATRIX* transform,
             [In] DWRITE_RENDERING_MODE renderingMode,
             [In] DWRITE_MEASURING_MODE measuringMode,
             [In, ComAliasName("FLOAT")] float baselineOriginX,

@@ -23,13 +23,13 @@ namespace TerraFX.Interop
             [In] ID3D12CommandQueue* This,
             [In] ID3D12Resource* pResource,
             [In, ComAliasName("UINT")] uint NumResourceRegions,
-            [In, Optional] /* readonly */ D3D12_TILED_RESOURCE_COORDINATE* pResourceRegionStartCoordinates,
-            [In, Optional] /* readonly */ D3D12_TILE_REGION_SIZE* pResourceRegionSizes,
+            [In, Optional, ComAliasName("D3D12_TILED_RESOURCE_COORDINATE[]")] D3D12_TILED_RESOURCE_COORDINATE* pResourceRegionStartCoordinates,
+            [In, Optional, ComAliasName("D3D12_TILE_REGION_SIZE[]")] D3D12_TILE_REGION_SIZE* pResourceRegionSizes,
             [In, Optional] ID3D12Heap* pHeap,
             [In, ComAliasName("UINT")] uint NumRanges,
-            [In, Optional] /* readonly */ D3D12_TILE_RANGE_FLAGS* pRangeFlags,
-            [In, Optional, ComAliasName("UINT")] /* readonly */ uint* pHeapRangeStartOffsets,
-            [In, Optional, ComAliasName("UINT")] /* readonly */ uint* pRangeTileCounts,
+            [In, Optional, ComAliasName("D3D12_TILE_RANGE_FLAGS[]")] D3D12_TILE_RANGE_FLAGS* pRangeFlags,
+            [In, Optional, ComAliasName("UINT[]")] uint* pHeapRangeStartOffsets,
+            [In, Optional, ComAliasName("UINT[]")] uint* pRangeTileCounts,
             [In] D3D12_TILE_MAPPING_FLAGS Flags
         );
 
@@ -38,10 +38,10 @@ namespace TerraFX.Interop
         public /* static */ delegate void CopyTileMappings(
             [In] ID3D12CommandQueue* This,
             [In] ID3D12Resource* pDstResource,
-            [In] /* readonly */ D3D12_TILED_RESOURCE_COORDINATE* pDstRegionStartCoordinate,
+            [In] D3D12_TILED_RESOURCE_COORDINATE* pDstRegionStartCoordinate,
             [In] ID3D12Resource* pSrcResource,
-            [In] /* readonly */ D3D12_TILED_RESOURCE_COORDINATE* pSrcRegionStartCoordinate,
-            [In] /* readonly */ D3D12_TILE_REGION_SIZE* pRegionSize,
+            [In] D3D12_TILED_RESOURCE_COORDINATE* pSrcRegionStartCoordinate,
+            [In] D3D12_TILE_REGION_SIZE* pRegionSize,
             [In] D3D12_TILE_MAPPING_FLAGS Flags
         );
 
@@ -50,7 +50,7 @@ namespace TerraFX.Interop
         public /* static */ delegate void ExecuteCommandLists(
             [In] ID3D12CommandQueue* This,
             [In, ComAliasName("UINT")] uint NumCommandLists,
-            [In] /* readonly */ ID3D12CommandList** ppCommandLists
+            [In, ComAliasName("ID3D12CommandList*[]")] ID3D12CommandList** ppCommandLists
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -58,7 +58,7 @@ namespace TerraFX.Interop
         public /* static */ delegate void SetMarker(
             [In] ID3D12CommandQueue* This,
             [In, ComAliasName("UINT")] uint Metadata,
-            [In, Optional] /* readonly */ void* pData,
+            [In, Optional] void* pData,
             [In, ComAliasName("UINT")] uint Size
         );
 
@@ -67,7 +67,7 @@ namespace TerraFX.Interop
         public /* static */ delegate void BeginEvent(
             [In] ID3D12CommandQueue* This,
             [In, ComAliasName("UINT")] uint Metadata,
-            [In, Optional] /* readonly */ void* pData,
+            [In, Optional] void* pData,
             [In, ComAliasName("UINT")] uint Size
         );
 
@@ -114,8 +114,9 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D3D12_COMMAND_QUEUE_DESC GetDesc(
-            [In] ID3D12CommandQueue* This
+        public /* static */ delegate void GetDesc(
+            [In] ID3D12CommandQueue* This,
+            [Out] D3D12_COMMAND_QUEUE_DESC* pDesc
         );
         #endregion
 

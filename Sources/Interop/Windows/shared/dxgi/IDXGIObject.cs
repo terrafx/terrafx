@@ -22,9 +22,9 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetPrivateData(
             [In] IDXGIObject* This,
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* Name,
+            [In, ComAliasName("REFGUID")] Guid* Name,
             [In, ComAliasName("UINT")] uint DataSize,
-            [In] /* readonly */ void* pData
+            [In] void* pData
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -32,8 +32,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetPrivateDataInterface(
             [In] IDXGIObject* This,
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* Name,
-            [In] /* readonly */ IUnknown* pUnknown = null
+            [In, ComAliasName("REFGUID")] Guid* Name,
+            [In] IUnknown* pUnknown = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -41,7 +41,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetPrivateData(
             [In] IDXGIObject* This,
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* Name,
+            [In, ComAliasName("REFGUID")] Guid* Name,
             [In, Out, ComAliasName("UINT")] uint* pDataSize,
             [Out] void* pData
         );
@@ -51,7 +51,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetParent(
             [In] IDXGIObject* This,
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
+            [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppParent
         );
         #endregion

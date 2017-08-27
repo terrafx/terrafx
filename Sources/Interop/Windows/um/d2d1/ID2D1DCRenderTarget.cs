@@ -23,8 +23,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int BindDC(
             [In] ID2D1DCRenderTarget* This,
-            [In, ComAliasName("HDC")] /* readonly */ IntPtr hDC,
-            [In] /* readonly */ RECT* pSubRect
+            [In, ComAliasName("HDC")] IntPtr hDC,
+            [In] RECT* pSubRect
         );
         #endregion
 

@@ -36,8 +36,8 @@ namespace TerraFX.Interop
         public DWRITE_FLOW_DIRECTION flowDirection;
 
         /// <summary>Locale of the text the underline is being drawn under. Can be pertinent where the locale affects how the underline is drawn. For example, in vertical text, the underline belongs on the left for Chinese but on the right for Japanese. This choice is completely left up to higher levels.</summary>
-        [ComAliasName("WCHAR")]
-        public /* readonly */ char* localeName;
+        [ComAliasName("WCHAR[]")]
+        public char* localeName;
 
         /// <summary>The measuring mode can be useful to the renderer to determine how
         /// underlines are rendered, e.g. rounding the thickness to a whole pixel

@@ -28,7 +28,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateStreamFromKey(
             [In] IDWriteFontFileLoader* This,
-            [In] /* readonly */ void* fontFileReferenceKey,
+            [In] void* fontFileReferenceKey,
             [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
             [Out] IDWriteFontFileStream** fontFileStream
         );

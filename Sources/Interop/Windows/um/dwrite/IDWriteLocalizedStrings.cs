@@ -36,7 +36,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int FindLocaleName(
             [In] IDWriteLocalizedStrings* This,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* localeName,
+            [In, ComAliasName("WCHAR[]")] char* localeName,
             [Out, ComAliasName("UINT32")] uint* index,
             [Out, ComAliasName("BOOL")] int* exists
         );
@@ -65,7 +65,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetLocaleName(
             [In] IDWriteLocalizedStrings* This,
             [In, ComAliasName("UINT32")] uint index,
-            [Out, ComAliasName("WCHAR")] char* localeName,
+            [Out, ComAliasName("WCHAR[]")] char* localeName,
             [In, ComAliasName("UINT32")] uint size
         );
 
@@ -93,7 +93,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetString(
             [In] IDWriteLocalizedStrings* This,
             [In, ComAliasName("UINT32")] uint index,
-            [Out, ComAliasName("WCHAR")] char* stringBuffer,
+            [Out, ComAliasName("WCHAR[]")] char* stringBuffer,
             [In, ComAliasName("UINT32")] uint size
         );
         #endregion

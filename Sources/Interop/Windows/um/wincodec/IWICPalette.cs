@@ -31,7 +31,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int InitializeCustom(
             [In] IWICPalette* This,
-            [In, ComAliasName("WICColor")] uint* pColors,
+            [In, ComAliasName("WICColor[]")] uint* pColors,
             [In, ComAliasName("UINT")] uint cCount
         );
 
@@ -75,7 +75,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetColors(
             [In] IWICPalette* This,
             [In, ComAliasName("UINT")] uint cCount,
-            [Out, ComAliasName("WICColor")] uint* pColors,
+            [Out, ComAliasName("WICColor[]")] uint* pColors,
             [Out, ComAliasName("UINT")] uint* pcActualColors
         );
 

@@ -96,7 +96,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("UINT")] uint scanIndex,
             [In, ComAliasName("UINT")] uint scanOffset,
             [In, ComAliasName("UINT")] uint cbScanData,
-            [Out, ComAliasName("BYTE")] byte* pbScanData,
+            [Out, ComAliasName("BYTE[]")] byte* pbScanData,
             [Out, ComAliasName("UINT")] uint* pcbScanDataActual
         );
 
@@ -107,7 +107,7 @@ namespace TerraFX.Interop
             [In] IWICJpegFrameDecode* This,
             [In, ComAliasName("UINT")] uint streamOffset,
             [In, ComAliasName("UINT")] uint cbStreamData,
-            [Out, ComAliasName("BYTE")] byte* pbStreamData,
+            [Out, ComAliasName("BYTE[]")] byte* pbStreamData,
             [Out, ComAliasName("UINT")] uint* pcbStreamDataActual
         );
         #endregion

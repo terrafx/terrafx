@@ -48,7 +48,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int SetColorContexts(
             [In] IWICBitmapEncoder* This,
             [In, ComAliasName("UINT")] uint cCount,
-            [In] IWICColorContext** ppIColorContext
+            [In, ComAliasName("IWICColorContext*[]")] IWICColorContext** ppIColorContext
         );
 
         [SuppressUnmanagedCodeSecurity]

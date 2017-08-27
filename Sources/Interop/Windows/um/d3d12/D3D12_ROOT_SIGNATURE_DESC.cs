@@ -13,12 +13,14 @@ namespace TerraFX.Interop
         [ComAliasName("UINT")]
         public uint NumParameters;
 
-        public /* readonly */ D3D12_ROOT_PARAMETER* pParameters;
+        [ComAliasName("D3D12_ROOT_PARAMETER[]")]
+        public D3D12_ROOT_PARAMETER* pParameters;
 
         [ComAliasName("UINT")]
         public uint NumStaticSamplers;
 
-        public /* readonly */ D3D12_STATIC_SAMPLER_DESC* pStaticSamplers;
+        [ComAliasName("D3D12_STATIC_SAMPLER_DESC[]")]
+        public D3D12_STATIC_SAMPLER_DESC* pStaticSamplers;
 
         public D3D12_ROOT_SIGNATURE_FLAGS Flags;
         #endregion

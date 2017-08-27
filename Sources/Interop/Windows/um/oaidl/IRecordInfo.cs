@@ -80,7 +80,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetField(
             [In] IRecordInfo* This,
             [In, ComAliasName("PVOID")] void* pvData,
-            [In, ComAliasName("LPCOLESTR")] /* readonly */ char* szFieldName,
+            [In, ComAliasName("LPCOLESTR")] char* szFieldName,
             [Out] VARIANT* pvarField
         );
 
@@ -90,7 +90,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetFieldNoCopy(
             [In] IRecordInfo* This,
             [In, ComAliasName("PVOID")] void* pvData,
-            [In, ComAliasName("LPCOLESTR")] /* readonly */ char* szFieldName,
+            [In, ComAliasName("LPCOLESTR")] char* szFieldName,
             [Out] VARIANT* pvarField,
             [Out, ComAliasName("PVOID")] void** ppvDataCArray
         );
@@ -102,7 +102,7 @@ namespace TerraFX.Interop
             [In] IRecordInfo* This,
             [In, ComAliasName("ULONG")] uint wFlags,
             [In, Out, ComAliasName("PVOID")] void* pvData,
-            [In, ComAliasName("LPCOLESTR")] /* readonly */ char* szFieldName,
+            [In, ComAliasName("LPCOLESTR")] char* szFieldName,
             [In] VARIANT* pvarField
         );
 
@@ -113,7 +113,7 @@ namespace TerraFX.Interop
             [In] IRecordInfo* This,
             [In, ComAliasName("ULONG")] uint wFlags,
             [In, Out, ComAliasName("PVOID")] void* pvData,
-            [In, ComAliasName("LPCOLESTR")] /* readonly */ char* szFieldName,
+            [In, ComAliasName("LPCOLESTR")] char* szFieldName,
             [In] VARIANT* pvarField
         );
 
@@ -123,7 +123,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetFieldNames(
             [In] IRecordInfo* This,
             [In, Out, ComAliasName("ULONG")] uint* pcNames,
-            [Out, ComAliasName("BSTR")] char** rgBstrNames
+            [Out, ComAliasName("BSTR[]")] char** rgBstrNames
         );
 
         [SuppressUnmanagedCodeSecurity]

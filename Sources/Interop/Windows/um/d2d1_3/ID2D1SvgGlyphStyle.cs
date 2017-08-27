@@ -48,7 +48,7 @@ namespace TerraFX.Interop
             [In] ID2D1SvgGlyphStyle* This,
             [In] ID2D1Brush* brush = null,
             [In, ComAliasName("FLOAT")] float strokeWidth = 1.0f,
-            [In, ComAliasName("FLOAT")] /* readonly */ float* dashes = null,
+            [In, ComAliasName("FLOAT[]")] float* dashes = null,
             [In, ComAliasName("UINT32")] uint dashesCount = 0,
             [In, ComAliasName("FLOAT")] float dashOffset = 1.0f
         );
@@ -68,7 +68,7 @@ namespace TerraFX.Interop
             [In] ID2D1SvgGlyphStyle* This,
             [Out] ID2D1Brush** brush = null,
             [Out, ComAliasName("FLOAT")] float* strokeWidth = null,
-            [Out, ComAliasName("FLOAT")] float* dashes = null,
+            [Out, ComAliasName("FLOAT[]")] float* dashes = null,
             [In, ComAliasName("UINT32")] uint dashesCount = 0,
             [Out, ComAliasName("FLOAT")] float* dashOffset = null
         );

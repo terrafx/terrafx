@@ -39,7 +39,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public static extern int CreateDXGIFactory2(
             [In, ComAliasName("UINT")] uint Flags,
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
+            [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppFactory
         );
 
@@ -48,7 +48,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public static extern int DXGIGetDebugInterface1(
             [In, ComAliasName("UINT")] uint Flags,
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
+            [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** pDebug
         );
         #endregion

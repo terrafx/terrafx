@@ -28,7 +28,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetFilePathLengthFromKey(
             [In] IDWriteLocalFontFileLoader* This,
-            [In] /* readonly */ void* fontFileReferenceKey,
+            [In] void* fontFileReferenceKey,
             [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
             [Out, ComAliasName("UINT32")] uint* filePathLength
         );
@@ -44,9 +44,9 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetFilePathFromKey(
             [In] IDWriteLocalFontFileLoader* This,
-            [In] /* readonly */ void* fontFileReferenceKey,
+            [In] void* fontFileReferenceKey,
             [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
-            [Out, ComAliasName("WCHAR")] char* filePath,
+            [Out, ComAliasName("WCHAR[]")] char* filePath,
             [In, ComAliasName("UINT32")] uint filePathSize
         );
 
@@ -60,7 +60,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetLastWriteTimeFromKey(
             [In] IDWriteLocalFontFileLoader* This,
-            [In] /* readonly */ void* fontFileReferenceKey,
+            [In] void* fontFileReferenceKey,
             [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
             [Out] FILETIME* lastWriteTime
         );

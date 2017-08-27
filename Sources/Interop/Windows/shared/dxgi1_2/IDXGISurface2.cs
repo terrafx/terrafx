@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetResource(
             [In] IDXGISurface2* This,
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
+            [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppParentResource,
             [Out, ComAliasName("UINT")] uint* pSubresourceIndex
         );

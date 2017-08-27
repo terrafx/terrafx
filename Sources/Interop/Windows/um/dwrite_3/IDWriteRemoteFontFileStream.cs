@@ -61,8 +61,8 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int BeginDownload(
-            [In, ComAliasName("GUID")] /* readonly */ Guid* downloadOperationID,
-            [In] /* readonly */ DWRITE_FILE_FRAGMENT* fileFragments,
+            [In, ComAliasName("GUID")] Guid* downloadOperationID,
+            [In, ComAliasName("DWRITE_FILE_FRAGMENT[]")] DWRITE_FILE_FRAGMENT* fileFragments,
             [In, ComAliasName("UINT32")] uint fragmentCount,
             [Out] IDWriteAsyncResult** asyncResult
         );

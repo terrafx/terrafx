@@ -34,7 +34,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int FindClosestMatchingMode1(
             [In] IDXGIOutput1* This,
-            [In] /* readonly */ DXGI_MODE_DESC1* pModeToMatch,
+            [In] DXGI_MODE_DESC1* pModeToMatch,
             [Out] DXGI_MODE_DESC1* pClosestMatch,
             [In] IUnknown* pConcernedDevice = null
         );

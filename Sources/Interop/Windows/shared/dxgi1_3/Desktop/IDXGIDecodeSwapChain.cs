@@ -32,7 +32,7 @@ namespace TerraFX.Interop.Desktop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetSourceRect(
             [In] IDXGIDecodeSwapChain* This,
-            [In] /* readonly */ RECT* pRect
+            [In] RECT* pRect
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -40,7 +40,7 @@ namespace TerraFX.Interop.Desktop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetTargetRect(
             [In] IDXGIDecodeSwapChain* This,
-            [In] /* readonly */ RECT* pRect
+            [In] RECT* pRect
         );
 
         [SuppressUnmanagedCodeSecurity]

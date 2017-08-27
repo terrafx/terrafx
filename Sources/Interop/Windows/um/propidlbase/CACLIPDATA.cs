@@ -13,6 +13,7 @@ namespace TerraFX.Interop
         [ComAliasName("ULONG")]
         public uint cElems;
 
+        [ComAliasName("CLIPDATA[]")]
         public CLIPDATA* pElems;
         #endregion
     }

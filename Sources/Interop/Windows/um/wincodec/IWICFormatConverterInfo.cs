@@ -23,7 +23,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetPixelFormats(
             [In] IWICFormatConverterInfo* This,
             [In, ComAliasName("UINT")] uint cFormats,
-            [In, Out, Optional, ComAliasName("WICPixelFormatGUID")] Guid* pPixelFormatGUIDs,
+            [In, Out, Optional, ComAliasName("WICPixelFormatGUID[]")] Guid* pPixelFormatGUIDs,
             [Out, ComAliasName("UINT")] uint* pcActual
         );
 

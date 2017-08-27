@@ -104,8 +104,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public static extern int D2D1CreateFactory(
             [In] D2D1_FACTORY_TYPE factoryType,
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
-            [In, Optional] /* readonly */ D2D1_FACTORY_OPTIONS* pFactoryOptions,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, Optional] D2D1_FACTORY_OPTIONS* pFactoryOptions,
             [Out] void** ppIFactory
         );
 
@@ -130,7 +130,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("BOOL")]
         public static extern int D2D1IsMatrixInvertible(
-            [In, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* matrix
+            [In, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* matrix
         );
 
         [DllImport("D2D1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1InvertMatrix", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]

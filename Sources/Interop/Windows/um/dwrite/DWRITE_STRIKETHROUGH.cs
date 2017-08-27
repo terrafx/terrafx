@@ -31,8 +31,8 @@ namespace TerraFX.Interop
         public DWRITE_FLOW_DIRECTION flowDirection;
 
         /// <summary>Locale of the range. Can be pertinent where the locale affects the style.</summary>
-        [ComAliasName("WCHAR")]
-        public /* readonly */ char* localeName;
+        [ComAliasName("WCHAR[]")]
+        public char* localeName;
 
         /// <summary>The measuring mode can be useful to the renderer to determine how
         /// underlines are rendered, e.g. rounding the thickness to a whole pixel

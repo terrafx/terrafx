@@ -39,7 +39,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CheckInterfaceSupport(
             [In] IDXGIAdapter* This,
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* InterfaceName,
+            [In, ComAliasName("REFGUID")] Guid* InterfaceName,
             [Out] LARGE_INTEGER* pUMDVersion
         );
         #endregion

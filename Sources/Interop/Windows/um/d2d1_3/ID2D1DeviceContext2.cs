@@ -23,7 +23,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateInk(
             [In] ID2D1DeviceContext2* This,
-            [In] /* readonly */ D2D1_INK_POINT* startPoint,
+            [In] D2D1_INK_POINT* startPoint,
             [Out] ID2D1Ink** ink
         );
 
@@ -33,7 +33,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateInkStyle(
             [In] ID2D1DeviceContext2* This,
-            [In, Optional] /* readonly */ D2D1_INK_STYLE_PROPERTIES* inkStyleProperties,
+            [In, Optional] D2D1_INK_STYLE_PROPERTIES* inkStyleProperties,
             [Out] ID2D1InkStyle** inkStyle
         );
 
@@ -42,7 +42,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateGradientMesh(
             [In] ID2D1DeviceContext2* This,
-            [In] /* readonly */ D2D1_GRADIENT_MESH_PATCH* patches,
+            [In, ComAliasName("D2D1_GRADIENT_MESH_PATCH[]")] D2D1_GRADIENT_MESH_PATCH* patches,
             [In, ComAliasName("UINT32")] uint patchesCount,
             [Out] ID2D1GradientMesh** gradientMesh
         );
@@ -65,10 +65,10 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateLookupTable3D(
             [In] ID2D1DeviceContext2* This,
             [In] D2D1_BUFFER_PRECISION precision,
-            [In, ComAliasName("UINT32")] /* readonly */ uint* extents,
-            [In, ComAliasName("BYTE")] /* readonly */ byte* data,
+            [In, ComAliasName("UINT32[]")] uint* extents,
+            [In, ComAliasName("BYTE[]")] byte* data,
             [In, ComAliasName("UINT32")] uint dataCount,
-            [In, ComAliasName("UINT32")] /* readonly */ uint* strides,
+            [In, ComAliasName("UINT32[]")] uint* strides,
             [Out] ID2D1LookupTable3D** lookupTable
         );
 
@@ -77,7 +77,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateImageSourceFromDxgi(
             [In] ID2D1DeviceContext2* This,
-            [In] IDXGISurface** surfaces,
+            [In, ComAliasName("IDXGISurface*[]")] IDXGISurface** surfaces,
             [In, ComAliasName("UINT32")] uint surfaceCount,
             [In] DXGI_COLOR_SPACE_TYPE colorSpace,
             [In] D2D1_IMAGE_SOURCE_FROM_DXGI_OPTIONS options,
@@ -116,8 +116,8 @@ namespace TerraFX.Interop
         public /* static */ delegate void DrawGdiMetafile(
             [In] ID2D1DeviceContext2* This,
             [In] ID2D1GdiMetafile* gdiMetafile,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangle = null,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* sourceRectangle = null
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* destinationRectangle = null,
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* sourceRectangle = null
         );
 
         /// <summary>Creates an image source which shares resources with an original.</summary>
@@ -127,7 +127,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateTransformedImageSource(
             [In] ID2D1DeviceContext2* This,
             [In] ID2D1ImageSource* imageSource,
-            [In] /* readonly */ D2D1_TRANSFORMED_IMAGE_SOURCE_PROPERTIES* properties,
+            [In] D2D1_TRANSFORMED_IMAGE_SOURCE_PROPERTIES* properties,
             [Out] ID2D1TransformedImageSource** transformedImageSource
         );
         #endregion

@@ -61,7 +61,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public static extern int D2D1CreateDevice(
             [In] IDXGIDevice* dxgiDevice,
-            [In, Optional] /* readonly */ D2D1_CREATION_PROPERTIES* creationProperties,
+            [In, Optional] D2D1_CREATION_PROPERTIES* creationProperties,
             [Out] ID2D1Device** d2dDevice
         );
 
@@ -70,7 +70,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public static extern int D2D1CreateDeviceContext(
             [In] IDXGISurface* dxgiSurface,
-            [In, Optional] /* readonly */ D2D1_CREATION_PROPERTIES* creationProperties,
+            [In, Optional] D2D1_CREATION_PROPERTIES* creationProperties,
             [Out] ID2D1DeviceContext** d2dDeviceContext
         );
 
@@ -80,7 +80,7 @@ namespace TerraFX.Interop
         public static extern DXGI_RGBA D2D1ConvertColorSpace(
             [In] D2D1_COLOR_SPACE sourceColorSpace,
             [In] D2D1_COLOR_SPACE destinationColorSpace,
-            [In, ComAliasName("D2D1_COLOR_F")] /* readonly */ DXGI_RGBA* color
+            [In, ComAliasName("D2D1_COLOR_F")] DXGI_RGBA* color
         );
 
         [DllImport("D2D1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1SinCos", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]

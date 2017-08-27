@@ -250,7 +250,7 @@ namespace TerraFX.Interop
             [In] DXGI_INFO_QUEUE_MESSAGE_CATEGORY Category,
             [In] DXGI_INFO_QUEUE_MESSAGE_SEVERITY Severity,
             [In, ComAliasName("DXGI_INFO_QUEUE_MESSAGE_ID")] int ID,
-            [In, ComAliasName("LPCSTR")] /* readonly */ sbyte* pDescription
+            [In, ComAliasName("LPCSTR")] sbyte* pDescription
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -259,7 +259,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int AddApplicationMessage(
             [In] IDXGIInfoQueue* This,
             [In] DXGI_INFO_QUEUE_MESSAGE_SEVERITY Severity,
-            [In, ComAliasName("LPCSTR")] /* readonly */ sbyte* pDescription
+            [In, ComAliasName("LPCSTR")] sbyte* pDescription
         );
 
         [SuppressUnmanagedCodeSecurity]

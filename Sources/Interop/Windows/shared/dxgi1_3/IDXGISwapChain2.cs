@@ -63,7 +63,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetMatrixTransform(
             [In] IDXGISwapChain2* This,
-            [In] /* readonly */ DXGI_MATRIX_3X2_F* pMatrix
+            [In] DXGI_MATRIX_3X2_F* pMatrix
         );
 
         [SuppressUnmanagedCodeSecurity]

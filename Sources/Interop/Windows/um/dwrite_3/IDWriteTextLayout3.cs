@@ -34,7 +34,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetLineSpacing(
             [In] IDWriteTextLayout3* This,
-            [In] /* readonly */ DWRITE_LINE_SPACING* lineSpacingOptions
+            [In] DWRITE_LINE_SPACING* lineSpacingOptions
         );
 
         /// <summary>Get line spacing.</summary>
@@ -59,7 +59,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetLineMetrics(
             [In] IDWriteTextLayout3* This,
-            [Out, Optional] DWRITE_LINE_METRICS1* lineMetrics,
+            [Out, Optional, ComAliasName("DWRITE_LINE_METRICS1[]")] DWRITE_LINE_METRICS1* lineMetrics,
             [In, ComAliasName("UINT32")] uint maxLineCount,
             [Out, ComAliasName("UINT32")] uint* actualLineCount
         );

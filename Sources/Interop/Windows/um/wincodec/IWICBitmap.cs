@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int Lock(
             [In] IWICBitmap* This,
-            [In, Optional] /* readonly */ WICRect* prcLock,
+            [In, Optional] WICRect* prcLock,
             [In, ComAliasName("DWORD")] uint flags,
             [Out] IWICBitmapLock** ppILock = null
         );

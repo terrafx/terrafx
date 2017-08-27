@@ -13,16 +13,19 @@ namespace TerraFX.Interop
         [ComAliasName("UINT")]
         public uint NumCategories;
 
+        [ComAliasName("D3D12_MESSAGE_CATEGORY[]")]
         public D3D12_MESSAGE_CATEGORY* pCategoryList;
 
         [ComAliasName("UINT")]
         public uint NumSeverities;
 
+        [ComAliasName("D3D12_MESSAGE_SEVERITY[]")]
         public D3D12_MESSAGE_SEVERITY* pSeverityList;
 
         [ComAliasName("UINT")]
         public uint NumIDs;
 
+        [ComAliasName("D3D12_MESSAGE_ID[]")]
         public D3D12_MESSAGE_ID* pIDList;
         #endregion
     }

@@ -24,8 +24,8 @@ namespace TerraFX.Interop.Desktop
         [return: ComAliasName("HWND")]
         public static extern IntPtr CreateWindowEx(
             [In, ComAliasName("DWORD")] uint dwExStyle,
-            [In, Optional, ComAliasName("LPCWSTR")] /* readonly */ char* lpClassName,
-            [In, Optional, ComAliasName("LPCWSTR")] /* readonly */ char* lpWindowName,
+            [In, Optional, ComAliasName("LPCWSTR")] char* lpClassName,
+            [In, Optional, ComAliasName("LPCWSTR")] char* lpWindowName,
             [In, ComAliasName("DWORD")] uint dwStyle,
             [In] int X,
             [In] int Y,
@@ -58,7 +58,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("LRESULT")]
         public static extern nint DispatchMessage(
-            [In] /* readonly */ MSG* lpMsg
+            [In] MSG* lpMsg
         );
 
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "GetActiveWindow", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
@@ -72,7 +72,7 @@ namespace TerraFX.Interop.Desktop
         [return: ComAliasName("BOOL")]
         public static extern int GetClassInfoEx(
             [In, Optional, ComAliasName("HINSTANCE")] IntPtr hInstance,
-            [In, ComAliasName("LPCWSTR")] /* readonly */ char* lpszClass,
+            [In, ComAliasName("LPCWSTR")] char* lpszClass,
             [Out, ComAliasName("LPWNDCLASSEX")] WNDCLASSEX* lpwcx
         );
 
@@ -126,7 +126,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("ATOM")]
         public static extern ushort RegisterClassEx(
-            [In] /* readonly */ WNDCLASSEX* lpWndClassEx
+            [In] WNDCLASSEX* lpWndClassEx
         );
 
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "SendMessageW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
@@ -165,14 +165,14 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("BOOL")]
         public static extern int TranslateMessage(
-            [In] /* readonly */ MSG* lpMsg
+            [In] MSG* lpMsg
         );
 
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "UnregisterClassW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("BOOL")]
         public static extern int UnregisterClass(
-            [In, ComAliasName("LPCWSTR")] /* readonly */ char* lpClassName,
+            [In, ComAliasName("LPCWSTR")] char* lpClassName,
             [In, ComAliasName("HINSTANCE")] IntPtr hInstance = default
         );
         #endregion

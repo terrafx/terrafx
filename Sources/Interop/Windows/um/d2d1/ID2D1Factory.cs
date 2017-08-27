@@ -40,7 +40,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateRectangleGeometry(
             [In] ID2D1Factory* This,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* rectangle,
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* rectangle,
             [Out] ID2D1RectangleGeometry** rectangleGeometry
         );
 
@@ -49,7 +49,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateRoundedRectangleGeometry(
             [In] ID2D1Factory* This,
-            [In] /* readonly */ D2D1_ROUNDED_RECT* roundedRectangle,
+            [In] D2D1_ROUNDED_RECT* roundedRectangle,
             [Out] ID2D1RoundedRectangleGeometry** roundedRectangleGeometry
         );
 
@@ -58,7 +58,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateEllipseGeometry(
             [In] ID2D1Factory* This,
-            [In] /* readonly */ D2D1_ELLIPSE* ellipse,
+            [In] D2D1_ELLIPSE* ellipse,
             [Out] ID2D1EllipseGeometry** ellipseGeometry
         );
 
@@ -69,7 +69,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateGeometryGroup(
             [In] ID2D1Factory* This,
             [In] D2D1_FILL_MODE fillMode,
-            [In] ID2D1Geometry** geometries,
+            [In, ComAliasName("ID2D1Geometry*[]")] ID2D1Geometry** geometries,
             [In, ComAliasName("UINT32")] uint geometriesCount,
             [Out] ID2D1GeometryGroup** geometryGroup
         );
@@ -80,7 +80,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateTransformedGeometry(
             [In] ID2D1Factory* This,
             [In] ID2D1Geometry* sourceGeometry,
-            [In, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* transform,
+            [In, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform,
             [Out] ID2D1TransformedGeometry** transformedGeometry
         );
 
@@ -99,8 +99,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateStrokeStyle(
             [In] ID2D1Factory* This,
-            [In] /* readonly */ D2D1_STROKE_STYLE_PROPERTIES* strokeStyleProperties,
-            [In, Optional, ComAliasName("FLOAT")] /* readonly */ float* dashes,
+            [In] D2D1_STROKE_STYLE_PROPERTIES* strokeStyleProperties,
+            [In, Optional, ComAliasName("FLOAT[]")] float* dashes,
             [In, ComAliasName("UINT32")] uint dashesCount,
             [Out] ID2D1StrokeStyle** strokeStyle
         );
@@ -111,7 +111,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateDrawingStateBlock(
             [In] ID2D1Factory* This,
-            [In, Optional] /* readonly */ D2D1_DRAWING_STATE_DESCRIPTION* drawingStateDescription,
+            [In, Optional] D2D1_DRAWING_STATE_DESCRIPTION* drawingStateDescription,
             [In, Optional] IDWriteRenderingParams* textRenderingParams,
             [Out] ID2D1DrawingStateBlock** drawingStateBlock
         );
@@ -123,7 +123,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateWicBitmapRenderTarget(
             [In] ID2D1Factory* This,
             [In] IWICBitmap* target,
-            [In] /* readonly */ D2D1_RENDER_TARGET_PROPERTIES* renderTargetProperties,
+            [In] D2D1_RENDER_TARGET_PROPERTIES* renderTargetProperties,
             [Out] ID2D1RenderTarget** renderTarget
         );
 
@@ -133,8 +133,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateHwndRenderTarget(
             [In] ID2D1Factory* This,
-            [In] /* readonly */ D2D1_RENDER_TARGET_PROPERTIES* renderTargetProperties,
-            [In] /* readonly */ D2D1_HWND_RENDER_TARGET_PROPERTIES* hwndRenderTargetProperties,
+            [In] D2D1_RENDER_TARGET_PROPERTIES* renderTargetProperties,
+            [In] D2D1_HWND_RENDER_TARGET_PROPERTIES* hwndRenderTargetProperties,
             [Out] ID2D1HwndRenderTarget** hwndRenderTarget
         );
 
@@ -145,7 +145,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateDxgiSurfaceRenderTarget(
             [In] ID2D1Factory* This,
             [In] IDXGISurface* dxgiSurface,
-            [In] /* readonly */ D2D1_RENDER_TARGET_PROPERTIES* renderTargetProperties,
+            [In] D2D1_RENDER_TARGET_PROPERTIES* renderTargetProperties,
             [Out] ID2D1RenderTarget** renderTarget
         );
 
@@ -155,7 +155,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateDCRenderTarget(
             [In] ID2D1Factory* This,
-            [In] /* readonly */ D2D1_RENDER_TARGET_PROPERTIES* renderTargetProperties,
+            [In] D2D1_RENDER_TARGET_PROPERTIES* renderTargetProperties,
             [Out] ID2D1DCRenderTarget** dcRenderTarget
         );
         #endregion

@@ -23,7 +23,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int Map(
             [In] ID3D12Resource* This,
             [In, ComAliasName("UINT")] uint Subresource,
-            [In] /* readonly */ D3D12_RANGE* pReadRange = null,
+            [In] D3D12_RANGE* pReadRange = null,
             [Out] void** ppData = null
         );
 
@@ -32,13 +32,14 @@ namespace TerraFX.Interop
         public /* static */ delegate void Unmap(
             [In] ID3D12Resource* This,
             [In, ComAliasName("UINT")] uint Subresource,
-            [In] /* readonly */ D3D12_RANGE* pWrittenRange = null
+            [In] D3D12_RANGE* pWrittenRange = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D3D12_RESOURCE_DESC GetDesc(
-            [In] ID3D12Resource* This
+        public /* static */ delegate void GetDesc(
+            [In] ID3D12Resource* This,
+            [Out] D3D12_RESOURCE_DESC* pDesc
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -54,8 +55,8 @@ namespace TerraFX.Interop
         public /* static */ delegate int WriteToSubresource(
             [In] ID3D12Resource* This,
             [In, ComAliasName("UINT")] uint DstSubresource,
-            [In, Optional] /* readonly */ D3D12_BOX* pDstBox,
-            [In] /* readonly */ void* pSrcData,
+            [In, Optional] D3D12_BOX* pDstBox,
+            [In] void* pSrcData,
             [In, ComAliasName("UINT")] uint SrcRowPitch,
             [In, ComAliasName("UINT")] uint SrcDepthPitch
         );
@@ -69,7 +70,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("UINT")] uint DstRowPitch,
             [In, ComAliasName("UINT")] uint DstDepthPitch,
             [In, ComAliasName("UINT")] uint SrcSubresource,
-            [In] /* readonly */ D3D12_BOX* pSrcBox = null
+            [In] D3D12_BOX* pSrcBox = null
         );
 
         [SuppressUnmanagedCodeSecurity]

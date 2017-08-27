@@ -845,7 +845,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("BOOL")]
         public static extern int SetWindowText(
             [In, ComAliasName("HWND")] IntPtr hWnd,
-            [In, Optional, ComAliasName("LPCWSTR")] /* readonly */ char* lpString
+            [In, Optional, ComAliasName("LPCWSTR")] char* lpString
         );
         #endregion
     }

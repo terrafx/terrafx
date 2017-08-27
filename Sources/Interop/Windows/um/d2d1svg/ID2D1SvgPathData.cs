@@ -37,7 +37,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int UpdateSegmentData(
             [In] ID2D1SvgPathData* This,
-            [In, ComAliasName("FLOAT")] /* readonly */ float* data,
+            [In, ComAliasName("FLOAT[]")] float* data,
             [In, ComAliasName("UINT32")] uint dataCount,
             [In, ComAliasName("UINT32")] uint startIndex = 0
         );
@@ -51,7 +51,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetSegmentData(
             [In] ID2D1SvgPathData* This,
-            [Out, ComAliasName("FLOAT")] float* data,
+            [Out, ComAliasName("FLOAT[]")] float* data,
             [In, ComAliasName("UINT32")] uint dataCount,
             [In, ComAliasName("UINT32")] uint startIndex = 0
         );
@@ -83,7 +83,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int UpdateCommands(
             [In] ID2D1SvgPathData* This,
-            [In] /* readonly */ D2D1_SVG_PATH_COMMAND* commands,
+            [In, ComAliasName("D2D1_SVG_PATH_COMMAND")] D2D1_SVG_PATH_COMMAND* commands,
             [In, ComAliasName("UINT32")] uint commandsCount,
             [In, ComAliasName("UINT32")] uint startIndex = 0
         );
@@ -97,7 +97,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetCommands(
             [In] ID2D1SvgPathData* This,
-            [Out] D2D1_SVG_PATH_COMMAND* commands,
+            [Out, ComAliasName("D2D1_SVG_PATH_COMMAND[]")] D2D1_SVG_PATH_COMMAND* commands,
             [In, ComAliasName("UINT32")] uint commandsCount,
             [In, ComAliasName("UINT32")] uint startIndex = 0
         );

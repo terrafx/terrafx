@@ -25,7 +25,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetLineSpacing(
             [In] IDWriteTextFormat2* This,
-            [In] /* readonly */ DWRITE_LINE_SPACING* lineSpacingOptions
+            [In] DWRITE_LINE_SPACING* lineSpacingOptions
         );
 
         /// <summary>Get line spacing.</summary>

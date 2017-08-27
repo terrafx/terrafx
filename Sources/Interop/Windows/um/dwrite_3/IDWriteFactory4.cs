@@ -34,11 +34,11 @@ namespace TerraFX.Interop
         public /* static */ delegate int TranslateColorGlyphRun(
             [In] IDWriteFactory4* This,
             [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
-            [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
-            [In, Optional] /* readonly */ DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
+            [In] DWRITE_GLYPH_RUN* glyphRun,
+            [In, Optional] DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
             [In] DWRITE_GLYPH_IMAGE_FORMATS desiredGlyphImageFormats,
             [In] DWRITE_MEASURING_MODE measuringMode,
-            [In, Optional] /* readonly */ DWRITE_MATRIX* worldAndDpiTransform,
+            [In, Optional] DWRITE_MATRIX* worldAndDpiTransform,
             [In, ComAliasName("UINT32")] uint colorPaletteIndex,
             [Out] IDWriteColorGlyphRunEnumerator1** colorLayers
         );
@@ -51,10 +51,10 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int ComputeGlyphOrigins(
             [In] IDWriteFactory4* This,
-            [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
+            [In] DWRITE_GLYPH_RUN* glyphRun,
             [In] DWRITE_MEASURING_MODE measuringMode,
             [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
-            [In, Optional] /* readonly */ DWRITE_MATRIX* worldAndDpiTransform,
+            [In, Optional] DWRITE_MATRIX* worldAndDpiTransform,
             [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* glyphOrigins
         );
 
@@ -64,7 +64,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int ComputeGlyphOrigins1(
             [In] IDWriteFactory4* This,
-            [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
+            [In] DWRITE_GLYPH_RUN* glyphRun,
             [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
             [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* glyphOrigins
         );

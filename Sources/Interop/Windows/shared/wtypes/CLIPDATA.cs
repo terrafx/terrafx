@@ -16,7 +16,7 @@ namespace TerraFX.Interop
         [ComAliasName("LONG")]
         public int ulClipFmt;
 
-        [ComAliasName("BYTE")]
+        [ComAliasName("BYTE[]")]
         public byte* pClipDAta;
         #endregion
     }

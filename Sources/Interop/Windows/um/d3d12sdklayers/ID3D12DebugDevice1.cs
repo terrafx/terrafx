@@ -23,7 +23,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int SetDebugParameter(
             [In] ID3D12DebugDevice1* This,
             [In] D3D12_DEBUG_DEVICE_PARAMETER_TYPE Type,
-            [In] /* readonly */ void* pData,
+            [In] void* pData,
             [In, ComAliasName("UINT")] uint DataSize
         );
 

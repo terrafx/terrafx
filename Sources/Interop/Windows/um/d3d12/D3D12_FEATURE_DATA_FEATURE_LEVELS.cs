@@ -13,7 +13,8 @@ namespace TerraFX.Interop
         [ComAliasName("UINT")]
         public uint NumFeatureLevels;
 
-        public /* readonly */ D3D_FEATURE_LEVEL* pFeatureLevelsRequested;
+        [ComAliasName("D3D_FEATURE_LEVEL[]")]
+        public D3D_FEATURE_LEVEL* pFeatureLevelsRequested;
 
         public D3D_FEATURE_LEVEL MaxSupportedFeatureLevel;
         #endregion

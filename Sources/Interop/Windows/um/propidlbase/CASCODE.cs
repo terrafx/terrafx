@@ -13,7 +13,7 @@ namespace TerraFX.Interop
         [ComAliasName("ULONG")]
         public uint cElems;
 
-        [ComAliasName("SCODE")]
+        [ComAliasName("SCODE[]")]
         public int* pElems;
         #endregion
     }

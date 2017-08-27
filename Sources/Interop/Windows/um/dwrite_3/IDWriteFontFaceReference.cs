@@ -131,7 +131,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int EnqueueCharacterDownloadRequest(
             [In] IDWriteFontFaceReference* This,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* characters,
+            [In, ComAliasName("WCHAR[]")] char* characters,
             [In, ComAliasName("UINT32")] uint characterCount
         );
 
@@ -145,7 +145,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int EnqueueGlyphDownloadRequest(
             [In] IDWriteFontFaceReference* This,
-            [In, ComAliasName("UINT16")] /* readonly */ ushort* glyphIndices,
+            [In, ComAliasName("UINT16[]")] ushort* glyphIndices,
             [In, ComAliasName("UINT32")] uint glyphCount
         );
 

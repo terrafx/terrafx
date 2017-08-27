@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void AddTriangles(
             [In] ID2D1TessellationSink* This,
-            [In] /* readonly */ D2D1_TRIANGLE* triangles,
+            [In, ComAliasName("D2D1_TRIANGLE[]")] D2D1_TRIANGLE* triangles,
             [In, ComAliasName("UINT32")] uint trianglesCount
         );
 

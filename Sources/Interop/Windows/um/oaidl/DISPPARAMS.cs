@@ -10,10 +10,10 @@ namespace TerraFX.Interop
     public /* blittable */ unsafe struct DISPPARAMS
     {
         #region Fields
-        [ComAliasName("VARIANTARG")]
+        [ComAliasName("VARIANTARG[]")]
         public VARIANT* rgvarg;
 
-        [ComAliasName("DISPID")]
+        [ComAliasName("DISPID[]")]
         public int* rgdispidNamedArgs;
 
         [ComAliasName("UINT")]

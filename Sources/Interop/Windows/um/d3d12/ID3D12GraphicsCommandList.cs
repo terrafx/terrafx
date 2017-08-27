@@ -85,12 +85,12 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void CopyTextureRegion(
             [In] ID3D12GraphicsCommandList* This,
-            [In] /* readonly */ D3D12_TEXTURE_COPY_LOCATION* pDst,
+            [In] D3D12_TEXTURE_COPY_LOCATION* pDst,
             [In, ComAliasName("UINT")] uint DstX,
             [In, ComAliasName("UINT")] uint DstY,
             [In, ComAliasName("UINT")] uint DstZ,
-            [In] /* readonly */ D3D12_TEXTURE_COPY_LOCATION* pSrc,
-            [In] /* readonly */ D3D12_BOX* pSrcBox = null
+            [In] D3D12_TEXTURE_COPY_LOCATION* pSrc,
+            [In] D3D12_BOX* pSrcBox = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -106,8 +106,8 @@ namespace TerraFX.Interop
         public /* static */ delegate void CopyTiles(
             [In] ID3D12GraphicsCommandList* This,
             [In] ID3D12Resource* pTiledResource,
-            [In] /* readonly */ D3D12_TILED_RESOURCE_COORDINATE* pTileRegionStartCoordinate,
-            [In] /* readonly */ D3D12_TILE_REGION_SIZE* pTileRegionSize,
+            [In] D3D12_TILED_RESOURCE_COORDINATE* pTileRegionStartCoordinate,
+            [In] D3D12_TILE_REGION_SIZE* pTileRegionSize,
             [In] ID3D12Resource* pBuffer,
             [In, ComAliasName("UINT64")] ulong BufferStartOffsetInBytes,
             [In] D3D12_TILE_COPY_FLAGS Flags
@@ -136,7 +136,7 @@ namespace TerraFX.Interop
         public /* static */ delegate void RSSetViewports(
             [In] ID3D12GraphicsCommandList* This,
             [In, ComAliasName("UINT")] uint NumViewports,
-            [In] /* readonly */ D3D12_VIEWPORT* pViewports
+            [In] D3D12_VIEWPORT* pViewports
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -144,14 +144,14 @@ namespace TerraFX.Interop
         public /* static */ delegate void RSSetScissorRects(
             [In] ID3D12GraphicsCommandList* This,
             [In, ComAliasName("UINT")] uint NumRects,
-            [In, ComAliasName("D3D12_RECT")] /* readonly */ RECT* pRects
+            [In, ComAliasName("D3D12_RECT")] RECT* pRects
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void OMSetBlendFactor(
             [In] ID3D12GraphicsCommandList* This,
-            [In, ComAliasName("FLOAT")] /* readonly */ float* BlendFactor = null
+            [In, ComAliasName("FLOAT")] float* BlendFactor = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -173,7 +173,7 @@ namespace TerraFX.Interop
         public /* static */ delegate void ResourceBarrier(
             [In] ID3D12GraphicsCommandList* This,
             [In, ComAliasName("UINT")] uint NumBarriers,
-            [In] /* readonly */ D3D12_RESOURCE_BARRIER* pBarriers
+            [In, ComAliasName("D3D12_RESOURCE_BARRIER[]")] D3D12_RESOURCE_BARRIER* pBarriers
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -188,7 +188,7 @@ namespace TerraFX.Interop
         public /* static */ delegate void SetDescriptorHeaps(
             [In] ID3D12GraphicsCommandList* This,
             [In, ComAliasName("UINT")] uint NumDescriptorHeaps,
-            [In] /* readonly */ ID3D12DescriptorHeap** ppDescriptorHeaps
+            [In, ComAliasName("ID3D12DescriptorHeap*[]")] ID3D12DescriptorHeap** ppDescriptorHeaps
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -245,7 +245,7 @@ namespace TerraFX.Interop
             [In] ID3D12GraphicsCommandList* This,
             [In, ComAliasName("UINT")] uint RootParameterIndex,
             [In, ComAliasName("UINT")] uint Num32BitValuesToSet,
-            [In] /* readonly */ void* pSrcData,
+            [In] void* pSrcData,
             [In, ComAliasName("UINT")] uint DestOffsetIn32BitValues
         );
 
@@ -255,7 +255,7 @@ namespace TerraFX.Interop
             [In] ID3D12GraphicsCommandList* This,
             [In, ComAliasName("UINT")] uint RootParameterIndex,
             [In, ComAliasName("UINT")] uint Num32BitValuesToSet,
-            [In] /* readonly */ void* pSrcData,
+            [In] void* pSrcData,
             [In, ComAliasName("UINT")] uint DestOffsetIn32BitValues
         );
 
@@ -311,7 +311,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void IASetIndexBuffer(
             [In] ID3D12GraphicsCommandList* This,
-            [In] /* readonly */ D3D12_INDEX_BUFFER_VIEW* pView = null
+            [In] D3D12_INDEX_BUFFER_VIEW* pView = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -320,7 +320,7 @@ namespace TerraFX.Interop
             [In] ID3D12GraphicsCommandList* This,
             [In, ComAliasName("UINT")] uint StartSlot,
             [In, ComAliasName("UINT")] uint NumViews,
-            [In] /* readonly */ D3D12_VERTEX_BUFFER_VIEW* pViews = null
+            [In, ComAliasName("D3D12_VERTEX_BUFFER_VIEW[]")] D3D12_VERTEX_BUFFER_VIEW* pViews = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -329,7 +329,7 @@ namespace TerraFX.Interop
             [In] ID3D12GraphicsCommandList* This,
             [In, ComAliasName("UINT")] uint StartSlot,
             [In, ComAliasName("UINT")] uint NumViews,
-            [In] /* readonly */ D3D12_STREAM_OUTPUT_BUFFER_VIEW* pViews = null
+            [In, ComAliasName("D3D12_STREAM_OUTPUT_BUFFER_VIEW[]")] D3D12_STREAM_OUTPUT_BUFFER_VIEW* pViews = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -337,9 +337,9 @@ namespace TerraFX.Interop
         public /* static */ delegate void OMSetRenderTargets(
             [In] ID3D12GraphicsCommandList* This,
             [In, ComAliasName("UINT")] uint NumRenderTargetDescriptors,
-            [In, Optional] /* readonly */ D3D12_CPU_DESCRIPTOR_HANDLE* pRenderTargetDescriptors,
+            [In, Optional, ComAliasName("D3D12_CPU_DESCRIPTOR_HANDLE[]")] D3D12_CPU_DESCRIPTOR_HANDLE* pRenderTargetDescriptors,
             [In, ComAliasName("INT")] int RTsSingleHandleToDescriptorRange,
-            [In] /* readonly */ D3D12_CPU_DESCRIPTOR_HANDLE* pDepthStencilDescriptor = null
+            [In] D3D12_CPU_DESCRIPTOR_HANDLE* pDepthStencilDescriptor = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -351,7 +351,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("FLOAT")] float Depth,
             [In, ComAliasName("UINT8")] byte Stencil,
             [In, ComAliasName("UINT")] uint NumRects,
-            [In, ComAliasName("D3D12_RECT")] /* readonly */ RECT* pRects
+            [In, ComAliasName("D3D12_RECT[]")] RECT* pRects
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -359,9 +359,9 @@ namespace TerraFX.Interop
         public /* static */ delegate void ClearRenderTargetView(
             [In] ID3D12GraphicsCommandList* This,
             [In] D3D12_CPU_DESCRIPTOR_HANDLE RenderTargetView,
-            [In, ComAliasName("FLOAT")] /* readonly */ float* ColorRGBA,
+            [In, ComAliasName("FLOAT")] float* ColorRGBA,
             [In, ComAliasName("UINT")] uint NumRects,
-            [In, ComAliasName("D3D12_RECT")] /* readonly */ RECT* pRects
+            [In, ComAliasName("D3D12_RECT[]")] RECT* pRects
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -371,9 +371,9 @@ namespace TerraFX.Interop
             [In] D3D12_GPU_DESCRIPTOR_HANDLE ViewGPUHandleInCurrentHeap,
             [In] D3D12_CPU_DESCRIPTOR_HANDLE ViewCPUHandle,
             [In] [MarshalAs(UnmanagedType.Interface)] ID3D12Resource pResource,
-            [In, ComAliasName("UINT")] /* readonly */ uint* Values,
+            [In, ComAliasName("UINT")] uint* Values,
             [In, ComAliasName("UINT")] uint NumRects,
-            [In, ComAliasName("D3D12_RECT")] /* readonly */ RECT* pRects
+            [In, ComAliasName("D3D12_RECT[]")] RECT* pRects
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -383,9 +383,9 @@ namespace TerraFX.Interop
             [In] D3D12_GPU_DESCRIPTOR_HANDLE ViewGPUHandleInCurrentHeap,
             [In] D3D12_CPU_DESCRIPTOR_HANDLE ViewCPUHandle,
             [In] ID3D12Resource* pResource,
-            [In, ComAliasName("FLOAT")] /* readonly */ float* Values,
+            [In, ComAliasName("FLOAT")] float* Values,
             [In, ComAliasName("UINT")] uint NumRects,
-            [In, ComAliasName("D3D12_RECT")] /* readonly */ RECT* pRects
+            [In, ComAliasName("D3D12_RECT[]")] RECT* pRects
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -393,7 +393,7 @@ namespace TerraFX.Interop
         public /* static */ delegate void DiscardResource(
             [In] ID3D12GraphicsCommandList* This,
             [In] ID3D12Resource* pResource,
-            [In] /* readonly */ D3D12_DISCARD_REGION* pRegion = null
+            [In] D3D12_DISCARD_REGION* pRegion = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -440,7 +440,7 @@ namespace TerraFX.Interop
         public /* static */ delegate void SetMarker(
             [In] ID3D12GraphicsCommandList* This,
             [In, ComAliasName("UINT")] uint Metadata,
-            [In, Optional] /* readonly */ void* pData,
+            [In, Optional] void* pData,
             [In, ComAliasName("UINT")] uint Size
         );
 
@@ -449,7 +449,7 @@ namespace TerraFX.Interop
         public /* static */ delegate void BeginEvent(
             [In] ID3D12GraphicsCommandList* This,
             [In, ComAliasName("UINT")] uint Metadata,
-            [In, Optional] /* readonly */ void* pData,
+            [In, Optional] void* pData,
             [In, ComAliasName("UINT")] uint Size
         );
 

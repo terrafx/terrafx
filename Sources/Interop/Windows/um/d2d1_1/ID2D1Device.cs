@@ -36,7 +36,7 @@ namespace TerraFX.Interop
             [In] ID2D1Device* This,
             [In] IWICImagingFactory* wicFactory,
             [In] IPrintDocumentPackageTarget* documentTarget,
-            [In, Optional] /* readonly */ D2D1_PRINT_CONTROL_PROPERTIES* printControlProperties,
+            [In, Optional] D2D1_PRINT_CONTROL_PROPERTIES* printControlProperties,
             [Out] ID2D1PrintControl** printControl
         );
 

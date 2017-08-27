@@ -23,7 +23,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int WritePixels(
             [In] IWICPlanarBitmapFrameEncode* This,
             [In, ComAliasName("UINT")] uint lineCount,
-            [In] WICBitmapPlane* pPlanes,
+            [In, ComAliasName("WICBitmapPlane[]")] WICBitmapPlane* pPlanes,
             [In, ComAliasName("UINT")] uint cPlanes
         );
 
@@ -32,7 +32,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int WriteSource(
             [In] IWICPlanarBitmapFrameEncode* This,
-            [In] IWICBitmapSource** ppPlanes,
+            [In, ComAliasName("IWICBitmapSource*[]")] IWICBitmapSource** ppPlanes,
             [In, ComAliasName("UINT")] uint cPlanes,
             [In] WICRect* prcSource = null
         );

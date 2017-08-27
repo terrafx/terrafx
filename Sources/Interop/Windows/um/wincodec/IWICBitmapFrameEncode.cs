@@ -57,7 +57,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int SetColorContexts(
             [In] IWICBitmapFrameEncode* This,
             [In, ComAliasName("UINT")] uint cCount,
-            [In] IWICColorContext** ppIColorContext
+            [In, ComAliasName("IWICColorContext*[]")] IWICColorContext** ppIColorContext
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -84,7 +84,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("UINT")] uint lineCount,
             [In, ComAliasName("UINT")] uint cbStride,
             [In, ComAliasName("UINT")] uint cbBufferSize,
-            [In, ComAliasName("BYTE")] byte* pbPixels
+            [In, ComAliasName("BYTE[]")] byte* pbPixels
         );
 
         [SuppressUnmanagedCodeSecurity]

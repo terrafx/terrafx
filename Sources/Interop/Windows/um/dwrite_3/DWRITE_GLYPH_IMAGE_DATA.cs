@@ -12,7 +12,7 @@ namespace TerraFX.Interop
     {
         #region Fields
         /// <summary>Pointer to the glyph data, be it SVG, PNG, JPEG, TIFF.</summary>
-        public /* readonly */ void* imageData;
+        public void* imageData;
 
         /// <summary>Size of glyph data in bytes.</summary>
         [ComAliasName("UINT32")]

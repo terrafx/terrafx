@@ -23,7 +23,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int EnumAdapterByLuid(
             [In] IDXGIFactory4* This,
             [In] LUID AdapterLuid,
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
+            [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvAdapter
         );
 
@@ -32,7 +32,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int EnumWarpAdapter(
             [In] IDXGIFactory4* This,
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
+            [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvAdapter
         );
         #endregion

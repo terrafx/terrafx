@@ -11,7 +11,7 @@ namespace TerraFX.Interop
     {
         #region Fields
         [ComAliasName("LPCSTR")]
-        public /* readonly */ sbyte* SemanticName;
+        public sbyte* SemanticName;
 
         [ComAliasName("UINT")]
         public uint SemanticIndex;

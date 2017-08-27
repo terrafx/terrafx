@@ -32,7 +32,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int Draw(
             [In] ID2D1SourceTransform* This,
             [In] ID2D1Bitmap1* target,
-            [In, ComAliasName("D2D1_RECT_L")] /* readonly */ RECT* drawRect,
+            [In, ComAliasName("D2D1_RECT_L")] RECT* drawRect,
             [In, ComAliasName("D2D1_POINT_2U")] D2D_POINT_2U targetOrigin
         );
         #endregion

@@ -22,9 +22,9 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetValue(
             [In] IWICMetadataWriter* This,
-            [In, Optional] /* readonly */ PROPVARIANT* pvarSchema,
-            [In] /* readonly */ PROPVARIANT* pvarId,
-            [In] /* readonly */ PROPVARIANT* pvarValue
+            [In, Optional] PROPVARIANT* pvarSchema,
+            [In] PROPVARIANT* pvarId,
+            [In] PROPVARIANT* pvarValue
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -33,9 +33,9 @@ namespace TerraFX.Interop
         public /* static */ delegate int SetValueByIndex(
             [In] IWICMetadataWriter* This,
             [In, ComAliasName("UINT")] uint nIndex,
-            [In, Optional] /* readonly */ PROPVARIANT* pvarSchema,
-            [In] /* readonly */ PROPVARIANT* pvarId,
-            [In] /* readonly */ PROPVARIANT* pvarValue
+            [In, Optional] PROPVARIANT* pvarSchema,
+            [In] PROPVARIANT* pvarId,
+            [In] PROPVARIANT* pvarValue
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -43,8 +43,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int RemoveValue(
             [In] IWICMetadataWriter* This,
-            [In, Optional] /* readonly */ PROPVARIANT* pvarSchema,
-            [In] /* readonly */ PROPVARIANT* pvarId
+            [In, Optional] PROPVARIANT* pvarSchema,
+            [In] PROPVARIANT* pvarId
         );
 
         [SuppressUnmanagedCodeSecurity]

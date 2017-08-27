@@ -13,7 +13,7 @@ namespace TerraFX.Interop
         [ComAliasName("ULONG")]
         public uint cElems;
 
-        [ComAliasName("CHAR")]
+        [ComAliasName("CHAR[]")]
         public sbyte* pElems;
         #endregion
     }

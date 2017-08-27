@@ -12,7 +12,7 @@ namespace TerraFX.Interop
     {
         #region Fields
         [ComAliasName("PCSTR")]
-        public /* readonly */ sbyte* semanticName;
+        public sbyte* semanticName;
 
         [ComAliasName("UINT32")]
         public uint semanticIndex;

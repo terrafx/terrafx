@@ -37,7 +37,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int UpdateDashes(
             [In] ID2D1SvgStrokeDashArray* This,
-            [In, ComAliasName("FLOAT")] /* readonly */ float* dashes,
+            [In, ComAliasName("FLOAT[]")] float* dashes,
             [In, ComAliasName("UINT32")] uint dashesCount,
             [In, ComAliasName("UINT32")] uint startIndex = 0
         );
@@ -51,7 +51,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int UpdateDashes1(
             [In] ID2D1SvgStrokeDashArray* This,
-            [In] /* readonly */ D2D1_SVG_LENGTH* dashes,
+            [In, ComAliasName("D2D1_SVG_LENGTH[]")] D2D1_SVG_LENGTH* dashes,
             [In, ComAliasName("UINT32")] uint dashesCount,
             [In, ComAliasName("UINT32")] uint startIndex = 0
         );
@@ -65,7 +65,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetDashes(
             [In] ID2D1SvgStrokeDashArray* This,
-            [Out, ComAliasName("FLOAT")] float* dashes,
+            [Out, ComAliasName("FLOAT[]")] float* dashes,
             [In, ComAliasName("UINT32")] uint dashesCount,
             [In, ComAliasName("UINT32")] uint startIndex = 0
         );
@@ -79,7 +79,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetDashes1(
             [In] ID2D1SvgStrokeDashArray* This,
-            [Out] D2D1_SVG_LENGTH* dashes,
+            [Out, ComAliasName("D2D1_SVG_LENGTH[]")] D2D1_SVG_LENGTH* dashes,
             [In, ComAliasName("UINT32")] uint dashesCount,
             [In, ComAliasName("UINT32")] uint startIndex = 0
         );

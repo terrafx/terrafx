@@ -92,7 +92,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public static extern int DWriteCreateFactory(
             [In] DWRITE_FACTORY_TYPE factoryType,
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* iid,
+            [In, ComAliasName("REFIID")] Guid* iid,
             [Out] IUnknown** factory
         );
         #endregion

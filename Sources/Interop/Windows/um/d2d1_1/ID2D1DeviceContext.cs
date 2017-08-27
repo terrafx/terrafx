@@ -28,9 +28,9 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateBitmap(
             [In] ID2D1DeviceContext* This,
             [In, ComAliasName("D2D1_SIZE_U")] D2D_SIZE_U size,
-            [In, Optional] /* readonly */ void* sourceData,
+            [In, Optional] void* sourceData,
             [In, ComAliasName("UINT32")] uint pitch,
-            [In] /* readonly */ D2D1_BITMAP_PROPERTIES1* bitmapProperties,
+            [In] D2D1_BITMAP_PROPERTIES1* bitmapProperties,
             [Out] ID2D1Bitmap1** bitmap
         );
 
@@ -41,7 +41,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateBitmapFromWicBitmap(
             [In] ID2D1DeviceContext* This,
             [In] IWICBitmapSource* wicBitmapSource,
-            [In, Optional] /* readonly */ D2D1_BITMAP_PROPERTIES1* bitmapProperties,
+            [In, Optional] D2D1_BITMAP_PROPERTIES1* bitmapProperties,
             [Out] ID2D1Bitmap1** bitmap
         );
 
@@ -52,7 +52,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateColorContext(
             [In] ID2D1DeviceContext* This,
             [In] D2D1_COLOR_SPACE space,
-            [In, ComAliasName("BYTE")] /* readonly */ byte* profile,
+            [In, ComAliasName("BYTE[]")] byte* profile,
             [In, ComAliasName("UINT32")] uint profileSize,
             [Out] ID2D1ColorContext** colorContext
         );
@@ -62,7 +62,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateColorContextFromFilename(
             [In] ID2D1DeviceContext* This,
-            [In, ComAliasName("PCWSTR")] /* readonly */ char* filename,
+            [In, ComAliasName("PCWSTR")] char* filename,
             [Out] ID2D1ColorContext** colorContext
         );
 
@@ -82,7 +82,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateBitmapFromDxgiSurface(
             [In] ID2D1DeviceContext* This,
             [In] IDXGISurface* surface,
-            [In, Optional] /* readonly */ D2D1_BITMAP_PROPERTIES1* bitmapProperties,
+            [In, Optional] D2D1_BITMAP_PROPERTIES1* bitmapProperties,
             [Out] ID2D1Bitmap1** bitmap
         );
 
@@ -92,7 +92,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateEffect(
             [In] ID2D1DeviceContext* This,
-            [In, ComAliasName("REFCLSID")] /* readonly */ Guid* effectId,
+            [In, ComAliasName("REFCLSID")] Guid* effectId,
             [Out] ID2D1Effect** effect
         );
 
@@ -107,7 +107,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateGradientStopCollection(
             [In] ID2D1DeviceContext* This,
-            [In] /* readonly */ D2D1_GRADIENT_STOP* straightAlphaGradientStops,
+            [In, ComAliasName("D2D1_GRADIENT_STOP[]")] D2D1_GRADIENT_STOP* straightAlphaGradientStops,
             [In, ComAliasName("UINT32")] uint straightAlphaGradientStopsCount,
             [In] D2D1_COLOR_SPACE preInterpolationSpace,
             [In] D2D1_COLOR_SPACE postInterpolationSpace,
@@ -124,8 +124,8 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateImageBrush(
             [In] ID2D1DeviceContext* This,
             [In, Optional] ID2D1Image* image,
-            [In] /* readonly */ D2D1_IMAGE_BRUSH_PROPERTIES* imageBrushProperties,
-            [In, Optional] /* readonly */ D2D1_BRUSH_PROPERTIES* brushProperties,
+            [In] D2D1_IMAGE_BRUSH_PROPERTIES* imageBrushProperties,
+            [In, Optional] D2D1_BRUSH_PROPERTIES* brushProperties,
             [Out] ID2D1ImageBrush** imageBrush
         );
 
@@ -135,8 +135,8 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateBitmapBrush(
             [In] ID2D1DeviceContext* This,
             [In, Optional] ID2D1Bitmap* bitmap,
-            [In, Optional] /* readonly */ D2D1_BITMAP_BRUSH_PROPERTIES1* bitmapBrushProperties,
-            [In, Optional] /* readonly */ D2D1_BRUSH_PROPERTIES* brushProperties,
+            [In, Optional] D2D1_BITMAP_BRUSH_PROPERTIES1* bitmapBrushProperties,
+            [In, Optional] D2D1_BRUSH_PROPERTIES* brushProperties,
             [Out] ID2D1BitmapBrush1** bitmapBrush
         );
 
@@ -194,7 +194,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetGlyphRunWorldBounds(
             [In] ID2D1DeviceContext* This,
             [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
-            [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
+            [In] DWRITE_GLYPH_RUN* glyphRun,
             [In] DWRITE_MEASURING_MODE measuringMode,
             [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* bounds
         );
@@ -228,7 +228,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetRenderingControls(
             [In] ID2D1DeviceContext* This,
-            [In] /* readonly */ D2D1_RENDERING_CONTROLS* renderingControls
+            [In] D2D1_RENDERING_CONTROLS* renderingControls
         );
 
         /// <summary>This retrieves the rendering controls currently selected into the device context.</summary>
@@ -275,8 +275,8 @@ namespace TerraFX.Interop
         public /* static */ delegate void DrawGlyphRun(
             [In] ID2D1DeviceContext* This,
             [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
-            [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
-            [In, Optional] /* readonly */ DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
+            [In] DWRITE_GLYPH_RUN* glyphRun,
+            [In, Optional] DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
             [In] ID2D1Brush* foregroundBrush,
             [In] DWRITE_MEASURING_MODE measuringMode = DWRITE_MEASURING_MODE_NATURAL
         );
@@ -287,8 +287,8 @@ namespace TerraFX.Interop
         public /* static */ delegate void DrawImage(
             [In] ID2D1DeviceContext* This,
             [In] ID2D1Image* image,
-            [In, ComAliasName("D2D1_POINT_2F")] /* readonly */ D2D_POINT_2F* targetOffset = null,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* imageRectangle = null,
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* targetOffset = null,
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* imageRectangle = null,
             [In] D2D1_INTERPOLATION_MODE interpolationMode = D2D1_INTERPOLATION_MODE_LINEAR,
             [In] D2D1_COMPOSITE_MODE compositeMode = D2D1_COMPOSITE_MODE_SOURCE_OVER
         );
@@ -299,7 +299,7 @@ namespace TerraFX.Interop
         public /* static */ delegate void DrawGdiMetafile(
             [In] ID2D1DeviceContext* This,
             [In] ID2D1GdiMetafile* gdiMetafile,
-            [In, ComAliasName("D2D1_POINT_2F")] /* readonly */ D2D_POINT_2F* targetOffset = null
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* targetOffset = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -307,11 +307,11 @@ namespace TerraFX.Interop
         public /* static */ delegate void DrawBitmap(
             [In] ID2D1DeviceContext* This,
             [In] ID2D1Bitmap* bitmap,
-            [In, Optional, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangle,
+            [In, Optional, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* destinationRectangle,
             [In, ComAliasName("FLOAT")] float opacity,
             [In] D2D1_INTERPOLATION_MODE interpolationMode,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* sourceRectangle = null,
-            [In, ComAliasName("D2D1_MATRIX_4X4_F")] /* readonly */ D2D_MATRIX_4X4_F* perspectiveTransform = null
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* sourceRectangle = null,
+            [In, ComAliasName("D2D1_MATRIX_4X4_F")] D2D_MATRIX_4X4_F* perspectiveTransform = null
         );
 
         /// <summary>Push a layer on the device context.</summary>
@@ -319,7 +319,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void PushLayer(
             [In] ID2D1DeviceContext* This,
-            [In] /* readonly */ D2D1_LAYER_PARAMETERS1* layerParameters,
+            [In] D2D1_LAYER_PARAMETERS1* layerParameters,
             [In] ID2D1Layer* layer = null
         );
 
@@ -331,7 +331,7 @@ namespace TerraFX.Interop
             [In] ID2D1DeviceContext* This,
             [In] ID2D1Effect* effect,
             [In, ComAliasName("UINT32")] uint input,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* inputRectangle
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* inputRectangle
         );
 
         /// <summary>Gets the number of invalid ouptut rectangles that have accumulated at the effect.</summary>
@@ -351,7 +351,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetEffectInvalidRectangles(
             [In] ID2D1DeviceContext* This,
             [In] ID2D1Effect* effect,
-            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* rectangles,
+            [Out, ComAliasName("D2D1_RECT_F[]")] D2D_RECT_F* rectangles,
             [In, ComAliasName("UINT32")] uint rectanglesCount
         );
 
@@ -362,9 +362,9 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetEffectRequiredInputRectangles(
             [In] ID2D1DeviceContext* This,
             [In] ID2D1Effect* renderEffect,
-            [In, Optional, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* renderImageRectangle,
-            [In] /* readonly */ D2D1_EFFECT_INPUT_DESCRIPTION* inputDescriptions,
-            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* requiredInputRects,
+            [In, Optional, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* renderImageRectangle,
+            [In] D2D1_EFFECT_INPUT_DESCRIPTION* inputDescriptions,
+            [Out, ComAliasName("D2D1_RECT_F[]")] D2D_RECT_F* requiredInputRects,
             [In, ComAliasName("UINT32")] uint inputCount
         );
 
@@ -375,8 +375,8 @@ namespace TerraFX.Interop
             [In] ID2D1DeviceContext* This,
             [In] ID2D1Bitmap* opacityMask,
             [In] ID2D1Brush* brush,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangle = null,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* sourceRectangle = null
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* destinationRectangle = null,
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* sourceRectangle = null
         );
         #endregion
 

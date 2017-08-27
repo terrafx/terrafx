@@ -50,8 +50,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateHttpFontFileLoader(
             [In] IDWriteFactory5* This,
-            [In, Optional, ComAliasName("WCHAR")] /* readonly */ char* referrerUrl,
-            [In, Optional, ComAliasName("WCHAR")] /* readonly */ char* extraHeaders,
+            [In, Optional, ComAliasName("WCHAR[]")] char* referrerUrl,
+            [In, Optional, ComAliasName("WCHAR[]")] char* extraHeaders,
             [Out] IDWriteRemoteFontFileLoader** newLoader
         );
 
@@ -61,7 +61,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate DWRITE_CONTAINER_TYPE AnalyzeContainerType(
             [In] IDWriteFactory5* This,
-            [In] /* readonly */ void* fileData,
+            [In] void* fileData,
             [In, ComAliasName("UINT32")] uint fileDataSize
         );
 
@@ -77,7 +77,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int UnpackFontFile(
             [In] IDWriteFactory5* This,
             [In] DWRITE_CONTAINER_TYPE containerType,
-            [In] /* readonly */ void* fileData,
+            [In] void* fileData,
             [In, ComAliasName("UINT32")] uint fileDataSize,
             [Out] IDWriteFontFileStream** unpackedFontStream
         );

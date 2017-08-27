@@ -117,22 +117,22 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetGlyphs(
             [In] IDWriteTextAnalyzer* This,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* textString,
+            [In, ComAliasName("WCHAR[]")] char* textString,
             [In, ComAliasName("UINT32")] uint textLength,
             [In] IDWriteFontFace* fontFace,
             [In, ComAliasName("BOOL")] int isSideways,
             [In, ComAliasName("BOOL")] int isRightToLeft,
-            [In] /* readonly */ DWRITE_SCRIPT_ANALYSIS* scriptAnalysis,
-            [In, Optional, ComAliasName("WCHAR")] /* readonly */ char* localeName,
+            [In] DWRITE_SCRIPT_ANALYSIS* scriptAnalysis,
+            [In, Optional, ComAliasName("WCHAR[]")] char* localeName,
             [In, Optional] IDWriteNumberSubstitution* numberSubstitution,
-            [In, Optional] /* readonly */ DWRITE_TYPOGRAPHIC_FEATURES** features,
-            [In, Optional, ComAliasName("UINT32")] /* readonly */ uint* featureRangeLengths,
+            [In, Optional, ComAliasName("DWRITE_TYPOGRAPHIC_FEATURES*[]")] DWRITE_TYPOGRAPHIC_FEATURES** features,
+            [In, Optional, ComAliasName("UINT32[]")] uint* featureRangeLengths,
             [In, ComAliasName("UINT32")] uint featureRanges,
             [In, ComAliasName("UINT32")] uint maxGlyphCount,
-            [Out, ComAliasName("UINT16")] ushort* clusterMap,
-            [Out] DWRITE_SHAPING_TEXT_PROPERTIES* textProps,
-            [Out, ComAliasName("UINT16")] ushort* glyphIndices,
-            [Out] DWRITE_SHAPING_GLYPH_PROPERTIES* glyphProps,
+            [Out, ComAliasName("UINT16[]")] ushort* clusterMap,
+            [Out, ComAliasName("DWRITE_SHAPING_TEXT_PROPERTIES[]")] DWRITE_SHAPING_TEXT_PROPERTIES* textProps,
+            [Out, ComAliasName("UINT16[]")] ushort* glyphIndices,
+            [Out, ComAliasName("DWRITE_SHAPING_GLYPH_PROPERTIES[]")] DWRITE_SHAPING_GLYPH_PROPERTIES* glyphProps,
             [Out, ComAliasName("UINT32")] uint* actualGlyphCount
         );
 
@@ -161,24 +161,24 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetGlyphPlacements(
             [In] IDWriteTextAnalyzer* This,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* textString,
-            [In, ComAliasName("UINT16")] /* readonly */ ushort* clusterMap,
+            [In, ComAliasName("WCHAR[]")] char* textString,
+            [In, ComAliasName("UINT16[]")] ushort* clusterMap,
             [In] DWRITE_SHAPING_TEXT_PROPERTIES* textProps,
             [In, ComAliasName("UINT32")] uint textLength,
-            [In, ComAliasName("UINT16")] /* readonly */ ushort* glyphIndices,
-            [In] /* readonly */ DWRITE_SHAPING_GLYPH_PROPERTIES* glyphProps,
+            [In, ComAliasName("UINT16[]")] ushort* glyphIndices,
+            [In, ComAliasName("DWRITE_SHAPING_GLYPH_PROPERTIES[]")] DWRITE_SHAPING_GLYPH_PROPERTIES* glyphProps,
             [In, ComAliasName("UINT32")] uint glyphCount,
             [In] IDWriteFontFace* fontFace,
             [In, ComAliasName("FLOAT")] float fontEmSize,
             [In, ComAliasName("BOOL")] int isSideways,
             [In, ComAliasName("BOOL")] int isRightToLeft,
-            [In] /* readonly */ DWRITE_SCRIPT_ANALYSIS* scriptAnalysis,
-            [In, Optional, ComAliasName("WCHAR")] /* readonly */ char* localeName,
-            [In, Optional] /* readonly */ DWRITE_TYPOGRAPHIC_FEATURES** features,
-            [In, Optional, ComAliasName("UINT32")] /* readonly */ uint* featureRangeLengths,
+            [In] DWRITE_SCRIPT_ANALYSIS* scriptAnalysis,
+            [In, Optional, ComAliasName("WCHAR[]")] char* localeName,
+            [In, Optional, ComAliasName("DWRITE_TYPOGRAPHIC_FEATURES*[]")] DWRITE_TYPOGRAPHIC_FEATURES** features,
+            [In, Optional, ComAliasName("UINT32[]")] uint* featureRangeLengths,
             [In, ComAliasName("UINT32")] uint featureRanges,
-            [Out, ComAliasName("FLOAT")] float* glyphAdvances,
-            [Out] DWRITE_GLYPH_OFFSET* glyphOffsets
+            [Out, ComAliasName("FLOAT[]")] float* glyphAdvances,
+            [Out, ComAliasName("DWRITE_GLYPH_OFFSET[]")] DWRITE_GLYPH_OFFSET* glyphOffsets
         );
 
         /// <summary>Place glyphs output from the GetGlyphs method according to the font and the writing system's rendering rules.</summary>
@@ -209,27 +209,27 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetGdiCompatibleGlyphPlacements(
             [In] IDWriteTextAnalyzer* This,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* textString,
-            [In, ComAliasName("UINT16")] /* readonly */ ushort* clusterMap,
+            [In, ComAliasName("WCHAR[]")] char* textString,
+            [In, ComAliasName("UINT16[]")] ushort* clusterMap,
             [In] DWRITE_SHAPING_TEXT_PROPERTIES* textProps,
             [In, ComAliasName("UINT32")] uint textLength,
-            [In, ComAliasName("UINT16")] /* readonly */ ushort* glyphIndices,
-            [In] /* readonly */ DWRITE_SHAPING_GLYPH_PROPERTIES* glyphProps,
+            [In, ComAliasName("UINT16[]")] ushort* glyphIndices,
+            [In] DWRITE_SHAPING_GLYPH_PROPERTIES* glyphProps,
             [In, ComAliasName("UINT32")] uint glyphCount,
             [In] IDWriteFontFace* fontFace,
             [In, ComAliasName("FLOAT")] float fontEmSize,
             [In, ComAliasName("FLOAT")] float pixelsPerDip,
-            [In, Optional] /* readonly */ DWRITE_MATRIX* transform,
+            [In, Optional] DWRITE_MATRIX* transform,
             [In, ComAliasName("BOOL")] int useGdiNatural,
             [In, ComAliasName("BOOL")] int isSideways,
             [In, ComAliasName("BOOL")] int isRightToLeft,
-            [In] /* readonly */ DWRITE_SCRIPT_ANALYSIS* scriptAnalysis,
-            [In, Optional, ComAliasName("WCHAR")] /* readonly */ char* localeName,
-            [In, Optional] /* readonly */ DWRITE_TYPOGRAPHIC_FEATURES** features,
-            [In, Optional, ComAliasName("UINT32")] /* readonly */ uint* featureRangeLengths,
+            [In] DWRITE_SCRIPT_ANALYSIS* scriptAnalysis,
+            [In, Optional, ComAliasName("WCHAR[]")] char* localeName,
+            [In, Optional, ComAliasName("DWRITE_TYPOGRAPHIC_FEATURES*[]")] DWRITE_TYPOGRAPHIC_FEATURES** features,
+            [In, Optional, ComAliasName("UINT32[]")] uint* featureRangeLengths,
             [In, ComAliasName("UINT32")] uint featureRanges,
-            [Out, ComAliasName("FLOAT")] float* glyphAdvances,
-            [Out] DWRITE_GLYPH_OFFSET* glyphOffsets
+            [Out, ComAliasName("FLOAT[]")] float* glyphAdvances,
+            [Out, ComAliasName("DWRITE_GLYPH_OFFSET[]")] DWRITE_GLYPH_OFFSET* glyphOffsets
         );
         #endregion
 

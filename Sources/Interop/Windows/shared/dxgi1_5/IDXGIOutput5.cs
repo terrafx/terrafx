@@ -26,7 +26,7 @@ namespace TerraFX.Interop
             [In] IUnknown* pDevice,
             [In, ComAliasName("UINT")] uint Flags,
             [In, ComAliasName("UINT")] uint SupportedFormatsCount,
-            [In] /* readonly */ DXGI_FORMAT* pSupportedFormats,
+            [In, ComAliasName("DXGI_FORMAT[]")] DXGI_FORMAT* pSupportedFormats,
             [Out] IDXGIOutputDuplication** ppOutputDuplication
         );
         #endregion

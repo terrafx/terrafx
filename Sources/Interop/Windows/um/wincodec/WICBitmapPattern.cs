@@ -15,10 +15,10 @@ namespace TerraFX.Interop
         [ComAliasName("ULONG")]
         public uint Length;
 
-        [ComAliasName("BYTE")]
+        [ComAliasName("BYTE[]")]
         public byte* Pattern;
 
-        [ComAliasName("BYTE")]
+        [ComAliasName("BYTE[]")]
         public byte* Mask;
 
         [ComAliasName("BOOL")]

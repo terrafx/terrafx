@@ -23,7 +23,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int LoadEx(
             [In] IWICPersistStream* This,
             [In, Optional] IStream* pIStream,
-            [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* pguidPreferredVendor,
+            [In, Optional, ComAliasName("GUID")] Guid* pguidPreferredVendor,
             [In, ComAliasName("DWORD")] uint dwPersistOptions
         );
 

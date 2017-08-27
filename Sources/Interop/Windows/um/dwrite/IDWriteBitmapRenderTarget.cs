@@ -35,7 +35,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("FLOAT")] float baselineOriginX,
             [In, ComAliasName("FLOAT")] float baselineOriginY,
             [In] DWRITE_MEASURING_MODE measuringMode,
-            [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
+            [In] DWRITE_GLYPH_RUN* glyphRun,
             [In] IDWriteRenderingParams* renderingParams,
             [In, ComAliasName("COLORREF")] uint textColor,
             [Out] RECT* blackBoxRect = null
@@ -90,7 +90,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetCurrentTransform(
             [In] IDWriteBitmapRenderTarget* This,
-            [In] /* readonly */ DWRITE_MATRIX* transform = null
+            [In] DWRITE_MATRIX* transform = null
         );
 
         /// <summary>Gets the dimensions of the bitmap.</summary>

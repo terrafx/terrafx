@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateStream(
             [In] IStorage* This,
-            [In, ComAliasName("OLECHAR")] /* readonly */ char* pwcsName,
+            [In, ComAliasName("OLECHAR")] char* pwcsName,
             [In, ComAliasName("DWORD")] uint grfMode,
             [In, ComAliasName("DWORD")] uint reserved1,
             [In, ComAliasName("DWORD")] uint reserved2,
@@ -34,7 +34,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int OpenStream(
             [In] IStorage* This,
-            [In, ComAliasName("OLECHAR")] /* readonly */ char* pwcsName,
+            [In, ComAliasName("OLECHAR")] char* pwcsName,
             [In] void* reserved1,
             [In, ComAliasName("DWORD")] uint grfMode,
             [In, ComAliasName("DWORD")] uint reserved2,
@@ -46,7 +46,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateStorage(
             [In] IStorage* This,
-            [In, ComAliasName("OLECHAR")] /* readonly */ char* pwcsName,
+            [In, ComAliasName("OLECHAR")] char* pwcsName,
             [In, ComAliasName("DWORD")] uint grfMode,
             [In, ComAliasName("DWORD")] uint reserved1,
             [In, ComAliasName("DWORD")] uint reserved2,
@@ -58,7 +58,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int OpenStorage(
             [In] IStorage* This,
-            [In, Optional, ComAliasName("OLECHAR")] /* readonly */ char* pwcsName,
+            [In, Optional, ComAliasName("OLECHAR")] char* pwcsName,
             [In, Optional] IStorage* pstgPriority,
             [In, ComAliasName("DWORD")] uint grfMode,
             [In, Optional, ComAliasName("SNB")] char** snbExclude,
@@ -71,7 +71,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CopyTo(
             [In] IStorage* This,
-            [In, ComAliasName("IID")] /* readonly */ Guid* ciidExclude,
+            [In, ComAliasName("IID")] Guid* ciidExclude,
             [In, Optional] Guid* rgiidExclude,
             [In, Optional, ComAliasName("SNB")] char** snbExclude,
             [In] IStorage* pstgDest
@@ -82,9 +82,9 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int MoveElementTo(
             [In] IStorage* This,
-            [In, ComAliasName("OLECHAR")] /* readonly */ char* pwcsName,
+            [In, ComAliasName("OLECHAR")] char* pwcsName,
             [In, Optional] IStorage* pstgDest,
-            [In, ComAliasName("OLECHAR")] /* readonly */ char* pwcsNewName,
+            [In, ComAliasName("OLECHAR")] char* pwcsNewName,
             [In, ComAliasName("DWORD")] uint grfFlags
         );
 
@@ -119,7 +119,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int DestroyElement(
             [In] IStorage* This,
-            [In, ComAliasName("OLECHAR")] /* readonly */ char* pwcsName
+            [In, ComAliasName("OLECHAR")] char* pwcsName
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -127,8 +127,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int RenameElement(
             [In] IStorage* This,
-            [In, ComAliasName("OLECHAR")] /* readonly */ char* pwcsOldName,
-            [In, ComAliasName("OLECHAR")] /* readonly */ char* pwcsNewName
+            [In, ComAliasName("OLECHAR")] char* pwcsOldName,
+            [In, ComAliasName("OLECHAR")] char* pwcsNewName
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -136,10 +136,10 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetElementTimes(
             [In] IStorage* This,
-            [In, ComAliasName("OLECHAR")] /* readonly */ char* pwcsName = null,
-            [In] /* readonly */ FILETIME* pctime = null,
-            [In] /* readonly */ FILETIME* patime = null,
-            [In] /* readonly */ FILETIME* pmtime = null
+            [In, ComAliasName("OLECHAR")] char* pwcsName = null,
+            [In] FILETIME* pctime = null,
+            [In] FILETIME* patime = null,
+            [In] FILETIME* pmtime = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -147,7 +147,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetClass(
             [In] IStorage* This,
-            [In, ComAliasName("REFCLSID")] /* readonly */ Guid* clsid
+            [In, ComAliasName("REFCLSID")] Guid* clsid
         );
 
         [SuppressUnmanagedCodeSecurity]

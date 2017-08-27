@@ -14,7 +14,7 @@ namespace TerraFX.Interop
         [ComAliasName("UINT32")]
         public uint pitch;
 
-        [ComAliasName("BYTE")]
+        [ComAliasName("BYTE[]")]
         public byte* bits;
         #endregion
     }

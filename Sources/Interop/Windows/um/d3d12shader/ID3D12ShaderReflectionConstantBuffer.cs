@@ -36,7 +36,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate ID3D12ShaderReflectionVariable* GetVariableByName(
             [In] ID3D12ShaderReflectionConstantBuffer* This,
-            [In, ComAliasName("LPCSTR")] /* readonly */ sbyte* Name
+            [In, ComAliasName("LPCSTR")] sbyte* Name
         );
         #endregion
 

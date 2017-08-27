@@ -30,7 +30,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateRemoteStreamFromKey(
             [In] IDWriteRemoteFontFileLoader* This,
-            [In] /* readonly */ void* fontFileReferenceKey,
+            [In] void* fontFileReferenceKey,
             [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
             [Out] IDWriteRemoteFontFileStream** fontFileStream
         );
@@ -45,7 +45,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetLocalityFromKey(
             [In] IDWriteRemoteFontFileLoader* This,
-            [In] /* readonly */ void* fontFileReferenceKey,
+            [In] void* fontFileReferenceKey,
             [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
             [Out] DWRITE_LOCALITY* locality
         );
@@ -62,8 +62,8 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateFontFileReferenceFromUrl(
             [In] IDWriteRemoteFontFileLoader* This,
             [In] IDWriteFactory* factory,
-            [In, Optional, ComAliasName("WCHAR")] /* readonly */ char* baseUrl,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* fontFileUrl,
+            [In, Optional, ComAliasName("WCHAR[]")] char* baseUrl,
+            [In, ComAliasName("WCHAR[]")] char* fontFileUrl,
             [Out] IDWriteFontFile** fontFile
         );
         #endregion

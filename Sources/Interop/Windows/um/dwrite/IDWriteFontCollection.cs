@@ -49,7 +49,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int FindFamilyName(
             [In] IDWriteFontCollection* This,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* familyName,
+            [In, ComAliasName("WCHAR[]")] char* familyName,
             [Out, ComAliasName("UINT32")] uint* index,
             [Out, ComAliasName("BOOL")] int* exists
         );

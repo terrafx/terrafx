@@ -25,10 +25,10 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateLookupTable3D(
             [In] ID2D1EffectContext1* This,
             [In] D2D1_BUFFER_PRECISION precision,
-            [In, ComAliasName("UINT32")] /* readonly */ uint* extents,
-            [In, ComAliasName("BYTE")] /* readonly */ byte* data,
+            [In, ComAliasName("UINT32[]")] uint* extents,
+            [In, ComAliasName("BYTE[]")] byte* data,
             [In, ComAliasName("UINT32")] uint dataCount,
-            [In, ComAliasName("UINT32")] /* readonly */ uint* strides,
+            [In, ComAliasName("UINT32[]")] uint* strides,
             [Out] ID2D1LookupTable3D** lookupTable
         );
         #endregion

@@ -25,7 +25,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetPixelShaderConstantBuffer(
             [In] ID2D1DrawInfo* This,
-            [In, ComAliasName("BYTE")] /* readonly */ byte* buffer,
+            [In, ComAliasName("BYTE[]")] byte* buffer,
             [In, ComAliasName("UINT32")] uint bufferCount
         );
 
@@ -45,7 +45,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetVertexShaderConstantBuffer(
             [In] ID2D1DrawInfo* This,
-            [In, ComAliasName("BYTE")] /* readonly */ byte* buffer,
+            [In, ComAliasName("BYTE[]")] byte* buffer,
             [In, ComAliasName("UINT32")] uint bufferCount
         );
 
@@ -55,7 +55,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetPixelShader(
             [In] ID2D1DrawInfo* This,
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* shaderId,
+            [In, ComAliasName("REFGUID")] Guid* shaderId,
             [In] D2D1_PIXEL_OPTIONS pixelOptions = D2D1_PIXEL_OPTIONS_NONE
         );
 
@@ -67,9 +67,9 @@ namespace TerraFX.Interop
             [In] ID2D1DrawInfo* This,
             [In, Optional] ID2D1VertexBuffer* vertexBuffer,
             [In] D2D1_VERTEX_OPTIONS vertexOptions,
-            [In] /* readonly */ D2D1_BLEND_DESCRIPTION* blendDescription = null,
-            [In] /* readonly */ D2D1_VERTEX_RANGE* vertexRange = null,
-            [In, ComAliasName("GUID")] /* readonly */ Guid* vertexShader = null
+            [In] D2D1_BLEND_DESCRIPTION* blendDescription = null,
+            [In] D2D1_VERTEX_RANGE* vertexRange = null,
+            [In, ComAliasName("GUID")] Guid* vertexShader = null
         );
         #endregion
 

@@ -30,7 +30,7 @@ namespace TerraFX.Interop
             [In] IDWriteTextAnalysisSink* This,
             [In, ComAliasName("UINT32")] uint textPosition,
             [In, ComAliasName("UINT32")] uint textLength,
-            [In] /* readonly */ DWRITE_SCRIPT_ANALYSIS* scriptAnalysis
+            [In] DWRITE_SCRIPT_ANALYSIS* scriptAnalysis
         );
 
         /// <summary>Report line-break opportunities for each character, starting from the specified position.</summary>
@@ -45,7 +45,7 @@ namespace TerraFX.Interop
             [In] IDWriteTextAnalysisSink* This,
             [In, ComAliasName("UINT32")] uint textPosition,
             [In, ComAliasName("UINT32")] uint textLength,
-            [In] /* readonly */ DWRITE_LINE_BREAKPOINT* lineBreakpoints
+            [In] DWRITE_LINE_BREAKPOINT* lineBreakpoints
         );
 
         /// <summary>Set bidirectional level on the range, called once per each level run change (either explicit or resolved implicit).</summary>

@@ -10,13 +10,14 @@ namespace TerraFX.Interop
     public /* blittable */ unsafe struct D3D12_STREAM_OUTPUT_DESC
     {
         #region Fields
-        public /* readonly */ D3D12_SO_DECLARATION_ENTRY* pSODeclaration;
+        [ComAliasName("D3D12_SO_DECLARATION_ENTRY[]")]
+        public D3D12_SO_DECLARATION_ENTRY* pSODeclaration;
 
         [ComAliasName("UINT")]
         public uint NumEntries;
 
-        [ComAliasName("UINT")]
-        public /* readonly */ uint* pBufferStrides;
+        [ComAliasName("UINT[]")]
+        public uint* pBufferStrides;
 
         [ComAliasName("UINT")]
         public uint NumStrides;

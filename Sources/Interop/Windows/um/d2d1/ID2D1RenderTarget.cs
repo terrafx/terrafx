@@ -28,9 +28,9 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateBitmap(
             [In] ID2D1RenderTarget* This,
             [In, ComAliasName("D2D1_SIZE_U")] D2D_SIZE_U size,
-            [In, Optional] /* readonly */ void* srcData,
+            [In, Optional] void* srcData,
             [In, ComAliasName("UINT32")] uint pitch,
-            [In] /* readonly */ D2D1_BITMAP_PROPERTIES* bitmapProperties,
+            [In] D2D1_BITMAP_PROPERTIES* bitmapProperties,
             [Out] ID2D1Bitmap** bitmap
         );
 
@@ -41,7 +41,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateBitmapFromWicBitmap(
             [In] ID2D1RenderTarget* This,
             [In] IWICBitmapSource* wicBitmapSource,
-            [In, Optional] /* readonly */ D2D1_BITMAP_PROPERTIES* bitmapProperties,
+            [In, Optional] D2D1_BITMAP_PROPERTIES* bitmapProperties,
             [Out] ID2D1Bitmap** bitmap
         );
 
@@ -51,9 +51,9 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateSharedBitmap(
             [In] ID2D1RenderTarget* This,
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
+            [In, ComAliasName("REFIID")] Guid* riid,
             [In, Out] void* data,
-            [In, Optional] /* readonly */ D2D1_BITMAP_PROPERTIES* bitmapProperties,
+            [In, Optional] D2D1_BITMAP_PROPERTIES* bitmapProperties,
             [Out] ID2D1Bitmap** bitmap
         );
 
@@ -64,8 +64,8 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateBitmapBrush(
             [In] ID2D1RenderTarget* This,
             [In, Optional] ID2D1Bitmap* bitmap,
-            [In, Optional] /* readonly */ D2D1_BITMAP_BRUSH_PROPERTIES* bitmapBrushProperties,
-            [In, Optional] /* readonly */ D2D1_BRUSH_PROPERTIES* brushProperties,
+            [In, Optional] D2D1_BITMAP_BRUSH_PROPERTIES* bitmapBrushProperties,
+            [In, Optional] D2D1_BRUSH_PROPERTIES* brushProperties,
             [Out] ID2D1BitmapBrush** bitmapBrush
         );
 
@@ -74,8 +74,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateSolidColorBrush(
             [In] ID2D1RenderTarget* This,
-            [In, ComAliasName("D2D1_COLOR_F")] /* readonly */ DXGI_RGBA* color,
-            [In, Optional] /* readonly */ D2D1_BRUSH_PROPERTIES* brushProperties,
+            [In, ComAliasName("D2D1_COLOR_F")] DXGI_RGBA* color,
+            [In, Optional] D2D1_BRUSH_PROPERTIES* brushProperties,
             [Out] ID2D1SolidColorBrush** solidColorBrush
         );
 
@@ -87,7 +87,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateGradientStopCollection(
             [In] ID2D1RenderTarget* This,
-            [In] /* readonly */ D2D1_GRADIENT_STOP* gradientStops,
+            [In, ComAliasName("D2D1_GRADIENT_STOP[]")] D2D1_GRADIENT_STOP* gradientStops,
             [In, ComAliasName("UINT32")] uint gradientStopsCount,
             [In] D2D1_GAMMA colorInterpolationGamma,
             [In] D2D1_EXTEND_MODE extendMode,
@@ -99,8 +99,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateLinearGradientBrush(
             [In] ID2D1RenderTarget* This,
-            [In] /* readonly */ D2D1_LINEAR_GRADIENT_BRUSH_PROPERTIES* linearGradientBrushProperties,
-            [In, Optional] /* readonly */ D2D1_BRUSH_PROPERTIES* brushProperties,
+            [In] D2D1_LINEAR_GRADIENT_BRUSH_PROPERTIES* linearGradientBrushProperties,
+            [In, Optional] D2D1_BRUSH_PROPERTIES* brushProperties,
             [In] ID2D1GradientStopCollection* gradientStopCollection,
             [Out] ID2D1LinearGradientBrush** linearGradientBrush
         );
@@ -110,8 +110,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateRadialGradientBrush(
             [In] ID2D1RenderTarget* This,
-            [In] /* readonly */ D2D1_RADIAL_GRADIENT_BRUSH_PROPERTIES* radialGradientBrushProperties,
-            [In, Optional] /* readonly */ D2D1_BRUSH_PROPERTIES* brushProperties,
+            [In] D2D1_RADIAL_GRADIENT_BRUSH_PROPERTIES* radialGradientBrushProperties,
+            [In, Optional] D2D1_BRUSH_PROPERTIES* brushProperties,
             [In] ID2D1GradientStopCollection* gradientStopCollection,
             [Out] ID2D1RadialGradientBrush** radialGradientBrush
         );
@@ -127,9 +127,9 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateCompatibleRenderTarget(
             [In] ID2D1RenderTarget* This,
-            [In, Optional, ComAliasName("D2D1_SIZE_F")] /* readonly */ D2D_SIZE_F* desiredSize,
-            [In, Optional, ComAliasName("D2D1_SIZE_U")] /* readonly */ D2D_SIZE_U* desiredPixelSize,
-            [In, Optional] /* readonly */ D2D1_PIXEL_FORMAT* desiredFormat,
+            [In, Optional, ComAliasName("D2D1_SIZE_F")] D2D_SIZE_F* desiredSize,
+            [In, Optional, ComAliasName("D2D1_SIZE_U")] D2D_SIZE_U* desiredPixelSize,
+            [In, Optional] D2D1_PIXEL_FORMAT* desiredFormat,
             [In] D2D1_COMPATIBLE_RENDER_TARGET_OPTIONS options,
             [Out] ID2D1BitmapRenderTarget** bitmapRenderTarget
         );
@@ -141,7 +141,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateLayer(
             [In] ID2D1RenderTarget* This,
-            [In, Optional, ComAliasName("D2D1_SIZE_F")] /* readonly */ D2D_SIZE_F* size,
+            [In, Optional, ComAliasName("D2D1_SIZE_F")] D2D_SIZE_F* size,
             [Out] ID2D1Layer** layer
         );
 
@@ -169,7 +169,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void DrawRectangle(
             [In] ID2D1RenderTarget* This,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* rect,
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* rect,
             [In] ID2D1Brush* brush,
             [In, ComAliasName("FLOAT")] float strokeWidth = 1.0f,
             [In] ID2D1StrokeStyle* strokeStyle = null
@@ -179,7 +179,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void FillRectangle(
             [In] ID2D1RenderTarget* This,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* rect,
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* rect,
             [In] ID2D1Brush* brush
         );
 
@@ -187,7 +187,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void DrawRoundedRectangle(
             [In] ID2D1RenderTarget* This,
-            [In] /* readonly */ D2D1_ROUNDED_RECT* roundedRect,
+            [In] D2D1_ROUNDED_RECT* roundedRect,
             [In] ID2D1Brush* brush,
             [In, ComAliasName("FLOAT")] float strokeWidth = 1.0f,
             [In] ID2D1StrokeStyle* strokeStyle = null
@@ -197,7 +197,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void FillRoundedRectangle(
             [In] ID2D1RenderTarget* This,
-            [In] /* readonly */ D2D1_ROUNDED_RECT* roundedRect,
+            [In] D2D1_ROUNDED_RECT* roundedRect,
             [In] ID2D1Brush* brush
         );
 
@@ -205,7 +205,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void DrawEllipse(
             [In] ID2D1RenderTarget* This,
-            [In] /* readonly */ D2D1_ELLIPSE* ellipse,
+            [In] D2D1_ELLIPSE* ellipse,
             [In] ID2D1Brush* brush,
             [In, ComAliasName("FLOAT")] float strokeWidth = 1.0f,
             [In] ID2D1StrokeStyle* strokeStyle = null
@@ -215,7 +215,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void FillEllipse(
             [In] ID2D1RenderTarget* This,
-            [In] /* readonly */ D2D1_ELLIPSE* ellipse,
+            [In] D2D1_ELLIPSE* ellipse,
             [In] ID2D1Brush* brush
         );
 
@@ -256,8 +256,8 @@ namespace TerraFX.Interop
             [In] ID2D1Bitmap* opacityMask,
             [In] ID2D1Brush* brush,
             [In] D2D1_OPACITY_MASK_CONTENT content,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangle = null,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* sourceRectangle = null
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* destinationRectangle = null,
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* sourceRectangle = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -265,10 +265,10 @@ namespace TerraFX.Interop
         public /* static */ delegate void DrawBitmap(
             [In] ID2D1RenderTarget* This,
             [In] ID2D1Bitmap* bitmap,
-            [In, Optional, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangle,
+            [In, Optional, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* destinationRectangle,
             [In, ComAliasName("FLOAT")] float opacity = 1.0f,
             [In] D2D1_BITMAP_INTERPOLATION_MODE interpolationMode = D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* sourceRectangle = null
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* sourceRectangle = null
         );
 
         /// <summary>Draws the text within the given layout rectangle and by default also performs baseline snapping.</summary>
@@ -276,10 +276,10 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void DrawText(
             [In] ID2D1RenderTarget* This,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* @string,
+            [In, ComAliasName("WCHAR[]")] char* @string,
             [In, ComAliasName("UINT32")] uint stringLength,
             [In] IDWriteTextFormat* textFormat,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* layoutRect,
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* layoutRect,
             [In] ID2D1Brush* defaultFillBrush,
             [In] D2D1_DRAW_TEXT_OPTIONS options = D2D1_DRAW_TEXT_OPTIONS_NONE,
             [In] DWRITE_MEASURING_MODE measuringMode = DWRITE_MEASURING_MODE_NATURAL
@@ -302,7 +302,7 @@ namespace TerraFX.Interop
         public /* static */ delegate void DrawGlyphRun(
             [In] ID2D1RenderTarget* This,
             [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
-            [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
+            [In] DWRITE_GLYPH_RUN* glyphRun,
             [In] ID2D1Brush* foregroundBrush,
             [In] DWRITE_MEASURING_MODE measuringMode = DWRITE_MEASURING_MODE_NATURAL
         );
@@ -311,7 +311,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetTransform(
             [In] ID2D1RenderTarget* This,
-            [In, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* transform
+            [In, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -385,7 +385,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void PushLayer(
             [In] ID2D1RenderTarget* This,
-            [In] /* readonly */ D2D1_LAYER_PARAMETERS* layerParameters,
+            [In] D2D1_LAYER_PARAMETERS* layerParameters,
             [In] ID2D1Layer* layer = null
         );
 
@@ -426,7 +426,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void PushAxisAlignedClip(
             [In] ID2D1RenderTarget* This,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* clipRect,
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* clipRect,
             [In] D2D1_ANTIALIAS_MODE antialiasMode
         );
 
@@ -440,7 +440,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void Clear(
             [In] ID2D1RenderTarget* This,
-            [In, ComAliasName("D2D1_COLOR_F")] /* readonly */ DXGI_RGBA* clearColor = null
+            [In, ComAliasName("D2D1_COLOR_F")] DXGI_RGBA* clearColor = null
         );
 
         /// <summary>Start drawing on this render target. Draw calls can only be issued between a BeginDraw and EndDraw call.</summary>
@@ -462,8 +462,9 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_PIXEL_FORMAT GetPixelFormat(
-            [In] ID2D1RenderTarget* This
+        public /* static */ delegate void GetPixelFormat(
+            [In] ID2D1RenderTarget* This,
+            [Out] D2D1_PIXEL_FORMAT* pPixelFormat
         );
 
         /// <summary>Sets the DPI on the render target. This results in the render target being interpreted to a different scale. Neither DPI can be negative. If zero is specified for both, the system DPI is chosen. If one is zero and the other unspecified, the DPI is not changed.</summary>
@@ -487,17 +488,17 @@ namespace TerraFX.Interop
         /// <summary>Returns the size of the render target in DIPs.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("D2D1_SIZE_F")]
-        public /* static */ delegate D2D_SIZE_F GetSize(
-            [In] ID2D1RenderTarget* This
+        public /* static */ delegate void GetSize(
+            [In] ID2D1RenderTarget* This,
+            [Out, ComAliasName("D2D1_SIZE_F")] D2D_SIZE_F* pSize
         );
 
         /// <summary>Returns the size of the render target in pixels.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("D2D1_SIZE_U")]
-        public /* static */ delegate D2D_SIZE_U GetPixelSize(
-            [In] ID2D1RenderTarget* This
+        public /* static */ delegate void GetPixelSize(
+            [In] ID2D1RenderTarget* This,
+            [Out, ComAliasName("D2D1_SIZE_U")] D2D_SIZE_U* pPixelSize
         );
 
         /// <summary>Returns the maximum bitmap and render target size that is guaranteed to be supported by the render target.</summary>
@@ -514,7 +515,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("BOOL")]
         public /* static */ delegate int IsSupported(
             [In] ID2D1RenderTarget* This,
-            [In] /* readonly */ D2D1_RENDER_TARGET_PROPERTIES* renderTargetProperties
+            [In] D2D1_RENDER_TARGET_PROPERTIES* renderTargetProperties
         );
         #endregion
 

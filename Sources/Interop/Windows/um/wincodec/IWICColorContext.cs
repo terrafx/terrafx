@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int InitializeFromFilename(
             [In] IWICColorContext* This,
-            [In, ComAliasName("LPCWSTR")] /* readonly */ char* wzFilename
+            [In, ComAliasName("LPCWSTR")] char* wzFilename
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -30,7 +30,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int InitializeFromMemory(
             [In] IWICColorContext* This,
-            [In, ComAliasName("BYTE")] /* readonly */ byte* pbBuffer,
+            [In, ComAliasName("BYTE[]")] byte* pbBuffer,
             [In, ComAliasName("UINT")] uint cbBufferSize
         );
 
@@ -56,7 +56,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetProfileBytes(
             [In] IWICColorContext* This,
             [In, ComAliasName("UINT")] uint cbBuffer,
-            [In, Out, Optional, ComAliasName("BYTE")] byte* pbBuffer,
+            [In, Out, Optional, ComAliasName("BYTE[]")] byte* pbBuffer,
             [Out, ComAliasName("UINT")] uint* pcbActual
         );
 

@@ -26,8 +26,8 @@ namespace TerraFX.Interop
             [In, Out, ComAliasName("UINT")] uint* puiHeight,
             [In] WICBitmapTransformOptions dstTransform,
             [In] WICPlanarOptions dstPlanarOptions,
-            [In, ComAliasName("WICPixelFormatGUID")] /* readonly */ Guid* pguidDstFormats,
-            [Out] WICBitmapPlaneDescription* pPlaneDescriptions,
+            [In, ComAliasName("WICPixelFormatGUID[]")] Guid* pguidDstFormats,
+            [Out, ComAliasName("WICBitmapPlaneDescription[]")] WICBitmapPlaneDescription* pPlaneDescriptions,
             [In, ComAliasName("UINT")] uint cPlanes,
             [Out, ComAliasName("BOOL")] int* pfIsSupported
         );
@@ -37,12 +37,12 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CopyPixels(
             [In] IWICPlanarBitmapSourceTransform* This,
-            [In, Optional] /* readonly */ WICRect* prcSource,
+            [In, Optional] WICRect* prcSource,
             [In, ComAliasName("UINT")] uint uiWidth,
             [In, ComAliasName("UINT")] uint uiHeight,
             [In] WICBitmapTransformOptions dstTransform,
             [In] WICPlanarOptions dstPlanarOptions,
-            [In] /* readonly */ WICBitmapPlane* pDstPlanes,
+            [In, ComAliasName("WICBitmapPlane[]")] WICBitmapPlane* pDstPlanes,
             [In, ComAliasName("UINT")] uint cPlanes
         );
         #endregion

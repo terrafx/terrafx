@@ -39,7 +39,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int AddFontFaceReference1(
             [In] IDWriteFontSetBuilder* This,
             [In] IDWriteFontFaceReference* fontFaceReference,
-            [In] /* readonly */ DWRITE_FONT_PROPERTY* properties,
+            [In, ComAliasName("DWRITE_FONT_PROPERTY[]")] DWRITE_FONT_PROPERTY* properties,
             [In, ComAliasName("UINT32")] uint propertyCount
         );
 

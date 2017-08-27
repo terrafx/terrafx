@@ -29,9 +29,9 @@ namespace TerraFX.Interop
         /// <summary>Returns the size of the initial viewport.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("D2D1_SIZE_F")]
-        public /* static */ delegate D2D_SIZE_F GetViewportSize(
-            [In] ID2D1SvgDocument* This
+        public /* static */ delegate void GetViewportSize(
+            [In] ID2D1SvgDocument* This,
+            [Out, ComAliasName("D2D1_SIZE_F")] D2D_SIZE_F* pViewportSize
         );
 
         /// <summary>Sets the root element of the document. The root element must be an 'svg' element. If the element already exists within an svg tree, it is first removed.</summary>
@@ -57,7 +57,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int FindElementById(
             [In] ID2D1SvgDocument* This,
-            [In, ComAliasName("PCWSTR")] /* readonly */ char* id,
+            [In, ComAliasName("PCWSTR")] char* id,
             [Out] ID2D1SvgElement** svgElement
         );
 
@@ -94,8 +94,8 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreatePaint(
             [In] ID2D1SvgDocument* This,
             [In] D2D1_SVG_PAINT_TYPE paintType,
-            [In, Optional, ComAliasName("D2D1_COLOR_F")] /* readonly */ DXGI_RGBA* color,
-            [In, Optional, ComAliasName("PCWSTR")] /* readonly */ char* id,
+            [In, Optional, ComAliasName("D2D1_COLOR_F")] DXGI_RGBA* color,
+            [In, Optional, ComAliasName("PCWSTR")] char* id,
             [Out] ID2D1SvgPaint** paint
         );
 
@@ -105,7 +105,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateStrokeDashArray(
             [In] ID2D1SvgDocument* This,
-            [In, Optional] /* readonly */ D2D1_SVG_LENGTH* dashes,
+            [In, Optional, ComAliasName("D2D1_SVG_LENGTH[]")] D2D1_SVG_LENGTH* dashes,
             [In, ComAliasName("UINT32")] uint dashesCount,
             [Out] ID2D1SvgStrokeDashArray** strokeDashArray
         );
@@ -116,7 +116,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreatePointCollection(
             [In] ID2D1SvgDocument* This,
-            [In, Optional, ComAliasName("D2D1_POINT_2F")] /* readonly */ D2D_POINT_2F* points,
+            [In, Optional, ComAliasName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
             [In, ComAliasName("UINT32")] uint pointsCount,
             [Out] ID2D1SvgPointCollection** pointCollection
         );
@@ -127,9 +127,9 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreatePathData(
             [In] ID2D1SvgDocument* This,
-            [In, Optional, ComAliasName("FLOAT")] /* readonly */ float* segmentData,
+            [In, Optional, ComAliasName("FLOAT[]")] float* segmentData,
             [In, ComAliasName("UINT32")] uint segmentDataCount,
-            [In, Optional] /* readonly */ D2D1_SVG_PATH_COMMAND* commands,
+            [In, Optional, ComAliasName("D2D1_SVG_PATH_COMMAND[]")] D2D1_SVG_PATH_COMMAND* commands,
             [In, ComAliasName("UINT32")] uint commandsCount,
             [Out] ID2D1SvgPathData** pathData
         );

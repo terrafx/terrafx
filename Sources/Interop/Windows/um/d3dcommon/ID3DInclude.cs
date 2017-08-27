@@ -22,9 +22,9 @@ namespace TerraFX.Interop
         public /* static */ delegate int Open(
             [In] ID3DInclude* This,
             [In] D3D_INCLUDE_TYPE IncludeType,
-            [In, ComAliasName("LPCSTR")] /* readonly */ sbyte* pFileName,
-            [In, ComAliasName("LPCVOID")] /* readonly */ void* pParentData,
-            [Out, ComAliasName("LPCVOID")] /* readonly */ void** ppData,
+            [In, ComAliasName("LPCSTR")] sbyte* pFileName,
+            [In, ComAliasName("LPCVOID")] void* pParentData,
+            [Out, ComAliasName("LPCVOID")] void** ppData,
             [Out, ComAliasName("UINT")] uint* pBytes
         );
 
@@ -33,7 +33,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int Close(
             [In] ID3DInclude* This,
-            [In, ComAliasName("LPCVOID")] /* readonly */ void* pData
+            [In, ComAliasName("LPCVOID")] void* pData
         );
         #endregion
 

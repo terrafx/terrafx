@@ -40,7 +40,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetColor(
             [In] ID2D1SvgPaint* This,
-            [In, ComAliasName("D2D1_COLOR_F")] /* readonly */ DXGI_RGBA* color
+            [In, ComAliasName("D2D1_COLOR_F")] DXGI_RGBA* color
         );
 
         /// <summary>Gets the paint color that is used if the paint type is D2D1_SVG_PAINT_TYPE_COLOR.</summary>
@@ -57,7 +57,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetId(
             [In] ID2D1SvgPaint* This,
-            [In, ComAliasName("PCWSTR")] /* readonly */ char* id
+            [In, ComAliasName("PCWSTR")] char* id
         );
 
         /// <summary>Gets the element id which acts as the paint server. This id is used if the paint type is D2D1_SVG_PAINT_TYPE_URI.</summary>

@@ -27,9 +27,9 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("D2D1_POINT_2L")]
-        public /* static */ delegate POINT GetOffset(
-            [In] ID2D1OffsetTransform* This
+        public /* static */ delegate void GetOffset(
+            [In] ID2D1OffsetTransform* This,
+            [Out, ComAliasName("D2D1_POINT_2L")] POINT* pOffset
         );
         #endregion
 

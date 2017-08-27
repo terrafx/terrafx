@@ -160,7 +160,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateChild(
             [In] ID2D1SvgElement* This,
-            [In, Optional, ComAliasName("PCWSTR")] /* readonly */ char* tagName,
+            [In, Optional, ComAliasName("PCWSTR")] char* tagName,
             [Out] ID2D1SvgElement** newChild
         );
 
@@ -172,7 +172,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("BOOL")]
         public /* static */ delegate int IsAttributeSpecified(
             [In] ID2D1SvgElement* This,
-            [In, ComAliasName("PCWSTR")] /* readonly */ char* name,
+            [In, ComAliasName("PCWSTR")] char* name,
             [Out, ComAliasName("BOOL")] int* inherited = null
         );
 
@@ -219,7 +219,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int RemoveAttribute(
             [In] ID2D1SvgElement* This,
-            [In, ComAliasName("PCWSTR")] /* readonly */ char* name
+            [In, ComAliasName("PCWSTR")] char* name
         );
 
         /// <summary>Sets the value of a text content element.</summary>
@@ -228,7 +228,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetTextValue(
             [In] ID2D1SvgElement* This,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* name,
+            [In, ComAliasName("WCHAR[]")] char* name,
             [In, ComAliasName("UINT32")] uint nameCount
         );
 
@@ -256,9 +256,9 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetAttributeValue(
             [In] ID2D1SvgElement* This,
-            [In, ComAliasName("PCWSTR")] /* readonly */ char* name,
+            [In, ComAliasName("PCWSTR")] char* name,
             [In] D2D1_SVG_ATTRIBUTE_STRING_TYPE type,
-            [In, ComAliasName("PCWSTR")] /* readonly */ char* value
+            [In, ComAliasName("PCWSTR")] char* value
         );
 
         /// <summary>Gets an attribute of this element as a string. Returns an error if the attribute is not specified. Returns an error if the attribute name is not valid on this element. Returns an error if the attribute cannot be expressed as the specified string type.</summary>
@@ -267,7 +267,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetAttributeValue(
             [In] ID2D1SvgElement* This,
-            [In, ComAliasName("PCWSTR")] /* readonly */ char* name,
+            [In, ComAliasName("PCWSTR")] char* name,
             [In] D2D1_SVG_ATTRIBUTE_STRING_TYPE type,
             [Out, ComAliasName("PWSTR")] char* value,
             [In, ComAliasName("UINT32")] uint valueCount
@@ -279,7 +279,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetAttributeValueLength(
             [In] ID2D1SvgElement* This,
-            [In, ComAliasName("PCWSTR")] /* readonly */ char* name,
+            [In, ComAliasName("PCWSTR")] char* name,
             [In] D2D1_SVG_ATTRIBUTE_STRING_TYPE type,
             [Out, ComAliasName("UINT32")] uint* valueLength
         );
@@ -290,9 +290,9 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetAttributeValue1(
             [In] ID2D1SvgElement* This,
-            [In, ComAliasName("PCWSTR")] /* readonly */ char* name,
+            [In, ComAliasName("PCWSTR")] char* name,
             [In] D2D1_SVG_ATTRIBUTE_POD_TYPE type,
-            [In] /* readonly */ void* value,
+            [In] void* value,
             [In, ComAliasName("UINT32")] uint valueSizeInBytes
         );
 
@@ -302,7 +302,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetAttributeValue1(
             [In] ID2D1SvgElement* This,
-            [In, ComAliasName("PCWSTR")] /* readonly */ char* name,
+            [In, ComAliasName("PCWSTR")] char* name,
             [In] D2D1_SVG_ATTRIBUTE_POD_TYPE type,
             [Out] void* value,
             [In, ComAliasName("UINT32")] uint valueSizeInBytes
@@ -314,7 +314,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetAttributeValue2(
             [In] ID2D1SvgElement* This,
-            [In, ComAliasName("PCWSTR")] /* readonly */ char* name,
+            [In, ComAliasName("PCWSTR")] char* name,
             [In] ID2D1SvgAttribute* value
         );
 
@@ -325,8 +325,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetAttributeValue2(
             [In] ID2D1SvgElement* This,
-            [In, ComAliasName("PCWSTR")] /* readonly */ char* name,
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
+            [In, ComAliasName("PCWSTR")] char* name,
+            [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** value
         );
         #endregion

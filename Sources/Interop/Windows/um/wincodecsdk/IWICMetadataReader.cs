@@ -57,8 +57,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetValue(
             [In] IWICMetadataReader* This,
-            [In, Optional] /* readonly */ PROPVARIANT* pvarSchema,
-            [In] /* readonly */ PROPVARIANT* pvarId,
+            [In, Optional] PROPVARIANT* pvarSchema,
+            [In] PROPVARIANT* pvarId,
             [In, Out] PROPVARIANT* pvarValue = null
         );
 

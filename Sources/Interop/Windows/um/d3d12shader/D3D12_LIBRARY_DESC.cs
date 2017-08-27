@@ -11,7 +11,7 @@ namespace TerraFX.Interop
     {
         #region Fields
         [ComAliasName("LPCSTR")]
-        public /* readonly */ sbyte* Creator;
+        public sbyte* Creator;
 
         [ComAliasName("UINT")]
         public uint Flags;

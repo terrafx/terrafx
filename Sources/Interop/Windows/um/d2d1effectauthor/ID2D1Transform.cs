@@ -23,8 +23,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int MapOutputRectToInputRects(
             [In] ID2D1Transform* This,
-            [In, ComAliasName("D2D1_RECT_L")] /* readonly */ RECT* outputRect,
-            [Out, ComAliasName("D2D1_RECT_L")] RECT* inputRects,
+            [In, ComAliasName("D2D1_RECT_L")] RECT* outputRect,
+            [Out, ComAliasName("D2D1_RECT_L[]")] RECT* inputRects,
             [In, ComAliasName("UINT32")] uint inputRectsCount
         );
 
@@ -33,8 +33,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int MapInputRectsToOutputRect(
             [In] ID2D1Transform* This,
-            [In, ComAliasName("D2D1_RECT_L")] /* readonly */ RECT* inputRects,
-            [In, ComAliasName("D2D1_RECT_L")] /* readonly */ RECT* inputOpaqueSubRects,
+            [In, ComAliasName("D2D1_RECT_L[]")] RECT* inputRects,
+            [In, ComAliasName("D2D1_RECT_L[]")] RECT* inputOpaqueSubRects,
             [In, ComAliasName("UINT32")] uint inputRectCount,
             [Out, ComAliasName("D2D1_RECT_L")] RECT* outputRect,
             [Out, ComAliasName("D2D1_RECT_L")] RECT* outputOpaqueSubRect

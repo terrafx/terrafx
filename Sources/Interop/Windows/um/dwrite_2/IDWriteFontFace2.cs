@@ -56,7 +56,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("UINT32")] uint colorPaletteIndex,
             [In, ComAliasName("UINT32")] uint firstEntryIndex,
             [In, ComAliasName("UINT32")] uint entryCount,
-            [Out, ComAliasName("DWRITE_COLOR_F")] DXGI_RGBA* paletteEntries
+            [Out, ComAliasName("DWRITE_COLOR_F[]")] DXGI_RGBA* paletteEntries
         );
 
         /// <summary>Determines the recommended text rendering and grid-fit mode to be used based on the font, size, world transform, and measuring mode.</summary>
@@ -79,7 +79,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("FLOAT")] float fontEmSize,
             [In, ComAliasName("FLOAT")] float dpiX,
             [In, ComAliasName("FLOAT")] float dpiY,
-            [In, Optional] /* readonly */ DWRITE_MATRIX* transform,
+            [In, Optional] DWRITE_MATRIX* transform,
             [In, ComAliasName("BOOL")] int isSideways,
             [In] DWRITE_OUTLINE_THRESHOLD outlineThreshold,
             [In] DWRITE_MEASURING_MODE measuringMode,

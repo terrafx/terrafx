@@ -32,7 +32,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int Write(
             [In] ISequentialStream* This,
-            [In] /* readonly */ void* pv,
+            [In] void* pv,
             [In, ComAliasName("ULONG")] uint cb,
             [Out, ComAliasName("ULONG")] uint* pcbWritten = null
         );

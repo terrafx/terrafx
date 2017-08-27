@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int AddError(
             [In] IErrorLog* This,
-            [In, ComAliasName("LPCOLESTR")] /* readonly */ char* pszPropName,
+            [In, ComAliasName("LPCOLESTR")] char* pszPropName,
             [In] EXCEPINFO* pExcepInfo
         );
         #endregion

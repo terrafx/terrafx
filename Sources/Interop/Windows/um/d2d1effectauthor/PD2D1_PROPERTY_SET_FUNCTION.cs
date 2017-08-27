@@ -14,7 +14,7 @@ namespace TerraFX.Interop
     [return: ComAliasName("HRESULT")]
     public /* static */ unsafe delegate int PD2D1_PROPERTY_SET_FUNCTION(
         [In] IUnknown* effect,
-        [In, ComAliasName("BYTE")] /* readonly */ byte* data,
+        [In, ComAliasName("BYTE[]")] byte* data,
         [In, ComAliasName("UINT32")] uint dataSize
     );
 }

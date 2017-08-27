@@ -97,7 +97,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetTrimming(
             [In] IDWriteTextFormat* This,
-            [In] /* readonly */ DWRITE_TRIMMING* trimmingOptions,
+            [In] DWRITE_TRIMMING* trimmingOptions,
             [In] IDWriteInlineObject* trimmingSign = null
         );
 
@@ -216,7 +216,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetFontFamilyName(
             [In] IDWriteTextFormat* This,
-            [Out, ComAliasName("WCHAR")] char* fontFamilyName,
+            [Out, ComAliasName("WCHAR[]")] char* fontFamilyName,
             [In, ComAliasName("UINT32")] uint nameSize
         );
 
@@ -266,7 +266,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetLocaleName(
             [In] IDWriteTextFormat* This,
-            [Out, ComAliasName("WCHAR")] char* localeName,
+            [Out, ComAliasName("WCHAR[]")] char* localeName,
             [In, ComAliasName("UINT32")] uint nameSize
         );
         #endregion

@@ -42,8 +42,8 @@ namespace TerraFX.Interop
         public /* static */ delegate int DrawGdiMetafile(
             [In] ID2D1CommandSink2* This,
             [In] ID2D1GdiMetafile* gdiMetafile,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* destinationRectangle = null,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* sourceRectangle = null
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* destinationRectangle = null,
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* sourceRectangle = null
         );
         #endregion
 

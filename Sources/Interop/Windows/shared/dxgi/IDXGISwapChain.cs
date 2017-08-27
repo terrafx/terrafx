@@ -32,7 +32,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetBuffer(
             [In] IDXGISwapChain* This,
             [In, ComAliasName("UINT")] uint Buffer,
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
+            [In, ComAliasName("REFIID")] Guid* riid,
             [In, Out] void** ppSurface
         );
 
@@ -79,7 +79,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int ResizeTarget(
             [In] IDXGISwapChain* This,
-            [In] /* readonly */ DXGI_MODE_DESC* pNewTargetParameters
+            [In] DXGI_MODE_DESC* pNewTargetParameters
         );
 
         [SuppressUnmanagedCodeSecurity]

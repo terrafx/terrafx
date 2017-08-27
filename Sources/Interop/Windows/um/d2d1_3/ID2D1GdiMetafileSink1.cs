@@ -25,7 +25,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int ProcessRecord(
             [In] ID2D1GdiMetafileSink1* This,
             [In, ComAliasName("DWORD")] uint recordType,
-            [In, Optional] /* readonly */ void* recordData,
+            [In, Optional] void* recordData,
             [In, ComAliasName("DWORD")] uint recordDataSize,
             [In, ComAliasName("UINT32")] uint flags
         );

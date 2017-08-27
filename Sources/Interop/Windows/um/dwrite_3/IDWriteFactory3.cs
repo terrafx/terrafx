@@ -34,8 +34,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateGlyphRunAnalysis(
             [In] IDWriteFactory3* This,
-            [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
-            [In, Optional] /* readonly */ DWRITE_MATRIX* transform,
+            [In] DWRITE_GLYPH_RUN* glyphRun,
+            [In, Optional] DWRITE_MATRIX* transform,
             [In] DWRITE_RENDERING_MODE1 renderingMode,
             [In] DWRITE_MEASURING_MODE measuringMode,
             [In] DWRITE_GRID_FIT_MODE gridFitMode,
@@ -82,8 +82,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateFontFaceReference(
             [In] IDWriteFactory3* This,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* filePath,
-            [In, Optional] /* readonly */ FILETIME* lastWriteTime,
+            [In, ComAliasName("WCHAR[]")] char* filePath,
+            [In, Optional] FILETIME* lastWriteTime,
             [In, ComAliasName("UINT32")] uint faceIndex,
             [In] DWRITE_FONT_SIMULATIONS fontSimulations,
             [Out] IDWriteFontFaceReference** fontFaceReference

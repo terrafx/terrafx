@@ -50,7 +50,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetSourceRectangle(
             [In] ID2D1ImageBrush* This,
-            [In, ComAliasName("D2D1_RECT_F")] /* readonly */ D2D_RECT_F* sourceRectangle
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* sourceRectangle
         );
 
         [SuppressUnmanagedCodeSecurity]

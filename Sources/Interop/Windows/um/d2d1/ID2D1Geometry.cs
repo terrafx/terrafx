@@ -24,7 +24,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetBounds(
             [In] ID2D1Geometry* This,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
             [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* bounds
         );
 
@@ -36,7 +36,7 @@ namespace TerraFX.Interop
             [In] ID2D1Geometry* This,
             [In, ComAliasName("FLOAT")] float strokeWidth,
             [In, Optional] ID2D1StrokeStyle* strokeStyle,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
             [In, ComAliasName("FLOAT")] float flatteningTolerance,
             [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* bounds
         );
@@ -50,7 +50,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F point,
             [In, ComAliasName("FLOAT")] float strokeWidth,
             [In, Optional] ID2D1StrokeStyle* strokeStyle,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
             [In, ComAliasName("FLOAT")] float flatteningTolerance,
             [Out, ComAliasName("BOOL")] int* contains
         );
@@ -62,7 +62,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int FillContainsPoint(
             [In] ID2D1Geometry* This,
             [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F point,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
             [In, ComAliasName("FLOAT")] float flatteningTolerance,
             [Out, ComAliasName("BOOL")] int* contains
         );
@@ -74,7 +74,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int CompareWithGeometry(
             [In] ID2D1Geometry* This,
             [In] ID2D1Geometry* inputGeometry,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* inputGeometryTransform,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* inputGeometryTransform,
             [In, ComAliasName("FLOAT")] float flatteningTolerance,
             [Out] D2D1_GEOMETRY_RELATION* relation
         );
@@ -86,7 +86,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int Simplify(
             [In] ID2D1Geometry* This,
             [In] D2D1_GEOMETRY_SIMPLIFICATION_OPTION simplificationOption,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
             [In, ComAliasName("FLOAT")] float flatteningTolerance,
             [In] ID2D1SimplifiedGeometrySink* geometrySink
         );
@@ -97,7 +97,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int Tessellate(
             [In] ID2D1Geometry* This,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
             [In, ComAliasName("FLOAT")] float flatteningTolerance,
             [In] ID2D1TessellationSink* tessellationSink
         );
@@ -110,7 +110,7 @@ namespace TerraFX.Interop
             [In] ID2D1Geometry* This,
             [In] ID2D1Geometry* inputGeometry,
             [In] D2D1_COMBINE_MODE combineMode,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* inputGeometryTransform,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* inputGeometryTransform,
             [In, ComAliasName("FLOAT")] float flatteningTolerance,
             [In] ID2D1SimplifiedGeometrySink* geometrySink
         );
@@ -121,7 +121,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int Outline(
             [In] ID2D1Geometry* This,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
             [In, ComAliasName("FLOAT")] float flatteningTolerance,
             [In] ID2D1SimplifiedGeometrySink* geometrySink
         );
@@ -132,7 +132,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int ComputeArea(
             [In] ID2D1Geometry* This,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
             [In, ComAliasName("FLOAT")] float flatteningTolerance,
             [Out, ComAliasName("FLOAT")] float* area
         );
@@ -143,7 +143,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int ComputeLength(
             [In] ID2D1Geometry* This,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
             [In, ComAliasName("FLOAT")] float flatteningTolerance,
             [Out, ComAliasName("FLOAT")] float* length
         );
@@ -155,7 +155,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int ComputePointAtLength(
             [In] ID2D1Geometry* This,
             [In, ComAliasName("FLOAT")] float length,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
             [In, ComAliasName("FLOAT")] float flatteningTolerance,
             [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* point = null,
             [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* unitTangentVector = null
@@ -169,7 +169,7 @@ namespace TerraFX.Interop
             [In] ID2D1Geometry* This,
             [In, ComAliasName("FLOAT")] float strokeWidth,
             [In, Optional] ID2D1StrokeStyle* strokeStyle,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
             [In, ComAliasName("FLOAT")] float flatteningTolerance,
             [In] ID2D1SimplifiedGeometrySink* geometrySink
         );

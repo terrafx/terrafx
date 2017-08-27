@@ -13,17 +13,19 @@ namespace TerraFX.Interop
         [ComAliasName("UINT")]
         public uint NumCategories;
 
+        [ComAliasName("DXGI_INFO_QUEUE_MESSAGE_CATEGORY[]")]
         public DXGI_INFO_QUEUE_MESSAGE_CATEGORY* pCategoryList;
 
         [ComAliasName("UINT")]
         public uint NumSeverities;
 
+        [ComAliasName("DXGI_INFO_QUEUE_MESSAGE_SEVERITY[]")]
         public DXGI_INFO_QUEUE_MESSAGE_SEVERITY* pSeverityList;
 
         [ComAliasName("UINT")]
         public uint NumIDs;
 
-        [ComAliasName("DXGI_INFO_QUEUE_MESSAGE_ID")]
+        [ComAliasName("DXGI_INFO_QUEUE_MESSAGE_ID[]")]
         public int* pIDList;
         #endregion
     }

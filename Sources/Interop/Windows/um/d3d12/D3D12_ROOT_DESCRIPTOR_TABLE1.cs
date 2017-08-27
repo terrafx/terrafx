@@ -13,7 +13,8 @@ namespace TerraFX.Interop
         [ComAliasName("UINT")]
         public uint NumDescriptorRanges;
 
-        public /* readonly */ D3D12_DESCRIPTOR_RANGE1* pDescriptorRanges;
+        [ComAliasName("D3D12_DESCRIPTOR_RANGE1[]")]
+        public D3D12_DESCRIPTOR_RANGE1* pDescriptorRanges;
         #endregion
     }
 }

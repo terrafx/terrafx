@@ -11,7 +11,7 @@ namespace TerraFX.Interop
     {
         #region Fields
         [ComAliasName("LPCSTR")]
-        public /* readonly */ sbyte* Name;
+        public sbyte* Name;
 
         [ComAliasName("UINT")]
         public uint StartOffset;

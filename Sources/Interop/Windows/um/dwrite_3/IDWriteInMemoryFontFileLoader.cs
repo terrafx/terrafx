@@ -31,7 +31,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateInMemoryFontFileReference(
             [In] IDWriteInMemoryFontFileLoader* This,
             [In] IDWriteFactory* factory,
-            [In] /* readonly */ void* fontData,
+            [In] void* fontData,
             [In, ComAliasName("UINT32")] uint fontDataSize,
             [In, Optional] IUnknown* ownerObject,
             [Out] IDWriteFontFile** fontFile

@@ -31,10 +31,10 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateSharedHandle(
             [In] IDXGIResource1* This,
-            [In, Optional] /* readonly */ SECURITY_ATTRIBUTES* pAttributes,
+            [In, Optional] SECURITY_ATTRIBUTES* pAttributes,
             [In, ComAliasName("DWORD")] uint dwAccess,
-            [In, Optional, ComAliasName("LPCWSTR")] /* readonly */ char* lpName,
-            [Out, ComAliasName("HANDLE")] out IntPtr pHandle
+            [In, Optional, ComAliasName("LPCWSTR")] char* lpName,
+            [Out, ComAliasName("HANDLE")] IntPtr* pHandle
         );
         #endregion
 

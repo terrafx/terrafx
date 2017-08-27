@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         public int ID;
 
         [ComAliasName("CHAR")]
-        public /* readonly */ sbyte* pDescription;
+        public sbyte* pDescription;
 
         [ComAliasName("SIZE_T")]
         public nuint DescriptionByteLength;

@@ -23,7 +23,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int Read(
             [In] IPropertyBag2* This,
             [In, ComAliasName("ULONG")] uint cProperties,
-            [In] PROPBAG2* pPropBag,
+            [In, ComAliasName("PROPBAG2[]")] PROPBAG2* pPropBag,
             [In, Optional] IErrorLog* pErrLog,
             [Out] VARIANT* pvarValue,
             [In, Out, ComAliasName("HRESULT")] int* phrError = null
@@ -35,7 +35,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int Write(
             [In] IPropertyBag2* This,
             [In, ComAliasName("ULONG")] uint cProperties,
-            [In] PROPBAG2* pPropBag,
+            [In, ComAliasName("PROPBAG2[]")] PROPBAG2* pPropBag,
             [In] VARIANT* pvarValue
         );
 
@@ -54,7 +54,7 @@ namespace TerraFX.Interop
             [In] IPropertyBag2* This,
             [In, ComAliasName("ULONG")] uint iProperty,
             [In, ComAliasName("ULONG")] uint cProperties,
-            [Out] PROPBAG2* pPropBag,
+            [Out, ComAliasName("PROPBAG2")] PROPBAG2* pPropBag,
             [Out, ComAliasName("ULONG")] uint* pcProperties
         );
 
@@ -63,7 +63,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int LoadObject(
             [In] IPropertyBag2* This,
-            [In, ComAliasName("LPCOLESTR")] /* readonly */ char* pstrName,
+            [In, ComAliasName("LPCOLESTR")] char* pstrName,
             [In, ComAliasName("DWORD")] uint dwHint,
             [In] IUnknown* pUnkObject = null,
             [In] IErrorLog* pErrLog = null

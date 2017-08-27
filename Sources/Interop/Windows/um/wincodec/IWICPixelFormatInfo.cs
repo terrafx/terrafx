@@ -56,7 +56,7 @@ namespace TerraFX.Interop
             [In] IWICPixelFormatInfo* This,
             [In, ComAliasName("UINT")] uint uiChannelIndex,
             [In, ComAliasName("UINT")] uint cbMaskBuffer,
-            [In, Out, Optional, ComAliasName("BYTE")] byte* pbMaskBuffer,
+            [In, Out, Optional, ComAliasName("BYTE[]")] byte* pbMaskBuffer,
             [Out, ComAliasName("UINT")] uint* pcbActual
         );
         #endregion

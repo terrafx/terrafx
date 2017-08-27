@@ -14,7 +14,7 @@ namespace TerraFX.Interop
         public uint Version;
 
         [ComAliasName("LPCSTR")]
-        public /* readonly */ sbyte* Creator;
+        public sbyte* Creator;
 
         [ComAliasName("UINT")]
         public uint Flags;

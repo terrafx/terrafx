@@ -44,7 +44,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void AddLines(
             [In] ID2D1SimplifiedGeometrySink* This,
-            [In, ComAliasName("D2D1_POINT_2F")] /* readonly */ D2D_POINT_2F* points,
+            [In, ComAliasName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
             [In, ComAliasName("UINT32")] uint pointsCount
         );
 
@@ -52,7 +52,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void AddBeziers(
             [In] ID2D1SimplifiedGeometrySink* This,
-            [In] /* readonly */ D2D1_BEZIER_SEGMENT* beziers,
+            [In, ComAliasName("D2D1_BEZIER_SEGMENT[]")] D2D1_BEZIER_SEGMENT* beziers,
             [In, ComAliasName("UINT32")] uint beziersCount
         );
 

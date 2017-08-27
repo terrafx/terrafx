@@ -50,7 +50,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetLocaleName(
             [In] IDWriteStringList* This,
             [In, ComAliasName("UINT32")] uint listIndex,
-            [Out, ComAliasName("WCHAR")] char* localeName,
+            [Out, ComAliasName("WCHAR[]")] char* localeName,
             [In, ComAliasName("UINT32")] uint size
         );
 
@@ -78,7 +78,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetString(
             [In] IDWriteStringList* This,
             [In, ComAliasName("UINT32")] uint listIndex,
-            [Out, ComAliasName("WCHAR")] char* stringBuffer,
+            [Out, ComAliasName("WCHAR[]")] char* stringBuffer,
             [In, ComAliasName("UINT32")] uint stringBufferSize
         );
         #endregion

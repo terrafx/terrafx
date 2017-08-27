@@ -46,7 +46,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetTypeInfoOfGuid(
             [In] ITypeLib* This,
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guid,
+            [In, ComAliasName("REFGUID")] Guid* guid,
             [Out] ITypeInfo** ppTinfo = null
         );
 

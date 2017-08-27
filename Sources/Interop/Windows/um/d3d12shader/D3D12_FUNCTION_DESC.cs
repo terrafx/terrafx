@@ -14,7 +14,7 @@ namespace TerraFX.Interop
         public uint Version;
 
         [ComAliasName("LPCSTR")]
-        public /* readonly */ sbyte* Creator;
+        public sbyte* Creator;
 
         [ComAliasName("UINT")]
         public uint Flags;
@@ -94,7 +94,7 @@ namespace TerraFX.Interop
         public ulong RequiredFeatureFlags;
 
         [ComAliasName("LPCSTR")]
-        public /* readonly */ sbyte* Name;
+        public sbyte* Name;
 
         [ComAliasName("INT")]
         public int FunctionParameterCount;

@@ -49,7 +49,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetUnicodeRanges(
             [In] IDWriteFont1* This,
             [In, ComAliasName("UINT32")] uint maxRangeCount,
-            [Out, Optional] DWRITE_UNICODE_RANGE* unicodeRanges,
+            [Out, Optional, ComAliasName("DWRITE_UNICODE_RANGE[]")] DWRITE_UNICODE_RANGE* unicodeRanges,
             [Out, ComAliasName("UINT32")] uint* actualRangeCount
         );
 

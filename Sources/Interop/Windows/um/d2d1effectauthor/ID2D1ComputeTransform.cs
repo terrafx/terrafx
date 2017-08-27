@@ -31,7 +31,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CalculateThreadgroups(
             [In] ID2D1ComputeTransform* This,
-            [In, ComAliasName("D2D1_RECT_L")] /* readonly */ RECT* outputRect,
+            [In, ComAliasName("D2D1_RECT_L")] RECT* outputRect,
             [Out, ComAliasName("UINT32")] uint* dimensionX,
             [Out, ComAliasName("UINT32")] uint* dimensionY,
             [Out, ComAliasName("UINT32")] uint* dimensionZ

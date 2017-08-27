@@ -40,7 +40,7 @@ namespace TerraFX.Interop.Desktop
         public /* static */ delegate int GetFrameDirtyRects(
             [In] IDXGIOutputDuplication* This,
             [In, ComAliasName("UINT")] uint DirtyRectsBufferSize,
-            [Out] RECT* pDirtyRectsBuffer,
+            [Out, ComAliasName("RECT[]")] RECT* pDirtyRectsBuffer,
             [Out, ComAliasName("UINT")] uint* pDirtyRectsBufferSizeRequired
         );
 
@@ -50,7 +50,7 @@ namespace TerraFX.Interop.Desktop
         public /* static */ delegate int GetFrameMoveRects(
             [In] IDXGIOutputDuplication* This,
             [In, ComAliasName("UINT")] uint MoveRectsBufferSize,
-            [Out] DXGI_OUTDUPL_MOVE_RECT* pMoveRectBuffer,
+            [Out, ComAliasName("DXGI_OUTDUPL_MOVE_RECT[]")] DXGI_OUTDUPL_MOVE_RECT* pMoveRectBuffer,
             [Out, ComAliasName("UINT")] uint* pMoveRectsBufferSizeRequired
         );
 

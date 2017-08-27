@@ -13,8 +13,8 @@ namespace TerraFX.Interop
         [ComAliasName("UINT")]
         public uint NumRects;
 
-        [ComAliasName("D3D12_RECT")]
-        public /* readonly */ RECT* pRects;
+        [ComAliasName("D3D12_RECT[]")]
+        public RECT* pRects;
 
         [ComAliasName("UINT")]
         public uint FirstSubresource;

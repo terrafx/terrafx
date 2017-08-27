@@ -37,7 +37,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int UpdatePoints(
             [In] ID2D1SvgPointCollection* This,
-            [In, ComAliasName("D2D1_POINT_2F")] /* readonly */ D2D_POINT_2F* points,
+            [In, ComAliasName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
             [In, ComAliasName("UINT32")] uint pointsCount,
             [In, ComAliasName("UINT32")] uint startIndex = 0
         );
@@ -51,7 +51,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetPoints(
             [In] ID2D1SvgPointCollection* This,
-            [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* points,
+            [Out, ComAliasName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
             [In, ComAliasName("UINT32")] uint pointsCount,
             [In, ComAliasName("UINT32")] uint startIndex = 0
         );

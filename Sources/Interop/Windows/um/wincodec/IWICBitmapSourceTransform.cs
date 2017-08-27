@@ -22,14 +22,14 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CopyPixels(
             [In] IWICBitmapSourceTransform* This,
-            [In, Optional] /* readonly */ WICRect* prc,
+            [In, Optional] WICRect* prc,
             [In, ComAliasName("UINT")] uint uiWidth,
             [In, ComAliasName("UINT")] uint uiHeight,
             [In, Optional, ComAliasName("WICPixelFormatGUID")] Guid* pguidDstFormat,
             [In] WICBitmapTransformOptions dstTransform,
             [In, ComAliasName("UINT")] uint nStride,
             [In, ComAliasName("UINT")] uint cbBufferSize,
-            [Out, ComAliasName("BYTE")] byte* pbBuffer
+            [Out, ComAliasName("BYTE[]")] byte* pbBuffer
         );
 
         [SuppressUnmanagedCodeSecurity]

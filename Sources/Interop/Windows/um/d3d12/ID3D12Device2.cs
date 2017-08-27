@@ -22,8 +22,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreatePipelineState(
             [In] ID3D12Device2* This,
-            [In] /* readonly */ D3D12_PIPELINE_STATE_STREAM_DESC* pDesc,
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
+            [In] D3D12_PIPELINE_STATE_STREAM_DESC* pDesc,
+            [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppPipelineState
         );
         #endregion

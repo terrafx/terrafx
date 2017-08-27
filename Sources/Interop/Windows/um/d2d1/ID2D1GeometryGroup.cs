@@ -35,7 +35,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void GetSourceGeometries(
             [In] ID2D1GeometryGroup* This,
-            [Out] ID2D1Geometry** geometries,
+            [Out, ComAliasName("ID2D1Geometry*[]")] ID2D1Geometry** geometries,
             [In, ComAliasName("UINT32")] uint geometriesCount
         );
         #endregion

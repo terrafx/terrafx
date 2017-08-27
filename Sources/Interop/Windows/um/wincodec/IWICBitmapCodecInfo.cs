@@ -31,7 +31,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetPixelFormats(
             [In] IWICBitmapCodecInfo* This,
             [In, ComAliasName("UINT")] uint cFormats,
-            [In, Out, Optional, ComAliasName("GUID")] Guid* pguidPixelFormats,
+            [In, Out, Optional, ComAliasName("GUID[]")] Guid* pguidPixelFormats,
             [Out, ComAliasName("UINT")] uint* pcActual
         );
 
@@ -41,7 +41,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetColorManagementVersion(
             [In] IWICBitmapCodecInfo* This,
             [In, ComAliasName("UINT")] uint cchColorManagementVersion,
-            [In, Out, Optional, ComAliasName("WCHAR")] char* wzColorManagementVersion,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzColorManagementVersion,
             [Out, ComAliasName("UINT")] uint* pcchActual
         );
 
@@ -51,7 +51,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetDeviceManufacturer(
             [In] IWICBitmapCodecInfo* This,
             [In, ComAliasName("UINT")] uint cchDeviceManufacturer,
-            [In, Out, Optional, ComAliasName("WCHAR")] char* wzDeviceManufacturer,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzDeviceManufacturer,
             [Out, ComAliasName("UINT")] uint* pcchActual
         );
 
@@ -61,7 +61,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetDeviceModels(
             [In] IWICBitmapCodecInfo* This,
             [In, ComAliasName("UINT")] uint cchDeviceModels,
-            [In, Out, Optional, ComAliasName("WCHAR")] char* wzDeviceModels,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzDeviceModels,
             [Out, ComAliasName("UINT")] uint* pcchActual
         );
 
@@ -71,7 +71,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetMimeTypes(
             [In] IWICBitmapCodecInfo* This,
             [In, ComAliasName("UINT")] uint cchMimeTypes,
-            [In, Out, Optional, ComAliasName("WCHAR")] char* wzMimeTypes,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzMimeTypes,
             [Out, ComAliasName("UINT")] uint* pcchActual
         );
 
@@ -81,7 +81,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetFileExtensions(
             [In] IWICBitmapCodecInfo* This,
             [In, ComAliasName("UINT")] uint cchFileExtensions,
-            [In, Out, Optional, ComAliasName("WCHAR")] char* wzFileExtensions,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzFileExtensions,
             [Out, ComAliasName("UINT")] uint* pcchActual
         );
 
@@ -122,7 +122,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int MatchesMimeType(
             [In] IWICBitmapCodecInfo* This,
-            [In, ComAliasName("LPCWSTR")] /* readonly */ char* wzMimeType,
+            [In, ComAliasName("LPCWSTR")] char* wzMimeType,
             [Out, ComAliasName("BOOL")] int* pfMatches
         );
         #endregion

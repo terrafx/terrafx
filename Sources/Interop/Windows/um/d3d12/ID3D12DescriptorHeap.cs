@@ -19,20 +19,23 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D3D12_DESCRIPTOR_HEAP_DESC GetDesc(
-            [In] ID3D12DescriptorHeap* This
+        public /* static */ delegate void GetDesc(
+            [In] ID3D12DescriptorHeap* This,
+            [Out] D3D12_DESCRIPTOR_HEAP_DESC* pDesc
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandleForHeapStart(
-            [In] ID3D12DescriptorHeap* This
+        public /* static */ delegate void GetCPUDescriptorHandleForHeapStart(
+            [In] ID3D12DescriptorHeap* This,
+            [Out] D3D12_CPU_DESCRIPTOR_HANDLE* pCPUDescriptorHandleForHeapStart
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandleForHeapStart(
-            [In] ID3D12DescriptorHeap* This
+        public /* static */ delegate void GetGPUDescriptorHandleForHeapStart(
+            [In] ID3D12DescriptorHeap* This,
+            [Out] D3D12_GPU_DESCRIPTOR_HANDLE* pGPUDescriptorHandleForHeapStart
         );
         #endregion
 

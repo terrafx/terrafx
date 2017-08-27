@@ -14,7 +14,7 @@ namespace TerraFX.Interop
         [ComAliasName("ULONG")]
         public uint cElems;
 
-        [ComAliasName("CLSID")]
+        [ComAliasName("CLSID[]")]
         public Guid* pElems;
         #endregion
     }

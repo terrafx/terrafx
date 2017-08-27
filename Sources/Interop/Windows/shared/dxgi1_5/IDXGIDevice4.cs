@@ -23,7 +23,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int OfferResources1(
             [In] IDXGIDevice4* This,
             [In, ComAliasName("UINT")] uint NumResources,
-            [In] /* readonly */ IDXGIResource** ppResources,
+            [In, ComAliasName("IDXGIResource*[]")] IDXGIResource** ppResources,
             [In] DXGI_OFFER_RESOURCE_PRIORITY Priority,
             [In, ComAliasName("UINT")] uint Flags
         );
@@ -34,7 +34,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int ReclaimResources1(
             [In] IDXGIDevice4* This,
             [In, ComAliasName("UINT")] uint NumResources,
-            [In] /* readonly */ IDXGIResource** ppResources,
+            [In, ComAliasName("IDXGIResource*[]")] IDXGIResource** ppResources,
             [Out] DXGI_RECLAIM_RESOURCE_RESULTS* pResults
         );
         #endregion

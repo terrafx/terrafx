@@ -13,7 +13,7 @@ namespace TerraFX.Interop
         [ComAliasName("ULONG")]
         public uint cElems;
 
-        [ComAliasName("VARIANT_BOOL")]
+        [ComAliasName("VARIANT_BOOL[]")]
         public short* pElems;
         #endregion
     }

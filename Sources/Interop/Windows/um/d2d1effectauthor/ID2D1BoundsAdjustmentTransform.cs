@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetOutputBounds(
             [In] ID2D1BoundsAdjustmentTransform* This,
-            [In, ComAliasName("D2D1_RECT_L")] /* readonly */ RECT* outputBounds
+            [In, ComAliasName("D2D1_RECT_L")] RECT* outputBounds
         );
 
         [SuppressUnmanagedCodeSecurity]

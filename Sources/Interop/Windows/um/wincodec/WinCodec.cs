@@ -465,7 +465,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HRESULT")]
         public static extern int WICConvertBitmapSource(
-            [In, ComAliasName("REFWICPixelFormatGUID")] /* readonly */ Guid* dstFormat,
+            [In, ComAliasName("REFWICPixelFormatGUID")] Guid* dstFormat,
             [In] IWICBitmapSource* pISrc,
             [Out] IWICBitmapSource** ppIDst
         );
@@ -476,7 +476,7 @@ namespace TerraFX.Interop
         public static extern int WICCreateBitmapFromSection(
              [In, ComAliasName("UINT")] uint width,
              [In, ComAliasName("UINT")] uint height,
-             [In, ComAliasName("REFWICPixelFormatGUID")] /* readonly */ Guid* pixelFormat,
+             [In, ComAliasName("REFWICPixelFormatGUID")] Guid* pixelFormat,
              [In, ComAliasName("HANDLE")] IntPtr hSection,
              [In, ComAliasName("UINT")] uint stride,
              [In, ComAliasName("UINT")] uint offset,
@@ -489,7 +489,7 @@ namespace TerraFX.Interop
         public static extern int WICCreateBitmapFromSectionEx(
              [In, ComAliasName("UINT")] uint width,
              [In, ComAliasName("UINT")] uint height,
-             [In, ComAliasName("REFWICPixelFormatGUID")] /* readonly */ Guid* pixelFormat,
+             [In, ComAliasName("REFWICPixelFormatGUID")] Guid* pixelFormat,
              [In, ComAliasName("HANDLE")] IntPtr hSection,
              [In, ComAliasName("UINT")] uint stride,
              [In, ComAliasName("UINT")] uint offset,
@@ -501,9 +501,9 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HRESULT")]
         public static extern int WICMapGuidToShortName(
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guid,
+            [In, ComAliasName("REFGUID")] Guid* guid,
             [In, ComAliasName("UINT")] uint cchName,
-            [In, Out, Optional, ComAliasName("WCHAR")] char* wzName,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzName,
             [Out, ComAliasName("UINT")] uint* pcchActual
         );
 
@@ -511,7 +511,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HRESULT")]
         public static extern int WICMapShortNameToGuid(
-            [In, ComAliasName("PCWSTR")] /* readonly */ char* wzName,
+            [In, ComAliasName("PCWSTR")] char* wzName,
             [Out, ComAliasName("GUID")] Guid* pguid
         );
 
@@ -519,10 +519,10 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HRESULT")]
         public static extern int WICMapSchemaToName(
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidMetadataFormat,
+            [In, ComAliasName("REFGUID")] Guid* guidMetadataFormat,
             [In, ComAliasName("LPWSTR")] char* pwzSchema,
             [In, ComAliasName("UINT")] uint cchName,
-            [In, Out, Optional, ComAliasName("WCHAR")] char* wzName,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzName,
             [Out, ComAliasName("UINT")] uint* pcchActual
         );
         #endregion

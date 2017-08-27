@@ -30,7 +30,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int Resize(
             [In] ID2D1HwndRenderTarget* This,
-            [In, ComAliasName("D2D1_SIZE_U")] /* readonly */ D2D_SIZE_U* pixelSize
+            [In, ComAliasName("D2D1_SIZE_U")] D2D_SIZE_U* pixelSize
         );
 
         [SuppressUnmanagedCodeSecurity]

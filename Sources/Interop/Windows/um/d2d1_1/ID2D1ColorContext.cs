@@ -39,7 +39,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetProfile(
             [In] ID2D1ColorContext* This,
-            [Out, ComAliasName("BYTE")] byte* profile,
+            [Out, ComAliasName("BYTE[]")] byte* profile,
             [In, ComAliasName("UINT32")] uint profileSize
         );
         #endregion

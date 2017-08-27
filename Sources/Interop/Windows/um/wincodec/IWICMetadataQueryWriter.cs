@@ -22,8 +22,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetMetadataByName(
             [In] IWICMetadataQueryWriter* This,
-            [In, ComAliasName("LPCWSTR")] /* readonly */ char* wzName,
-            [In] /* readonly */ PROPVARIANT* pvarValue
+            [In, ComAliasName("LPCWSTR")] char* wzName,
+            [In] PROPVARIANT* pvarValue
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -31,7 +31,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int RemoveMetadataByName(
             [In] IWICMetadataQueryWriter* This,
-            [In, ComAliasName("LPCWSTR")] /* readonly */ char* wzName
+            [In, ComAliasName("LPCWSTR")] char* wzName
         );
         #endregion
 

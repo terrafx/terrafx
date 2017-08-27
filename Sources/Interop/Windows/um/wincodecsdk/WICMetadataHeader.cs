@@ -15,7 +15,7 @@ namespace TerraFX.Interop
         [ComAliasName("ULONG")]
         public uint Length;
 
-        [ComAliasName("BYTE")]
+        [ComAliasName("BYTE[]")]
         public byte* Header;
 
         public ULARGE_INTEGER DataOffset;

@@ -26,8 +26,8 @@ namespace TerraFX.Interop
             [In] ID3D12Resource* pSrcBuffer,
             [In, ComAliasName("UINT64")] ulong SrcOffset,
             [In, ComAliasName("UINT")] uint Dependencies,
-            [In] /* readonly */ ID3D12Resource** ppDependentResources,
-            [In] /* readonly */ D3D12_SUBRESOURCE_RANGE_UINT64* pDependentSubresourceRanges
+            [In, ComAliasName("ID3D12Resource*[]")] ID3D12Resource** ppDependentResources,
+            [In, ComAliasName("D3D12_SUBRESOURCE_RANGE_UINT64[]")] D3D12_SUBRESOURCE_RANGE_UINT64* pDependentSubresourceRanges
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -39,8 +39,8 @@ namespace TerraFX.Interop
             [In] ID3D12Resource* pSrcBuffer,
             [In, ComAliasName("UINT64")] ulong SrcOffset,
             [In, ComAliasName("UINT")] uint Dependencies,
-            [In] /* readonly */ ID3D12Resource** ppDependentResources,
-            [In] /* readonly */ D3D12_SUBRESOURCE_RANGE_UINT64* pDependentSubresourceRanges
+            [In, ComAliasName("ID3D12Resource*[]")] ID3D12Resource** ppDependentResources,
+            [In, ComAliasName("D3D12_SUBRESOURCE_RANGE_UINT64[]")] D3D12_SUBRESOURCE_RANGE_UINT64* pDependentSubresourceRanges
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -57,7 +57,7 @@ namespace TerraFX.Interop
             [In] ID3D12GraphicsCommandList1* This,
             [In, ComAliasName("UINT")] uint NumSamplesPerPixel,
             [In, ComAliasName("UINT")] uint NumPixels,
-            [In] D3D12_SAMPLE_POSITION* pSamplePositions
+            [In, ComAliasName("D3D12_SAMPLE_POSITION[]")] D3D12_SAMPLE_POSITION* pSamplePositions
         );
 
         [SuppressUnmanagedCodeSecurity]

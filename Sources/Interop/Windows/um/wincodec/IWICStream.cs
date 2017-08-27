@@ -30,7 +30,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int InitializeFromFilename(
             [In] IWICStream* This,
-            [In, ComAliasName("LPCWSTR")] /* readonly */ char* wzFileName,
+            [In, ComAliasName("LPCWSTR")] char* wzFileName,
             [In, ComAliasName("DWORD")] uint dwDesiredAccess
         );
 

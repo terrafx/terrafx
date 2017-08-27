@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetPrivateData(
             [In] ID3D12Object* This,
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guid,
+            [In, ComAliasName("REFGUID")] Guid* guid,
             [In, Out, ComAliasName("UINT")] uint* pDataSize,
             [Out] void* pData = null
         );
@@ -32,9 +32,9 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetPrivateData(
             [In] ID3D12Object* This,
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guid,
+            [In, ComAliasName("REFGUID")] Guid* guid,
             [In, ComAliasName("UINT")] uint DataSize,
-            [In] /* readonly */ void* pData = null
+            [In] void* pData = null
         );
 
 
@@ -43,8 +43,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetPrivateDataInterface(
             [In] ID3D12Object* This,
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guid,
-            [In] /* readonly */ IUnknown* pData = null
+            [In, ComAliasName("REFGUID")] Guid* guid,
+            [In] IUnknown* pData = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -52,7 +52,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetName(
             [In] ID3D12Object* This,
-            [In, ComAliasName("LPCWSTR")] /* readonly */ char* Name
+            [In, ComAliasName("LPCWSTR")] char* Name
         );
         #endregion
 

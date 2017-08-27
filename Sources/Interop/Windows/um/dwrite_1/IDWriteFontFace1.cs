@@ -41,7 +41,7 @@ namespace TerraFX.Interop
             [In] IDWriteFontFace1* This,
             [In, ComAliasName("FLOAT")] float emSize,
             [In, ComAliasName("FLOAT")] float pixelsPerDip,
-            [In, Optional] /* readonly */ DWRITE_MATRIX* transform,
+            [In, Optional] DWRITE_MATRIX* transform,
             [Out] DWRITE_FONT_METRICS1* fontMetrics
         );
 
@@ -66,7 +66,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetUnicodeRanges(
             [In] IDWriteFontFace1* This,
             [In, ComAliasName("UINT32")] uint maxRangeCount,
-            [Out, Optional] DWRITE_UNICODE_RANGE* unicodeRanges,
+            [Out, Optional, ComAliasName("DWRITE_UNICODE_RANGE[]")] DWRITE_UNICODE_RANGE* unicodeRanges,
             [Out, ComAliasName("UINT32")] uint* actualRangeCount
         );
 
@@ -91,8 +91,8 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetDesignGlyphAdvances(
             [In] IDWriteFontFace1* This,
             [In, ComAliasName("UINT32")] uint glyphCount,
-            [In, ComAliasName("UINT16")] /* readonly */ ushort* glyphIndices,
-            [Out, ComAliasName("INT32")] int* glyphAdvances,
+            [In, ComAliasName("UINT16[]")] ushort* glyphIndices,
+            [Out, ComAliasName("INT32[]")] int* glyphAdvances,
             [In, ComAliasName("BOOL")] int isSideways = FALSE
         );
 
@@ -114,12 +114,12 @@ namespace TerraFX.Interop
             [In] IDWriteFontFace1* This,
             [In, ComAliasName("FLOAT")] float emSize,
             [In, ComAliasName("FLOAT")] float pixelsPerDip,
-            [In, Optional] /* readonly */ DWRITE_MATRIX* transform,
+            [In, Optional] DWRITE_MATRIX* transform,
             [In, ComAliasName("BOOL")] int useGdiNatural,
             [In, ComAliasName("BOOL")] int isSideways,
             [In, ComAliasName("UINT32")] uint glyphCount,
-            [In, ComAliasName("UINT16")] /* readonly */ ushort* glyphIndices,
-            [Out, ComAliasName("INT32")] int* glyphAdvances
+            [In, ComAliasName("UINT16[]")] ushort* glyphIndices,
+            [Out, ComAliasName("INT32[]")] int* glyphAdvances
         );
 
         /// <summary>Retrieves the kerning pair adjustments from the font's kern table.</summary>
@@ -135,8 +135,8 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetKerningPairAdjustments(
             [In] IDWriteFontFace1* This,
             [In, ComAliasName("UINT32")] uint glyphCount,
-            [In, ComAliasName("UINT16")] /* readonly */ ushort* glyphIndices,
-            [Out, ComAliasName("INT32")] int* glyphAdvanceAdjustments
+            [In, ComAliasName("UINT16[]")] ushort* glyphIndices,
+            [Out, ComAliasName("INT32[]")] int* glyphAdvanceAdjustments
         );
 
         /// <summary>Returns whether or not the font supports pair-kerning.</summary>
@@ -167,7 +167,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("FLOAT")] float fontEmSize,
             [In, ComAliasName("FLOAT")] float dpiX,
             [In, ComAliasName("FLOAT")] float dpiY,
-            [In, Optional] /* readonly */ DWRITE_MATRIX* transform,
+            [In, Optional] DWRITE_MATRIX* transform,
             [In, ComAliasName("BOOL")] int isSideways,
             [In] DWRITE_OUTLINE_THRESHOLD outlineThreshold,
             [In] DWRITE_MEASURING_MODE measuringMode,
@@ -186,8 +186,8 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetVerticalGlyphVariants(
             [In] IDWriteFontFace1* This,
             [In, ComAliasName("UINT32")] uint glyphCount,
-            [In, ComAliasName("UINT16")] /* readonly */ ushort* nominalGlyphIndices,
-            [Out, ComAliasName("UINT16")] ushort* verticalGlyphIndices
+            [In, ComAliasName("UINT16[]")] ushort* nominalGlyphIndices,
+            [Out, ComAliasName("UINT16[]")] ushort* verticalGlyphIndices
         );
 
         /// <summary>Returns whether or not the font has any vertical glyph variants.</summary>

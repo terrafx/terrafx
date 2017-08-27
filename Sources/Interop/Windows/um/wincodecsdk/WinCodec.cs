@@ -268,8 +268,8 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HRESULT")]
         public static extern int WICMatchMetadataContent(
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidContainerFormat,
-            [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor,
+            [In, ComAliasName("REFGUID")] Guid* guidContainerFormat,
+            [In, Optional, ComAliasName("GUID")] Guid* pguidVendor,
             [In] IStream* pIStream,
             [Out, ComAliasName("GUID")] Guid* pguidMetadataFormat
         );
@@ -278,7 +278,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HRESULT")]
         public static extern int WICSerializeMetadataContent(
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidContainerFormat,
+            [In, ComAliasName("REFGUID")] Guid* guidContainerFormat,
             [In] IWICMetadataWriter* pIWriter,
             [In, ComAliasName("DWORD")] uint dwPersistOptions,
             [In] IStream* pIStream
@@ -288,7 +288,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HRESULT")]
         public static extern int WICGetMetadataContentSize(
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidContainerFormat,
+            [In, ComAliasName("REFGUID")] Guid* guidContainerFormat,
             [In] IWICMetadataWriter* pIWriter,
             [Out] ULARGE_INTEGER* pcbSize
         );

@@ -57,10 +57,10 @@ namespace TerraFX.Interop
             [In] IDWriteFactory2* This,
             [In, ComAliasName("FLOAT")] float baselineOriginX,
             [In, ComAliasName("FLOAT")] float baselineOriginY,
-            [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
-            [In, Optional] /* readonly */ DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
+            [In] DWRITE_GLYPH_RUN* glyphRun,
+            [In, Optional] DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
             [In] DWRITE_MEASURING_MODE measuringMode,
-            [In, Optional] /* readonly */ DWRITE_MATRIX* worldToDeviceTransform,
+            [In, Optional] DWRITE_MATRIX* worldToDeviceTransform,
             [In, ComAliasName("UINT32")] uint colorPaletteIndex,
             [Out] IDWriteColorGlyphRunEnumerator** colorLayers
         );
@@ -104,8 +104,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateGlyphRunAnalysis(
             [In] IDWriteFactory2* This,
-            [In] /* readonly */ DWRITE_GLYPH_RUN* glyphRun,
-            [In, Optional] /* readonly */ DWRITE_MATRIX* transform,
+            [In] DWRITE_GLYPH_RUN* glyphRun,
+            [In, Optional] DWRITE_MATRIX* transform,
             [In] DWRITE_RENDERING_MODE renderingMode,
             [In] DWRITE_MEASURING_MODE measuringMode,
             [In] DWRITE_GRID_FIT_MODE gridFitMode,

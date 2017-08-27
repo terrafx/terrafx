@@ -22,9 +22,9 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int Initialize(
             [In] IWICPlanarFormatConverter* This,
-            [In] IWICBitmapSource** ppPlanes,
+            [In, ComAliasName("IWICBitmapSource*[]")] IWICBitmapSource** ppPlanes,
             [In, ComAliasName("UINT")] uint cPlanes,
-            [In, ComAliasName("REFWICPixelFormatGUID")] /* readonly */ Guid* dstFormat,
+            [In, ComAliasName("REFWICPixelFormatGUID")] Guid* dstFormat,
             [In] WICBitmapDitherType dither,
             [In, Optional] IWICPalette* pIPalette,
             [In] double alphaThresholdPercent,
@@ -36,9 +36,9 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CanConvert(
             [In] IWICPlanarFormatConverter* This,
-            [In, ComAliasName("WICPixelFormatGUID")] /* readonly */ Guid* pSrcPixelFormats,
+            [In, ComAliasName("WICPixelFormatGUID[]")] Guid* pSrcPixelFormats,
             [In, ComAliasName("UINT")] uint cSrcPlanes,
-            [In, ComAliasName("REFWICPixelFormatGUID")] /* readonly */ Guid* dstPixelFormat,
+            [In, ComAliasName("REFWICPixelFormatGUID")] Guid* dstPixelFormat,
             [Out, ComAliasName("BOOL")] int* pfCanConvert
         );
         #endregion

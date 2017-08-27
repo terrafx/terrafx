@@ -51,8 +51,8 @@ namespace TerraFX.Interop
             [In, ComAliasName("UINT")] uint Height,
             [In] DXGI_FORMAT Format,
             [In, ComAliasName("UINT")] uint SwapChainFlags,
-            [In, ComAliasName("UINT")] /* readonly */ uint* pCreationNodeMask,
-            [In] /* readonly */ IUnknown** ppPresentQueue
+            [In, ComAliasName("UINT[]")] uint* pCreationNodeMask,
+            [In, ComAliasName("IUnknown*[]")] IUnknown** ppPresentQueue
         );
         #endregion
 

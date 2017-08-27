@@ -33,7 +33,7 @@ namespace TerraFX.Interop
             [In] DXGI_FORMAT EnumFormat,
             [In, ComAliasName("UINT")] uint Flags,
             [In, Out, ComAliasName("UINT")] uint* pNumModes,
-            [Out] DXGI_MODE_DESC* pDesc = null
+            [Out, ComAliasName("DXGI_MODE_DESC[]")] DXGI_MODE_DESC* pDesc = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -41,7 +41,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int FindClosestMatchingMode(
             [In] IDXGIOutput* This,
-            [In] /* readonly */ DXGI_MODE_DESC* pModeToMatch,
+            [In] DXGI_MODE_DESC* pModeToMatch,
             [Out] DXGI_MODE_DESC* pClosestMatch,
             [In] IUnknown* pConcernedDevice = null
         );
@@ -81,7 +81,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetGammaControl(
             [In] IDXGIOutput* This,
-            [In] /* readonly */ DXGI_GAMMA_CONTROL* pArray
+            [In] DXGI_GAMMA_CONTROL* pArray
         );
 
         [SuppressUnmanagedCodeSecurity]

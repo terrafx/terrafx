@@ -16,8 +16,8 @@ namespace TerraFX.Interop
 
         public D2D1_VERTEX_USAGE usage;
 
-        [ComAliasName("BYTE")]
-        public /* readonly */ byte* data;
+        [ComAliasName("BYTE[]")]
+        public byte* data;
 
         [ComAliasName("UINT32")]
         public uint byteWidth;

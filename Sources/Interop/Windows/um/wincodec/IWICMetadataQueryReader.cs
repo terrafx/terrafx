@@ -31,7 +31,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetLocation(
             [In] IWICMetadataQueryReader* This,
             [In, ComAliasName("UINT")] uint cchMaxLength,
-            [In, Out, Optional, ComAliasName("WCHAR")] char* wzNamespace,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzNamespace,
             [Out, ComAliasName("UINT")] uint* pcchActualLength
         );
 
@@ -40,7 +40,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetMetadataByName(
             [In] IWICMetadataQueryReader* This,
-            [In, ComAliasName("LPCWSTR")] /* readonly */ char* wzName,
+            [In, ComAliasName("LPCWSTR")] char* wzName,
             [In, Out] PROPVARIANT* pvarValue = null
         );
 

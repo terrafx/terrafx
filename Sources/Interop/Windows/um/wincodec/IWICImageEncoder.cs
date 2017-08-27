@@ -24,7 +24,7 @@ namespace TerraFX.Interop
             [In] IWICImageEncoder* This,
             [In] ID2D1Image* pImage,
             [In] IWICBitmapFrameEncode* pFrameEncode,
-            [In] /* readonly */ WICImageParameters* pImageParameters
+            [In] WICImageParameters* pImageParameters
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -34,7 +34,7 @@ namespace TerraFX.Interop
             [In] IWICImageEncoder* This,
             [In] ID2D1Image* pImage,
             [In] IWICBitmapFrameEncode* pFrameEncode,
-            [In] /* readonly */ WICImageParameters* pImageParameters
+            [In] WICImageParameters* pImageParameters
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -44,7 +44,7 @@ namespace TerraFX.Interop
             [In] IWICImageEncoder* This,
             [In] ID2D1Image* pImage,
             [In] IWICBitmapEncoder* pEncoder,
-            [In] /* readonly */ WICImageParameters* pImageParameters
+            [In] WICImageParameters* pImageParameters
         );
         #endregion
 

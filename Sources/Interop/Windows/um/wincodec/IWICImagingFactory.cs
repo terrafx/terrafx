@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateDecoderFromFilename(
             [In] IWICImagingFactory* This,
-            [In, ComAliasName("LPCWSTR")] /* readonly */ char* wzFilename,
+            [In, ComAliasName("LPCWSTR")] char* wzFilename,
             [In, Optional, ComAliasName("GUID")] Guid* pguidVendor,
             [In, ComAliasName("DWORD")] uint dwDesiredAccess,
             [In] WICDecodeOptions metadataOptions,
@@ -35,7 +35,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateDecoderFromStream(
             [In] IWICImagingFactory* This,
             [In, Optional] IStream* pIStream,
-            [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor,
+            [In, Optional, ComAliasName("GUID")] Guid* pguidVendor,
             [In] WICDecodeOptions metadataOptions,
             [Out] IWICBitmapDecoder** ppIDecoder = null
         );
@@ -46,7 +46,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateDecoderFromFileHandle(
             [In] IWICImagingFactory* This,
             [In, ComAliasName("ULONG_PTR")] nuint hFile,
-            [In, Optional, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor,
+            [In, Optional, ComAliasName("GUID")] Guid* pguidVendor,
             [In] WICDecodeOptions metadataOptions,
             [Out] IWICBitmapDecoder** ppIDecoder = null
         );
@@ -56,7 +56,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateComponentInfo(
             [In] IWICImagingFactory* This,
-            [In, ComAliasName("REFCLSID")] /* readonly */ Guid* clsidComponent,
+            [In, ComAliasName("REFCLSID")] Guid* clsidComponent,
             [Out] IWICComponentInfo** ppIInfo = null
         );
 
@@ -65,8 +65,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateDecoder(
             [In] IWICImagingFactory* This,
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidContainerFormat,
-            [In, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor = null,
+            [In, ComAliasName("REFGUID")] Guid* guidContainerFormat,
+            [In, ComAliasName("GUID")] Guid* pguidVendor = null,
             [Out] IWICBitmapDecoder** ppIDecoder = null
         );
 
@@ -75,8 +75,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateEncoder(
             [In] IWICImagingFactory* This,
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidContainerFormat,
-            [In, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor = null,
+            [In, ComAliasName("REFGUID")] Guid* guidContainerFormat,
+            [In, ComAliasName("GUID")] Guid* pguidVendor = null,
             [Out] IWICBitmapEncoder** ppIEncoder = null
         );
 
@@ -151,7 +151,7 @@ namespace TerraFX.Interop
             [In] IWICImagingFactory* This,
             [In, ComAliasName("UINT")] uint uiWidth,
             [In, ComAliasName("UINT")] uint uiHeight,
-            [In, ComAliasName("REFWICPixelFormatGUID")] /* readonly */ Guid* pixelFormat,
+            [In, ComAliasName("REFWICPixelFormatGUID")] Guid* pixelFormat,
             [In] WICBitmapCreateCacheOption option,
             [Out] IWICBitmap** ppIBitmap = null
         );
@@ -186,10 +186,10 @@ namespace TerraFX.Interop
             [In] IWICImagingFactory* This,
             [In, ComAliasName("UINT")] uint uiWidth,
             [In, ComAliasName("UINT")] uint uiHeight,
-            [In, ComAliasName("REFWICPixelFormatGUID")] /* readonly */ Guid* pixelFormat,
+            [In, ComAliasName("REFWICPixelFormatGUID")] Guid* pixelFormat,
             [In, ComAliasName("UINT")] uint cbStride,
             [In, ComAliasName("UINT")] uint cbBufferSize,
-            [In, ComAliasName("BYTE")] byte* pbBuffer,
+            [In, ComAliasName("BYTE[]")] byte* pbBuffer,
             [Out] IWICBitmap** ppIBitmap = null
         );
 
@@ -246,8 +246,8 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateQueryWriter(
             [In] IWICImagingFactory* This,
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidMetadataFormat,
-            [In, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor = null,
+            [In, ComAliasName("REFGUID")] Guid* guidMetadataFormat,
+            [In, ComAliasName("GUID")] Guid* pguidVendor = null,
             [Out] IWICMetadataQueryWriter** ppIQueryWriter = null
         );
 
@@ -257,7 +257,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateQueryWriterFromReader(
             [In] IWICImagingFactory* This,
             [In] IWICMetadataQueryReader* pIQueryReader = null,
-            [In, ComAliasName("GUID")] /* readonly */ Guid* pguidVendor = null,
+            [In, ComAliasName("GUID")] Guid* pguidVendor = null,
             [Out] IWICMetadataQueryWriter** ppIQueryWriter = null
         );
         #endregion

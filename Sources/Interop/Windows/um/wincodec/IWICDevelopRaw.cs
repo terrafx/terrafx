@@ -229,7 +229,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int SetToneCurve(
             [In] IWICDevelopRaw* This,
             [In, ComAliasName("UINT")] uint cbToneCurveSize,
-            [In] /* readonly */ WICRawToneCurve* pToneCurve
+            [In, ComAliasName("WICRawToneCurve[]")] WICRawToneCurve* pToneCurve
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -238,7 +238,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetToneCurve(
             [In] IWICDevelopRaw* This,
             [In, ComAliasName("UINT")] uint cbToneCurveBufferSize,
-            [Out] WICRawToneCurve* pToneCurve = null,
+            [Out, ComAliasName("WICRawToneCurve[]")] WICRawToneCurve* pToneCurve = null,
             [In, Out, ComAliasName("UINT")] uint* pcbActualToneCurveBufferSize = null
         );
 

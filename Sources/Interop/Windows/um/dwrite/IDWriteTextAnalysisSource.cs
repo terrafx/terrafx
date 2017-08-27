@@ -30,7 +30,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetTextAtPosition(
             [In] IDWriteTextAnalysisSource* This,
             [In, ComAliasName("UINT32")] uint textPosition,
-            [Out, ComAliasName("WCHAR")] /* readonly */ char** textString,
+            [Out, ComAliasName("WCHAR[]")] char** textString,
             [Out, ComAliasName("UINT32")] uint* textLength
         );
 
@@ -46,7 +46,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetTextBeforePosition(
             [In] IDWriteTextAnalysisSource* This,
             [In, ComAliasName("UINT32")] uint textPosition,
-            [Out, ComAliasName("WCHAR")] /* readonly */ char** textString,
+            [Out, ComAliasName("WCHAR[]")] char** textString,
             [Out, ComAliasName("UINT32")] uint* textLength
         );
 
@@ -69,7 +69,7 @@ namespace TerraFX.Interop
             [In] IDWriteTextAnalysisSource* This,
             [In, ComAliasName("UINT32")] uint textPosition,
             [Out, ComAliasName("UINT32")] uint* textLength,
-            [Out, ComAliasName("WCHAR")] /* readonly */ char** localeName
+            [Out, ComAliasName("WCHAR[]")] char** localeName
         );
 
         /// <summary>Get number substitution on the range affected by it.</summary>

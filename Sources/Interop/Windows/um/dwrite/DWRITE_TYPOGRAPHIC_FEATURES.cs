@@ -12,6 +12,7 @@ namespace TerraFX.Interop
     {
         #region Fields
         /// <summary>Array of font features.</summary>
+        [ComAliasName("DWRITE_FONT_FEATURE[]")]
         public DWRITE_FONT_FEATURE* features;
 
         /// <summary>The number of features.</summary>

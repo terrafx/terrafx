@@ -20,9 +20,9 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("D2D1_SIZE_F")]
-        public /* static */ delegate D2D_SIZE_F GetSize(
-            [In] ID2D1Layer* This
+        public /* static */ delegate void GetSize(
+            [In] ID2D1Layer* This,
+            [Out, ComAliasName("D2D1_SIZE_F")] D2D_SIZE_F* pSize
         );
         #endregion
 

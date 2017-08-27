@@ -11,8 +11,8 @@ namespace TerraFX.Interop
     public /* blittable */ unsafe struct D2D1_RESOURCE_TEXTURE_PROPERTIES
     {
         #region Fields
-        [ComAliasName("UINT32")]
-        public /* readonly */ uint* extents;
+        [ComAliasName("UINT32[]")]
+        public uint* extents;
 
         [ComAliasName("UINT32")]
         public uint dimensions;
@@ -23,7 +23,8 @@ namespace TerraFX.Interop
 
         public D2D1_FILTER filter;
 
-        public /* readonly */ D2D1_EXTEND_MODE* extendModes;
+        [ComAliasName("D2D1_EXTEND_MODE[]")]
+        public D2D1_EXTEND_MODE* extendModes;
         #endregion
     }
 }

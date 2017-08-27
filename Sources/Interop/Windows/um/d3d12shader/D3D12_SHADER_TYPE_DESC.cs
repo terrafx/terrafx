@@ -30,7 +30,7 @@ namespace TerraFX.Interop
         public uint Offset;
 
         [ComAliasName("LPCSTR")]
-        public /* readonly */ sbyte* Name;
+        public sbyte* Name;
         #endregion
     }
 }

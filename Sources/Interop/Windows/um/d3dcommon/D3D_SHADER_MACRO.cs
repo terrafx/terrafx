@@ -11,10 +11,10 @@ namespace TerraFX.Interop
     {
         #region Fields
         [ComAliasName("LPCSTR")]
-        public /* readonly */ sbyte* Name;
+        public sbyte* Name;
 
         [ComAliasName("LPCSTR")]
-        public /* readonly */ sbyte* Definition;
+        public sbyte* Definition;
         #endregion
     }
 }

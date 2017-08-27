@@ -27,7 +27,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetReferenceKey(
             [In] IDWriteFontFile* This,
-            [Out] /* readonly */ void** fontFileReferenceKey,
+            [Out] void** fontFileReferenceKey,
             [Out, ComAliasName("UINT32")] uint* fontFileReferenceKeySize
         );
 

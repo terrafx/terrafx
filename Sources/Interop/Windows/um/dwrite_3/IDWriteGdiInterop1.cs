@@ -29,7 +29,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CreateFontFromLOGFONT(
             [In] IDWriteGdiInterop1* This,
-            [In] /* readonly */ LOGFONT* logFont,
+            [In] LOGFONT* logFont,
             [In, Optional] IDWriteFontCollection* fontCollection,
             [Out] IDWriteFont** font
         );
@@ -67,7 +67,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetMatchingFontsByLOGFONT(
             [In] IDWriteGdiInterop1* This,
-            [In] /* readonly */ LOGFONT* logFont,
+            [In] LOGFONT* logFont,
             [In] IDWriteFontSet* fontSet,
             [Out] IDWriteFontSet** filteredSet
         );

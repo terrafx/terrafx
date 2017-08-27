@@ -31,8 +31,8 @@ namespace TerraFX.Interop
             [In] IDXGIFactory2* This,
             [In] IUnknown* pDevice,
             [In, ComAliasName("HWND")] IntPtr hWnd,
-            [In] /* readonly */ DXGI_SWAP_CHAIN_DESC1* pDesc,
-            [In, Optional] /* readonly */ DXGI_SWAP_CHAIN_FULLSCREEN_DESC* pFullscreenDesc,
+            [In] DXGI_SWAP_CHAIN_DESC1* pDesc,
+            [In, Optional] DXGI_SWAP_CHAIN_FULLSCREEN_DESC* pFullscreenDesc,
             [In, Optional] IDXGIOutput* pRestrictToOutput,
             [Out] IDXGISwapChain1** ppSwapChain
         );
@@ -44,7 +44,7 @@ namespace TerraFX.Interop
             [In] IDXGIFactory2* This,
             [In] IUnknown* pDevice,
             [In] IUnknown* pWindow,
-            [In] /* readonly */ DXGI_SWAP_CHAIN_DESC1* pDesc,
+            [In] DXGI_SWAP_CHAIN_DESC1* pDesc,
             [In, Optional] IDXGIOutput* pRestrictToOutput,
             [Out] IDXGISwapChain1** ppSwapChain
         );
@@ -116,7 +116,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int CreateSwapChainForComposition(
             [In] IDXGIFactory2* This,
             [In] IUnknown* pDevice,
-            [In] /* readonly */ DXGI_SWAP_CHAIN_DESC1* pDesc,
+            [In] DXGI_SWAP_CHAIN_DESC1* pDesc,
             [In, Optional] IDXGIOutput* pRestrictToOutput,
             [Out] IDXGISwapChain1** ppSwapChain
         );

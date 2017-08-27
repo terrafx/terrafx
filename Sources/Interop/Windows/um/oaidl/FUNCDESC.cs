@@ -16,6 +16,7 @@ namespace TerraFX.Interop
         [ComAliasName("SCODE")]
         public int* lprgscode;
 
+        [ComAliasName("ELEMDESC[]")]
         public ELEMDESC* lprgelemdescParam;
 
         public FUNCKIND funckind;

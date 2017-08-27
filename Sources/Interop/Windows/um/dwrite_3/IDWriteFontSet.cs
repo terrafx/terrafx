@@ -98,7 +98,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetPropertyValues1(
             [In] IDWriteFontSet* This,
             [In] DWRITE_FONT_PROPERTY_ID propertyID,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* preferredLocaleNames,
+            [In, ComAliasName("WCHAR[]")] char* preferredLocaleNames,
             [Out] IDWriteStringList** values
         );
 
@@ -126,7 +126,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetPropertyOccurrenceCount(
             [In] IDWriteFontSet* This,
-            [In] /* readonly */ DWRITE_FONT_PROPERTY* property,
+            [In] DWRITE_FONT_PROPERTY* property,
             [Out, ComAliasName("UINT32")] uint* propertyOccurrenceCount
         );
 
@@ -141,7 +141,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetMatchingFonts(
             [In] IDWriteFontSet* This,
-            [In] /* readonly */ DWRITE_FONT_PROPERTY* properties,
+            [In, ComAliasName("DWRITE_FONT_PROPERTY[]")] DWRITE_FONT_PROPERTY* properties,
             [In, ComAliasName("UINT32")] uint propertyCount,
             [Out] IDWriteFontSet** filteredSet
         );
@@ -159,7 +159,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetMatchingFonts1(
             [In] IDWriteFontSet* This,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* familyName,
+            [In, ComAliasName("WCHAR[]")] char* familyName,
             [In] DWRITE_FONT_WEIGHT fontWeight,
             [In] DWRITE_FONT_STRETCH fontStretch,
             [In] DWRITE_FONT_STYLE fontStyle,

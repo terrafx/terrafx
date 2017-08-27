@@ -60,7 +60,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("UINT32")]
         public /* static */ delegate uint GetPropertyIndex(
             [In] ID2D1Properties* This,
-            [In, ComAliasName("PCWSTR")] /* readonly */ char* name
+            [In, ComAliasName("PCWSTR")] char* name
         );
 
         /// <summary>Sets the value of the given property using its name.</summary>
@@ -69,9 +69,9 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int SetValueByName(
             [In] ID2D1Properties* This,
-            [In, ComAliasName("PCWSTR")] /* readonly */ char* name,
+            [In, ComAliasName("PCWSTR")] char* name,
             [In] D2D1_PROPERTY_TYPE type,
-            [In, ComAliasName("BYTE")] /* readonly */ byte* data,
+            [In, ComAliasName("BYTE[]")] byte* data,
             [In, ComAliasName("UINT32")] uint dataSize
         );
 
@@ -83,7 +83,7 @@ namespace TerraFX.Interop
             [In] ID2D1Properties* This,
             [In, ComAliasName("UINT32")] uint index,
             [In] D2D1_PROPERTY_TYPE type,
-            [In, ComAliasName("BYTE")] /* readonly */ byte* data,
+            [In, ComAliasName("BYTE[]")] byte* data,
             [In, ComAliasName("UINT32")] uint dataSize
         );
 
@@ -93,9 +93,9 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetValueByName(
             [In] ID2D1Properties* This,
-            [In, ComAliasName("PCWSTR")] /* readonly */ char* name,
+            [In, ComAliasName("PCWSTR")] char* name,
             [In] D2D1_PROPERTY_TYPE type,
-            [Out, ComAliasName("BYTE")] byte* data,
+            [Out, ComAliasName("BYTE[]")] byte* data,
             [In, ComAliasName("UINT32")] uint dataSize
         );
 
@@ -107,7 +107,7 @@ namespace TerraFX.Interop
             [In] ID2D1Properties* This,
             [In, ComAliasName("UINT32")] uint index,
             [In] D2D1_PROPERTY_TYPE type,
-            [Out, ComAliasName("BYTE")] byte* data,
+            [Out, ComAliasName("BYTE[]")] byte* data,
             [In, ComAliasName("UINT32")] uint dataSize
         );
 

@@ -39,7 +39,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("UINT32")] uint textPosition,
             [In, ComAliasName("UINT32")] uint textLength,
             [In, Optional] IDWriteFontCollection* baseFontCollection,
-            [In, Optional, ComAliasName("WCHAR")] /* readonly */ char* baseFamilyName,
+            [In, Optional, ComAliasName("WCHAR[]")] char* baseFamilyName,
             [In] DWRITE_FONT_WEIGHT baseWeight,
             [In] DWRITE_FONT_STYLE baseStyle,
             [In] DWRITE_FONT_STRETCH baseStretch,

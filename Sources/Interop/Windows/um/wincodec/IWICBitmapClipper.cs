@@ -23,7 +23,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int Initialize(
             [In] IWICBitmapClipper* This,
             [In, Optional] IWICBitmapSource* pISource,
-            [In] /* readonly */ WICRect* prc
+            [In] WICRect* prc
         );
         #endregion
 

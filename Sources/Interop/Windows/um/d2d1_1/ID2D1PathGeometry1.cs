@@ -25,7 +25,7 @@ namespace TerraFX.Interop
             [In] ID2D1PathGeometry1* This,
             [In, ComAliasName("FLOAT")] float length,
             [In, ComAliasName("UINT32")] uint startSegment,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] /* readonly */ D2D_MATRIX_3X2_F* worldTransform,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
             [In, ComAliasName("FLOAT")] float flatteningTolerance,
             [Out] D2D1_POINT_DESCRIPTION* pointDescription
         );

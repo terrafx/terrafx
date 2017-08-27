@@ -40,11 +40,11 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetIDsOfNames(
             [In] IDispatch* This,
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
-            [In, ComAliasName("LPOLESTR")] char** rgszNames,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, ComAliasName("LPOLESTR[]")] char** rgszNames,
             [In, ComAliasName("UINT")] uint cNames,
             [In, ComAliasName("LCID")] uint lcid,
-            [Out, ComAliasName("DISPID")] int* rgDispId
+            [Out, ComAliasName("DISPID[]")] int* rgDispId
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -53,10 +53,10 @@ namespace TerraFX.Interop
         public /* static */ delegate int Invoke(
             [In] IDispatch* This,
             [In, ComAliasName("DISPID")] int dispIdMember,
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
+            [In, ComAliasName("REFIID")] Guid* riid,
             [In, ComAliasName("LCID")] uint lcid,
             [In, ComAliasName("WORD")] ushort wFlags,
-            [In] DISPPARAMS* pDispParams,
+            [In, ComAliasName("DISPPARAMS[]")] DISPPARAMS* pDispParams,
             [Out] VARIANT* pVarResult = null,
             [Out] EXCEPINFO* pExcepInfo = null,
             [Out, ComAliasName("UINT")] uint* puArgErr = null

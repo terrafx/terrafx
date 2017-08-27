@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int ProcessAnalysisResults(
-            [In, ComAliasName("BYTE")] /* readonly */ byte* analysisData,
+            [In, ComAliasName("BYTE[]")] byte* analysisData,
             [In, ComAliasName("UINT32")] uint analysisDataCount
         );
         #endregion

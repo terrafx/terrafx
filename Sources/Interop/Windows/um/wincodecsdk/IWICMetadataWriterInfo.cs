@@ -23,7 +23,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetHeader(
             [In] IWICMetadataWriterInfo* This,
-            [In, ComAliasName("REFGUID")] /* readonly */ Guid* guidContainerFormat,
+            [In, ComAliasName("REFGUID")] Guid* guidContainerFormat,
             [In, ComAliasName("UINT")] uint cbSize,
             [Out] WICMetadataHeader* pHeader = null,
             [Out, ComAliasName("UINT")] uint* pcbActual = null

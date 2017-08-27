@@ -31,7 +31,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void SetDescription(
             [In] ID2D1DrawingStateBlock* This,
-            [In] /* readonly */ D2D1_DRAWING_STATE_DESCRIPTION* stateDescription
+            [In] D2D1_DRAWING_STATE_DESCRIPTION* stateDescription
         );
 
         /// <summary>Sets the text rendering parameters of this state block resource.</summary>

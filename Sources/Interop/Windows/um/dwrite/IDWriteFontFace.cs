@@ -90,7 +90,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetDesignGlyphMetrics(
             [In] IDWriteFontFace* This,
-            [In, ComAliasName("UINT16")] /* readonly */ ushort* glyphIndices,
+            [In, ComAliasName("UINT16[]")] ushort* glyphIndices,
             [In, ComAliasName("UINT32")] uint glyphCount,
             [Out] DWRITE_GLYPH_METRICS* glyphMetrics,
             [In, ComAliasName("BOOL")] int isSideways = FALSE
@@ -106,7 +106,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetGlyphIndices(
             [In] IDWriteFontFace* This,
-            [In, ComAliasName("UINT32")] /* readonly */ uint* codePoints,
+            [In, ComAliasName("UINT32[]")] uint* codePoints,
             [In, ComAliasName("UINT32")] uint codePointCount,
             [Out, ComAliasName("UINT16")] ushort* glyphIndices
         );
@@ -125,7 +125,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int TryGetFontTable(
             [In] IDWriteFontFace* This,
             [In, ComAliasName("UINT32")] uint openTypeTableTag,
-            [Out] /* readonly */ void** tableData,
+            [Out] void** tableData,
             [Out, ComAliasName("UINT32")] uint* tableSize,
             [Out] void** tableContext,
             [Out, ComAliasName("BOOL")] int* exists
@@ -156,9 +156,9 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetGlyphRunOutline(
             [In] IDWriteFontFace* This,
             [In, ComAliasName("FLOAT")] float emSize,
-            [In, ComAliasName("UINT16")] /* readonly */ ushort* glyphIndices,
-            [In, Optional, ComAliasName("FLOAT")] /* readonly */ float* glyphAdvances,
-            [In, Optional] /* readonly */ DWRITE_GLYPH_OFFSET* glyphOffsets,
+            [In, ComAliasName("UINT16[]")] ushort* glyphIndices,
+            [In, Optional, ComAliasName("FLOAT[]")] float* glyphAdvances,
+            [In, Optional, ComAliasName("DWRITE_GLYPH_OFFSET[]")] DWRITE_GLYPH_OFFSET* glyphOffsets,
             [In, ComAliasName("UINT32")] uint glyphCount,
             [In, ComAliasName("BOOL")] int isSideways,
             [In, ComAliasName("BOOL")] int isRightToLeft,
@@ -196,7 +196,7 @@ namespace TerraFX.Interop
             [In] IDWriteFontFace* This,
             [In, ComAliasName("FLOAT")] float emSize,
             [In, ComAliasName("FLOAT")] float pixelsPerDip,
-            [In, Optional] /* readonly */ DWRITE_MATRIX* transform,
+            [In, Optional] DWRITE_MATRIX* transform,
             [Out] DWRITE_FONT_METRICS* fontFaceMetrics
         );
 
@@ -217,11 +217,11 @@ namespace TerraFX.Interop
             [In] IDWriteFontFace* This,
             [In, ComAliasName("FLOAT")] float emSize,
             [In, ComAliasName("FLOAT")] float pixelsPerDip,
-            [In, Optional] /* readonly */ DWRITE_MATRIX* transform,
+            [In, Optional] DWRITE_MATRIX* transform,
             [In, ComAliasName("BOOL")] int useGdiNatural,
-            [In, ComAliasName("UINT16")] /* readonly */ ushort* glyphIndices,
+            [In, ComAliasName("UINT16[]")] ushort* glyphIndices,
             [In, ComAliasName("UINT32")] uint glyphCount,
-            [Out] DWRITE_GLYPH_METRICS* glyphMetrics,
+            [Out, ComAliasName("DWRITE_GLYPH_METRICS[]")] DWRITE_GLYPH_METRICS* glyphMetrics,
             [In, ComAliasName("BOOL")] int isSideways = FALSE
         );
         #endregion

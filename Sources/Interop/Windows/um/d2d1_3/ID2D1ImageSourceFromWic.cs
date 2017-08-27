@@ -23,7 +23,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int EnsureCached(
             [In] ID2D1ImageSourceFromWic* This,
-            [In, ComAliasName("D2D1_RECT_U")] /* readonly */ D2D_RECT_U* rectangleToFill = null
+            [In, ComAliasName("D2D1_RECT_U")] D2D_RECT_U* rectangleToFill = null
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -31,7 +31,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int TrimCache(
             [In] ID2D1ImageSourceFromWic* This,
-            [In, ComAliasName("D2D1_RECT_U")] /* readonly */ D2D_RECT_U* rectangleToPreserve = null
+            [In, ComAliasName("D2D1_RECT_U")] D2D_RECT_U* rectangleToPreserve = null
         );
 
         [SuppressUnmanagedCodeSecurity]

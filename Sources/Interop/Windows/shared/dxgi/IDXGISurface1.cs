@@ -23,7 +23,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetDC(
             [In] IDXGISurface1* This,
             [In, ComAliasName("BOOL")] int Discard,
-            [Out, ComAliasName("HDC")] out IntPtr phdc
+            [Out, ComAliasName("HDC")] IntPtr* phdc
         );
 
         [SuppressUnmanagedCodeSecurity]

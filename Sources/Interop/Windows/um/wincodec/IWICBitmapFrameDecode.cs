@@ -31,7 +31,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetColorContexts(
             [In] IWICBitmapFrameDecode* This,
             [In, ComAliasName("UINT")] uint cCount,
-            [In, Out, Optional] IWICColorContext** ppIColorContexts,
+            [In, Out, Optional, ComAliasName("IWICColorContext*[]")] IWICColorContext** ppIColorContexts,
             [Out, ComAliasName("UINT")] uint* pcActualCount
         );
 

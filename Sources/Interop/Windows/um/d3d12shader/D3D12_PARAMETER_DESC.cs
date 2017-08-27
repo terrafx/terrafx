@@ -11,10 +11,10 @@ namespace TerraFX.Interop
     {
         #region Fields
         [ComAliasName("LPCSTR")]
-        public /* readonly */ sbyte* Name;
+        public sbyte* Name;
 
         [ComAliasName("LPCSTR")]
-        public /* readonly */ sbyte* SemanticName;
+        public sbyte* SemanticName;
 
         public D3D_SHADER_VARIABLE_TYPE Type;
 

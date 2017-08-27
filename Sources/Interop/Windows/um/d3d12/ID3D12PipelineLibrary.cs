@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int StorePipeline(
             [In] ID3D12PipelineLibrary* This,
-            [In, Optional, ComAliasName("LPCWSTR")] /* readonly */ char* pName,
+            [In, Optional, ComAliasName("LPCWSTR")] char* pName,
             [In] ID3D12PipelineState* pPipeline
         );
 
@@ -31,9 +31,9 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int LoadGraphicsPipeline(
             [In] ID3D12PipelineLibrary* This,
-            [In, ComAliasName("LPCWSTR")] /* readonly */ char* pName,
-            [In] /* readonly */ D3D12_GRAPHICS_PIPELINE_STATE_DESC* pDesc,
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
+            [In, ComAliasName("LPCWSTR")] char* pName,
+            [In] D3D12_GRAPHICS_PIPELINE_STATE_DESC* pDesc,
+            [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppPipelineState
         );
 
@@ -42,9 +42,9 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int LoadComputePipeline(
             [In] ID3D12PipelineLibrary* This,
-            [In, ComAliasName("LPCWSTR")] /* readonly */ char* pName,
-            [In] /* readonly */ D3D12_COMPUTE_PIPELINE_STATE_DESC* pDesc,
-            [In, ComAliasName("REFIID")] /* readonly */ Guid* riid,
+            [In, ComAliasName("LPCWSTR")] char* pName,
+            [In] D3D12_COMPUTE_PIPELINE_STATE_DESC* pDesc,
+            [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppPipelineState
         );
 

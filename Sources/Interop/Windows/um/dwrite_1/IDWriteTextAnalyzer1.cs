@@ -42,12 +42,12 @@ namespace TerraFX.Interop
             [In, ComAliasName("FLOAT")] float minimumAdvanceWidth,
             [In, ComAliasName("UINT32")] uint textLength,
             [In, ComAliasName("UINT32")] uint glyphCount,
-            [In, ComAliasName("UINT16")] /* readonly */ ushort* clusterMap,
-            [In, ComAliasName("FLOAT")] /* readonly */ float* glyphAdvances,
-            [In] /* readonly */ DWRITE_GLYPH_OFFSET* glyphOffsets,
-            [In] /* readonly */ DWRITE_SHAPING_GLYPH_PROPERTIES* glyphProperties,
-            [Out, ComAliasName("FLOAT")] float* modifiedGlyphAdvances,
-            [Out] DWRITE_GLYPH_OFFSET* modifiedGlyphOffsets
+            [In, ComAliasName("UINT16[]")] ushort* clusterMap,
+            [In, ComAliasName("FLOAT[]")] float* glyphAdvances,
+            [In, ComAliasName("DWRITE_GLYPH_OFFSET[]")] DWRITE_GLYPH_OFFSET* glyphOffsets,
+            [In, ComAliasName("DWRITE_SHAPING_GLYPH_PROPERTIES[]")] DWRITE_SHAPING_GLYPH_PROPERTIES* glyphProperties,
+            [Out, ComAliasName("FLOAT[]")] float* modifiedGlyphAdvances,
+            [Out, ComAliasName("DWRITE_GLYPH_OFFSET[]")] DWRITE_GLYPH_OFFSET* modifiedGlyphOffsets
         );
 
         /// <summary>Retrieves the given baseline from the font.</summary>
@@ -71,7 +71,7 @@ namespace TerraFX.Interop
             [In, ComAliasName("BOOL")] int isVertical,
             [In, ComAliasName("BOOL")] int isSimulationAllowed,
             [In] DWRITE_SCRIPT_ANALYSIS scriptAnalysis,
-            [In, Optional, ComAliasName("WCHAR")] /* readonly */ char* localeName,
+            [In, Optional, ComAliasName("WCHAR[]")] char* localeName,
             [Out, ComAliasName("INT32")] int* baselineCoordinate,
             [Out, ComAliasName("BOOL")] int* exists
         );
@@ -137,7 +137,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int GetTextComplexity(
             [In] IDWriteTextAnalyzer1* This,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* textString,
+            [In, ComAliasName("WCHAR[]")] char* textString,
             [In, ComAliasName("UINT32")] uint textLength,
             [In] IDWriteFontFace* fontFace,
             [Out, ComAliasName("BOOL")] int* isTextSimple,
@@ -167,10 +167,10 @@ namespace TerraFX.Interop
             [In] DWRITE_SCRIPT_ANALYSIS scriptAnalysis,
             [In, ComAliasName("UINT32")] uint textLength,
             [In, ComAliasName("UINT32")] uint glyphCount,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* textString,
-            [In, ComAliasName("UINT16")] /* readonly */ ushort* clusterMap,
-            [In] /* readonly */ DWRITE_SHAPING_GLYPH_PROPERTIES* glyphProperties,
-            [Out] DWRITE_JUSTIFICATION_OPPORTUNITY* justificationOpportunities
+            [In, ComAliasName("WCHAR[]")] char* textString,
+            [In, ComAliasName("UINT16[]")] ushort* clusterMap,
+            [In, ComAliasName("DWRITE_SHAPING_GLYPH_PROPERTIES[]")] DWRITE_SHAPING_GLYPH_PROPERTIES* glyphProperties,
+            [Out, ComAliasName("DWRITE_JUSTIFICATION_OPPORTUNITY[]")] DWRITE_JUSTIFICATION_OPPORTUNITY* justificationOpportunities
         );
 
         /// <summary>Justifies an array of glyph advances to fit the line width.</summary>
@@ -190,11 +190,11 @@ namespace TerraFX.Interop
             [In] IDWriteTextAnalyzer1* This,
             [In, ComAliasName("FLOAT")] float lineWidth,
             [In, ComAliasName("UINT32")] uint glyphCount,
-            [In] /* readonly */ DWRITE_JUSTIFICATION_OPPORTUNITY* justificationOpportunities,
-            [In, ComAliasName("FLOAT")] /* readonly */ float* glyphAdvances,
-            [In] /* readonly */ DWRITE_GLYPH_OFFSET* glyphOffsets,
-            [Out, ComAliasName("FLOAT")] float* justifiedGlyphAdvances,
-            [Out] DWRITE_GLYPH_OFFSET* justifiedGlyphOffsets = null
+            [In] DWRITE_JUSTIFICATION_OPPORTUNITY* justificationOpportunities,
+            [In, ComAliasName("FLOAT[]")] float* glyphAdvances,
+            [In, ComAliasName("DWRITE_GLYPH_OFFSET[]")] DWRITE_GLYPH_OFFSET* glyphOffsets,
+            [Out, ComAliasName("FLOAT[]")] float* justifiedGlyphAdvances,
+            [Out, ComAliasName("DWRITE_GLYPH_OFFSET[]")] DWRITE_GLYPH_OFFSET* justifiedGlyphOffsets = null
         );
 
         /// <summary>Fills in new glyphs for complex scripts where justification increased the advances of glyphs, such as Arabic with kashida.</summary>
@@ -228,17 +228,17 @@ namespace TerraFX.Interop
             [In, ComAliasName("UINT32")] uint textLength,
             [In, ComAliasName("UINT32")] uint glyphCount,
             [In, ComAliasName("UINT32")] uint maxGlyphCount,
-            [In, Optional, ComAliasName("UINT16")] /* readonly */ ushort* clusterMap,
-            [In, ComAliasName("UINT16")] /* readonly */ ushort* glyphIndices,
-            [In, ComAliasName("FLOAT")] /* readonly */ float* glyphAdvances,
-            [In, ComAliasName("FLOAT")] /* readonly */ float* justifiedGlyphAdvances,
-            [In] /* readonly */ DWRITE_GLYPH_OFFSET* justifiedGlyphOffsets,
-            [In] /* readonly */ DWRITE_SHAPING_GLYPH_PROPERTIES* glyphProperties,
+            [In, Optional, ComAliasName("UINT16[]")] ushort* clusterMap,
+            [In, ComAliasName("UINT16[]")] ushort* glyphIndices,
+            [In, ComAliasName("FLOAT[]")] float* glyphAdvances,
+            [In, ComAliasName("FLOAT[]")] float* justifiedGlyphAdvances,
+            [In, ComAliasName("DWRITE_GLYPH_OFFSET[]")] DWRITE_GLYPH_OFFSET* justifiedGlyphOffsets,
+            [In, ComAliasName("DWRITE_SHAPING_GLYPH_PROPERTIES[]")] DWRITE_SHAPING_GLYPH_PROPERTIES* glyphProperties,
             [Out, ComAliasName("UINT32")] uint* actualGlyphCount,
-            [Out, Optional, ComAliasName("UINT16")] ushort* modifiedClusterMap,
-            [Out, ComAliasName("UINT16")] ushort* modifiedGlyphIndices,
-            [Out, ComAliasName("FLOAT")] float* modifiedGlyphAdvances,
-            [Out] DWRITE_GLYPH_OFFSET* modifiedGlyphOffsets
+            [Out, Optional, ComAliasName("UINT16[]")] ushort* modifiedClusterMap,
+            [Out, ComAliasName("UINT16[]")] ushort* modifiedGlyphIndices,
+            [Out, ComAliasName("FLOAT[]")] float* modifiedGlyphAdvances,
+            [Out, ComAliasName("DWRITE_GLYPH_OFFSET[]")] DWRITE_GLYPH_OFFSET* modifiedGlyphOffsets
         );
         #endregion
 

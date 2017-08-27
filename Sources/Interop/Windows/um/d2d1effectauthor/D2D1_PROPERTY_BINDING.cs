@@ -15,7 +15,7 @@ namespace TerraFX.Interop
         #region Fields
         /// <summary>The name of the property.</summary>
         [ComAliasName("PCWSTR")]
-        public /* readonly */ char* propertyName;
+        public char* propertyName;
 
         /// <summary>The function that will receive the data to set.</summary>
         [ComAliasName("PD2D1_PROPERTY_SET_FUNCTION")]

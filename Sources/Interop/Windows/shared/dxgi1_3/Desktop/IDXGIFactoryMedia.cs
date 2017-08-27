@@ -24,7 +24,7 @@ namespace TerraFX.Interop.Desktop
             [In] IDXGIFactoryMedia* This,
             [In] IUnknown* pDevice,
             [In, Optional, ComAliasName("HANDLE")] IntPtr hSurface,
-            [In] /* readonly */ DXGI_SWAP_CHAIN_DESC1* pDesc,
+            [In] DXGI_SWAP_CHAIN_DESC1* pDesc,
             [In, Optional] IDXGIOutput* pRestrictToOutput,
             [Out] IDXGISwapChain1** ppSwapChain
         );

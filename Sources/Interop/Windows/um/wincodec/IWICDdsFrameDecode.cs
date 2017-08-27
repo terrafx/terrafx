@@ -39,10 +39,10 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int CopyBlocks(
             [In] IWICDdsFrameDecode* This,
-            [In] /* readonly */ WICRect* prcBoundsInBlocks,
+            [In] WICRect* prcBoundsInBlocks,
             [In, ComAliasName("UINT")] uint cbStride,
             [In, ComAliasName("UINT")] uint cbBufferSize,
-            [Out, ComAliasName("BYTE")] byte* pbBuffer
+            [Out, ComAliasName("BYTE[]")] byte* pbBuffer
         );
         #endregion
 

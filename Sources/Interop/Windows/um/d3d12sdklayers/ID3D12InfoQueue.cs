@@ -207,7 +207,7 @@ namespace TerraFX.Interop
             [In] D3D12_MESSAGE_CATEGORY Category,
             [In] D3D12_MESSAGE_SEVERITY Severity,
             [In] D3D12_MESSAGE_ID ID,
-            [In, ComAliasName("LPCSTR")] /* readonly */ sbyte* pDescription
+            [In, ComAliasName("LPCSTR")] sbyte* pDescription
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -216,7 +216,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int AddApplicationMessage(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_MESSAGE_SEVERITY Severity,
-            [In, ComAliasName("LPCSTR")] /* readonly */ sbyte* pDescription
+            [In, ComAliasName("LPCSTR")] sbyte* pDescription
         );
 
         [SuppressUnmanagedCodeSecurity]

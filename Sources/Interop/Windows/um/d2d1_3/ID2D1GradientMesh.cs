@@ -33,7 +33,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int GetPatches(
             [In] ID2D1GradientMesh* This,
             [In, ComAliasName("UINT32")] uint startIndex,
-            [Out] D2D1_GRADIENT_MESH_PATCH* patches,
+            [Out, ComAliasName("D2D1_GRADIENT_MESH_PATCH[]")] D2D1_GRADIENT_MESH_PATCH* patches,
             [In, ComAliasName("UINT32")] uint patchesCount
         );
         #endregion

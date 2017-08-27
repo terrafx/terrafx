@@ -13,6 +13,7 @@ namespace TerraFX.Interop
         [ComAliasName("UINT")]
         public uint DirtyRectsCount;
 
+        [ComAliasName("RECT[]")]
         public RECT* pDirtyRects;
 
         public RECT* pScrollRect;

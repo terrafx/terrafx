@@ -13,6 +13,7 @@ namespace TerraFX.Interop
         [ComAliasName("ULONG")]
         public uint cElems;
 
+        [ComAliasName("FILETIME[]")]
         public FILETIME* pElems;
         #endregion
     }

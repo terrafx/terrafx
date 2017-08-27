@@ -34,13 +34,13 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int AddMapping(
             [In] IDWriteFontFallbackBuilder* This,
-            [In] /* readonly */ DWRITE_UNICODE_RANGE* ranges,
+            [In, ComAliasName("DWRITE_UNICODE_RANGE[]")] DWRITE_UNICODE_RANGE* ranges,
             [In, ComAliasName("UINT32")] uint rangesCount,
-            [In, ComAliasName("WCHAR")] /* readonly */ char** targetFamilyNames,
+            [In, ComAliasName("WCHAR[]")] char** targetFamilyNames,
             [In, ComAliasName("UINT32")] uint targetFamilyNamesCount,
             [In] IDWriteFontCollection* fontCollection = null,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* localeName = null,
-            [In, ComAliasName("WCHAR")] /* readonly */ char* baseFamilyName = null,
+            [In, ComAliasName("WCHAR[]")] char* localeName = null,
+            [In, ComAliasName("WCHAR[]")] char* baseFamilyName = null,
             [In, ComAliasName("FLOAT")] float scale = 1.0f
         );
 

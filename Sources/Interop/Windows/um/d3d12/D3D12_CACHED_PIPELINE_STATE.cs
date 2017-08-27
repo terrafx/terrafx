@@ -10,7 +10,7 @@ namespace TerraFX.Interop
     public /* blittable */ unsafe struct D3D12_CACHED_PIPELINE_STATE
     {
         #region Fields
-        public /* readonly */ void* pCachedBlob;
+        public void* pCachedBlob;
 
         [ComAliasName("SIZE_T")]
         public nuint CachedBlobSizeInBytes;

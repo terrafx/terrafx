@@ -74,7 +74,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void GetDashes(
             [In] ID2D1StrokeStyle* This,
-            [Out, ComAliasName("FLOAT")] float* dashes,
+            [Out, ComAliasName("FLOAT[]")] float* dashes,
             [In, ComAliasName("UINT32")] uint dashesCount
         );
         #endregion
