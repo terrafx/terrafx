@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.Threading;
 using TerraFX.Interop;
 using TerraFX.Threading;
-using GC = System.GC;
 using static TerraFX.Interop.libc;
 using static TerraFX.Interop.libX11;
 using static TerraFX.Utilities.ExceptionUtilities;
