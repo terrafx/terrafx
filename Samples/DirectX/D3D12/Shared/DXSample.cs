@@ -12,7 +12,6 @@ using static TerraFX.Interop.DXGI_ADAPTER_FLAG;
 using static TerraFX.Interop.User32;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Samples.DirectX.D3D12.DXSampleHelper;
-using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Samples.DirectX.D3D12
 {
