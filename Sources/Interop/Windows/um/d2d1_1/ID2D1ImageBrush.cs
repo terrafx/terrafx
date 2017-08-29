@@ -17,6 +17,73 @@ namespace TerraFX.Interop
         public readonly Vtbl* lpVtbl;
         #endregion
 
+        #region IUnknown Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryInterface(
+            [In] ID2D1ImageBrush* This,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint AddRef(
+            [In] ID2D1ImageBrush* This
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint Release(
+            [In] ID2D1ImageBrush* This
+        );
+        #endregion
+
+        #region ID2D1Resource Delegates
+        /// <summary>Retrieve the factory associated with this resource.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate void GetFactory(
+            [In] ID2D1ImageBrush* This,
+            [Out] ID2D1Factory** factory
+        );
+        #endregion
+
+        #region ID2D1Brush Delegates
+        /// <summary>Sets the opacity for when the brush is drawn over the entire fill of the brush.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate void SetOpacity(
+            [In] ID2D1ImageBrush* This,
+            [In, ComAliasName("FLOAT")] float opacity
+        );
+
+        /// <summary>Sets the transform that applies to everything drawn by the brush.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate void SetTransform(
+            [In] ID2D1ImageBrush* This,
+            [In, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("FLOAT")]
+        public /* static */ delegate float GetOpacity(
+            [In] ID2D1ImageBrush* This
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate void GetTransform(
+            [In] ID2D1ImageBrush* This,
+            [Out, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform
+        );
+        #endregion
+
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -89,9 +156,29 @@ namespace TerraFX.Interop
         #region Structs
         public /* blittable */ struct Vtbl
         {
-            #region Fields
-            public ID2D1Brush.Vtbl BaseVtbl;
+            #region IUnknown Fields
+            public IntPtr QueryInterface;
 
+            public IntPtr AddRef;
+
+            public IntPtr Release;
+            #endregion
+
+            #region ID2D1Resource Fields
+            public IntPtr GetFactory;
+            #endregion
+
+            #region ID2D1Brush Fields
+            public IntPtr SetOpacity;
+
+            public IntPtr SetTransform;
+
+            public IntPtr GetOpacity;
+
+            public IntPtr GetTransform;
+            #endregion
+
+            #region Fields
             public IntPtr SetImage;
 
             public IntPtr SetExtendModeX;

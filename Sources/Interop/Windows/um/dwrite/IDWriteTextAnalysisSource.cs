@@ -17,6 +17,31 @@ namespace TerraFX.Interop
         public readonly Vtbl* lpVtbl;
         #endregion
 
+        #region IUnknown Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryInterface(
+            [In] IDWriteTextAnalysisSource* This,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint AddRef(
+            [In] IDWriteTextAnalysisSource* This
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint Release(
+            [In] IDWriteTextAnalysisSource* This
+        );
+        #endregion
+
         #region Delegates
         /// <summary>Get a block of text starting at the specified text position. Returning NULL indicates the end of text - the position is after the last character. This function is called iteratively for each consecutive block, tying together several fragmented blocks in the backing store into a virtual contiguous string.</summary>
         /// <param name="textPosition">First position of the piece to obtain. All positions are in UTF16 code-units, not whole characters, which matters when supplementary characters are used.</param>
@@ -91,9 +116,15 @@ namespace TerraFX.Interop
         #region Structs
         public /* blittable */ struct Vtbl
         {
-            #region Fields
-            public IUnknown.Vtbl BaseVtbl;
+            #region IUnknown Fields
+            public IntPtr QueryInterface;
 
+            public IntPtr AddRef;
+
+            public IntPtr Release;
+            #endregion
+
+            #region Fields
             public IntPtr GetTextAtPosition;
 
             public IntPtr GetTextBeforePosition;

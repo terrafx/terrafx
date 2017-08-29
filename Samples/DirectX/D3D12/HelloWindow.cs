@@ -87,8 +87,8 @@ namespace TerraFX.Samples.DirectX.D3D12
             ExecuteCommandList(_commandQueue, 1, ppCommandLists);
 
             // Present the frame.
-            var Present = MarshalFunction<IDXGISwapChain.Present>(_swapChain->lpVtbl->BaseVtbl.BaseVtbl.BaseVtbl.Present);
-            ThrowIfFailed(nameof(IDXGISwapChain.Present), Present((IDXGISwapChain*)(_swapChain), 1, 0));
+            var Present = MarshalFunction<IDXGISwapChain3.Present>(_swapChain->lpVtbl->Present);
+            ThrowIfFailed(nameof(IDXGISwapChain3.Present), Present(_swapChain, 1, 0));
 
             WaitForPreviousFrame();
         }
@@ -142,7 +142,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                 }
                 else
                 {
-                    adapter = (IDXGIAdapter*)(GetHardwareAdapter((IDXGIFactory2*)(factory)));
+                    adapter = GetHardwareAdapter(factory);
                 }
 
                 iid = IID_ID3D12Device;
@@ -174,9 +174,9 @@ namespace TerraFX.Samples.DirectX.D3D12
                 };
                 swapChainDesc.SampleDesc.Count = 1;
 
-                var CreateSwapChainForHwnd = MarshalFunction<IDXGIFactory2.CreateSwapChainForHwnd>(factory->lpVtbl->BaseVtbl.BaseVtbl.CreateSwapChainForHwnd);
-                ThrowIfFailed(nameof(IDXGIFactory2.CreateSwapChainForHwnd), CreateSwapChainForHwnd(
-                    (IDXGIFactory2*)(factory),
+                var CreateSwapChainForHwnd = MarshalFunction<IDXGIFactory4.CreateSwapChainForHwnd>(factory->lpVtbl->CreateSwapChainForHwnd);
+                ThrowIfFailed(nameof(IDXGIFactory4.CreateSwapChainForHwnd), CreateSwapChainForHwnd(
+                    factory,
                     (IUnknown*)(_commandQueue),         // Swap chain needs the queue so that it can force a flush on it.
                     Win32Application.Hwnd,
                     &swapChainDesc,
@@ -186,15 +186,15 @@ namespace TerraFX.Samples.DirectX.D3D12
                 ));
 
                 // This sample does not support fullscreen transitions.
-                var MakeWindowAssociation = MarshalFunction<IDXGIFactory.MakeWindowAssociation>(factory->lpVtbl->BaseVtbl.BaseVtbl.BaseVtbl.BaseVtbl.MakeWindowAssociation);
-                ThrowIfFailed(nameof(IDXGIFactory.MakeWindowAssociation), MakeWindowAssociation((IDXGIFactory*)(factory), Win32Application.Hwnd, DXGI_MWA_NO_ALT_ENTER));
+                var MakeWindowAssociation = MarshalFunction<IDXGIFactory4.MakeWindowAssociation>(factory->lpVtbl->MakeWindowAssociation);
+                ThrowIfFailed(nameof(IDXGIFactory4.MakeWindowAssociation), MakeWindowAssociation(factory, Win32Application.Hwnd, DXGI_MWA_NO_ALT_ENTER));
 
-                var QueryInterface = MarshalFunction<IUnknown.QueryInterface>(swapChain->lpVtbl->BaseVtbl.BaseVtbl.BaseVtbl.BaseVtbl.QueryInterface);
+                var QueryInterface = MarshalFunction<IDXGISwapChain1.QueryInterface>(swapChain->lpVtbl->QueryInterface);
 
                 iid = IID_IDXGISwapChain3;
                 IDXGISwapChain3* pvObject;
 
-                ThrowIfFailed(nameof(IUnknown.QueryInterface), QueryInterface((IUnknown*)(swapChain), &iid, (void**)(&pvObject)));
+                ThrowIfFailed(nameof(IDXGISwapChain1.QueryInterface), QueryInterface(swapChain, &iid, (void**)(&pvObject)));
                 _swapChain = pvObject;
 
                 var GetCurrentBackBufferIndex = MarshalFunction<IDXGISwapChain3.GetCurrentBackBufferIndex>(_swapChain->lpVtbl->GetCurrentBackBufferIndex);
@@ -228,7 +228,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                     D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
                     GetCPUDescriptorHandleForHeapStart(_rtvHeap, &rtvHandle);
 
-                    var GetBuffer = MarshalFunction<IDXGISwapChain.GetBuffer>(_swapChain->lpVtbl->BaseVtbl.BaseVtbl.BaseVtbl.GetBuffer);
+                    var GetBuffer = MarshalFunction<IDXGISwapChain3.GetBuffer>(_swapChain->lpVtbl->GetBuffer);
                     var CreateRenderTargetView = MarshalFunction<ID3D12Device.CreateRenderTargetView>(_device->lpVtbl->CreateRenderTargetView);
 
                     iid = IID_ID3D12Resource;
@@ -237,7 +237,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                     for (var n = 0u; n < FrameCount; n++)
                     {
                         ID3D12Resource* pSurface;
-                        ThrowIfFailed(nameof(IDXGISwapChain.GetBuffer), GetBuffer((IDXGISwapChain*)(_swapChain), n, &iid, (void**)(&pSurface)));
+                        ThrowIfFailed(nameof(IDXGISwapChain3.GetBuffer), GetBuffer(_swapChain, n, &iid, (void**)(&pSurface)));
                         _renderTargets[unchecked((int)(n))] = pSurface;
 
                         CreateRenderTargetView(_device, _renderTargets[unchecked((int)(n))], null, rtvHandle);

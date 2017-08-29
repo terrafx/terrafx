@@ -18,6 +18,31 @@ namespace TerraFX.Interop
         public readonly Vtbl* lpVtbl;
         #endregion
 
+        #region IUnknown Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryInterface(
+            [In] IDWriteTextFormat* This,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint AddRef(
+            [In] IDWriteTextFormat* This
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint Release(
+            [In] IDWriteTextFormat* This
+        );
+        #endregion
+
         #region Delegates
         /// <summary>Set alignment option of text relative to layout box's leading and trailing edge.</summary>
         /// <param name="textAlignment">Text alignment option</param>
@@ -274,9 +299,15 @@ namespace TerraFX.Interop
         #region Structs
         public /* blittable */ struct Vtbl
         {
-            #region Fields
-            public IUnknown.Vtbl BaseVtbl;
+            #region IUnknown Fields
+            public IntPtr QueryInterface;
 
+            public IntPtr AddRef;
+
+            public IntPtr Release;
+            #endregion
+
+            #region Fields
             public IntPtr SetTextAlignment;
 
             public IntPtr SetParagraphAlignment;

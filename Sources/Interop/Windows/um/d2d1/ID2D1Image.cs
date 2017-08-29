@@ -5,6 +5,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Security;
 
 namespace TerraFX.Interop
 {
@@ -16,6 +17,41 @@ namespace TerraFX.Interop
         public readonly Vtbl* lpVtbl;
         #endregion
 
+        #region IUnknown Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryInterface(
+            [In] ID2D1Image* This,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint AddRef(
+            [In] ID2D1Image* This
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint Release(
+            [In] ID2D1Image* This
+        );
+        #endregion
+
+        #region ID2D1Resource Delegates
+        /// <summary>Retrieve the factory associated with this resource.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate void GetFactory(
+            [In] ID2D1Image* This,
+            [Out] ID2D1Factory** factory
+        );
+        #endregion
+
         #region Delegates
         // ID2D1Image declares no new members
         #endregion
@@ -23,8 +59,20 @@ namespace TerraFX.Interop
         #region Structs
         public /* blittable */ struct Vtbl
         {
+            #region IUnknown Fields
+            public IntPtr QueryInterface;
+
+            public IntPtr AddRef;
+
+            public IntPtr Release;
+            #endregion
+
+            #region ID2D1Resource Fields
+            public IntPtr GetFactory;
+            #endregion
+
             #region Fields
-            public ID2D1Resource.Vtbl BaseVtbl;
+            // ID2D1Image declares no new members
             #endregion
         }
         #endregion

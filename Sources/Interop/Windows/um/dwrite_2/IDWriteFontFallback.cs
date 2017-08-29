@@ -17,6 +17,31 @@ namespace TerraFX.Interop
         public readonly Vtbl* lpVtbl;
         #endregion
 
+        #region IUnknown Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryInterface(
+            [In] IDWriteFontFallback* This,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint AddRef(
+            [In] IDWriteFontFallback* This
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint Release(
+            [In] IDWriteFontFallback* This
+        );
+        #endregion
+
         #region Delegates
         /// <summary>Determines an appropriate font to use to render the range of text.</summary>
         /// <param name="analysisSource">The text source implementation holds the text and locale.</param>
@@ -52,9 +77,15 @@ namespace TerraFX.Interop
         #region Structs
         public /* blittable */ struct Vtbl
         {
-            #region Fields
-            public IUnknown.Vtbl BaseVtbl;
+            #region IUnknown Fields
+            public IntPtr QueryInterface;
 
+            public IntPtr AddRef;
+
+            public IntPtr Release;
+            #endregion
+
+            #region Fields
             public IntPtr MapCharacters;
             #endregion
         }

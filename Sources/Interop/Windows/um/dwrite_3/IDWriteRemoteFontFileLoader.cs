@@ -18,6 +18,48 @@ namespace TerraFX.Interop
         public readonly Vtbl* lpVtbl;
         #endregion
 
+        #region IUnknown Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryInterface(
+            [In] IDWriteRemoteFontFileLoader* This,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint AddRef(
+            [In] IDWriteRemoteFontFileLoader* This
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint Release(
+            [In] IDWriteRemoteFontFileLoader* This
+        );
+        #endregion
+
+        #region IDWriteFontFileLoader Delegates
+        /// <summary>Creates a font file stream object that encapsulates an open file resource. The resource is closed when the last reference to fontFileStream is released.</summary>
+        /// <param name="fontFileReferenceKey">Font file reference key that uniquely identifies the font file resource within the scope of the font loader being used.</param>
+        /// <param name="fontFileReferenceKeySize">Size of font file reference key in bytes.</param>
+        /// <param name="fontFileStream">Pointer to the newly created font file stream.</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateStreamFromKey(
+            [In] IDWriteRemoteFontFileLoader* This,
+            [In] void* fontFileReferenceKey,
+            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [Out] IDWriteFontFileStream** fontFileStream
+        );
+        #endregion
+
         #region Delegates
         /// <summary>Creates a remote font file stream object that encapsulates an open file resource and can be used to download remote file data.</summary>
         /// <param name="fontFileReferenceKey">Font file reference key that uniquely identifies the font file resource within the scope of the font loader being used.</param>
@@ -71,9 +113,19 @@ namespace TerraFX.Interop
         #region Structs
         public /* blittable */ struct Vtbl
         {
-            #region Fields
-            public IDWriteFontFileLoader.Vtbl BaseVtbl;
+            #region IUnknown Fields
+            public IntPtr QueryInterface;
 
+            public IntPtr AddRef;
+
+            public IntPtr Release;
+            #endregion
+
+            #region IDWriteFontFileLoader Fields
+            public IntPtr CreateStreamFromKey;
+            #endregion
+
+            #region Fields
             public IntPtr CreateRemoteStreamFromKey;
 
             public IntPtr GetLocalityFromKey;

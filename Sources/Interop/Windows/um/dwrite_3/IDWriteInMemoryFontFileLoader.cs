@@ -17,6 +17,48 @@ namespace TerraFX.Interop
         public readonly Vtbl* lpVtbl;
         #endregion
 
+        #region IUnknown Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryInterface(
+            [In] IDWriteInMemoryFontFileLoader* This,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint AddRef(
+            [In] IDWriteInMemoryFontFileLoader* This
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint Release(
+            [In] IDWriteInMemoryFontFileLoader* This
+        );
+        #endregion
+
+        #region IDWriteFontFileLoader Delegates
+        /// <summary>Creates a font file stream object that encapsulates an open file resource. The resource is closed when the last reference to fontFileStream is released.</summary>
+        /// <param name="fontFileReferenceKey">Font file reference key that uniquely identifies the font file resource within the scope of the font loader being used.</param>
+        /// <param name="fontFileReferenceKeySize">Size of font file reference key in bytes.</param>
+        /// <param name="fontFileStream">Pointer to the newly created font file stream.</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateStreamFromKey(
+            [In] IDWriteInMemoryFontFileLoader* This,
+            [In] void* fontFileReferenceKey,
+            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [Out] IDWriteFontFileStream** fontFileStream
+        );
+        #endregion
+
         #region Delegates
         /// <summary>The CreateInMemoryFontFileReference method creates a font file reference (IDWriteFontFile object) from an array of bytes. The font file reference is bound to the IDWRiteInMemoryFontFileLoader instance with which it was created and remains valid for as long as that loader is registered with the factory.</summary>
         /// <param name="factory">Factory object used to create the font file reference.</param>
@@ -49,9 +91,19 @@ namespace TerraFX.Interop
         #region Structs
         public /* blittable */ struct Vtbl
         {
-            #region Fields
-            public IDWriteFontFileLoader.Vtbl BaseVtbl;
+            #region IUnknown Fields
+            public IntPtr QueryInterface;
 
+            public IntPtr AddRef;
+
+            public IntPtr Release;
+            #endregion
+
+            #region IDWriteFontFileLoader Fields
+            public IntPtr CreateStreamFromKey;
+            #endregion
+
+            #region Fields
             public IntPtr CreateInMemoryFontFileReference;
 
             public IntPtr GetFileCount;

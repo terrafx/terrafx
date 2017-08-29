@@ -16,6 +16,68 @@ namespace TerraFX.Interop
         public readonly Vtbl* lpVtbl;
         #endregion
 
+        #region IUnknown Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryInterface(
+            [In] IWICMetadataQueryWriter* This,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint AddRef(
+            [In] IWICMetadataQueryWriter* This
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint Release(
+            [In] IWICMetadataQueryWriter* This
+        );
+        #endregion
+
+        #region IWICMetadataQueryReader Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetContainerFormat(
+            [In] IWICMetadataQueryWriter* This,
+            [Out, ComAliasName("GUID")] Guid* pguidContainerFormat
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetLocation(
+            [In] IWICMetadataQueryWriter* This,
+            [In, ComAliasName("UINT")] uint cchMaxLength,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzNamespace,
+            [Out, ComAliasName("UINT")] uint* pcchActualLength
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetMetadataByName(
+            [In] IWICMetadataQueryWriter* This,
+            [In, ComAliasName("LPCWSTR")] char* wzName,
+            [In, Out] PROPVARIANT* pvarValue = null
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetEnumerator(
+            [In] IWICMetadataQueryWriter* This,
+            [Out] IEnumString** ppIEnumString = null
+        );
+        #endregion
+
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -38,9 +100,25 @@ namespace TerraFX.Interop
         #region Structs
         public /* blittable */ struct Vtbl
         {
-            #region Fields
-            public IWICMetadataQueryReader.Vtbl BaseVtbl;
+            #region IUnknown Fields
+            public IntPtr QueryInterface;
 
+            public IntPtr AddRef;
+
+            public IntPtr Release;
+            #endregion
+
+            #region IWICMetadataQueryReader Fields
+            public IntPtr GetContainerFormat;
+
+            public IntPtr GetLocation;
+
+            public IntPtr GetMetadataByName;
+
+            public IntPtr GetEnumerator;
+            #endregion
+
+            #region Fields
             public IntPtr SetMetadataByName;
 
             public IntPtr RemoveMetadataByName;

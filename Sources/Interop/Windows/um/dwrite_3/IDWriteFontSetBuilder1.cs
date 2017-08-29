@@ -16,6 +16,82 @@ namespace TerraFX.Interop
         public readonly Vtbl* lpVtbl;
         #endregion
 
+        #region IUnknown Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryInterface(
+            [In] IDWriteFontSetBuilder1* This,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint AddRef(
+            [In] IDWriteFontSetBuilder1* This
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint Release(
+            [In] IDWriteFontSetBuilder1* This
+        );
+        #endregion
+
+        #region IDWriteFontSetBuilder Delegates
+        /// <summary>Adds a reference to a font to the set being built. The necessary metadata will automatically be extracted from the font upon calling CreateFontSet.</summary>
+        /// <param name="fontFaceReference">Font face reference object to add to the set.</param>
+        /// <returns> Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddFontFaceReference(
+            [In] IDWriteFontSetBuilder1* This,
+            [In] IDWriteFontFaceReference* fontFaceReference
+        );
+
+        /// <summary>Adds a reference to a font to the set being built. The caller supplies enough information to search on, avoiding the need to open the potentially non-local font. Any properties not supplied by the caller will be missing, and those properties will not be available as filters in GetMatchingFonts. GetPropertyValues for missing properties will return an empty string list. The properties passed should generally be consistent with the actual font contents, but they need not be. You could, for example, alias a font using a different name or unique identifier, or you could set custom tags not present in the actual font.</summary>
+        /// <param name="fontFaceReference">Reference to the font.</param>
+        /// <param name="properties">List of properties to associate with the reference.</param>
+        /// <param name="propertyCount">How many properties are defined.</param>
+        /// <returns> Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddFontFaceReference1(
+            [In] IDWriteFontSetBuilder1* This,
+            [In] IDWriteFontFaceReference* fontFaceReference,
+            [In, ComAliasName("DWRITE_FONT_PROPERTY[]")] DWRITE_FONT_PROPERTY* properties,
+            [In, ComAliasName("UINT32")] uint propertyCount
+        );
+
+        /// <summary>Appends an existing font set to the one being built, allowing one to aggregate two sets or to essentially extend an existing one.</summary>
+        /// <param name="fontSet">Font set to append font face references from.</param>
+        /// <returns> Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int AddFontSet(
+            [In] IDWriteFontSetBuilder1* This,
+            [In] IDWriteFontSet* fontSet
+        );
+
+        /// <summary>Creates a font set from all the font face references added so far via AddFontFaceReference.</summary>
+        /// <param name="fontSet">Contains newly created font set object, or nullptr in case of failure.</param>
+        /// <returns> Standard HRESULT error code.</returns>
+        /// <remarks> Creating a font set takes less time if the references were added with metadata rather than needing to extract the metadata from the font file.</remarks>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateFontSet(
+            [In] IDWriteFontSetBuilder1* This,
+            [Out] IDWriteFontSet** fontSet
+        );
+        #endregion
+
         #region Delegates
         /// <summary>Adds references to all the fonts in the specified font file. The method parses the font file to determine the fonts and their properties.</summary>
         /// <param name="fontFile">Font file reference object to add to the set.</param>
@@ -32,9 +108,25 @@ namespace TerraFX.Interop
         #region Structs
         public /* blittable */ struct Vtbl
         {
-            #region Fields
-            public IDWriteFontSetBuilder.Vtbl BaseVtbl;
+            #region IUnknown Fields
+            public IntPtr QueryInterface;
 
+            public IntPtr AddRef;
+
+            public IntPtr Release;
+            #endregion
+
+            #region IDWriteFontSetBuilder Fields
+            public IntPtr AddFontFaceReference;
+
+            public IntPtr AddFontFaceReference1;
+
+            public IntPtr AddFontSet;
+
+            public IntPtr CreateFontSet;
+            #endregion
+
+            #region Fields
             public IntPtr AddFontFile;
             #endregion
         }

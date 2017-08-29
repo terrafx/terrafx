@@ -18,6 +18,69 @@ namespace TerraFX.Interop
         public readonly Vtbl* lpVtbl;
         #endregion
 
+        #region IUnknown Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryInterface(
+            [In] ID2D1DrawInfo* This,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint AddRef(
+            [In] ID2D1DrawInfo* This
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint Release(
+            [In] ID2D1DrawInfo* This
+        );
+        #endregion
+
+        #region ID2D1RenderInfo Delegates
+        /// <summary>Sets options for sampling the specified image input</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetInputDescription(
+            [In] ID2D1DrawInfo* This,
+            [In, ComAliasName("UINT32")] uint inputIndex,
+            [In] D2D1_INPUT_DESCRIPTION inputDescription
+        );
+
+        /// <summary>Controls the output precision and channel-depth for the associated transform.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetOutputBuffer(
+            [In] ID2D1DrawInfo* This,
+            [In] D2D1_BUFFER_PRECISION bufferPrecision,
+            [In] D2D1_CHANNEL_DEPTH channelDepth
+        );
+
+        /// <summary>Controls whether the output of the associated transform is cached.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate void SetCached(
+            [In] ID2D1DrawInfo* This,
+            [In, ComAliasName("BOOL")] int isCached
+        );
+
+        /// <summary>Provides a hint of the approximate shader instruction count per pixel.  If provided, it may improve performance when processing large images.  Instructions should be counted multiple times if occurring within loops.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate void SetInstructionCountHint(
+            [In] ID2D1DrawInfo* This,
+            [In, ComAliasName("UINT32")] uint instructionCount
+        );
+        #endregion
+
         #region Delegates
         /// <summary>Set the constant buffer for this transform's pixel shader.</summary>
         [SuppressUnmanagedCodeSecurity]
@@ -76,9 +139,25 @@ namespace TerraFX.Interop
         #region Structs
         public /* blittable */ struct Vtbl
         {
-            #region Fields
-            public ID2D1RenderInfo.Vtbl BaseVtbl;
+            #region IUnknown Fields
+            public IntPtr QueryInterface;
 
+            public IntPtr AddRef;
+
+            public IntPtr Release;
+            #endregion
+
+            #region ID2D1RenderInfo Fields
+            public IntPtr SetInputDescription;
+
+            public IntPtr SetOutputBuffer;
+
+            public IntPtr SetCached;
+
+            public IntPtr SetInstructionCountHint;
+            #endregion
+
+            #region Fields
             public IntPtr SetPixelShaderConstantBuffer;
 
             public IntPtr SetResourceTexture;

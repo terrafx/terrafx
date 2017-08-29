@@ -16,6 +16,82 @@ namespace TerraFX.Interop
         public readonly Vtbl* lpVtbl;
         #endregion
 
+        #region IUnknown Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryInterface(
+            [In] ID3D12PipelineLibrary* This,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint AddRef(
+            [In] ID3D12PipelineLibrary* This
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint Release(
+            [In] ID3D12PipelineLibrary* This
+        );
+        #endregion
+
+        #region ID3D12Object Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPrivateData(
+            [In] ID3D12PipelineLibrary* This,
+            [In, ComAliasName("REFGUID")] Guid* guid,
+            [In, Out, ComAliasName("UINT")] uint* pDataSize,
+            [Out] void* pData = null
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetPrivateData(
+            [In] ID3D12PipelineLibrary* This,
+            [In, ComAliasName("REFGUID")] Guid* guid,
+            [In, ComAliasName("UINT")] uint DataSize,
+            [In] void* pData = null
+        );
+
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetPrivateDataInterface(
+            [In] ID3D12PipelineLibrary* This,
+            [In, ComAliasName("REFGUID")] Guid* guid,
+            [In] IUnknown* pData = null
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetName(
+            [In] ID3D12PipelineLibrary* This,
+            [In, ComAliasName("LPCWSTR")] char* Name
+        );
+        #endregion
+
+        #region ID3D12DeviceChild Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetDevice(
+            [In] ID3D12PipelineLibrary* This,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvDevice = null
+        );
+        #endregion
+
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -68,9 +144,29 @@ namespace TerraFX.Interop
         #region Structs
         public /* blittable */ struct Vtbl
         {
-            #region Fields
-            public ID3D12DeviceChild.Vtbl BaseVtbl;
+            #region IUnknown Fields
+            public IntPtr QueryInterface;
 
+            public IntPtr AddRef;
+
+            public IntPtr Release;
+            #endregion
+
+            #region ID3D12Object Fields
+            public IntPtr GetPrivateData;
+
+            public IntPtr SetPrivateData;
+
+            public IntPtr SetPrivateDataInterface;
+
+            public IntPtr SetName;
+            #endregion
+
+            #region ID3D12DeviceChild Fields
+            public IntPtr GetDevice;
+            #endregion
+
+            #region Fields
             public IntPtr StorePipeline;
 
             public IntPtr LoadGraphicsPipeline;

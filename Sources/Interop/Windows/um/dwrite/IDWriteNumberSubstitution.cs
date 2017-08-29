@@ -5,6 +5,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Security;
 
 namespace TerraFX.Interop
 {
@@ -16,6 +17,31 @@ namespace TerraFX.Interop
         public readonly Vtbl* lpVtbl;
         #endregion
 
+        #region IUnknown Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryInterface(
+            [In] IDWriteNumberSubstitution* This,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint AddRef(
+            [In] IDWriteNumberSubstitution* This
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint Release(
+            [In] IDWriteNumberSubstitution* This
+        );
+        #endregion
+
         #region Delegates
         // IDWriteNumberSubstitution declares no new members
         #endregion
@@ -23,8 +49,16 @@ namespace TerraFX.Interop
         #region Structs
         public /* blittable */ struct Vtbl
         {
+            #region IUnknown Fields
+            public IntPtr QueryInterface;
+
+            public IntPtr AddRef;
+
+            public IntPtr Release;
+            #endregion
+
             #region Fields
-            public IUnknown.Vtbl BaseVtbl;
+            // IDWriteNumberSubstitution declares no new members
             #endregion
         }
         #endregion

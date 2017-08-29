@@ -17,6 +17,103 @@ namespace TerraFX.Interop
         public readonly Vtbl* lpVtbl;
         #endregion
 
+        #region IUnknown Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryInterface(
+            [In] IDWriteGdiInterop1* This,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint AddRef(
+            [In] IDWriteGdiInterop1* This
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint Release(
+            [In] IDWriteGdiInterop1* This
+        );
+        #endregion
+
+        #region IDWriteGdiInterop Delegates
+        /// <summary>Creates a font object that matches the properties specified by the LOGFONT public structure in the system font collection (GetSystemFontCollection).</summary>
+        /// <param name="logFont">Structure containing a GDI-compatible font description.</param>
+        /// <param name="font">Receives a newly created font object if successful, or NULL in case of error.</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateFontFromLOGFONT(
+            [In] IDWriteGdiInterop1* This,
+            [In] LOGFONT* logFont,
+            [Out] IDWriteFont** font
+        );
+
+        /// <summary>Initializes a LOGFONT public structure based on the GDI-compatible properties of the specified font.</summary>
+        /// <param name="font">Specifies a font.</param>
+        /// <param name="logFont">Structure that receives a GDI-compatible font description.</param>
+        /// <param name="isSystemFont">Contains TRUE if the specified font object is part of the system font collection or FALSE otherwise.</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ConvertFontToLOGFONT(
+            [In] IDWriteGdiInterop1* This,
+            [In] IDWriteFont* font,
+            [Out] LOGFONT* logFont,
+            [Out, ComAliasName("BOOL")] int* isSystemFont
+        );
+
+        /// <summary>Initializes a LOGFONT public structure based on the GDI-compatible properties of the specified font.</summary>
+        /// <param name="font">Specifies a font face.</param>
+        /// <param name="logFont">Structure that receives a GDI-compatible font description.</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int ConvertFontFaceToLOGFONT(
+            [In] IDWriteGdiInterop1* This,
+            [In] IDWriteFontFace* font,
+            [Out] LOGFONT* logFont
+        );
+
+        /// <summary>Creates a font face object that corresponds to the currently selected HFONT.</summary>
+        /// <param name="hdc">Handle to a device context into which a font has been selected. It is assumed that the client has already performed font mapping and that the font selected into the DC is the actual font that would be used for rendering glyphs.</param>
+        /// <param name="fontFace">Contains the newly created font face object, or NULL in case of failure.</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateFontFaceFromHdc(
+            [In] IDWriteGdiInterop1* This,
+            [In, ComAliasName("HDC")] IntPtr hdc,
+            [Out] IDWriteFontFace** fontFace
+        );
+
+        /// <summary>Creates an object that encapsulates a bitmap and memory DC which can be used for rendering glyphs.</summary>
+        /// <param name="hdc">Optional device context used to create a compatible memory DC.</param>
+        /// <param name="width">Width of the bitmap.</param>
+        /// <param name="height">Height of the bitmap.</param>
+        /// <param name="renderTarget">Receives a pointer to the newly created render target.</param>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CreateBitmapRenderTarget(
+            [In] IDWriteGdiInterop1* This,
+            [In, Optional, ComAliasName("HDC")] IntPtr hdc,
+            [In, ComAliasName("UINT32")] uint width,
+            [In, ComAliasName("UINT32")] uint height,
+            [Out] IDWriteBitmapRenderTarget** renderTarget
+        );
+        #endregion
+
         #region Delegates
         /// <summary>Creates a font object that matches the properties specified by the LOGFONT public structure.</summary>
         /// <param name="logFont">Structure containing a GDI-compatible font description.</param>
@@ -27,7 +124,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateFontFromLOGFONT(
+        public /* static */ delegate int CreateFontFromLOGFONT1(
             [In] IDWriteGdiInterop1* This,
             [In] LOGFONT* logFont,
             [In, Optional] IDWriteFontCollection* fontCollection,
@@ -76,10 +173,28 @@ namespace TerraFX.Interop
         #region Structs
         public /* blittable */ struct Vtbl
         {
-            #region Fields
-            public IDWriteGdiInterop.Vtbl BaseVtbl;
+            #region IUnknown Fields
+            public IntPtr QueryInterface;
 
+            public IntPtr AddRef;
+
+            public IntPtr Release;
+            #endregion
+
+            #region IDWriteGdiInterop Fields
             public IntPtr CreateFontFromLOGFONT;
+
+            public IntPtr ConvertFontToLOGFONT;
+
+            public IntPtr ConvertFontFaceToLOGFONT;
+
+            public IntPtr CreateFontFaceFromHdc;
+
+            public IntPtr CreateBitmapRenderTarget;
+            #endregion
+
+            #region Fields
+            public IntPtr CreateFontFromLOGFONT1;
 
             public IntPtr GetFontSignature;
 

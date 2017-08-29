@@ -17,6 +17,75 @@ namespace TerraFX.Interop
         public readonly Vtbl* lpVtbl;
         #endregion
 
+        #region IUnknown Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryInterface(
+            [In] ID2D1DrawTransform* This,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint AddRef(
+            [In] ID2D1DrawTransform* This
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint Release(
+            [In] ID2D1DrawTransform* This
+        );
+        #endregion
+
+        #region ID2D1TransformNode Delegates
+        /// <summary>Return the number of input this node has.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetInputCount(
+            [In] ID2D1DrawTransform* This
+        );
+        #endregion
+
+        #region ID2D1Transform Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int MapOutputRectToInputRects(
+            [In] ID2D1DrawTransform* This,
+            [In, ComAliasName("D2D1_RECT_L")] RECT* outputRect,
+            [Out, ComAliasName("D2D1_RECT_L[]")] RECT* inputRects,
+            [In, ComAliasName("UINT32")] uint inputRectsCount
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int MapInputRectsToOutputRect(
+            [In] ID2D1DrawTransform* This,
+            [In, ComAliasName("D2D1_RECT_L[]")] RECT* inputRects,
+            [In, ComAliasName("D2D1_RECT_L[]")] RECT* inputOpaqueSubRects,
+            [In, ComAliasName("UINT32")] uint inputRectCount,
+            [Out, ComAliasName("D2D1_RECT_L")] RECT* outputRect,
+            [Out, ComAliasName("D2D1_RECT_L")] RECT* outputOpaqueSubRect
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int MapInvalidRect(
+            [In] ID2D1DrawTransform* This,
+            [In, ComAliasName("UINT32")] uint inputIndex,
+            [In, ComAliasName("D2D1_RECT_L")] RECT invalidInputRect,
+            [Out, ComAliasName("D2D1_RECT_L")] RECT* invalidOutputRect
+        );
+        #endregion
+
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -30,9 +99,27 @@ namespace TerraFX.Interop
         #region Structs
         public /* blittable */ struct Vtbl
         {
-            #region Fields
-            public ID2D1Transform.Vtbl BaseVtbl;
+            #region IUnknown Fields
+            public IntPtr QueryInterface;
 
+            public IntPtr AddRef;
+
+            public IntPtr Release;
+            #endregion
+
+            #region ID2D1TransformNode Fields
+            public IntPtr GetInputCount;
+            #endregion
+
+            #region ID2D1Transform Fields
+            public IntPtr MapOutputRectToInputRects;
+
+            public IntPtr MapInputRectsToOutputRect;
+
+            public IntPtr MapInvalidRect;
+            #endregion
+
+            #region Fields
             public IntPtr SetDrawInfo;
             #endregion
         }

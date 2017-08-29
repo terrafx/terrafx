@@ -17,6 +17,112 @@ namespace TerraFX.Interop
         public readonly Vtbl* lpVtbl;
         #endregion
 
+        #region IUnknown Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryInterface(
+            [In] IDWriteFontFamily1* This,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint AddRef(
+            [In] IDWriteFontFamily1* This
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint Release(
+            [In] IDWriteFontFamily1* This
+        );
+        #endregion
+
+        #region IDWriteFontList Delegates
+        /// <summary>Gets the font collection that contains the fonts.</summary>
+        /// <param name="fontCollection">Receives a pointer to the font collection object.</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFontCollection(
+            [In] IDWriteFontFamily1* This,
+            [Out] IDWriteFontCollection** fontCollection
+        );
+
+        /// <summary>Gets the number of fonts in the font list.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetFontCount(
+            [In] IDWriteFontFamily1* This
+        );
+
+        /// <summary>Gets a font given its zero-based index.</summary>
+        /// <param name="index">Zero-based index of the font in the font list.</param>
+        /// <param name="font">Receives a pointer to the newly created font object.</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFont(
+            [In] IDWriteFontFamily1* This,
+            [In, ComAliasName("UINT32")] uint index,
+            [Out] IDWriteFont** font
+        );
+        #endregion
+
+        #region IDWriteFontFamily Delegates
+        /// <summary>Creates a localized strings object that contains the family names for the font family, indexed by locale name.</summary>
+        /// <param name="names">Receives a pointer to the newly created localized strings object.</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFamilyNames(
+            [In] IDWriteFontFamily1* This,
+            [Out] IDWriteLocalizedStrings** names
+        );
+
+        /// <summary>Gets the font that best matches the specified properties.</summary>
+        /// <param name="weight">Requested font weight.</param>
+        /// <param name="stretch">Requested font stretch.</param>
+        /// <param name="style">Requested font style.</param>
+        /// <param name="matchingFont">Receives a pointer to the newly created font object.</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFirstMatchingFont(
+            [In] IDWriteFontFamily1* This,
+            [In] DWRITE_FONT_WEIGHT weight,
+            [In] DWRITE_FONT_STRETCH stretch,
+            [In] DWRITE_FONT_STYLE style,
+            [Out] IDWriteFont** matchingFont
+        );
+
+        /// <summary>Gets a list of fonts in the font family ranked in order of how well they match the specified properties.</summary>
+        /// <param name="weight">Requested font weight.</param>
+        /// <param name="stretch">Requested font stretch.</param>
+        /// <param name="style">Requested font style.</param>
+        /// <param name="matchingFonts">Receives a pointer to the newly created font list object.</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetMatchingFonts(
+            [In] IDWriteFontFamily1* This,
+            [In] DWRITE_FONT_WEIGHT weight,
+            [In] DWRITE_FONT_STRETCH stretch,
+            [In] DWRITE_FONT_STYLE style,
+            [Out] IDWriteFontList** matchingFonts
+        );
+        #endregion
+
         #region Delegates
         /// <summary>Gets the current locality of a font given its zero-based index.</summary>
         /// <param name="listIndex">Zero-based index of the font in the font list.</param>
@@ -36,7 +142,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFont(
+        public /* static */ delegate int GetFont1(
             [In] IDWriteFontFamily1* This,
             [In, ComAliasName("UINT32")] uint listIndex,
             [Out] IDWriteFont3** font
@@ -59,12 +165,34 @@ namespace TerraFX.Interop
         #region Structs
         public /* blittable */ struct Vtbl
         {
-            #region Fields
-            public IDWriteFontFamily.Vtbl BaseVtbl;
+            #region IUnknown Fields
+            public IntPtr QueryInterface;
 
-            public IntPtr GetFontLocality;
+            public IntPtr AddRef;
+
+            public IntPtr Release;
+            #endregion
+
+            #region IDWriteFontList Fields
+            public IntPtr GetFontCollection;
+
+            public IntPtr GetFontCount;
 
             public IntPtr GetFont;
+            #endregion
+
+            #region IDWriteFontFamily Fields
+            public IntPtr GetFamilyNames;
+
+            public IntPtr GetFirstMatchingFont;
+
+            public IntPtr GetMatchingFonts;
+            #endregion
+
+            #region Fields
+            public IntPtr GetFontLocality;
+
+            public IntPtr GetFont1;
 
             public IntPtr GetFontFaceReference;
             #endregion

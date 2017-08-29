@@ -17,6 +17,284 @@ namespace TerraFX.Interop
         public readonly Vtbl* lpVtbl;
         #endregion
 
+        #region IUnknown Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryInterface(
+            [In] IDWriteTextLayout* This,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint AddRef(
+            [In] IDWriteTextLayout* This
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint Release(
+            [In] IDWriteTextLayout* This
+        );
+        #endregion
+
+        #region IDWriteTextFormat Delegates
+        /// <summary>Set alignment option of text relative to layout box's leading and trailing edge.</summary>
+        /// <param name="textAlignment">Text alignment option</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetTextAlignment(
+            [In] IDWriteTextLayout* This,
+            [In] DWRITE_TEXT_ALIGNMENT textAlignment
+        );
+
+        /// <summary>Set alignment option of paragraph relative to layout box's top and bottom edge.</summary>
+        /// <param name="paragraphAlignment">Paragraph alignment option</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetParagraphAlignment(
+            [In] IDWriteTextLayout* This,
+            [In] DWRITE_PARAGRAPH_ALIGNMENT paragraphAlignment
+        );
+
+        /// <summary>Set word wrapping option.</summary>
+        /// <param name="wordWrapping">Word wrapping option</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetWordWrapping(
+            [In] IDWriteTextLayout* This,
+            [In] DWRITE_WORD_WRAPPING wordWrapping
+        );
+
+        /// <summary>Set paragraph reading direction.</summary>
+        /// <param name="readingDirection">Text reading direction</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        /// <remarks> The flow direction must be perpendicular to the reading direction. Setting both to a vertical direction or both to horizontal yields DWRITE_E_FLOWDIRECTIONCONFLICTS when calling GetMetrics or Draw.</remarks>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetReadingDirection(
+            [In] IDWriteTextLayout* This,
+            [In] DWRITE_READING_DIRECTION readingDirection
+        );
+
+        /// <summary>Set paragraph flow direction.</summary>
+        /// <param name="flowDirection">Paragraph flow direction</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        /// <remarks> The flow direction must be perpendicular to the reading direction. Setting both to a vertical direction or both to horizontal yields DWRITE_E_FLOWDIRECTIONCONFLICTS when calling GetMetrics or Draw.</remarks>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetFlowDirection(
+            [In] IDWriteTextLayout* This,
+            [In] DWRITE_FLOW_DIRECTION flowDirection
+        );
+
+        /// <summary>Set incremental tab stop position.</summary>
+        /// <param name="incrementalTabStop">The incremental tab stop value</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetIncrementalTabStop(
+            [In] IDWriteTextLayout* This,
+            [In, ComAliasName("FLOAT")] float incrementalTabStop
+        );
+
+        /// <summary>Set trimming options for any trailing text exceeding the layout width or for any far text exceeding the layout height.</summary>
+        /// <param name="trimmingOptions">Text trimming options.</param>
+        /// <param name="trimmingSign">Application-defined omission sign. This parameter may be NULL if no trimming sign is desired.</param>
+        /// <remarks> Any inline object can be used for the trimming sign, but CreateEllipsisTrimmingSign provides a typical ellipsis symbol. Trimming is also useful vertically for hiding partial lines.</remarks>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetTrimming(
+            [In] IDWriteTextLayout* This,
+            [In] DWRITE_TRIMMING* trimmingOptions,
+            [In] IDWriteInlineObject* trimmingSign = null
+        );
+
+        /// <summary>Set line spacing.</summary>
+        /// <param name="lineSpacingMethod">How to determine line height.</param>
+        /// <param name="lineSpacing">The line height, or rather distance between one baseline to another.</param>
+        /// <param name="baseline">Distance from top of line to baseline. A reasonable ratio to lineSpacing is 80%.</param>
+        /// <remarks> For the default method, spacing depends solely on the content. For uniform spacing, the given line height will override the content.</remarks>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetLineSpacing(
+            [In] IDWriteTextLayout* This,
+            [In] DWRITE_LINE_SPACING_METHOD lineSpacingMethod,
+            [In, ComAliasName("FLOAT")] float lineSpacing,
+            [In, ComAliasName("FLOAT")] float baseline
+        );
+
+        /// <summary>Get alignment option of text relative to layout box's leading and trailing edge.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate DWRITE_TEXT_ALIGNMENT GetTextAlignment(
+            [In] IDWriteTextLayout* This
+        );
+
+        /// <summary>Get alignment option of paragraph relative to layout box's top and bottom edge.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate DWRITE_PARAGRAPH_ALIGNMENT GetParagraphAlignment(
+            [In] IDWriteTextLayout* This
+        );
+
+        /// <summary>Get word wrapping option.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate DWRITE_WORD_WRAPPING GetWordWrapping(
+            [In] IDWriteTextLayout* This
+        );
+
+        /// <summary>Get paragraph reading direction.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate DWRITE_READING_DIRECTION GetReadingDirection(
+            [In] IDWriteTextLayout* This
+        );
+
+        /// <summary>Get paragraph flow direction.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate DWRITE_FLOW_DIRECTION GetFlowDirection(
+            [In] IDWriteTextLayout* This
+        );
+
+        /// <summary>Get incremental tab stop position.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("FLOAT")]
+        public /* static */ delegate float GetIncrementalTabStop(
+            [In] IDWriteTextLayout* This
+        );
+
+        /// <summary>Get trimming options for text overflowing the layout width.</summary>
+        /// <param name="trimmingOptions">Text trimming options.</param>
+        /// <param name="trimmingSign">Trimming omission sign. This parameter may be NULL.</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetTrimming(
+            [In] IDWriteTextLayout* This,
+            [Out] DWRITE_TRIMMING* trimmingOptions,
+            [Out] IDWriteInlineObject** trimmingSign
+        );
+
+        /// <summary>Get line spacing.</summary>
+        /// <param name="lineSpacingMethod">How line height is determined.</param>
+        /// <param name="lineSpacing">The line height, or rather distance between one baseline to another.</param>
+        /// <param name="baseline">Distance from top of line to baseline.</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetLineSpacing(
+            [In] IDWriteTextLayout* This,
+            [Out] DWRITE_LINE_SPACING_METHOD* lineSpacingMethod,
+            [Out, ComAliasName("FLOAT")] float* lineSpacing,
+            [Out, ComAliasName("FLOAT")] float* baseline
+        );
+
+        /// <summary>Get the font collection.</summary>
+        /// <param name="fontCollection">The current font collection.</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFontCollection(
+            [In] IDWriteTextLayout* This,
+            [Out] IDWriteFontCollection** fontCollection
+        );
+
+        /// <summary>Get the length of the font family name, in characters, not including the terminating NULL character.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetFontFamilyNameLength(
+            [In] IDWriteTextLayout* This
+        );
+
+        /// <summary>Get a copy of the font family name.</summary>
+        /// <param name="fontFamilyName">Character array that receives the current font family name</param>
+        /// <param name="nameSize">Size of the character array in character count including the terminated NULL character.</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFontFamilyName(
+            [In] IDWriteTextLayout* This,
+            [Out, ComAliasName("WCHAR[]")] char* fontFamilyName,
+            [In, ComAliasName("UINT32")] uint nameSize
+        );
+
+        /// <summary>Get the font weight.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate DWRITE_FONT_WEIGHT GetFontWeight(
+            [In] IDWriteTextLayout* This
+        );
+
+        /// <summary>Get the font style.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate DWRITE_FONT_STYLE GetFontStyle(
+            [In] IDWriteTextLayout* This
+        );
+
+        /// <summary>Get the font stretch.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate DWRITE_FONT_STRETCH GetFontStretch(
+            [In] IDWriteTextLayout* This
+        );
+
+        /// <summary>Get the font em height.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("FLOAT")]
+        public /* static */ delegate float GetFontSize(
+            [In] IDWriteTextLayout* This
+        );
+
+        /// <summary>Get the length of the locale name, in characters, not including the terminating NULL character.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetLocaleNameLength(
+            [In] IDWriteTextLayout* This
+        );
+
+        /// <summary>Get a copy of the locale name.</summary>
+        /// <param name="localeName">Character array that receives the current locale name</param>
+        /// <param name="nameSize">Size of the character array in character count including the terminated NULL character.</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetLocaleName(
+            [In] IDWriteTextLayout* This,
+            [Out, ComAliasName("WCHAR[]")] char* localeName,
+            [In, ComAliasName("UINT32")] uint nameSize
+        );
+        #endregion
+
         #region Delegates
         /// <summary>Set layout maximum width</summary>
         /// <param name="maxWidth">Layout maximum width</param>
@@ -222,7 +500,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFontCollection(
+        public /* static */ delegate int GetFontCollection1(
             [In] IDWriteTextLayout* This,
             [In, ComAliasName("UINT32")] uint currentPosition,
             [Out] IDWriteFontCollection** fontCollection,
@@ -237,7 +515,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFontFamilyNameLength(
+        public /* static */ delegate int GetFontFamilyNameLength1(
             [In] IDWriteTextLayout* This,
             [In, ComAliasName("UINT32")] uint currentPosition,
             [Out, ComAliasName("UINT32")] uint* nameLength,
@@ -253,7 +531,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFontFamilyName(
+        public /* static */ delegate int GetFontFamilyName1(
             [In] IDWriteTextLayout* This,
             [In, ComAliasName("UINT32")] uint currentPosition,
             [Out, ComAliasName("WCHAR[]")] char* fontFamilyName,
@@ -269,7 +547,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFontWeight(
+        public /* static */ delegate int GetFontWeight1(
             [In] IDWriteTextLayout* This,
             [In, ComAliasName("UINT32")] uint currentPosition,
             [Out] DWRITE_FONT_WEIGHT* fontWeight,
@@ -284,7 +562,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFontStyle(
+        public /* static */ delegate int GetFontStyle1(
             [In] IDWriteTextLayout* This,
             [In, ComAliasName("UINT32")] uint currentPosition,
             [Out] DWRITE_FONT_STYLE* fontStyle,
@@ -299,7 +577,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFontStretch(
+        public /* static */ delegate int GetFontStretch1(
             [In] IDWriteTextLayout* This,
             [In, ComAliasName("UINT32")] uint currentPosition,
             [Out] DWRITE_FONT_STRETCH* fontStretch,
@@ -314,7 +592,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFontSize(
+        public /* static */ delegate int GetFontSize1(
             [In] IDWriteTextLayout* This,
             [In, ComAliasName("UINT32")] uint currentPosition,
             [Out, ComAliasName("FLOAT")] float* fontSize,
@@ -404,7 +682,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetLocaleNameLength(
+        public /* static */ delegate int GetLocaleNameLength1(
             [In] IDWriteTextLayout* This,
             [In, ComAliasName("UINT32")] uint currentPosition,
             [Out, ComAliasName("UINT32")] uint* nameLength,
@@ -420,7 +698,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetLocaleName(
+        public /* static */ delegate int GetLocaleName1(
             [In] IDWriteTextLayout* This,
             [In, ComAliasName("UINT32")] uint currentPosition,
             [Out, ComAliasName("WCHAR[]")] char* localeName,
@@ -579,9 +857,67 @@ namespace TerraFX.Interop
         #region Structs
         public /* blittable */ struct Vtbl
         {
-            #region Fields
-            public IDWriteTextFormat.Vtbl BaseVtbl;
+            #region IUnknown Fields
+            public IntPtr QueryInterface;
 
+            public IntPtr AddRef;
+
+            public IntPtr Release;
+            #endregion
+
+            #region IDWriteTextFormat Fields
+            public IntPtr SetTextAlignment;
+
+            public IntPtr SetParagraphAlignment;
+
+            public IntPtr SetWordWrapping;
+
+            public IntPtr SetReadingDirection;
+
+            public IntPtr SetFlowDirection;
+
+            public IntPtr SetIncrementalTabStop;
+
+            public IntPtr SetTrimming;
+
+            public IntPtr SetLineSpacing;
+
+            public IntPtr GetTextAlignment;
+
+            public IntPtr GetParagraphAlignment;
+
+            public IntPtr GetWordWrapping;
+
+            public IntPtr GetReadingDirection;
+
+            public IntPtr GetFlowDirection;
+
+            public IntPtr GetIncrementalTabStop;
+
+            public IntPtr GetTrimming;
+
+            public IntPtr GetLineSpacing;
+
+            public IntPtr GetFontCollection;
+
+            public IntPtr GetFontFamilyNameLength;
+
+            public IntPtr GetFontFamilyName;
+
+            public IntPtr GetFontWeight;
+
+            public IntPtr GetFontStyle;
+
+            public IntPtr GetFontStretch;
+
+            public IntPtr GetFontSize;
+
+            public IntPtr GetLocaleNameLength;
+
+            public IntPtr GetLocaleName;
+            #endregion
+
+            #region Fields
             public IntPtr SetMaxWidth;
 
             public IntPtr SetMaxHeight;
@@ -614,19 +950,19 @@ namespace TerraFX.Interop
 
             public IntPtr GetMaxHeight;
 
-            public IntPtr GetFontCollection;
+            public IntPtr GetFontCollection1;
 
-            public IntPtr GetFontFamilyNameLength;
+            public IntPtr GetFontFamilyNameLength1;
 
-            public IntPtr GetFontFamilyName;
+            public IntPtr GetFontFamilyName1;
 
-            public IntPtr GetFontWeight;
+            public IntPtr GetFontWeight1;
 
-            public IntPtr GetFontStyle;
+            public IntPtr GetFontStyle1;
 
-            public IntPtr GetFontStretch;
+            public IntPtr GetFontStretch1;
 
-            public IntPtr GetFontSize;
+            public IntPtr GetFontSize1;
 
             public IntPtr GetUnderline;
 
@@ -638,9 +974,9 @@ namespace TerraFX.Interop
 
             public IntPtr GetTypography;
 
-            public IntPtr GetLocaleNameLength;
+            public IntPtr GetLocaleNameLength1;
 
-            public IntPtr GetLocaleName;
+            public IntPtr GetLocaleName1;
 
             public IntPtr Draw;
 

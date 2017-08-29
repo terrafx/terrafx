@@ -17,6 +17,65 @@ namespace TerraFX.Interop
         public readonly Vtbl* lpVtbl;
         #endregion
 
+        #region IUnknown Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryInterface(
+            [In] IDWriteFontList1* This,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint AddRef(
+            [In] IDWriteFontList1* This
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint Release(
+            [In] IDWriteFontList1* This
+        );
+        #endregion
+
+        #region IDWriteFontList Delegates
+        /// <summary>Gets the font collection that contains the fonts.</summary>
+        /// <param name="fontCollection">Receives a pointer to the font collection object.</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFontCollection(
+            [In] IDWriteFontList1* This,
+            [Out] IDWriteFontCollection** fontCollection
+        );
+
+        /// <summary>Gets the number of fonts in the font list.</summary>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("UINT32")]
+        public /* static */ delegate uint GetFontCount(
+            [In] IDWriteFontList1* This
+        );
+
+        /// <summary>Gets a font given its zero-based index.</summary>
+        /// <param name="index">Zero-based index of the font in the font list.</param>
+        /// <param name="font">Receives a pointer to the newly created font object.</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFont(
+            [In] IDWriteFontList1* This,
+            [In, ComAliasName("UINT32")] uint index,
+            [Out] IDWriteFont** font
+        );
+        #endregion
+
         #region Delegates
         /// <summary>Gets the current locality of a font given its zero-based index.</summary>
         /// <param name="listIndex">Zero-based index of the font in the font list.</param>
@@ -36,7 +95,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFont(
+        public /* static */ delegate int GetFont1(
             [In] IDWriteFontList1* This,
             [In, ComAliasName("UINT32")] uint listIndex,
             [Out] IDWriteFont3** font
@@ -59,12 +118,26 @@ namespace TerraFX.Interop
         #region Structs
         public /* blittable */ struct Vtbl
         {
-            #region Fields
-            public IDWriteFontList.Vtbl BaseVtbl;
+            #region IUnknown Fields
+            public IntPtr QueryInterface;
 
-            public IntPtr GetFontLocality;
+            public IntPtr AddRef;
+
+            public IntPtr Release;
+            #endregion
+
+            #region IDWriteFontList Fields
+            public IntPtr GetFontCollection;
+
+            public IntPtr GetFontCount;
 
             public IntPtr GetFont;
+            #endregion
+
+            #region Fields
+            public IntPtr GetFontLocality;
+
+            public IntPtr GetFont1;
 
             public IntPtr GetFontFaceReference;
             #endregion

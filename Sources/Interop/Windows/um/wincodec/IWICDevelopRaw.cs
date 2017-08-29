@@ -16,6 +16,106 @@ namespace TerraFX.Interop
         public readonly Vtbl* lpVtbl;
         #endregion
 
+        #region IUnknown Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryInterface(
+            [In] IWICDevelopRaw* This,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint AddRef(
+            [In] IWICDevelopRaw* This
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint Release(
+            [In] IWICDevelopRaw* This
+        );
+        #endregion
+
+        #region IWICBitmapSource Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSize(
+            [In] IWICDevelopRaw* This,
+            [Out, ComAliasName("UINT")] uint* puiWidth,
+            [Out, ComAliasName("UINT")] uint* puiHeight
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPixelFormat(
+            [In] IWICDevelopRaw* This,
+            [Out, ComAliasName("WICPixelFormatGUID")] Guid* pPixelFormat
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetResolution(
+            [In] IWICDevelopRaw* This,
+            [Out] double* pDpiX,
+            [Out] double* pDpiY
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CopyPalette(
+            [In] IWICDevelopRaw* This,
+            [In] IWICPalette* pIPalette = null
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int CopyPixels(
+            [In] IWICDevelopRaw* This,
+            [In, Optional] WICRect* prc,
+            [In, ComAliasName("UINT")] uint cbStride,
+            [In, ComAliasName("UINT")] uint cbBufferSize,
+            [Out, ComAliasName("BYTE[]")] byte* pbBuffer
+        );
+        #endregion
+
+        #region IWICBitmapFrameDecode Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetMetadataQueryReader(
+            [In] IWICDevelopRaw* This,
+            [Out] IWICMetadataQueryReader** ppIMetadataQueryReader = null
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetColorContexts(
+            [In] IWICDevelopRaw* This,
+            [In, ComAliasName("UINT")] uint cCount,
+            [In, Out, Optional, ComAliasName("IWICColorContext*[]")] IWICColorContext** ppIColorContexts,
+            [Out, ComAliasName("UINT")] uint* pcActualCount
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetThumbnail(
+            [In] IWICDevelopRaw* This,
+            [Out] IWICBitmapSource** ppIThumbnail = null
+        );
+        #endregion
+
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -286,9 +386,35 @@ namespace TerraFX.Interop
         #region Structs
         public /* blittable */ struct Vtbl
         {
-            #region Fields
-            public IWICBitmapFrameDecode.Vtbl BaseVtbl;
+            #region IUnknown Fields
+            public IntPtr QueryInterface;
 
+            public IntPtr AddRef;
+
+            public IntPtr Release;
+            #endregion
+
+            #region IWICBitmapSource Fields
+            public IntPtr GetSize;
+
+            public IntPtr GetPixelFormat;
+
+            public IntPtr GetResolution;
+
+            public IntPtr CopyPalette;
+
+            public IntPtr CopyPixels;
+            #endregion
+
+            #region IWICBitmapFrameDecode Fields
+            public IntPtr GetMetadataQueryReader;
+
+            public IntPtr GetColorContexts;
+
+            public IntPtr GetThumbnail;
+            #endregion
+
+            #region Fields
             public IntPtr QueryRawCapabilitiesInfo;
 
             public IntPtr LoadParameterSet;

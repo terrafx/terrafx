@@ -17,6 +17,96 @@ namespace TerraFX.Interop
         public readonly Vtbl* lpVtbl;
         #endregion
 
+        #region IUnknown Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryInterface(
+            [In] IDWriteTextAnalysisSink1* This,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint AddRef(
+            [In] IDWriteTextAnalysisSink1* This
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint Release(
+            [In] IDWriteTextAnalysisSink1* This
+        );
+        #endregion
+
+        #region IDWriteTextAnalysisSink Delegates
+        /// <summary>Report script analysis for the text range.</summary>
+        /// <param name="textPosition">Starting position to report from.</param>
+        /// <param name="textLength">Number of UTF16 units of the reported range.</param>
+        /// <param name="scriptAnalysis">Script analysis of characters in range.</param>
+        /// <returns>A successful code or error code to abort analysis.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetScriptAnalysis(
+            [In] IDWriteTextAnalysisSink1* This,
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [In, ComAliasName("UINT32")] uint textLength,
+            [In] DWRITE_SCRIPT_ANALYSIS* scriptAnalysis
+        );
+
+        /// <summary>Report line-break opportunities for each character, starting from the specified position.</summary>
+        /// <param name="textPosition">Starting position to report from.</param>
+        /// <param name="textLength">Number of UTF16 units of the reported range.</param>
+        /// <param name="lineBreakpoints">Breaking conditions for each character.</param>
+        /// <returns>A successful code or error code to abort analysis.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetLineBreakpoints(
+            [In] IDWriteTextAnalysisSink1* This,
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [In, ComAliasName("UINT32")] uint textLength,
+            [In] DWRITE_LINE_BREAKPOINT* lineBreakpoints
+        );
+
+        /// <summary>Set bidirectional level on the range, called once per each level run change (either explicit or resolved implicit).</summary>
+        /// <param name="textPosition">Starting position to report from.</param>
+        /// <param name="textLength">Number of UTF16 units of the reported range.</param>
+        /// <param name="explicitLevel">Explicit level from embedded control codes RLE/RLO/LRE/LRO/PDF, determined before any additional rules.</param>
+        /// <param name="resolvedLevel">Final implicit level considering the explicit level and characters' natural directionality, after all Bidi rules have been applied.</param>
+        /// <returns>A successful code or error code to abort analysis.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetBidiLevel(
+            [In] IDWriteTextAnalysisSink1* This,
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [In, ComAliasName("UINT32")] uint textLength,
+            [In, ComAliasName("UINT8")] byte explicitLevel,
+            [In, ComAliasName("UINT8")] byte resolvedLevel
+        );
+
+        /// <summary>Set number substitution on the range.</summary>
+        /// <param name="textPosition">Starting position to report from.</param>
+        /// <param name="textLength">Number of UTF16 units of the reported range.</param>
+        /// <param name="numberSubstitution">The number substitution applicable to the returned range of text. The sink callback may hold onto it by incrementing its ref count.</param>
+        /// <returns>A successful code or error code to abort analysis.</returns>
+        /// <remark> Unlike script and bidi analysis, where every character passed to the analyzer has a result, this will only be called for those ranges where substitution is applicable. For any other range, you will simply not be called.</remark>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int SetNumberSubstitution(
+            [In] IDWriteTextAnalysisSink1* This,
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [In, ComAliasName("UINT32")] uint textLength,
+            [In] IDWriteNumberSubstitution* numberSubstitution
+        );
+        #endregion
+
         #region Delegates
         /// <summary>The text analyzer calls back to this to report the actual orientation of each character for shaping and drawing.</summary>
         /// <param name="textPosition">Starting position to report from.</param>
@@ -43,9 +133,25 @@ namespace TerraFX.Interop
         #region Structs
         public /* blittable */ struct Vtbl
         {
-            #region Fields
-            public IDWriteTextAnalysisSink.Vtbl BaseVtbl;
+            #region IUnknown Fields
+            public IntPtr QueryInterface;
 
+            public IntPtr AddRef;
+
+            public IntPtr Release;
+            #endregion
+
+            #region IDWriteTextAnalysisSink Fields
+            public IntPtr SetScriptAnalysis;
+
+            public IntPtr SetLineBreakpoints;
+
+            public IntPtr SetBidiLevel;
+
+            public IntPtr SetNumberSubstitution;
+            #endregion
+
+            #region Fields
             public IntPtr SetGlyphOrientation;
             #endregion
         }

@@ -120,12 +120,12 @@ namespace TerraFX.Samples.DirectX.D3D12
 
         // Helper function for acquiring the first available hardware adapter that supports Direct3D 12.
         // If no such adapter can be found, returns null.
-        protected IDXGIAdapter1* GetHardwareAdapter(IDXGIFactory2* pFactory)
+        protected IDXGIAdapter* GetHardwareAdapter(IDXGIFactory4* pFactory)
         {
             IDXGIAdapter1* adapter;
-            var EnumAdapters1 = MarshalFunction<IDXGIFactory1.EnumAdapters1>(pFactory->lpVtbl->BaseVtbl.EnumAdapters1);
+            var EnumAdapters1 = MarshalFunction<IDXGIFactory4.EnumAdapters1>(pFactory->lpVtbl->EnumAdapters1);
 
-            for (var adapterIndex = 0u; DXGI_ERROR_NOT_FOUND != EnumAdapters1((IDXGIFactory1*)(pFactory), adapterIndex, &adapter); ++adapterIndex)
+            for (var adapterIndex = 0u; DXGI_ERROR_NOT_FOUND != EnumAdapters1(pFactory, adapterIndex, &adapter); ++adapterIndex)
             {
                 var GetDesc1 = MarshalFunction<IDXGIAdapter1.GetDesc1>(adapter->lpVtbl->GetDesc1);
 
@@ -148,7 +148,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                 }
             }
 
-            return adapter;
+            return (IDXGIAdapter*)(adapter);
         }
 
         protected void SetCustomWindowText(string text)

@@ -16,6 +16,105 @@ namespace TerraFX.Interop
         public readonly Vtbl* lpVtbl;
         #endregion
 
+        #region IUnknown Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryInterface(
+            [In] IWICBitmapCodecInfo* This,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint AddRef(
+            [In] IWICBitmapCodecInfo* This
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint Release(
+            [In] IWICBitmapCodecInfo* This
+        );
+        #endregion
+
+        #region IWICComponentInfo Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetComponentType(
+            [In] IWICBitmapCodecInfo* This,
+            [Out] WICComponentType* pType
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetCLSID(
+            [In] IWICBitmapCodecInfo* This,
+            [Out, ComAliasName("CLSID")] Guid* pclsid
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSigningStatus(
+            [In] IWICBitmapCodecInfo* This,
+            [Out, ComAliasName("DWORD")] uint* pStatus
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetAuthor(
+            [In] IWICBitmapCodecInfo* This,
+            [In, ComAliasName("UINT")] uint cchAuthor,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzAuthor,
+            [Out, ComAliasName("UINT")] uint* pcchActual
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetVendorGUID(
+            [In] IWICBitmapCodecInfo* This,
+            [Out, ComAliasName("GUID")] Guid* pguidVendor
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetVersion(
+            [In] IWICBitmapCodecInfo* This,
+            [In, ComAliasName("UINT")] uint cchVersion,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzVersion,
+            [Out, ComAliasName("UINT")] uint* pcchActual
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetSpecVersion(
+            [In] IWICBitmapCodecInfo* This,
+            [In, ComAliasName("UINT")] uint cchSpecVersion,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzSpecVersion,
+            [Out, ComAliasName("UINT")] uint* pcchActual
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetFriendlyName(
+            [In] IWICBitmapCodecInfo* This,
+            [In, ComAliasName("UINT")] uint cchFriendlyName,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzFriendlyName,
+            [Out, ComAliasName("UINT")] uint* pcchActual
+        );
+        #endregion
+
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -130,9 +229,33 @@ namespace TerraFX.Interop
         #region Structs
         public /* blittable */ struct Vtbl
         {
-            #region Fields
-            public IWICComponentInfo.Vtbl BaseVtbl;
+            #region IUnknown Fields
+            public IntPtr QueryInterface;
 
+            public IntPtr AddRef;
+
+            public IntPtr Release;
+            #endregion
+
+            #region IWICComponentInfo Fields
+            public IntPtr GetComponentType;
+
+            public IntPtr GetCLSID;
+
+            public IntPtr GetSigningStatus;
+
+            public IntPtr GetAuthor;
+
+            public IntPtr GetVendorGUID;
+
+            public IntPtr GetVersion;
+
+            public IntPtr GetSpecVersion;
+
+            public IntPtr GetFriendlyName;
+            #endregion
+
+            #region Fields
             public IntPtr GetContainerFormat;
 
             public IntPtr GetPixelFormats;

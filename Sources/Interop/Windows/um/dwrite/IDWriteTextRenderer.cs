@@ -17,6 +17,72 @@ namespace TerraFX.Interop
         public readonly Vtbl* lpVtbl;
         #endregion
 
+        #region IUnknown Delegates
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int QueryInterface(
+            [In] IDWriteTextRenderer* This,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint AddRef(
+            [In] IDWriteTextRenderer* This
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("ULONG")]
+        public /* static */ delegate uint Release(
+            [In] IDWriteTextRenderer* This
+        );
+        #endregion
+
+        #region IDWritePixelSnapping Delegates
+        /// <summary>Determines whether pixel snapping is disabled. The recommended default is FALSE, unless doing animation that requires subpixel vertical placement.</summary>
+        /// <param name="clientDrawingContext">The context passed to IDWriteTextLayout::Draw.</param>
+        /// <param name="isDisabled">Receives TRUE if pixel snapping is disabled or FALSE if it not.</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int IsPixelSnappingDisabled(
+            [In] IDWriteTextRenderer* This,
+            [In, Optional] void* clientDrawingContext,
+            [Out, ComAliasName("BOOL")] int* isDisabled
+        );
+
+        /// <summary>Gets the current transform that maps abstract coordinates to DIPs, which may disable pixel snapping upon any rotation or shear.</summary>
+        /// <param name="clientDrawingContext">The context passed to IDWriteTextLayout::Draw.</param>
+        /// <param name="transform">Receives the transform.</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetCurrentTransform(
+            [In] IDWriteTextRenderer* This,
+            [In, Optional] void* clientDrawingContext,
+            [Out] DWRITE_MATRIX* transform
+        );
+
+        /// <summary>Gets the number of physical pixels per DIP. A DIP (device-independent pixel) is 1/96 inch, so the pixelsPerDip value is the number of logical pixels per inch divided by 96 (yielding a value of 1 for 96 DPI and 1.25 for 120).</summary>
+        /// <param name="clientDrawingContext">The context passed to IDWriteTextLayout::Draw.</param>
+        /// <param name="pixelsPerDip">Receives the number of physical pixels per DIP.</param>
+        /// <returns>Standard HRESULT error code.</returns>
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("HRESULT")]
+        public /* static */ delegate int GetPixelsPerDip(
+            [In] IDWriteTextRenderer* This,
+            [In, Optional] void* clientDrawingContext,
+            [Out, ComAliasName("FLOAT")] float* pixelsPerDip
+        );
+        #endregion
+
         #region Delegates
         /// <summary>IDWriteTextLayout::Draw calls this function to instruct the client to render a run of glyphs.</summary>
         /// <param name="clientDrawingContext">The context passed to IDWriteTextLayout::Draw.</param>
@@ -109,9 +175,23 @@ namespace TerraFX.Interop
         #region Structs
         public /* blittable */ struct Vtbl
         {
-            #region Fields
-            public IDWritePixelSnapping.Vtbl BaseVtbl;
+            #region IUnknown Fields
+            public IntPtr QueryInterface;
 
+            public IntPtr AddRef;
+
+            public IntPtr Release;
+            #endregion
+
+            #region IDWritePixelSnapping Fields
+            public IntPtr IsPixelSnappingDisabled;
+
+            public IntPtr GetCurrentTransform;
+
+            public IntPtr GetPixelsPerDip;
+            #endregion
+
+            #region Fields
             public IntPtr DrawGlyphRun;
 
             public IntPtr DrawUnderline;
