@@ -123,14 +123,10 @@ namespace TerraFX.Samples.DirectX.D3D12
         protected IDXGIAdapter* GetHardwareAdapter(IDXGIFactory4* pFactory)
         {
             IDXGIAdapter1* adapter;
-            var EnumAdapters1 = MarshalFunction<IDXGIFactory4.EnumAdapters1>(pFactory->lpVtbl->EnumAdapters1);
-
-            for (var adapterIndex = 0u; DXGI_ERROR_NOT_FOUND != EnumAdapters1(pFactory, adapterIndex, &adapter); ++adapterIndex)
+            for (var adapterIndex = 0u; DXGI_ERROR_NOT_FOUND != pFactory->EnumAdapters1(adapterIndex, &adapter); ++adapterIndex)
             {
-                var GetDesc1 = MarshalFunction<IDXGIAdapter1.GetDesc1>(adapter->lpVtbl->GetDesc1);
-
                 DXGI_ADAPTER_DESC1 desc;
-                GetDesc1(adapter, &desc);
+                adapter->GetDesc1(&desc);
 
                 if ((desc.Flags & (uint)(DXGI_ADAPTER_FLAG_SOFTWARE)) != 0)
                 {

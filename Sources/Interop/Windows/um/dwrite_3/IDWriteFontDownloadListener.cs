@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDWriteFontDownloadListener* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDWriteFontDownloadListener* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDWriteFontDownloadListener* This
         );
         #endregion
@@ -49,12 +50,71 @@ namespace TerraFX.Interop
         /// <param name="downloadResult">Result of the download operation.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void DownloadCompleted(
+        public /* static */ delegate void _DownloadCompleted(
             [In] IDWriteFontDownloadListener* This,
             [In] IDWriteFontDownloadQueue* downloadQueue,
             [In, Optional] IUnknown* context,
             [In, ComAliasName("HRESULT")] int downloadResult
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDWriteFontDownloadListener* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDWriteFontDownloadListener* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDWriteFontDownloadListener* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        public void DownloadCompleted(
+            [In] IDWriteFontDownloadQueue* downloadQueue,
+            [In, Optional] IUnknown* context,
+            [In, ComAliasName("HRESULT")] int downloadResult
+        )
+        {
+            fixed (IDWriteFontDownloadListener* This = &this)
+            {
+                MarshalFunction<_DownloadCompleted>(lpVtbl->DownloadCompleted)(
+                    This,
+                    downloadQueue,
+                    context,
+                    downloadResult
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -75,3 +135,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

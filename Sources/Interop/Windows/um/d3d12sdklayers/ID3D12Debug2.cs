@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ID3D12Debug2* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ID3D12Debug2* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ID3D12Debug2* This
         );
         #endregion
@@ -44,10 +45,65 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void SetGPUBasedValidationFlags(
+        public /* static */ delegate void _SetGPUBasedValidationFlags(
             [In] ID3D12Debug2* This,
             [In] D3D12_GPU_BASED_VALIDATION_FLAGS Flags
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ID3D12Debug2* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ID3D12Debug2* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ID3D12Debug2* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        public void SetGPUBasedValidationFlags(
+            [In] D3D12_GPU_BASED_VALIDATION_FLAGS Flags
+        )
+        {
+            fixed (ID3D12Debug2* This = &this)
+            {
+                MarshalFunction<_SetGPUBasedValidationFlags>(lpVtbl->SetGPUBasedValidationFlags)(
+                    This,
+                    Flags
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -68,3 +124,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

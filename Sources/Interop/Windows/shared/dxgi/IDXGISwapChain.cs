@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDXGISwapChain* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDXGISwapChain* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDXGISwapChain* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetPrivateData(
+        public /* static */ delegate int _SetPrivateData(
             [In] IDXGISwapChain* This,
             [In, ComAliasName("REFGUID")] Guid* Name,
             [In, ComAliasName("UINT")] uint DataSize,
@@ -55,7 +56,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetPrivateDataInterface(
+        public /* static */ delegate int _SetPrivateDataInterface(
             [In] IDXGISwapChain* This,
             [In, ComAliasName("REFGUID")] Guid* Name,
             [In] IUnknown* pUnknown = null
@@ -64,7 +65,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetPrivateData(
+        public /* static */ delegate int _GetPrivateData(
             [In] IDXGISwapChain* This,
             [In, ComAliasName("REFGUID")] Guid* Name,
             [In, Out, ComAliasName("UINT")] uint* pDataSize,
@@ -74,7 +75,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetParent(
+        public /* static */ delegate int _GetParent(
             [In] IDXGISwapChain* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppParent
@@ -85,7 +86,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetDevice(
+        public /* static */ delegate int _GetDevice(
             [In] IDXGISwapChain* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppDevice
@@ -96,7 +97,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Present(
+        public /* static */ delegate int _Present(
             [In] IDXGISwapChain* This,
             [In, ComAliasName("UINT")] uint SyncInterval,
             [In, ComAliasName("UINT")] uint Flags
@@ -105,7 +106,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetBuffer(
+        public /* static */ delegate int _GetBuffer(
             [In] IDXGISwapChain* This,
             [In, ComAliasName("UINT")] uint Buffer,
             [In, ComAliasName("REFIID")] Guid* riid,
@@ -115,7 +116,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetFullscreenState(
+        public /* static */ delegate int _SetFullscreenState(
             [In] IDXGISwapChain* This,
             [In, ComAliasName("BOOL")] int Fullscreen,
             [In] IDXGIOutput* pTarget = null
@@ -124,7 +125,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFullscreenState(
+        public /* static */ delegate int _GetFullscreenState(
             [In] IDXGISwapChain* This,
             [Out, ComAliasName("BOOL")] int* pFullscreen = null,
             [Out] IDXGIOutput** ppTarget = null
@@ -133,7 +134,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetDesc(
+        public /* static */ delegate int _GetDesc(
             [In] IDXGISwapChain* This,
             [Out] DXGI_SWAP_CHAIN_DESC* pDesc
         );
@@ -141,7 +142,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int ResizeBuffers(
+        public /* static */ delegate int _ResizeBuffers(
             [In] IDXGISwapChain* This,
             [In, ComAliasName("UINT")] uint BufferCount,
             [In, ComAliasName("UINT")] uint Width,
@@ -153,7 +154,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int ResizeTarget(
+        public /* static */ delegate int _ResizeTarget(
             [In] IDXGISwapChain* This,
             [In] DXGI_MODE_DESC* pNewTargetParameters
         );
@@ -161,7 +162,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetContainingOutput(
+        public /* static */ delegate int _GetContainingOutput(
             [In] IDXGISwapChain* This,
             [Out] IDXGIOutput** ppOutput
         );
@@ -169,7 +170,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFrameStatistics(
+        public /* static */ delegate int _GetFrameStatistics(
             [In] IDXGISwapChain* This,
             [Out] DXGI_FRAME_STATISTICS* pStats
         );
@@ -177,10 +178,298 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetLastPresentCount(
+        public /* static */ delegate int _GetLastPresentCount(
             [In] IDXGISwapChain* This,
             [Out, ComAliasName("UINT")] uint* pLastPresentCount
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDXGISwapChain* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDXGISwapChain* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDXGISwapChain* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region IDXGIObject Methods
+        [return: ComAliasName("HRESULT")]
+        public int SetPrivateData(
+            [In, ComAliasName("REFGUID")] Guid* Name,
+            [In, ComAliasName("UINT")] uint DataSize,
+            [In] void* pData
+        )
+        {
+            fixed (IDXGISwapChain* This = &this)
+            {
+                return MarshalFunction<_SetPrivateData>(lpVtbl->SetPrivateData)(
+                    This,
+                    Name,
+                    DataSize,
+                    pData
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetPrivateDataInterface(
+            [In, ComAliasName("REFGUID")] Guid* Name,
+            [In] IUnknown* pUnknown = null
+        )
+        {
+            fixed (IDXGISwapChain* This = &this)
+            {
+                return MarshalFunction<_SetPrivateDataInterface>(lpVtbl->SetPrivateDataInterface)(
+                    This,
+                    Name,
+                    pUnknown
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetPrivateData(
+            [In, ComAliasName("REFGUID")] Guid* Name,
+            [In, Out, ComAliasName("UINT")] uint* pDataSize,
+            [Out] void* pData
+        )
+        {
+            fixed (IDXGISwapChain* This = &this)
+            {
+                return MarshalFunction<_GetPrivateData>(lpVtbl->GetPrivateData)(
+                    This,
+                    Name,
+                    pDataSize,
+                    pData
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetParent(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppParent
+        )
+        {
+            fixed (IDXGISwapChain* This = &this)
+            {
+                return MarshalFunction<_GetParent>(lpVtbl->GetParent)(
+                    This,
+                    riid,
+                    ppParent
+                );
+            }
+        }
+        #endregion
+
+        #region IDXGIDeviceSubObject Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetDevice(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppDevice
+        )
+        {
+            fixed (IDXGISwapChain* This = &this)
+            {
+                return MarshalFunction<_GetDevice>(lpVtbl->GetDevice)(
+                    This,
+                    riid,
+                    ppDevice
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int Present(
+            [In, ComAliasName("UINT")] uint SyncInterval,
+            [In, ComAliasName("UINT")] uint Flags
+        )
+        {
+            fixed (IDXGISwapChain* This = &this)
+            {
+                return MarshalFunction<_Present>(lpVtbl->Present)(
+                    This,
+                    SyncInterval,
+                    Flags
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetBuffer(
+            [In, ComAliasName("UINT")] uint Buffer,
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, Out] void** ppSurface
+        )
+        {
+            fixed (IDXGISwapChain* This = &this)
+            {
+                return MarshalFunction<_GetBuffer>(lpVtbl->GetBuffer)(
+                    This,
+                    Buffer,
+                    riid,
+                    ppSurface
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetFullscreenState(
+            [In, ComAliasName("BOOL")] int Fullscreen,
+            [In] IDXGIOutput* pTarget = null
+        )
+        {
+            fixed (IDXGISwapChain* This = &this)
+            {
+                return MarshalFunction<_SetFullscreenState>(lpVtbl->SetFullscreenState)(
+                    This,
+                    Fullscreen,
+                    pTarget
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetFullscreenState(
+            [Out, ComAliasName("BOOL")] int* pFullscreen = null,
+            [Out] IDXGIOutput** ppTarget = null
+        )
+        {
+            fixed (IDXGISwapChain* This = &this)
+            {
+                return MarshalFunction<_GetFullscreenState>(lpVtbl->GetFullscreenState)(
+                    This,
+                    pFullscreen,
+                    ppTarget
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetDesc(
+            [Out] DXGI_SWAP_CHAIN_DESC* pDesc
+        )
+        {
+            fixed (IDXGISwapChain* This = &this)
+            {
+                return MarshalFunction<_GetDesc>(lpVtbl->GetDesc)(
+                    This,
+                    pDesc
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int ResizeBuffers(
+            [In, ComAliasName("UINT")] uint BufferCount,
+            [In, ComAliasName("UINT")] uint Width,
+            [In, ComAliasName("UINT")] uint Height,
+            [In] DXGI_FORMAT NewFormat,
+            [In, ComAliasName("UINT")] uint SwapChainFlags
+        )
+        {
+            fixed (IDXGISwapChain* This = &this)
+            {
+                return MarshalFunction<_ResizeBuffers>(lpVtbl->ResizeBuffers)(
+                    This,
+                    BufferCount,
+                    Width,
+                    Height,
+                    NewFormat,
+                    SwapChainFlags
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int ResizeTarget(
+            [In] DXGI_MODE_DESC* pNewTargetParameters
+        )
+        {
+            fixed (IDXGISwapChain* This = &this)
+            {
+                return MarshalFunction<_ResizeTarget>(lpVtbl->ResizeTarget)(
+                    This,
+                    pNewTargetParameters
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetContainingOutput(
+            [Out] IDXGIOutput** ppOutput
+        )
+        {
+            fixed (IDXGISwapChain* This = &this)
+            {
+                return MarshalFunction<_GetContainingOutput>(lpVtbl->GetContainingOutput)(
+                    This,
+                    ppOutput
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetFrameStatistics(
+            [Out] DXGI_FRAME_STATISTICS* pStats
+        )
+        {
+            fixed (IDXGISwapChain* This = &this)
+            {
+                return MarshalFunction<_GetFrameStatistics>(lpVtbl->GetFrameStatistics)(
+                    This,
+                    pStats
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetLastPresentCount(
+            [Out, ComAliasName("UINT")] uint* pLastPresentCount
+        )
+        {
+            fixed (IDXGISwapChain* This = &this)
+            {
+                return MarshalFunction<_GetLastPresentCount>(lpVtbl->GetLastPresentCount)(
+                    This,
+                    pLastPresentCount
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -233,3 +522,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

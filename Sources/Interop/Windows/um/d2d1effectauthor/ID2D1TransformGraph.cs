@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ID2D1TransformGraph* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ID2D1TransformGraph* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ID2D1TransformGraph* This
         );
         #endregion
@@ -47,7 +48,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("UINT32")]
-        public /* static */ delegate uint GetInputCount(
+        public /* static */ delegate uint _GetInputCount(
             [In] ID2D1TransformGraph* This
         );
 
@@ -55,7 +56,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetSingleTransformNode(
+        public /* static */ delegate int _SetSingleTransformNode(
             [In] ID2D1TransformGraph* This,
             [In] ID2D1TransformNode* node
         );
@@ -64,7 +65,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int AddNode(
+        public /* static */ delegate int _AddNode(
             [In] ID2D1TransformGraph* This,
             [In] ID2D1TransformNode* node
         );
@@ -73,7 +74,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int RemoveNode(
+        public /* static */ delegate int _RemoveNode(
             [In] ID2D1TransformGraph* This,
             [In] ID2D1TransformNode* node
         );
@@ -82,7 +83,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetOutputNode(
+        public /* static */ delegate int _SetOutputNode(
             [In] ID2D1TransformGraph* This,
             [In] ID2D1TransformNode* node
         );
@@ -91,7 +92,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int ConnectNode(
+        public /* static */ delegate int _ConnectNode(
             [In] ID2D1TransformGraph* This,
             [In] ID2D1TransformNode* fromNode,
             [In] ID2D1TransformNode* toNode,
@@ -102,7 +103,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int ConnectToEffectInput(
+        public /* static */ delegate int _ConnectToEffectInput(
             [In] ID2D1TransformGraph* This,
             [In, ComAliasName("UINT32")] uint toEffectInputIndex,
             [In] ID2D1TransformNode* node,
@@ -112,7 +113,7 @@ namespace TerraFX.Interop
         /// <summary>Clears all nodes and connections from the transform graph.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void Clear(
+        public /* static */ delegate void _Clear(
             [In] ID2D1TransformGraph* This
         );
 
@@ -120,10 +121,179 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetPassthroughGraph(
+        public /* static */ delegate int _SetPassthroughGraph(
             [In] ID2D1TransformGraph* This,
             [In, ComAliasName("UINT32")] uint effectInputIndex
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ID2D1TransformGraph* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ID2D1TransformGraph* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ID2D1TransformGraph* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("UINT32")]
+        public uint GetInputCount()
+        {
+            fixed (ID2D1TransformGraph* This = &this)
+            {
+                return MarshalFunction<_GetInputCount>(lpVtbl->GetInputCount)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetSingleTransformNode(
+            [In] ID2D1TransformNode* node
+        )
+        {
+            fixed (ID2D1TransformGraph* This = &this)
+            {
+                return MarshalFunction<_SetSingleTransformNode>(lpVtbl->SetSingleTransformNode)(
+                    This,
+                    node
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int AddNode(
+            [In] ID2D1TransformNode* node
+        )
+        {
+            fixed (ID2D1TransformGraph* This = &this)
+            {
+                return MarshalFunction<_AddNode>(lpVtbl->AddNode)(
+                    This,
+                    node
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int RemoveNode(
+            [In] ID2D1TransformNode* node
+        )
+        {
+            fixed (ID2D1TransformGraph* This = &this)
+            {
+                return MarshalFunction<_RemoveNode>(lpVtbl->RemoveNode)(
+                    This,
+                    node
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetOutputNode(
+            [In] ID2D1TransformNode* node
+        )
+        {
+            fixed (ID2D1TransformGraph* This = &this)
+            {
+                return MarshalFunction<_SetOutputNode>(lpVtbl->SetOutputNode)(
+                    This,
+                    node
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int ConnectNode(
+            [In] ID2D1TransformNode* fromNode,
+            [In] ID2D1TransformNode* toNode,
+            [In, ComAliasName("UINT32")] uint toNodeInputIndex
+        )
+        {
+            fixed (ID2D1TransformGraph* This = &this)
+            {
+                return MarshalFunction<_ConnectNode>(lpVtbl->ConnectNode)(
+                    This,
+                    fromNode,
+                    toNode,
+                    toNodeInputIndex
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int ConnectToEffectInput(
+            [In, ComAliasName("UINT32")] uint toEffectInputIndex,
+            [In] ID2D1TransformNode* node,
+            [In, ComAliasName("UINT32")] uint toNodeInputIndex
+        )
+        {
+            fixed (ID2D1TransformGraph* This = &this)
+            {
+                return MarshalFunction<_ConnectToEffectInput>(lpVtbl->ConnectToEffectInput)(
+                    This,
+                    toEffectInputIndex,
+                    node,
+                    toNodeInputIndex
+                );
+            }
+        }
+
+        public void Clear()
+        {
+            fixed (ID2D1TransformGraph* This = &this)
+            {
+                MarshalFunction<_Clear>(lpVtbl->Clear)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetPassthroughGraph(
+            [In, ComAliasName("UINT32")] uint effectInputIndex
+        )
+        {
+            fixed (ID2D1TransformGraph* This = &this)
+            {
+                return MarshalFunction<_SetPassthroughGraph>(lpVtbl->SetPassthroughGraph)(
+                    This,
+                    effectInputIndex
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -160,3 +330,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

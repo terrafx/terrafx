@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IWICImageEncoder* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IWICImageEncoder* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IWICImageEncoder* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int WriteFrame(
+        public /* static */ delegate int _WriteFrame(
             [In] IWICImageEncoder* This,
             [In] ID2D1Image* pImage,
             [In] IWICBitmapFrameEncode* pFrameEncode,
@@ -55,7 +56,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int WriteFrameThumbnail(
+        public /* static */ delegate int _WriteFrameThumbnail(
             [In] IWICImageEncoder* This,
             [In] ID2D1Image* pImage,
             [In] IWICBitmapFrameEncode* pFrameEncode,
@@ -65,12 +66,108 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int WriteThumbnail(
+        public /* static */ delegate int _WriteThumbnail(
             [In] IWICImageEncoder* This,
             [In] ID2D1Image* pImage,
             [In] IWICBitmapEncoder* pEncoder,
             [In] WICImageParameters* pImageParameters
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IWICImageEncoder* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IWICImageEncoder* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IWICImageEncoder* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int WriteFrame(
+            [In] ID2D1Image* pImage,
+            [In] IWICBitmapFrameEncode* pFrameEncode,
+            [In] WICImageParameters* pImageParameters
+        )
+        {
+            fixed (IWICImageEncoder* This = &this)
+            {
+                return MarshalFunction<_WriteFrame>(lpVtbl->WriteFrame)(
+                    This,
+                    pImage,
+                    pFrameEncode,
+                    pImageParameters
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int WriteFrameThumbnail(
+            [In] ID2D1Image* pImage,
+            [In] IWICBitmapFrameEncode* pFrameEncode,
+            [In] WICImageParameters* pImageParameters
+        )
+        {
+            fixed (IWICImageEncoder* This = &this)
+            {
+                return MarshalFunction<_WriteFrameThumbnail>(lpVtbl->WriteFrameThumbnail)(
+                    This,
+                    pImage,
+                    pFrameEncode,
+                    pImageParameters
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int WriteThumbnail(
+            [In] ID2D1Image* pImage,
+            [In] IWICBitmapEncoder* pEncoder,
+            [In] WICImageParameters* pImageParameters
+        )
+        {
+            fixed (IWICImageEncoder* This = &this)
+            {
+                return MarshalFunction<_WriteThumbnail>(lpVtbl->WriteThumbnail)(
+                    This,
+                    pImage,
+                    pEncoder,
+                    pImageParameters
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -95,3 +192,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

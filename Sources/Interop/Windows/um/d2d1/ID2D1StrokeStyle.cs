@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ID2D1StrokeStyle* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ID2D1StrokeStyle* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ID2D1StrokeStyle* This
         );
         #endregion
@@ -46,7 +47,7 @@ namespace TerraFX.Interop
         /// <summary>Retrieve the factory associated with this resource.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetFactory(
+        public /* static */ delegate void _GetFactory(
             [In] ID2D1StrokeStyle* This,
             [Out] ID2D1Factory** factory
         );
@@ -55,63 +56,218 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_CAP_STYLE GetStartCap(
+        public /* static */ delegate D2D1_CAP_STYLE _GetStartCap(
             [In] ID2D1StrokeStyle* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_CAP_STYLE GetEndCap(
+        public /* static */ delegate D2D1_CAP_STYLE _GetEndCap(
             [In] ID2D1StrokeStyle* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_CAP_STYLE GetDashCap(
-            [In] ID2D1StrokeStyle* This
-        );
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("FLOAT")]
-        public /* static */ delegate float GetMiterLimit(
-            [In] ID2D1StrokeStyle* This
-        );
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_LINE_JOIN GetLineJoin(
+        public /* static */ delegate D2D1_CAP_STYLE _GetDashCap(
             [In] ID2D1StrokeStyle* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("FLOAT")]
-        public /* static */ delegate float GetDashOffset(
+        public /* static */ delegate float _GetMiterLimit(
             [In] ID2D1StrokeStyle* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_DASH_STYLE GetDashStyle(
+        public /* static */ delegate D2D1_LINE_JOIN _GetLineJoin(
+            [In] ID2D1StrokeStyle* This
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: ComAliasName("FLOAT")]
+        public /* static */ delegate float _GetDashOffset(
+            [In] ID2D1StrokeStyle* This
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate D2D1_DASH_STYLE _GetDashStyle(
             [In] ID2D1StrokeStyle* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("UINT32")]
-        public /* static */ delegate uint GetDashesCount(
+        public /* static */ delegate uint _GetDashesCount(
             [In] ID2D1StrokeStyle* This
         );
 
         /// <summary>Returns the dashes from the object into a user allocated array. The user must call GetDashesCount to retrieve the required size.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetDashes(
+        public /* static */ delegate void _GetDashes(
             [In] ID2D1StrokeStyle* This,
             [Out, ComAliasName("FLOAT[]")] float* dashes,
             [In, ComAliasName("UINT32")] uint dashesCount
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ID2D1StrokeStyle* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ID2D1StrokeStyle* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ID2D1StrokeStyle* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1Resource Methods
+        public void GetFactory(
+            [Out] ID2D1Factory** factory
+        )
+        {
+            fixed (ID2D1StrokeStyle* This = &this)
+            {
+                MarshalFunction<_GetFactory>(lpVtbl->GetFactory)(
+                    This,
+                    factory
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        public D2D1_CAP_STYLE GetStartCap()
+        {
+            fixed (ID2D1StrokeStyle* This = &this)
+            {
+                return MarshalFunction<_GetStartCap>(lpVtbl->GetStartCap)(
+                    This
+                );
+            }
+        }
+
+        public D2D1_CAP_STYLE GetEndCap()
+        {
+            fixed (ID2D1StrokeStyle* This = &this)
+            {
+                return MarshalFunction<_GetEndCap>(lpVtbl->GetEndCap)(
+                    This
+                );
+            }
+        }
+
+        public D2D1_CAP_STYLE GetDashCap()
+        {
+            fixed (ID2D1StrokeStyle* This = &this)
+            {
+                return MarshalFunction<_GetDashCap>(lpVtbl->GetDashCap)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("FLOAT")]
+        public float GetMiterLimit()
+        {
+            fixed (ID2D1StrokeStyle* This = &this)
+            {
+                return MarshalFunction<_GetMiterLimit>(lpVtbl->GetMiterLimit)(
+                    This
+                );
+            }
+        }
+
+        public D2D1_LINE_JOIN GetLineJoin()
+        {
+            fixed (ID2D1StrokeStyle* This = &this)
+            {
+                return MarshalFunction<_GetLineJoin>(lpVtbl->GetLineJoin)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("FLOAT")]
+        public float GetDashOffset()
+        {
+            fixed (ID2D1StrokeStyle* This = &this)
+            {
+                return MarshalFunction<_GetDashOffset>(lpVtbl->GetDashOffset)(
+                    This
+                );
+            }
+        }
+
+        public D2D1_DASH_STYLE GetDashStyle()
+        {
+            fixed (ID2D1StrokeStyle* This = &this)
+            {
+                return MarshalFunction<_GetDashStyle>(lpVtbl->GetDashStyle)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("UINT32")]
+        public uint GetDashesCount()
+        {
+            fixed (ID2D1StrokeStyle* This = &this)
+            {
+                return MarshalFunction<_GetDashesCount>(lpVtbl->GetDashesCount)(
+                    This
+                );
+            }
+        }
+
+        public void GetDashes(
+            [Out, ComAliasName("FLOAT[]")] float* dashes,
+            [In, ComAliasName("UINT32")] uint dashesCount
+        )
+        {
+            fixed (ID2D1StrokeStyle* This = &this)
+            {
+                MarshalFunction<_GetDashes>(lpVtbl->GetDashes)(
+                    This,
+                    dashes,
+                    dashesCount
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -152,3 +308,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

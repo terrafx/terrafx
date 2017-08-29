@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ID3D12DebugDevice* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ID3D12DebugDevice* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ID3D12DebugDevice* This
         );
         #endregion
@@ -45,24 +46,104 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetFeatureMask(
+        public /* static */ delegate int _SetFeatureMask(
             [In] ID3D12DebugDevice* This,
             [In] D3D12_DEBUG_FEATURE Mask
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D3D12_DEBUG_FEATURE GetFeatureMask(
+        public /* static */ delegate D3D12_DEBUG_FEATURE _GetFeatureMask(
             [In] ID3D12DebugDevice* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int ReportLiveDeviceObjects(
+        public /* static */ delegate int _ReportLiveDeviceObjects(
             [In] ID3D12DebugDevice* This,
             [In] D3D12_RLDO_FLAGS Flags
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ID3D12DebugDevice* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ID3D12DebugDevice* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ID3D12DebugDevice* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int SetFeatureMask(
+            [In] D3D12_DEBUG_FEATURE Mask
+        )
+        {
+            fixed (ID3D12DebugDevice* This = &this)
+            {
+                return MarshalFunction<_SetFeatureMask>(lpVtbl->SetFeatureMask)(
+                    This,
+                    Mask
+                );
+            }
+        }
+
+        public D3D12_DEBUG_FEATURE GetFeatureMask()
+        {
+            fixed (ID3D12DebugDevice* This = &this)
+            {
+                return MarshalFunction<_GetFeatureMask>(lpVtbl->GetFeatureMask)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int ReportLiveDeviceObjects(
+            [In] D3D12_RLDO_FLAGS Flags
+        )
+        {
+            fixed (ID3D12DebugDevice* This = &this)
+            {
+                return MarshalFunction<_ReportLiveDeviceObjects>(lpVtbl->ReportLiveDeviceObjects)(
+                    This,
+                    Flags
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -87,3 +168,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

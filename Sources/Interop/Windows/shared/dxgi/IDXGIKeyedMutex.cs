@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDXGIKeyedMutex* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDXGIKeyedMutex* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDXGIKeyedMutex* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetPrivateData(
+        public /* static */ delegate int _SetPrivateData(
             [In] IDXGIKeyedMutex* This,
             [In, ComAliasName("REFGUID")] Guid* Name,
             [In, ComAliasName("UINT")] uint DataSize,
@@ -55,7 +56,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetPrivateDataInterface(
+        public /* static */ delegate int _SetPrivateDataInterface(
             [In] IDXGIKeyedMutex* This,
             [In, ComAliasName("REFGUID")] Guid* Name,
             [In] IUnknown* pUnknown = null
@@ -64,7 +65,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetPrivateData(
+        public /* static */ delegate int _GetPrivateData(
             [In] IDXGIKeyedMutex* This,
             [In, ComAliasName("REFGUID")] Guid* Name,
             [In, Out, ComAliasName("UINT")] uint* pDataSize,
@@ -74,7 +75,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetParent(
+        public /* static */ delegate int _GetParent(
             [In] IDXGIKeyedMutex* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppParent
@@ -85,7 +86,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetDevice(
+        public /* static */ delegate int _GetDevice(
             [In] IDXGIKeyedMutex* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppDevice
@@ -96,7 +97,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int AcquireSync(
+        public /* static */ delegate int _AcquireSync(
             [In] IDXGIKeyedMutex* This,
             [In, ComAliasName("UINT64")] ulong Key,
             [In, ComAliasName("DWORD")] uint dwMilliseconds
@@ -105,10 +106,170 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int ReleaseSync(
+        public /* static */ delegate int _ReleaseSync(
             [In] IDXGIKeyedMutex* This,
             [In, ComAliasName("UINT64")] ulong Key
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDXGIKeyedMutex* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDXGIKeyedMutex* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDXGIKeyedMutex* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region IDXGIObject Methods
+        [return: ComAliasName("HRESULT")]
+        public int SetPrivateData(
+            [In, ComAliasName("REFGUID")] Guid* Name,
+            [In, ComAliasName("UINT")] uint DataSize,
+            [In] void* pData
+        )
+        {
+            fixed (IDXGIKeyedMutex* This = &this)
+            {
+                return MarshalFunction<_SetPrivateData>(lpVtbl->SetPrivateData)(
+                    This,
+                    Name,
+                    DataSize,
+                    pData
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetPrivateDataInterface(
+            [In, ComAliasName("REFGUID")] Guid* Name,
+            [In] IUnknown* pUnknown = null
+        )
+        {
+            fixed (IDXGIKeyedMutex* This = &this)
+            {
+                return MarshalFunction<_SetPrivateDataInterface>(lpVtbl->SetPrivateDataInterface)(
+                    This,
+                    Name,
+                    pUnknown
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetPrivateData(
+            [In, ComAliasName("REFGUID")] Guid* Name,
+            [In, Out, ComAliasName("UINT")] uint* pDataSize,
+            [Out] void* pData
+        )
+        {
+            fixed (IDXGIKeyedMutex* This = &this)
+            {
+                return MarshalFunction<_GetPrivateData>(lpVtbl->GetPrivateData)(
+                    This,
+                    Name,
+                    pDataSize,
+                    pData
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetParent(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppParent
+        )
+        {
+            fixed (IDXGIKeyedMutex* This = &this)
+            {
+                return MarshalFunction<_GetParent>(lpVtbl->GetParent)(
+                    This,
+                    riid,
+                    ppParent
+                );
+            }
+        }
+        #endregion
+
+        #region IDXGIDeviceSubObject Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetDevice(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppDevice
+        )
+        {
+            fixed (IDXGIKeyedMutex* This = &this)
+            {
+                return MarshalFunction<_GetDevice>(lpVtbl->GetDevice)(
+                    This,
+                    riid,
+                    ppDevice
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int AcquireSync(
+            [In, ComAliasName("UINT64")] ulong Key,
+            [In, ComAliasName("DWORD")] uint dwMilliseconds
+        )
+        {
+            fixed (IDXGIKeyedMutex* This = &this)
+            {
+                return MarshalFunction<_AcquireSync>(lpVtbl->AcquireSync)(
+                    This,
+                    Key,
+                    dwMilliseconds
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int ReleaseSync(
+            [In, ComAliasName("UINT64")] ulong Key
+        )
+        {
+            fixed (IDXGIKeyedMutex* This = &this)
+            {
+                return MarshalFunction<_ReleaseSync>(lpVtbl->ReleaseSync)(
+                    This,
+                    Key
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -145,3 +306,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

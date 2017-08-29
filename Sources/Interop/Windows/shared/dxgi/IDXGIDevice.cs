@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDXGIDevice* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDXGIDevice* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDXGIDevice* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetPrivateData(
+        public /* static */ delegate int _SetPrivateData(
             [In] IDXGIDevice* This,
             [In, ComAliasName("REFGUID")] Guid* Name,
             [In, ComAliasName("UINT")] uint DataSize,
@@ -55,7 +56,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetPrivateDataInterface(
+        public /* static */ delegate int _SetPrivateDataInterface(
             [In] IDXGIDevice* This,
             [In, ComAliasName("REFGUID")] Guid* Name,
             [In] IUnknown* pUnknown = null
@@ -64,7 +65,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetPrivateData(
+        public /* static */ delegate int _GetPrivateData(
             [In] IDXGIDevice* This,
             [In, ComAliasName("REFGUID")] Guid* Name,
             [In, Out, ComAliasName("UINT")] uint* pDataSize,
@@ -74,7 +75,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetParent(
+        public /* static */ delegate int _GetParent(
             [In] IDXGIDevice* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppParent
@@ -85,7 +86,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetAdapter(
+        public /* static */ delegate int _GetAdapter(
             [In] IDXGIDevice* This,
             [Out] IDXGIAdapter** pAdapter
         );
@@ -93,7 +94,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateSurface(
+        public /* static */ delegate int _CreateSurface(
             [In] IDXGIDevice* This,
             [In] DXGI_SURFACE_DESC* pDesc,
             [In, ComAliasName("UINT")] uint NumSurfaces,
@@ -105,7 +106,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryResourceResidency(
+        public /* static */ delegate int _QueryResourceResidency(
             [In] IDXGIDevice* This,
             [In, ComAliasName("IUnknown*[]")] IUnknown** ppResources,
             [Out, ComAliasName("DXGI_RESIDENCY[]")] DXGI_RESIDENCY* pResidencyStatus,
@@ -115,7 +116,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetGPUThreadPriority(
+        public /* static */ delegate int _SetGPUThreadPriority(
             [In] IDXGIDevice* This,
             [In, ComAliasName("INT")] int Priority
         );
@@ -123,10 +124,204 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetGPUThreadPriority(
+        public /* static */ delegate int _GetGPUThreadPriority(
             [In] IDXGIDevice* This,
             [Out, ComAliasName("INT")] int* pPriority
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDXGIDevice* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDXGIDevice* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDXGIDevice* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region IDXGIObject Methods
+        [return: ComAliasName("HRESULT")]
+        public int SetPrivateData(
+            [In, ComAliasName("REFGUID")] Guid* Name,
+            [In, ComAliasName("UINT")] uint DataSize,
+            [In] void* pData
+        )
+        {
+            fixed (IDXGIDevice* This = &this)
+            {
+                return MarshalFunction<_SetPrivateData>(lpVtbl->SetPrivateData)(
+                    This,
+                    Name,
+                    DataSize,
+                    pData
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetPrivateDataInterface(
+            [In, ComAliasName("REFGUID")] Guid* Name,
+            [In] IUnknown* pUnknown = null
+        )
+        {
+            fixed (IDXGIDevice* This = &this)
+            {
+                return MarshalFunction<_SetPrivateDataInterface>(lpVtbl->SetPrivateDataInterface)(
+                    This,
+                    Name,
+                    pUnknown
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetPrivateData(
+            [In, ComAliasName("REFGUID")] Guid* Name,
+            [In, Out, ComAliasName("UINT")] uint* pDataSize,
+            [Out] void* pData
+        )
+        {
+            fixed (IDXGIDevice* This = &this)
+            {
+                return MarshalFunction<_GetPrivateData>(lpVtbl->GetPrivateData)(
+                    This,
+                    Name,
+                    pDataSize,
+                    pData
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetParent(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppParent
+        )
+        {
+            fixed (IDXGIDevice* This = &this)
+            {
+                return MarshalFunction<_GetParent>(lpVtbl->GetParent)(
+                    This,
+                    riid,
+                    ppParent
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetAdapter(
+            [Out] IDXGIAdapter** pAdapter
+        )
+        {
+            fixed (IDXGIDevice* This = &this)
+            {
+                return MarshalFunction<_GetAdapter>(lpVtbl->GetAdapter)(
+                    This,
+                    pAdapter
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateSurface(
+            [In] DXGI_SURFACE_DESC* pDesc,
+            [In, ComAliasName("UINT")] uint NumSurfaces,
+            [In, ComAliasName("DXGI_USAGE")] uint Usage,
+            [In, Optional] DXGI_SHARED_RESOURCE* pSharedResource,
+            [Out, ComAliasName("IDXGISurface*[]")] IDXGISurface** ppSurface
+        )
+        {
+            fixed (IDXGIDevice* This = &this)
+            {
+                return MarshalFunction<_CreateSurface>(lpVtbl->CreateSurface)(
+                    This,
+                    pDesc,
+                    NumSurfaces,
+                    Usage,
+                    pSharedResource,
+                    ppSurface
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int QueryResourceResidency(
+            [In, ComAliasName("IUnknown*[]")] IUnknown** ppResources,
+            [Out, ComAliasName("DXGI_RESIDENCY[]")] DXGI_RESIDENCY* pResidencyStatus,
+            [In, ComAliasName("UINT")] uint NumResources
+        )
+        {
+            fixed (IDXGIDevice* This = &this)
+            {
+                return MarshalFunction<_QueryResourceResidency>(lpVtbl->QueryResourceResidency)(
+                    This,
+                    ppResources,
+                    pResidencyStatus,
+                    NumResources
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetGPUThreadPriority(
+            [In, ComAliasName("INT")] int Priority
+        )
+        {
+            fixed (IDXGIDevice* This = &this)
+            {
+                return MarshalFunction<_SetGPUThreadPriority>(lpVtbl->SetGPUThreadPriority)(
+                    This,
+                    Priority
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetGPUThreadPriority(
+            [Out, ComAliasName("INT")] int* pPriority
+        )
+        {
+            fixed (IDXGIDevice* This = &this)
+            {
+                return MarshalFunction<_GetGPUThreadPriority>(lpVtbl->GetGPUThreadPriority)(
+                    This,
+                    pPriority
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -165,3 +360,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

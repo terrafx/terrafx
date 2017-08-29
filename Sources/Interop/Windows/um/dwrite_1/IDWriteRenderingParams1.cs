@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDWriteRenderingParams1* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDWriteRenderingParams1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDWriteRenderingParams1* This
         );
         #endregion
@@ -47,7 +48,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("FLOAT")]
-        public /* static */ delegate float GetGamma(
+        public /* static */ delegate float _GetGamma(
             [In] IDWriteRenderingParams1* This
         );
 
@@ -55,28 +56,28 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("FLOAT")]
-        public /* static */ delegate float GetEnhancedContrast(
+        public /* static */ delegate float _GetEnhancedContrast(
             [In] IDWriteRenderingParams1* This
         );
 
         /// <summary>Gets the ClearType level. Valid values range from 0.0f (no ClearType) to 1.0f (full ClearType).</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate float GetClearTypeLevel(
+        public /* static */ delegate float _GetClearTypeLevel(
             [In] IDWriteRenderingParams1* This
         );
 
         /// <summary>Gets the pixel geometry.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate DWRITE_PIXEL_GEOMETRY GetPixelGeometry(
+        public /* static */ delegate DWRITE_PIXEL_GEOMETRY _GetPixelGeometry(
             [In] IDWriteRenderingParams1* This
         );
 
         /// <summary>Gets the rendering mode.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate DWRITE_RENDERING_MODE GetRenderingMode(
+        public /* static */ delegate DWRITE_RENDERING_MODE _GetRenderingMode(
             [In] IDWriteRenderingParams1* This
         );
         #endregion
@@ -86,9 +87,116 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("FLOAT")]
-        public /* static */ delegate float GetGrayscaleEnhancedContrast(
+        public /* static */ delegate float _GetGrayscaleEnhancedContrast(
             [In] IDWriteRenderingParams1* This
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDWriteRenderingParams1* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDWriteRenderingParams1* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDWriteRenderingParams1* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region IDWriteRenderingParams Methods
+        [return: ComAliasName("FLOAT")]
+        public float GetGamma()
+        {
+            fixed (IDWriteRenderingParams1* This = &this)
+            {
+                return MarshalFunction<_GetGamma>(lpVtbl->GetGamma)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("FLOAT")]
+        public float GetEnhancedContrast()
+        {
+            fixed (IDWriteRenderingParams1* This = &this)
+            {
+                return MarshalFunction<_GetEnhancedContrast>(lpVtbl->GetEnhancedContrast)(
+                    This
+                );
+            }
+        }
+
+        public float GetClearTypeLevel()
+        {
+            fixed (IDWriteRenderingParams1* This = &this)
+            {
+                return MarshalFunction<_GetClearTypeLevel>(lpVtbl->GetClearTypeLevel)(
+                    This
+                );
+            }
+        }
+
+        public DWRITE_PIXEL_GEOMETRY GetPixelGeometry()
+        {
+            fixed (IDWriteRenderingParams1* This = &this)
+            {
+                return MarshalFunction<_GetPixelGeometry>(lpVtbl->GetPixelGeometry)(
+                    This
+                );
+            }
+        }
+
+        public DWRITE_RENDERING_MODE GetRenderingMode()
+        {
+            fixed (IDWriteRenderingParams1* This = &this)
+            {
+                return MarshalFunction<_GetRenderingMode>(lpVtbl->GetRenderingMode)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("FLOAT")]
+        public float GetGrayscaleEnhancedContrast()
+        {
+            fixed (IDWriteRenderingParams1* This = &this)
+            {
+                return MarshalFunction<_GetGrayscaleEnhancedContrast>(lpVtbl->GetGrayscaleEnhancedContrast)(
+                    This
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -121,3 +229,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

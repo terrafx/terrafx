@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDWriteFontDownloadQueue* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDWriteFontDownloadQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDWriteFontDownloadQueue* This
         );
         #endregion
@@ -51,7 +52,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int AddListener(
+        public /* static */ delegate int _AddListener(
             [In] IDWriteFontDownloadQueue* This,
             [In] IDWriteFontDownloadListener* listener,
             [Out, ComAliasName("UINT32")] uint* token
@@ -63,7 +64,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int RemoveListener(
+        public /* static */ delegate int _RemoveListener(
             [In] IDWriteFontDownloadQueue* This,
             [In, ComAliasName("UINT32")] uint token
         );
@@ -73,7 +74,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("BOOL")]
-        public /* static */ delegate int IsEmpty(
+        public /* static */ delegate int _IsEmpty(
             [In] IDWriteFontDownloadQueue* This
         );
 
@@ -84,7 +85,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int BeginDownload(
+        public /* static */ delegate int _BeginDownload(
             [In] IDWriteFontDownloadQueue* This,
             [In] IUnknown* context = null
         );
@@ -94,7 +95,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CancelDownload(
+        public /* static */ delegate int _CancelDownload(
             [In] IDWriteFontDownloadQueue* This
         );
 
@@ -103,9 +104,128 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("UINT64")]
-        public /* static */ delegate ulong GetGenerationCount(
+        public /* static */ delegate ulong _GetGenerationCount(
             [In] IDWriteFontDownloadQueue* This
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDWriteFontDownloadQueue* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDWriteFontDownloadQueue* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDWriteFontDownloadQueue* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int AddListener(
+            [In] IDWriteFontDownloadListener* listener,
+            [Out, ComAliasName("UINT32")] uint* token
+        )
+        {
+            fixed (IDWriteFontDownloadQueue* This = &this)
+            {
+                return MarshalFunction<_AddListener>(lpVtbl->AddListener)(
+                    This,
+                    listener,
+                    token
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int RemoveListener(
+            [In, ComAliasName("UINT32")] uint token
+        )
+        {
+            fixed (IDWriteFontDownloadQueue* This = &this)
+            {
+                return MarshalFunction<_RemoveListener>(lpVtbl->RemoveListener)(
+                    This,
+                    token
+                );
+            }
+        }
+
+        [return: ComAliasName("BOOL")]
+        public int IsEmpty()
+        {
+            fixed (IDWriteFontDownloadQueue* This = &this)
+            {
+                return MarshalFunction<_IsEmpty>(lpVtbl->IsEmpty)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int BeginDownload(
+            [In] IUnknown* context = null
+        )
+        {
+            fixed (IDWriteFontDownloadQueue* This = &this)
+            {
+                return MarshalFunction<_BeginDownload>(lpVtbl->BeginDownload)(
+                    This,
+                    context
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CancelDownload()
+        {
+            fixed (IDWriteFontDownloadQueue* This = &this)
+            {
+                return MarshalFunction<_CancelDownload>(lpVtbl->CancelDownload)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("UINT64")]
+        public ulong GetGenerationCount()
+        {
+            fixed (IDWriteFontDownloadQueue* This = &this)
+            {
+                return MarshalFunction<_GetGenerationCount>(lpVtbl->GetGenerationCount)(
+                    This
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -136,3 +256,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

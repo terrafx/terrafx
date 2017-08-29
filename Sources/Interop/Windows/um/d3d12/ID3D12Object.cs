@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ID3D12Object* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ID3D12Object* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ID3D12Object* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetPrivateData(
+        public /* static */ delegate int _GetPrivateData(
             [In] ID3D12Object* This,
             [In, ComAliasName("REFGUID")] Guid* guid,
             [In, Out, ComAliasName("UINT")] uint* pDataSize,
@@ -55,7 +56,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetPrivateData(
+        public /* static */ delegate int _SetPrivateData(
             [In] ID3D12Object* This,
             [In, ComAliasName("REFGUID")] Guid* guid,
             [In, ComAliasName("UINT")] uint DataSize,
@@ -66,7 +67,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetPrivateDataInterface(
+        public /* static */ delegate int _SetPrivateDataInterface(
             [In] ID3D12Object* This,
             [In, ComAliasName("REFGUID")] Guid* guid,
             [In] IUnknown* pData = null
@@ -75,10 +76,118 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetName(
+        public /* static */ delegate int _SetName(
             [In] ID3D12Object* This,
             [In, ComAliasName("LPCWSTR")] char* Name
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ID3D12Object* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ID3D12Object* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ID3D12Object* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetPrivateData(
+            [In, ComAliasName("REFGUID")] Guid* guid,
+            [In, Out, ComAliasName("UINT")] uint* pDataSize,
+            [Out] void* pData = null
+        )
+        {
+            fixed (ID3D12Object* This = &this)
+            {
+                return MarshalFunction<_GetPrivateData>(lpVtbl->GetPrivateData)(
+                    This,
+                    guid,
+                    pDataSize,
+                    pData
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetPrivateData(
+            [In, ComAliasName("REFGUID")] Guid* guid,
+            [In, ComAliasName("UINT")] uint DataSize,
+            [In] void* pData = null
+        )
+        {
+            fixed (ID3D12Object* This = &this)
+            {
+                return MarshalFunction<_SetPrivateData>(lpVtbl->SetPrivateData)(
+                    This,
+                    guid,
+                    DataSize,
+                    pData
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetPrivateDataInterface(
+            [In, ComAliasName("REFGUID")] Guid* guid,
+            [In] IUnknown* pData = null
+        )
+        {
+            fixed (ID3D12Object* This = &this)
+            {
+                return MarshalFunction<_SetPrivateDataInterface>(lpVtbl->SetPrivateDataInterface)(
+                    This,
+                    guid,
+                    pData
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetName(
+            [In, ComAliasName("LPCWSTR")] char* Name
+        )
+        {
+            fixed (ID3D12Object* This = &this)
+            {
+                return MarshalFunction<_SetName>(lpVtbl->SetName)(
+                    This,
+                    Name
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -105,3 +214,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

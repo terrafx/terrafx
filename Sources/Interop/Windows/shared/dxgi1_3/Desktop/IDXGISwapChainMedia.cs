@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop.Desktop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDXGISwapChainMedia* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDXGISwapChainMedia* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDXGISwapChainMedia* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFrameStatisticsMedia(
+        public /* static */ delegate int _GetFrameStatisticsMedia(
             [In] IDXGISwapChainMedia* This,
             [Out] DXGI_FRAME_STATISTICS_MEDIA* pStats
         );
@@ -53,7 +54,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetPresentDuration(
+        public /* static */ delegate int _SetPresentDuration(
             [In] IDXGISwapChainMedia* This,
             [In, ComAliasName("UINT")] uint Duration
         );
@@ -61,12 +62,100 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CheckPresentDurationSupport(
+        public /* static */ delegate int _CheckPresentDurationSupport(
             [In] IDXGISwapChainMedia* This,
             [In, ComAliasName("UINT")] uint DesiredPresentDuration,
             [Out, ComAliasName("UINT")] uint* pClosestSmallerPresentDuration,
             [Out, ComAliasName("UINT")] uint* pClosestLargerPresentDuration
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDXGISwapChainMedia* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDXGISwapChainMedia* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDXGISwapChainMedia* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetFrameStatisticsMedia(
+            [Out] DXGI_FRAME_STATISTICS_MEDIA* pStats
+        )
+        {
+            fixed (IDXGISwapChainMedia* This = &this)
+            {
+                return MarshalFunction<_GetFrameStatisticsMedia>(lpVtbl->GetFrameStatisticsMedia)(
+                    This,
+                    pStats
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetPresentDuration(
+            [In, ComAliasName("UINT")] uint Duration
+        )
+        {
+            fixed (IDXGISwapChainMedia* This = &this)
+            {
+                return MarshalFunction<_SetPresentDuration>(lpVtbl->SetPresentDuration)(
+                    This,
+                    Duration
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CheckPresentDurationSupport(
+            [In, ComAliasName("UINT")] uint DesiredPresentDuration,
+            [Out, ComAliasName("UINT")] uint* pClosestSmallerPresentDuration,
+            [Out, ComAliasName("UINT")] uint* pClosestLargerPresentDuration
+        )
+        {
+            fixed (IDXGISwapChainMedia* This = &this)
+            {
+                return MarshalFunction<_CheckPresentDurationSupport>(lpVtbl->CheckPresentDurationSupport)(
+                    This,
+                    DesiredPresentDuration,
+                    pClosestSmallerPresentDuration,
+                    pClosestLargerPresentDuration
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -91,3 +180,4 @@ namespace TerraFX.Interop.Desktop
         #endregion
     }
 }
+

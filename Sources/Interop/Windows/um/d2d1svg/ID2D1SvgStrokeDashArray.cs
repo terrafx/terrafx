@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ID2D1SvgStrokeDashArray* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ID2D1SvgStrokeDashArray* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ID2D1SvgStrokeDashArray* This
         );
         #endregion
@@ -46,7 +47,7 @@ namespace TerraFX.Interop
         /// <summary>Retrieve the factory associated with this resource.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetFactory(
+        public /* static */ delegate void _GetFactory(
             [In] ID2D1SvgStrokeDashArray* This,
             [Out] ID2D1Factory** factory
         );
@@ -56,7 +57,7 @@ namespace TerraFX.Interop
         /// <summary>Returns the element on which this attribute is set. Returns null if the attribute is not set on any element.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetElement(
+        public /* static */ delegate void _GetElement(
             [In] ID2D1SvgStrokeDashArray* This,
             [Out] ID2D1SvgElement** element
         );
@@ -65,7 +66,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Clone(
+        public /* static */ delegate int _Clone(
             [In] ID2D1SvgStrokeDashArray* This,
             [Out] ID2D1SvgAttribute** attribute
         );
@@ -77,7 +78,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int RemoveDashesAtEnd(
+        public /* static */ delegate int _RemoveDashesAtEnd(
             [In] ID2D1SvgStrokeDashArray* This,
             [In, ComAliasName("UINT32")] uint dashesCount
         );
@@ -89,7 +90,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int UpdateDashes(
+        public /* static */ delegate int _UpdateDashes(
             [In] ID2D1SvgStrokeDashArray* This,
             [In, ComAliasName("FLOAT[]")] float* dashes,
             [In, ComAliasName("UINT32")] uint dashesCount,
@@ -103,7 +104,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int UpdateDashes1(
+        public /* static */ delegate int _UpdateDashes1(
             [In] ID2D1SvgStrokeDashArray* This,
             [In, ComAliasName("D2D1_SVG_LENGTH[]")] D2D1_SVG_LENGTH* dashes,
             [In, ComAliasName("UINT32")] uint dashesCount,
@@ -117,7 +118,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetDashes(
+        public /* static */ delegate int _GetDashes(
             [In] ID2D1SvgStrokeDashArray* This,
             [Out, ComAliasName("FLOAT[]")] float* dashes,
             [In, ComAliasName("UINT32")] uint dashesCount,
@@ -131,7 +132,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetDashes1(
+        public /* static */ delegate int _GetDashes1(
             [In] ID2D1SvgStrokeDashArray* This,
             [Out, ComAliasName("D2D1_SVG_LENGTH[]")] D2D1_SVG_LENGTH* dashes,
             [In, ComAliasName("UINT32")] uint dashesCount,
@@ -142,9 +143,192 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("UINT32")]
-        public /* static */ delegate uint GetDashesCount(
+        public /* static */ delegate uint _GetDashesCount(
             [In] ID2D1SvgStrokeDashArray* This
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ID2D1SvgStrokeDashArray* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ID2D1SvgStrokeDashArray* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ID2D1SvgStrokeDashArray* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1Resource Methods
+        public void GetFactory(
+            [Out] ID2D1Factory** factory
+        )
+        {
+            fixed (ID2D1SvgStrokeDashArray* This = &this)
+            {
+                MarshalFunction<_GetFactory>(lpVtbl->GetFactory)(
+                    This,
+                    factory
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1SvgAttribute Methods
+        public void GetElement(
+            [Out] ID2D1SvgElement** element
+        )
+        {
+            fixed (ID2D1SvgStrokeDashArray* This = &this)
+            {
+                MarshalFunction<_GetElement>(lpVtbl->GetElement)(
+                    This,
+                    element
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int Clone(
+            [Out] ID2D1SvgAttribute** attribute
+        )
+        {
+            fixed (ID2D1SvgStrokeDashArray* This = &this)
+            {
+                return MarshalFunction<_Clone>(lpVtbl->Clone)(
+                    This,
+                    attribute
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int RemoveDashesAtEnd(
+            [In, ComAliasName("UINT32")] uint dashesCount
+        )
+        {
+            fixed (ID2D1SvgStrokeDashArray* This = &this)
+            {
+                return MarshalFunction<_RemoveDashesAtEnd>(lpVtbl->RemoveDashesAtEnd)(
+                    This,
+                    dashesCount
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int UpdateDashes(
+            [In, ComAliasName("FLOAT[]")] float* dashes,
+            [In, ComAliasName("UINT32")] uint dashesCount,
+            [In, ComAliasName("UINT32")] uint startIndex = 0
+        )
+        {
+            fixed (ID2D1SvgStrokeDashArray* This = &this)
+            {
+                return MarshalFunction<_UpdateDashes>(lpVtbl->UpdateDashes)(
+                    This,
+                    dashes,
+                    dashesCount,
+                    startIndex
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int UpdateDashes1(
+            [In, ComAliasName("D2D1_SVG_LENGTH[]")] D2D1_SVG_LENGTH* dashes,
+            [In, ComAliasName("UINT32")] uint dashesCount,
+            [In, ComAliasName("UINT32")] uint startIndex = 0
+        )
+        {
+            fixed (ID2D1SvgStrokeDashArray* This = &this)
+            {
+                return MarshalFunction<_UpdateDashes1>(lpVtbl->UpdateDashes1)(
+                    This,
+                    dashes,
+                    dashesCount,
+                    startIndex
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetDashes(
+            [Out, ComAliasName("FLOAT[]")] float* dashes,
+            [In, ComAliasName("UINT32")] uint dashesCount,
+            [In, ComAliasName("UINT32")] uint startIndex = 0
+        )
+        {
+            fixed (ID2D1SvgStrokeDashArray* This = &this)
+            {
+                return MarshalFunction<_GetDashes>(lpVtbl->GetDashes)(
+                    This,
+                    dashes,
+                    dashesCount,
+                    startIndex
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetDashes1(
+            [Out, ComAliasName("D2D1_SVG_LENGTH[]")] D2D1_SVG_LENGTH* dashes,
+            [In, ComAliasName("UINT32")] uint dashesCount,
+            [In, ComAliasName("UINT32")] uint startIndex = 0
+        )
+        {
+            fixed (ID2D1SvgStrokeDashArray* This = &this)
+            {
+                return MarshalFunction<_GetDashes1>(lpVtbl->GetDashes1)(
+                    This,
+                    dashes,
+                    dashesCount,
+                    startIndex
+                );
+            }
+        }
+
+        [return: ComAliasName("UINT32")]
+        public uint GetDashesCount()
+        {
+            fixed (ID2D1SvgStrokeDashArray* This = &this)
+            {
+                return MarshalFunction<_GetDashesCount>(lpVtbl->GetDashesCount)(
+                    This
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -185,3 +369,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

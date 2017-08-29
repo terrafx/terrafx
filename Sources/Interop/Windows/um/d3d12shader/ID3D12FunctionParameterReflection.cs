@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,10 +21,26 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetDesc(
+        public /* static */ delegate int _GetDesc(
             [In] ID3D12FunctionParameterReflection* This,
             [Out] D3D12_PARAMETER_DESC* pDesc
         );
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetDesc(
+            [Out] D3D12_PARAMETER_DESC* pDesc
+        )
+        {
+            fixed (ID3D12FunctionParameterReflection* This = &this)
+            {
+                return MarshalFunction<_GetDesc>(lpVtbl->GetDesc)(
+                    This,
+                    pDesc
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -36,3 +53,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ID2D1Factory* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ID2D1Factory* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ID2D1Factory* This
         );
         #endregion
@@ -47,14 +48,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int ReloadSystemMetrics(
+        public /* static */ delegate int _ReloadSystemMetrics(
             [In] ID2D1Factory* This
         );
 
         /// <summary>Retrieves the current desktop DPI. To refresh this, call ReloadSystemMetrics.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetDesktopDpi(
+        public /* static */ delegate void _GetDesktopDpi(
             [In] ID2D1Factory* This,
             [Out, ComAliasName("FLOAT")] float* dpiX,
             [Out, ComAliasName("FLOAT")] float* dpiY
@@ -63,7 +64,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateRectangleGeometry(
+        public /* static */ delegate int _CreateRectangleGeometry(
             [In] ID2D1Factory* This,
             [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* rectangle,
             [Out] ID2D1RectangleGeometry** rectangleGeometry
@@ -72,7 +73,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateRoundedRectangleGeometry(
+        public /* static */ delegate int _CreateRoundedRectangleGeometry(
             [In] ID2D1Factory* This,
             [In] D2D1_ROUNDED_RECT* roundedRectangle,
             [Out] ID2D1RoundedRectangleGeometry** roundedRectangleGeometry
@@ -81,7 +82,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateEllipseGeometry(
+        public /* static */ delegate int _CreateEllipseGeometry(
             [In] ID2D1Factory* This,
             [In] D2D1_ELLIPSE* ellipse,
             [Out] ID2D1EllipseGeometry** ellipseGeometry
@@ -91,7 +92,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateGeometryGroup(
+        public /* static */ delegate int _CreateGeometryGroup(
             [In] ID2D1Factory* This,
             [In] D2D1_FILL_MODE fillMode,
             [In, ComAliasName("ID2D1Geometry*[]")] ID2D1Geometry** geometries,
@@ -102,7 +103,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateTransformedGeometry(
+        public /* static */ delegate int _CreateTransformedGeometry(
             [In] ID2D1Factory* This,
             [In] ID2D1Geometry* sourceGeometry,
             [In, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform,
@@ -113,7 +114,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreatePathGeometry(
+        public /* static */ delegate int _CreatePathGeometry(
             [In] ID2D1Factory* This,
             [Out] ID2D1PathGeometry** pathGeometry
         );
@@ -122,7 +123,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateStrokeStyle(
+        public /* static */ delegate int _CreateStrokeStyle(
             [In] ID2D1Factory* This,
             [In] D2D1_STROKE_STYLE_PROPERTIES* strokeStyleProperties,
             [In, Optional, ComAliasName("FLOAT[]")] float* dashes,
@@ -134,7 +135,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateDrawingStateBlock(
+        public /* static */ delegate int _CreateDrawingStateBlock(
             [In] ID2D1Factory* This,
             [In, Optional] D2D1_DRAWING_STATE_DESCRIPTION* drawingStateDescription,
             [In, Optional] IDWriteRenderingParams* textRenderingParams,
@@ -145,7 +146,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateWicBitmapRenderTarget(
+        public /* static */ delegate int _CreateWicBitmapRenderTarget(
             [In] ID2D1Factory* This,
             [In] IWICBitmap* target,
             [In] D2D1_RENDER_TARGET_PROPERTIES* renderTargetProperties,
@@ -156,7 +157,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateHwndRenderTarget(
+        public /* static */ delegate int _CreateHwndRenderTarget(
             [In] ID2D1Factory* This,
             [In] D2D1_RENDER_TARGET_PROPERTIES* renderTargetProperties,
             [In] D2D1_HWND_RENDER_TARGET_PROPERTIES* hwndRenderTargetProperties,
@@ -167,7 +168,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateDxgiSurfaceRenderTarget(
+        public /* static */ delegate int _CreateDxgiSurfaceRenderTarget(
             [In] ID2D1Factory* This,
             [In] IDXGISurface* dxgiSurface,
             [In] D2D1_RENDER_TARGET_PROPERTIES* renderTargetProperties,
@@ -178,11 +179,287 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateDCRenderTarget(
+        public /* static */ delegate int _CreateDCRenderTarget(
             [In] ID2D1Factory* This,
             [In] D2D1_RENDER_TARGET_PROPERTIES* renderTargetProperties,
             [Out] ID2D1DCRenderTarget** dcRenderTarget
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ID2D1Factory* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ID2D1Factory* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ID2D1Factory* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int ReloadSystemMetrics()
+        {
+            fixed (ID2D1Factory* This = &this)
+            {
+                return MarshalFunction<_ReloadSystemMetrics>(lpVtbl->ReloadSystemMetrics)(
+                    This
+                );
+            }
+        }
+
+        public void GetDesktopDpi(
+            [Out, ComAliasName("FLOAT")] float* dpiX,
+            [Out, ComAliasName("FLOAT")] float* dpiY
+        )
+        {
+            fixed (ID2D1Factory* This = &this)
+            {
+                MarshalFunction<_GetDesktopDpi>(lpVtbl->GetDesktopDpi)(
+                    This,
+                    dpiX,
+                    dpiY
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateRectangleGeometry(
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* rectangle,
+            [Out] ID2D1RectangleGeometry** rectangleGeometry
+        )
+        {
+            fixed (ID2D1Factory* This = &this)
+            {
+                return MarshalFunction<_CreateRectangleGeometry>(lpVtbl->CreateRectangleGeometry)(
+                    This,
+                    rectangle,
+                    rectangleGeometry
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateRoundedRectangleGeometry(
+            [In] D2D1_ROUNDED_RECT* roundedRectangle,
+            [Out] ID2D1RoundedRectangleGeometry** roundedRectangleGeometry
+        )
+        {
+            fixed (ID2D1Factory* This = &this)
+            {
+                return MarshalFunction<_CreateRoundedRectangleGeometry>(lpVtbl->CreateRoundedRectangleGeometry)(
+                    This,
+                    roundedRectangle,
+                    roundedRectangleGeometry
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateEllipseGeometry(
+            [In] D2D1_ELLIPSE* ellipse,
+            [Out] ID2D1EllipseGeometry** ellipseGeometry
+        )
+        {
+            fixed (ID2D1Factory* This = &this)
+            {
+                return MarshalFunction<_CreateEllipseGeometry>(lpVtbl->CreateEllipseGeometry)(
+                    This,
+                    ellipse,
+                    ellipseGeometry
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateGeometryGroup(
+            [In] D2D1_FILL_MODE fillMode,
+            [In, ComAliasName("ID2D1Geometry*[]")] ID2D1Geometry** geometries,
+            [In, ComAliasName("UINT32")] uint geometriesCount,
+            [Out] ID2D1GeometryGroup** geometryGroup
+        )
+        {
+            fixed (ID2D1Factory* This = &this)
+            {
+                return MarshalFunction<_CreateGeometryGroup>(lpVtbl->CreateGeometryGroup)(
+                    This,
+                    fillMode,
+                    geometries,
+                    geometriesCount,
+                    geometryGroup
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateTransformedGeometry(
+            [In] ID2D1Geometry* sourceGeometry,
+            [In, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform,
+            [Out] ID2D1TransformedGeometry** transformedGeometry
+        )
+        {
+            fixed (ID2D1Factory* This = &this)
+            {
+                return MarshalFunction<_CreateTransformedGeometry>(lpVtbl->CreateTransformedGeometry)(
+                    This,
+                    sourceGeometry,
+                    transform,
+                    transformedGeometry
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreatePathGeometry(
+            [Out] ID2D1PathGeometry** pathGeometry
+        )
+        {
+            fixed (ID2D1Factory* This = &this)
+            {
+                return MarshalFunction<_CreatePathGeometry>(lpVtbl->CreatePathGeometry)(
+                    This,
+                    pathGeometry
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateStrokeStyle(
+            [In] D2D1_STROKE_STYLE_PROPERTIES* strokeStyleProperties,
+            [In, Optional, ComAliasName("FLOAT[]")] float* dashes,
+            [In, ComAliasName("UINT32")] uint dashesCount,
+            [Out] ID2D1StrokeStyle** strokeStyle
+        )
+        {
+            fixed (ID2D1Factory* This = &this)
+            {
+                return MarshalFunction<_CreateStrokeStyle>(lpVtbl->CreateStrokeStyle)(
+                    This,
+                    strokeStyleProperties,
+                    dashes,
+                    dashesCount,
+                    strokeStyle
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateDrawingStateBlock(
+            [In, Optional] D2D1_DRAWING_STATE_DESCRIPTION* drawingStateDescription,
+            [In, Optional] IDWriteRenderingParams* textRenderingParams,
+            [Out] ID2D1DrawingStateBlock** drawingStateBlock
+        )
+        {
+            fixed (ID2D1Factory* This = &this)
+            {
+                return MarshalFunction<_CreateDrawingStateBlock>(lpVtbl->CreateDrawingStateBlock)(
+                    This,
+                    drawingStateDescription,
+                    textRenderingParams,
+                    drawingStateBlock
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateWicBitmapRenderTarget(
+            [In] IWICBitmap* target,
+            [In] D2D1_RENDER_TARGET_PROPERTIES* renderTargetProperties,
+            [Out] ID2D1RenderTarget** renderTarget
+        )
+        {
+            fixed (ID2D1Factory* This = &this)
+            {
+                return MarshalFunction<_CreateWicBitmapRenderTarget>(lpVtbl->CreateWicBitmapRenderTarget)(
+                    This,
+                    target,
+                    renderTargetProperties,
+                    renderTarget
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateHwndRenderTarget(
+            [In] D2D1_RENDER_TARGET_PROPERTIES* renderTargetProperties,
+            [In] D2D1_HWND_RENDER_TARGET_PROPERTIES* hwndRenderTargetProperties,
+            [Out] ID2D1HwndRenderTarget** hwndRenderTarget
+        )
+        {
+            fixed (ID2D1Factory* This = &this)
+            {
+                return MarshalFunction<_CreateHwndRenderTarget>(lpVtbl->CreateHwndRenderTarget)(
+                    This,
+                    renderTargetProperties,
+                    hwndRenderTargetProperties,
+                    hwndRenderTarget
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateDxgiSurfaceRenderTarget(
+            [In] IDXGISurface* dxgiSurface,
+            [In] D2D1_RENDER_TARGET_PROPERTIES* renderTargetProperties,
+            [Out] ID2D1RenderTarget** renderTarget
+        )
+        {
+            fixed (ID2D1Factory* This = &this)
+            {
+                return MarshalFunction<_CreateDxgiSurfaceRenderTarget>(lpVtbl->CreateDxgiSurfaceRenderTarget)(
+                    This,
+                    dxgiSurface,
+                    renderTargetProperties,
+                    renderTarget
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateDCRenderTarget(
+            [In] D2D1_RENDER_TARGET_PROPERTIES* renderTargetProperties,
+            [Out] ID2D1DCRenderTarget** dcRenderTarget
+        )
+        {
+            fixed (ID2D1Factory* This = &this)
+            {
+                return MarshalFunction<_CreateDCRenderTarget>(lpVtbl->CreateDCRenderTarget)(
+                    This,
+                    renderTargetProperties,
+                    dcRenderTarget
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -229,3 +506,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

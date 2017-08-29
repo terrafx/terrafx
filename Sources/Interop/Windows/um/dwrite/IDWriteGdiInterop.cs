@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDWriteGdiInterop* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDWriteGdiInterop* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDWriteGdiInterop* This
         );
         #endregion
@@ -50,7 +51,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateFontFromLOGFONT(
+        public /* static */ delegate int _CreateFontFromLOGFONT(
             [In] IDWriteGdiInterop* This,
             [In] LOGFONT* logFont,
             [Out] IDWriteFont** font
@@ -64,7 +65,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int ConvertFontToLOGFONT(
+        public /* static */ delegate int _ConvertFontToLOGFONT(
             [In] IDWriteGdiInterop* This,
             [In] IDWriteFont* font,
             [Out] LOGFONT* logFont,
@@ -78,7 +79,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int ConvertFontFaceToLOGFONT(
+        public /* static */ delegate int _ConvertFontFaceToLOGFONT(
             [In] IDWriteGdiInterop* This,
             [In] IDWriteFontFace* font,
             [Out] LOGFONT* logFont
@@ -91,7 +92,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateFontFaceFromHdc(
+        public /* static */ delegate int _CreateFontFaceFromHdc(
             [In] IDWriteGdiInterop* This,
             [In, ComAliasName("HDC")] IntPtr hdc,
             [Out] IDWriteFontFace** fontFace
@@ -105,13 +106,141 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateBitmapRenderTarget(
+        public /* static */ delegate int _CreateBitmapRenderTarget(
             [In] IDWriteGdiInterop* This,
             [In, Optional, ComAliasName("HDC")] IntPtr hdc,
             [In, ComAliasName("UINT32")] uint width,
             [In, ComAliasName("UINT32")] uint height,
             [Out] IDWriteBitmapRenderTarget** renderTarget
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDWriteGdiInterop* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDWriteGdiInterop* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDWriteGdiInterop* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int CreateFontFromLOGFONT(
+            [In] LOGFONT* logFont,
+            [Out] IDWriteFont** font
+        )
+        {
+            fixed (IDWriteGdiInterop* This = &this)
+            {
+                return MarshalFunction<_CreateFontFromLOGFONT>(lpVtbl->CreateFontFromLOGFONT)(
+                    This,
+                    logFont,
+                    font
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int ConvertFontToLOGFONT(
+            [In] IDWriteFont* font,
+            [Out] LOGFONT* logFont,
+            [Out, ComAliasName("BOOL")] int* isSystemFont
+        )
+        {
+            fixed (IDWriteGdiInterop* This = &this)
+            {
+                return MarshalFunction<_ConvertFontToLOGFONT>(lpVtbl->ConvertFontToLOGFONT)(
+                    This,
+                    font,
+                    logFont,
+                    isSystemFont
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int ConvertFontFaceToLOGFONT(
+            [In] IDWriteFontFace* font,
+            [Out] LOGFONT* logFont
+        )
+        {
+            fixed (IDWriteGdiInterop* This = &this)
+            {
+                return MarshalFunction<_ConvertFontFaceToLOGFONT>(lpVtbl->ConvertFontFaceToLOGFONT)(
+                    This,
+                    font,
+                    logFont
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateFontFaceFromHdc(
+            [In, ComAliasName("HDC")] IntPtr hdc,
+            [Out] IDWriteFontFace** fontFace
+        )
+        {
+            fixed (IDWriteGdiInterop* This = &this)
+            {
+                return MarshalFunction<_CreateFontFaceFromHdc>(lpVtbl->CreateFontFaceFromHdc)(
+                    This,
+                    hdc,
+                    fontFace
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateBitmapRenderTarget(
+            [In, Optional, ComAliasName("HDC")] IntPtr hdc,
+            [In, ComAliasName("UINT32")] uint width,
+            [In, ComAliasName("UINT32")] uint height,
+            [Out] IDWriteBitmapRenderTarget** renderTarget
+        )
+        {
+            fixed (IDWriteGdiInterop* This = &this)
+            {
+                return MarshalFunction<_CreateBitmapRenderTarget>(lpVtbl->CreateBitmapRenderTarget)(
+                    This,
+                    hdc,
+                    width,
+                    height,
+                    renderTarget
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -140,3 +269,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

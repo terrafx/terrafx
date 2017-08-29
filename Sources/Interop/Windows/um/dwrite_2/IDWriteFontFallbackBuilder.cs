@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -22,7 +23,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDWriteFontFallbackBuilder* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -31,14 +32,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDWriteFontFallbackBuilder* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDWriteFontFallbackBuilder* This
         );
         #endregion
@@ -57,7 +58,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int AddMapping(
+        public /* static */ delegate int _AddMapping(
             [In] IDWriteFontFallbackBuilder* This,
             [In, ComAliasName("DWRITE_UNICODE_RANGE[]")] DWRITE_UNICODE_RANGE* ranges,
             [In, ComAliasName("UINT32")] uint rangesCount,
@@ -75,7 +76,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int AddMappings(
+        public /* static */ delegate int _AddMappings(
             [In] IDWriteFontFallbackBuilder* This,
             [In] IDWriteFontFallback* fontFallback
         );
@@ -86,10 +87,108 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateFontFallback(
+        public /* static */ delegate int _CreateFontFallback(
             [In] IDWriteFontFallbackBuilder* This,
             [Out] IDWriteFontFallback** fontFallback
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDWriteFontFallbackBuilder* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDWriteFontFallbackBuilder* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDWriteFontFallbackBuilder* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int AddMapping(
+            [In, ComAliasName("DWRITE_UNICODE_RANGE[]")] DWRITE_UNICODE_RANGE* ranges,
+            [In, ComAliasName("UINT32")] uint rangesCount,
+            [In, ComAliasName("WCHAR[]")] char** targetFamilyNames,
+            [In, ComAliasName("UINT32")] uint targetFamilyNamesCount,
+            [In] IDWriteFontCollection* fontCollection = null,
+            [In, ComAliasName("WCHAR[]")] char* localeName = null,
+            [In, ComAliasName("WCHAR[]")] char* baseFamilyName = null,
+            [In, ComAliasName("FLOAT")] float scale = 1.0f
+        )
+        {
+            fixed (IDWriteFontFallbackBuilder* This = &this)
+            {
+                return MarshalFunction<_AddMapping>(lpVtbl->AddMapping)(
+                    This,
+                    ranges,
+                    rangesCount,
+                    targetFamilyNames,
+                    targetFamilyNamesCount,
+                    fontCollection,
+                    localeName,
+                    baseFamilyName,
+                    scale
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int AddMappings(
+            [In] IDWriteFontFallback* fontFallback
+        )
+        {
+            fixed (IDWriteFontFallbackBuilder* This = &this)
+            {
+                return MarshalFunction<_AddMappings>(lpVtbl->AddMappings)(
+                    This,
+                    fontFallback
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateFontFallback(
+            [Out] IDWriteFontFallback** fontFallback
+        )
+        {
+            fixed (IDWriteFontFallbackBuilder* This = &this)
+            {
+                return MarshalFunction<_CreateFontFallback>(lpVtbl->CreateFontFallback)(
+                    This,
+                    fontFallback
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -114,3 +213,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

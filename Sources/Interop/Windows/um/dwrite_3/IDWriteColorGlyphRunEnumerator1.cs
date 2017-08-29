@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDWriteColorGlyphRunEnumerator1* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDWriteColorGlyphRunEnumerator1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDWriteColorGlyphRunEnumerator1* This
         );
         #endregion
@@ -49,7 +50,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int MoveNext(
+        public /* static */ delegate int _MoveNext(
             [In] IDWriteColorGlyphRunEnumerator1* This,
             [Out, ComAliasName("BOOL")] int* hasRun
         );
@@ -60,7 +61,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetCurrentRun(
+        public /* static */ delegate int _GetCurrentRun(
             [In] IDWriteColorGlyphRunEnumerator1* This,
             [Out] DWRITE_COLOR_GLYPH_RUN** colorGlyphRun
         );
@@ -73,10 +74,96 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetCurrentRun1(
+        public /* static */ delegate int _GetCurrentRun1(
             [In] IDWriteColorGlyphRunEnumerator1* This,
             [Out] DWRITE_COLOR_GLYPH_RUN1** colorGlyphRun
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDWriteColorGlyphRunEnumerator1* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDWriteColorGlyphRunEnumerator1* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDWriteColorGlyphRunEnumerator1* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region IDWriteColorGlyphRunEnumerator Methods
+        [return: ComAliasName("HRESULT")]
+        public int MoveNext(
+            [Out, ComAliasName("BOOL")] int* hasRun
+        )
+        {
+            fixed (IDWriteColorGlyphRunEnumerator1* This = &this)
+            {
+                return MarshalFunction<_MoveNext>(lpVtbl->MoveNext)(
+                    This,
+                    hasRun
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetCurrentRun(
+            [Out] DWRITE_COLOR_GLYPH_RUN** colorGlyphRun
+        )
+        {
+            fixed (IDWriteColorGlyphRunEnumerator1* This = &this)
+            {
+                return MarshalFunction<_GetCurrentRun>(lpVtbl->GetCurrentRun)(
+                    This,
+                    colorGlyphRun
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetCurrentRun1(
+            [Out] DWRITE_COLOR_GLYPH_RUN1** colorGlyphRun
+        )
+        {
+            fixed (IDWriteColorGlyphRunEnumerator1* This = &this)
+            {
+                return MarshalFunction<_GetCurrentRun1>(lpVtbl->GetCurrentRun1)(
+                    This,
+                    colorGlyphRun
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -103,3 +190,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

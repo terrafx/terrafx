@@ -7,6 +7,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Security;
 using TerraFX.Interop.Desktop;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDXGIOutput1* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDXGIOutput1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDXGIOutput1* This
         );
         #endregion
@@ -46,7 +47,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetPrivateData(
+        public /* static */ delegate int _SetPrivateData(
             [In] IDXGIOutput1* This,
             [In, ComAliasName("REFGUID")] Guid* Name,
             [In, ComAliasName("UINT")] uint DataSize,
@@ -56,7 +57,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetPrivateDataInterface(
+        public /* static */ delegate int _SetPrivateDataInterface(
             [In] IDXGIOutput1* This,
             [In, ComAliasName("REFGUID")] Guid* Name,
             [In] IUnknown* pUnknown = null
@@ -65,7 +66,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetPrivateData(
+        public /* static */ delegate int _GetPrivateData(
             [In] IDXGIOutput1* This,
             [In, ComAliasName("REFGUID")] Guid* Name,
             [In, Out, ComAliasName("UINT")] uint* pDataSize,
@@ -75,7 +76,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetParent(
+        public /* static */ delegate int _GetParent(
             [In] IDXGIOutput1* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppParent
@@ -86,7 +87,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetDesc(
+        public /* static */ delegate int _GetDesc(
             [In] IDXGIOutput1* This,
             [Out] DXGI_OUTPUT_DESC* pDesc
         );
@@ -94,7 +95,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetDisplayModeList(
+        public /* static */ delegate int _GetDisplayModeList(
             [In] IDXGIOutput1* This,
             [In] DXGI_FORMAT EnumFormat,
             [In, ComAliasName("UINT")] uint Flags,
@@ -105,7 +106,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int FindClosestMatchingMode(
+        public /* static */ delegate int _FindClosestMatchingMode(
             [In] IDXGIOutput1* This,
             [In] DXGI_MODE_DESC* pModeToMatch,
             [Out] DXGI_MODE_DESC* pClosestMatch,
@@ -115,14 +116,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int WaitForVBlank(
+        public /* static */ delegate int _WaitForVBlank(
             [In] IDXGIOutput1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int TakeOwnership(
+        public /* static */ delegate int _TakeOwnership(
             [In] IDXGIOutput1* This,
             [In] IUnknown* pDevice,
             [In, ComAliasName("BOOL")] int Exclusive
@@ -130,14 +131,14 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void ReleaseOwnership(
+        public /* static */ delegate void _ReleaseOwnership(
             [In] IDXGIOutput1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetGammaControlCapabilities(
+        public /* static */ delegate int _GetGammaControlCapabilities(
             [In] IDXGIOutput1* This,
             [Out] DXGI_GAMMA_CONTROL_CAPABILITIES* pGammaCaps
         );
@@ -145,7 +146,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetGammaControl(
+        public /* static */ delegate int _SetGammaControl(
             [In] IDXGIOutput1* This,
             [In] DXGI_GAMMA_CONTROL* pArray
         );
@@ -153,7 +154,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetGammaControl(
+        public /* static */ delegate int _GetGammaControl(
             [In] IDXGIOutput1* This,
             [Out] DXGI_GAMMA_CONTROL* pArray
         );
@@ -161,7 +162,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetDisplaySurface(
+        public /* static */ delegate int _SetDisplaySurface(
             [In] IDXGIOutput1* This,
             [In] IDXGISurface* pScanoutSurface
         );
@@ -169,7 +170,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetDisplaySurfaceData(
+        public /* static */ delegate int _GetDisplaySurfaceData(
             [In] IDXGIOutput1* This,
             [In] IDXGISurface* pDestination
         );
@@ -177,7 +178,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFrameStatistics(
+        public /* static */ delegate int _GetFrameStatistics(
             [In] IDXGIOutput1* This,
             [Out] DXGI_FRAME_STATISTICS* pStats
         );
@@ -187,7 +188,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetDisplayModeList1(
+        public /* static */ delegate int _GetDisplayModeList1(
             [In] IDXGIOutput1* This,
             [In] DXGI_FORMAT EnumFormat,
             [In, ComAliasName("UINT")] uint Flags,
@@ -198,7 +199,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int FindClosestMatchingMode1(
+        public /* static */ delegate int _FindClosestMatchingMode1(
             [In] IDXGIOutput1* This,
             [In] DXGI_MODE_DESC1* pModeToMatch,
             [Out] DXGI_MODE_DESC1* pClosestMatch,
@@ -208,7 +209,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetDisplaySurfaceData1(
+        public /* static */ delegate int _GetDisplaySurfaceData1(
             [In] IDXGIOutput1* This,
             [In] IDXGIResource* pDestination
         );
@@ -216,11 +217,366 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int DuplicateOutput(
+        public /* static */ delegate int _DuplicateOutput(
             [In] IDXGIOutput1* This,
             [In] IUnknown* pDevice,
             [Out] IDXGIOutputDuplication** ppOutputDuplication
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDXGIOutput1* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDXGIOutput1* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDXGIOutput1* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region IDXGIObject Methods
+        [return: ComAliasName("HRESULT")]
+        public int SetPrivateData(
+            [In, ComAliasName("REFGUID")] Guid* Name,
+            [In, ComAliasName("UINT")] uint DataSize,
+            [In] void* pData
+        )
+        {
+            fixed (IDXGIOutput1* This = &this)
+            {
+                return MarshalFunction<_SetPrivateData>(lpVtbl->SetPrivateData)(
+                    This,
+                    Name,
+                    DataSize,
+                    pData
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetPrivateDataInterface(
+            [In, ComAliasName("REFGUID")] Guid* Name,
+            [In] IUnknown* pUnknown = null
+        )
+        {
+            fixed (IDXGIOutput1* This = &this)
+            {
+                return MarshalFunction<_SetPrivateDataInterface>(lpVtbl->SetPrivateDataInterface)(
+                    This,
+                    Name,
+                    pUnknown
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetPrivateData(
+            [In, ComAliasName("REFGUID")] Guid* Name,
+            [In, Out, ComAliasName("UINT")] uint* pDataSize,
+            [Out] void* pData
+        )
+        {
+            fixed (IDXGIOutput1* This = &this)
+            {
+                return MarshalFunction<_GetPrivateData>(lpVtbl->GetPrivateData)(
+                    This,
+                    Name,
+                    pDataSize,
+                    pData
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetParent(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppParent
+        )
+        {
+            fixed (IDXGIOutput1* This = &this)
+            {
+                return MarshalFunction<_GetParent>(lpVtbl->GetParent)(
+                    This,
+                    riid,
+                    ppParent
+                );
+            }
+        }
+        #endregion
+
+        #region IDXGIOutput Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetDesc(
+            [Out] DXGI_OUTPUT_DESC* pDesc
+        )
+        {
+            fixed (IDXGIOutput1* This = &this)
+            {
+                return MarshalFunction<_GetDesc>(lpVtbl->GetDesc)(
+                    This,
+                    pDesc
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetDisplayModeList(
+            [In] DXGI_FORMAT EnumFormat,
+            [In, ComAliasName("UINT")] uint Flags,
+            [In, Out, ComAliasName("UINT")] uint* pNumModes,
+            [Out, ComAliasName("DXGI_MODE_DESC[]")] DXGI_MODE_DESC* pDesc = null
+        )
+        {
+            fixed (IDXGIOutput1* This = &this)
+            {
+                return MarshalFunction<_GetDisplayModeList>(lpVtbl->GetDisplayModeList)(
+                    This,
+                    EnumFormat,
+                    Flags,
+                    pNumModes,
+                    pDesc
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int FindClosestMatchingMode(
+            [In] DXGI_MODE_DESC* pModeToMatch,
+            [Out] DXGI_MODE_DESC* pClosestMatch,
+            [In] IUnknown* pConcernedDevice = null
+        )
+        {
+            fixed (IDXGIOutput1* This = &this)
+            {
+                return MarshalFunction<_FindClosestMatchingMode>(lpVtbl->FindClosestMatchingMode)(
+                    This,
+                    pModeToMatch,
+                    pClosestMatch,
+                    pConcernedDevice
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int WaitForVBlank()
+        {
+            fixed (IDXGIOutput1* This = &this)
+            {
+                return MarshalFunction<_WaitForVBlank>(lpVtbl->WaitForVBlank)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int TakeOwnership(
+            [In] IUnknown* pDevice,
+            [In, ComAliasName("BOOL")] int Exclusive
+        )
+        {
+            fixed (IDXGIOutput1* This = &this)
+            {
+                return MarshalFunction<_TakeOwnership>(lpVtbl->TakeOwnership)(
+                    This,
+                    pDevice,
+                    Exclusive
+                );
+            }
+        }
+
+        public void ReleaseOwnership()
+        {
+            fixed (IDXGIOutput1* This = &this)
+            {
+                MarshalFunction<_ReleaseOwnership>(lpVtbl->ReleaseOwnership)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetGammaControlCapabilities(
+            [Out] DXGI_GAMMA_CONTROL_CAPABILITIES* pGammaCaps
+        )
+        {
+            fixed (IDXGIOutput1* This = &this)
+            {
+                return MarshalFunction<_GetGammaControlCapabilities>(lpVtbl->GetGammaControlCapabilities)(
+                    This,
+                    pGammaCaps
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetGammaControl(
+            [In] DXGI_GAMMA_CONTROL* pArray
+        )
+        {
+            fixed (IDXGIOutput1* This = &this)
+            {
+                return MarshalFunction<_SetGammaControl>(lpVtbl->SetGammaControl)(
+                    This,
+                    pArray
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetGammaControl(
+            [Out] DXGI_GAMMA_CONTROL* pArray
+        )
+        {
+            fixed (IDXGIOutput1* This = &this)
+            {
+                return MarshalFunction<_GetGammaControl>(lpVtbl->GetGammaControl)(
+                    This,
+                    pArray
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetDisplaySurface(
+            [In] IDXGISurface* pScanoutSurface
+        )
+        {
+            fixed (IDXGIOutput1* This = &this)
+            {
+                return MarshalFunction<_SetDisplaySurface>(lpVtbl->SetDisplaySurface)(
+                    This,
+                    pScanoutSurface
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetDisplaySurfaceData(
+            [In] IDXGISurface* pDestination
+        )
+        {
+            fixed (IDXGIOutput1* This = &this)
+            {
+                return MarshalFunction<_GetDisplaySurfaceData>(lpVtbl->GetDisplaySurfaceData)(
+                    This,
+                    pDestination
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetFrameStatistics(
+            [Out] DXGI_FRAME_STATISTICS* pStats
+        )
+        {
+            fixed (IDXGIOutput1* This = &this)
+            {
+                return MarshalFunction<_GetFrameStatistics>(lpVtbl->GetFrameStatistics)(
+                    This,
+                    pStats
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetDisplayModeList1(
+            [In] DXGI_FORMAT EnumFormat,
+            [In, ComAliasName("UINT")] uint Flags,
+            [In, Out, ComAliasName("UINT")] uint* pNumModes,
+            [Out] DXGI_MODE_DESC1* pDesc = null
+        )
+        {
+            fixed (IDXGIOutput1* This = &this)
+            {
+                return MarshalFunction<_GetDisplayModeList1>(lpVtbl->GetDisplayModeList1)(
+                    This,
+                    EnumFormat,
+                    Flags,
+                    pNumModes,
+                    pDesc
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int FindClosestMatchingMode1(
+            [In] DXGI_MODE_DESC1* pModeToMatch,
+            [Out] DXGI_MODE_DESC1* pClosestMatch,
+            [In] IUnknown* pConcernedDevice = null
+        )
+        {
+            fixed (IDXGIOutput1* This = &this)
+            {
+                return MarshalFunction<_FindClosestMatchingMode1>(lpVtbl->FindClosestMatchingMode1)(
+                    This,
+                    pModeToMatch,
+                    pClosestMatch,
+                    pConcernedDevice
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetDisplaySurfaceData1(
+            [In] IDXGIResource* pDestination
+        )
+        {
+            fixed (IDXGIOutput1* This = &this)
+            {
+                return MarshalFunction<_GetDisplaySurfaceData1>(lpVtbl->GetDisplaySurfaceData1)(
+                    This,
+                    pDestination
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int DuplicateOutput(
+            [In] IUnknown* pDevice,
+            [Out] IDXGIOutputDuplication** ppOutputDuplication
+        )
+        {
+            fixed (IDXGIOutput1* This = &this)
+            {
+                return MarshalFunction<_DuplicateOutput>(lpVtbl->DuplicateOutput)(
+                    This,
+                    pDevice,
+                    ppOutputDuplication
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -283,3 +639,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ID2D1EffectContext2* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ID2D1EffectContext2* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ID2D1EffectContext2* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         #region ID2D1EffectContext Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetDpi(
+        public /* static */ delegate void _GetDpi(
             [In] ID2D1EffectContext2* This,
             [Out, ComAliasName("FLOAT")] float* dpiX,
             [Out, ComAliasName("FLOAT")] float* dpiY
@@ -55,7 +56,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateEffect(
+        public /* static */ delegate int _CreateEffect(
             [In] ID2D1EffectContext2* This,
             [In, ComAliasName("REFCLSID")] Guid* effectId,
             [Out] ID2D1Effect** effect
@@ -64,7 +65,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetMaximumSupportedFeatureLevel(
+        public /* static */ delegate int _GetMaximumSupportedFeatureLevel(
             [In] ID2D1EffectContext2* This,
             [In, ComAliasName("D3D_FEATURE_LEVEL[]")] D3D_FEATURE_LEVEL* featureLevels,
             [In, ComAliasName("UINT32")] uint featureLevelsCount,
@@ -75,7 +76,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateTransformNodeFromEffect(
+        public /* static */ delegate int _CreateTransformNodeFromEffect(
             [In] ID2D1EffectContext2* This,
             [In] ID2D1Effect* effect,
             [Out] ID2D1TransformNode** transformNode
@@ -84,7 +85,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateBlendTransform(
+        public /* static */ delegate int _CreateBlendTransform(
             [In] ID2D1EffectContext2* This,
             [In, ComAliasName("UINT32")] uint numInputs,
             [In] D2D1_BLEND_DESCRIPTION* blendDescription,
@@ -94,7 +95,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateBorderTransform(
+        public /* static */ delegate int _CreateBorderTransform(
             [In] ID2D1EffectContext2* This,
             [In] D2D1_EXTEND_MODE extendModeX,
             [In] D2D1_EXTEND_MODE extendModeY,
@@ -104,7 +105,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateOffsetTransform(
+        public /* static */ delegate int _CreateOffsetTransform(
             [In] ID2D1EffectContext2* This,
             [In, ComAliasName("D2D1_POINT_2L")] POINT offset,
             [Out] ID2D1OffsetTransform** transform
@@ -113,7 +114,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateBoundsAdjustmentTransform(
+        public /* static */ delegate int _CreateBoundsAdjustmentTransform(
             [In] ID2D1EffectContext2* This,
             [In, ComAliasName("D2D1_RECT_L")] RECT* outputRectangle,
             [Out] ID2D1BoundsAdjustmentTransform** transform
@@ -122,7 +123,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int LoadPixelShader(
+        public /* static */ delegate int _LoadPixelShader(
             [In] ID2D1EffectContext2* This,
             [In, ComAliasName("REFGUID")] Guid* shaderId,
             [In, ComAliasName("BYTE[]")] byte* shaderBuffer,
@@ -132,7 +133,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int LoadVertexShader(
+        public /* static */ delegate int _LoadVertexShader(
             [In] ID2D1EffectContext2* This,
             [In, ComAliasName("REFGUID")] Guid* resourceId,
             [In, ComAliasName("BYTE[]")] byte* shaderBuffer,
@@ -142,7 +143,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int LoadComputeShader(
+        public /* static */ delegate int _LoadComputeShader(
             [In] ID2D1EffectContext2* This,
             [In, ComAliasName("REFGUID")] Guid* resourceId,
             [In, ComAliasName("BYTE[]")]  byte* shaderBuffer,
@@ -152,7 +153,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("BOOL")]
-        public /* static */ delegate int IsShaderLoaded(
+        public /* static */ delegate int _IsShaderLoaded(
             [In] ID2D1EffectContext2* This,
             [In, ComAliasName("REFGUID")] Guid* shaderId
         );
@@ -160,7 +161,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateResourceTexture(
+        public /* static */ delegate int _CreateResourceTexture(
             [In] ID2D1EffectContext2* This,
             [In, Optional, ComAliasName("GUID")] Guid* resourceId,
             [In] D2D1_RESOURCE_TEXTURE_PROPERTIES* resourceTextureProperties,
@@ -173,7 +174,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int FindResourceTexture(
+        public /* static */ delegate int _FindResourceTexture(
             [In] ID2D1EffectContext2* This,
             [In, ComAliasName("GUID")] Guid* resourceId,
             [Out] ID2D1ResourceTexture** resourceTexture
@@ -182,7 +183,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateVertexBuffer(
+        public /* static */ delegate int _CreateVertexBuffer(
             [In] ID2D1EffectContext2* This,
             [In] D2D1_VERTEX_BUFFER_PROPERTIES* vertexBufferProperties,
             [In, Optional, ComAliasName("GUID")] Guid* resourceId,
@@ -193,7 +194,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int FindVertexBuffer(
+        public /* static */ delegate int _FindVertexBuffer(
             [In] ID2D1EffectContext2* This,
             [In, ComAliasName("GUID")] Guid* resourceId,
             [Out] ID2D1VertexBuffer** buffer
@@ -203,7 +204,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateColorContext(
+        public /* static */ delegate int _CreateColorContext(
             [In] ID2D1EffectContext2* This,
             [In] D2D1_COLOR_SPACE space,
             [In, Optional, ComAliasName("BYTE[]")] byte* profile,
@@ -214,7 +215,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateColorContextFromFilename(
+        public /* static */ delegate int _CreateColorContextFromFilename(
             [In] ID2D1EffectContext2* This,
             [In, ComAliasName("PCWSTR")] char* filename,
             [Out] ID2D1ColorContext** colorContext
@@ -223,7 +224,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateColorContextFromWicColorContext(
+        public /* static */ delegate int _CreateColorContextFromWicColorContext(
             [In] ID2D1EffectContext2* This,
             [In] IWICColorContext* wicColorContext,
             [Out] ID2D1ColorContext** colorContext
@@ -232,7 +233,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CheckFeatureSupport(
+        public /* static */ delegate int _CheckFeatureSupport(
             [In] ID2D1EffectContext2* This,
             [In] D2D1_FEATURE feature,
             [Out] void* featureSupportData,
@@ -243,7 +244,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("BOOL")]
-        public /* static */ delegate int IsBufferPrecisionSupported(
+        public /* static */ delegate int _IsBufferPrecisionSupported(
             [In] ID2D1EffectContext2* This,
             [In] D2D1_BUFFER_PRECISION bufferPrecision
         );
@@ -254,7 +255,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateLookupTable3D(
+        public /* static */ delegate int _CreateLookupTable3D(
             [In] ID2D1EffectContext2* This,
             [In] D2D1_BUFFER_PRECISION precision,
             [In, ComAliasName("UINT32[]")] uint* extents,
@@ -270,7 +271,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateColorContextFromDxgiColorSpace(
+        public /* static */ delegate int _CreateColorContextFromDxgiColorSpace(
             [In] ID2D1EffectContext2* This,
             [In] DXGI_COLOR_SPACE_TYPE colorSpace,
             [Out] ID2D1ColorContext1** colorContext
@@ -280,11 +281,474 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateColorContextFromSimpleColorProfile(
+        public /* static */ delegate int _CreateColorContextFromSimpleColorProfile(
             [In] ID2D1EffectContext2* This,
             [In] D2D1_SIMPLE_COLOR_PROFILE* simpleProfile,
             [Out] ID2D1ColorContext1** colorContext
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1EffectContext Methods
+        public void GetDpi(
+            [Out, ComAliasName("FLOAT")] float* dpiX,
+            [Out, ComAliasName("FLOAT")] float* dpiY
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                MarshalFunction<_GetDpi>(lpVtbl->GetDpi)(
+                    This,
+                    dpiX,
+                    dpiY
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateEffect(
+            [In, ComAliasName("REFCLSID")] Guid* effectId,
+            [Out] ID2D1Effect** effect
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_CreateEffect>(lpVtbl->CreateEffect)(
+                    This,
+                    effectId,
+                    effect
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetMaximumSupportedFeatureLevel(
+            [In, ComAliasName("D3D_FEATURE_LEVEL[]")] D3D_FEATURE_LEVEL* featureLevels,
+            [In, ComAliasName("UINT32")] uint featureLevelsCount,
+            [Out] D3D_FEATURE_LEVEL* maximumSupportedFeatureLevel
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_GetMaximumSupportedFeatureLevel>(lpVtbl->GetMaximumSupportedFeatureLevel)(
+                    This,
+                    featureLevels,
+                    featureLevelsCount,
+                    maximumSupportedFeatureLevel
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateTransformNodeFromEffect(
+            [In] ID2D1Effect* effect,
+            [Out] ID2D1TransformNode** transformNode
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_CreateTransformNodeFromEffect>(lpVtbl->CreateTransformNodeFromEffect)(
+                    This,
+                    effect,
+                    transformNode
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateBlendTransform(
+            [In, ComAliasName("UINT32")] uint numInputs,
+            [In] D2D1_BLEND_DESCRIPTION* blendDescription,
+            [Out] ID2D1BlendTransform** transform
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_CreateBlendTransform>(lpVtbl->CreateBlendTransform)(
+                    This,
+                    numInputs,
+                    blendDescription,
+                    transform
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateBorderTransform(
+            [In] D2D1_EXTEND_MODE extendModeX,
+            [In] D2D1_EXTEND_MODE extendModeY,
+            [Out] ID2D1BorderTransform** transform
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_CreateBorderTransform>(lpVtbl->CreateBorderTransform)(
+                    This,
+                    extendModeX,
+                    extendModeY,
+                    transform
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateOffsetTransform(
+            [In, ComAliasName("D2D1_POINT_2L")] POINT offset,
+            [Out] ID2D1OffsetTransform** transform
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_CreateOffsetTransform>(lpVtbl->CreateOffsetTransform)(
+                    This,
+                    offset,
+                    transform
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateBoundsAdjustmentTransform(
+            [In, ComAliasName("D2D1_RECT_L")] RECT* outputRectangle,
+            [Out] ID2D1BoundsAdjustmentTransform** transform
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_CreateBoundsAdjustmentTransform>(lpVtbl->CreateBoundsAdjustmentTransform)(
+                    This,
+                    outputRectangle,
+                    transform
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int LoadPixelShader(
+            [In, ComAliasName("REFGUID")] Guid* shaderId,
+            [In, ComAliasName("BYTE[]")] byte* shaderBuffer,
+            [In, ComAliasName("UINT32")] uint shaderBufferCount
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_LoadPixelShader>(lpVtbl->LoadPixelShader)(
+                    This,
+                    shaderId,
+                    shaderBuffer,
+                    shaderBufferCount
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int LoadVertexShader(
+            [In, ComAliasName("REFGUID")] Guid* resourceId,
+            [In, ComAliasName("BYTE[]")] byte* shaderBuffer,
+            [In, ComAliasName("UINT32")] uint shaderBufferCount
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_LoadVertexShader>(lpVtbl->LoadVertexShader)(
+                    This,
+                    resourceId,
+                    shaderBuffer,
+                    shaderBufferCount
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int LoadComputeShader(
+            [In, ComAliasName("REFGUID")] Guid* resourceId,
+            [In, ComAliasName("BYTE[]")]  byte* shaderBuffer,
+            [In, ComAliasName("UINT32")] uint shaderBufferCount
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_LoadComputeShader>(lpVtbl->LoadComputeShader)(
+                    This,
+                    resourceId,
+                    shaderBuffer,
+                    shaderBufferCount
+                );
+            }
+        }
+
+        [return: ComAliasName("BOOL")]
+        public int IsShaderLoaded(
+            [In, ComAliasName("REFGUID")] Guid* shaderId
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_IsShaderLoaded>(lpVtbl->IsShaderLoaded)(
+                    This,
+                    shaderId
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateResourceTexture(
+            [In, Optional, ComAliasName("GUID")] Guid* resourceId,
+            [In] D2D1_RESOURCE_TEXTURE_PROPERTIES* resourceTextureProperties,
+            [In, Optional, ComAliasName("BYTE[]")] byte* data,
+            [In, Optional, ComAliasName("UINT32[]")] uint* strides,
+            [In, ComAliasName("UINT32")] uint dataSize,
+            [Out] ID2D1ResourceTexture** resourceTexture
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_CreateResourceTexture>(lpVtbl->CreateResourceTexture)(
+                    This,
+                    resourceId,
+                    resourceTextureProperties,
+                    data,
+                    strides,
+                    dataSize,
+                    resourceTexture
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int FindResourceTexture(
+            [In, ComAliasName("GUID")] Guid* resourceId,
+            [Out] ID2D1ResourceTexture** resourceTexture
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_FindResourceTexture>(lpVtbl->FindResourceTexture)(
+                    This,
+                    resourceId,
+                    resourceTexture
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateVertexBuffer(
+            [In] D2D1_VERTEX_BUFFER_PROPERTIES* vertexBufferProperties,
+            [In, Optional, ComAliasName("GUID")] Guid* resourceId,
+            [In, Optional] D2D1_CUSTOM_VERTEX_BUFFER_PROPERTIES* customVertexBufferProperties,
+            [Out] ID2D1VertexBuffer** buffer
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_CreateVertexBuffer>(lpVtbl->CreateVertexBuffer)(
+                    This,
+                    vertexBufferProperties,
+                    resourceId,
+                    customVertexBufferProperties,
+                    buffer
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int FindVertexBuffer(
+            [In, ComAliasName("GUID")] Guid* resourceId,
+            [Out] ID2D1VertexBuffer** buffer
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_FindVertexBuffer>(lpVtbl->FindVertexBuffer)(
+                    This,
+                    resourceId,
+                    buffer
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateColorContext(
+            [In] D2D1_COLOR_SPACE space,
+            [In, Optional, ComAliasName("BYTE[]")] byte* profile,
+            [In, ComAliasName("UINT32")] uint profileSize,
+            [Out] ID2D1ColorContext** colorContext
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_CreateColorContext>(lpVtbl->CreateColorContext)(
+                    This,
+                    space,
+                    profile,
+                    profileSize,
+                    colorContext
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateColorContextFromFilename(
+            [In, ComAliasName("PCWSTR")] char* filename,
+            [Out] ID2D1ColorContext** colorContext
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_CreateColorContextFromFilename>(lpVtbl->CreateColorContextFromFilename)(
+                    This,
+                    filename,
+                    colorContext
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateColorContextFromWicColorContext(
+            [In] IWICColorContext* wicColorContext,
+            [Out] ID2D1ColorContext** colorContext
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_CreateColorContextFromWicColorContext>(lpVtbl->CreateColorContextFromWicColorContext)(
+                    This,
+                    wicColorContext,
+                    colorContext
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CheckFeatureSupport(
+            [In] D2D1_FEATURE feature,
+            [Out] void* featureSupportData,
+            [In, ComAliasName("UINT32")] uint featureSupportDataSize
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_CheckFeatureSupport>(lpVtbl->CheckFeatureSupport)(
+                    This,
+                    feature,
+                    featureSupportData,
+                    featureSupportDataSize
+                );
+            }
+        }
+
+        [return: ComAliasName("BOOL")]
+        public int IsBufferPrecisionSupported(
+            [In] D2D1_BUFFER_PRECISION bufferPrecision
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_IsBufferPrecisionSupported>(lpVtbl->IsBufferPrecisionSupported)(
+                    This,
+                    bufferPrecision
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1EffectContext1 Methods
+        [return: ComAliasName("HRESULT")]
+        public int CreateLookupTable3D(
+            [In] D2D1_BUFFER_PRECISION precision,
+            [In, ComAliasName("UINT32[]")] uint* extents,
+            [In, ComAliasName("BYTE[]")] byte* data,
+            [In, ComAliasName("UINT32")] uint dataCount,
+            [In, ComAliasName("UINT32[]")] uint* strides,
+            [Out] ID2D1LookupTable3D** lookupTable
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_CreateLookupTable3D>(lpVtbl->CreateLookupTable3D)(
+                    This,
+                    precision,
+                    extents,
+                    data,
+                    dataCount,
+                    strides,
+                    lookupTable
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int CreateColorContextFromDxgiColorSpace(
+            [In] DXGI_COLOR_SPACE_TYPE colorSpace,
+            [Out] ID2D1ColorContext1** colorContext
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_CreateColorContextFromDxgiColorSpace>(lpVtbl->CreateColorContextFromDxgiColorSpace)(
+                    This,
+                    colorSpace,
+                    colorContext
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateColorContextFromSimpleColorProfile(
+            [In] D2D1_SIMPLE_COLOR_PROFILE* simpleProfile,
+            [Out] ID2D1ColorContext1** colorContext
+        )
+        {
+            fixed (ID2D1EffectContext2* This = &this)
+            {
+                return MarshalFunction<_CreateColorContextFromSimpleColorProfile>(lpVtbl->CreateColorContextFromSimpleColorProfile)(
+                    This,
+                    simpleProfile,
+                    colorContext
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -355,3 +819,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

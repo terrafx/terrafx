@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDWriteBitmapRenderTarget1* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDWriteBitmapRenderTarget1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDWriteBitmapRenderTarget1* This
         );
         #endregion
@@ -55,7 +56,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int DrawGlyphRun(
+        public /* static */ delegate int _DrawGlyphRun(
             [In] IDWriteBitmapRenderTarget1* This,
             [In, ComAliasName("FLOAT")] float baselineOriginX,
             [In, ComAliasName("FLOAT")] float baselineOriginY,
@@ -72,7 +73,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HDC")]
-        public /* static */ delegate IntPtr GetMemoryDC(
+        public /* static */ delegate IntPtr _GetMemoryDC(
             [In] IDWriteBitmapRenderTarget1* This
         );
 
@@ -81,7 +82,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("FLOAT")]
-        public /* static */ delegate float GetPixelsPerDip(
+        public /* static */ delegate float _GetPixelsPerDip(
             [In] IDWriteBitmapRenderTarget1* This
         );
 
@@ -91,7 +92,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetPixelsPerDip(
+        public /* static */ delegate int _SetPixelsPerDip(
             [In] IDWriteBitmapRenderTarget1* This,
             [In, ComAliasName("FLOAT")] float pixelsPerDip
         );
@@ -102,7 +103,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetCurrentTransform(
+        public /* static */ delegate int _GetCurrentTransform(
             [In] IDWriteBitmapRenderTarget1* This,
             [Out] DWRITE_MATRIX* transform
         );
@@ -113,7 +114,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetCurrentTransform(
+        public /* static */ delegate int _SetCurrentTransform(
             [In] IDWriteBitmapRenderTarget1* This,
             [In] DWRITE_MATRIX* transform = null
         );
@@ -124,7 +125,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetSize(
+        public /* static */ delegate int _GetSize(
             [In] IDWriteBitmapRenderTarget1* This,
             [Out] SIZE* size
         );
@@ -136,7 +137,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Resize(
+        public /* static */ delegate int _Resize(
             [In] IDWriteBitmapRenderTarget1* This,
             [In, ComAliasName("UINT32")] uint width,
             [In, ComAliasName("UINT32")] uint height
@@ -148,7 +149,7 @@ namespace TerraFX.Interop
         /// <returns> Returns the antialiasing mode.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate DWRITE_TEXT_ANTIALIAS_MODE GetTextAntialiasMode(
+        public /* static */ delegate DWRITE_TEXT_ANTIALIAS_MODE _GetTextAntialiasMode(
             [In] IDWriteBitmapRenderTarget1* This
         );
 
@@ -158,10 +159,198 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetTextAntialiasMode(
+        public /* static */ delegate int _SetTextAntialiasMode(
             [In] IDWriteBitmapRenderTarget1* This,
             [In] DWRITE_TEXT_ANTIALIAS_MODE antialiasMode
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDWriteBitmapRenderTarget1* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDWriteBitmapRenderTarget1* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDWriteBitmapRenderTarget1* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region IDWriteBitmapRenderTarget Methods
+        [return: ComAliasName("HRESULT")]
+        public int DrawGlyphRun(
+            [In, ComAliasName("FLOAT")] float baselineOriginX,
+            [In, ComAliasName("FLOAT")] float baselineOriginY,
+            [In] DWRITE_MEASURING_MODE measuringMode,
+            [In] DWRITE_GLYPH_RUN* glyphRun,
+            [In] IDWriteRenderingParams* renderingParams,
+            [In, ComAliasName("COLORREF")] uint textColor,
+            [Out] RECT* blackBoxRect = null
+        )
+        {
+            fixed (IDWriteBitmapRenderTarget1* This = &this)
+            {
+                return MarshalFunction<_DrawGlyphRun>(lpVtbl->DrawGlyphRun)(
+                    This,
+                    baselineOriginX,
+                    baselineOriginY,
+                    measuringMode,
+                    glyphRun,
+                    renderingParams,
+                    textColor,
+                    blackBoxRect
+                );
+            }
+        }
+
+        [return: ComAliasName("HDC")]
+        public IntPtr GetMemoryDC()
+        {
+            fixed (IDWriteBitmapRenderTarget1* This = &this)
+            {
+                return MarshalFunction<_GetMemoryDC>(lpVtbl->GetMemoryDC)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("FLOAT")]
+        public float GetPixelsPerDip()
+        {
+            fixed (IDWriteBitmapRenderTarget1* This = &this)
+            {
+                return MarshalFunction<_GetPixelsPerDip>(lpVtbl->GetPixelsPerDip)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetPixelsPerDip(
+            [In, ComAliasName("FLOAT")] float pixelsPerDip
+        )
+        {
+            fixed (IDWriteBitmapRenderTarget1* This = &this)
+            {
+                return MarshalFunction<_SetPixelsPerDip>(lpVtbl->SetPixelsPerDip)(
+                    This,
+                    pixelsPerDip
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetCurrentTransform(
+            [Out] DWRITE_MATRIX* transform
+        )
+        {
+            fixed (IDWriteBitmapRenderTarget1* This = &this)
+            {
+                return MarshalFunction<_GetCurrentTransform>(lpVtbl->GetCurrentTransform)(
+                    This,
+                    transform
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetCurrentTransform(
+            [In] DWRITE_MATRIX* transform = null
+        )
+        {
+            fixed (IDWriteBitmapRenderTarget1* This = &this)
+            {
+                return MarshalFunction<_SetCurrentTransform>(lpVtbl->SetCurrentTransform)(
+                    This,
+                    transform
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetSize(
+            [Out] SIZE* size
+        )
+        {
+            fixed (IDWriteBitmapRenderTarget1* This = &this)
+            {
+                return MarshalFunction<_GetSize>(lpVtbl->GetSize)(
+                    This,
+                    size
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int Resize(
+            [In, ComAliasName("UINT32")] uint width,
+            [In, ComAliasName("UINT32")] uint height
+        )
+        {
+            fixed (IDWriteBitmapRenderTarget1* This = &this)
+            {
+                return MarshalFunction<_Resize>(lpVtbl->Resize)(
+                    This,
+                    width,
+                    height
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        public DWRITE_TEXT_ANTIALIAS_MODE GetTextAntialiasMode()
+        {
+            fixed (IDWriteBitmapRenderTarget1* This = &this)
+            {
+                return MarshalFunction<_GetTextAntialiasMode>(lpVtbl->GetTextAntialiasMode)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetTextAntialiasMode(
+            [In] DWRITE_TEXT_ANTIALIAS_MODE antialiasMode
+        )
+        {
+            fixed (IDWriteBitmapRenderTarget1* This = &this)
+            {
+                return MarshalFunction<_SetTextAntialiasMode>(lpVtbl->SetTextAntialiasMode)(
+                    This,
+                    antialiasMode
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -202,3 +391,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDWriteInlineObject* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDWriteInlineObject* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDWriteInlineObject* This
         );
         #endregion
@@ -55,7 +56,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Draw(
+        public /* static */ delegate int _Draw(
             [In] IDWriteInlineObject* This,
             [In, Optional] void* clientDrawingContext,
             [In] IDWriteTextRenderer* renderer,
@@ -72,7 +73,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetMetrics(
+        public /* static */ delegate int _GetMetrics(
             [In] IDWriteInlineObject* This,
             [Out] DWRITE_INLINE_OBJECT_METRICS* metrics
         );
@@ -84,7 +85,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetOverhangMetrics(
+        public /* static */ delegate int _GetOverhangMetrics(
             [In] IDWriteInlineObject* This,
             [Out] DWRITE_OVERHANG_METRICS* overhangs
         );
@@ -96,11 +97,123 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetBreakConditions(
+        public /* static */ delegate int _GetBreakConditions(
             [In] IDWriteInlineObject* This,
             [Out] DWRITE_BREAK_CONDITION* breakConditionBefore,
             [Out] DWRITE_BREAK_CONDITION* breakConditionAfter
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDWriteInlineObject* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDWriteInlineObject* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDWriteInlineObject* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int Draw(
+            [In, Optional] void* clientDrawingContext,
+            [In] IDWriteTextRenderer* renderer,
+            [In, ComAliasName("FLOAT")] float originX,
+            [In, ComAliasName("FLOAT")] float originY,
+            [In, ComAliasName("BOOL")] int isSideways,
+            [In, ComAliasName("BOOL")] int isRightToLeft,
+            [In] IUnknown* clientDrawingEffect = null
+        )
+        {
+            fixed (IDWriteInlineObject* This = &this)
+            {
+                return MarshalFunction<_Draw>(lpVtbl->Draw)(
+                    This,
+                    clientDrawingContext,
+                    renderer,
+                    originX,
+                    originY,
+                    isSideways,
+                    isRightToLeft,
+                    clientDrawingEffect
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetMetrics(
+            [Out] DWRITE_INLINE_OBJECT_METRICS* metrics
+        )
+        {
+            fixed (IDWriteInlineObject* This = &this)
+            {
+                return MarshalFunction<_GetMetrics>(lpVtbl->GetMetrics)(
+                    This,
+                    metrics
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetOverhangMetrics(
+            [Out] DWRITE_OVERHANG_METRICS* overhangs
+        )
+        {
+            fixed (IDWriteInlineObject* This = &this)
+            {
+                return MarshalFunction<_GetOverhangMetrics>(lpVtbl->GetOverhangMetrics)(
+                    This,
+                    overhangs
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetBreakConditions(
+            [Out] DWRITE_BREAK_CONDITION* breakConditionBefore,
+            [Out] DWRITE_BREAK_CONDITION* breakConditionAfter
+        )
+        {
+            fixed (IDWriteInlineObject* This = &this)
+            {
+                return MarshalFunction<_GetBreakConditions>(lpVtbl->GetBreakConditions)(
+                    This,
+                    breakConditionBefore,
+                    breakConditionAfter
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -127,3 +240,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

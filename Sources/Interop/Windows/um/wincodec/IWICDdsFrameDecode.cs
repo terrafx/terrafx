@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IWICDdsFrameDecode* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IWICDdsFrameDecode* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IWICDdsFrameDecode* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetSizeInBlocks(
+        public /* static */ delegate int _GetSizeInBlocks(
             [In] IWICDdsFrameDecode* This,
             [Out, ComAliasName("UINT")] uint* pWidthInBlocks,
             [Out, ComAliasName("UINT")] uint* pHeightInBlocks
@@ -54,7 +55,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFormatInfo(
+        public /* static */ delegate int _GetFormatInfo(
             [In] IWICDdsFrameDecode* This,
             [Out] WICDdsFormatInfo* pFormatInfo
         );
@@ -62,13 +63,105 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CopyBlocks(
+        public /* static */ delegate int _CopyBlocks(
             [In] IWICDdsFrameDecode* This,
             [In] WICRect* prcBoundsInBlocks,
             [In, ComAliasName("UINT")] uint cbStride,
             [In, ComAliasName("UINT")] uint cbBufferSize,
             [Out, ComAliasName("BYTE[]")] byte* pbBuffer
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IWICDdsFrameDecode* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IWICDdsFrameDecode* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IWICDdsFrameDecode* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetSizeInBlocks(
+            [Out, ComAliasName("UINT")] uint* pWidthInBlocks,
+            [Out, ComAliasName("UINT")] uint* pHeightInBlocks
+        )
+        {
+            fixed (IWICDdsFrameDecode* This = &this)
+            {
+                return MarshalFunction<_GetSizeInBlocks>(lpVtbl->GetSizeInBlocks)(
+                    This,
+                    pWidthInBlocks,
+                    pHeightInBlocks
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetFormatInfo(
+            [Out] WICDdsFormatInfo* pFormatInfo
+        )
+        {
+            fixed (IWICDdsFrameDecode* This = &this)
+            {
+                return MarshalFunction<_GetFormatInfo>(lpVtbl->GetFormatInfo)(
+                    This,
+                    pFormatInfo
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CopyBlocks(
+            [In] WICRect* prcBoundsInBlocks,
+            [In, ComAliasName("UINT")] uint cbStride,
+            [In, ComAliasName("UINT")] uint cbBufferSize,
+            [Out, ComAliasName("BYTE[]")] byte* pbBuffer
+        )
+        {
+            fixed (IWICDdsFrameDecode* This = &this)
+            {
+                return MarshalFunction<_CopyBlocks>(lpVtbl->CopyBlocks)(
+                    This,
+                    prcBoundsInBlocks,
+                    cbStride,
+                    cbBufferSize,
+                    pbBuffer
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -93,3 +186,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

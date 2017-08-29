@@ -57,8 +57,7 @@ namespace TerraFX.Samples.DirectX.D3D12
         {
             fixed (char* pName = name)
             {
-                var SetName = MarshalFunction<ID3D12Object.SetName>(pObject->lpVtbl->SetName);
-                SetName(pObject, pName);
+                pObject->SetName(pName);
             }
         }
 

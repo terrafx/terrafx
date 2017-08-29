@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDXGIFactory1* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDXGIFactory1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDXGIFactory1* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetPrivateData(
+        public /* static */ delegate int _SetPrivateData(
             [In] IDXGIFactory1* This,
             [In, ComAliasName("REFGUID")] Guid* Name,
             [In, ComAliasName("UINT")] uint DataSize,
@@ -55,7 +56,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetPrivateDataInterface(
+        public /* static */ delegate int _SetPrivateDataInterface(
             [In] IDXGIFactory1* This,
             [In, ComAliasName("REFGUID")] Guid* Name,
             [In] IUnknown* pUnknown = null
@@ -64,7 +65,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetPrivateData(
+        public /* static */ delegate int _GetPrivateData(
             [In] IDXGIFactory1* This,
             [In, ComAliasName("REFGUID")] Guid* Name,
             [In, Out, ComAliasName("UINT")] uint* pDataSize,
@@ -74,7 +75,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetParent(
+        public /* static */ delegate int _GetParent(
             [In] IDXGIFactory1* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppParent
@@ -85,7 +86,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int EnumAdapters(
+        public /* static */ delegate int _EnumAdapters(
             [In] IDXGIFactory1* This,
             [In, ComAliasName("UINT")] uint Adapter,
             [Out] IDXGIAdapter** ppAdapter
@@ -94,7 +95,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int MakeWindowAssociation(
+        public /* static */ delegate int _MakeWindowAssociation(
             [In] IDXGIFactory1* This,
             [In, ComAliasName("HWND")] IntPtr WindowHandle,
             [In, ComAliasName("UINT")] uint Flags
@@ -103,7 +104,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetWindowAssociation(
+        public /* static */ delegate int _GetWindowAssociation(
             [In] IDXGIFactory1* This,
             [Out, ComAliasName("HWND")] IntPtr* pWindowHandle
         );
@@ -111,7 +112,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateSwapChain(
+        public /* static */ delegate int _CreateSwapChain(
             [In] IDXGIFactory1* This,
             [In] IUnknown* pDevice,
             [In] DXGI_SWAP_CHAIN_DESC* pDesc,
@@ -121,7 +122,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateSoftwareAdapter(
+        public /* static */ delegate int _CreateSoftwareAdapter(
             [In] IDXGIFactory1* This,
             [In, ComAliasName("HMODULE")] IntPtr Module,
             [Out] IDXGIAdapter** ppAdapter
@@ -132,7 +133,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int EnumAdapters1(
+        public /* static */ delegate int _EnumAdapters1(
             [In] IDXGIFactory1* This,
             [In, ComAliasName("UINT")] uint Adapter,
             [Out] IDXGIAdapter1** ppAdapter
@@ -141,9 +142,230 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("BOOL")]
-        public /* static */ delegate int IsCurrent(
+        public /* static */ delegate int _IsCurrent(
             [In] IDXGIFactory1* This
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDXGIFactory1* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDXGIFactory1* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDXGIFactory1* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region IDXGIObject Methods
+        [return: ComAliasName("HRESULT")]
+        public int SetPrivateData(
+            [In, ComAliasName("REFGUID")] Guid* Name,
+            [In, ComAliasName("UINT")] uint DataSize,
+            [In] void* pData
+        )
+        {
+            fixed (IDXGIFactory1* This = &this)
+            {
+                return MarshalFunction<_SetPrivateData>(lpVtbl->SetPrivateData)(
+                    This,
+                    Name,
+                    DataSize,
+                    pData
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetPrivateDataInterface(
+            [In, ComAliasName("REFGUID")] Guid* Name,
+            [In] IUnknown* pUnknown = null
+        )
+        {
+            fixed (IDXGIFactory1* This = &this)
+            {
+                return MarshalFunction<_SetPrivateDataInterface>(lpVtbl->SetPrivateDataInterface)(
+                    This,
+                    Name,
+                    pUnknown
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetPrivateData(
+            [In, ComAliasName("REFGUID")] Guid* Name,
+            [In, Out, ComAliasName("UINT")] uint* pDataSize,
+            [Out] void* pData
+        )
+        {
+            fixed (IDXGIFactory1* This = &this)
+            {
+                return MarshalFunction<_GetPrivateData>(lpVtbl->GetPrivateData)(
+                    This,
+                    Name,
+                    pDataSize,
+                    pData
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetParent(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppParent
+        )
+        {
+            fixed (IDXGIFactory1* This = &this)
+            {
+                return MarshalFunction<_GetParent>(lpVtbl->GetParent)(
+                    This,
+                    riid,
+                    ppParent
+                );
+            }
+        }
+        #endregion
+
+        #region IDXGIFactory Methods
+        [return: ComAliasName("HRESULT")]
+        public int EnumAdapters(
+            [In, ComAliasName("UINT")] uint Adapter,
+            [Out] IDXGIAdapter** ppAdapter
+        )
+        {
+            fixed (IDXGIFactory1* This = &this)
+            {
+                return MarshalFunction<_EnumAdapters>(lpVtbl->EnumAdapters)(
+                    This,
+                    Adapter,
+                    ppAdapter
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int MakeWindowAssociation(
+            [In, ComAliasName("HWND")] IntPtr WindowHandle,
+            [In, ComAliasName("UINT")] uint Flags
+        )
+        {
+            fixed (IDXGIFactory1* This = &this)
+            {
+                return MarshalFunction<_MakeWindowAssociation>(lpVtbl->MakeWindowAssociation)(
+                    This,
+                    WindowHandle,
+                    Flags
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetWindowAssociation(
+            [Out, ComAliasName("HWND")] IntPtr* pWindowHandle
+        )
+        {
+            fixed (IDXGIFactory1* This = &this)
+            {
+                return MarshalFunction<_GetWindowAssociation>(lpVtbl->GetWindowAssociation)(
+                    This,
+                    pWindowHandle
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateSwapChain(
+            [In] IUnknown* pDevice,
+            [In] DXGI_SWAP_CHAIN_DESC* pDesc,
+            [Out] IDXGISwapChain** ppSwapChain
+        )
+        {
+            fixed (IDXGIFactory1* This = &this)
+            {
+                return MarshalFunction<_CreateSwapChain>(lpVtbl->CreateSwapChain)(
+                    This,
+                    pDevice,
+                    pDesc,
+                    ppSwapChain
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateSoftwareAdapter(
+            [In, ComAliasName("HMODULE")] IntPtr Module,
+            [Out] IDXGIAdapter** ppAdapter
+        )
+        {
+            fixed (IDXGIFactory1* This = &this)
+            {
+                return MarshalFunction<_CreateSoftwareAdapter>(lpVtbl->CreateSoftwareAdapter)(
+                    This,
+                    Module,
+                    ppAdapter
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int EnumAdapters1(
+            [In, ComAliasName("UINT")] uint Adapter,
+            [Out] IDXGIAdapter1** ppAdapter
+        )
+        {
+            fixed (IDXGIFactory1* This = &this)
+            {
+                return MarshalFunction<_EnumAdapters1>(lpVtbl->EnumAdapters1)(
+                    This,
+                    Adapter,
+                    ppAdapter
+                );
+            }
+        }
+
+        [return: ComAliasName("BOOL")]
+        public int IsCurrent()
+        {
+            fixed (IDXGIFactory1* This = &this)
+            {
+                return MarshalFunction<_IsCurrent>(lpVtbl->IsCurrent)(
+                    This
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -188,3 +410,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

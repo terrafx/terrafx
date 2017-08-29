@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDWriteTextAnalysisSink* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDWriteTextAnalysisSink* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDWriteTextAnalysisSink* This
         );
         #endregion
@@ -51,7 +52,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetScriptAnalysis(
+        public /* static */ delegate int _SetScriptAnalysis(
             [In] IDWriteTextAnalysisSink* This,
             [In, ComAliasName("UINT32")] uint textPosition,
             [In, ComAliasName("UINT32")] uint textLength,
@@ -66,7 +67,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetLineBreakpoints(
+        public /* static */ delegate int _SetLineBreakpoints(
             [In] IDWriteTextAnalysisSink* This,
             [In, ComAliasName("UINT32")] uint textPosition,
             [In, ComAliasName("UINT32")] uint textLength,
@@ -82,7 +83,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetBidiLevel(
+        public /* static */ delegate int _SetBidiLevel(
             [In] IDWriteTextAnalysisSink* This,
             [In, ComAliasName("UINT32")] uint textPosition,
             [In, ComAliasName("UINT32")] uint textLength,
@@ -99,12 +100,128 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetNumberSubstitution(
+        public /* static */ delegate int _SetNumberSubstitution(
             [In] IDWriteTextAnalysisSink* This,
             [In, ComAliasName("UINT32")] uint textPosition,
             [In, ComAliasName("UINT32")] uint textLength,
             [In] IDWriteNumberSubstitution* numberSubstitution
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDWriteTextAnalysisSink* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDWriteTextAnalysisSink* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDWriteTextAnalysisSink* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int SetScriptAnalysis(
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [In, ComAliasName("UINT32")] uint textLength,
+            [In] DWRITE_SCRIPT_ANALYSIS* scriptAnalysis
+        )
+        {
+            fixed (IDWriteTextAnalysisSink* This = &this)
+            {
+                return MarshalFunction<_SetScriptAnalysis>(lpVtbl->SetScriptAnalysis)(
+                    This,
+                    textPosition,
+                    textLength,
+                    scriptAnalysis
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetLineBreakpoints(
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [In, ComAliasName("UINT32")] uint textLength,
+            [In] DWRITE_LINE_BREAKPOINT* lineBreakpoints
+        )
+        {
+            fixed (IDWriteTextAnalysisSink* This = &this)
+            {
+                return MarshalFunction<_SetLineBreakpoints>(lpVtbl->SetLineBreakpoints)(
+                    This,
+                    textPosition,
+                    textLength,
+                    lineBreakpoints
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetBidiLevel(
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [In, ComAliasName("UINT32")] uint textLength,
+            [In, ComAliasName("UINT8")] byte explicitLevel,
+            [In, ComAliasName("UINT8")] byte resolvedLevel
+        )
+        {
+            fixed (IDWriteTextAnalysisSink* This = &this)
+            {
+                return MarshalFunction<_SetBidiLevel>(lpVtbl->SetBidiLevel)(
+                    This,
+                    textPosition,
+                    textLength,
+                    explicitLevel,
+                    resolvedLevel
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetNumberSubstitution(
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [In, ComAliasName("UINT32")] uint textLength,
+            [In] IDWriteNumberSubstitution* numberSubstitution
+        )
+        {
+            fixed (IDWriteTextAnalysisSink* This = &this)
+            {
+                return MarshalFunction<_SetNumberSubstitution>(lpVtbl->SetNumberSubstitution)(
+                    This,
+                    textPosition,
+                    textLength,
+                    numberSubstitution
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -131,3 +248,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

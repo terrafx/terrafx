@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IWICDdsDecoder* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IWICDdsDecoder* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IWICDdsDecoder* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetParameters(
+        public /* static */ delegate int _GetParameters(
             [In] IWICDdsDecoder* This,
             [Out] WICDdsParameters* pParameters
         );
@@ -53,13 +54,89 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFrame(
+        public /* static */ delegate int _GetFrame(
             [In] IWICDdsDecoder* This,
             [In, ComAliasName("UINT")] uint arrayIndex,
             [In, ComAliasName("UINT")] uint mipLevel,
             [In, ComAliasName("UINT")] uint sliceIndex,
             [Out] IWICBitmapFrameDecode** ppIBitmapFrame = null
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IWICDdsDecoder* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IWICDdsDecoder* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IWICDdsDecoder* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetParameters(
+            [Out] WICDdsParameters* pParameters
+        )
+        {
+            fixed (IWICDdsDecoder* This = &this)
+            {
+                return MarshalFunction<_GetParameters>(lpVtbl->GetParameters)(
+                    This,
+                    pParameters
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetFrame(
+            [In, ComAliasName("UINT")] uint arrayIndex,
+            [In, ComAliasName("UINT")] uint mipLevel,
+            [In, ComAliasName("UINT")] uint sliceIndex,
+            [Out] IWICBitmapFrameDecode** ppIBitmapFrame = null
+        )
+        {
+            fixed (IWICDdsDecoder* This = &this)
+            {
+                return MarshalFunction<_GetFrame>(lpVtbl->GetFrame)(
+                    This,
+                    arrayIndex,
+                    mipLevel,
+                    sliceIndex,
+                    ppIBitmapFrame
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -82,3 +159,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

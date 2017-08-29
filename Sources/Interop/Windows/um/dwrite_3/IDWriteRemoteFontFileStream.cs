@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -22,7 +23,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDWriteRemoteFontFileStream* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -31,14 +32,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDWriteRemoteFontFileStream* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDWriteRemoteFontFileStream* This
         );
         #endregion
@@ -54,7 +55,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int ReadFileFragment(
+        public /* static */ delegate int _ReadFileFragment(
             [In] IDWriteRemoteFontFileStream* This,
             [Out] void** fragmentStart,
             [In, ComAliasName("UINT64")] ulong fileOffset,
@@ -66,9 +67,9 @@ namespace TerraFX.Interop
         /// <param name="fragmentContext">The client defined context of a font fragment returned from ReadFileFragment.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void ReleaseFileFragment(
+        public /* static */ delegate void _ReleaseFileFragment(
             [In] IDWriteRemoteFontFileStream* This,
-            void* fragmentContext
+            [In] void* fragmentContext
         );
 
         /// <summary>Obtains the total size of a file.</summary>
@@ -78,7 +79,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFileSize(
+        public /* static */ delegate int _GetFileSize(
             [In] IDWriteRemoteFontFileStream* This,
             [Out, ComAliasName("UINT64")] ulong* fileSize
         );
@@ -89,7 +90,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetLastWriteTime(
+        public /* static */ delegate int _GetLastWriteTime(
             [In] IDWriteRemoteFontFileStream* This,
             [Out, ComAliasName("UINT64")] ulong* lastWriteTime
         );
@@ -102,7 +103,8 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetLocalFileSize(
+        public /* static */ delegate int _GetLocalFileSize(
+            [In] IDWriteRemoteFontFileStream* This,
             [Out, ComAliasName("UINT64")] ulong* localFileSize
         );
 
@@ -115,7 +117,8 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFileFragmentLocality(
+        public /* static */ delegate int _GetFileFragmentLocality(
+            [In] IDWriteRemoteFontFileStream* This,
             [In, ComAliasName("UINT64")] ulong fileOffset,
             [In, ComAliasName("UINT64")] ulong fragmentSize,
             [Out, ComAliasName("BOOL")] int* isLocal,
@@ -126,7 +129,8 @@ namespace TerraFX.Interop
         /// <returns> Returns the locality enumeration (i.e., remote, partial, or local).</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate DWRITE_LOCALITY GetLocality(
+        public /* static */ delegate DWRITE_LOCALITY _GetLocality(
+            [In] IDWriteRemoteFontFileStream* This
         );
 
         /// <summary>BeginDownload begins downloading all or part of the font file.</summary>
@@ -137,12 +141,182 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int BeginDownload(
+        public /* static */ delegate int _BeginDownload(
+            [In] IDWriteRemoteFontFileStream* This,
             [In, ComAliasName("GUID")] Guid* downloadOperationID,
             [In, ComAliasName("DWRITE_FILE_FRAGMENT[]")] DWRITE_FILE_FRAGMENT* fileFragments,
             [In, ComAliasName("UINT32")] uint fragmentCount,
             [Out] IDWriteAsyncResult** asyncResult
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDWriteRemoteFontFileStream* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDWriteRemoteFontFileStream* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDWriteRemoteFontFileStream* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region IDWriteFontFileStream Methods
+        [return: ComAliasName("HRESULT")]
+        public int ReadFileFragment(
+            [Out] void** fragmentStart,
+            [In, ComAliasName("UINT64")] ulong fileOffset,
+            [In, ComAliasName("UINT64")] ulong fragmentSize,
+            [Out] void** fragmentContext
+        )
+        {
+            fixed (IDWriteRemoteFontFileStream* This = &this)
+            {
+                return MarshalFunction<_ReadFileFragment>(lpVtbl->ReadFileFragment)(
+                    This,
+                    fragmentStart,
+                    fileOffset,
+                    fragmentSize,
+                    fragmentContext
+                );
+            }
+        }
+
+        public void ReleaseFileFragment(
+            [In] void* fragmentContext
+        )
+        {
+            fixed (IDWriteRemoteFontFileStream* This = &this)
+            {
+                MarshalFunction<_ReleaseFileFragment>(lpVtbl->ReleaseFileFragment)(
+                    This,
+                    fragmentContext
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetFileSize(
+            [Out, ComAliasName("UINT64")] ulong* fileSize
+        )
+        {
+            fixed (IDWriteRemoteFontFileStream* This = &this)
+            {
+                return MarshalFunction<_GetFileSize>(lpVtbl->GetFileSize)(
+                    This,
+                    fileSize
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetLastWriteTime(
+            [Out, ComAliasName("UINT64")] ulong* lastWriteTime
+        )
+        {
+            fixed (IDWriteRemoteFontFileStream* This = &this)
+            {
+                return MarshalFunction<_GetLastWriteTime>(lpVtbl->GetLastWriteTime)(
+                    This,
+                    lastWriteTime
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetLocalFileSize(
+            [Out, ComAliasName("UINT64")] ulong* localFileSize
+        )
+        {
+            fixed (IDWriteRemoteFontFileStream* This = &this)
+            {
+                return MarshalFunction<_GetLocalFileSize>(lpVtbl->GetLocalFileSize)(
+                    This,
+                    localFileSize
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetFileFragmentLocality(
+            [In, ComAliasName("UINT64")] ulong fileOffset,
+            [In, ComAliasName("UINT64")] ulong fragmentSize,
+            [Out, ComAliasName("BOOL")] int* isLocal,
+            [Out, ComAliasName("UINT64")] ulong* partialSize
+        )
+        {
+            fixed (IDWriteRemoteFontFileStream* This = &this)
+            {
+                return MarshalFunction<_GetFileFragmentLocality>(lpVtbl->GetFileFragmentLocality)(
+                    This,
+                    fileOffset,
+                    fragmentSize,
+                    isLocal,
+                    partialSize
+                );
+            }
+        }
+
+        public DWRITE_LOCALITY GetLocality()
+        {
+            fixed (IDWriteRemoteFontFileStream* This = &this)
+            {
+                return MarshalFunction<_GetLocality>(lpVtbl->GetLocality)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int BeginDownload(
+            [In, ComAliasName("GUID")] Guid* downloadOperationID,
+            [In, ComAliasName("DWRITE_FILE_FRAGMENT[]")] DWRITE_FILE_FRAGMENT* fileFragments,
+            [In, ComAliasName("UINT32")] uint fragmentCount,
+            [Out] IDWriteAsyncResult** asyncResult
+        )
+        {
+            fixed (IDWriteRemoteFontFileStream* This = &this)
+            {
+                return MarshalFunction<_BeginDownload>(lpVtbl->BeginDownload)(
+                    This,
+                    downloadOperationID,
+                    fileFragments,
+                    fragmentCount,
+                    asyncResult
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -179,3 +353,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

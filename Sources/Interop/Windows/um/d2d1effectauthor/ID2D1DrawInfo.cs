@@ -7,6 +7,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Security;
 using static TerraFX.Interop.D2D1_PIXEL_OPTIONS;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -22,7 +23,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ID2D1DrawInfo* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -31,14 +32,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ID2D1DrawInfo* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ID2D1DrawInfo* This
         );
         #endregion
@@ -48,7 +49,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetInputDescription(
+        public /* static */ delegate int _SetInputDescription(
             [In] ID2D1DrawInfo* This,
             [In, ComAliasName("UINT32")] uint inputIndex,
             [In] D2D1_INPUT_DESCRIPTION inputDescription
@@ -58,7 +59,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetOutputBuffer(
+        public /* static */ delegate int _SetOutputBuffer(
             [In] ID2D1DrawInfo* This,
             [In] D2D1_BUFFER_PRECISION bufferPrecision,
             [In] D2D1_CHANNEL_DEPTH channelDepth
@@ -67,7 +68,7 @@ namespace TerraFX.Interop
         /// <summary>Controls whether the output of the associated transform is cached.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void SetCached(
+        public /* static */ delegate void _SetCached(
             [In] ID2D1DrawInfo* This,
             [In, ComAliasName("BOOL")] int isCached
         );
@@ -75,7 +76,7 @@ namespace TerraFX.Interop
         /// <summary>Provides a hint of the approximate shader instruction count per pixel.  If provided, it may improve performance when processing large images.  Instructions should be counted multiple times if occurring within loops.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void SetInstructionCountHint(
+        public /* static */ delegate void _SetInstructionCountHint(
             [In] ID2D1DrawInfo* This,
             [In, ComAliasName("UINT32")] uint instructionCount
         );
@@ -86,7 +87,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetPixelShaderConstantBuffer(
+        public /* static */ delegate int _SetPixelShaderConstantBuffer(
             [In] ID2D1DrawInfo* This,
             [In, ComAliasName("BYTE[]")] byte* buffer,
             [In, ComAliasName("UINT32")] uint bufferCount
@@ -96,7 +97,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetResourceTexture(
+        public /* static */ delegate int _SetResourceTexture(
             [In] ID2D1DrawInfo* This,
             [In, ComAliasName("UINT32")] uint textureIndex,
             [In] ID2D1ResourceTexture* resourceTexture
@@ -106,7 +107,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetVertexShaderConstantBuffer(
+        public /* static */ delegate int _SetVertexShaderConstantBuffer(
             [In] ID2D1DrawInfo* This,
             [In, ComAliasName("BYTE[]")] byte* buffer,
             [In, ComAliasName("UINT32")] uint bufferCount
@@ -116,7 +117,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetPixelShader(
+        public /* static */ delegate int _SetPixelShader(
             [In] ID2D1DrawInfo* This,
             [In, ComAliasName("REFGUID")] Guid* shaderId,
             [In] D2D1_PIXEL_OPTIONS pixelOptions = D2D1_PIXEL_OPTIONS_NONE
@@ -126,7 +127,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetVertexProcessing(
+        public /* static */ delegate int _SetVertexProcessing(
             [In] ID2D1DrawInfo* This,
             [In, Optional] ID2D1VertexBuffer* vertexBuffer,
             [In] D2D1_VERTEX_OPTIONS vertexOptions,
@@ -134,6 +135,194 @@ namespace TerraFX.Interop
             [In] D2D1_VERTEX_RANGE* vertexRange = null,
             [In, ComAliasName("GUID")] Guid* vertexShader = null
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ID2D1DrawInfo* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ID2D1DrawInfo* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ID2D1DrawInfo* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1RenderInfo Methods
+        [return: ComAliasName("HRESULT")]
+        public int SetInputDescription(
+            [In, ComAliasName("UINT32")] uint inputIndex,
+            [In] D2D1_INPUT_DESCRIPTION inputDescription
+        )
+        {
+            fixed (ID2D1DrawInfo* This = &this)
+            {
+                return MarshalFunction<_SetInputDescription>(lpVtbl->SetInputDescription)(
+                    This,
+                    inputIndex,
+                    inputDescription
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetOutputBuffer(
+            [In] D2D1_BUFFER_PRECISION bufferPrecision,
+            [In] D2D1_CHANNEL_DEPTH channelDepth
+        )
+        {
+            fixed (ID2D1DrawInfo* This = &this)
+            {
+                return MarshalFunction<_SetOutputBuffer>(lpVtbl->SetOutputBuffer)(
+                    This,
+                    bufferPrecision,
+                    channelDepth
+                );
+            }
+        }
+
+        public void SetCached(
+            [In, ComAliasName("BOOL")] int isCached
+        )
+        {
+            fixed (ID2D1DrawInfo* This = &this)
+            {
+                MarshalFunction<_SetCached>(lpVtbl->SetCached)(
+                    This,
+                    isCached
+                );
+            }
+        }
+
+        public void SetInstructionCountHint(
+            [In, ComAliasName("UINT32")] uint instructionCount
+        )
+        {
+            fixed (ID2D1DrawInfo* This = &this)
+            {
+                MarshalFunction<_SetInstructionCountHint>(lpVtbl->SetInstructionCountHint)(
+                    This,
+                    instructionCount
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int SetPixelShaderConstantBuffer(
+            [In, ComAliasName("BYTE[]")] byte* buffer,
+            [In, ComAliasName("UINT32")] uint bufferCount
+        )
+        {
+            fixed (ID2D1DrawInfo* This = &this)
+            {
+                return MarshalFunction<_SetPixelShaderConstantBuffer>(lpVtbl->SetPixelShaderConstantBuffer)(
+                    This,
+                    buffer,
+                    bufferCount
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetResourceTexture(
+            [In, ComAliasName("UINT32")] uint textureIndex,
+            [In] ID2D1ResourceTexture* resourceTexture
+        )
+        {
+            fixed (ID2D1DrawInfo* This = &this)
+            {
+                return MarshalFunction<_SetResourceTexture>(lpVtbl->SetResourceTexture)(
+                    This,
+                    textureIndex,
+                    resourceTexture
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetVertexShaderConstantBuffer(
+            [In, ComAliasName("BYTE[]")] byte* buffer,
+            [In, ComAliasName("UINT32")] uint bufferCount
+        )
+        {
+            fixed (ID2D1DrawInfo* This = &this)
+            {
+                return MarshalFunction<_SetVertexShaderConstantBuffer>(lpVtbl->SetVertexShaderConstantBuffer)(
+                    This,
+                    buffer,
+                    bufferCount
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetPixelShader(
+            [In, ComAliasName("REFGUID")] Guid* shaderId,
+            [In] D2D1_PIXEL_OPTIONS pixelOptions = D2D1_PIXEL_OPTIONS_NONE
+        )
+        {
+            fixed (ID2D1DrawInfo* This = &this)
+            {
+                return MarshalFunction<_SetPixelShader>(lpVtbl->SetPixelShader)(
+                    This,
+                    shaderId,
+                    pixelOptions
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetVertexProcessing(
+            [In, Optional] ID2D1VertexBuffer* vertexBuffer,
+            [In] D2D1_VERTEX_OPTIONS vertexOptions,
+            [In] D2D1_BLEND_DESCRIPTION* blendDescription = null,
+            [In] D2D1_VERTEX_RANGE* vertexRange = null,
+            [In, ComAliasName("GUID")] Guid* vertexShader = null
+        )
+        {
+            fixed (ID2D1DrawInfo* This = &this)
+            {
+                return MarshalFunction<_SetVertexProcessing>(lpVtbl->SetVertexProcessing)(
+                    This,
+                    vertexBuffer,
+                    vertexOptions,
+                    blendDescription,
+                    vertexRange,
+                    vertexShader
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -172,3 +361,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

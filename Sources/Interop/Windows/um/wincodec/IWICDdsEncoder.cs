@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IWICDdsEncoder* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IWICDdsEncoder* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IWICDdsEncoder* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetParameters(
+        public /* static */ delegate int _SetParameters(
             [In] IWICDdsEncoder* This,
             [In] WICDdsParameters* pParameters
         );
@@ -53,7 +54,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetParameters(
+        public /* static */ delegate int _GetParameters(
             [In] IWICDdsEncoder* This,
             [Out] WICDdsParameters* pParameters
         );
@@ -61,13 +62,103 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateNewFrame(
+        public /* static */ delegate int _CreateNewFrame(
             [In] IWICDdsEncoder* This,
             [Out] IWICBitmapFrameEncode** ppIFrameEncode = null,
             [Out, ComAliasName("UINT")] uint* pArrayIndex = null,
             [Out, ComAliasName("UINT")] uint* pMipLevel = null,
             [Out, ComAliasName("UINT")] uint* pSliceIndex = null
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IWICDdsEncoder* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IWICDdsEncoder* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IWICDdsEncoder* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int SetParameters(
+            [In] WICDdsParameters* pParameters
+        )
+        {
+            fixed (IWICDdsEncoder* This = &this)
+            {
+                return MarshalFunction<_SetParameters>(lpVtbl->SetParameters)(
+                    This,
+                    pParameters
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetParameters(
+            [Out] WICDdsParameters* pParameters
+        )
+        {
+            fixed (IWICDdsEncoder* This = &this)
+            {
+                return MarshalFunction<_GetParameters>(lpVtbl->GetParameters)(
+                    This,
+                    pParameters
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateNewFrame(
+            [Out] IWICBitmapFrameEncode** ppIFrameEncode = null,
+            [Out, ComAliasName("UINT")] uint* pArrayIndex = null,
+            [Out, ComAliasName("UINT")] uint* pMipLevel = null,
+            [Out, ComAliasName("UINT")] uint* pSliceIndex = null
+        )
+        {
+            fixed (IWICDdsEncoder* This = &this)
+            {
+                return MarshalFunction<_CreateNewFrame>(lpVtbl->CreateNewFrame)(
+                    This,
+                    ppIFrameEncode,
+                    pArrayIndex,
+                    pMipLevel,
+                    pSliceIndex
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -92,3 +183,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

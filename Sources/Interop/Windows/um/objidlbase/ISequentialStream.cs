@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ISequentialStream* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ISequentialStream* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ISequentialStream* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Read(
+        public /* static */ delegate int _Read(
             [In] ISequentialStream* This,
             [Out] void* pv,
             [In, ComAliasName("ULONG")] uint cb,
@@ -55,12 +56,90 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Write(
+        public /* static */ delegate int _Write(
             [In] ISequentialStream* This,
             [In] void* pv,
             [In, ComAliasName("ULONG")] uint cb,
             [Out, ComAliasName("ULONG")] uint* pcbWritten = null
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ISequentialStream* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ISequentialStream* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ISequentialStream* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int Read(
+            [Out] void* pv,
+            [In, ComAliasName("ULONG")] uint cb,
+            [Out, ComAliasName("ULONG")] uint* pcbRead = null
+        )
+        {
+            fixed (ISequentialStream* This = &this)
+            {
+                return MarshalFunction<_Read>(lpVtbl->Read)(
+                    This,
+                    pv,
+                    cb,
+                    pcbRead
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int Write(
+            [In] void* pv,
+            [In, ComAliasName("ULONG")] uint cb,
+            [Out, ComAliasName("ULONG")] uint* pcbWritten = null
+        )
+        {
+            fixed (ISequentialStream* This = &this)
+            {
+                return MarshalFunction<_Write>(lpVtbl->Write)(
+                    This,
+                    pv,
+                    cb,
+                    pcbWritten
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -83,3 +162,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

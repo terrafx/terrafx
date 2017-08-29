@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IWICPlanarBitmapFrameEncode* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IWICPlanarBitmapFrameEncode* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IWICPlanarBitmapFrameEncode* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int WritePixels(
+        public /* static */ delegate int _WritePixels(
             [In] IWICPlanarBitmapFrameEncode* This,
             [In, ComAliasName("UINT")] uint lineCount,
             [In, ComAliasName("WICBitmapPlane[]")] WICBitmapPlane* pPlanes,
@@ -55,12 +56,90 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int WriteSource(
+        public /* static */ delegate int _WriteSource(
             [In] IWICPlanarBitmapFrameEncode* This,
             [In, ComAliasName("IWICBitmapSource*[]")] IWICBitmapSource** ppPlanes,
             [In, ComAliasName("UINT")] uint cPlanes,
             [In] WICRect* prcSource = null
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IWICPlanarBitmapFrameEncode* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IWICPlanarBitmapFrameEncode* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IWICPlanarBitmapFrameEncode* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int WritePixels(
+            [In, ComAliasName("UINT")] uint lineCount,
+            [In, ComAliasName("WICBitmapPlane[]")] WICBitmapPlane* pPlanes,
+            [In, ComAliasName("UINT")] uint cPlanes
+        )
+        {
+            fixed (IWICPlanarBitmapFrameEncode* This = &this)
+            {
+                return MarshalFunction<_WritePixels>(lpVtbl->WritePixels)(
+                    This,
+                    lineCount,
+                    pPlanes,
+                    cPlanes
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int WriteSource(
+            [In, ComAliasName("IWICBitmapSource*[]")] IWICBitmapSource** ppPlanes,
+            [In, ComAliasName("UINT")] uint cPlanes,
+            [In] WICRect* prcSource = null
+        )
+        {
+            fixed (IWICPlanarBitmapFrameEncode* This = &this)
+            {
+                return MarshalFunction<_WriteSource>(lpVtbl->WriteSource)(
+                    This,
+                    ppPlanes,
+                    cPlanes,
+                    prcSource
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -83,3 +162,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

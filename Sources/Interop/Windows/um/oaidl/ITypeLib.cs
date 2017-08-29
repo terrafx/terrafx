@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ITypeLib* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ITypeLib* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ITypeLib* This
         );
         #endregion
@@ -44,14 +45,14 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate uint GetTypeInfoCount(
+        public /* static */ delegate uint _GetTypeInfoCount(
             [In] ITypeLib* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetTypeInfo(
+        public /* static */ delegate int _GetTypeInfo(
             [In] ITypeLib* This,
             [In, ComAliasName("UINT")] uint index,
             [Out] ITypeInfo** ppTInfo = null
@@ -60,7 +61,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetTypeInfoType(
+        public /* static */ delegate int _GetTypeInfoType(
             [In] ITypeLib* This,
             [In, ComAliasName("UINT")] uint index,
             [Out] TYPEKIND* pTKind
@@ -69,7 +70,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetTypeInfoOfGuid(
+        public /* static */ delegate int _GetTypeInfoOfGuid(
             [In] ITypeLib* This,
             [In, ComAliasName("REFGUID")] Guid* guid,
             [Out] ITypeInfo** ppTinfo = null
@@ -78,7 +79,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetLibAttr(
+        public /* static */ delegate int _GetLibAttr(
             [In] ITypeLib* This,
             [Out] TLIBATTR** ppTLibAttr
         );
@@ -86,7 +87,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetTypeComp(
+        public /* static */ delegate int _GetTypeComp(
             [In] ITypeLib* This,
             [Out] ITypeComp** ppTComp = null
         );
@@ -94,7 +95,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetDocumentation(
+        public /* static */ delegate int _GetDocumentation(
             [In] ITypeLib* This,
             [In, ComAliasName("INT")] int index,
             [Out, Optional, ComAliasName("BSTR")] char** pBstrName,
@@ -106,7 +107,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int IsName(
+        public /* static */ delegate int _IsName(
             [In] ITypeLib* This,
             [In, Out, ComAliasName("LPOLESTR")] char* szNameBuf,
             [In, ComAliasName("ULONG")] uint lHashVal,
@@ -116,7 +117,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int FindName(
+        public /* static */ delegate int _FindName(
             [In] ITypeLib* This,
             [In, Out, ComAliasName("LPOLESTR")] char* szNameBuf,
             [In, ComAliasName("ULONG")] uint lHashVal,
@@ -127,10 +128,213 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void ReleaseTLibAttr(
+        public /* static */ delegate void _ReleaseTLibAttr(
             [In] ITypeLib* This,
             [In] TLIBATTR* pTLibAttr
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ITypeLib* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ITypeLib* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ITypeLib* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        public uint GetTypeInfoCount()
+        {
+            fixed (ITypeLib* This = &this)
+            {
+                return MarshalFunction<_GetTypeInfoCount>(lpVtbl->GetTypeInfoCount)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetTypeInfo(
+            [In, ComAliasName("UINT")] uint index,
+            [Out] ITypeInfo** ppTInfo = null
+        )
+        {
+            fixed (ITypeLib* This = &this)
+            {
+                return MarshalFunction<_GetTypeInfo>(lpVtbl->GetTypeInfo)(
+                    This,
+                    index,
+                    ppTInfo
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetTypeInfoType(
+            [In, ComAliasName("UINT")] uint index,
+            [Out] TYPEKIND* pTKind
+        )
+        {
+            fixed (ITypeLib* This = &this)
+            {
+                return MarshalFunction<_GetTypeInfoType>(lpVtbl->GetTypeInfoType)(
+                    This,
+                    index,
+                    pTKind
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetTypeInfoOfGuid(
+            [In, ComAliasName("REFGUID")] Guid* guid,
+            [Out] ITypeInfo** ppTinfo = null
+        )
+        {
+            fixed (ITypeLib* This = &this)
+            {
+                return MarshalFunction<_GetTypeInfoOfGuid>(lpVtbl->GetTypeInfoOfGuid)(
+                    This,
+                    guid,
+                    ppTinfo
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetLibAttr(
+            [Out] TLIBATTR** ppTLibAttr
+        )
+        {
+            fixed (ITypeLib* This = &this)
+            {
+                return MarshalFunction<_GetLibAttr>(lpVtbl->GetLibAttr)(
+                    This,
+                    ppTLibAttr
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetTypeComp(
+            [Out] ITypeComp** ppTComp = null
+        )
+        {
+            fixed (ITypeLib* This = &this)
+            {
+                return MarshalFunction<_GetTypeComp>(lpVtbl->GetTypeComp)(
+                    This,
+                    ppTComp
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetDocumentation(
+            [In, ComAliasName("INT")] int index,
+            [Out, Optional, ComAliasName("BSTR")] char** pBstrName,
+            [Out, Optional, ComAliasName("BSTR")] char** pBstrDocString,
+            [Out, ComAliasName("DWORD")] uint* pdwHelpContext,
+            [Out, ComAliasName("BSTR")] char** pBstrHelpFile = null
+        )
+        {
+            fixed (ITypeLib* This = &this)
+            {
+                return MarshalFunction<_GetDocumentation>(lpVtbl->GetDocumentation)(
+                    This,
+                    index,
+                    pBstrName,
+                    pBstrDocString,
+                    pdwHelpContext,
+                    pBstrHelpFile
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int IsName(
+            [In, Out, ComAliasName("LPOLESTR")] char* szNameBuf,
+            [In, ComAliasName("ULONG")] uint lHashVal,
+            [Out, ComAliasName("BOOL")] int* pfName
+        )
+        {
+            fixed (ITypeLib* This = &this)
+            {
+                return MarshalFunction<_IsName>(lpVtbl->IsName)(
+                    This,
+                    szNameBuf,
+                    lHashVal,
+                    pfName
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int FindName(
+            [In, Out, ComAliasName("LPOLESTR")] char* szNameBuf,
+            [In, ComAliasName("ULONG")] uint lHashVal,
+            [Out] ITypeInfo** ppTInfo,
+            [Out, ComAliasName("MEMBERID")] int* rgMemId,
+            [In, Out, ComAliasName("USHORT")] ushort* pcFound
+        )
+        {
+            fixed (ITypeLib* This = &this)
+            {
+                return MarshalFunction<_FindName>(lpVtbl->FindName)(
+                    This,
+                    szNameBuf,
+                    lHashVal,
+                    ppTInfo,
+                    rgMemId,
+                    pcFound
+                );
+            }
+        }
+
+        public void ReleaseTLibAttr(
+            [In] TLIBATTR* pTLibAttr
+        )
+        {
+            fixed (ITypeLib* This = &this)
+            {
+                MarshalFunction<_ReleaseTLibAttr>(lpVtbl->ReleaseTLibAttr)(
+                    This,
+                    pTLibAttr
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -169,3 +373,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

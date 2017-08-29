@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IPersistStream* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IPersistStream* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IPersistStream* This
         );
         #endregion
@@ -45,7 +46,8 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetClassID(
+        public /* static */ delegate int _GetClassID(
+            [In] IPersistStream* This,
             [Out, ComAliasName("CLSID")] Guid* pClassID
         );
         #endregion
@@ -54,14 +56,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int IsDirty(
+        public /* static */ delegate int _IsDirty(
             [In] IPersistStream* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Load(
+        public /* static */ delegate int _Load(
             [In] IPersistStream* This,
             [In] IStream* pStm = null
         );
@@ -69,7 +71,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Save(
+        public /* static */ delegate int _Save(
             [In] IPersistStream* This,
             [In, Optional] IStream* pStm,
             [In, ComAliasName("BOOL")] int fClearDirty
@@ -78,10 +80,123 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetSizeMax(
+        public /* static */ delegate int _GetSizeMax(
             [In] IPersistStream* This,
             [Out] ULARGE_INTEGER* pcbSize
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IPersistStream* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IPersistStream* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IPersistStream* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region IPersist Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetClassID(
+            [Out, ComAliasName("CLSID")] Guid* pClassID
+        )
+        {
+            fixed (IPersistStream* This = &this)
+            {
+                return MarshalFunction<_GetClassID>(lpVtbl->GetClassID)(
+                    This,
+                    pClassID
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int IsDirty()
+        {
+            fixed (IPersistStream* This = &this)
+            {
+                return MarshalFunction<_IsDirty>(lpVtbl->IsDirty)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int Load(
+            [In] IStream* pStm = null
+        )
+        {
+            fixed (IPersistStream* This = &this)
+            {
+                return MarshalFunction<_Load>(lpVtbl->Load)(
+                    This,
+                    pStm
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int Save(
+            [In, Optional] IStream* pStm,
+            [In, ComAliasName("BOOL")] int fClearDirty
+        )
+        {
+            fixed (IPersistStream* This = &this)
+            {
+                return MarshalFunction<_Save>(lpVtbl->Save)(
+                    This,
+                    pStm,
+                    fClearDirty
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetSizeMax(
+            [Out] ULARGE_INTEGER* pcbSize
+        )
+        {
+            fixed (IPersistStream* This = &this)
+            {
+                return MarshalFunction<_GetSizeMax>(lpVtbl->GetSizeMax)(
+                    This,
+                    pcbSize
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -112,3 +227,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

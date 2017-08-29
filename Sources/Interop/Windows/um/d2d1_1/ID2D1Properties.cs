@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ID2D1Properties* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ID2D1Properties* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ID2D1Properties* This
         );
         #endregion
@@ -47,7 +48,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("UINT32")]
-        public /* static */ delegate uint GetPropertyCount(
+        public /* static */ delegate uint _GetPropertyCount(
             [In] ID2D1Properties* This
         );
 
@@ -55,7 +56,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetPropertyName(
+        public /* static */ delegate int _GetPropertyName(
             [In] ID2D1Properties* This,
             [In, ComAliasName("UINT32")] uint index,
             [Out, ComAliasName("PWSTR")] char* name,
@@ -66,7 +67,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("UINT32")]
-        public /* static */ delegate uint GetPropertyNameLength(
+        public /* static */ delegate uint _GetPropertyNameLength(
             [In] ID2D1Properties* This,
             [In, ComAliasName("UINT32")] uint index
         );
@@ -74,7 +75,7 @@ namespace TerraFX.Interop
         /// <summary>Retrieves the type of the given property.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_PROPERTY_TYPE _GetType(
+        public /* static */ delegate D2D1_PROPERTY_TYPE __GetType(
             [In] ID2D1Properties* This,
             [In, ComAliasName("UINT32")] uint index
         );
@@ -83,7 +84,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("UINT32")]
-        public /* static */ delegate uint GetPropertyIndex(
+        public /* static */ delegate uint _GetPropertyIndex(
             [In] ID2D1Properties* This,
             [In, ComAliasName("PCWSTR")] char* name
         );
@@ -92,7 +93,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetValueByName(
+        public /* static */ delegate int _SetValueByName(
             [In] ID2D1Properties* This,
             [In, ComAliasName("PCWSTR")] char* name,
             [In] D2D1_PROPERTY_TYPE type,
@@ -104,7 +105,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetValue(
+        public /* static */ delegate int _SetValue(
             [In] ID2D1Properties* This,
             [In, ComAliasName("UINT32")] uint index,
             [In] D2D1_PROPERTY_TYPE type,
@@ -116,7 +117,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetValueByName(
+        public /* static */ delegate int _GetValueByName(
             [In] ID2D1Properties* This,
             [In, ComAliasName("PCWSTR")] char* name,
             [In] D2D1_PROPERTY_TYPE type,
@@ -128,7 +129,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetValue(
+        public /* static */ delegate int _GetValue(
             [In] ID2D1Properties* This,
             [In, ComAliasName("UINT32")] uint index,
             [In] D2D1_PROPERTY_TYPE type,
@@ -140,7 +141,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("UINT32")]
-        public /* static */ delegate uint GetValueSize(
+        public /* static */ delegate uint _GetValueSize(
             [In] ID2D1Properties* This,
             [In, ComAliasName("UINT32")] uint index
         );
@@ -149,11 +150,233 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetSubProperties(
+        public /* static */ delegate int _GetSubProperties(
             [In] ID2D1Properties* This,
             [In, ComAliasName("UINT32")] uint index,
             [Out] ID2D1Properties** subProperties
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ID2D1Properties* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ID2D1Properties* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ID2D1Properties* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("UINT32")]
+        public uint GetPropertyCount()
+        {
+            fixed (ID2D1Properties* This = &this)
+            {
+                return MarshalFunction<_GetPropertyCount>(lpVtbl->GetPropertyCount)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetPropertyName(
+            [In, ComAliasName("UINT32")] uint index,
+            [Out, ComAliasName("PWSTR")] char* name,
+            [In, ComAliasName("UINT32")] uint nameCount
+        )
+        {
+            fixed (ID2D1Properties* This = &this)
+            {
+                return MarshalFunction<_GetPropertyName>(lpVtbl->GetPropertyName)(
+                    This,
+                    index,
+                    name,
+                    nameCount
+                );
+            }
+        }
+
+        [return: ComAliasName("UINT32")]
+        public uint GetPropertyNameLength(
+            [In, ComAliasName("UINT32")] uint index
+        )
+        {
+            fixed (ID2D1Properties* This = &this)
+            {
+                return MarshalFunction<_GetPropertyNameLength>(lpVtbl->GetPropertyNameLength)(
+                    This,
+                    index
+                );
+            }
+        }
+
+        public D2D1_PROPERTY_TYPE _GetType(
+            [In, ComAliasName("UINT32")] uint index
+        )
+        {
+            fixed (ID2D1Properties* This = &this)
+            {
+                return MarshalFunction<__GetType>(lpVtbl->_GetType)(
+                    This,
+                    index
+                );
+            }
+        }
+
+        [return: ComAliasName("UINT32")]
+        public uint GetPropertyIndex(
+            [In, ComAliasName("PCWSTR")] char* name
+        )
+        {
+            fixed (ID2D1Properties* This = &this)
+            {
+                return MarshalFunction<_GetPropertyIndex>(lpVtbl->GetPropertyIndex)(
+                    This,
+                    name
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetValueByName(
+            [In, ComAliasName("PCWSTR")] char* name,
+            [In] D2D1_PROPERTY_TYPE type,
+            [In, ComAliasName("BYTE[]")] byte* data,
+            [In, ComAliasName("UINT32")] uint dataSize
+        )
+        {
+            fixed (ID2D1Properties* This = &this)
+            {
+                return MarshalFunction<_SetValueByName>(lpVtbl->SetValueByName)(
+                    This,
+                    name,
+                    type,
+                    data,
+                    dataSize
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetValue(
+            [In, ComAliasName("UINT32")] uint index,
+            [In] D2D1_PROPERTY_TYPE type,
+            [In, ComAliasName("BYTE[]")] byte* data,
+            [In, ComAliasName("UINT32")] uint dataSize
+        )
+        {
+            fixed (ID2D1Properties* This = &this)
+            {
+                return MarshalFunction<_SetValue>(lpVtbl->SetValue)(
+                    This,
+                    index,
+                    type,
+                    data,
+                    dataSize
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetValueByName(
+            [In, ComAliasName("PCWSTR")] char* name,
+            [In] D2D1_PROPERTY_TYPE type,
+            [Out, ComAliasName("BYTE[]")] byte* data,
+            [In, ComAliasName("UINT32")] uint dataSize
+        )
+        {
+            fixed (ID2D1Properties* This = &this)
+            {
+                return MarshalFunction<_GetValueByName>(lpVtbl->GetValueByName)(
+                    This,
+                    name,
+                    type,
+                    data,
+                    dataSize
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetValue(
+            [In, ComAliasName("UINT32")] uint index,
+            [In] D2D1_PROPERTY_TYPE type,
+            [Out, ComAliasName("BYTE[]")] byte* data,
+            [In, ComAliasName("UINT32")] uint dataSize
+        )
+        {
+            fixed (ID2D1Properties* This = &this)
+            {
+                return MarshalFunction<_GetValue>(lpVtbl->GetValue)(
+                    This,
+                    index,
+                    type,
+                    data,
+                    dataSize
+                );
+            }
+        }
+
+        [return: ComAliasName("UINT32")]
+        public uint GetValueSize(
+            [In, ComAliasName("UINT32")] uint index
+        )
+        {
+            fixed (ID2D1Properties* This = &this)
+            {
+                return MarshalFunction<_GetValueSize>(lpVtbl->GetValueSize)(
+                    This,
+                    index
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetSubProperties(
+            [In, ComAliasName("UINT32")] uint index,
+            [Out] ID2D1Properties** subProperties
+        )
+        {
+            fixed (ID2D1Properties* This = &this)
+            {
+                return MarshalFunction<_GetSubProperties>(lpVtbl->GetSubProperties)(
+                    This,
+                    index,
+                    subProperties
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -194,3 +417,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IWICFormatConverterInfo* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IWICFormatConverterInfo* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IWICFormatConverterInfo* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetComponentType(
+        public /* static */ delegate int _GetComponentType(
             [In] IWICFormatConverterInfo* This,
             [Out] WICComponentType* pType
         );
@@ -53,7 +54,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetCLSID(
+        public /* static */ delegate int _GetCLSID(
             [In] IWICFormatConverterInfo* This,
             [Out, ComAliasName("CLSID")] Guid* pclsid
         );
@@ -61,7 +62,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetSigningStatus(
+        public /* static */ delegate int _GetSigningStatus(
             [In] IWICFormatConverterInfo* This,
             [Out, ComAliasName("DWORD")] uint* pStatus
         );
@@ -69,7 +70,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetAuthor(
+        public /* static */ delegate int _GetAuthor(
             [In] IWICFormatConverterInfo* This,
             [In, ComAliasName("UINT")] uint cchAuthor,
             [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzAuthor,
@@ -79,7 +80,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetVendorGUID(
+        public /* static */ delegate int _GetVendorGUID(
             [In] IWICFormatConverterInfo* This,
             [Out, ComAliasName("GUID")] Guid* pguidVendor
         );
@@ -87,7 +88,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetVersion(
+        public /* static */ delegate int _GetVersion(
             [In] IWICFormatConverterInfo* This,
             [In, ComAliasName("UINT")] uint cchVersion,
             [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzVersion,
@@ -97,7 +98,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetSpecVersion(
+        public /* static */ delegate int _GetSpecVersion(
             [In] IWICFormatConverterInfo* This,
             [In, ComAliasName("UINT")] uint cchSpecVersion,
             [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzSpecVersion,
@@ -107,7 +108,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFriendlyName(
+        public /* static */ delegate int _GetFriendlyName(
             [In] IWICFormatConverterInfo* This,
             [In, ComAliasName("UINT")] uint cchFriendlyName,
             [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzFriendlyName,
@@ -119,7 +120,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetPixelFormats(
+        public /* static */ delegate int _GetPixelFormats(
             [In] IWICFormatConverterInfo* This,
             [In, ComAliasName("UINT")] uint cFormats,
             [In, Out, Optional, ComAliasName("WICPixelFormatGUID[]")] Guid* pPixelFormatGUIDs,
@@ -129,10 +130,214 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateInstance(
+        public /* static */ delegate int _CreateInstance(
             [In] IWICFormatConverterInfo* This,
             [Out] IWICFormatConverter** ppIConverter = null
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IWICFormatConverterInfo* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IWICFormatConverterInfo* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IWICFormatConverterInfo* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region IWICComponentInfo Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetComponentType(
+            [Out] WICComponentType* pType
+        )
+        {
+            fixed (IWICFormatConverterInfo* This = &this)
+            {
+                return MarshalFunction<_GetComponentType>(lpVtbl->GetComponentType)(
+                    This,
+                    pType
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetCLSID(
+            [Out, ComAliasName("CLSID")] Guid* pclsid
+        )
+        {
+            fixed (IWICFormatConverterInfo* This = &this)
+            {
+                return MarshalFunction<_GetCLSID>(lpVtbl->GetCLSID)(
+                    This,
+                    pclsid
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetSigningStatus(
+            [Out, ComAliasName("DWORD")] uint* pStatus
+        )
+        {
+            fixed (IWICFormatConverterInfo* This = &this)
+            {
+                return MarshalFunction<_GetSigningStatus>(lpVtbl->GetSigningStatus)(
+                    This,
+                    pStatus
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetAuthor(
+            [In, ComAliasName("UINT")] uint cchAuthor,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzAuthor,
+            [Out, ComAliasName("UINT")] uint* pcchActual
+        )
+        {
+            fixed (IWICFormatConverterInfo* This = &this)
+            {
+                return MarshalFunction<_GetAuthor>(lpVtbl->GetAuthor)(
+                    This,
+                    cchAuthor,
+                    wzAuthor,
+                    pcchActual
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetVendorGUID(
+            [Out, ComAliasName("GUID")] Guid* pguidVendor
+        )
+        {
+            fixed (IWICFormatConverterInfo* This = &this)
+            {
+                return MarshalFunction<_GetVendorGUID>(lpVtbl->GetVendorGUID)(
+                    This,
+                    pguidVendor
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetVersion(
+            [In, ComAliasName("UINT")] uint cchVersion,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzVersion,
+            [Out, ComAliasName("UINT")] uint* pcchActual
+        )
+        {
+            fixed (IWICFormatConverterInfo* This = &this)
+            {
+                return MarshalFunction<_GetVersion>(lpVtbl->GetVersion)(
+                    This,
+                    cchVersion,
+                    wzVersion,
+                    pcchActual
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetSpecVersion(
+            [In, ComAliasName("UINT")] uint cchSpecVersion,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzSpecVersion,
+            [Out, ComAliasName("UINT")] uint* pcchActual
+        )
+        {
+            fixed (IWICFormatConverterInfo* This = &this)
+            {
+                return MarshalFunction<_GetSpecVersion>(lpVtbl->GetSpecVersion)(
+                    This,
+                    cchSpecVersion,
+                    wzSpecVersion,
+                    pcchActual
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetFriendlyName(
+            [In, ComAliasName("UINT")] uint cchFriendlyName,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzFriendlyName,
+            [Out, ComAliasName("UINT")] uint* pcchActual
+        )
+        {
+            fixed (IWICFormatConverterInfo* This = &this)
+            {
+                return MarshalFunction<_GetFriendlyName>(lpVtbl->GetFriendlyName)(
+                    This,
+                    cchFriendlyName,
+                    wzFriendlyName,
+                    pcchActual
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetPixelFormats(
+            [In, ComAliasName("UINT")] uint cFormats,
+            [In, Out, Optional, ComAliasName("WICPixelFormatGUID[]")] Guid* pPixelFormatGUIDs,
+            [Out, ComAliasName("UINT")] uint* pcActual
+        )
+        {
+            fixed (IWICFormatConverterInfo* This = &this)
+            {
+                return MarshalFunction<_GetPixelFormats>(lpVtbl->GetPixelFormats)(
+                    This,
+                    cFormats,
+                    pPixelFormatGUIDs,
+                    pcActual
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateInstance(
+            [Out] IWICFormatConverter** ppIConverter = null
+        )
+        {
+            fixed (IWICFormatConverterInfo* This = &this)
+            {
+                return MarshalFunction<_CreateInstance>(lpVtbl->CreateInstance)(
+                    This,
+                    ppIConverter
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -173,3 +378,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

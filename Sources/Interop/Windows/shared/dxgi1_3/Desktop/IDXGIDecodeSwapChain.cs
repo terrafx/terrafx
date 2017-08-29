@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop.Desktop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDXGIDecodeSwapChain* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDXGIDecodeSwapChain* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDXGIDecodeSwapChain* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int PresentBuffer(
+        public /* static */ delegate int _PresentBuffer(
             [In] IDXGIDecodeSwapChain* This,
             [In, ComAliasName("UINT")] uint BufferToPresent,
             [In, ComAliasName("UINT")] uint SyncInterval,
@@ -55,7 +56,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetSourceRect(
+        public /* static */ delegate int _SetSourceRect(
             [In] IDXGIDecodeSwapChain* This,
             [In] RECT* pRect
         );
@@ -63,7 +64,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetTargetRect(
+        public /* static */ delegate int _SetTargetRect(
             [In] IDXGIDecodeSwapChain* This,
             [In] RECT* pRect
         );
@@ -71,7 +72,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetDestSize(
+        public /* static */ delegate int _SetDestSize(
             [In] IDXGIDecodeSwapChain* This,
             [In, ComAliasName("UINT")] uint Width,
             [In, ComAliasName("UINT")] uint Height
@@ -80,7 +81,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetSourceRect(
+        public /* static */ delegate int _GetSourceRect(
             [In] IDXGIDecodeSwapChain* This,
             [Out] RECT* pRect
         );
@@ -88,7 +89,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetTargetRect(
+        public /* static */ delegate int _GetTargetRect(
             [In] IDXGIDecodeSwapChain* This,
             [Out] RECT* pRect
         );
@@ -96,7 +97,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetDestSize(
+        public /* static */ delegate int _GetDestSize(
             [In] IDXGIDecodeSwapChain* This,
             [Out, ComAliasName("UINT")] uint* pWidth,
             [Out, ComAliasName("UINT")] uint* pHeight
@@ -105,16 +106,188 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetColorSpace(
+        public /* static */ delegate int _SetColorSpace(
             [In] IDXGIDecodeSwapChain* This,
             [In] DXGI_MULTIPLANE_OVERLAY_YCbCr_FLAGS ColorSpace
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate DXGI_MULTIPLANE_OVERLAY_YCbCr_FLAGS GetColorSpace(
+        public /* static */ delegate DXGI_MULTIPLANE_OVERLAY_YCbCr_FLAGS _GetColorSpace(
             [In] IDXGIDecodeSwapChain* This
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDXGIDecodeSwapChain* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDXGIDecodeSwapChain* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDXGIDecodeSwapChain* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int PresentBuffer(
+            [In, ComAliasName("UINT")] uint BufferToPresent,
+            [In, ComAliasName("UINT")] uint SyncInterval,
+            [In, ComAliasName("UINT")] uint Flags
+        )
+        {
+            fixed (IDXGIDecodeSwapChain* This = &this)
+            {
+                return MarshalFunction<_PresentBuffer>(lpVtbl->PresentBuffer)(
+                    This,
+                    BufferToPresent,
+                    SyncInterval,
+                    Flags
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetSourceRect(
+            [In] RECT* pRect
+        )
+        {
+            fixed (IDXGIDecodeSwapChain* This = &this)
+            {
+                return MarshalFunction<_SetSourceRect>(lpVtbl->SetSourceRect)(
+                    This,
+                    pRect
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetTargetRect(
+            [In] RECT* pRect
+        )
+        {
+            fixed (IDXGIDecodeSwapChain* This = &this)
+            {
+                return MarshalFunction<_SetTargetRect>(lpVtbl->SetTargetRect)(
+                    This,
+                    pRect
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetDestSize(
+            [In, ComAliasName("UINT")] uint Width,
+            [In, ComAliasName("UINT")] uint Height
+        )
+        {
+            fixed (IDXGIDecodeSwapChain* This = &this)
+            {
+                return MarshalFunction<_SetDestSize>(lpVtbl->SetDestSize)(
+                    This,
+                    Width,
+                    Height
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetSourceRect(
+            [Out] RECT* pRect
+        )
+        {
+            fixed (IDXGIDecodeSwapChain* This = &this)
+            {
+                return MarshalFunction<_GetSourceRect>(lpVtbl->GetSourceRect)(
+                    This,
+                    pRect
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetTargetRect(
+            [Out] RECT* pRect
+        )
+        {
+            fixed (IDXGIDecodeSwapChain* This = &this)
+            {
+                return MarshalFunction<_GetTargetRect>(lpVtbl->GetTargetRect)(
+                    This,
+                    pRect
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetDestSize(
+            [Out, ComAliasName("UINT")] uint* pWidth,
+            [Out, ComAliasName("UINT")] uint* pHeight
+        )
+        {
+            fixed (IDXGIDecodeSwapChain* This = &this)
+            {
+                return MarshalFunction<_GetDestSize>(lpVtbl->GetDestSize)(
+                    This,
+                    pWidth,
+                    pHeight
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetColorSpace(
+            [In] DXGI_MULTIPLANE_OVERLAY_YCbCr_FLAGS ColorSpace
+        )
+        {
+            fixed (IDXGIDecodeSwapChain* This = &this)
+            {
+                return MarshalFunction<_SetColorSpace>(lpVtbl->SetColorSpace)(
+                    This,
+                    ColorSpace
+                );
+            }
+        }
+
+        public DXGI_MULTIPLANE_OVERLAY_YCbCr_FLAGS GetColorSpace()
+        {
+            fixed (IDXGIDecodeSwapChain* This = &this)
+            {
+                return MarshalFunction<_GetColorSpace>(lpVtbl->GetColorSpace)(
+                    This
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -151,3 +324,4 @@ namespace TerraFX.Interop.Desktop
         #endregion
     }
 }
+

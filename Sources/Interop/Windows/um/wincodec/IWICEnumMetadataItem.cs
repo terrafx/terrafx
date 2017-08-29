@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IWICEnumMetadataItem* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IWICEnumMetadataItem* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IWICEnumMetadataItem* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Next(
+        public /* static */ delegate int _Next(
             [In] IWICEnumMetadataItem* This,
             [In, ComAliasName("ULONG")] uint celt,
             [In, Out, Optional] PROPVARIANT* rgeltSchema,
@@ -57,7 +58,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Skip(
+        public /* static */ delegate int _Skip(
             [In] IWICEnumMetadataItem* This,
             [In, ComAliasName("ULONG")] uint celt
         );
@@ -65,17 +66,120 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Reset(
+        public /* static */ delegate int _Reset(
             [In] IWICEnumMetadataItem* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Clone(
+        public /* static */ delegate int _Clone(
             [In] IWICEnumMetadataItem* This,
             [Out] IWICEnumMetadataItem** ppIEnumMetadataItem = null
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IWICEnumMetadataItem* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IWICEnumMetadataItem* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IWICEnumMetadataItem* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int Next(
+            [In, ComAliasName("ULONG")] uint celt,
+            [In, Out, Optional] PROPVARIANT* rgeltSchema,
+            [In, Out] PROPVARIANT* rgeltId,
+            [In, Out] PROPVARIANT* rgeltValue = null,
+            [Out, ComAliasName("ULONG")] uint* pceltFetched = null
+        )
+        {
+            fixed (IWICEnumMetadataItem* This = &this)
+            {
+                return MarshalFunction<_Next>(lpVtbl->Next)(
+                    This,
+                    celt,
+                    rgeltSchema,
+                    rgeltId,
+                    rgeltValue,
+                    pceltFetched
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int Skip(
+            [In, ComAliasName("ULONG")] uint celt
+        )
+        {
+            fixed (IWICEnumMetadataItem* This = &this)
+            {
+                return MarshalFunction<_Skip>(lpVtbl->Skip)(
+                    This,
+                    celt
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int Reset()
+        {
+            fixed (IWICEnumMetadataItem* This = &this)
+            {
+                return MarshalFunction<_Reset>(lpVtbl->Reset)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int Clone(
+            [Out] IWICEnumMetadataItem** ppIEnumMetadataItem = null
+        )
+        {
+            fixed (IWICEnumMetadataItem* This = &this)
+            {
+                return MarshalFunction<_Clone>(lpVtbl->Clone)(
+                    This,
+                    ppIEnumMetadataItem
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -102,3 +206,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

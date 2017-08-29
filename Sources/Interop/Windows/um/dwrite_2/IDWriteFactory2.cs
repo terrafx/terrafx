@@ -7,6 +7,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Security;
 using static TerraFX.Interop.Windows;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -22,7 +23,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDWriteFactory2* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -31,14 +32,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDWriteFactory2* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDWriteFactory2* This
         );
         #endregion
@@ -51,7 +52,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetSystemFontCollection(
+        public /* static */ delegate int _GetSystemFontCollection(
             [In] IDWriteFactory2* This,
             [Out] IDWriteFontCollection** fontCollection,
             [In, ComAliasName("BOOL")] int checkForUpdates = FALSE
@@ -66,7 +67,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateCustomFontCollection(
+        public /* static */ delegate int _CreateCustomFontCollection(
             [In] IDWriteFactory2* This,
             [In] IDWriteFontCollectionLoader* collectionLoader,
             [In] void* collectionKey,
@@ -80,7 +81,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int RegisterFontCollectionLoader(
+        public /* static */ delegate int _RegisterFontCollectionLoader(
             [In] IDWriteFactory2* This,
             [In] IDWriteFontCollectionLoader* fontCollectionLoader
         );
@@ -91,7 +92,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int UnregisterFontCollectionLoader(
+        public /* static */ delegate int _UnregisterFontCollectionLoader(
             [In] IDWriteFactory2* This,
             [In] IDWriteFontCollectionLoader* fontCollectionLoader
         );
@@ -104,7 +105,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateFontFileReference(
+        public /* static */ delegate int _CreateFontFileReference(
             [In] IDWriteFactory2* This,
             [In, ComAliasName("WCHAR[]")] char* filePath,
             [In, Optional] FILETIME* lastWriteTime,
@@ -121,7 +122,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateCustomFontFileReference(
+        public /* static */ delegate int _CreateCustomFontFileReference(
             [In] IDWriteFactory2* This,
             [In] void* fontFileReferenceKey,
             [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
@@ -140,7 +141,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateFontFace(
+        public /* static */ delegate int _CreateFontFace(
             [In] IDWriteFactory2* This,
             [In] DWRITE_FONT_FACE_TYPE fontFaceType,
             [In, ComAliasName("UINT32")] uint numberOfFiles,
@@ -156,7 +157,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateRenderingParams(
+        public /* static */ delegate int _CreateRenderingParams(
             [In] IDWriteFactory2* This,
             [Out] IDWriteRenderingParams** renderingParams
         );
@@ -168,7 +169,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateMonitorRenderingParams(
+        public /* static */ delegate int _CreateMonitorRenderingParams(
             [In] IDWriteFactory2* This,
             [In, ComAliasName("HMONITOR")] IntPtr monitor,
             [Out] IDWriteRenderingParams** renderingParams
@@ -185,7 +186,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateCustomRenderingParams(
+        public /* static */ delegate int _CreateCustomRenderingParams(
             [In] IDWriteFactory2* This,
             [In, ComAliasName("FLOAT")] float gamma,
             [In, ComAliasName("FLOAT")] float enhancedContrast,
@@ -202,7 +203,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int RegisterFontFileLoader(
+        public /* static */ delegate int _RegisterFontFileLoader(
             [In] IDWriteFactory2* This,
             [In] IDWriteFontFileLoader* fontFileLoader
         );
@@ -214,7 +215,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int UnregisterFontFileLoader(
+        public /* static */ delegate int _UnregisterFontFileLoader(
             [In] IDWriteFactory2* This,
             [In] IDWriteFontFileLoader* fontFileLoader
         );
@@ -232,7 +233,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateTextFormat(
+        public /* static */ delegate int _CreateTextFormat(
             [In] IDWriteFactory2* This,
             [In, ComAliasName("WCHAR[]")] char* fontFamilyName,
             [In, Optional] IDWriteFontCollection* fontCollection,
@@ -250,7 +251,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateTypography(
+        public /* static */ delegate int _CreateTypography(
             [In] IDWriteFactory2* This,
             [Out] IDWriteTypography** typography
         );
@@ -261,7 +262,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetGdiInterop(
+        public /* static */ delegate int _GetGdiInterop(
             [In] IDWriteFactory2* This,
             [Out] IDWriteGdiInterop** gdiInterop
         );
@@ -277,7 +278,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateTextLayout(
+        public /* static */ delegate int _CreateTextLayout(
             [In] IDWriteFactory2* This,
             [In, ComAliasName("WCHAR[]")] char* @string,
             [In, ComAliasName("UINT32")] uint stringLength,
@@ -301,7 +302,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateGdiCompatibleTextLayout(
+        public /* static */ delegate int _CreateGdiCompatibleTextLayout(
             [In] IDWriteFactory2* This,
             [In, ComAliasName("WCHAR[]")] char* @string,
             [In, ComAliasName("UINT32")] uint stringLength,
@@ -321,7 +322,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateEllipsisTrimmingSign(
+        public /* static */ delegate int _CreateEllipsisTrimmingSign(
             [In] IDWriteFactory2* This,
             [In] IDWriteTextFormat* textFormat,
             [Out] IDWriteInlineObject** trimmingSign
@@ -333,7 +334,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateTextAnalyzer(
+        public /* static */ delegate int _CreateTextAnalyzer(
             [In] IDWriteFactory2* This,
             [Out] IDWriteTextAnalyzer** textAnalyzer
         );
@@ -346,7 +347,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateNumberSubstitution(
+        public /* static */ delegate int _CreateNumberSubstitution(
             [In] IDWriteFactory2* This,
             [In] DWRITE_NUMBER_SUBSTITUTION_METHOD substitutionMethod,
             [In, ComAliasName("WCHAR[]")] char* localeName,
@@ -367,7 +368,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateGlyphRunAnalysis(
+        public /* static */ delegate int _CreateGlyphRunAnalysis(
             [In] IDWriteFactory2* This,
             [In] DWRITE_GLYPH_RUN* glyphRun,
             [In, ComAliasName("FLOAT")] float pixelsPerDip,
@@ -390,7 +391,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetEudcFontCollection(
+        public /* static */ delegate int _GetEudcFontCollection(
             [In] IDWriteFactory2* This,
             [Out] IDWriteFontCollection** fontCollection,
             [In, ComAliasName("BOOL")] int checkForUpdates = FALSE
@@ -408,7 +409,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateCustomRenderingParams1(
+        public /* static */ delegate int _CreateCustomRenderingParams1(
             [In] IDWriteFactory2* This,
             [In, ComAliasName("FLOAT")] float gamma,
             [In, ComAliasName("FLOAT")] float enhancedContrast,
@@ -427,7 +428,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetSystemFontFallback(
+        public /* static */ delegate int _GetSystemFontFallback(
             [In] IDWriteFactory2* This,
             [Out] IDWriteFontFallback** fontFallback
         );
@@ -438,7 +439,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateFontFallbackBuilder(
+        public /* static */ delegate int _CreateFontFallbackBuilder(
             [In] IDWriteFactory2* This,
             [Out] IDWriteFontFallbackBuilder** fontFallbackBuilder
         );
@@ -456,7 +457,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int TranslateColorGlyphRun(
+        public /* static */ delegate int _TranslateColorGlyphRun(
             [In] IDWriteFactory2* This,
             [In, ComAliasName("FLOAT")] float baselineOriginX,
             [In, ComAliasName("FLOAT")] float baselineOriginY,
@@ -480,7 +481,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateCustomRenderingParams2(
+        public /* static */ delegate int _CreateCustomRenderingParams2(
             [In] IDWriteFactory2* This,
             [In, ComAliasName("FLOAT")] float gamma,
             [In, ComAliasName("FLOAT")] float enhancedContrast,
@@ -505,7 +506,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateGlyphRunAnalysis1(
+        public /* static */ delegate int _CreateGlyphRunAnalysis1(
             [In] IDWriteFactory2* This,
             [In] DWRITE_GLYPH_RUN* glyphRun,
             [In, Optional] DWRITE_MATRIX* transform,
@@ -517,6 +518,604 @@ namespace TerraFX.Interop
             [In, ComAliasName("FLOAT")] float baselineOriginY,
             [Out] IDWriteGlyphRunAnalysis** glyphRunAnalysis
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region IDWriteFactory Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetSystemFontCollection(
+            [Out] IDWriteFontCollection** fontCollection,
+            [In, ComAliasName("BOOL")] int checkForUpdates = FALSE
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_GetSystemFontCollection>(lpVtbl->GetSystemFontCollection)(
+                    This,
+                    fontCollection,
+                    checkForUpdates
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateCustomFontCollection(
+            [In] IDWriteFontCollectionLoader* collectionLoader,
+            [In] void* collectionKey,
+            [In, ComAliasName("UINT32")] uint collectionKeySize,
+            [Out] IDWriteFontCollection** fontCollection
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_CreateCustomFontCollection>(lpVtbl->CreateCustomFontCollection)(
+                    This,
+                    collectionLoader,
+                    collectionKey,
+                    collectionKeySize,
+                    fontCollection
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int RegisterFontCollectionLoader(
+            [In] IDWriteFontCollectionLoader* fontCollectionLoader
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_RegisterFontCollectionLoader>(lpVtbl->RegisterFontCollectionLoader)(
+                    This,
+                    fontCollectionLoader
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int UnregisterFontCollectionLoader(
+            [In] IDWriteFontCollectionLoader* fontCollectionLoader
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_UnregisterFontCollectionLoader>(lpVtbl->UnregisterFontCollectionLoader)(
+                    This,
+                    fontCollectionLoader
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateFontFileReference(
+            [In, ComAliasName("WCHAR[]")] char* filePath,
+            [In, Optional] FILETIME* lastWriteTime,
+            [Out] IDWriteFontFile** fontFile
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_CreateFontFileReference>(lpVtbl->CreateFontFileReference)(
+                    This,
+                    filePath,
+                    lastWriteTime,
+                    fontFile
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateCustomFontFileReference(
+            [In] void* fontFileReferenceKey,
+            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [In] IDWriteFontFileLoader* fontFileLoader,
+            [Out] IDWriteFontFile** fontFile
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_CreateCustomFontFileReference>(lpVtbl->CreateCustomFontFileReference)(
+                    This,
+                    fontFileReferenceKey,
+                    fontFileReferenceKeySize,
+                    fontFileLoader,
+                    fontFile
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateFontFace(
+            [In] DWRITE_FONT_FACE_TYPE fontFaceType,
+            [In, ComAliasName("UINT32")] uint numberOfFiles,
+            [In, ComAliasName("IDWriteFontFile*[]")] IDWriteFontFile** fontFiles,
+            [In, ComAliasName("UINT32")] uint faceIndex,
+            [In] DWRITE_FONT_SIMULATIONS fontFaceSimulationFlags,
+            [Out] IDWriteFontFace** fontFace
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_CreateFontFace>(lpVtbl->CreateFontFace)(
+                    This,
+                    fontFaceType,
+                    numberOfFiles,
+                    fontFiles,
+                    faceIndex,
+                    fontFaceSimulationFlags,
+                    fontFace
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateRenderingParams(
+            [Out] IDWriteRenderingParams** renderingParams
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_CreateRenderingParams>(lpVtbl->CreateRenderingParams)(
+                    This,
+                    renderingParams
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateMonitorRenderingParams(
+            [In, ComAliasName("HMONITOR")] IntPtr monitor,
+            [Out] IDWriteRenderingParams** renderingParams
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_CreateMonitorRenderingParams>(lpVtbl->CreateMonitorRenderingParams)(
+                    This,
+                    monitor,
+                    renderingParams
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateCustomRenderingParams(
+            [In, ComAliasName("FLOAT")] float gamma,
+            [In, ComAliasName("FLOAT")] float enhancedContrast,
+            [In, ComAliasName("FLOAT")] float clearTypeLevel,
+            [In] DWRITE_PIXEL_GEOMETRY pixelGeometry,
+            [In] DWRITE_RENDERING_MODE renderingMode,
+            [Out] IDWriteRenderingParams** renderingParams
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_CreateCustomRenderingParams>(lpVtbl->CreateCustomRenderingParams)(
+                    This,
+                    gamma,
+                    enhancedContrast,
+                    clearTypeLevel,
+                    pixelGeometry,
+                    renderingMode,
+                    renderingParams
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int RegisterFontFileLoader(
+            [In] IDWriteFontFileLoader* fontFileLoader
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_RegisterFontFileLoader>(lpVtbl->RegisterFontFileLoader)(
+                    This,
+                    fontFileLoader
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int UnregisterFontFileLoader(
+            [In] IDWriteFontFileLoader* fontFileLoader
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_UnregisterFontFileLoader>(lpVtbl->UnregisterFontFileLoader)(
+                    This,
+                    fontFileLoader
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateTextFormat(
+            [In, ComAliasName("WCHAR[]")] char* fontFamilyName,
+            [In, Optional] IDWriteFontCollection* fontCollection,
+            [In] DWRITE_FONT_WEIGHT fontWeight,
+            [In] DWRITE_FONT_STYLE fontStyle,
+            [In] DWRITE_FONT_STRETCH fontStretch,
+            [In, ComAliasName("FLOAT")] float fontSize,
+            [In, ComAliasName("WCHAR[]")] char* localeName,
+            [Out] IDWriteTextFormat** textFormat
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_CreateTextFormat>(lpVtbl->CreateTextFormat)(
+                    This,
+                    fontFamilyName,
+                    fontCollection,
+                    fontWeight,
+                    fontStyle,
+                    fontStretch,
+                    fontSize,
+                    localeName,
+                    textFormat
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateTypography(
+            [Out] IDWriteTypography** typography
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_CreateTypography>(lpVtbl->CreateTypography)(
+                    This,
+                    typography
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetGdiInterop(
+            [Out] IDWriteGdiInterop** gdiInterop
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_GetGdiInterop>(lpVtbl->GetGdiInterop)(
+                    This,
+                    gdiInterop
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateTextLayout(
+            [In, ComAliasName("WCHAR[]")] char* @string,
+            [In, ComAliasName("UINT32")] uint stringLength,
+            [In] IDWriteTextFormat* textFormat,
+            [In, ComAliasName("FLOAT")] float maxWidth,
+            [In, ComAliasName("FLOAT")] float maxHeight,
+            [Out] IDWriteTextLayout** textLayout
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_CreateTextLayout>(lpVtbl->CreateTextLayout)(
+                    This,
+                    @string,
+                    stringLength,
+                    textFormat,
+                    maxWidth,
+                    maxHeight,
+                    textLayout
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateGdiCompatibleTextLayout(
+            [In, ComAliasName("WCHAR[]")] char* @string,
+            [In, ComAliasName("UINT32")] uint stringLength,
+            [In] IDWriteTextFormat* textFormat,
+            [In, ComAliasName("FLOAT")] float layoutWidth,
+            [In, ComAliasName("FLOAT")] float layoutHeight,
+            [In, ComAliasName("FLOAT")] float pixelsPerDip,
+            [In, Optional] DWRITE_MATRIX* transform,
+            [In, ComAliasName("BOOL")] int useGdiNatural,
+            [Out] IDWriteTextLayout** textLayout
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_CreateGdiCompatibleTextLayout>(lpVtbl->CreateGdiCompatibleTextLayout)(
+                    This,
+                    @string,
+                    stringLength,
+                    textFormat,
+                    layoutWidth,
+                    layoutHeight,
+                    pixelsPerDip,
+                    transform,
+                    useGdiNatural,
+                    textLayout
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateEllipsisTrimmingSign(
+            [In] IDWriteTextFormat* textFormat,
+            [Out] IDWriteInlineObject** trimmingSign
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_CreateEllipsisTrimmingSign>(lpVtbl->CreateEllipsisTrimmingSign)(
+                    This,
+                    textFormat,
+                    trimmingSign
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateTextAnalyzer(
+            [Out] IDWriteTextAnalyzer** textAnalyzer
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_CreateTextAnalyzer>(lpVtbl->CreateTextAnalyzer)(
+                    This,
+                    textAnalyzer
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateNumberSubstitution(
+            [In] DWRITE_NUMBER_SUBSTITUTION_METHOD substitutionMethod,
+            [In, ComAliasName("WCHAR[]")] char* localeName,
+            [In, ComAliasName("BOOL")] int ignoreUserOverride,
+            [Out] IDWriteNumberSubstitution** numberSubstitution
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_CreateNumberSubstitution>(lpVtbl->CreateNumberSubstitution)(
+                    This,
+                    substitutionMethod,
+                    localeName,
+                    ignoreUserOverride,
+                    numberSubstitution
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateGlyphRunAnalysis(
+            [In] DWRITE_GLYPH_RUN* glyphRun,
+            [In, ComAliasName("FLOAT")] float pixelsPerDip,
+            [In, Optional] DWRITE_MATRIX* transform,
+            [In] DWRITE_RENDERING_MODE renderingMode,
+            [In] DWRITE_MEASURING_MODE measuringMode,
+            [In, ComAliasName("FLOAT")] float baselineOriginX,
+            [In, ComAliasName("FLOAT")] float baselineOriginY,
+            [Out] IDWriteGlyphRunAnalysis** glyphRunAnalysis
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_CreateGlyphRunAnalysis>(lpVtbl->CreateGlyphRunAnalysis)(
+                    This,
+                    glyphRun,
+                    pixelsPerDip,
+                    transform,
+                    renderingMode,
+                    measuringMode,
+                    baselineOriginX,
+                    baselineOriginY,
+                    glyphRunAnalysis
+                );
+            }
+        }
+        #endregion
+
+        #region IDWriteFactory1 Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetEudcFontCollection(
+            [Out] IDWriteFontCollection** fontCollection,
+            [In, ComAliasName("BOOL")] int checkForUpdates = FALSE
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_GetEudcFontCollection>(lpVtbl->GetEudcFontCollection)(
+                    This,
+                    fontCollection,
+                    checkForUpdates
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateCustomRenderingParams1(
+            [In, ComAliasName("FLOAT")] float gamma,
+            [In, ComAliasName("FLOAT")] float enhancedContrast,
+            [In, ComAliasName("FLOAT")] float enhancedContrastGrayscale,
+            [In, ComAliasName("FLOAT")] float clearTypeLevel,
+            [In] DWRITE_PIXEL_GEOMETRY pixelGeometry,
+            [In] DWRITE_RENDERING_MODE renderingMode,
+            [Out] IDWriteRenderingParams1** renderingParams
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_CreateCustomRenderingParams1>(lpVtbl->CreateCustomRenderingParams1)(
+                    This,
+                    gamma,
+                    enhancedContrast,
+                    enhancedContrastGrayscale,
+                    clearTypeLevel,
+                    pixelGeometry,
+                    renderingMode,
+                    renderingParams
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetSystemFontFallback(
+            [Out] IDWriteFontFallback** fontFallback
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_GetSystemFontFallback>(lpVtbl->GetSystemFontFallback)(
+                    This,
+                    fontFallback
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateFontFallbackBuilder(
+            [Out] IDWriteFontFallbackBuilder** fontFallbackBuilder
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_CreateFontFallbackBuilder>(lpVtbl->CreateFontFallbackBuilder)(
+                    This,
+                    fontFallbackBuilder
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int TranslateColorGlyphRun(
+            [In, ComAliasName("FLOAT")] float baselineOriginX,
+            [In, ComAliasName("FLOAT")] float baselineOriginY,
+            [In] DWRITE_GLYPH_RUN* glyphRun,
+            [In, Optional] DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
+            [In] DWRITE_MEASURING_MODE measuringMode,
+            [In, Optional] DWRITE_MATRIX* worldToDeviceTransform,
+            [In, ComAliasName("UINT32")] uint colorPaletteIndex,
+            [Out] IDWriteColorGlyphRunEnumerator** colorLayers
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_TranslateColorGlyphRun>(lpVtbl->TranslateColorGlyphRun)(
+                    This,
+                    baselineOriginX,
+                    baselineOriginY,
+                    glyphRun,
+                    glyphRunDescription,
+                    measuringMode,
+                    worldToDeviceTransform,
+                    colorPaletteIndex,
+                    colorLayers
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateCustomRenderingParams2(
+            [In, ComAliasName("FLOAT")] float gamma,
+            [In, ComAliasName("FLOAT")] float enhancedContrast,
+            [In, ComAliasName("FLOAT")] float grayscaleEnhancedContrast,
+            [In, ComAliasName("FLOAT")] float clearTypeLevel,
+            [In] DWRITE_PIXEL_GEOMETRY pixelGeometry,
+            [In] DWRITE_RENDERING_MODE renderingMode,
+            [In] DWRITE_GRID_FIT_MODE gridFitMode,
+            [Out] IDWriteRenderingParams2** renderingParams
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_CreateCustomRenderingParams2>(lpVtbl->CreateCustomRenderingParams2)(
+                    This,
+                    gamma,
+                    enhancedContrast,
+                    grayscaleEnhancedContrast,
+                    clearTypeLevel,
+                    pixelGeometry,
+                    renderingMode,
+                    gridFitMode,
+                    renderingParams
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateGlyphRunAnalysis1(
+            [In] DWRITE_GLYPH_RUN* glyphRun,
+            [In, Optional] DWRITE_MATRIX* transform,
+            [In] DWRITE_RENDERING_MODE renderingMode,
+            [In] DWRITE_MEASURING_MODE measuringMode,
+            [In] DWRITE_GRID_FIT_MODE gridFitMode,
+            [In] DWRITE_TEXT_ANTIALIAS_MODE antialiasMode,
+            [In, ComAliasName("FLOAT")] float baselineOriginX,
+            [In, ComAliasName("FLOAT")] float baselineOriginY,
+            [Out] IDWriteGlyphRunAnalysis** glyphRunAnalysis
+        )
+        {
+            fixed (IDWriteFactory2* This = &this)
+            {
+                return MarshalFunction<_CreateGlyphRunAnalysis1>(lpVtbl->CreateGlyphRunAnalysis1)(
+                    This,
+                    glyphRun,
+                    transform,
+                    renderingMode,
+                    measuringMode,
+                    gridFitMode,
+                    antialiasMode,
+                    baselineOriginX,
+                    baselineOriginY,
+                    glyphRunAnalysis
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -595,3 +1194,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

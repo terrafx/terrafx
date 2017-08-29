@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IWICProgressiveLevelControl* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IWICProgressiveLevelControl* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IWICProgressiveLevelControl* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetLevelCount(
+        public /* static */ delegate int _GetLevelCount(
             [In] IWICProgressiveLevelControl* This,
             [Out, ComAliasName("UINT")] uint* pcLevels
         );
@@ -53,7 +54,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetCurrentLevel(
+        public /* static */ delegate int _GetCurrentLevel(
             [In] IWICProgressiveLevelControl* This,
             [Out, ComAliasName("UINT")] uint* pnLevel
         );
@@ -61,10 +62,94 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetCurrentLevel(
+        public /* static */ delegate int _SetCurrentLevel(
             [In] IWICProgressiveLevelControl* This,
             [In, ComAliasName("UINT")] uint nLevel
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IWICProgressiveLevelControl* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IWICProgressiveLevelControl* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IWICProgressiveLevelControl* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetLevelCount(
+            [Out, ComAliasName("UINT")] uint* pcLevels
+        )
+        {
+            fixed (IWICProgressiveLevelControl* This = &this)
+            {
+                return MarshalFunction<_GetLevelCount>(lpVtbl->GetLevelCount)(
+                    This,
+                    pcLevels
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetCurrentLevel(
+            [Out, ComAliasName("UINT")] uint* pnLevel
+        )
+        {
+            fixed (IWICProgressiveLevelControl* This = &this)
+            {
+                return MarshalFunction<_GetCurrentLevel>(lpVtbl->GetCurrentLevel)(
+                    This,
+                    pnLevel
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetCurrentLevel(
+            [In, ComAliasName("UINT")] uint nLevel
+        )
+        {
+            fixed (IWICProgressiveLevelControl* This = &this)
+            {
+                return MarshalFunction<_SetCurrentLevel>(lpVtbl->SetCurrentLevel)(
+                    This,
+                    nLevel
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -89,3 +174,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

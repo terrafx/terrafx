@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDXGIDebug1* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDXGIDebug1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDXGIDebug1* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int ReportLiveObjects(
+        public /* static */ delegate int _ReportLiveObjects(
             [In] IDXGIDebug1* This,
             [In, ComAliasName("GUID")] Guid apiid,
             [In] DXGI_DEBUG_RLO_FLAGS flags
@@ -55,22 +56,113 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void EnableLeakTrackingForThread(
+        public /* static */ delegate void _EnableLeakTrackingForThread(
             [In] IDXGIDebug1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void DisableLeakTrackingForThread(
+        public /* static */ delegate void _DisableLeakTrackingForThread(
             [In] IDXGIDebug1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("BOOL")]
-        public /* static */ delegate int IsLeakTrackingEnabledForThread(
+        public /* static */ delegate int _IsLeakTrackingEnabledForThread(
             [In] IDXGIDebug1* This
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDXGIDebug1* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDXGIDebug1* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDXGIDebug1* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region IDXGIDebug Methods
+        [return: ComAliasName("HRESULT")]
+        public int ReportLiveObjects(
+            [In, ComAliasName("GUID")] Guid apiid,
+            [In] DXGI_DEBUG_RLO_FLAGS flags
+        )
+        {
+            fixed (IDXGIDebug1* This = &this)
+            {
+                return MarshalFunction<_ReportLiveObjects>(lpVtbl->ReportLiveObjects)(
+                    This,
+                    apiid,
+                    flags
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        public void EnableLeakTrackingForThread()
+        {
+            fixed (IDXGIDebug1* This = &this)
+            {
+                MarshalFunction<_EnableLeakTrackingForThread>(lpVtbl->EnableLeakTrackingForThread)(
+                    This
+                );
+            }
+        }
+
+        public void DisableLeakTrackingForThread()
+        {
+            fixed (IDXGIDebug1* This = &this)
+            {
+                MarshalFunction<_DisableLeakTrackingForThread>(lpVtbl->DisableLeakTrackingForThread)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("BOOL")]
+        public int IsLeakTrackingEnabledForThread()
+        {
+            fixed (IDXGIDebug1* This = &this)
+            {
+                return MarshalFunction<_IsLeakTrackingEnabledForThread>(lpVtbl->IsLeakTrackingEnabledForThread)(
+                    This
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -99,3 +191,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

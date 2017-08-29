@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop.Desktop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDXGIFactoryMedia* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDXGIFactoryMedia* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDXGIFactoryMedia* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateSwapChainForCompositionSurfaceHandle(
+        public /* static */ delegate int _CreateSwapChainForCompositionSurfaceHandle(
             [In] IDXGIFactoryMedia* This,
             [In] IUnknown* pDevice,
             [In, Optional, ComAliasName("HANDLE")] IntPtr hSurface,
@@ -57,7 +58,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateDecodeSwapChainForCompositionSurfaceHandle(
+        public /* static */ delegate int _CreateDecodeSwapChainForCompositionSurfaceHandle(
             [In] IDXGIFactoryMedia* This,
             [In] IUnknown* pDevice,
             [In, Optional, ComAliasName("HANDLE")] IntPtr hSurface,
@@ -66,6 +67,94 @@ namespace TerraFX.Interop.Desktop
             [In, Optional] IDXGIOutput* pRestrictToOutput,
             [Out] IDXGIDecodeSwapChain** ppSwapChain
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDXGIFactoryMedia* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDXGIFactoryMedia* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDXGIFactoryMedia* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int CreateSwapChainForCompositionSurfaceHandle(
+            [In] IUnknown* pDevice,
+            [In, Optional, ComAliasName("HANDLE")] IntPtr hSurface,
+            [In] DXGI_SWAP_CHAIN_DESC1* pDesc,
+            [In, Optional] IDXGIOutput* pRestrictToOutput,
+            [Out] IDXGISwapChain1** ppSwapChain
+        )
+        {
+            fixed (IDXGIFactoryMedia* This = &this)
+            {
+                return MarshalFunction<_CreateSwapChainForCompositionSurfaceHandle>(lpVtbl->CreateSwapChainForCompositionSurfaceHandle)(
+                    This,
+                    pDevice,
+                    hSurface,
+                    pDesc,
+                    pRestrictToOutput,
+                    ppSwapChain
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateDecodeSwapChainForCompositionSurfaceHandle(
+            [In] IUnknown* pDevice,
+            [In, Optional, ComAliasName("HANDLE")] IntPtr hSurface,
+            [In] DXGI_DECODE_SWAP_CHAIN_DESC* pDesc,
+            [In] IDXGIResource* pYuvDecodeBuffers,
+            [In, Optional] IDXGIOutput* pRestrictToOutput,
+            [Out] IDXGIDecodeSwapChain** ppSwapChain
+        )
+        {
+            fixed (IDXGIFactoryMedia* This = &this)
+            {
+                return MarshalFunction<_CreateDecodeSwapChainForCompositionSurfaceHandle>(lpVtbl->CreateDecodeSwapChainForCompositionSurfaceHandle)(
+                    This,
+                    pDevice,
+                    hSurface,
+                    pDesc,
+                    pYuvDecodeBuffers,
+                    pRestrictToOutput,
+                    ppSwapChain
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -88,3 +177,4 @@ namespace TerraFX.Interop.Desktop
         #endregion
     }
 }
+

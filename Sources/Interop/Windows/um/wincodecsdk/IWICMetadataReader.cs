@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IWICMetadataReader* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IWICMetadataReader* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IWICMetadataReader* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetMetadataFormat(
+        public /* static */ delegate int _GetMetadataFormat(
             [In] IWICMetadataReader* This,
             [Out, ComAliasName("GUID")] Guid* pguidMetadataFormat
         );
@@ -53,7 +54,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetMetadataHandlerInfo(
+        public /* static */ delegate int _GetMetadataHandlerInfo(
             [In] IWICMetadataReader* This,
             [Out] IWICMetadataHandlerInfo** ppIHandler = null
         );
@@ -61,7 +62,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetCount(
+        public /* static */ delegate int _GetCount(
             [In] IWICMetadataReader* This,
             [Out, ComAliasName("UINT")] uint* pcCount
         );
@@ -69,7 +70,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetValueByIndex(
+        public /* static */ delegate int _GetValueByIndex(
             [In] IWICMetadataReader* This,
             [In, ComAliasName("UINT")] uint nIndex,
             [In, Out] PROPVARIANT* pvarSchema = null,
@@ -80,7 +81,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetValue(
+        public /* static */ delegate int _GetValue(
             [In] IWICMetadataReader* This,
             [In, Optional] PROPVARIANT* pvarSchema,
             [In] PROPVARIANT* pvarId,
@@ -90,10 +91,146 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetEnumerator(
+        public /* static */ delegate int _GetEnumerator(
             [In] IWICMetadataReader* This,
             [Out] IWICEnumMetadataItem** ppIEnumMetadata = null
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IWICMetadataReader* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IWICMetadataReader* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IWICMetadataReader* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetMetadataFormat(
+            [Out, ComAliasName("GUID")] Guid* pguidMetadataFormat
+        )
+        {
+            fixed (IWICMetadataReader* This = &this)
+            {
+                return MarshalFunction<_GetMetadataFormat>(lpVtbl->GetMetadataFormat)(
+                    This,
+                    pguidMetadataFormat
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetMetadataHandlerInfo(
+            [Out] IWICMetadataHandlerInfo** ppIHandler = null
+        )
+        {
+            fixed (IWICMetadataReader* This = &this)
+            {
+                return MarshalFunction<_GetMetadataHandlerInfo>(lpVtbl->GetMetadataHandlerInfo)(
+                    This,
+                    ppIHandler
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetCount(
+            [Out, ComAliasName("UINT")] uint* pcCount
+        )
+        {
+            fixed (IWICMetadataReader* This = &this)
+            {
+                return MarshalFunction<_GetCount>(lpVtbl->GetCount)(
+                    This,
+                    pcCount
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetValueByIndex(
+            [In, ComAliasName("UINT")] uint nIndex,
+            [In, Out] PROPVARIANT* pvarSchema = null,
+            [In, Out] PROPVARIANT* pvarId = null,
+            [In, Out] PROPVARIANT* pvarValue = null
+        )
+        {
+            fixed (IWICMetadataReader* This = &this)
+            {
+                return MarshalFunction<_GetValueByIndex>(lpVtbl->GetValueByIndex)(
+                    This,
+                    nIndex,
+                    pvarSchema,
+                    pvarId,
+                    pvarValue
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetValue(
+            [In, Optional] PROPVARIANT* pvarSchema,
+            [In] PROPVARIANT* pvarId,
+            [In, Out] PROPVARIANT* pvarValue = null
+        )
+        {
+            fixed (IWICMetadataReader* This = &this)
+            {
+                return MarshalFunction<_GetValue>(lpVtbl->GetValue)(
+                    This,
+                    pvarSchema,
+                    pvarId,
+                    pvarValue
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetEnumerator(
+            [Out] IWICEnumMetadataItem** ppIEnumMetadata = null
+        )
+        {
+            fixed (IWICMetadataReader* This = &this)
+            {
+                return MarshalFunction<_GetEnumerator>(lpVtbl->GetEnumerator)(
+                    This,
+                    ppIEnumMetadata
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -124,3 +261,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

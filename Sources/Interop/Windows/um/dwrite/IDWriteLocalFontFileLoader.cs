@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDWriteLocalFontFileLoader* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDWriteLocalFontFileLoader* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDWriteLocalFontFileLoader* This
         );
         #endregion
@@ -51,7 +52,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateStreamFromKey(
+        public /* static */ delegate int _CreateStreamFromKey(
             [In] IDWriteLocalFontFileLoader* This,
             [In] void* fontFileReferenceKey,
             [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
@@ -68,7 +69,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFilePathLengthFromKey(
+        public /* static */ delegate int _GetFilePathLengthFromKey(
             [In] IDWriteLocalFontFileLoader* This,
             [In] void* fontFileReferenceKey,
             [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
@@ -84,7 +85,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFilePathFromKey(
+        public /* static */ delegate int _GetFilePathFromKey(
             [In] IDWriteLocalFontFileLoader* This,
             [In] void* fontFileReferenceKey,
             [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
@@ -100,12 +101,130 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetLastWriteTimeFromKey(
+        public /* static */ delegate int _GetLastWriteTimeFromKey(
             [In] IDWriteLocalFontFileLoader* This,
             [In] void* fontFileReferenceKey,
             [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
             [Out] FILETIME* lastWriteTime
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDWriteLocalFontFileLoader* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDWriteLocalFontFileLoader* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDWriteLocalFontFileLoader* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region IDWriteFontFileLoader Methods
+        [return: ComAliasName("HRESULT")]
+        public int CreateStreamFromKey(
+            [In] void* fontFileReferenceKey,
+            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [Out] IDWriteFontFileStream** fontFileStream
+        )
+        {
+            fixed (IDWriteLocalFontFileLoader* This = &this)
+            {
+                return MarshalFunction<_CreateStreamFromKey>(lpVtbl->CreateStreamFromKey)(
+                    This,
+                    fontFileReferenceKey,
+                    fontFileReferenceKeySize,
+                    fontFileStream
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetFilePathLengthFromKey(
+            [In] void* fontFileReferenceKey,
+            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [Out, ComAliasName("UINT32")] uint* filePathLength
+        )
+        {
+            fixed (IDWriteLocalFontFileLoader* This = &this)
+            {
+                return MarshalFunction<_GetFilePathLengthFromKey>(lpVtbl->GetFilePathLengthFromKey)(
+                    This,
+                    fontFileReferenceKey,
+                    fontFileReferenceKeySize,
+                    filePathLength
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetFilePathFromKey(
+            [In] void* fontFileReferenceKey,
+            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [Out, ComAliasName("WCHAR[]")] char* filePath,
+            [In, ComAliasName("UINT32")] uint filePathSize
+        )
+        {
+            fixed (IDWriteLocalFontFileLoader* This = &this)
+            {
+                return MarshalFunction<_GetFilePathFromKey>(lpVtbl->GetFilePathFromKey)(
+                    This,
+                    fontFileReferenceKey,
+                    fontFileReferenceKeySize,
+                    filePath,
+                    filePathSize
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetLastWriteTimeFromKey(
+            [In] void* fontFileReferenceKey,
+            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [Out] FILETIME* lastWriteTime
+        )
+        {
+            fixed (IDWriteLocalFontFileLoader* This = &this)
+            {
+                return MarshalFunction<_GetLastWriteTimeFromKey>(lpVtbl->GetLastWriteTimeFromKey)(
+                    This,
+                    fontFileReferenceKey,
+                    fontFileReferenceKeySize,
+                    lastWriteTime
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -134,3 +253,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

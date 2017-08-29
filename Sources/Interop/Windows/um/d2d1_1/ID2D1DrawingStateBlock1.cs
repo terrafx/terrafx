@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ID2D1DrawingStateBlock1* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ID2D1DrawingStateBlock1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ID2D1DrawingStateBlock1* This
         );
         #endregion
@@ -46,7 +47,7 @@ namespace TerraFX.Interop
         /// <summary>Retrieve the factory associated with this resource.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetFactory(
+        public /* static */ delegate void _GetFactory(
             [In] ID2D1DrawingStateBlock1* This,
             [Out] ID2D1Factory** factory
         );
@@ -56,7 +57,7 @@ namespace TerraFX.Interop
         /// <summary>Retrieves the state currently contained within this state block resource.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetDescription(
+        public /* static */ delegate void _GetDescription(
             [In] ID2D1DrawingStateBlock1* This,
             [Out] D2D1_DRAWING_STATE_DESCRIPTION* stateDescription
         );
@@ -64,7 +65,7 @@ namespace TerraFX.Interop
         /// <summary>Sets the state description of this state block resource.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void SetDescription(
+        public /* static */ delegate void _SetDescription(
             [In] ID2D1DrawingStateBlock1* This,
             [In] D2D1_DRAWING_STATE_DESCRIPTION* stateDescription
         );
@@ -72,7 +73,7 @@ namespace TerraFX.Interop
         /// <summary>Sets the text rendering parameters of this state block resource.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void SetTextRenderingParams(
+        public /* static */ delegate void _SetTextRenderingParams(
             [In] ID2D1DrawingStateBlock1* This,
             [In] IDWriteRenderingParams* textRenderingParams = null
         );
@@ -80,7 +81,7 @@ namespace TerraFX.Interop
         /// <summary>Retrieves the text rendering parameters contained within this state block resource. If a NULL text rendering parameter was specified, NULL will be returned.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetTextRenderingParams(
+        public /* static */ delegate void _GetTextRenderingParams(
             [In] ID2D1DrawingStateBlock1* This,
             [Out] IDWriteRenderingParams** textRenderingParams
         );
@@ -90,7 +91,7 @@ namespace TerraFX.Interop
         /// <summary>Retrieves the state currently contained within this state block resource.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetDescription1(
+        public /* static */ delegate void _GetDescription1(
             [In] ID2D1DrawingStateBlock1* This,
             [Out] D2D1_DRAWING_STATE_DESCRIPTION1* stateDescription
         );
@@ -98,10 +99,147 @@ namespace TerraFX.Interop
         /// <summary>Sets the state description of this state block resource.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void SetDescription1(
+        public /* static */ delegate void _SetDescription1(
             [In] ID2D1DrawingStateBlock1* This,
             [In] D2D1_DRAWING_STATE_DESCRIPTION1* stateDescription
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ID2D1DrawingStateBlock1* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ID2D1DrawingStateBlock1* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ID2D1DrawingStateBlock1* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1Resource Methods
+        public void GetFactory(
+            [Out] ID2D1Factory** factory
+        )
+        {
+            fixed (ID2D1DrawingStateBlock1* This = &this)
+            {
+                MarshalFunction<_GetFactory>(lpVtbl->GetFactory)(
+                    This,
+                    factory
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1DrawingStateBlock Methods
+        public void GetDescription(
+            [Out] D2D1_DRAWING_STATE_DESCRIPTION* stateDescription
+        )
+        {
+            fixed (ID2D1DrawingStateBlock1* This = &this)
+            {
+                MarshalFunction<_GetDescription>(lpVtbl->GetDescription)(
+                    This,
+                    stateDescription
+                );
+            }
+        }
+
+        public void SetDescription(
+            [In] D2D1_DRAWING_STATE_DESCRIPTION* stateDescription
+        )
+        {
+            fixed (ID2D1DrawingStateBlock1* This = &this)
+            {
+                MarshalFunction<_SetDescription>(lpVtbl->SetDescription)(
+                    This,
+                    stateDescription
+                );
+            }
+        }
+
+        public void SetTextRenderingParams(
+            [In] IDWriteRenderingParams* textRenderingParams = null
+        )
+        {
+            fixed (ID2D1DrawingStateBlock1* This = &this)
+            {
+                MarshalFunction<_SetTextRenderingParams>(lpVtbl->SetTextRenderingParams)(
+                    This,
+                    textRenderingParams
+                );
+            }
+        }
+
+        public void GetTextRenderingParams(
+            [Out] IDWriteRenderingParams** textRenderingParams
+        )
+        {
+            fixed (ID2D1DrawingStateBlock1* This = &this)
+            {
+                MarshalFunction<_GetTextRenderingParams>(lpVtbl->GetTextRenderingParams)(
+                    This,
+                    textRenderingParams
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        public void GetDescription1(
+            [Out] D2D1_DRAWING_STATE_DESCRIPTION1* stateDescription
+        )
+        {
+            fixed (ID2D1DrawingStateBlock1* This = &this)
+            {
+                MarshalFunction<_GetDescription1>(lpVtbl->GetDescription1)(
+                    This,
+                    stateDescription
+                );
+            }
+        }
+
+        public void SetDescription1(
+            [In] D2D1_DRAWING_STATE_DESCRIPTION1* stateDescription
+        )
+        {
+            fixed (ID2D1DrawingStateBlock1* This = &this)
+            {
+                MarshalFunction<_SetDescription1>(lpVtbl->SetDescription1)(
+                    This,
+                    stateDescription
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -138,3 +276,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

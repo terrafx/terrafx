@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ID2D1Ink* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ID2D1Ink* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ID2D1Ink* This
         );
         #endregion
@@ -46,7 +47,7 @@ namespace TerraFX.Interop
         /// <summary>Retrieve the factory associated with this resource.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetFactory(
+        public /* static */ delegate void _GetFactory(
             [In] ID2D1Ink* This,
             [Out] ID2D1Factory** factory
         );
@@ -56,7 +57,7 @@ namespace TerraFX.Interop
         /// <summary>Resets the ink start point.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void SetStartPoint(
+        public /* static */ delegate void _SetStartPoint(
             [In] ID2D1Ink* This,
             [In] D2D1_INK_POINT* startPoint
         );
@@ -64,7 +65,7 @@ namespace TerraFX.Interop
         /// <summary>Retrieve the start point with which the ink was initialized.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetStartPoint(
+        public /* static */ delegate void _GetStartPoint(
             [In] ID2D1Ink* This,
             [Out] D2D1_INK_POINT* pStartPoint
         );
@@ -73,7 +74,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int AddSegments(
+        public /* static */ delegate int _AddSegments(
             [In] ID2D1Ink* This,
             [In, ComAliasName("D2D1_INK_BEZIER_SEGMENT[]")] D2D1_INK_BEZIER_SEGMENT* segments,
             [In, ComAliasName("UINT32")] uint segmentsCount
@@ -83,7 +84,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int RemoveSegmentsAtEnd(
+        public /* static */ delegate int _RemoveSegmentsAtEnd(
             [In] ID2D1Ink* This,
             [In, ComAliasName("UINT32")] uint segmentsCount
         );
@@ -92,7 +93,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetSegments(
+        public /* static */ delegate int _SetSegments(
             [In] ID2D1Ink* This,
             [In, ComAliasName("UINT32")] uint startSegment,
             [In, ComAliasName("D2D1_INK_BEZIER_SEGMENT[]")] D2D1_INK_BEZIER_SEGMENT* segments,
@@ -103,7 +104,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetSegmentAtEnd(
+        public /* static */ delegate int _SetSegmentAtEnd(
             [In] ID2D1Ink* This,
             [In] D2D1_INK_BEZIER_SEGMENT* segment
         );
@@ -112,7 +113,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("UINT32")]
-        public /* static */ delegate uint GetSegmentCount(
+        public /* static */ delegate uint _GetSegmentCount(
             [In] ID2D1Ink* This
         );
 
@@ -120,7 +121,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetSegments(
+        public /* static */ delegate int _GetSegments(
             [In] ID2D1Ink* This,
             [In, ComAliasName("UINT32")] uint startSegment,
             [Out, ComAliasName("D2D1_INK_BEZIER_SEGMENT[]")] D2D1_INK_BEZIER_SEGMENT* segments,
@@ -131,7 +132,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int StreamAsGeometry(
+        public /* static */ delegate int _StreamAsGeometry(
             [In] ID2D1Ink* This,
             [In, Optional] ID2D1InkStyle* inkStyle,
             [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
@@ -143,12 +144,224 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetBounds(
+        public /* static */ delegate int _GetBounds(
             [In] ID2D1Ink* This,
             [In, Optional] ID2D1InkStyle* inkStyle,
             [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
             [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* bounds
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ID2D1Ink* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ID2D1Ink* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ID2D1Ink* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1Resource Methods
+        public void GetFactory(
+            [Out] ID2D1Factory** factory
+        )
+        {
+            fixed (ID2D1Ink* This = &this)
+            {
+                MarshalFunction<_GetFactory>(lpVtbl->GetFactory)(
+                    This,
+                    factory
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        public void SetStartPoint(
+            [In] D2D1_INK_POINT* startPoint
+        )
+        {
+            fixed (ID2D1Ink* This = &this)
+            {
+                MarshalFunction<_SetStartPoint>(lpVtbl->SetStartPoint)(
+                    This,
+                    startPoint
+                );
+            }
+        }
+
+        public void GetStartPoint(
+            [Out] D2D1_INK_POINT* pStartPoint
+        )
+        {
+            fixed (ID2D1Ink* This = &this)
+            {
+                MarshalFunction<_GetStartPoint>(lpVtbl->GetStartPoint)(
+                    This,
+                    pStartPoint
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int AddSegments(
+            [In, ComAliasName("D2D1_INK_BEZIER_SEGMENT[]")] D2D1_INK_BEZIER_SEGMENT* segments,
+            [In, ComAliasName("UINT32")] uint segmentsCount
+        )
+        {
+            fixed (ID2D1Ink* This = &this)
+            {
+                return MarshalFunction<_AddSegments>(lpVtbl->AddSegments)(
+                    This,
+                    segments,
+                    segmentsCount
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int RemoveSegmentsAtEnd(
+            [In, ComAliasName("UINT32")] uint segmentsCount
+        )
+        {
+            fixed (ID2D1Ink* This = &this)
+            {
+                return MarshalFunction<_RemoveSegmentsAtEnd>(lpVtbl->RemoveSegmentsAtEnd)(
+                    This,
+                    segmentsCount
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetSegments(
+            [In, ComAliasName("UINT32")] uint startSegment,
+            [In, ComAliasName("D2D1_INK_BEZIER_SEGMENT[]")] D2D1_INK_BEZIER_SEGMENT* segments,
+            [In, ComAliasName("UINT32")] uint segmentsCount
+        )
+        {
+            fixed (ID2D1Ink* This = &this)
+            {
+                return MarshalFunction<_SetSegments>(lpVtbl->SetSegments)(
+                    This,
+                    startSegment,
+                    segments,
+                    segmentsCount
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetSegmentAtEnd(
+            [In] D2D1_INK_BEZIER_SEGMENT* segment
+        )
+        {
+            fixed (ID2D1Ink* This = &this)
+            {
+                return MarshalFunction<_SetSegmentAtEnd>(lpVtbl->SetSegmentAtEnd)(
+                    This,
+                    segment
+                );
+            }
+        }
+
+        [return: ComAliasName("UINT32")]
+        public uint GetSegmentCount()
+        {
+            fixed (ID2D1Ink* This = &this)
+            {
+                return MarshalFunction<_GetSegmentCount>(lpVtbl->GetSegmentCount)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetSegments(
+            [In, ComAliasName("UINT32")] uint startSegment,
+            [Out, ComAliasName("D2D1_INK_BEZIER_SEGMENT[]")] D2D1_INK_BEZIER_SEGMENT* segments,
+            [In, ComAliasName("UINT32")] uint segmentsCount
+        )
+        {
+            fixed (ID2D1Ink* This = &this)
+            {
+                return MarshalFunction<_GetSegments>(lpVtbl->GetSegments)(
+                    This,
+                    startSegment,
+                    segments,
+                    segmentsCount
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int StreamAsGeometry(
+            [In, Optional] ID2D1InkStyle* inkStyle,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [In] ID2D1SimplifiedGeometrySink* geometrySink
+        )
+        {
+            fixed (ID2D1Ink* This = &this)
+            {
+                return MarshalFunction<_StreamAsGeometry>(lpVtbl->StreamAsGeometry)(
+                    This,
+                    inkStyle,
+                    worldTransform,
+                    flatteningTolerance,
+                    geometrySink
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetBounds(
+            [In, Optional] ID2D1InkStyle* inkStyle,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* bounds
+        )
+        {
+            fixed (ID2D1Ink* This = &this)
+            {
+                return MarshalFunction<_GetBounds>(lpVtbl->GetBounds)(
+                    This,
+                    inkStyle,
+                    worldTransform,
+                    bounds
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -191,3 +404,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

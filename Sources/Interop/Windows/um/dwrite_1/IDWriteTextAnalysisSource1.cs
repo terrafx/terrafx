@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDWriteTextAnalysisSource1* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDWriteTextAnalysisSource1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDWriteTextAnalysisSource1* This
         );
         #endregion
@@ -52,7 +53,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetTextAtPosition(
+        public /* static */ delegate int _GetTextAtPosition(
             [In] IDWriteTextAnalysisSource1* This,
             [In, ComAliasName("UINT32")] uint textPosition,
             [Out, ComAliasName("WCHAR[]")] char** textString,
@@ -68,7 +69,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetTextBeforePosition(
+        public /* static */ delegate int _GetTextBeforePosition(
             [In] IDWriteTextAnalysisSource1* This,
             [In, ComAliasName("UINT32")] uint textPosition,
             [Out, ComAliasName("WCHAR[]")] char** textString,
@@ -78,7 +79,7 @@ namespace TerraFX.Interop
         /// <summary>Get paragraph reading direction.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate DWRITE_READING_DIRECTION GetParagraphReadingDirection(
+        public /* static */ delegate DWRITE_READING_DIRECTION _GetParagraphReadingDirection(
             [In] IDWriteTextAnalysisSource1* This
         );
 
@@ -90,7 +91,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetLocaleName(
+        public /* static */ delegate int _GetLocaleName(
             [In] IDWriteTextAnalysisSource1* This,
             [In, ComAliasName("UINT32")] uint textPosition,
             [Out, ComAliasName("UINT32")] uint* textLength,
@@ -105,7 +106,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetNumberSubstitution(
+        public /* static */ delegate int _GetNumberSubstitution(
             [In] IDWriteTextAnalysisSource1* This,
             [In, ComAliasName("UINT32")] uint textPosition,
             [Out, ComAliasName("UINT32")] uint* textLength,
@@ -123,13 +124,159 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetVerticalGlyphOrientation(
+        public /* static */ delegate int _GetVerticalGlyphOrientation(
             [In] IDWriteTextAnalysisSource1* This,
             [In, ComAliasName("UINT32")] uint textPosition,
             [Out, ComAliasName("UINT32")] uint* textLength,
             [Out] DWRITE_VERTICAL_GLYPH_ORIENTATION* glyphOrientation,
             [Out, ComAliasName("UINT8")] byte* bidiLevel
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDWriteTextAnalysisSource1* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDWriteTextAnalysisSource1* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDWriteTextAnalysisSource1* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region IDWriteTextAnalysisSource Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetTextAtPosition(
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [Out, ComAliasName("WCHAR[]")] char** textString,
+            [Out, ComAliasName("UINT32")] uint* textLength
+        )
+        {
+            fixed (IDWriteTextAnalysisSource1* This = &this)
+            {
+                return MarshalFunction<_GetTextAtPosition>(lpVtbl->GetTextAtPosition)(
+                    This,
+                    textPosition,
+                    textString,
+                    textLength
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetTextBeforePosition(
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [Out, ComAliasName("WCHAR[]")] char** textString,
+            [Out, ComAliasName("UINT32")] uint* textLength
+        )
+        {
+            fixed (IDWriteTextAnalysisSource1* This = &this)
+            {
+                return MarshalFunction<_GetTextBeforePosition>(lpVtbl->GetTextBeforePosition)(
+                    This,
+                    textPosition,
+                    textString,
+                    textLength
+                );
+            }
+        }
+
+        public DWRITE_READING_DIRECTION GetParagraphReadingDirection()
+        {
+            fixed (IDWriteTextAnalysisSource1* This = &this)
+            {
+                return MarshalFunction<_GetParagraphReadingDirection>(lpVtbl->GetParagraphReadingDirection)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetLocaleName(
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [Out, ComAliasName("UINT32")] uint* textLength,
+            [Out, ComAliasName("WCHAR[]")] char** localeName
+        )
+        {
+            fixed (IDWriteTextAnalysisSource1* This = &this)
+            {
+                return MarshalFunction<_GetLocaleName>(lpVtbl->GetLocaleName)(
+                    This,
+                    textPosition,
+                    textLength,
+                    localeName
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetNumberSubstitution(
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [Out, ComAliasName("UINT32")] uint* textLength,
+            [Out] IDWriteNumberSubstitution** numberSubstitution
+        )
+        {
+            fixed (IDWriteTextAnalysisSource1* This = &this)
+            {
+                return MarshalFunction<_GetNumberSubstitution>(lpVtbl->GetNumberSubstitution)(
+                    This,
+                    textPosition,
+                    textLength,
+                    numberSubstitution
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetVerticalGlyphOrientation(
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [Out, ComAliasName("UINT32")] uint* textLength,
+            [Out] DWRITE_VERTICAL_GLYPH_ORIENTATION* glyphOrientation,
+            [Out, ComAliasName("UINT8")] byte* bidiLevel
+        )
+        {
+            fixed (IDWriteTextAnalysisSource1* This = &this)
+            {
+                return MarshalFunction<_GetVerticalGlyphOrientation>(lpVtbl->GetVerticalGlyphOrientation)(
+                    This,
+                    textPosition,
+                    textLength,
+                    glyphOrientation,
+                    bidiLevel
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -162,3 +309,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDWriteLocalizedStrings* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDWriteLocalizedStrings* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDWriteLocalizedStrings* This
         );
         #endregion
@@ -47,7 +48,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("UINT32")]
-        public /* static */ delegate uint GetCount(
+        public /* static */ delegate uint _GetCount(
             [In] IDWriteLocalizedStrings* This
         );
 
@@ -59,7 +60,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int FindLocaleName(
+        public /* static */ delegate int _FindLocaleName(
             [In] IDWriteLocalizedStrings* This,
             [In, ComAliasName("WCHAR[]")] char* localeName,
             [Out, ComAliasName("UINT32")] uint* index,
@@ -73,7 +74,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetLocaleNameLength(
+        public /* static */ delegate int _GetLocaleNameLength(
             [In] IDWriteLocalizedStrings* This,
             [In, ComAliasName("UINT32")] uint index,
             [Out, ComAliasName("UINT32")] uint* length
@@ -87,7 +88,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetLocaleName(
+        public /* static */ delegate int _GetLocaleName(
             [In] IDWriteLocalizedStrings* This,
             [In, ComAliasName("UINT32")] uint index,
             [Out, ComAliasName("WCHAR[]")] char* localeName,
@@ -101,7 +102,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetStringLength(
+        public /* static */ delegate int _GetStringLength(
             [In] IDWriteLocalizedStrings* This,
             [In, ComAliasName("UINT32")] uint index,
             [Out, ComAliasName("UINT32")] uint* length
@@ -115,12 +116,151 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetString(
+        public /* static */ delegate int _GetString(
             [In] IDWriteLocalizedStrings* This,
             [In, ComAliasName("UINT32")] uint index,
             [Out, ComAliasName("WCHAR[]")] char* stringBuffer,
             [In, ComAliasName("UINT32")] uint size
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDWriteLocalizedStrings* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDWriteLocalizedStrings* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDWriteLocalizedStrings* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("UINT32")]
+        public uint GetCount()
+        {
+            fixed (IDWriteLocalizedStrings* This = &this)
+            {
+                return MarshalFunction<_GetCount>(lpVtbl->GetCount)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int FindLocaleName(
+            [In, ComAliasName("WCHAR[]")] char* localeName,
+            [Out, ComAliasName("UINT32")] uint* index,
+            [Out, ComAliasName("BOOL")] int* exists
+        )
+        {
+            fixed (IDWriteLocalizedStrings* This = &this)
+            {
+                return MarshalFunction<_FindLocaleName>(lpVtbl->FindLocaleName)(
+                    This,
+                    localeName,
+                    index,
+                    exists
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetLocaleNameLength(
+            [In, ComAliasName("UINT32")] uint index,
+            [Out, ComAliasName("UINT32")] uint* length
+        )
+        {
+            fixed (IDWriteLocalizedStrings* This = &this)
+            {
+                return MarshalFunction<_GetLocaleNameLength>(lpVtbl->GetLocaleNameLength)(
+                    This,
+                    index,
+                    length
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetLocaleName(
+            [In, ComAliasName("UINT32")] uint index,
+            [Out, ComAliasName("WCHAR[]")] char* localeName,
+            [In, ComAliasName("UINT32")] uint size
+        )
+        {
+            fixed (IDWriteLocalizedStrings* This = &this)
+            {
+                return MarshalFunction<_GetLocaleName>(lpVtbl->GetLocaleName)(
+                    This,
+                    index,
+                    localeName,
+                    size
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetStringLength(
+            [In, ComAliasName("UINT32")] uint index,
+            [Out, ComAliasName("UINT32")] uint* length
+        )
+        {
+            fixed (IDWriteLocalizedStrings* This = &this)
+            {
+                return MarshalFunction<_GetStringLength>(lpVtbl->GetStringLength)(
+                    This,
+                    index,
+                    length
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetString(
+            [In, ComAliasName("UINT32")] uint index,
+            [Out, ComAliasName("WCHAR[]")] char* stringBuffer,
+            [In, ComAliasName("UINT32")] uint size
+        )
+        {
+            fixed (IDWriteLocalizedStrings* This = &this)
+            {
+                return MarshalFunction<_GetString>(lpVtbl->GetString)(
+                    This,
+                    index,
+                    stringBuffer,
+                    size
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -151,3 +291,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

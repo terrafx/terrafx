@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ID2D1Device1* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ID2D1Device1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ID2D1Device1* This
         );
         #endregion
@@ -46,7 +47,7 @@ namespace TerraFX.Interop
         /// <summary>Retrieve the factory associated with this resource.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetFactory(
+        public /* static */ delegate void _GetFactory(
             [In] ID2D1Device1* This,
             [Out] ID2D1Factory** factory
         );
@@ -57,7 +58,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateDeviceContext(
+        public /* static */ delegate int _CreateDeviceContext(
             [In] ID2D1Device1* This,
             [In] D2D1_DEVICE_CONTEXT_OPTIONS options,
             [Out] ID2D1DeviceContext** deviceContext
@@ -67,7 +68,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreatePrintControl(
+        public /* static */ delegate int _CreatePrintControl(
             [In] ID2D1Device1* This,
             [In] IWICImagingFactory* wicFactory,
             [In] IPrintDocumentPackageTarget* documentTarget,
@@ -78,7 +79,7 @@ namespace TerraFX.Interop
         /// <summary>Sets the maximum amount of texture memory to maintain before evicting caches.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void SetMaximumTextureMemory(
+        public /* static */ delegate void _SetMaximumTextureMemory(
             [In] ID2D1Device1* This,
             [In, ComAliasName("UINT64")] ulong maximumInBytes
         );
@@ -87,14 +88,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("UINT64")]
-        public /* static */ delegate ulong GetMaximumTextureMemory(
+        public /* static */ delegate ulong _GetMaximumTextureMemory(
             [In] ID2D1Device1* This
         );
 
         /// <summary>Clears all resources that are cached but not held in use by the application through an interface reference.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void ClearResources(
+        public /* static */ delegate void _ClearResources(
             [In] ID2D1Device1* This,
             [In, ComAliasName("UINT32")] uint millisecondsSinceUse = 0
         );
@@ -104,14 +105,14 @@ namespace TerraFX.Interop
         /// <summary>Retrieves the rendering priority currently set on the device.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_RENDERING_PRIORITY GetRenderingPriority(
+        public /* static */ delegate D2D1_RENDERING_PRIORITY _GetRenderingPriority(
             [In] ID2D1Device1* This
         );
 
         /// <summary>Sets the rendering priority of the device.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void SetRenderingPriority(
+        public /* static */ delegate void _SetRenderingPriority(
             [In] ID2D1Device1* This,
             [In] D2D1_RENDERING_PRIORITY renderingPriority
         );
@@ -120,11 +121,182 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateDeviceContext1(
+        public /* static */ delegate int _CreateDeviceContext1(
             [In] ID2D1Device1* This,
             [In] D2D1_DEVICE_CONTEXT_OPTIONS options,
             [Out] ID2D1DeviceContext1** deviceContext1
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ID2D1Device1* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ID2D1Device1* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ID2D1Device1* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1Resource Methods
+        public void GetFactory(
+            [Out] ID2D1Factory** factory
+        )
+        {
+            fixed (ID2D1Device1* This = &this)
+            {
+                MarshalFunction<_GetFactory>(lpVtbl->GetFactory)(
+                    This,
+                    factory
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1Device Methods
+        [return: ComAliasName("HRESULT")]
+        public int CreateDeviceContext(
+            [In] D2D1_DEVICE_CONTEXT_OPTIONS options,
+            [Out] ID2D1DeviceContext** deviceContext
+        )
+        {
+            fixed (ID2D1Device1* This = &this)
+            {
+                return MarshalFunction<_CreateDeviceContext>(lpVtbl->CreateDeviceContext)(
+                    This,
+                    options,
+                    deviceContext
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreatePrintControl(
+            [In] IWICImagingFactory* wicFactory,
+            [In] IPrintDocumentPackageTarget* documentTarget,
+            [In, Optional] D2D1_PRINT_CONTROL_PROPERTIES* printControlProperties,
+            [Out] ID2D1PrintControl** printControl
+        )
+        {
+            fixed (ID2D1Device1* This = &this)
+            {
+                return MarshalFunction<_CreatePrintControl>(lpVtbl->CreatePrintControl)(
+                    This,
+                    wicFactory,
+                    documentTarget,
+                    printControlProperties,
+                    printControl
+                );
+            }
+        }
+
+        public void SetMaximumTextureMemory(
+            [In, ComAliasName("UINT64")] ulong maximumInBytes
+        )
+        {
+            fixed (ID2D1Device1* This = &this)
+            {
+                MarshalFunction<_SetMaximumTextureMemory>(lpVtbl->SetMaximumTextureMemory)(
+                    This,
+                    maximumInBytes
+                );
+            }
+        }
+
+        [return: ComAliasName("UINT64")]
+        public ulong GetMaximumTextureMemory()
+        {
+            fixed (ID2D1Device1* This = &this)
+            {
+                return MarshalFunction<_GetMaximumTextureMemory>(lpVtbl->GetMaximumTextureMemory)(
+                    This
+                );
+            }
+        }
+
+        public void ClearResources(
+            [In, ComAliasName("UINT32")] uint millisecondsSinceUse = 0
+        )
+        {
+            fixed (ID2D1Device1* This = &this)
+            {
+                MarshalFunction<_ClearResources>(lpVtbl->ClearResources)(
+                    This,
+                    millisecondsSinceUse
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        public D2D1_RENDERING_PRIORITY GetRenderingPriority()
+        {
+            fixed (ID2D1Device1* This = &this)
+            {
+                return MarshalFunction<_GetRenderingPriority>(lpVtbl->GetRenderingPriority)(
+                    This
+                );
+            }
+        }
+
+        public void SetRenderingPriority(
+            [In] D2D1_RENDERING_PRIORITY renderingPriority
+        )
+        {
+            fixed (ID2D1Device1* This = &this)
+            {
+                MarshalFunction<_SetRenderingPriority>(lpVtbl->SetRenderingPriority)(
+                    This,
+                    renderingPriority
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateDeviceContext1(
+            [In] D2D1_DEVICE_CONTEXT_OPTIONS options,
+            [Out] ID2D1DeviceContext1** deviceContext1
+        )
+        {
+            fixed (ID2D1Device1* This = &this)
+            {
+                return MarshalFunction<_CreateDeviceContext1>(lpVtbl->CreateDeviceContext1)(
+                    This,
+                    options,
+                    deviceContext1
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -165,3 +337,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

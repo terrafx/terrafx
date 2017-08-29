@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IWICDevelopRaw* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IWICDevelopRaw* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IWICDevelopRaw* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetSize(
+        public /* static */ delegate int _GetSize(
             [In] IWICDevelopRaw* This,
             [Out, ComAliasName("UINT")] uint* puiWidth,
             [Out, ComAliasName("UINT")] uint* puiHeight
@@ -54,7 +55,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetPixelFormat(
+        public /* static */ delegate int _GetPixelFormat(
             [In] IWICDevelopRaw* This,
             [Out, ComAliasName("WICPixelFormatGUID")] Guid* pPixelFormat
         );
@@ -62,7 +63,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetResolution(
+        public /* static */ delegate int _GetResolution(
             [In] IWICDevelopRaw* This,
             [Out] double* pDpiX,
             [Out] double* pDpiY
@@ -71,7 +72,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CopyPalette(
+        public /* static */ delegate int _CopyPalette(
             [In] IWICDevelopRaw* This,
             [In] IWICPalette* pIPalette = null
         );
@@ -79,7 +80,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CopyPixels(
+        public /* static */ delegate int _CopyPixels(
             [In] IWICDevelopRaw* This,
             [In, Optional] WICRect* prc,
             [In, ComAliasName("UINT")] uint cbStride,
@@ -92,7 +93,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetMetadataQueryReader(
+        public /* static */ delegate int _GetMetadataQueryReader(
             [In] IWICDevelopRaw* This,
             [Out] IWICMetadataQueryReader** ppIMetadataQueryReader = null
         );
@@ -100,7 +101,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetColorContexts(
+        public /* static */ delegate int _GetColorContexts(
             [In] IWICDevelopRaw* This,
             [In, ComAliasName("UINT")] uint cCount,
             [In, Out, Optional, ComAliasName("IWICColorContext*[]")] IWICColorContext** ppIColorContexts,
@@ -110,7 +111,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetThumbnail(
+        public /* static */ delegate int _GetThumbnail(
             [In] IWICDevelopRaw* This,
             [Out] IWICBitmapSource** ppIThumbnail = null
         );
@@ -120,7 +121,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryRawCapabilitiesInfo(
+        public /* static */ delegate int _QueryRawCapabilitiesInfo(
             [In] IWICDevelopRaw* This,
             [In, Out] WICRawCapabilitiesInfo* pInfo
         );
@@ -128,7 +129,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int LoadParameterSet(
+        public /* static */ delegate int _LoadParameterSet(
             [In] IWICDevelopRaw* This,
             [In] WICRawParameterSet ParameterSet
         );
@@ -136,7 +137,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetCurrentParameterSet(
+        public /* static */ delegate int _GetCurrentParameterSet(
             [In] IWICDevelopRaw* This,
             [Out] IPropertyBag2** ppCurrentParameterSet = null
         );
@@ -144,7 +145,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetExposureCompensation(
+        public /* static */ delegate int _SetExposureCompensation(
             [In] IWICDevelopRaw* This,
             [In] double ev
         );
@@ -152,7 +153,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetExposureCompensation(
+        public /* static */ delegate int _GetExposureCompensation(
             [In] IWICDevelopRaw* This,
             [Out] double* pEV
         );
@@ -160,7 +161,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetWhitePointRGB(
+        public /* static */ delegate int _SetWhitePointRGB(
             [In] IWICDevelopRaw* This,
             [In, ComAliasName("UINT")] uint Red,
             [In, ComAliasName("UINT")] uint Green,
@@ -170,7 +171,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetWhitePointRGB(
+        public /* static */ delegate int _GetWhitePointRGB(
             [In] IWICDevelopRaw* This,
             [Out, ComAliasName("UINT")] uint* pRed,
             [Out, ComAliasName("UINT")] uint* pGreen,
@@ -180,7 +181,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetNamedWhitePoint(
+        public /* static */ delegate int _SetNamedWhitePoint(
             [In] IWICDevelopRaw* This,
             [In] WICNamedWhitePoint WhitePoint
         );
@@ -188,7 +189,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetNamedWhitePoint(
+        public /* static */ delegate int _GetNamedWhitePoint(
             [In] IWICDevelopRaw* This,
             [Out] WICNamedWhitePoint* pWhitePoint
         );
@@ -196,7 +197,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetWhitePointKelvin(
+        public /* static */ delegate int _SetWhitePointKelvin(
             [In] IWICDevelopRaw* This,
             [In, ComAliasName("UINT")] uint WhitePointKelvin
         );
@@ -204,7 +205,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetWhitePointKelvin(
+        public /* static */ delegate int _GetWhitePointKelvin(
             [In] IWICDevelopRaw* This,
             [Out, ComAliasName("UINT")] uint* pWhitePointKelvin
         );
@@ -212,7 +213,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetKelvinRangeInfo(
+        public /* static */ delegate int _GetKelvinRangeInfo(
             [In] IWICDevelopRaw* This,
             [Out, ComAliasName("UINT")] uint* pMinKelvinTemp,
             [Out, ComAliasName("UINT")] uint* pMaxKelvinTemp,
@@ -222,7 +223,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetContrast(
+        public /* static */ delegate int _SetContrast(
             [In] IWICDevelopRaw* This,
             [In] double Contrast
         );
@@ -230,7 +231,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetContrast(
+        public /* static */ delegate int _GetContrast(
             [In] IWICDevelopRaw* This,
             [Out] double* pContrast
         );
@@ -238,7 +239,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetGamma(
+        public /* static */ delegate int _SetGamma(
             [In] IWICDevelopRaw* This,
             [In] double Gamma
         );
@@ -246,7 +247,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetGamma(
+        public /* static */ delegate int _GetGamma(
             [In] IWICDevelopRaw* This,
             [Out] double* pGamma
         );
@@ -254,7 +255,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetSharpness(
+        public /* static */ delegate int _SetSharpness(
             [In] IWICDevelopRaw* This,
             [In] double Sharpness
         );
@@ -262,7 +263,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetSharpness(
+        public /* static */ delegate int _GetSharpness(
             [In] IWICDevelopRaw* This,
             [Out] double* pSharpness
         );
@@ -270,7 +271,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetSaturation(
+        public /* static */ delegate int _SetSaturation(
             [In] IWICDevelopRaw* This,
             [In] double Saturation
         );
@@ -278,7 +279,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetSaturation(
+        public /* static */ delegate int _GetSaturation(
             [In] IWICDevelopRaw* This,
             [Out] double* pSaturation
         );
@@ -286,7 +287,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetTint(
+        public /* static */ delegate int _SetTint(
             [In] IWICDevelopRaw* This,
             [In] double Tint
         );
@@ -294,7 +295,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetTint(
+        public /* static */ delegate int _GetTint(
             [In] IWICDevelopRaw* This,
             [Out] double* pTint
         );
@@ -302,7 +303,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetNoiseReduction(
+        public /* static */ delegate int _SetNoiseReduction(
             [In] IWICDevelopRaw* This,
             [In] double NoiseReduction
         );
@@ -310,7 +311,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetNoiseReduction(
+        public /* static */ delegate int _GetNoiseReduction(
             [In] IWICDevelopRaw* This,
             [Out] double* pNoiseReduction
         );
@@ -318,7 +319,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetDestinationColorContext(
+        public /* static */ delegate int _SetDestinationColorContext(
             [In] IWICDevelopRaw* This,
             [In] IWICColorContext* pColorContext = null
         );
@@ -326,7 +327,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetToneCurve(
+        public /* static */ delegate int _SetToneCurve(
             [In] IWICDevelopRaw* This,
             [In, ComAliasName("UINT")] uint cbToneCurveSize,
             [In, ComAliasName("WICRawToneCurve[]")] WICRawToneCurve* pToneCurve
@@ -335,7 +336,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetToneCurve(
+        public /* static */ delegate int _GetToneCurve(
             [In] IWICDevelopRaw* This,
             [In, ComAliasName("UINT")] uint cbToneCurveBufferSize,
             [Out, ComAliasName("WICRawToneCurve[]")] WICRawToneCurve* pToneCurve = null,
@@ -345,7 +346,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetRotation(
+        public /* static */ delegate int _SetRotation(
             [In] IWICDevelopRaw* This,
             [In] double Rotation
         );
@@ -353,7 +354,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetRotation(
+        public /* static */ delegate int _GetRotation(
             [In] IWICDevelopRaw* This,
             [Out] double* pRotation
         );
@@ -361,7 +362,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetRenderMode(
+        public /* static */ delegate int _SetRenderMode(
             [In] IWICDevelopRaw* This,
             [In] WICRawRenderMode RenderMode
         );
@@ -369,7 +370,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetRenderMode(
+        public /* static */ delegate int _GetRenderMode(
             [In] IWICDevelopRaw* This,
             [Out] WICRawRenderMode* pRenderMode
         );
@@ -377,10 +378,648 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetNotificationCallback(
+        public /* static */ delegate int _SetNotificationCallback(
             [In] IWICDevelopRaw* This,
             [In] IWICDevelopRawNotificationCallback* pCallback = null
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region IWICBitmapSource Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetSize(
+            [Out, ComAliasName("UINT")] uint* puiWidth,
+            [Out, ComAliasName("UINT")] uint* puiHeight
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_GetSize>(lpVtbl->GetSize)(
+                    This,
+                    puiWidth,
+                    puiHeight
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetPixelFormat(
+            [Out, ComAliasName("WICPixelFormatGUID")] Guid* pPixelFormat
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_GetPixelFormat>(lpVtbl->GetPixelFormat)(
+                    This,
+                    pPixelFormat
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetResolution(
+            [Out] double* pDpiX,
+            [Out] double* pDpiY
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_GetResolution>(lpVtbl->GetResolution)(
+                    This,
+                    pDpiX,
+                    pDpiY
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CopyPalette(
+            [In] IWICPalette* pIPalette = null
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_CopyPalette>(lpVtbl->CopyPalette)(
+                    This,
+                    pIPalette
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CopyPixels(
+            [In, Optional] WICRect* prc,
+            [In, ComAliasName("UINT")] uint cbStride,
+            [In, ComAliasName("UINT")] uint cbBufferSize,
+            [Out, ComAliasName("BYTE[]")] byte* pbBuffer
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_CopyPixels>(lpVtbl->CopyPixels)(
+                    This,
+                    prc,
+                    cbStride,
+                    cbBufferSize,
+                    pbBuffer
+                );
+            }
+        }
+        #endregion
+
+        #region IWICBitmapFrameDecode Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetMetadataQueryReader(
+            [Out] IWICMetadataQueryReader** ppIMetadataQueryReader = null
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_GetMetadataQueryReader>(lpVtbl->GetMetadataQueryReader)(
+                    This,
+                    ppIMetadataQueryReader
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetColorContexts(
+            [In, ComAliasName("UINT")] uint cCount,
+            [In, Out, Optional, ComAliasName("IWICColorContext*[]")] IWICColorContext** ppIColorContexts,
+            [Out, ComAliasName("UINT")] uint* pcActualCount
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_GetColorContexts>(lpVtbl->GetColorContexts)(
+                    This,
+                    cCount,
+                    ppIColorContexts,
+                    pcActualCount
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetThumbnail(
+            [Out] IWICBitmapSource** ppIThumbnail = null
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_GetThumbnail>(lpVtbl->GetThumbnail)(
+                    This,
+                    ppIThumbnail
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryRawCapabilitiesInfo(
+            [In, Out] WICRawCapabilitiesInfo* pInfo
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_QueryRawCapabilitiesInfo>(lpVtbl->QueryRawCapabilitiesInfo)(
+                    This,
+                    pInfo
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int LoadParameterSet(
+            [In] WICRawParameterSet ParameterSet
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_LoadParameterSet>(lpVtbl->LoadParameterSet)(
+                    This,
+                    ParameterSet
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetCurrentParameterSet(
+            [Out] IPropertyBag2** ppCurrentParameterSet = null
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_GetCurrentParameterSet>(lpVtbl->GetCurrentParameterSet)(
+                    This,
+                    ppCurrentParameterSet
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetExposureCompensation(
+            [In] double ev
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_SetExposureCompensation>(lpVtbl->SetExposureCompensation)(
+                    This,
+                    ev
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetExposureCompensation(
+            [Out] double* pEV
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_GetExposureCompensation>(lpVtbl->GetExposureCompensation)(
+                    This,
+                    pEV
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetWhitePointRGB(
+            [In, ComAliasName("UINT")] uint Red,
+            [In, ComAliasName("UINT")] uint Green,
+            [In, ComAliasName("UINT")] uint Blue
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_SetWhitePointRGB>(lpVtbl->SetWhitePointRGB)(
+                    This,
+                    Red,
+                    Green,
+                    Blue
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetWhitePointRGB(
+            [Out, ComAliasName("UINT")] uint* pRed,
+            [Out, ComAliasName("UINT")] uint* pGreen,
+            [Out, ComAliasName("UINT")] uint* pBlue
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_GetWhitePointRGB>(lpVtbl->GetWhitePointRGB)(
+                    This,
+                    pRed,
+                    pGreen,
+                    pBlue
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetNamedWhitePoint(
+            [In] WICNamedWhitePoint WhitePoint
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_SetNamedWhitePoint>(lpVtbl->SetNamedWhitePoint)(
+                    This,
+                    WhitePoint
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetNamedWhitePoint(
+            [Out] WICNamedWhitePoint* pWhitePoint
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_GetNamedWhitePoint>(lpVtbl->GetNamedWhitePoint)(
+                    This,
+                    pWhitePoint
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetWhitePointKelvin(
+            [In, ComAliasName("UINT")] uint WhitePointKelvin
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_SetWhitePointKelvin>(lpVtbl->SetWhitePointKelvin)(
+                    This,
+                    WhitePointKelvin
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetWhitePointKelvin(
+            [Out, ComAliasName("UINT")] uint* pWhitePointKelvin
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_GetWhitePointKelvin>(lpVtbl->GetWhitePointKelvin)(
+                    This,
+                    pWhitePointKelvin
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetKelvinRangeInfo(
+            [Out, ComAliasName("UINT")] uint* pMinKelvinTemp,
+            [Out, ComAliasName("UINT")] uint* pMaxKelvinTemp,
+            [Out, ComAliasName("UINT")] uint* pKelvinTempStepValue
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_GetKelvinRangeInfo>(lpVtbl->GetKelvinRangeInfo)(
+                    This,
+                    pMinKelvinTemp,
+                    pMaxKelvinTemp,
+                    pKelvinTempStepValue
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetContrast(
+            [In] double Contrast
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_SetContrast>(lpVtbl->SetContrast)(
+                    This,
+                    Contrast
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetContrast(
+            [Out] double* pContrast
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_GetContrast>(lpVtbl->GetContrast)(
+                    This,
+                    pContrast
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetGamma(
+            [In] double Gamma
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_SetGamma>(lpVtbl->SetGamma)(
+                    This,
+                    Gamma
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetGamma(
+            [Out] double* pGamma
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_GetGamma>(lpVtbl->GetGamma)(
+                    This,
+                    pGamma
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetSharpness(
+            [In] double Sharpness
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_SetSharpness>(lpVtbl->SetSharpness)(
+                    This,
+                    Sharpness
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetSharpness(
+            [Out] double* pSharpness
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_GetSharpness>(lpVtbl->GetSharpness)(
+                    This,
+                    pSharpness
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetSaturation(
+            [In] double Saturation
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_SetSaturation>(lpVtbl->SetSaturation)(
+                    This,
+                    Saturation
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetSaturation(
+            [Out] double* pSaturation
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_GetSaturation>(lpVtbl->GetSaturation)(
+                    This,
+                    pSaturation
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetTint(
+            [In] double Tint
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_SetTint>(lpVtbl->SetTint)(
+                    This,
+                    Tint
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetTint(
+            [Out] double* pTint
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_GetTint>(lpVtbl->GetTint)(
+                    This,
+                    pTint
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetNoiseReduction(
+            [In] double NoiseReduction
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_SetNoiseReduction>(lpVtbl->SetNoiseReduction)(
+                    This,
+                    NoiseReduction
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetNoiseReduction(
+            [Out] double* pNoiseReduction
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_GetNoiseReduction>(lpVtbl->GetNoiseReduction)(
+                    This,
+                    pNoiseReduction
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetDestinationColorContext(
+            [In] IWICColorContext* pColorContext = null
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_SetDestinationColorContext>(lpVtbl->SetDestinationColorContext)(
+                    This,
+                    pColorContext
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetToneCurve(
+            [In, ComAliasName("UINT")] uint cbToneCurveSize,
+            [In, ComAliasName("WICRawToneCurve[]")] WICRawToneCurve* pToneCurve
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_SetToneCurve>(lpVtbl->SetToneCurve)(
+                    This,
+                    cbToneCurveSize,
+                    pToneCurve
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetToneCurve(
+            [In, ComAliasName("UINT")] uint cbToneCurveBufferSize,
+            [Out, ComAliasName("WICRawToneCurve[]")] WICRawToneCurve* pToneCurve = null,
+            [In, Out, ComAliasName("UINT")] uint* pcbActualToneCurveBufferSize = null
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_GetToneCurve>(lpVtbl->GetToneCurve)(
+                    This,
+                    cbToneCurveBufferSize,
+                    pToneCurve,
+                    pcbActualToneCurveBufferSize
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetRotation(
+            [In] double Rotation
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_SetRotation>(lpVtbl->SetRotation)(
+                    This,
+                    Rotation
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetRotation(
+            [Out] double* pRotation
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_GetRotation>(lpVtbl->GetRotation)(
+                    This,
+                    pRotation
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetRenderMode(
+            [In] WICRawRenderMode RenderMode
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_SetRenderMode>(lpVtbl->SetRenderMode)(
+                    This,
+                    RenderMode
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetRenderMode(
+            [Out] WICRawRenderMode* pRenderMode
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_GetRenderMode>(lpVtbl->GetRenderMode)(
+                    This,
+                    pRenderMode
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetNotificationCallback(
+            [In] IWICDevelopRawNotificationCallback* pCallback = null
+        )
+        {
+            fixed (IWICDevelopRaw* This = &this)
+            {
+                return MarshalFunction<_SetNotificationCallback>(lpVtbl->SetNotificationCallback)(
+                    This,
+                    pCallback
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -483,3 +1122,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

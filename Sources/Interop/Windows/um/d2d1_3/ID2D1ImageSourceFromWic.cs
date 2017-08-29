@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ID2D1ImageSourceFromWic* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ID2D1ImageSourceFromWic* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ID2D1ImageSourceFromWic* This
         );
         #endregion
@@ -46,7 +47,7 @@ namespace TerraFX.Interop
         /// <summary>Retrieve the factory associated with this resource.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetFactory(
+        public /* static */ delegate void _GetFactory(
             [In] ID2D1ImageSourceFromWic* This,
             [Out] ID2D1Factory** factory
         );
@@ -56,14 +57,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int OfferResources(
+        public /* static */ delegate int _OfferResources(
             [In] ID2D1ImageSourceFromWic* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int TryReclaimResources(
+        public /* static */ delegate int _TryReclaimResources(
             [In] ID2D1ImageSourceFromWic* This,
             [Out, ComAliasName("BOOL")] int* resourcesDiscarded
         );
@@ -73,7 +74,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int EnsureCached(
+        public /* static */ delegate int _EnsureCached(
             [In] ID2D1ImageSourceFromWic* This,
             [In, ComAliasName("D2D1_RECT_U")] D2D_RECT_U* rectangleToFill = null
         );
@@ -81,17 +82,142 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int TrimCache(
+        public /* static */ delegate int _TrimCache(
             [In] ID2D1ImageSourceFromWic* This,
             [In, ComAliasName("D2D1_RECT_U")] D2D_RECT_U* rectangleToPreserve = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetSource(
+        public /* static */ delegate void _GetSource(
             [In] ID2D1ImageSourceFromWic* This,
             [Out] IWICBitmapSource** wicBitmapSource
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ID2D1ImageSourceFromWic* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ID2D1ImageSourceFromWic* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ID2D1ImageSourceFromWic* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1Resource Methods
+        public void GetFactory(
+            [Out] ID2D1Factory** factory
+        )
+        {
+            fixed (ID2D1ImageSourceFromWic* This = &this)
+            {
+                MarshalFunction<_GetFactory>(lpVtbl->GetFactory)(
+                    This,
+                    factory
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1ImageSource Methods
+        [return: ComAliasName("HRESULT")]
+        public int OfferResources()
+        {
+            fixed (ID2D1ImageSourceFromWic* This = &this)
+            {
+                return MarshalFunction<_OfferResources>(lpVtbl->OfferResources)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int TryReclaimResources(
+            [Out, ComAliasName("BOOL")] int* resourcesDiscarded
+        )
+        {
+            fixed (ID2D1ImageSourceFromWic* This = &this)
+            {
+                return MarshalFunction<_TryReclaimResources>(lpVtbl->TryReclaimResources)(
+                    This,
+                    resourcesDiscarded
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int EnsureCached(
+            [In, ComAliasName("D2D1_RECT_U")] D2D_RECT_U* rectangleToFill = null
+        )
+        {
+            fixed (ID2D1ImageSourceFromWic* This = &this)
+            {
+                return MarshalFunction<_EnsureCached>(lpVtbl->EnsureCached)(
+                    This,
+                    rectangleToFill
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int TrimCache(
+            [In, ComAliasName("D2D1_RECT_U")] D2D_RECT_U* rectangleToPreserve = null
+        )
+        {
+            fixed (ID2D1ImageSourceFromWic* This = &this)
+            {
+                return MarshalFunction<_TrimCache>(lpVtbl->TrimCache)(
+                    This,
+                    rectangleToPreserve
+                );
+            }
+        }
+
+        public void GetSource(
+            [Out] IWICBitmapSource** wicBitmapSource
+        )
+        {
+            fixed (ID2D1ImageSourceFromWic* This = &this)
+            {
+                MarshalFunction<_GetSource>(lpVtbl->GetSource)(
+                    This,
+                    wicBitmapSource
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -126,3 +252,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

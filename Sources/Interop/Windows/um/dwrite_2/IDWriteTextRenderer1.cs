@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDWriteTextRenderer1* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDWriteTextRenderer1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDWriteTextRenderer1* This
         );
         #endregion
@@ -50,7 +51,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int IsPixelSnappingDisabled(
+        public /* static */ delegate int _IsPixelSnappingDisabled(
             [In] IDWriteTextRenderer1* This,
             [In, Optional] void* clientDrawingContext,
             [Out, ComAliasName("BOOL")] int* isDisabled
@@ -63,7 +64,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetCurrentTransform(
+        public /* static */ delegate int _GetCurrentTransform(
             [In] IDWriteTextRenderer1* This,
             [In, Optional] void* clientDrawingContext,
             [Out] DWRITE_MATRIX* transform
@@ -76,7 +77,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetPixelsPerDip(
+        public /* static */ delegate int _GetPixelsPerDip(
             [In] IDWriteTextRenderer1* This,
             [In, Optional] void* clientDrawingContext,
             [Out, ComAliasName("FLOAT")] float* pixelsPerDip
@@ -96,7 +97,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int DrawGlyphRun(
+        public /* static */ delegate int _DrawGlyphRun(
             [In] IDWriteTextRenderer1* This,
             [In, Optional] void* clientDrawingContext,
             [In, ComAliasName("FLOAT")] float baselineOriginX,
@@ -118,7 +119,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int DrawUnderline(
+        public /* static */ delegate int _DrawUnderline(
             [In] IDWriteTextRenderer1* This,
             [In, Optional] void* clientDrawingContext,
             [In, ComAliasName("FLOAT")] float baselineOriginX,
@@ -138,7 +139,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int DrawStrikethrough(
+        public /* static */ delegate int _DrawStrikethrough(
             [In] IDWriteTextRenderer1* This,
             [In, Optional] void* clientDrawingContext,
             [In, ComAliasName("FLOAT")] float baselineOriginX,
@@ -160,7 +161,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int DrawInlineObject(
+        public /* static */ delegate int _DrawInlineObject(
             [In] IDWriteTextRenderer1* This,
             [In, Optional] void* clientDrawingContext,
             [In, ComAliasName("FLOAT")] float originX,
@@ -187,7 +188,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int DrawGlyphRun1(
+        public /* static */ delegate int _DrawGlyphRun1(
             [In] IDWriteTextRenderer1* This,
             [In, Optional] void* clientDrawingContext,
             [In, ComAliasName("FLOAT")] float baselineOriginX,
@@ -212,7 +213,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int DrawUnderline1(
+        public /* static */ delegate int _DrawUnderline1(
             [In] IDWriteTextRenderer1* This,
             [In, Optional] void* clientDrawingContext,
             [In, ComAliasName("FLOAT")] float baselineOriginX,
@@ -234,7 +235,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int DrawStrikethrough1(
+        public /* static */ delegate int _DrawStrikethrough1(
             [In] IDWriteTextRenderer1* This,
             [In, Optional] void* clientDrawingContext,
             [In, ComAliasName("FLOAT")] float baselineOriginX,
@@ -258,7 +259,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int DrawInlineObject1(
+        public /* static */ delegate int _DrawInlineObject1(
             [In] IDWriteTextRenderer1* This,
             [In, Optional] void* clientDrawingContext,
             [In, ComAliasName("FLOAT")] float originX,
@@ -269,6 +270,300 @@ namespace TerraFX.Interop
             [In, ComAliasName("BOOL")] int isRightToLeft,
             [In] IUnknown* clientDrawingEffect = null
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDWriteTextRenderer1* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDWriteTextRenderer1* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDWriteTextRenderer1* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region IDWritePixelSnapping Methods
+        [return: ComAliasName("HRESULT")]
+        public int IsPixelSnappingDisabled(
+            [In, Optional] void* clientDrawingContext,
+            [Out, ComAliasName("BOOL")] int* isDisabled
+        )
+        {
+            fixed (IDWriteTextRenderer1* This = &this)
+            {
+                return MarshalFunction<_IsPixelSnappingDisabled>(lpVtbl->IsPixelSnappingDisabled)(
+                    This,
+                    clientDrawingContext,
+                    isDisabled
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetCurrentTransform(
+            [In, Optional] void* clientDrawingContext,
+            [Out] DWRITE_MATRIX* transform
+        )
+        {
+            fixed (IDWriteTextRenderer1* This = &this)
+            {
+                return MarshalFunction<_GetCurrentTransform>(lpVtbl->GetCurrentTransform)(
+                    This,
+                    clientDrawingContext,
+                    transform
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetPixelsPerDip(
+            [In, Optional] void* clientDrawingContext,
+            [Out, ComAliasName("FLOAT")] float* pixelsPerDip
+        )
+        {
+            fixed (IDWriteTextRenderer1* This = &this)
+            {
+                return MarshalFunction<_GetPixelsPerDip>(lpVtbl->GetPixelsPerDip)(
+                    This,
+                    clientDrawingContext,
+                    pixelsPerDip
+                );
+            }
+        }
+        #endregion
+
+        #region IDWriteTextRenderer Methods
+        [return: ComAliasName("HRESULT")]
+        public int DrawGlyphRun(
+            [In, Optional] void* clientDrawingContext,
+            [In, ComAliasName("FLOAT")] float baselineOriginX,
+            [In, ComAliasName("FLOAT")] float baselineOriginY,
+            [In] DWRITE_MEASURING_MODE measuringMode,
+            [In] DWRITE_GLYPH_RUN* glyphRun,
+            [In] DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
+            [In] IUnknown* clientDrawingEffect = null
+        )
+        {
+            fixed (IDWriteTextRenderer1* This = &this)
+            {
+                return MarshalFunction<_DrawGlyphRun>(lpVtbl->DrawGlyphRun)(
+                    This,
+                    clientDrawingContext,
+                    baselineOriginX,
+                    baselineOriginY,
+                    measuringMode,
+                    glyphRun,
+                    glyphRunDescription,
+                    clientDrawingEffect
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int DrawUnderline(
+            [In, Optional] void* clientDrawingContext,
+            [In, ComAliasName("FLOAT")] float baselineOriginX,
+            [In, ComAliasName("FLOAT")] float baselineOriginY,
+            [In] DWRITE_UNDERLINE* underline,
+            [In] IUnknown* clientDrawingEffect = null
+        )
+        {
+            fixed (IDWriteTextRenderer1* This = &this)
+            {
+                return MarshalFunction<_DrawUnderline>(lpVtbl->DrawUnderline)(
+                    This,
+                    clientDrawingContext,
+                    baselineOriginX,
+                    baselineOriginY,
+                    underline,
+                    clientDrawingEffect
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int DrawStrikethrough(
+            [In, Optional] void* clientDrawingContext,
+            [In, ComAliasName("FLOAT")] float baselineOriginX,
+            [In, ComAliasName("FLOAT")] float baselineOriginY,
+            [In] DWRITE_STRIKETHROUGH* strikethrough,
+            [In] IUnknown* clientDrawingEffect = null
+        )
+        {
+            fixed (IDWriteTextRenderer1* This = &this)
+            {
+                return MarshalFunction<_DrawStrikethrough>(lpVtbl->DrawStrikethrough)(
+                    This,
+                    clientDrawingContext,
+                    baselineOriginX,
+                    baselineOriginY,
+                    strikethrough,
+                    clientDrawingEffect
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int DrawInlineObject(
+            [In, Optional] void* clientDrawingContext,
+            [In, ComAliasName("FLOAT")] float originX,
+            [In, ComAliasName("FLOAT")] float originY,
+            [In] IDWriteInlineObject* inlineObject,
+            [In, ComAliasName("BOOL")] int isSideways,
+            [In, ComAliasName("BOOL")] int isRightToLeft,
+            [In] IUnknown* clientDrawingEffect = null
+        )
+        {
+            fixed (IDWriteTextRenderer1* This = &this)
+            {
+                return MarshalFunction<_DrawInlineObject>(lpVtbl->DrawInlineObject)(
+                    This,
+                    clientDrawingContext,
+                    originX,
+                    originY,
+                    inlineObject,
+                    isSideways,
+                    isRightToLeft,
+                    clientDrawingEffect
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int DrawGlyphRun1(
+            [In, Optional] void* clientDrawingContext,
+            [In, ComAliasName("FLOAT")] float baselineOriginX,
+            [In, ComAliasName("FLOAT")] float baselineOriginY,
+            [In] DWRITE_GLYPH_ORIENTATION_ANGLE orientationAngle,
+            [In] DWRITE_MEASURING_MODE measuringMode,
+            [In] DWRITE_GLYPH_RUN* glyphRun,
+            [In] DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
+            [In] IUnknown* clientDrawingEffect = null
+        )
+        {
+            fixed (IDWriteTextRenderer1* This = &this)
+            {
+                return MarshalFunction<_DrawGlyphRun1>(lpVtbl->DrawGlyphRun1)(
+                    This,
+                    clientDrawingContext,
+                    baselineOriginX,
+                    baselineOriginY,
+                    orientationAngle,
+                    measuringMode,
+                    glyphRun,
+                    glyphRunDescription,
+                    clientDrawingEffect
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int DrawUnderline1(
+            [In, Optional] void* clientDrawingContext,
+            [In, ComAliasName("FLOAT")] float baselineOriginX,
+            [In, ComAliasName("FLOAT")] float baselineOriginY,
+            [In] DWRITE_GLYPH_ORIENTATION_ANGLE orientationAngle,
+            [In] DWRITE_UNDERLINE* underline,
+            [In] IUnknown* clientDrawingEffect = null
+        )
+        {
+            fixed (IDWriteTextRenderer1* This = &this)
+            {
+                return MarshalFunction<_DrawUnderline1>(lpVtbl->DrawUnderline1)(
+                    This,
+                    clientDrawingContext,
+                    baselineOriginX,
+                    baselineOriginY,
+                    orientationAngle,
+                    underline,
+                    clientDrawingEffect
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int DrawStrikethrough1(
+            [In, Optional] void* clientDrawingContext,
+            [In, ComAliasName("FLOAT")] float baselineOriginX,
+            [In, ComAliasName("FLOAT")] float baselineOriginY,
+            [In] DWRITE_GLYPH_ORIENTATION_ANGLE orientationAngle,
+            [In] DWRITE_STRIKETHROUGH* strikethrough,
+            [In] IUnknown* clientDrawingEffect = null
+        )
+        {
+            fixed (IDWriteTextRenderer1* This = &this)
+            {
+                return MarshalFunction<_DrawStrikethrough1>(lpVtbl->DrawStrikethrough1)(
+                    This,
+                    clientDrawingContext,
+                    baselineOriginX,
+                    baselineOriginY,
+                    orientationAngle,
+                    strikethrough,
+                    clientDrawingEffect
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int DrawInlineObject1(
+            [In, Optional] void* clientDrawingContext,
+            [In, ComAliasName("FLOAT")] float originX,
+            [In, ComAliasName("FLOAT")] float originY,
+            [In] DWRITE_GLYPH_ORIENTATION_ANGLE orientationAngle,
+            [In] IDWriteInlineObject* inlineObject,
+            [In, ComAliasName("BOOL")] int isSideways,
+            [In, ComAliasName("BOOL")] int isRightToLeft,
+            [In] IUnknown* clientDrawingEffect = null
+        )
+        {
+            fixed (IDWriteTextRenderer1* This = &this)
+            {
+                return MarshalFunction<_DrawInlineObject1>(lpVtbl->DrawInlineObject1)(
+                    This,
+                    clientDrawingContext,
+                    originX,
+                    originY,
+                    orientationAngle,
+                    inlineObject,
+                    isSideways,
+                    isRightToLeft,
+                    clientDrawingEffect
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -313,3 +608,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

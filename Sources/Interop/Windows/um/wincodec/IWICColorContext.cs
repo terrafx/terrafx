@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IWICColorContext* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IWICColorContext* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IWICColorContext* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int InitializeFromFilename(
+        public /* static */ delegate int _InitializeFromFilename(
             [In] IWICColorContext* This,
             [In, ComAliasName("LPCWSTR")] char* wzFilename
         );
@@ -53,7 +54,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int InitializeFromMemory(
+        public /* static */ delegate int _InitializeFromMemory(
             [In] IWICColorContext* This,
             [In, ComAliasName("BYTE[]")] byte* pbBuffer,
             [In, ComAliasName("UINT")] uint cbBufferSize
@@ -62,7 +63,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int InitializeFromExifColorSpace(
+        public /* static */ delegate int _InitializeFromExifColorSpace(
             [In] IWICColorContext* This,
             [In, ComAliasName("UINT")] uint value
         );
@@ -70,7 +71,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int _GetType(
+        public /* static */ delegate int __GetType(
             [In] IWICColorContext* This,
             [Out] WICColorContextType* pType
         );
@@ -78,7 +79,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetProfileBytes(
+        public /* static */ delegate int _GetProfileBytes(
             [In] IWICColorContext* This,
             [In, ComAliasName("UINT")] uint cbBuffer,
             [In, Out, Optional, ComAliasName("BYTE[]")] byte* pbBuffer,
@@ -88,10 +89,142 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetExifColorSpace(
+        public /* static */ delegate int _GetExifColorSpace(
             [In] IWICColorContext* This,
             [Out, ComAliasName("UINT")] uint* pValue
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IWICColorContext* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IWICColorContext* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IWICColorContext* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int InitializeFromFilename(
+            [In, ComAliasName("LPCWSTR")] char* wzFilename
+        )
+        {
+            fixed (IWICColorContext* This = &this)
+            {
+                return MarshalFunction<_InitializeFromFilename>(lpVtbl->InitializeFromFilename)(
+                    This,
+                    wzFilename
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int InitializeFromMemory(
+            [In, ComAliasName("BYTE[]")] byte* pbBuffer,
+            [In, ComAliasName("UINT")] uint cbBufferSize
+        )
+        {
+            fixed (IWICColorContext* This = &this)
+            {
+                return MarshalFunction<_InitializeFromMemory>(lpVtbl->InitializeFromMemory)(
+                    This,
+                    pbBuffer,
+                    cbBufferSize
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int InitializeFromExifColorSpace(
+            [In, ComAliasName("UINT")] uint value
+        )
+        {
+            fixed (IWICColorContext* This = &this)
+            {
+                return MarshalFunction<_InitializeFromExifColorSpace>(lpVtbl->InitializeFromExifColorSpace)(
+                    This,
+                    value
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int _GetType(
+            [Out] WICColorContextType* pType
+        )
+        {
+            fixed (IWICColorContext* This = &this)
+            {
+                return MarshalFunction<__GetType>(lpVtbl->_GetType)(
+                    This,
+                    pType
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetProfileBytes(
+            [In, ComAliasName("UINT")] uint cbBuffer,
+            [In, Out, Optional, ComAliasName("BYTE[]")] byte* pbBuffer,
+            [Out, ComAliasName("UINT")] uint* pcbActual
+        )
+        {
+            fixed (IWICColorContext* This = &this)
+            {
+                return MarshalFunction<_GetProfileBytes>(lpVtbl->GetProfileBytes)(
+                    This,
+                    cbBuffer,
+                    pbBuffer,
+                    pcbActual
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetExifColorSpace(
+            [Out, ComAliasName("UINT")] uint* pValue
+        )
+        {
+            fixed (IWICColorContext* This = &this)
+            {
+                return MarshalFunction<_GetExifColorSpace>(lpVtbl->GetExifColorSpace)(
+                    This,
+                    pValue
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -122,3 +255,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

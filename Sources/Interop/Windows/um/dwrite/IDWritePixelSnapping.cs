@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDWritePixelSnapping* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDWritePixelSnapping* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDWritePixelSnapping* This
         );
         #endregion
@@ -50,7 +51,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int IsPixelSnappingDisabled(
+        public /* static */ delegate int _IsPixelSnappingDisabled(
             [In] IDWritePixelSnapping* This,
             [In, Optional] void* clientDrawingContext,
             [Out, ComAliasName("BOOL")] int* isDisabled
@@ -63,7 +64,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetCurrentTransform(
+        public /* static */ delegate int _GetCurrentTransform(
             [In] IDWritePixelSnapping* This,
             [In, Optional] void* clientDrawingContext,
             [Out] DWRITE_MATRIX* transform
@@ -76,11 +77,101 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetPixelsPerDip(
+        public /* static */ delegate int _GetPixelsPerDip(
             [In] IDWritePixelSnapping* This,
             [In, Optional] void* clientDrawingContext,
             [Out, ComAliasName("FLOAT")] float* pixelsPerDip
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDWritePixelSnapping* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDWritePixelSnapping* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDWritePixelSnapping* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int IsPixelSnappingDisabled(
+            [In, Optional] void* clientDrawingContext,
+            [Out, ComAliasName("BOOL")] int* isDisabled
+        )
+        {
+            fixed (IDWritePixelSnapping* This = &this)
+            {
+                return MarshalFunction<_IsPixelSnappingDisabled>(lpVtbl->IsPixelSnappingDisabled)(
+                    This,
+                    clientDrawingContext,
+                    isDisabled
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetCurrentTransform(
+            [In, Optional] void* clientDrawingContext,
+            [Out] DWRITE_MATRIX* transform
+        )
+        {
+            fixed (IDWritePixelSnapping* This = &this)
+            {
+                return MarshalFunction<_GetCurrentTransform>(lpVtbl->GetCurrentTransform)(
+                    This,
+                    clientDrawingContext,
+                    transform
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetPixelsPerDip(
+            [In, Optional] void* clientDrawingContext,
+            [Out, ComAliasName("FLOAT")] float* pixelsPerDip
+        )
+        {
+            fixed (IDWritePixelSnapping* This = &this)
+            {
+                return MarshalFunction<_GetPixelsPerDip>(lpVtbl->GetPixelsPerDip)(
+                    This,
+                    clientDrawingContext,
+                    pixelsPerDip
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -105,3 +196,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

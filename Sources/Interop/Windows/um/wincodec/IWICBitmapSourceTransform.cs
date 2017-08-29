@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IWICBitmapSourceTransform* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IWICBitmapSourceTransform* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IWICBitmapSourceTransform* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CopyPixels(
+        public /* static */ delegate int _CopyPixels(
             [In] IWICBitmapSourceTransform* This,
             [In, Optional] WICRect* prc,
             [In, ComAliasName("UINT")] uint uiWidth,
@@ -60,7 +61,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetClosestSize(
+        public /* static */ delegate int _GetClosestSize(
             [In] IWICBitmapSourceTransform* This,
             [In, Out, ComAliasName("UINT")] uint* puiWidth,
             [In, Out, ComAliasName("UINT")] uint* puiHeight
@@ -69,7 +70,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetClosestPixelFormat(
+        public /* static */ delegate int _GetClosestPixelFormat(
             [In] IWICBitmapSourceTransform* This,
             [In, Out, ComAliasName("WICPixelFormatGUID")] Guid* pguidDstFormat
         );
@@ -77,11 +78,127 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int DoesSupportTransform(
+        public /* static */ delegate int _DoesSupportTransform(
             [In] IWICBitmapSourceTransform* This,
             [In] WICBitmapTransformOptions dstTransform,
             [Out, ComAliasName("BOOL")] int* pfIsSupported
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IWICBitmapSourceTransform* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IWICBitmapSourceTransform* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IWICBitmapSourceTransform* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int CopyPixels(
+            [In, Optional] WICRect* prc,
+            [In, ComAliasName("UINT")] uint uiWidth,
+            [In, ComAliasName("UINT")] uint uiHeight,
+            [In, Optional, ComAliasName("WICPixelFormatGUID")] Guid* pguidDstFormat,
+            [In] WICBitmapTransformOptions dstTransform,
+            [In, ComAliasName("UINT")] uint nStride,
+            [In, ComAliasName("UINT")] uint cbBufferSize,
+            [Out, ComAliasName("BYTE[]")] byte* pbBuffer
+        )
+        {
+            fixed (IWICBitmapSourceTransform* This = &this)
+            {
+                return MarshalFunction<_CopyPixels>(lpVtbl->CopyPixels)(
+                    This,
+                    prc,
+                    uiWidth,
+                    uiHeight,
+                    pguidDstFormat,
+                    dstTransform,
+                    nStride,
+                    cbBufferSize,
+                    pbBuffer
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetClosestSize(
+            [In, Out, ComAliasName("UINT")] uint* puiWidth,
+            [In, Out, ComAliasName("UINT")] uint* puiHeight
+        )
+        {
+            fixed (IWICBitmapSourceTransform* This = &this)
+            {
+                return MarshalFunction<_GetClosestSize>(lpVtbl->GetClosestSize)(
+                    This,
+                    puiWidth,
+                    puiHeight
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetClosestPixelFormat(
+            [In, Out, ComAliasName("WICPixelFormatGUID")] Guid* pguidDstFormat
+        )
+        {
+            fixed (IWICBitmapSourceTransform* This = &this)
+            {
+                return MarshalFunction<_GetClosestPixelFormat>(lpVtbl->GetClosestPixelFormat)(
+                    This,
+                    pguidDstFormat
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int DoesSupportTransform(
+            [In] WICBitmapTransformOptions dstTransform,
+            [Out, ComAliasName("BOOL")] int* pfIsSupported
+        )
+        {
+            fixed (IWICBitmapSourceTransform* This = &this)
+            {
+                return MarshalFunction<_DoesSupportTransform>(lpVtbl->DoesSupportTransform)(
+                    This,
+                    dstTransform,
+                    pfIsSupported
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -108,3 +225,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

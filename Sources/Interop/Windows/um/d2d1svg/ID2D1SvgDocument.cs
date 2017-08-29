@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ID2D1SvgDocument* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ID2D1SvgDocument* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ID2D1SvgDocument* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         /// <summary>Retrieve the factory associated with this resource.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetFactory(
+        public /* static */ delegate void _GetFactory(
             [In] ID2D1SvgDocument* This,
             [Out] ID2D1Factory** factory
         );
@@ -56,7 +57,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetViewportSize(
+        public /* static */ delegate int _SetViewportSize(
             [In] ID2D1SvgDocument* This,
             [In, ComAliasName("D2D1_SIZE_F")] D2D_SIZE_F viewportSize
         );
@@ -64,7 +65,7 @@ namespace TerraFX.Interop
         /// <summary>Returns the size of the initial viewport.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetViewportSize(
+        public /* static */ delegate void _GetViewportSize(
             [In] ID2D1SvgDocument* This,
             [Out, ComAliasName("D2D1_SIZE_F")] D2D_SIZE_F* pViewportSize
         );
@@ -73,7 +74,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetRoot(
+        public /* static */ delegate int _SetRoot(
             [In] ID2D1SvgDocument* This,
             [In] ID2D1SvgElement* root = null
         );
@@ -81,7 +82,7 @@ namespace TerraFX.Interop
         /// <summary>Gets the root element of the document.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetRoot(
+        public /* static */ delegate void _GetRoot(
             [In] ID2D1SvgDocument* This,
             [Out] ID2D1SvgElement** root
         );
@@ -90,7 +91,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int FindElementById(
+        public /* static */ delegate int _FindElementById(
             [In] ID2D1SvgDocument* This,
             [In, ComAliasName("PCWSTR")] char* id,
             [Out] ID2D1SvgElement** svgElement
@@ -102,7 +103,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Serialize(
+        public /* static */ delegate int _Serialize(
             [In] ID2D1SvgDocument* This,
             [In] IStream* outputXmlStream,
             [In] ID2D1SvgElement* subtree = null
@@ -114,7 +115,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Deserialize(
+        public /* static */ delegate int _Deserialize(
             [In] ID2D1SvgDocument* This,
             [In] IStream* inputXmlStream,
             [Out] ID2D1SvgElement** subtree
@@ -126,7 +127,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreatePaint(
+        public /* static */ delegate int _CreatePaint(
             [In] ID2D1SvgDocument* This,
             [In] D2D1_SVG_PAINT_TYPE paintType,
             [In, Optional, ComAliasName("D2D1_COLOR_F")] DXGI_RGBA* color,
@@ -138,7 +139,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateStrokeDashArray(
+        public /* static */ delegate int _CreateStrokeDashArray(
             [In] ID2D1SvgDocument* This,
             [In, Optional, ComAliasName("D2D1_SVG_LENGTH[]")] D2D1_SVG_LENGTH* dashes,
             [In, ComAliasName("UINT32")] uint dashesCount,
@@ -149,7 +150,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreatePointCollection(
+        public /* static */ delegate int _CreatePointCollection(
             [In] ID2D1SvgDocument* This,
             [In, Optional, ComAliasName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
             [In, ComAliasName("UINT32")] uint pointsCount,
@@ -160,7 +161,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreatePathData(
+        public /* static */ delegate int _CreatePathData(
             [In] ID2D1SvgDocument* This,
             [In, Optional, ComAliasName("FLOAT[]")] float* segmentData,
             [In, ComAliasName("UINT32")] uint segmentDataCount,
@@ -168,6 +169,243 @@ namespace TerraFX.Interop
             [In, ComAliasName("UINT32")] uint commandsCount,
             [Out] ID2D1SvgPathData** pathData
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ID2D1SvgDocument* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ID2D1SvgDocument* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ID2D1SvgDocument* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1Resource Methods
+        public void GetFactory(
+            [Out] ID2D1Factory** factory
+        )
+        {
+            fixed (ID2D1SvgDocument* This = &this)
+            {
+                MarshalFunction<_GetFactory>(lpVtbl->GetFactory)(
+                    This,
+                    factory
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int SetViewportSize(
+            [In, ComAliasName("D2D1_SIZE_F")] D2D_SIZE_F viewportSize
+        )
+        {
+            fixed (ID2D1SvgDocument* This = &this)
+            {
+                return MarshalFunction<_SetViewportSize>(lpVtbl->SetViewportSize)(
+                    This,
+                    viewportSize
+                );
+            }
+        }
+
+        public void GetViewportSize(
+            [Out, ComAliasName("D2D1_SIZE_F")] D2D_SIZE_F* pViewportSize
+        )
+        {
+            fixed (ID2D1SvgDocument* This = &this)
+            {
+                MarshalFunction<_GetViewportSize>(lpVtbl->GetViewportSize)(
+                    This,
+                    pViewportSize
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetRoot(
+            [In] ID2D1SvgElement* root = null
+        )
+        {
+            fixed (ID2D1SvgDocument* This = &this)
+            {
+                return MarshalFunction<_SetRoot>(lpVtbl->SetRoot)(
+                    This,
+                    root
+                );
+            }
+        }
+
+        public void GetRoot(
+            [Out] ID2D1SvgElement** root
+        )
+        {
+            fixed (ID2D1SvgDocument* This = &this)
+            {
+                MarshalFunction<_GetRoot>(lpVtbl->GetRoot)(
+                    This,
+                    root
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int FindElementById(
+            [In, ComAliasName("PCWSTR")] char* id,
+            [Out] ID2D1SvgElement** svgElement
+        )
+        {
+            fixed (ID2D1SvgDocument* This = &this)
+            {
+                return MarshalFunction<_FindElementById>(lpVtbl->FindElementById)(
+                    This,
+                    id,
+                    svgElement
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int Serialize(
+            [In] IStream* outputXmlStream,
+            [In] ID2D1SvgElement* subtree = null
+        )
+        {
+            fixed (ID2D1SvgDocument* This = &this)
+            {
+                return MarshalFunction<_Serialize>(lpVtbl->Serialize)(
+                    This,
+                    outputXmlStream,
+                    subtree
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int Deserialize(
+            [In] IStream* inputXmlStream,
+            [Out] ID2D1SvgElement** subtree
+        )
+        {
+            fixed (ID2D1SvgDocument* This = &this)
+            {
+                return MarshalFunction<_Deserialize>(lpVtbl->Deserialize)(
+                    This,
+                    inputXmlStream,
+                    subtree
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreatePaint(
+            [In] D2D1_SVG_PAINT_TYPE paintType,
+            [In, Optional, ComAliasName("D2D1_COLOR_F")] DXGI_RGBA* color,
+            [In, Optional, ComAliasName("PCWSTR")] char* id,
+            [Out] ID2D1SvgPaint** paint
+        )
+        {
+            fixed (ID2D1SvgDocument* This = &this)
+            {
+                return MarshalFunction<_CreatePaint>(lpVtbl->CreatePaint)(
+                    This,
+                    paintType,
+                    color,
+                    id,
+                    paint
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateStrokeDashArray(
+            [In, Optional, ComAliasName("D2D1_SVG_LENGTH[]")] D2D1_SVG_LENGTH* dashes,
+            [In, ComAliasName("UINT32")] uint dashesCount,
+            [Out] ID2D1SvgStrokeDashArray** strokeDashArray
+        )
+        {
+            fixed (ID2D1SvgDocument* This = &this)
+            {
+                return MarshalFunction<_CreateStrokeDashArray>(lpVtbl->CreateStrokeDashArray)(
+                    This,
+                    dashes,
+                    dashesCount,
+                    strokeDashArray
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreatePointCollection(
+            [In, Optional, ComAliasName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
+            [In, ComAliasName("UINT32")] uint pointsCount,
+            [Out] ID2D1SvgPointCollection** pointCollection
+        )
+        {
+            fixed (ID2D1SvgDocument* This = &this)
+            {
+                return MarshalFunction<_CreatePointCollection>(lpVtbl->CreatePointCollection)(
+                    This,
+                    points,
+                    pointsCount,
+                    pointCollection
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreatePathData(
+            [In, Optional, ComAliasName("FLOAT[]")] float* segmentData,
+            [In, ComAliasName("UINT32")] uint segmentDataCount,
+            [In, Optional, ComAliasName("D2D1_SVG_PATH_COMMAND[]")] D2D1_SVG_PATH_COMMAND* commands,
+            [In, ComAliasName("UINT32")] uint commandsCount,
+            [Out] ID2D1SvgPathData** pathData
+        )
+        {
+            fixed (ID2D1SvgDocument* This = &this)
+            {
+                return MarshalFunction<_CreatePathData>(lpVtbl->CreatePathData)(
+                    This,
+                    segmentData,
+                    segmentDataCount,
+                    commands,
+                    commandsCount,
+                    pathData
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -212,3 +450,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

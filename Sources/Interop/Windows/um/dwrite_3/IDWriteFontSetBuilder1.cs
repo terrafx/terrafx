@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDWriteFontSetBuilder1* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDWriteFontSetBuilder1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDWriteFontSetBuilder1* This
         );
         #endregion
@@ -48,7 +49,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int AddFontFaceReference(
+        public /* static */ delegate int _AddFontFaceReference(
             [In] IDWriteFontSetBuilder1* This,
             [In] IDWriteFontFaceReference* fontFaceReference
         );
@@ -61,7 +62,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int AddFontFaceReference1(
+        public /* static */ delegate int _AddFontFaceReference1(
             [In] IDWriteFontSetBuilder1* This,
             [In] IDWriteFontFaceReference* fontFaceReference,
             [In, ComAliasName("DWRITE_FONT_PROPERTY[]")] DWRITE_FONT_PROPERTY* properties,
@@ -74,7 +75,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int AddFontSet(
+        public /* static */ delegate int _AddFontSet(
             [In] IDWriteFontSetBuilder1* This,
             [In] IDWriteFontSet* fontSet
         );
@@ -86,7 +87,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateFontSet(
+        public /* static */ delegate int _CreateFontSet(
             [In] IDWriteFontSetBuilder1* This,
             [Out] IDWriteFontSet** fontSet
         );
@@ -99,10 +100,128 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int AddFontFile(
+        public /* static */ delegate int _AddFontFile(
             [In] IDWriteFontSetBuilder1* This,
             [In] IDWriteFontFile* fontFile
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDWriteFontSetBuilder1* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDWriteFontSetBuilder1* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDWriteFontSetBuilder1* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region IDWriteFontSetBuilder Methods
+        [return: ComAliasName("HRESULT")]
+        public int AddFontFaceReference(
+            [In] IDWriteFontFaceReference* fontFaceReference
+        )
+        {
+            fixed (IDWriteFontSetBuilder1* This = &this)
+            {
+                return MarshalFunction<_AddFontFaceReference>(lpVtbl->AddFontFaceReference)(
+                    This,
+                    fontFaceReference
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int AddFontFaceReference1(
+            [In] IDWriteFontFaceReference* fontFaceReference,
+            [In, ComAliasName("DWRITE_FONT_PROPERTY[]")] DWRITE_FONT_PROPERTY* properties,
+            [In, ComAliasName("UINT32")] uint propertyCount
+        )
+        {
+            fixed (IDWriteFontSetBuilder1* This = &this)
+            {
+                return MarshalFunction<_AddFontFaceReference1>(lpVtbl->AddFontFaceReference1)(
+                    This,
+                    fontFaceReference,
+                    properties,
+                    propertyCount
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int AddFontSet(
+            [In] IDWriteFontSet* fontSet
+        )
+        {
+            fixed (IDWriteFontSetBuilder1* This = &this)
+            {
+                return MarshalFunction<_AddFontSet>(lpVtbl->AddFontSet)(
+                    This,
+                    fontSet
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateFontSet(
+            [Out] IDWriteFontSet** fontSet
+        )
+        {
+            fixed (IDWriteFontSetBuilder1* This = &this)
+            {
+                return MarshalFunction<_CreateFontSet>(lpVtbl->CreateFontSet)(
+                    This,
+                    fontSet
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int AddFontFile(
+            [In] IDWriteFontFile* fontFile
+        )
+        {
+            fixed (IDWriteFontSetBuilder1* This = &this)
+            {
+                return MarshalFunction<_AddFontFile>(lpVtbl->AddFontFile)(
+                    This,
+                    fontFile
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -133,3 +252,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

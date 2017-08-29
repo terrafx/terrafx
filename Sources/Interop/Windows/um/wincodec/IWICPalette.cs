@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IWICPalette* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IWICPalette* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IWICPalette* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int InitializePredefined(
+        public /* static */ delegate int _InitializePredefined(
             [In] IWICPalette* This,
             [In] WICBitmapPaletteType ePaletteType,
             [In, ComAliasName("BOOL")] int fAddTransparentColor
@@ -54,7 +55,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int InitializeCustom(
+        public /* static */ delegate int _InitializeCustom(
             [In] IWICPalette* This,
             [In, ComAliasName("WICColor[]")] uint* pColors,
             [In, ComAliasName("UINT")] uint cCount
@@ -63,7 +64,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int InitializeFromBitmap(
+        public /* static */ delegate int _InitializeFromBitmap(
             [In] IWICPalette* This,
             [In, Optional] IWICBitmapSource* pISurface,
             [In, ComAliasName("UINT")] uint cCount,
@@ -73,7 +74,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int InitializeFromPalette(
+        public /* static */ delegate int _InitializeFromPalette(
             [In] IWICPalette* This,
             [In] IWICPalette* pIPalette = null
         );
@@ -81,7 +82,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int _GetType(
+        public /* static */ delegate int __GetType(
             [In] IWICPalette* This,
             [Out] WICBitmapPaletteType* pePaletteType
         );
@@ -89,7 +90,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetColorCount(
+        public /* static */ delegate int _GetColorCount(
             [In] IWICPalette* This,
             [Out, ComAliasName("UINT")] uint* pcCount
         );
@@ -97,7 +98,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetColors(
+        public /* static */ delegate int _GetColors(
             [In] IWICPalette* This,
             [In, ComAliasName("UINT")] uint cCount,
             [Out, ComAliasName("WICColor[]")] uint* pColors,
@@ -107,7 +108,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int IsBlackWhite(
+        public /* static */ delegate int _IsBlackWhite(
             [In] IWICPalette* This,
             [Out, ComAliasName("BOOL")] int* pfIsBlackWhite
         );
@@ -115,7 +116,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int IsGrayscale(
+        public /* static */ delegate int _IsGrayscale(
             [In] IWICPalette* This,
             [Out, ComAliasName("BOOL")] int* pfIsGrayscale
         );
@@ -123,10 +124,204 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int HasAlpha(
+        public /* static */ delegate int _HasAlpha(
             [In] IWICPalette* This,
             [Out, ComAliasName("BOOL")] int* pfHasAlpha
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IWICPalette* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IWICPalette* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IWICPalette* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int InitializePredefined(
+            [In] WICBitmapPaletteType ePaletteType,
+            [In, ComAliasName("BOOL")] int fAddTransparentColor
+        )
+        {
+            fixed (IWICPalette* This = &this)
+            {
+                return MarshalFunction<_InitializePredefined>(lpVtbl->InitializePredefined)(
+                    This,
+                    ePaletteType,
+                    fAddTransparentColor
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int InitializeCustom(
+            [In, ComAliasName("WICColor[]")] uint* pColors,
+            [In, ComAliasName("UINT")] uint cCount
+        )
+        {
+            fixed (IWICPalette* This = &this)
+            {
+                return MarshalFunction<_InitializeCustom>(lpVtbl->InitializeCustom)(
+                    This,
+                    pColors,
+                    cCount
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int InitializeFromBitmap(
+            [In, Optional] IWICBitmapSource* pISurface,
+            [In, ComAliasName("UINT")] uint cCount,
+            [In, ComAliasName("BOOL")] int fAddTransparentColor
+        )
+        {
+            fixed (IWICPalette* This = &this)
+            {
+                return MarshalFunction<_InitializeFromBitmap>(lpVtbl->InitializeFromBitmap)(
+                    This,
+                    pISurface,
+                    cCount,
+                    fAddTransparentColor
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int InitializeFromPalette(
+            [In] IWICPalette* pIPalette = null
+        )
+        {
+            fixed (IWICPalette* This = &this)
+            {
+                return MarshalFunction<_InitializeFromPalette>(lpVtbl->InitializeFromPalette)(
+                    This,
+                    pIPalette
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int _GetType(
+            [Out] WICBitmapPaletteType* pePaletteType
+        )
+        {
+            fixed (IWICPalette* This = &this)
+            {
+                return MarshalFunction<__GetType>(lpVtbl->_GetType)(
+                    This,
+                    pePaletteType
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetColorCount(
+            [Out, ComAliasName("UINT")] uint* pcCount
+        )
+        {
+            fixed (IWICPalette* This = &this)
+            {
+                return MarshalFunction<_GetColorCount>(lpVtbl->GetColorCount)(
+                    This,
+                    pcCount
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetColors(
+            [In, ComAliasName("UINT")] uint cCount,
+            [Out, ComAliasName("WICColor[]")] uint* pColors,
+            [Out, ComAliasName("UINT")] uint* pcActualColors
+        )
+        {
+            fixed (IWICPalette* This = &this)
+            {
+                return MarshalFunction<_GetColors>(lpVtbl->GetColors)(
+                    This,
+                    cCount,
+                    pColors,
+                    pcActualColors
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int IsBlackWhite(
+            [Out, ComAliasName("BOOL")] int* pfIsBlackWhite
+        )
+        {
+            fixed (IWICPalette* This = &this)
+            {
+                return MarshalFunction<_IsBlackWhite>(lpVtbl->IsBlackWhite)(
+                    This,
+                    pfIsBlackWhite
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int IsGrayscale(
+            [Out, ComAliasName("BOOL")] int* pfIsGrayscale
+        )
+        {
+            fixed (IWICPalette* This = &this)
+            {
+                return MarshalFunction<_IsGrayscale>(lpVtbl->IsGrayscale)(
+                    This,
+                    pfIsGrayscale
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int HasAlpha(
+            [Out, ComAliasName("BOOL")] int* pfHasAlpha
+        )
+        {
+            fixed (IWICPalette* This = &this)
+            {
+                return MarshalFunction<_HasAlpha>(lpVtbl->HasAlpha)(
+                    This,
+                    pfHasAlpha
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -165,3 +360,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -22,7 +23,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDWriteTextFormat1* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -31,14 +32,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDWriteTextFormat1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDWriteTextFormat1* This
         );
         #endregion
@@ -50,7 +51,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetTextAlignment(
+        public /* static */ delegate int _SetTextAlignment(
             [In] IDWriteTextFormat1* This,
             [In] DWRITE_TEXT_ALIGNMENT textAlignment
         );
@@ -61,7 +62,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetParagraphAlignment(
+        public /* static */ delegate int _SetParagraphAlignment(
             [In] IDWriteTextFormat1* This,
             [In] DWRITE_PARAGRAPH_ALIGNMENT paragraphAlignment
         );
@@ -72,7 +73,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetWordWrapping(
+        public /* static */ delegate int _SetWordWrapping(
             [In] IDWriteTextFormat1* This,
             [In] DWRITE_WORD_WRAPPING wordWrapping
         );
@@ -84,7 +85,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetReadingDirection(
+        public /* static */ delegate int _SetReadingDirection(
             [In] IDWriteTextFormat1* This,
             [In] DWRITE_READING_DIRECTION readingDirection
         );
@@ -96,7 +97,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetFlowDirection(
+        public /* static */ delegate int _SetFlowDirection(
             [In] IDWriteTextFormat1* This,
             [In] DWRITE_FLOW_DIRECTION flowDirection
         );
@@ -107,7 +108,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetIncrementalTabStop(
+        public /* static */ delegate int _SetIncrementalTabStop(
             [In] IDWriteTextFormat1* This,
             [In, ComAliasName("FLOAT")] float incrementalTabStop
         );
@@ -120,7 +121,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetTrimming(
+        public /* static */ delegate int _SetTrimming(
             [In] IDWriteTextFormat1* This,
             [In] DWRITE_TRIMMING* trimmingOptions,
             [In] IDWriteInlineObject* trimmingSign = null
@@ -135,7 +136,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetLineSpacing(
+        public /* static */ delegate int _SetLineSpacing(
             [In] IDWriteTextFormat1* This,
             [In] DWRITE_LINE_SPACING_METHOD lineSpacingMethod,
             [In, ComAliasName("FLOAT")] float lineSpacing,
@@ -145,35 +146,35 @@ namespace TerraFX.Interop
         /// <summary>Get alignment option of text relative to layout box's leading and trailing edge.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate DWRITE_TEXT_ALIGNMENT GetTextAlignment(
+        public /* static */ delegate DWRITE_TEXT_ALIGNMENT _GetTextAlignment(
             [In] IDWriteTextFormat1* This
         );
 
         /// <summary>Get alignment option of paragraph relative to layout box's top and bottom edge.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate DWRITE_PARAGRAPH_ALIGNMENT GetParagraphAlignment(
+        public /* static */ delegate DWRITE_PARAGRAPH_ALIGNMENT _GetParagraphAlignment(
             [In] IDWriteTextFormat1* This
         );
 
         /// <summary>Get word wrapping option.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate DWRITE_WORD_WRAPPING GetWordWrapping(
+        public /* static */ delegate DWRITE_WORD_WRAPPING _GetWordWrapping(
             [In] IDWriteTextFormat1* This
         );
 
         /// <summary>Get paragraph reading direction.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate DWRITE_READING_DIRECTION GetReadingDirection(
+        public /* static */ delegate DWRITE_READING_DIRECTION _GetReadingDirection(
             [In] IDWriteTextFormat1* This
         );
 
         /// <summary>Get paragraph flow direction.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate DWRITE_FLOW_DIRECTION GetFlowDirection(
+        public /* static */ delegate DWRITE_FLOW_DIRECTION _GetFlowDirection(
             [In] IDWriteTextFormat1* This
         );
 
@@ -181,7 +182,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("FLOAT")]
-        public /* static */ delegate float GetIncrementalTabStop(
+        public /* static */ delegate float _GetIncrementalTabStop(
             [In] IDWriteTextFormat1* This
         );
 
@@ -192,7 +193,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetTrimming(
+        public /* static */ delegate int _GetTrimming(
             [In] IDWriteTextFormat1* This,
             [Out] DWRITE_TRIMMING* trimmingOptions,
             [Out] IDWriteInlineObject** trimmingSign
@@ -206,7 +207,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetLineSpacing(
+        public /* static */ delegate int _GetLineSpacing(
             [In] IDWriteTextFormat1* This,
             [Out] DWRITE_LINE_SPACING_METHOD* lineSpacingMethod,
             [Out, ComAliasName("FLOAT")] float* lineSpacing,
@@ -219,7 +220,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFontCollection(
+        public /* static */ delegate int _GetFontCollection(
             [In] IDWriteTextFormat1* This,
             [Out] IDWriteFontCollection** fontCollection
         );
@@ -228,7 +229,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("UINT32")]
-        public /* static */ delegate uint GetFontFamilyNameLength(
+        public /* static */ delegate uint _GetFontFamilyNameLength(
             [In] IDWriteTextFormat1* This
         );
 
@@ -239,7 +240,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFontFamilyName(
+        public /* static */ delegate int _GetFontFamilyName(
             [In] IDWriteTextFormat1* This,
             [Out, ComAliasName("WCHAR[]")] char* fontFamilyName,
             [In, ComAliasName("UINT32")] uint nameSize
@@ -248,21 +249,21 @@ namespace TerraFX.Interop
         /// <summary>Get the font weight.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate DWRITE_FONT_WEIGHT GetFontWeight(
+        public /* static */ delegate DWRITE_FONT_WEIGHT _GetFontWeight(
             [In] IDWriteTextFormat1* This
         );
 
         /// <summary>Get the font style.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate DWRITE_FONT_STYLE GetFontStyle(
+        public /* static */ delegate DWRITE_FONT_STYLE _GetFontStyle(
             [In] IDWriteTextFormat1* This
         );
 
         /// <summary>Get the font stretch.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate DWRITE_FONT_STRETCH GetFontStretch(
+        public /* static */ delegate DWRITE_FONT_STRETCH _GetFontStretch(
             [In] IDWriteTextFormat1* This
         );
 
@@ -270,7 +271,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("FLOAT")]
-        public /* static */ delegate float GetFontSize(
+        public /* static */ delegate float _GetFontSize(
             [In] IDWriteTextFormat1* This
         );
 
@@ -278,7 +279,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("UINT32")]
-        public /* static */ delegate uint GetLocaleNameLength(
+        public /* static */ delegate uint _GetLocaleNameLength(
             [In] IDWriteTextFormat1* This
         );
 
@@ -289,7 +290,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetLocaleName(
+        public /* static */ delegate int _GetLocaleName(
             [In] IDWriteTextFormat1* This,
             [Out, ComAliasName("WCHAR[]")] char* localeName,
             [In, ComAliasName("UINT32")] uint nameSize
@@ -303,7 +304,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetVerticalGlyphOrientation(
+        public /* static */ delegate int _SetVerticalGlyphOrientation(
             [In] IDWriteTextFormat1* This,
             [In] DWRITE_VERTICAL_GLYPH_ORIENTATION glyphOrientation
         );
@@ -311,7 +312,7 @@ namespace TerraFX.Interop
         /// <summary>Get the preferred orientation of glyphs when using a vertical reading direction.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate DWRITE_VERTICAL_GLYPH_ORIENTATION GetVerticalGlyphOrientation(
+        public /* static */ delegate DWRITE_VERTICAL_GLYPH_ORIENTATION _GetVerticalGlyphOrientation(
             [In] IDWriteTextFormat1* This
         );
 
@@ -321,7 +322,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetLastLineWrapping(
+        public /* static */ delegate int _SetLastLineWrapping(
             [In] IDWriteTextFormat1* This,
             [In, ComAliasName("BOOL")] int isLastLineWrappingEnabled
         );
@@ -330,7 +331,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("BOOL")]
-        public /* static */ delegate int GetLastLineWrapping(
+        public /* static */ delegate int _GetLastLineWrapping(
             [In] IDWriteTextFormat1* This
         );
 
@@ -340,7 +341,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetOpticalAlignment(
+        public /* static */ delegate int _SetOpticalAlignment(
             [In] IDWriteTextFormat1* This,
             [In] DWRITE_OPTICAL_ALIGNMENT opticalAlignment
         );
@@ -348,7 +349,7 @@ namespace TerraFX.Interop
         /// <summary>Get how the glyphs align to the edges the margin.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate DWRITE_OPTICAL_ALIGNMENT GetOpticalAlignment(
+        public /* static */ delegate DWRITE_OPTICAL_ALIGNMENT _GetOpticalAlignment(
             [In] IDWriteTextFormat1* This
         );
 
@@ -358,7 +359,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetFontFallback(
+        public /* static */ delegate int _SetFontFallback(
             [In] IDWriteTextFormat1* This,
             [In] IDWriteFontFallback* fontFallback
         );
@@ -367,10 +368,477 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFontFallback(
+        public /* static */ delegate int _GetFontFallback(
             [In] IDWriteTextFormat1* This,
             [Out] IDWriteFontFallback** fontFallback
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region IDWriteTextFormat Methods
+        [return: ComAliasName("HRESULT")]
+        public int SetTextAlignment(
+            [In] DWRITE_TEXT_ALIGNMENT textAlignment
+        )
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_SetTextAlignment>(lpVtbl->SetTextAlignment)(
+                    This,
+                    textAlignment
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetParagraphAlignment(
+            [In] DWRITE_PARAGRAPH_ALIGNMENT paragraphAlignment
+        )
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_SetParagraphAlignment>(lpVtbl->SetParagraphAlignment)(
+                    This,
+                    paragraphAlignment
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetWordWrapping(
+            [In] DWRITE_WORD_WRAPPING wordWrapping
+        )
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_SetWordWrapping>(lpVtbl->SetWordWrapping)(
+                    This,
+                    wordWrapping
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetReadingDirection(
+            [In] DWRITE_READING_DIRECTION readingDirection
+        )
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_SetReadingDirection>(lpVtbl->SetReadingDirection)(
+                    This,
+                    readingDirection
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetFlowDirection(
+            [In] DWRITE_FLOW_DIRECTION flowDirection
+        )
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_SetFlowDirection>(lpVtbl->SetFlowDirection)(
+                    This,
+                    flowDirection
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetIncrementalTabStop(
+            [In, ComAliasName("FLOAT")] float incrementalTabStop
+        )
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_SetIncrementalTabStop>(lpVtbl->SetIncrementalTabStop)(
+                    This,
+                    incrementalTabStop
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetTrimming(
+            [In] DWRITE_TRIMMING* trimmingOptions,
+            [In] IDWriteInlineObject* trimmingSign = null
+        )
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_SetTrimming>(lpVtbl->SetTrimming)(
+                    This,
+                    trimmingOptions,
+                    trimmingSign
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetLineSpacing(
+            [In] DWRITE_LINE_SPACING_METHOD lineSpacingMethod,
+            [In, ComAliasName("FLOAT")] float lineSpacing,
+            [In, ComAliasName("FLOAT")] float baseline
+        )
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_SetLineSpacing>(lpVtbl->SetLineSpacing)(
+                    This,
+                    lineSpacingMethod,
+                    lineSpacing,
+                    baseline
+                );
+            }
+        }
+
+        public DWRITE_TEXT_ALIGNMENT GetTextAlignment()
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_GetTextAlignment>(lpVtbl->GetTextAlignment)(
+                    This
+                );
+            }
+        }
+
+        public DWRITE_PARAGRAPH_ALIGNMENT GetParagraphAlignment()
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_GetParagraphAlignment>(lpVtbl->GetParagraphAlignment)(
+                    This
+                );
+            }
+        }
+
+        public DWRITE_WORD_WRAPPING GetWordWrapping()
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_GetWordWrapping>(lpVtbl->GetWordWrapping)(
+                    This
+                );
+            }
+        }
+
+        public DWRITE_READING_DIRECTION GetReadingDirection()
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_GetReadingDirection>(lpVtbl->GetReadingDirection)(
+                    This
+                );
+            }
+        }
+
+        public DWRITE_FLOW_DIRECTION GetFlowDirection()
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_GetFlowDirection>(lpVtbl->GetFlowDirection)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("FLOAT")]
+        public float GetIncrementalTabStop()
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_GetIncrementalTabStop>(lpVtbl->GetIncrementalTabStop)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetTrimming(
+            [Out] DWRITE_TRIMMING* trimmingOptions,
+            [Out] IDWriteInlineObject** trimmingSign
+        )
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_GetTrimming>(lpVtbl->GetTrimming)(
+                    This,
+                    trimmingOptions,
+                    trimmingSign
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetLineSpacing(
+            [Out] DWRITE_LINE_SPACING_METHOD* lineSpacingMethod,
+            [Out, ComAliasName("FLOAT")] float* lineSpacing,
+            [Out, ComAliasName("FLOAT")] float* baseline
+        )
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_GetLineSpacing>(lpVtbl->GetLineSpacing)(
+                    This,
+                    lineSpacingMethod,
+                    lineSpacing,
+                    baseline
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetFontCollection(
+            [Out] IDWriteFontCollection** fontCollection
+        )
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_GetFontCollection>(lpVtbl->GetFontCollection)(
+                    This,
+                    fontCollection
+                );
+            }
+        }
+
+        [return: ComAliasName("UINT32")]
+        public uint GetFontFamilyNameLength()
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_GetFontFamilyNameLength>(lpVtbl->GetFontFamilyNameLength)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetFontFamilyName(
+            [Out, ComAliasName("WCHAR[]")] char* fontFamilyName,
+            [In, ComAliasName("UINT32")] uint nameSize
+        )
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_GetFontFamilyName>(lpVtbl->GetFontFamilyName)(
+                    This,
+                    fontFamilyName,
+                    nameSize
+                );
+            }
+        }
+
+        public DWRITE_FONT_WEIGHT GetFontWeight()
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_GetFontWeight>(lpVtbl->GetFontWeight)(
+                    This
+                );
+            }
+        }
+
+        public DWRITE_FONT_STYLE GetFontStyle()
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_GetFontStyle>(lpVtbl->GetFontStyle)(
+                    This
+                );
+            }
+        }
+
+        public DWRITE_FONT_STRETCH GetFontStretch()
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_GetFontStretch>(lpVtbl->GetFontStretch)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("FLOAT")]
+        public float GetFontSize()
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_GetFontSize>(lpVtbl->GetFontSize)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("UINT32")]
+        public uint GetLocaleNameLength()
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_GetLocaleNameLength>(lpVtbl->GetLocaleNameLength)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetLocaleName(
+            [Out, ComAliasName("WCHAR[]")] char* localeName,
+            [In, ComAliasName("UINT32")] uint nameSize
+        )
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_GetLocaleName>(lpVtbl->GetLocaleName)(
+                    This,
+                    localeName,
+                    nameSize
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int SetVerticalGlyphOrientation(
+            [In] DWRITE_VERTICAL_GLYPH_ORIENTATION glyphOrientation
+        )
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_SetVerticalGlyphOrientation>(lpVtbl->SetVerticalGlyphOrientation)(
+                    This,
+                    glyphOrientation
+                );
+            }
+        }
+
+        public DWRITE_VERTICAL_GLYPH_ORIENTATION GetVerticalGlyphOrientation()
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_GetVerticalGlyphOrientation>(lpVtbl->GetVerticalGlyphOrientation)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetLastLineWrapping(
+            [In, ComAliasName("BOOL")] int isLastLineWrappingEnabled
+        )
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_SetLastLineWrapping>(lpVtbl->SetLastLineWrapping)(
+                    This,
+                    isLastLineWrappingEnabled
+                );
+            }
+        }
+
+        [return: ComAliasName("BOOL")]
+        public int GetLastLineWrapping()
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_GetLastLineWrapping>(lpVtbl->GetLastLineWrapping)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetOpticalAlignment(
+            [In] DWRITE_OPTICAL_ALIGNMENT opticalAlignment
+        )
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_SetOpticalAlignment>(lpVtbl->SetOpticalAlignment)(
+                    This,
+                    opticalAlignment
+                );
+            }
+        }
+
+        public DWRITE_OPTICAL_ALIGNMENT GetOpticalAlignment()
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_GetOpticalAlignment>(lpVtbl->GetOpticalAlignment)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetFontFallback(
+            [In] IDWriteFontFallback* fontFallback
+        )
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_SetFontFallback>(lpVtbl->SetFontFallback)(
+                    This,
+                    fontFallback
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetFontFallback(
+            [Out] IDWriteFontFallback** fontFallback
+        )
+        {
+            fixed (IDWriteTextFormat1* This = &this)
+            {
+                return MarshalFunction<_GetFontFallback>(lpVtbl->GetFontFallback)(
+                    This,
+                    fontFallback
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -457,3 +925,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

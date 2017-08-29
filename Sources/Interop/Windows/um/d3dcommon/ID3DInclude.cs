@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -19,7 +20,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Open(
+        public /* static */ delegate int _Open(
             [In] ID3DInclude* This,
             [In] D3D_INCLUDE_TYPE IncludeType,
             [In, ComAliasName("LPCSTR")] sbyte* pFileName,
@@ -31,10 +32,48 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Close(
+        public /* static */ delegate int _Close(
             [In] ID3DInclude* This,
             [In, ComAliasName("LPCVOID")] void* pData
         );
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int Open(
+            [In] D3D_INCLUDE_TYPE IncludeType,
+            [In, ComAliasName("LPCSTR")] sbyte* pFileName,
+            [In, ComAliasName("LPCVOID")] void* pParentData,
+            [Out, ComAliasName("LPCVOID")] void** ppData,
+            [Out, ComAliasName("UINT")] uint* pBytes
+        )
+        {
+            fixed (ID3DInclude* This = &this)
+            {
+                return MarshalFunction<_Open>(lpVtbl->Open)(
+                    This,
+                    IncludeType,
+                    pFileName,
+                    pParentData,
+                    ppData,
+                    pBytes
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int Close(
+            [In, ComAliasName("LPCVOID")] void* pData
+        )
+        {
+            fixed (ID3DInclude* This = &this)
+            {
+                return MarshalFunction<_Close>(lpVtbl->Close)(
+                    This,
+                    pData
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -49,3 +88,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

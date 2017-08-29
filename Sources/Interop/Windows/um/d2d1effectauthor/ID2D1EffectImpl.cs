@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ID2D1EffectImpl* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ID2D1EffectImpl* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ID2D1EffectImpl* This
         );
         #endregion
@@ -47,7 +48,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Initialize(
+        public /* static */ delegate int _Initialize(
             [In] ID2D1EffectImpl* This,
             [In] ID2D1EffectContext* effectContext,
             [In] ID2D1TransformGraph* transformGraph
@@ -57,7 +58,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int PrepareForRender(
+        public /* static */ delegate int _PrepareForRender(
             [In] ID2D1EffectImpl* This,
             [In] D2D1_CHANGE_TYPE changeType
         );
@@ -66,10 +67,96 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetGraph(
+        public /* static */ delegate int _SetGraph(
             [In] ID2D1EffectImpl* This,
             [In] ID2D1TransformGraph* transformGraph
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ID2D1EffectImpl* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ID2D1EffectImpl* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ID2D1EffectImpl* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int Initialize(
+            [In] ID2D1EffectContext* effectContext,
+            [In] ID2D1TransformGraph* transformGraph
+        )
+        {
+            fixed (ID2D1EffectImpl* This = &this)
+            {
+                return MarshalFunction<_Initialize>(lpVtbl->Initialize)(
+                    This,
+                    effectContext,
+                    transformGraph
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int PrepareForRender(
+            [In] D2D1_CHANGE_TYPE changeType
+        )
+        {
+            fixed (ID2D1EffectImpl* This = &this)
+            {
+                return MarshalFunction<_PrepareForRender>(lpVtbl->PrepareForRender)(
+                    This,
+                    changeType
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetGraph(
+            [In] ID2D1TransformGraph* transformGraph
+        )
+        {
+            fixed (ID2D1EffectImpl* This = &this)
+            {
+                return MarshalFunction<_SetGraph>(lpVtbl->SetGraph)(
+                    This,
+                    transformGraph
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -94,3 +181,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

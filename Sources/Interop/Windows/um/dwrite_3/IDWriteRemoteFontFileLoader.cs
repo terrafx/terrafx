@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -22,7 +23,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDWriteRemoteFontFileLoader* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -31,14 +32,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDWriteRemoteFontFileLoader* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDWriteRemoteFontFileLoader* This
         );
         #endregion
@@ -52,7 +53,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateStreamFromKey(
+        public /* static */ delegate int _CreateStreamFromKey(
             [In] IDWriteRemoteFontFileLoader* This,
             [In] void* fontFileReferenceKey,
             [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
@@ -70,7 +71,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateRemoteStreamFromKey(
+        public /* static */ delegate int _CreateRemoteStreamFromKey(
             [In] IDWriteRemoteFontFileLoader* This,
             [In] void* fontFileReferenceKey,
             [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
@@ -85,7 +86,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetLocalityFromKey(
+        public /* static */ delegate int _GetLocalityFromKey(
             [In] IDWriteRemoteFontFileLoader* This,
             [In] void* fontFileReferenceKey,
             [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
@@ -101,13 +102,131 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateFontFileReferenceFromUrl(
+        public /* static */ delegate int _CreateFontFileReferenceFromUrl(
             [In] IDWriteRemoteFontFileLoader* This,
             [In] IDWriteFactory* factory,
             [In, Optional, ComAliasName("WCHAR[]")] char* baseUrl,
             [In, ComAliasName("WCHAR[]")] char* fontFileUrl,
             [Out] IDWriteFontFile** fontFile
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDWriteRemoteFontFileLoader* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDWriteRemoteFontFileLoader* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDWriteRemoteFontFileLoader* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region IDWriteFontFileLoader Methods
+        [return: ComAliasName("HRESULT")]
+        public int CreateStreamFromKey(
+            [In] void* fontFileReferenceKey,
+            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [Out] IDWriteFontFileStream** fontFileStream
+        )
+        {
+            fixed (IDWriteRemoteFontFileLoader* This = &this)
+            {
+                return MarshalFunction<_CreateStreamFromKey>(lpVtbl->CreateStreamFromKey)(
+                    This,
+                    fontFileReferenceKey,
+                    fontFileReferenceKeySize,
+                    fontFileStream
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int CreateRemoteStreamFromKey(
+            [In] void* fontFileReferenceKey,
+            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [Out] IDWriteRemoteFontFileStream** fontFileStream
+        )
+        {
+            fixed (IDWriteRemoteFontFileLoader* This = &this)
+            {
+                return MarshalFunction<_CreateRemoteStreamFromKey>(lpVtbl->CreateRemoteStreamFromKey)(
+                    This,
+                    fontFileReferenceKey,
+                    fontFileReferenceKeySize,
+                    fontFileStream
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetLocalityFromKey(
+            [In] void* fontFileReferenceKey,
+            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [Out] DWRITE_LOCALITY* locality
+        )
+        {
+            fixed (IDWriteRemoteFontFileLoader* This = &this)
+            {
+                return MarshalFunction<_GetLocalityFromKey>(lpVtbl->GetLocalityFromKey)(
+                    This,
+                    fontFileReferenceKey,
+                    fontFileReferenceKeySize,
+                    locality
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateFontFileReferenceFromUrl(
+            [In] IDWriteFactory* factory,
+            [In, Optional, ComAliasName("WCHAR[]")] char* baseUrl,
+            [In, ComAliasName("WCHAR[]")] char* fontFileUrl,
+            [Out] IDWriteFontFile** fontFile
+        )
+        {
+            fixed (IDWriteRemoteFontFileLoader* This = &this)
+            {
+                return MarshalFunction<_CreateFontFileReferenceFromUrl>(lpVtbl->CreateFontFileReferenceFromUrl)(
+                    This,
+                    factory,
+                    baseUrl,
+                    fontFileUrl,
+                    fontFile
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -136,3 +255,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

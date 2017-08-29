@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ID2D1SvgPointCollection* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ID2D1SvgPointCollection* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ID2D1SvgPointCollection* This
         );
         #endregion
@@ -46,7 +47,7 @@ namespace TerraFX.Interop
         /// <summary>Retrieve the factory associated with this resource.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetFactory(
+        public /* static */ delegate void _GetFactory(
             [In] ID2D1SvgPointCollection* This,
             [Out] ID2D1Factory** factory
         );
@@ -56,7 +57,7 @@ namespace TerraFX.Interop
         /// <summary>Returns the element on which this attribute is set. Returns null if the attribute is not set on any element.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetElement(
+        public /* static */ delegate void _GetElement(
             [In] ID2D1SvgPointCollection* This,
             [Out] ID2D1SvgElement** element
         );
@@ -65,7 +66,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Clone(
+        public /* static */ delegate int _Clone(
             [In] ID2D1SvgPointCollection* This,
             [Out] ID2D1SvgAttribute** attribute
         );
@@ -77,7 +78,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int RemovePointsAtEnd(
+        public /* static */ delegate int _RemovePointsAtEnd(
             [In] ID2D1SvgPointCollection* This,
             [In, ComAliasName("UINT32")] uint pointsCount
         );
@@ -89,7 +90,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int UpdatePoints(
+        public /* static */ delegate int _UpdatePoints(
             [In] ID2D1SvgPointCollection* This,
             [In, ComAliasName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
             [In, ComAliasName("UINT32")] uint pointsCount,
@@ -103,7 +104,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetPoints(
+        public /* static */ delegate int _GetPoints(
             [In] ID2D1SvgPointCollection* This,
             [Out, ComAliasName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
             [In, ComAliasName("UINT32")] uint pointsCount,
@@ -114,9 +115,156 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("UINT32")]
-        public /* static */ delegate uint GetPointsCount(
+        public /* static */ delegate uint _GetPointsCount(
             [In] ID2D1SvgPointCollection* This
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ID2D1SvgPointCollection* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ID2D1SvgPointCollection* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ID2D1SvgPointCollection* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1Resource Methods
+        public void GetFactory(
+            [Out] ID2D1Factory** factory
+        )
+        {
+            fixed (ID2D1SvgPointCollection* This = &this)
+            {
+                MarshalFunction<_GetFactory>(lpVtbl->GetFactory)(
+                    This,
+                    factory
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1SvgAttribute Methods
+        public void GetElement(
+            [Out] ID2D1SvgElement** element
+        )
+        {
+            fixed (ID2D1SvgPointCollection* This = &this)
+            {
+                MarshalFunction<_GetElement>(lpVtbl->GetElement)(
+                    This,
+                    element
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int Clone(
+            [Out] ID2D1SvgAttribute** attribute
+        )
+        {
+            fixed (ID2D1SvgPointCollection* This = &this)
+            {
+                return MarshalFunction<_Clone>(lpVtbl->Clone)(
+                    This,
+                    attribute
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int RemovePointsAtEnd(
+            [In, ComAliasName("UINT32")] uint pointsCount
+        )
+        {
+            fixed (ID2D1SvgPointCollection* This = &this)
+            {
+                return MarshalFunction<_RemovePointsAtEnd>(lpVtbl->RemovePointsAtEnd)(
+                    This,
+                    pointsCount
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int UpdatePoints(
+            [In, ComAliasName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
+            [In, ComAliasName("UINT32")] uint pointsCount,
+            [In, ComAliasName("UINT32")] uint startIndex = 0
+        )
+        {
+            fixed (ID2D1SvgPointCollection* This = &this)
+            {
+                return MarshalFunction<_UpdatePoints>(lpVtbl->UpdatePoints)(
+                    This,
+                    points,
+                    pointsCount,
+                    startIndex
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetPoints(
+            [Out, ComAliasName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
+            [In, ComAliasName("UINT32")] uint pointsCount,
+            [In, ComAliasName("UINT32")] uint startIndex = 0
+        )
+        {
+            fixed (ID2D1SvgPointCollection* This = &this)
+            {
+                return MarshalFunction<_GetPoints>(lpVtbl->GetPoints)(
+                    This,
+                    points,
+                    pointsCount,
+                    startIndex
+                );
+            }
+        }
+
+        [return: ComAliasName("UINT32")]
+        public uint GetPointsCount()
+        {
+            fixed (ID2D1SvgPointCollection* This = &this)
+            {
+                return MarshalFunction<_GetPointsCount>(lpVtbl->GetPointsCount)(
+                    This
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -153,3 +301,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

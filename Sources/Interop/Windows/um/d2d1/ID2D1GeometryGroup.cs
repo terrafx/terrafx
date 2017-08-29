@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ID2D1GeometryGroup* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ID2D1GeometryGroup* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ID2D1GeometryGroup* This
         );
         #endregion
@@ -46,7 +47,7 @@ namespace TerraFX.Interop
         /// <summary>Retrieve the factory associated with this resource.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetFactory(
+        public /* static */ delegate void _GetFactory(
             [In] ID2D1GeometryGroup* This,
             [Out] ID2D1Factory** factory
         );
@@ -57,7 +58,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetBounds(
+        public /* static */ delegate int _GetBounds(
             [In] ID2D1GeometryGroup* This,
             [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
             [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* bounds
@@ -67,7 +68,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetWidenedBounds(
+        public /* static */ delegate int _GetWidenedBounds(
             [In] ID2D1GeometryGroup* This,
             [In, ComAliasName("FLOAT")] float strokeWidth,
             [In, Optional] ID2D1StrokeStyle* strokeStyle,
@@ -80,7 +81,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int StrokeContainsPoint(
+        public /* static */ delegate int _StrokeContainsPoint(
             [In] ID2D1GeometryGroup* This,
             [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F point,
             [In, ComAliasName("FLOAT")] float strokeWidth,
@@ -94,7 +95,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int FillContainsPoint(
+        public /* static */ delegate int _FillContainsPoint(
             [In] ID2D1GeometryGroup* This,
             [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F point,
             [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
@@ -106,7 +107,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CompareWithGeometry(
+        public /* static */ delegate int _CompareWithGeometry(
             [In] ID2D1GeometryGroup* This,
             [In] ID2D1Geometry* inputGeometry,
             [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* inputGeometryTransform,
@@ -118,7 +119,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Simplify(
+        public /* static */ delegate int _Simplify(
             [In] ID2D1GeometryGroup* This,
             [In] D2D1_GEOMETRY_SIMPLIFICATION_OPTION simplificationOption,
             [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
@@ -130,7 +131,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Tessellate(
+        public /* static */ delegate int _Tessellate(
             [In] ID2D1GeometryGroup* This,
             [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
             [In, ComAliasName("FLOAT")] float flatteningTolerance,
@@ -141,7 +142,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CombineWithGeometry(
+        public /* static */ delegate int _CombineWithGeometry(
             [In] ID2D1GeometryGroup* This,
             [In] ID2D1Geometry* inputGeometry,
             [In] D2D1_COMBINE_MODE combineMode,
@@ -154,7 +155,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Outline(
+        public /* static */ delegate int _Outline(
             [In] ID2D1GeometryGroup* This,
             [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
             [In, ComAliasName("FLOAT")] float flatteningTolerance,
@@ -165,7 +166,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int ComputeArea(
+        public /* static */ delegate int _ComputeArea(
             [In] ID2D1GeometryGroup* This,
             [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
             [In, ComAliasName("FLOAT")] float flatteningTolerance,
@@ -176,7 +177,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int ComputeLength(
+        public /* static */ delegate int _ComputeLength(
             [In] ID2D1GeometryGroup* This,
             [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
             [In, ComAliasName("FLOAT")] float flatteningTolerance,
@@ -187,7 +188,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int ComputePointAtLength(
+        public /* static */ delegate int _ComputePointAtLength(
             [In] ID2D1GeometryGroup* This,
             [In, ComAliasName("FLOAT")] float length,
             [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
@@ -200,7 +201,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Widen(
+        public /* static */ delegate int _Widen(
             [In] ID2D1GeometryGroup* This,
             [In, ComAliasName("FLOAT")] float strokeWidth,
             [In, Optional] ID2D1StrokeStyle* strokeStyle,
@@ -213,24 +214,379 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_FILL_MODE GetFillMode(
+        public /* static */ delegate D2D1_FILL_MODE _GetFillMode(
             [In] ID2D1GeometryGroup* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("UINT32")]
-        public /* static */ delegate uint GetSourceGeometryCount(
+        public /* static */ delegate uint _GetSourceGeometryCount(
             [In] ID2D1GeometryGroup* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetSourceGeometries(
+        public /* static */ delegate void _GetSourceGeometries(
             [In] ID2D1GeometryGroup* This,
             [Out, ComAliasName("ID2D1Geometry*[]")] ID2D1Geometry** geometries,
             [In, ComAliasName("UINT32")] uint geometriesCount
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ID2D1GeometryGroup* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ID2D1GeometryGroup* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ID2D1GeometryGroup* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1Resource Methods
+        public void GetFactory(
+            [Out] ID2D1Factory** factory
+        )
+        {
+            fixed (ID2D1GeometryGroup* This = &this)
+            {
+                MarshalFunction<_GetFactory>(lpVtbl->GetFactory)(
+                    This,
+                    factory
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1Geometry Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetBounds(
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* bounds
+        )
+        {
+            fixed (ID2D1GeometryGroup* This = &this)
+            {
+                return MarshalFunction<_GetBounds>(lpVtbl->GetBounds)(
+                    This,
+                    worldTransform,
+                    bounds
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetWidenedBounds(
+            [In, ComAliasName("FLOAT")] float strokeWidth,
+            [In, Optional] ID2D1StrokeStyle* strokeStyle,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* bounds
+        )
+        {
+            fixed (ID2D1GeometryGroup* This = &this)
+            {
+                return MarshalFunction<_GetWidenedBounds>(lpVtbl->GetWidenedBounds)(
+                    This,
+                    strokeWidth,
+                    strokeStyle,
+                    worldTransform,
+                    flatteningTolerance,
+                    bounds
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int StrokeContainsPoint(
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F point,
+            [In, ComAliasName("FLOAT")] float strokeWidth,
+            [In, Optional] ID2D1StrokeStyle* strokeStyle,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [Out, ComAliasName("BOOL")] int* contains
+        )
+        {
+            fixed (ID2D1GeometryGroup* This = &this)
+            {
+                return MarshalFunction<_StrokeContainsPoint>(lpVtbl->StrokeContainsPoint)(
+                    This,
+                    point,
+                    strokeWidth,
+                    strokeStyle,
+                    worldTransform,
+                    flatteningTolerance,
+                    contains
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int FillContainsPoint(
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F point,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [Out, ComAliasName("BOOL")] int* contains
+        )
+        {
+            fixed (ID2D1GeometryGroup* This = &this)
+            {
+                return MarshalFunction<_FillContainsPoint>(lpVtbl->FillContainsPoint)(
+                    This,
+                    point,
+                    worldTransform,
+                    flatteningTolerance,
+                    contains
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CompareWithGeometry(
+            [In] ID2D1Geometry* inputGeometry,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* inputGeometryTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [Out] D2D1_GEOMETRY_RELATION* relation
+        )
+        {
+            fixed (ID2D1GeometryGroup* This = &this)
+            {
+                return MarshalFunction<_CompareWithGeometry>(lpVtbl->CompareWithGeometry)(
+                    This,
+                    inputGeometry,
+                    inputGeometryTransform,
+                    flatteningTolerance,
+                    relation
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int Simplify(
+            [In] D2D1_GEOMETRY_SIMPLIFICATION_OPTION simplificationOption,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [In] ID2D1SimplifiedGeometrySink* geometrySink
+        )
+        {
+            fixed (ID2D1GeometryGroup* This = &this)
+            {
+                return MarshalFunction<_Simplify>(lpVtbl->Simplify)(
+                    This,
+                    simplificationOption,
+                    worldTransform,
+                    flatteningTolerance,
+                    geometrySink
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int Tessellate(
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [In] ID2D1TessellationSink* tessellationSink
+        )
+        {
+            fixed (ID2D1GeometryGroup* This = &this)
+            {
+                return MarshalFunction<_Tessellate>(lpVtbl->Tessellate)(
+                    This,
+                    worldTransform,
+                    flatteningTolerance,
+                    tessellationSink
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CombineWithGeometry(
+            [In] ID2D1Geometry* inputGeometry,
+            [In] D2D1_COMBINE_MODE combineMode,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* inputGeometryTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [In] ID2D1SimplifiedGeometrySink* geometrySink
+        )
+        {
+            fixed (ID2D1GeometryGroup* This = &this)
+            {
+                return MarshalFunction<_CombineWithGeometry>(lpVtbl->CombineWithGeometry)(
+                    This,
+                    inputGeometry,
+                    combineMode,
+                    inputGeometryTransform,
+                    flatteningTolerance,
+                    geometrySink
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int Outline(
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [In] ID2D1SimplifiedGeometrySink* geometrySink
+        )
+        {
+            fixed (ID2D1GeometryGroup* This = &this)
+            {
+                return MarshalFunction<_Outline>(lpVtbl->Outline)(
+                    This,
+                    worldTransform,
+                    flatteningTolerance,
+                    geometrySink
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int ComputeArea(
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [Out, ComAliasName("FLOAT")] float* area
+        )
+        {
+            fixed (ID2D1GeometryGroup* This = &this)
+            {
+                return MarshalFunction<_ComputeArea>(lpVtbl->ComputeArea)(
+                    This,
+                    worldTransform,
+                    flatteningTolerance,
+                    area
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int ComputeLength(
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [Out, ComAliasName("FLOAT")] float* length
+        )
+        {
+            fixed (ID2D1GeometryGroup* This = &this)
+            {
+                return MarshalFunction<_ComputeLength>(lpVtbl->ComputeLength)(
+                    This,
+                    worldTransform,
+                    flatteningTolerance,
+                    length
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int ComputePointAtLength(
+            [In, ComAliasName("FLOAT")] float length,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* point = null,
+            [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* unitTangentVector = null
+        )
+        {
+            fixed (ID2D1GeometryGroup* This = &this)
+            {
+                return MarshalFunction<_ComputePointAtLength>(lpVtbl->ComputePointAtLength)(
+                    This,
+                    length,
+                    worldTransform,
+                    flatteningTolerance,
+                    point,
+                    unitTangentVector
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int Widen(
+            [In, ComAliasName("FLOAT")] float strokeWidth,
+            [In, Optional] ID2D1StrokeStyle* strokeStyle,
+            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [In] ID2D1SimplifiedGeometrySink* geometrySink
+        )
+        {
+            fixed (ID2D1GeometryGroup* This = &this)
+            {
+                return MarshalFunction<_Widen>(lpVtbl->Widen)(
+                    This,
+                    strokeWidth,
+                    strokeStyle,
+                    worldTransform,
+                    flatteningTolerance,
+                    geometrySink
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        public D2D1_FILL_MODE GetFillMode()
+        {
+            fixed (ID2D1GeometryGroup* This = &this)
+            {
+                return MarshalFunction<_GetFillMode>(lpVtbl->GetFillMode)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("UINT32")]
+        public uint GetSourceGeometryCount()
+        {
+            fixed (ID2D1GeometryGroup* This = &this)
+            {
+                return MarshalFunction<_GetSourceGeometryCount>(lpVtbl->GetSourceGeometryCount)(
+                    This
+                );
+            }
+        }
+
+        public void GetSourceGeometries(
+            [Out, ComAliasName("ID2D1Geometry*[]")] ID2D1Geometry** geometries,
+            [In, ComAliasName("UINT32")] uint geometriesCount
+        )
+        {
+            fixed (ID2D1GeometryGroup* This = &this)
+            {
+                MarshalFunction<_GetSourceGeometries>(lpVtbl->GetSourceGeometries)(
+                    This,
+                    geometries,
+                    geometriesCount
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -287,3 +643,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

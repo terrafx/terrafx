@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDWriteInMemoryFontFileLoader* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDWriteInMemoryFontFileLoader* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDWriteInMemoryFontFileLoader* This
         );
         #endregion
@@ -51,7 +52,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateStreamFromKey(
+        public /* static */ delegate int _CreateStreamFromKey(
             [In] IDWriteInMemoryFontFileLoader* This,
             [In] void* fontFileReferenceKey,
             [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
@@ -70,7 +71,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateInMemoryFontFileReference(
+        public /* static */ delegate int _CreateInMemoryFontFileReference(
             [In] IDWriteInMemoryFontFileLoader* This,
             [In] IDWriteFactory* factory,
             [In] void* fontData,
@@ -83,9 +84,104 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("UINT32")]
-        public /* static */ delegate uint GetFileCount(
+        public /* static */ delegate uint _GetFileCount(
             [In] IDWriteInMemoryFontFileLoader* This
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDWriteInMemoryFontFileLoader* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDWriteInMemoryFontFileLoader* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDWriteInMemoryFontFileLoader* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region IDWriteFontFileLoader Methods
+        [return: ComAliasName("HRESULT")]
+        public int CreateStreamFromKey(
+            [In] void* fontFileReferenceKey,
+            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [Out] IDWriteFontFileStream** fontFileStream
+        )
+        {
+            fixed (IDWriteInMemoryFontFileLoader* This = &this)
+            {
+                return MarshalFunction<_CreateStreamFromKey>(lpVtbl->CreateStreamFromKey)(
+                    This,
+                    fontFileReferenceKey,
+                    fontFileReferenceKeySize,
+                    fontFileStream
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int CreateInMemoryFontFileReference(
+            [In] IDWriteFactory* factory,
+            [In] void* fontData,
+            [In, ComAliasName("UINT32")] uint fontDataSize,
+            [In, Optional] IUnknown* ownerObject,
+            [Out] IDWriteFontFile** fontFile
+        )
+        {
+            fixed (IDWriteInMemoryFontFileLoader* This = &this)
+            {
+                return MarshalFunction<_CreateInMemoryFontFileReference>(lpVtbl->CreateInMemoryFontFileReference)(
+                    This,
+                    factory,
+                    fontData,
+                    fontDataSize,
+                    ownerObject,
+                    fontFile
+                );
+            }
+        }
+
+        [return: ComAliasName("UINT32")]
+        public uint GetFileCount()
+        {
+            fixed (IDWriteInMemoryFontFileLoader* This = &this)
+            {
+                return MarshalFunction<_GetFileCount>(lpVtbl->GetFileCount)(
+                    This
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -112,3 +208,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

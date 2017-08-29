@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ID2D1SourceTransform* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ID2D1SourceTransform* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ID2D1SourceTransform* This
         );
         #endregion
@@ -47,7 +48,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("UINT32")]
-        public /* static */ delegate uint GetInputCount(
+        public /* static */ delegate uint _GetInputCount(
             [In] ID2D1SourceTransform* This
         );
         #endregion
@@ -56,7 +57,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int MapOutputRectToInputRects(
+        public /* static */ delegate int _MapOutputRectToInputRects(
             [In] ID2D1SourceTransform* This,
             [In, ComAliasName("D2D1_RECT_L")] RECT* outputRect,
             [Out, ComAliasName("D2D1_RECT_L[]")] RECT* inputRects,
@@ -66,7 +67,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int MapInputRectsToOutputRect(
+        public /* static */ delegate int _MapInputRectsToOutputRect(
             [In] ID2D1SourceTransform* This,
             [In, ComAliasName("D2D1_RECT_L[]")] RECT* inputRects,
             [In, ComAliasName("D2D1_RECT_L[]")] RECT* inputOpaqueSubRects,
@@ -78,7 +79,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int MapInvalidRect(
+        public /* static */ delegate int _MapInvalidRect(
             [In] ID2D1SourceTransform* This,
             [In, ComAliasName("UINT32")] uint inputIndex,
             [In, ComAliasName("D2D1_RECT_L")] RECT invalidInputRect,
@@ -90,7 +91,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetRenderInfo(
+        public /* static */ delegate int _SetRenderInfo(
             [In] ID2D1SourceTransform* This,
             [In] ID2D1RenderInfo* renderInfo
         );
@@ -98,12 +99,159 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Draw(
+        public /* static */ delegate int _Draw(
             [In] ID2D1SourceTransform* This,
             [In] ID2D1Bitmap1* target,
             [In, ComAliasName("D2D1_RECT_L")] RECT* drawRect,
             [In, ComAliasName("D2D1_POINT_2U")] D2D_POINT_2U targetOrigin
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ID2D1SourceTransform* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ID2D1SourceTransform* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ID2D1SourceTransform* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1TransformNode Methods
+        [return: ComAliasName("UINT32")]
+        public uint GetInputCount()
+        {
+            fixed (ID2D1SourceTransform* This = &this)
+            {
+                return MarshalFunction<_GetInputCount>(lpVtbl->GetInputCount)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1Transform Methods
+        [return: ComAliasName("HRESULT")]
+        public int MapOutputRectToInputRects(
+            [In, ComAliasName("D2D1_RECT_L")] RECT* outputRect,
+            [Out, ComAliasName("D2D1_RECT_L[]")] RECT* inputRects,
+            [In, ComAliasName("UINT32")] uint inputRectsCount
+        )
+        {
+            fixed (ID2D1SourceTransform* This = &this)
+            {
+                return MarshalFunction<_MapOutputRectToInputRects>(lpVtbl->MapOutputRectToInputRects)(
+                    This,
+                    outputRect,
+                    inputRects,
+                    inputRectsCount
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int MapInputRectsToOutputRect(
+            [In, ComAliasName("D2D1_RECT_L[]")] RECT* inputRects,
+            [In, ComAliasName("D2D1_RECT_L[]")] RECT* inputOpaqueSubRects,
+            [In, ComAliasName("UINT32")] uint inputRectCount,
+            [Out, ComAliasName("D2D1_RECT_L")] RECT* outputRect,
+            [Out, ComAliasName("D2D1_RECT_L")] RECT* outputOpaqueSubRect
+        )
+        {
+            fixed (ID2D1SourceTransform* This = &this)
+            {
+                return MarshalFunction<_MapInputRectsToOutputRect>(lpVtbl->MapInputRectsToOutputRect)(
+                    This,
+                    inputRects,
+                    inputOpaqueSubRects,
+                    inputRectCount,
+                    outputRect,
+                    outputOpaqueSubRect
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int MapInvalidRect(
+            [In, ComAliasName("UINT32")] uint inputIndex,
+            [In, ComAliasName("D2D1_RECT_L")] RECT invalidInputRect,
+            [Out, ComAliasName("D2D1_RECT_L")] RECT* invalidOutputRect
+        )
+        {
+            fixed (ID2D1SourceTransform* This = &this)
+            {
+                return MarshalFunction<_MapInvalidRect>(lpVtbl->MapInvalidRect)(
+                    This,
+                    inputIndex,
+                    invalidInputRect,
+                    invalidOutputRect
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int SetRenderInfo(
+            [In] ID2D1RenderInfo* renderInfo
+        )
+        {
+            fixed (ID2D1SourceTransform* This = &this)
+            {
+                return MarshalFunction<_SetRenderInfo>(lpVtbl->SetRenderInfo)(
+                    This,
+                    renderInfo
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int Draw(
+            [In] ID2D1Bitmap1* target,
+            [In, ComAliasName("D2D1_RECT_L")] RECT* drawRect,
+            [In, ComAliasName("D2D1_POINT_2U")] D2D_POINT_2U targetOrigin
+        )
+        {
+            fixed (ID2D1SourceTransform* This = &this)
+            {
+                return MarshalFunction<_Draw>(lpVtbl->Draw)(
+                    This,
+                    target,
+                    drawRect,
+                    targetOrigin
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -138,3 +286,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

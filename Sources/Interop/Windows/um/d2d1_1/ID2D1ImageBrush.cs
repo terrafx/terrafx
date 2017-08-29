@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ID2D1ImageBrush* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ID2D1ImageBrush* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ID2D1ImageBrush* This
         );
         #endregion
@@ -46,7 +47,7 @@ namespace TerraFX.Interop
         /// <summary>Retrieve the factory associated with this resource.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetFactory(
+        public /* static */ delegate void _GetFactory(
             [In] ID2D1ImageBrush* This,
             [Out] ID2D1Factory** factory
         );
@@ -56,7 +57,7 @@ namespace TerraFX.Interop
         /// <summary>Sets the opacity for when the brush is drawn over the entire fill of the brush.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void SetOpacity(
+        public /* static */ delegate void _SetOpacity(
             [In] ID2D1ImageBrush* This,
             [In, ComAliasName("FLOAT")] float opacity
         );
@@ -64,7 +65,7 @@ namespace TerraFX.Interop
         /// <summary>Sets the transform that applies to everything drawn by the brush.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void SetTransform(
+        public /* static */ delegate void _SetTransform(
             [In] ID2D1ImageBrush* This,
             [In, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform
         );
@@ -72,13 +73,13 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("FLOAT")]
-        public /* static */ delegate float GetOpacity(
+        public /* static */ delegate float _GetOpacity(
             [In] ID2D1ImageBrush* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetTransform(
+        public /* static */ delegate void _GetTransform(
             [In] ID2D1ImageBrush* This,
             [Out, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform
         );
@@ -87,70 +88,300 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void SetImage(
+        public /* static */ delegate void _SetImage(
             [In] ID2D1ImageBrush* This,
             [In] ID2D1Image* image = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void SetExtendModeX(
+        public /* static */ delegate void _SetExtendModeX(
             [In] ID2D1ImageBrush* This,
-            D2D1_EXTEND_MODE extendModeX
+            [In] D2D1_EXTEND_MODE extendModeX
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void SetExtendModeY(
+        public /* static */ delegate void _SetExtendModeY(
             [In] ID2D1ImageBrush* This,
-            D2D1_EXTEND_MODE extendModeY
+            [In] D2D1_EXTEND_MODE extendModeY
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void SetInterpolationMode(
+        public /* static */ delegate void _SetInterpolationMode(
             [In] ID2D1ImageBrush* This,
-            D2D1_INTERPOLATION_MODE interpolationMode
+            [In] D2D1_INTERPOLATION_MODE interpolationMode
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void SetSourceRectangle(
+        public /* static */ delegate void _SetSourceRectangle(
             [In] ID2D1ImageBrush* This,
             [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* sourceRectangle
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetImage(
+        public /* static */ delegate void _GetImage(
             [In] ID2D1ImageBrush* This,
             [Out] ID2D1Image** image
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_EXTEND_MODE GetExtendModeX(
+        public /* static */ delegate D2D1_EXTEND_MODE _GetExtendModeX(
             [In] ID2D1ImageBrush* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_EXTEND_MODE GetExtendModeY(
+        public /* static */ delegate D2D1_EXTEND_MODE _GetExtendModeY(
             [In] ID2D1ImageBrush* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_INTERPOLATION_MODE GetInterpolationMode(
+        public /* static */ delegate D2D1_INTERPOLATION_MODE _GetInterpolationMode(
             [In] ID2D1ImageBrush* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetSourceRectangle(
+        public /* static */ delegate void _GetSourceRectangle(
             [In] ID2D1ImageBrush* This,
             [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* sourceRectangle
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ID2D1ImageBrush* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ID2D1ImageBrush* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ID2D1ImageBrush* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1Resource Methods
+        public void GetFactory(
+            [Out] ID2D1Factory** factory
+        )
+        {
+            fixed (ID2D1ImageBrush* This = &this)
+            {
+                MarshalFunction<_GetFactory>(lpVtbl->GetFactory)(
+                    This,
+                    factory
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1Brush Methods
+        public void SetOpacity(
+            [In, ComAliasName("FLOAT")] float opacity
+        )
+        {
+            fixed (ID2D1ImageBrush* This = &this)
+            {
+                MarshalFunction<_SetOpacity>(lpVtbl->SetOpacity)(
+                    This,
+                    opacity
+                );
+            }
+        }
+
+        public void SetTransform(
+            [In, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform
+        )
+        {
+            fixed (ID2D1ImageBrush* This = &this)
+            {
+                MarshalFunction<_SetTransform>(lpVtbl->SetTransform)(
+                    This,
+                    transform
+                );
+            }
+        }
+
+        [return: ComAliasName("FLOAT")]
+        public float GetOpacity()
+        {
+            fixed (ID2D1ImageBrush* This = &this)
+            {
+                return MarshalFunction<_GetOpacity>(lpVtbl->GetOpacity)(
+                    This
+                );
+            }
+        }
+
+        public void GetTransform(
+            [Out, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform
+        )
+        {
+            fixed (ID2D1ImageBrush* This = &this)
+            {
+                MarshalFunction<_GetTransform>(lpVtbl->GetTransform)(
+                    This,
+                    transform
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        public void SetImage(
+            [In] ID2D1Image* image = null
+        )
+        {
+            fixed (ID2D1ImageBrush* This = &this)
+            {
+                MarshalFunction<_SetImage>(lpVtbl->SetImage)(
+                    This,
+                    image
+                );
+            }
+        }
+
+        public void SetExtendModeX(
+            [In] D2D1_EXTEND_MODE extendModeX
+        )
+        {
+            fixed (ID2D1ImageBrush* This = &this)
+            {
+                MarshalFunction<_SetExtendModeX>(lpVtbl->SetExtendModeX)(
+                    This,
+                    extendModeX
+                );
+            }
+        }
+
+        public void SetExtendModeY(
+            [In] D2D1_EXTEND_MODE extendModeY
+        )
+        {
+            fixed (ID2D1ImageBrush* This = &this)
+            {
+                MarshalFunction<_SetExtendModeY>(lpVtbl->SetExtendModeY)(
+                    This,
+                    extendModeY
+                );
+            }
+        }
+
+        public void SetInterpolationMode(
+            [In] D2D1_INTERPOLATION_MODE interpolationMode
+        )
+        {
+            fixed (ID2D1ImageBrush* This = &this)
+            {
+                MarshalFunction<_SetInterpolationMode>(lpVtbl->SetInterpolationMode)(
+                    This,
+                    interpolationMode
+                );
+            }
+        }
+
+        public void SetSourceRectangle(
+            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* sourceRectangle
+        )
+        {
+            fixed (ID2D1ImageBrush* This = &this)
+            {
+                MarshalFunction<_SetSourceRectangle>(lpVtbl->SetSourceRectangle)(
+                    This,
+                    sourceRectangle
+                );
+            }
+        }
+
+        public void GetImage(
+            [Out] ID2D1Image** image
+        )
+        {
+            fixed (ID2D1ImageBrush* This = &this)
+            {
+                MarshalFunction<_GetImage>(lpVtbl->GetImage)(
+                    This,
+                    image
+                );
+            }
+        }
+
+        public D2D1_EXTEND_MODE GetExtendModeX()
+        {
+            fixed (ID2D1ImageBrush* This = &this)
+            {
+                return MarshalFunction<_GetExtendModeX>(lpVtbl->GetExtendModeX)(
+                    This
+                );
+            }
+        }
+
+        public D2D1_EXTEND_MODE GetExtendModeY()
+        {
+            fixed (ID2D1ImageBrush* This = &this)
+            {
+                return MarshalFunction<_GetExtendModeY>(lpVtbl->GetExtendModeY)(
+                    This
+                );
+            }
+        }
+
+        public D2D1_INTERPOLATION_MODE GetInterpolationMode()
+        {
+            fixed (ID2D1ImageBrush* This = &this)
+            {
+                return MarshalFunction<_GetInterpolationMode>(lpVtbl->GetInterpolationMode)(
+                    This
+                );
+            }
+        }
+
+        public void GetSourceRectangle(
+            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* sourceRectangle
+        )
+        {
+            fixed (ID2D1ImageBrush* This = &this)
+            {
+                MarshalFunction<_GetSourceRectangle>(lpVtbl->GetSourceRectangle)(
+                    This,
+                    sourceRectangle
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -203,3 +434,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

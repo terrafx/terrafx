@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IWICMetadataWriterInfo* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IWICMetadataWriterInfo* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IWICMetadataWriterInfo* This
         );
         #endregion
@@ -46,7 +47,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetComponentType(
+        public /* static */ delegate int _GetComponentType(
             [In] IWICMetadataWriterInfo* This,
             [Out] WICComponentType* pType
         );
@@ -54,7 +55,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetCLSID(
+        public /* static */ delegate int _GetCLSID(
             [In] IWICMetadataWriterInfo* This,
             [Out, ComAliasName("CLSID")] Guid* pclsid
         );
@@ -62,7 +63,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetSigningStatus(
+        public /* static */ delegate int _GetSigningStatus(
             [In] IWICMetadataWriterInfo* This,
             [Out, ComAliasName("DWORD")] uint* pStatus
         );
@@ -70,7 +71,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetAuthor(
+        public /* static */ delegate int _GetAuthor(
             [In] IWICMetadataWriterInfo* This,
             [In, ComAliasName("UINT")] uint cchAuthor,
             [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzAuthor,
@@ -80,7 +81,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetVendorGUID(
+        public /* static */ delegate int _GetVendorGUID(
             [In] IWICMetadataWriterInfo* This,
             [Out, ComAliasName("GUID")] Guid* pguidVendor
         );
@@ -88,7 +89,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetVersion(
+        public /* static */ delegate int _GetVersion(
             [In] IWICMetadataWriterInfo* This,
             [In, ComAliasName("UINT")] uint cchVersion,
             [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzVersion,
@@ -98,7 +99,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetSpecVersion(
+        public /* static */ delegate int _GetSpecVersion(
             [In] IWICMetadataWriterInfo* This,
             [In, ComAliasName("UINT")] uint cchSpecVersion,
             [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzSpecVersion,
@@ -108,7 +109,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFriendlyName(
+        public /* static */ delegate int _GetFriendlyName(
             [In] IWICMetadataWriterInfo* This,
             [In, ComAliasName("UINT")] uint cchFriendlyName,
             [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzFriendlyName,
@@ -120,7 +121,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetMetadataFormat(
+        public /* static */ delegate int _GetMetadataFormat(
             [In] IWICMetadataWriterInfo* This,
             [Out, ComAliasName("GUID")] Guid* pguidMetadataFormat
         );
@@ -128,7 +129,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetContainerFormats(
+        public /* static */ delegate int _GetContainerFormats(
             [In] IWICMetadataWriterInfo* This,
             [In, ComAliasName("UINT")] uint cContainerFormats,
             [In, Out, Optional, ComAliasName("GUID[]")] Guid* pguidContainerFormats,
@@ -138,7 +139,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetDeviceManufacturer(
+        public /* static */ delegate int _GetDeviceManufacturer(
             [In] IWICMetadataWriterInfo* This,
             [In, ComAliasName("UINT")] uint cchDeviceManufacturer,
             [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzDeviceManufacturer,
@@ -148,7 +149,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetDeviceModels(
+        public /* static */ delegate int _GetDeviceModels(
             [In] IWICMetadataWriterInfo* This,
             [In, ComAliasName("UINT")] uint cchDeviceModels,
             [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzDeviceModels,
@@ -158,7 +159,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int DoesRequireFullStream(
+        public /* static */ delegate int _DoesRequireFullStream(
             [In] IWICMetadataWriterInfo* This,
             [Out, ComAliasName("BOOL")] int* pfRequiresFullStream
         );
@@ -166,7 +167,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int DoesSupportPadding(
+        public /* static */ delegate int _DoesSupportPadding(
             [In] IWICMetadataWriterInfo* This,
             [Out, ComAliasName("BOOL")] int* pfSupportsPadding
         );
@@ -174,7 +175,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int DoesRequireFixedSize(
+        public /* static */ delegate int _DoesRequireFixedSize(
             [In] IWICMetadataWriterInfo* This,
             [Out, ComAliasName("BOOL")] int* pfFixedSize
         );
@@ -184,7 +185,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetHeader(
+        public /* static */ delegate int _GetHeader(
             [In] IWICMetadataWriterInfo* This,
             [In, ComAliasName("REFGUID")] Guid* guidContainerFormat,
             [In, ComAliasName("UINT")] uint cbSize,
@@ -195,10 +196,328 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CreateInstance(
+        public /* static */ delegate int _CreateInstance(
             [In] IWICMetadataWriterInfo* This,
             [Out] IWICMetadataWriter** ppIWriter = null
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IWICMetadataWriterInfo* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IWICMetadataWriterInfo* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IWICMetadataWriterInfo* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region IWICComponentInfo Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetComponentType(
+            [Out] WICComponentType* pType
+        )
+        {
+            fixed (IWICMetadataWriterInfo* This = &this)
+            {
+                return MarshalFunction<_GetComponentType>(lpVtbl->GetComponentType)(
+                    This,
+                    pType
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetCLSID(
+            [Out, ComAliasName("CLSID")] Guid* pclsid
+        )
+        {
+            fixed (IWICMetadataWriterInfo* This = &this)
+            {
+                return MarshalFunction<_GetCLSID>(lpVtbl->GetCLSID)(
+                    This,
+                    pclsid
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetSigningStatus(
+            [Out, ComAliasName("DWORD")] uint* pStatus
+        )
+        {
+            fixed (IWICMetadataWriterInfo* This = &this)
+            {
+                return MarshalFunction<_GetSigningStatus>(lpVtbl->GetSigningStatus)(
+                    This,
+                    pStatus
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetAuthor(
+            [In, ComAliasName("UINT")] uint cchAuthor,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzAuthor,
+            [Out, ComAliasName("UINT")] uint* pcchActual
+        )
+        {
+            fixed (IWICMetadataWriterInfo* This = &this)
+            {
+                return MarshalFunction<_GetAuthor>(lpVtbl->GetAuthor)(
+                    This,
+                    cchAuthor,
+                    wzAuthor,
+                    pcchActual
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetVendorGUID(
+            [Out, ComAliasName("GUID")] Guid* pguidVendor
+        )
+        {
+            fixed (IWICMetadataWriterInfo* This = &this)
+            {
+                return MarshalFunction<_GetVendorGUID>(lpVtbl->GetVendorGUID)(
+                    This,
+                    pguidVendor
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetVersion(
+            [In, ComAliasName("UINT")] uint cchVersion,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzVersion,
+            [Out, ComAliasName("UINT")] uint* pcchActual
+        )
+        {
+            fixed (IWICMetadataWriterInfo* This = &this)
+            {
+                return MarshalFunction<_GetVersion>(lpVtbl->GetVersion)(
+                    This,
+                    cchVersion,
+                    wzVersion,
+                    pcchActual
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetSpecVersion(
+            [In, ComAliasName("UINT")] uint cchSpecVersion,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzSpecVersion,
+            [Out, ComAliasName("UINT")] uint* pcchActual
+        )
+        {
+            fixed (IWICMetadataWriterInfo* This = &this)
+            {
+                return MarshalFunction<_GetSpecVersion>(lpVtbl->GetSpecVersion)(
+                    This,
+                    cchSpecVersion,
+                    wzSpecVersion,
+                    pcchActual
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetFriendlyName(
+            [In, ComAliasName("UINT")] uint cchFriendlyName,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzFriendlyName,
+            [Out, ComAliasName("UINT")] uint* pcchActual
+        )
+        {
+            fixed (IWICMetadataWriterInfo* This = &this)
+            {
+                return MarshalFunction<_GetFriendlyName>(lpVtbl->GetFriendlyName)(
+                    This,
+                    cchFriendlyName,
+                    wzFriendlyName,
+                    pcchActual
+                );
+            }
+        }
+        #endregion
+
+        #region IWICMetadataHandlerInfo Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetMetadataFormat(
+            [Out, ComAliasName("GUID")] Guid* pguidMetadataFormat
+        )
+        {
+            fixed (IWICMetadataWriterInfo* This = &this)
+            {
+                return MarshalFunction<_GetMetadataFormat>(lpVtbl->GetMetadataFormat)(
+                    This,
+                    pguidMetadataFormat
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetContainerFormats(
+            [In, ComAliasName("UINT")] uint cContainerFormats,
+            [In, Out, Optional, ComAliasName("GUID[]")] Guid* pguidContainerFormats,
+            [Out, ComAliasName("UINT")] uint* pcchActual
+        )
+        {
+            fixed (IWICMetadataWriterInfo* This = &this)
+            {
+                return MarshalFunction<_GetContainerFormats>(lpVtbl->GetContainerFormats)(
+                    This,
+                    cContainerFormats,
+                    pguidContainerFormats,
+                    pcchActual
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetDeviceManufacturer(
+            [In, ComAliasName("UINT")] uint cchDeviceManufacturer,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzDeviceManufacturer,
+            [Out, ComAliasName("UINT")] uint* pcchActual
+        )
+        {
+            fixed (IWICMetadataWriterInfo* This = &this)
+            {
+                return MarshalFunction<_GetDeviceManufacturer>(lpVtbl->GetDeviceManufacturer)(
+                    This,
+                    cchDeviceManufacturer,
+                    wzDeviceManufacturer,
+                    pcchActual
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetDeviceModels(
+            [In, ComAliasName("UINT")] uint cchDeviceModels,
+            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzDeviceModels,
+            [Out, ComAliasName("UINT")] uint* pcchActual
+        )
+        {
+            fixed (IWICMetadataWriterInfo* This = &this)
+            {
+                return MarshalFunction<_GetDeviceModels>(lpVtbl->GetDeviceModels)(
+                    This,
+                    cchDeviceModels,
+                    wzDeviceModels,
+                    pcchActual
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int DoesRequireFullStream(
+            [Out, ComAliasName("BOOL")] int* pfRequiresFullStream
+        )
+        {
+            fixed (IWICMetadataWriterInfo* This = &this)
+            {
+                return MarshalFunction<_DoesRequireFullStream>(lpVtbl->DoesRequireFullStream)(
+                    This,
+                    pfRequiresFullStream
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int DoesSupportPadding(
+            [Out, ComAliasName("BOOL")] int* pfSupportsPadding
+        )
+        {
+            fixed (IWICMetadataWriterInfo* This = &this)
+            {
+                return MarshalFunction<_DoesSupportPadding>(lpVtbl->DoesSupportPadding)(
+                    This,
+                    pfSupportsPadding
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int DoesRequireFixedSize(
+            [Out, ComAliasName("BOOL")] int* pfFixedSize
+        )
+        {
+            fixed (IWICMetadataWriterInfo* This = &this)
+            {
+                return MarshalFunction<_DoesRequireFixedSize>(lpVtbl->DoesRequireFixedSize)(
+                    This,
+                    pfFixedSize
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetHeader(
+            [In, ComAliasName("REFGUID")] Guid* guidContainerFormat,
+            [In, ComAliasName("UINT")] uint cbSize,
+            [Out] WICMetadataHeader* pHeader = null,
+            [Out, ComAliasName("UINT")] uint* pcbActual = null
+        )
+        {
+            fixed (IWICMetadataWriterInfo* This = &this)
+            {
+                return MarshalFunction<_GetHeader>(lpVtbl->GetHeader)(
+                    This,
+                    guidContainerFormat,
+                    cbSize,
+                    pHeader,
+                    pcbActual
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CreateInstance(
+            [Out] IWICMetadataWriter** ppIWriter = null
+        )
+        {
+            fixed (IWICMetadataWriterInfo* This = &this)
+            {
+                return MarshalFunction<_CreateInstance>(lpVtbl->CreateInstance)(
+                    This,
+                    ppIWriter
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -255,3 +574,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IWICPlanarBitmapSourceTransform* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IWICPlanarBitmapSourceTransform* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IWICPlanarBitmapSourceTransform* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int DoesSupportTransform(
+        public /* static */ delegate int _DoesSupportTransform(
             [In] IWICPlanarBitmapSourceTransform* This,
             [In, Out, ComAliasName("UINT")] uint* puiWidth,
             [In, Out, ComAliasName("UINT")] uint* puiHeight,
@@ -60,7 +61,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CopyPixels(
+        public /* static */ delegate int _CopyPixels(
             [In] IWICPlanarBitmapSourceTransform* This,
             [In, Optional] WICRect* prcSource,
             [In, ComAliasName("UINT")] uint uiWidth,
@@ -70,6 +71,102 @@ namespace TerraFX.Interop
             [In, ComAliasName("WICBitmapPlane[]")] WICBitmapPlane* pDstPlanes,
             [In, ComAliasName("UINT")] uint cPlanes
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IWICPlanarBitmapSourceTransform* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IWICPlanarBitmapSourceTransform* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IWICPlanarBitmapSourceTransform* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int DoesSupportTransform(
+            [In, Out, ComAliasName("UINT")] uint* puiWidth,
+            [In, Out, ComAliasName("UINT")] uint* puiHeight,
+            [In] WICBitmapTransformOptions dstTransform,
+            [In] WICPlanarOptions dstPlanarOptions,
+            [In, ComAliasName("WICPixelFormatGUID[]")] Guid* pguidDstFormats,
+            [Out, ComAliasName("WICBitmapPlaneDescription[]")] WICBitmapPlaneDescription* pPlaneDescriptions,
+            [In, ComAliasName("UINT")] uint cPlanes,
+            [Out, ComAliasName("BOOL")] int* pfIsSupported
+        )
+        {
+            fixed (IWICPlanarBitmapSourceTransform* This = &this)
+            {
+                return MarshalFunction<_DoesSupportTransform>(lpVtbl->DoesSupportTransform)(
+                    This,
+                    puiWidth,
+                    puiHeight,
+                    dstTransform,
+                    dstPlanarOptions,
+                    pguidDstFormats,
+                    pPlaneDescriptions,
+                    cPlanes,
+                    pfIsSupported
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CopyPixels(
+            [In, Optional] WICRect* prcSource,
+            [In, ComAliasName("UINT")] uint uiWidth,
+            [In, ComAliasName("UINT")] uint uiHeight,
+            [In] WICBitmapTransformOptions dstTransform,
+            [In] WICPlanarOptions dstPlanarOptions,
+            [In, ComAliasName("WICBitmapPlane[]")] WICBitmapPlane* pDstPlanes,
+            [In, ComAliasName("UINT")] uint cPlanes
+        )
+        {
+            fixed (IWICPlanarBitmapSourceTransform* This = &this)
+            {
+                return MarshalFunction<_CopyPixels>(lpVtbl->CopyPixels)(
+                    This,
+                    prcSource,
+                    uiWidth,
+                    uiHeight,
+                    dstTransform,
+                    dstPlanarOptions,
+                    pDstPlanes,
+                    cPlanes
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -92,3 +189,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

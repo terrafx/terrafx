@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IEnumSTATSTG* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IEnumSTATSTG* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IEnumSTATSTG* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Next(
+        public /* static */ delegate int _Next(
             [In] IEnumSTATSTG* This,
             [In, ComAliasName("ULONG")] uint celt,
             [Out] STATSTG* rgelt,
@@ -55,7 +56,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Skip(
+        public /* static */ delegate int _Skip(
             [In] IEnumSTATSTG* This,
             [In, ComAliasName("ULONG")] uint celt
         );
@@ -63,17 +64,116 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Reset(
+        public /* static */ delegate int _Reset(
             [In] IEnumSTATSTG* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Clone(
+        public /* static */ delegate int _Clone(
             [In] IEnumSTATSTG* This,
             [Out] IEnumSTATSTG** ppenum = null
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IEnumSTATSTG* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IEnumSTATSTG* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IEnumSTATSTG* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int Next(
+            [In, ComAliasName("ULONG")] uint celt,
+            [Out] STATSTG* rgelt,
+            [Out, ComAliasName("ULONG")] uint* pceltFetched = null
+        )
+        {
+            fixed (IEnumSTATSTG* This = &this)
+            {
+                return MarshalFunction<_Next>(lpVtbl->Next)(
+                    This,
+                    celt,
+                    rgelt,
+                    pceltFetched
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int Skip(
+            [In, ComAliasName("ULONG")] uint celt
+        )
+        {
+            fixed (IEnumSTATSTG* This = &this)
+            {
+                return MarshalFunction<_Skip>(lpVtbl->Skip)(
+                    This,
+                    celt
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int Reset()
+        {
+            fixed (IEnumSTATSTG* This = &this)
+            {
+                return MarshalFunction<_Reset>(lpVtbl->Reset)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int Clone(
+            [Out] IEnumSTATSTG** ppenum = null
+        )
+        {
+            fixed (IEnumSTATSTG* This = &this)
+            {
+                return MarshalFunction<_Clone>(lpVtbl->Clone)(
+                    This,
+                    ppenum
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -100,3 +200,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

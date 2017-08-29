@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ID2D1GdiMetafile1* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ID2D1GdiMetafile1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ID2D1GdiMetafile1* This
         );
         #endregion
@@ -46,7 +47,7 @@ namespace TerraFX.Interop
         /// <summary>Retrieve the factory associated with this resource.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetFactory(
+        public /* static */ delegate void _GetFactory(
             [In] ID2D1GdiMetafile1* This,
             [Out] ID2D1Factory** factory
         );
@@ -57,7 +58,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Stream(
+        public /* static */ delegate int _Stream(
             [In] ID2D1GdiMetafile1* This,
             [In] ID2D1GdiMetafileSink* sink
         );
@@ -66,7 +67,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetBounds(
+        public /* static */ delegate int _GetBounds(
             [In] ID2D1GdiMetafile1* This,
             [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* bounds
         );
@@ -77,7 +78,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetDpi(
+        public /* static */ delegate int _GetDpi(
             [In] ID2D1GdiMetafile1* This,
             [Out, ComAliasName("FLOAT")] float* dpiX,
             [Out, ComAliasName("FLOAT")] float* dpiY
@@ -87,10 +88,127 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetSourceBounds(
+        public /* static */ delegate int _GetSourceBounds(
             [In] ID2D1GdiMetafile1* This,
             [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* bounds
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ID2D1GdiMetafile1* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ID2D1GdiMetafile1* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ID2D1GdiMetafile1* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1Resource Methods
+        public void GetFactory(
+            [Out] ID2D1Factory** factory
+        )
+        {
+            fixed (ID2D1GdiMetafile1* This = &this)
+            {
+                MarshalFunction<_GetFactory>(lpVtbl->GetFactory)(
+                    This,
+                    factory
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1GdiMetafile Methods
+        [return: ComAliasName("HRESULT")]
+        public int Stream(
+            [In] ID2D1GdiMetafileSink* sink
+        )
+        {
+            fixed (ID2D1GdiMetafile1* This = &this)
+            {
+                return MarshalFunction<_Stream>(lpVtbl->Stream)(
+                    This,
+                    sink
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetBounds(
+            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* bounds
+        )
+        {
+            fixed (ID2D1GdiMetafile1* This = &this)
+            {
+                return MarshalFunction<_GetBounds>(lpVtbl->GetBounds)(
+                    This,
+                    bounds
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetDpi(
+            [Out, ComAliasName("FLOAT")] float* dpiX,
+            [Out, ComAliasName("FLOAT")] float* dpiY
+        )
+        {
+            fixed (ID2D1GdiMetafile1* This = &this)
+            {
+                return MarshalFunction<_GetDpi>(lpVtbl->GetDpi)(
+                    This,
+                    dpiX,
+                    dpiY
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetSourceBounds(
+            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* bounds
+        )
+        {
+            fixed (ID2D1GdiMetafile1* This = &this)
+            {
+                return MarshalFunction<_GetSourceBounds>(lpVtbl->GetSourceBounds)(
+                    This,
+                    bounds
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -123,3 +241,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

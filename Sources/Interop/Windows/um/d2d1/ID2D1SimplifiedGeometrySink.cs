@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ID2D1SimplifiedGeometrySink* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ID2D1SimplifiedGeometrySink* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ID2D1SimplifiedGeometrySink* This
         );
         #endregion
@@ -45,21 +46,21 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void SetFillMode(
+        public /* static */ delegate void _SetFillMode(
             [In] ID2D1SimplifiedGeometrySink* This,
             [In] D2D1_FILL_MODE fillMode
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void SetSegmentFlags(
+        public /* static */ delegate void _SetSegmentFlags(
             [In] ID2D1SimplifiedGeometrySink* This,
             [In] D2D1_PATH_SEGMENT vertexFlags
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void BeginFigure(
+        public /* static */ delegate void _BeginFigure(
             [In] ID2D1SimplifiedGeometrySink* This,
             [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F startPoint,
             [In] D2D1_FIGURE_BEGIN figureBegin
@@ -67,7 +68,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void AddLines(
+        public /* static */ delegate void _AddLines(
             [In] ID2D1SimplifiedGeometrySink* This,
             [In, ComAliasName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
             [In, ComAliasName("UINT32")] uint pointsCount
@@ -75,7 +76,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void AddBeziers(
+        public /* static */ delegate void _AddBeziers(
             [In] ID2D1SimplifiedGeometrySink* This,
             [In, ComAliasName("D2D1_BEZIER_SEGMENT[]")] D2D1_BEZIER_SEGMENT* beziers,
             [In, ComAliasName("UINT32")] uint beziersCount
@@ -83,7 +84,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void EndFigure(
+        public /* static */ delegate void _EndFigure(
             [In] ID2D1SimplifiedGeometrySink* This,
             [In] D2D1_FIGURE_END figureEnd
         );
@@ -91,9 +92,146 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Close(
+        public /* static */ delegate int _Close(
             [In] ID2D1SimplifiedGeometrySink* This
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ID2D1SimplifiedGeometrySink* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ID2D1SimplifiedGeometrySink* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ID2D1SimplifiedGeometrySink* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        public void SetFillMode(
+            [In] D2D1_FILL_MODE fillMode
+        )
+        {
+            fixed (ID2D1SimplifiedGeometrySink* This = &this)
+            {
+                MarshalFunction<_SetFillMode>(lpVtbl->SetFillMode)(
+                    This,
+                    fillMode
+                );
+            }
+        }
+
+        public void SetSegmentFlags(
+            [In] D2D1_PATH_SEGMENT vertexFlags
+        )
+        {
+            fixed (ID2D1SimplifiedGeometrySink* This = &this)
+            {
+                MarshalFunction<_SetSegmentFlags>(lpVtbl->SetSegmentFlags)(
+                    This,
+                    vertexFlags
+                );
+            }
+        }
+
+        public void BeginFigure(
+            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F startPoint,
+            [In] D2D1_FIGURE_BEGIN figureBegin
+        )
+        {
+            fixed (ID2D1SimplifiedGeometrySink* This = &this)
+            {
+                MarshalFunction<_BeginFigure>(lpVtbl->BeginFigure)(
+                    This,
+                    startPoint,
+                    figureBegin
+                );
+            }
+        }
+
+        public void AddLines(
+            [In, ComAliasName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
+            [In, ComAliasName("UINT32")] uint pointsCount
+        )
+        {
+            fixed (ID2D1SimplifiedGeometrySink* This = &this)
+            {
+                MarshalFunction<_AddLines>(lpVtbl->AddLines)(
+                    This,
+                    points,
+                    pointsCount
+                );
+            }
+        }
+
+        public void AddBeziers(
+            [In, ComAliasName("D2D1_BEZIER_SEGMENT[]")] D2D1_BEZIER_SEGMENT* beziers,
+            [In, ComAliasName("UINT32")] uint beziersCount
+        )
+        {
+            fixed (ID2D1SimplifiedGeometrySink* This = &this)
+            {
+                MarshalFunction<_AddBeziers>(lpVtbl->AddBeziers)(
+                    This,
+                    beziers,
+                    beziersCount
+                );
+            }
+        }
+
+        public void EndFigure(
+            [In] D2D1_FIGURE_END figureEnd
+        )
+        {
+            fixed (ID2D1SimplifiedGeometrySink* This = &this)
+            {
+                MarshalFunction<_EndFigure>(lpVtbl->EndFigure)(
+                    This,
+                    figureEnd
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int Close()
+        {
+            fixed (ID2D1SimplifiedGeometrySink* This = &this)
+            {
+                return MarshalFunction<_Close>(lpVtbl->Close)(
+                    This
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -126,3 +264,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

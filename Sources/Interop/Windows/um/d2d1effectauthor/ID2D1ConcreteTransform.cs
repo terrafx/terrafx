@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ID2D1ConcreteTransform* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ID2D1ConcreteTransform* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ID2D1ConcreteTransform* This
         );
         #endregion
@@ -47,7 +48,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("UINT32")]
-        public /* static */ delegate uint GetInputCount(
+        public /* static */ delegate uint _GetInputCount(
             [In] ID2D1ConcreteTransform* This
         );
         #endregion
@@ -57,7 +58,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetOutputBuffer(
+        public /* static */ delegate int _SetOutputBuffer(
             [In] ID2D1ConcreteTransform* This,
             [In] D2D1_BUFFER_PRECISION bufferPrecision,
             [In] D2D1_CHANNEL_DEPTH channelDepth
@@ -66,10 +67,94 @@ namespace TerraFX.Interop
         /// <summary>Controls whether the output of this transform is cached.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void SetCached(
+        public /* static */ delegate void _SetCached(
             [In] ID2D1ConcreteTransform* This,
             [In, ComAliasName("BOOL")] int isCached
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ID2D1ConcreteTransform* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ID2D1ConcreteTransform* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ID2D1ConcreteTransform* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1TransformNode Methods
+        [return: ComAliasName("UINT32")]
+        public uint GetInputCount()
+        {
+            fixed (ID2D1ConcreteTransform* This = &this)
+            {
+                return MarshalFunction<_GetInputCount>(lpVtbl->GetInputCount)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int SetOutputBuffer(
+            [In] D2D1_BUFFER_PRECISION bufferPrecision,
+            [In] D2D1_CHANNEL_DEPTH channelDepth
+        )
+        {
+            fixed (ID2D1ConcreteTransform* This = &this)
+            {
+                return MarshalFunction<_SetOutputBuffer>(lpVtbl->SetOutputBuffer)(
+                    This,
+                    bufferPrecision,
+                    channelDepth
+                );
+            }
+        }
+
+        public void SetCached(
+            [In, ComAliasName("BOOL")] int isCached
+        )
+        {
+            fixed (ID2D1ConcreteTransform* This = &this)
+            {
+                MarshalFunction<_SetCached>(lpVtbl->SetCached)(
+                    This,
+                    isCached
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -96,3 +181,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,24 +21,66 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetDesc(
+        public /* static */ delegate int _GetDesc(
             [In] ID3D12ShaderReflectionConstantBuffer* This,
             [Out] D3D12_SHADER_BUFFER_DESC* pDesc
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate ID3D12ShaderReflectionVariable* GetVariableByIndex(
+        public /* static */ delegate ID3D12ShaderReflectionVariable* _GetVariableByIndex(
             [In] ID3D12ShaderReflectionConstantBuffer* This,
             [In, ComAliasName("UINT")] uint Index
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate ID3D12ShaderReflectionVariable* GetVariableByName(
+        public /* static */ delegate ID3D12ShaderReflectionVariable* _GetVariableByName(
             [In] ID3D12ShaderReflectionConstantBuffer* This,
             [In, ComAliasName("LPCSTR")] sbyte* Name
         );
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetDesc(
+            [Out] D3D12_SHADER_BUFFER_DESC* pDesc
+        )
+        {
+            fixed (ID3D12ShaderReflectionConstantBuffer* This = &this)
+            {
+                return MarshalFunction<_GetDesc>(lpVtbl->GetDesc)(
+                    This,
+                    pDesc
+                );
+            }
+        }
+
+        public ID3D12ShaderReflectionVariable* GetVariableByIndex(
+            [In, ComAliasName("UINT")] uint Index
+        )
+        {
+            fixed (ID3D12ShaderReflectionConstantBuffer* This = &this)
+            {
+                return MarshalFunction<_GetVariableByIndex>(lpVtbl->GetVariableByIndex)(
+                    This,
+                    Index
+                );
+            }
+        }
+
+        public ID3D12ShaderReflectionVariable* GetVariableByName(
+            [In, ComAliasName("LPCSTR")] sbyte* Name
+        )
+        {
+            fixed (ID3D12ShaderReflectionConstantBuffer* This = &this)
+            {
+                return MarshalFunction<_GetVariableByName>(lpVtbl->GetVariableByName)(
+                    This,
+                    Name
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -54,3 +97,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

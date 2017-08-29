@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] ID2D1SvgPaint* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] ID2D1SvgPaint* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] ID2D1SvgPaint* This
         );
         #endregion
@@ -46,7 +47,7 @@ namespace TerraFX.Interop
         /// <summary>Retrieve the factory associated with this resource.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetFactory(
+        public /* static */ delegate void _GetFactory(
             [In] ID2D1SvgPaint* This,
             [Out] ID2D1Factory** factory
         );
@@ -56,7 +57,7 @@ namespace TerraFX.Interop
         /// <summary>Returns the element on which this attribute is set. Returns null if the attribute is not set on any element.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetElement(
+        public /* static */ delegate void _GetElement(
             [In] ID2D1SvgPaint* This,
             [Out] ID2D1SvgElement** element
         );
@@ -65,7 +66,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Clone(
+        public /* static */ delegate int _Clone(
             [In] ID2D1SvgPaint* This,
             [Out] ID2D1SvgAttribute** attribute
         );
@@ -76,7 +77,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetPaintType(
+        public /* static */ delegate int _SetPaintType(
             [In] ID2D1SvgPaint* This,
             [In] D2D1_SVG_PAINT_TYPE paintType
         );
@@ -84,7 +85,7 @@ namespace TerraFX.Interop
         /// <summary>Gets the paint type.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_SVG_PAINT_TYPE GetPaintType(
+        public /* static */ delegate D2D1_SVG_PAINT_TYPE _GetPaintType(
             [In] ID2D1SvgPaint* This
         );
 
@@ -92,7 +93,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetColor(
+        public /* static */ delegate int _SetColor(
             [In] ID2D1SvgPaint* This,
             [In, ComAliasName("D2D1_COLOR_F")] DXGI_RGBA* color
         );
@@ -100,7 +101,7 @@ namespace TerraFX.Interop
         /// <summary>Gets the paint color that is used if the paint type is D2D1_SVG_PAINT_TYPE_COLOR.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void GetColor(
+        public /* static */ delegate void _GetColor(
             [In] ID2D1SvgPaint* This,
             [Out, ComAliasName("D2D1_COLOR_F")] DXGI_RGBA* color
         );
@@ -109,7 +110,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetId(
+        public /* static */ delegate int _SetId(
             [In] ID2D1SvgPaint* This,
             [In, ComAliasName("PCWSTR")] char* id
         );
@@ -118,7 +119,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetId(
+        public /* static */ delegate int _GetId(
             [In] ID2D1SvgPaint* This,
             [Out, ComAliasName("PWSTR")] char* id,
             [In, ComAliasName("UINT32")] uint idCount
@@ -128,9 +129,187 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("UINT32")]
-        public /* static */ delegate uint GetIdLength(
+        public /* static */ delegate uint _GetIdLength(
             [In] ID2D1SvgPaint* This
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (ID2D1SvgPaint* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (ID2D1SvgPaint* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (ID2D1SvgPaint* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1Resource Methods
+        public void GetFactory(
+            [Out] ID2D1Factory** factory
+        )
+        {
+            fixed (ID2D1SvgPaint* This = &this)
+            {
+                MarshalFunction<_GetFactory>(lpVtbl->GetFactory)(
+                    This,
+                    factory
+                );
+            }
+        }
+        #endregion
+
+        #region ID2D1SvgAttribute Methods
+        public void GetElement(
+            [Out] ID2D1SvgElement** element
+        )
+        {
+            fixed (ID2D1SvgPaint* This = &this)
+            {
+                MarshalFunction<_GetElement>(lpVtbl->GetElement)(
+                    This,
+                    element
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int Clone(
+            [Out] ID2D1SvgAttribute** attribute
+        )
+        {
+            fixed (ID2D1SvgPaint* This = &this)
+            {
+                return MarshalFunction<_Clone>(lpVtbl->Clone)(
+                    This,
+                    attribute
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int SetPaintType(
+            [In] D2D1_SVG_PAINT_TYPE paintType
+        )
+        {
+            fixed (ID2D1SvgPaint* This = &this)
+            {
+                return MarshalFunction<_SetPaintType>(lpVtbl->SetPaintType)(
+                    This,
+                    paintType
+                );
+            }
+        }
+
+        public D2D1_SVG_PAINT_TYPE GetPaintType()
+        {
+            fixed (ID2D1SvgPaint* This = &this)
+            {
+                return MarshalFunction<_GetPaintType>(lpVtbl->GetPaintType)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetColor(
+            [In, ComAliasName("D2D1_COLOR_F")] DXGI_RGBA* color
+        )
+        {
+            fixed (ID2D1SvgPaint* This = &this)
+            {
+                return MarshalFunction<_SetColor>(lpVtbl->SetColor)(
+                    This,
+                    color
+                );
+            }
+        }
+
+        public void GetColor(
+            [Out, ComAliasName("D2D1_COLOR_F")] DXGI_RGBA* color
+        )
+        {
+            fixed (ID2D1SvgPaint* This = &this)
+            {
+                MarshalFunction<_GetColor>(lpVtbl->GetColor)(
+                    This,
+                    color
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetId(
+            [In, ComAliasName("PCWSTR")] char* id
+        )
+        {
+            fixed (ID2D1SvgPaint* This = &this)
+            {
+                return MarshalFunction<_SetId>(lpVtbl->SetId)(
+                    This,
+                    id
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetId(
+            [Out, ComAliasName("PWSTR")] char* id,
+            [In, ComAliasName("UINT32")] uint idCount
+        )
+        {
+            fixed (ID2D1SvgPaint* This = &this)
+            {
+                return MarshalFunction<_GetId>(lpVtbl->GetId)(
+                    This,
+                    id,
+                    idCount
+                );
+            }
+        }
+
+        [return: ComAliasName("UINT32")]
+        public uint GetIdLength()
+        {
+            fixed (ID2D1SvgPaint* This = &this)
+            {
+                return MarshalFunction<_GetIdLength>(lpVtbl->GetIdLength)(
+                    This
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -173,3 +352,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

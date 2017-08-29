@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IPropertyBag2* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IPropertyBag2* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IPropertyBag2* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Read(
+        public /* static */ delegate int _Read(
             [In] IPropertyBag2* This,
             [In, ComAliasName("ULONG")] uint cProperties,
             [In, ComAliasName("PROPBAG2[]")] PROPBAG2* pPropBag,
@@ -57,7 +58,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int Write(
+        public /* static */ delegate int _Write(
             [In] IPropertyBag2* This,
             [In, ComAliasName("ULONG")] uint cProperties,
             [In, ComAliasName("PROPBAG2[]")] PROPBAG2* pPropBag,
@@ -67,7 +68,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CountProperties(
+        public /* static */ delegate int _CountProperties(
             [In] IPropertyBag2* This,
             [Out, ComAliasName("ULONG")] uint* pcProperties
         );
@@ -75,7 +76,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetPropertyInfo(
+        public /* static */ delegate int _GetPropertyInfo(
             [In] IPropertyBag2* This,
             [In, ComAliasName("ULONG")] uint iProperty,
             [In, ComAliasName("ULONG")] uint cProperties,
@@ -86,13 +87,149 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int LoadObject(
+        public /* static */ delegate int _LoadObject(
             [In] IPropertyBag2* This,
             [In, ComAliasName("LPCOLESTR")] char* pstrName,
             [In, ComAliasName("DWORD")] uint dwHint,
             [In] IUnknown* pUnkObject = null,
             [In] IErrorLog* pErrLog = null
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IPropertyBag2* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IPropertyBag2* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IPropertyBag2* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int Read(
+            [In, ComAliasName("ULONG")] uint cProperties,
+            [In, ComAliasName("PROPBAG2[]")] PROPBAG2* pPropBag,
+            [In, Optional] IErrorLog* pErrLog,
+            [Out] VARIANT* pvarValue,
+            [In, Out, ComAliasName("HRESULT")] int* phrError = null
+        )
+        {
+            fixed (IPropertyBag2* This = &this)
+            {
+                return MarshalFunction<_Read>(lpVtbl->Read)(
+                    This,
+                    cProperties,
+                    pPropBag,
+                    pErrLog,
+                    pvarValue,
+                    phrError
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int Write(
+            [In, ComAliasName("ULONG")] uint cProperties,
+            [In, ComAliasName("PROPBAG2[]")] PROPBAG2* pPropBag,
+            [In] VARIANT* pvarValue
+        )
+        {
+            fixed (IPropertyBag2* This = &this)
+            {
+                return MarshalFunction<_Write>(lpVtbl->Write)(
+                    This,
+                    cProperties,
+                    pPropBag,
+                    pvarValue
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CountProperties(
+            [Out, ComAliasName("ULONG")] uint* pcProperties
+        )
+        {
+            fixed (IPropertyBag2* This = &this)
+            {
+                return MarshalFunction<_CountProperties>(lpVtbl->CountProperties)(
+                    This,
+                    pcProperties
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetPropertyInfo(
+            [In, ComAliasName("ULONG")] uint iProperty,
+            [In, ComAliasName("ULONG")] uint cProperties,
+            [Out, ComAliasName("PROPBAG2")] PROPBAG2* pPropBag,
+            [Out, ComAliasName("ULONG")] uint* pcProperties
+        )
+        {
+            fixed (IPropertyBag2* This = &this)
+            {
+                return MarshalFunction<_GetPropertyInfo>(lpVtbl->GetPropertyInfo)(
+                    This,
+                    iProperty,
+                    cProperties,
+                    pPropBag,
+                    pcProperties
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int LoadObject(
+            [In, ComAliasName("LPCOLESTR")] char* pstrName,
+            [In, ComAliasName("DWORD")] uint dwHint,
+            [In] IUnknown* pUnkObject = null,
+            [In] IErrorLog* pErrLog = null
+        )
+        {
+            fixed (IPropertyBag2* This = &this)
+            {
+                return MarshalFunction<_LoadObject>(lpVtbl->LoadObject)(
+                    This,
+                    pstrName,
+                    dwHint,
+                    pUnkObject,
+                    pErrLog
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -121,3 +258,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

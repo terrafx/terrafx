@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IDWriteFontFallback* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -30,14 +31,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IDWriteFontFallback* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IDWriteFontFallback* This
         );
         #endregion
@@ -58,7 +59,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int MapCharacters(
+        public /* static */ delegate int _MapCharacters(
             [In] IDWriteFontFallback* This,
             [In] IDWriteTextAnalysisSource* analysisSource,
             [In, ComAliasName("UINT32")] uint textPosition,
@@ -72,6 +73,82 @@ namespace TerraFX.Interop
             [Out] IDWriteFont** mappedFont,
             [Out, ComAliasName("FLOAT")] float* scale
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IDWriteFontFallback* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IDWriteFontFallback* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IDWriteFontFallback* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int MapCharacters(
+            [In] IDWriteTextAnalysisSource* analysisSource,
+            [In, ComAliasName("UINT32")] uint textPosition,
+            [In, ComAliasName("UINT32")] uint textLength,
+            [In, Optional] IDWriteFontCollection* baseFontCollection,
+            [In, Optional, ComAliasName("WCHAR[]")] char* baseFamilyName,
+            [In] DWRITE_FONT_WEIGHT baseWeight,
+            [In] DWRITE_FONT_STYLE baseStyle,
+            [In] DWRITE_FONT_STRETCH baseStretch,
+            [Out, ComAliasName("UINT32")] uint* mappedLength,
+            [Out] IDWriteFont** mappedFont,
+            [Out, ComAliasName("FLOAT")] float* scale
+        )
+        {
+            fixed (IDWriteFontFallback* This = &this)
+            {
+                return MarshalFunction<_MapCharacters>(lpVtbl->MapCharacters)(
+                    This,
+                    analysisSource,
+                    textPosition,
+                    textLength,
+                    baseFontCollection,
+                    baseFamilyName,
+                    baseWeight,
+                    baseStyle,
+                    baseStretch,
+                    mappedLength,
+                    mappedFont,
+                    scale
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -92,3 +169,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IWICStreamProvider* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IWICStreamProvider* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IWICStreamProvider* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetStream(
+        public /* static */ delegate int _GetStream(
             [In] IWICStreamProvider* This,
             [Out] IStream** ppIStream = null
         );
@@ -53,7 +54,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetPersistOptions(
+        public /* static */ delegate int _GetPersistOptions(
             [In] IWICStreamProvider* This,
             [Out, ComAliasName("DWORD")] uint* pdwPersistOptions
         );
@@ -61,7 +62,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetPreferredVendorGUID(
+        public /* static */ delegate int _GetPreferredVendorGUID(
             [In] IWICStreamProvider* This,
             [Out, ComAliasName("GUID")] Guid* pguidPreferredVendor
         );
@@ -69,9 +70,104 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int RefreshStream(
+        public /* static */ delegate int _RefreshStream(
             [In] IWICStreamProvider* This
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IWICStreamProvider* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IWICStreamProvider* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IWICStreamProvider* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int GetStream(
+            [Out] IStream** ppIStream = null
+        )
+        {
+            fixed (IWICStreamProvider* This = &this)
+            {
+                return MarshalFunction<_GetStream>(lpVtbl->GetStream)(
+                    This,
+                    ppIStream
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetPersistOptions(
+            [Out, ComAliasName("DWORD")] uint* pdwPersistOptions
+        )
+        {
+            fixed (IWICStreamProvider* This = &this)
+            {
+                return MarshalFunction<_GetPersistOptions>(lpVtbl->GetPersistOptions)(
+                    This,
+                    pdwPersistOptions
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetPreferredVendorGUID(
+            [Out, ComAliasName("GUID")] Guid* pguidPreferredVendor
+        )
+        {
+            fixed (IWICStreamProvider* This = &this)
+            {
+                return MarshalFunction<_GetPreferredVendorGUID>(lpVtbl->GetPreferredVendorGUID)(
+                    This,
+                    pguidPreferredVendor
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int RefreshStream()
+        {
+            fixed (IWICStreamProvider* This = &this)
+            {
+                return MarshalFunction<_RefreshStream>(lpVtbl->RefreshStream)(
+                    This
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -98,3 +194,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+

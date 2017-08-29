@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int QueryInterface(
+        public /* static */ delegate int _QueryInterface(
             [In] IWICJpegFrameDecode* This,
             [In, ComAliasName("REFIID")] Guid* riid,
             [Out] void** ppvObject
@@ -29,14 +30,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint AddRef(
+        public /* static */ delegate uint _AddRef(
             [In] IWICJpegFrameDecode* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("ULONG")]
-        public /* static */ delegate uint Release(
+        public /* static */ delegate uint _Release(
             [In] IWICJpegFrameDecode* This
         );
         #endregion
@@ -45,7 +46,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int DoesSupportIndexing(
+        public /* static */ delegate int _DoesSupportIndexing(
             [In] IWICJpegFrameDecode* This,
             [Out, ComAliasName("BOOL")] int* pfIndexingSupported
         );
@@ -53,7 +54,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int SetIndexing(
+        public /* static */ delegate int _SetIndexing(
             [In] IWICJpegFrameDecode* This,
             [In] WICJpegIndexingOptions options,
             [In, ComAliasName("UINT")] uint horizontalIntervalSize
@@ -62,14 +63,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int ClearIndexing(
+        public /* static */ delegate int _ClearIndexing(
             [In] IWICJpegFrameDecode* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetAcHuffmanTable(
+        public /* static */ delegate int _GetAcHuffmanTable(
             [In] IWICJpegFrameDecode* This,
             [In, ComAliasName("UINT")] uint scanIndex,
             [In, ComAliasName("UINT")] uint tableIndex,
@@ -79,7 +80,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetDcHuffmanTable(
+        public /* static */ delegate int _GetDcHuffmanTable(
             [In] IWICJpegFrameDecode* This,
             [In, ComAliasName("UINT")] uint scanIndex,
             [In, ComAliasName("UINT")] uint tableIndex,
@@ -89,7 +90,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetQuantizationTable(
+        public /* static */ delegate int _GetQuantizationTable(
             [In] IWICJpegFrameDecode* This,
             [In, ComAliasName("UINT")] uint scanIndex,
             [In, ComAliasName("UINT")] uint tableIndex,
@@ -99,7 +100,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetFrameHeader(
+        public /* static */ delegate int _GetFrameHeader(
             [In] IWICJpegFrameDecode* This,
             [Out] WICJpegFrameHeader* pFrameHeader
         );
@@ -107,7 +108,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int GetScanHeader(
+        public /* static */ delegate int _GetScanHeader(
             [In] IWICJpegFrameDecode* This,
             [In, ComAliasName("UINT")] uint scanIndex,
             [Out] WICJpegScanHeader* pScanHeader
@@ -116,7 +117,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CopyScan(
+        public /* static */ delegate int _CopyScan(
             [In] IWICJpegFrameDecode* This,
             [In, ComAliasName("UINT")] uint scanIndex,
             [In, ComAliasName("UINT")] uint scanOffset,
@@ -128,13 +129,222 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
-        public /* static */ delegate int CopyMinimalStream(
+        public /* static */ delegate int _CopyMinimalStream(
             [In] IWICJpegFrameDecode* This,
             [In, ComAliasName("UINT")] uint streamOffset,
             [In, ComAliasName("UINT")] uint cbStreamData,
             [Out, ComAliasName("BYTE[]")] byte* pbStreamData,
             [Out, ComAliasName("UINT")] uint* pcbStreamDataActual
         );
+        #endregion
+
+        #region IUnknown Methods
+        [return: ComAliasName("HRESULT")]
+        public int QueryInterface(
+            [In, ComAliasName("REFIID")] Guid* riid,
+            [Out] void** ppvObject
+        )
+        {
+            fixed (IWICJpegFrameDecode* This = &this)
+            {
+                return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
+                    This,
+                    riid,
+                    ppvObject
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint AddRef()
+        {
+            fixed (IWICJpegFrameDecode* This = &this)
+            {
+                return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("ULONG")]
+        public uint Release()
+        {
+            fixed (IWICJpegFrameDecode* This = &this)
+            {
+                return MarshalFunction<_Release>(lpVtbl->Release)(
+                    This
+                );
+            }
+        }
+        #endregion
+
+        #region Methods
+        [return: ComAliasName("HRESULT")]
+        public int DoesSupportIndexing(
+            [Out, ComAliasName("BOOL")] int* pfIndexingSupported
+        )
+        {
+            fixed (IWICJpegFrameDecode* This = &this)
+            {
+                return MarshalFunction<_DoesSupportIndexing>(lpVtbl->DoesSupportIndexing)(
+                    This,
+                    pfIndexingSupported
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int SetIndexing(
+            [In] WICJpegIndexingOptions options,
+            [In, ComAliasName("UINT")] uint horizontalIntervalSize
+        )
+        {
+            fixed (IWICJpegFrameDecode* This = &this)
+            {
+                return MarshalFunction<_SetIndexing>(lpVtbl->SetIndexing)(
+                    This,
+                    options,
+                    horizontalIntervalSize
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int ClearIndexing()
+        {
+            fixed (IWICJpegFrameDecode* This = &this)
+            {
+                return MarshalFunction<_ClearIndexing>(lpVtbl->ClearIndexing)(
+                    This
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetAcHuffmanTable(
+            [In, ComAliasName("UINT")] uint scanIndex,
+            [In, ComAliasName("UINT")] uint tableIndex,
+            [Out] DXGI_JPEG_AC_HUFFMAN_TABLE* pAcHuffmanTable
+        )
+        {
+            fixed (IWICJpegFrameDecode* This = &this)
+            {
+                return MarshalFunction<_GetAcHuffmanTable>(lpVtbl->GetAcHuffmanTable)(
+                    This,
+                    scanIndex,
+                    tableIndex,
+                    pAcHuffmanTable
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetDcHuffmanTable(
+            [In, ComAliasName("UINT")] uint scanIndex,
+            [In, ComAliasName("UINT")] uint tableIndex,
+            [Out] DXGI_JPEG_DC_HUFFMAN_TABLE* pDcHuffmanTable
+        )
+        {
+            fixed (IWICJpegFrameDecode* This = &this)
+            {
+                return MarshalFunction<_GetDcHuffmanTable>(lpVtbl->GetDcHuffmanTable)(
+                    This,
+                    scanIndex,
+                    tableIndex,
+                    pDcHuffmanTable
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetQuantizationTable(
+            [In, ComAliasName("UINT")] uint scanIndex,
+            [In, ComAliasName("UINT")] uint tableIndex,
+            [Out] DXGI_JPEG_QUANTIZATION_TABLE* pQuantizationTable
+        )
+        {
+            fixed (IWICJpegFrameDecode* This = &this)
+            {
+                return MarshalFunction<_GetQuantizationTable>(lpVtbl->GetQuantizationTable)(
+                    This,
+                    scanIndex,
+                    tableIndex,
+                    pQuantizationTable
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetFrameHeader(
+            [Out] WICJpegFrameHeader* pFrameHeader
+        )
+        {
+            fixed (IWICJpegFrameDecode* This = &this)
+            {
+                return MarshalFunction<_GetFrameHeader>(lpVtbl->GetFrameHeader)(
+                    This,
+                    pFrameHeader
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int GetScanHeader(
+            [In, ComAliasName("UINT")] uint scanIndex,
+            [Out] WICJpegScanHeader* pScanHeader
+        )
+        {
+            fixed (IWICJpegFrameDecode* This = &this)
+            {
+                return MarshalFunction<_GetScanHeader>(lpVtbl->GetScanHeader)(
+                    This,
+                    scanIndex,
+                    pScanHeader
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CopyScan(
+            [In, ComAliasName("UINT")] uint scanIndex,
+            [In, ComAliasName("UINT")] uint scanOffset,
+            [In, ComAliasName("UINT")] uint cbScanData,
+            [Out, ComAliasName("BYTE[]")] byte* pbScanData,
+            [Out, ComAliasName("UINT")] uint* pcbScanDataActual
+        )
+        {
+            fixed (IWICJpegFrameDecode* This = &this)
+            {
+                return MarshalFunction<_CopyScan>(lpVtbl->CopyScan)(
+                    This,
+                    scanIndex,
+                    scanOffset,
+                    cbScanData,
+                    pbScanData,
+                    pcbScanDataActual
+                );
+            }
+        }
+
+        [return: ComAliasName("HRESULT")]
+        public int CopyMinimalStream(
+            [In, ComAliasName("UINT")] uint streamOffset,
+            [In, ComAliasName("UINT")] uint cbStreamData,
+            [Out, ComAliasName("BYTE[]")] byte* pbStreamData,
+            [Out, ComAliasName("UINT")] uint* pcbStreamDataActual
+        )
+        {
+            fixed (IWICJpegFrameDecode* This = &this)
+            {
+                return MarshalFunction<_CopyMinimalStream>(lpVtbl->CopyMinimalStream)(
+                    This,
+                    streamOffset,
+                    cbStreamData,
+                    pbStreamData,
+                    pcbStreamDataActual
+                );
+            }
+        }
         #endregion
 
         #region Structs
@@ -173,3 +383,4 @@ namespace TerraFX.Interop
         #endregion
     }
 }
+
