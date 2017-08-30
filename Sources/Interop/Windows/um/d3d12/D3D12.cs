@@ -232,7 +232,7 @@ namespace TerraFX.Interop
 
         public const float D3D12_DEFAULT_BORDER_COLOR_COMPONENT = 0.0f;
 
-        public const uint D3D12_DEFAULT_DEPTH_BIAS = 0;
+        public const int D3D12_DEFAULT_DEPTH_BIAS = 0;
 
         public const float D3D12_DEFAULT_DEPTH_BIAS_CLAMP = 0.0f;
 
