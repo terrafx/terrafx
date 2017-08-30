@@ -58,12 +58,9 @@ namespace TerraFX.ApplicationModel
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Application" /> class.</summary>
         /// <param name="compositionAssemblies">The set of <see cref="Assembly" /> instances to search for type exports.</param>
-        /// <exception cref="InvalidOperationException">The <see cref="ApartmentState" /> for <see cref="Thread.CurrentThread" /> is not <see cref="ApartmentState.STA"/>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="compositionAssemblies" /> is <c>null</c>.</exception>
         public Application(IEnumerable<Assembly> compositionAssemblies)
         {
-            ThrowIfCurrentThreadIsNotSTA();
-
             _compositionHost = CreateCompositionHost(compositionAssemblies);
 
             var dispatchManager = _compositionHost.GetExport<IDispatchManager>();
@@ -160,18 +157,6 @@ namespace TerraFX.ApplicationModel
                 containerConfiguration = containerConfiguration.WithAssemblies(compositionAssemblies);
             }
             return containerConfiguration.CreateContainer();
-        }
-
-        /// <summary>Thows a <see cref="InvalidOperationException"/> if the <see cref="ApartmentState" /> for <see cref="Thread.CurrentThread" /> is not <see cref="ApartmentState.STA"/>.</summary>
-        /// <exception cref="InvalidOperationException">The <see cref="ApartmentState" /> for <see cref="Thread.CurrentThread" /> is not <see cref="ApartmentState.STA"/>.</exception>
-        internal static void ThrowIfCurrentThreadIsNotSTA()
-        {
-            var apartmentState = Thread.CurrentThread.GetApartmentState();
-
-            if (apartmentState != ApartmentState.STA)
-            {
-                ThrowInvalidOperationException(nameof(Thread.GetApartmentState), apartmentState);
-            }
         }
 
         /// <summary>Throws a <see cref="ObjectDisposedException" /> if the instance has already been disposed.</summary>

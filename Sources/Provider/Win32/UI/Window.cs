@@ -208,21 +208,6 @@ namespace TerraFX.Provider.Win32.UI
             return hWnd;
         }
 
-        /// <summary>Gets <see cref="Thread.CurrentThread" /> and validates that <see cref="Thread.GetApartmentState" /> is <see cref="ApartmentState.STA" />.</summary>
-        /// <returns><see cref="Thread.CurrentThread"/></returns>
-        /// <exception cref="InvalidOperationException">The <see cref="ApartmentState" /> for <see cref="Thread.CurrentThread" /> is not <see cref="ApartmentState.STA"/>.</exception>
-        internal static Thread GetParentThread()
-        {
-            var currentThread = Thread.CurrentThread;
-
-            if (currentThread.GetApartmentState() != ApartmentState.STA)
-            {
-                ThrowInvalidOperationException(nameof(Thread.GetApartmentState), currentThread.GetApartmentState());
-            }
-
-            return currentThread;
-        }
-
         /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of a native window.</summary>
         /// <param name="handle">A handle to the native window to get the bounds for.</param>
         /// <returns>A <see cref="Rectangle" /> that represents the bounds of <paramref name="handle" />.</returns>

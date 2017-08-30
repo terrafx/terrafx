@@ -20,28 +20,8 @@ namespace TerraFX.Samples
             new EnumerateGraphicsAdapters("Vulkan.EnumerateGraphicsAdapter", VulkanProvider),
         };
 
-        [STAThread]
         public static void Main(string[] args)
         {
-            if (Thread.CurrentThread.GetApartmentState() != ApartmentState.STA)
-            {
-                var staThread = new Thread(STAMain);
-                {
-                    staThread.SetApartmentState(ApartmentState.STA);
-                }
-                staThread.Start(args);
-                staThread.Join();
-            }
-            else
-            {
-                STAMain(args);
-            }
-        }
-
-        private static void STAMain(object obj)
-        {
-            var args = (string[])(obj);
-
             Environment.CurrentDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 
             if ((args.Length == 0) || args.Any((arg) => Matches(arg, "?", "h", "help")))
