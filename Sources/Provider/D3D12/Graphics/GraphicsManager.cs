@@ -53,7 +53,7 @@ namespace TerraFX.Provider.D3D12.Graphics
         /// <exception cref="ExternalException">The call to <see cref="IDXGIFactory1.EnumAdapters1(uint, IDXGIAdapter1**)" /> failed.</exception>
         /// <exception cref="ExternalException">The call to <see cref="IDXGIAdapter1.GetDesc1(DXGI_ADAPTER_DESC1*)" /> failed.</exception>
         [ImportingConstructor]
-        internal GraphicsManager()
+        public GraphicsManager()
         {
             fixed (IDXGIFactory3** factory = &_factory)
             {
@@ -119,6 +119,8 @@ namespace TerraFX.Provider.D3D12.Graphics
                     var graphicsAdapter = new GraphicsAdapter(graphicsManager, adapter);
                     graphicsAdapters.Add(graphicsAdapter);
                     adapter = null;
+
+                    index++;
                 }
             }
             finally

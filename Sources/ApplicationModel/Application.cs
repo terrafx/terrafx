@@ -64,9 +64,9 @@ namespace TerraFX.ApplicationModel
         {
             ThrowIfCurrentThreadIsNotSTA();
 
-            var compositionHost = CreateCompositionHost(compositionAssemblies);
-            var dispatchManager = _compositionHost.GetExport<IDispatchManager>();
+            _compositionHost = CreateCompositionHost(compositionAssemblies);
 
+            var dispatchManager = _compositionHost.GetExport<IDispatchManager>();
             _dispatcher = dispatchManager.DispatcherForCurrentThread;
 
             _graphicsManager = new Lazy<IGraphicsManager>(_compositionHost.GetExport<IGraphicsManager>, isThreadSafe: true);

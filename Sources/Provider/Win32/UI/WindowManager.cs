@@ -71,7 +71,7 @@ namespace TerraFX.Provider.Win32.UI
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="WindowManager" /> class.</summary>
         [ImportingConstructor]
-        internal WindowManager(
+        public WindowManager(
             [Import] Lazy<DispatchManager> dispatchManager
         )
         {

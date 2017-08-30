@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information. -->
+<Project>
+
+  <Import Project="$(MSBuildThisFileDirectory)..\..\Imports\TerraFX.Common.props" />
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <HasRuntimeOutput>true</HasRuntimeOutput>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <NoWarn>CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Properties\launchSettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Sources\ApplicationModel\TerraFX.ApplicationModel.csproj" />
+    <ProjectReference Include="..\..\Sources\Provider\D3D12\TerraFX.Provider.D3D12.csproj" />
+    <ProjectReference Include="..\..\Sources\Provider\libX11\TerraFX.Provider.libX11.csproj" />
+    <ProjectReference Include="..\..\Sources\Provider\Vulkan\TerraFX.Provider.Vulkan.csproj" />
+    <ProjectReference Include="..\..\Sources\Provider\Win32\TerraFX.Provider.Win32.csproj" />
+  </ItemGroup>
+  
+  <Import Project="$(MSBuildThisFileDirectory)..\..\Imports\TerraFX.Common.targets" />
+
+</Project>

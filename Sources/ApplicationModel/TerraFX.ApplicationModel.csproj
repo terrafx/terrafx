@@ -6,6 +6,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>TerraFX.ApplicationModel</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

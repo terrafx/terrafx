@@ -28,7 +28,7 @@ namespace TerraFX.Provider.libX11.Threading
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="DispatchManager" /> class.</summary>
         [ImportingConstructor]
-        internal DispatchManager()
+        public DispatchManager()
         {
             _display = CreateDisplay();
             _dispatchers = new ConcurrentDictionary<Thread, Dispatcher>();

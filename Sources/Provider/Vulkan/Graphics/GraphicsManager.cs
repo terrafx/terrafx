@@ -53,7 +53,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
         /// <exception cref="ExternalException">The call to <see cref="vkCreateInstance(VkInstanceCreateInfo*, VkAllocationCallbacks*, IntPtr*)" /> failed.</exception>
         /// <exception cref="ExternalException">The call to <see cref="vkEnumeratePhysicalDevices(IntPtr, uint*, IntPtr*)" /> failed.</exception>
         [ImportingConstructor]
-        internal GraphicsManager()
+        public GraphicsManager()
         {
             _instance = CreateVulkanInstance();
             _adapters = GetGraphicsAdapters(this, _instance);
