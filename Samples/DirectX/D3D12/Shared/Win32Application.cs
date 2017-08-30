@@ -7,6 +7,7 @@ using System;
 using System.Runtime.InteropServices;
 using TerraFX.Interop;
 using TerraFX.Interop.Desktop;
+using TerraFX.Utilities;
 using static TerraFX.Interop.User32;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Interop.Desktop.User32;
@@ -17,7 +18,7 @@ namespace TerraFX.Samples.DirectX.D3D12
     public static unsafe class Win32Application
     {
         #region Static Fields
-        private static readonly WNDPROC _wndProc = WindowProc;
+        private static readonly NativeDelegate<WNDPROC> _wndProc = new NativeDelegate<WNDPROC>(WindowProc);
 
         private static IntPtr _hwnd;
         #endregion
@@ -45,21 +46,17 @@ namespace TerraFX.Samples.DirectX.D3D12
                 var windowClass = new WNDCLASSEX {
                     cbSize = SizeOf<WNDCLASSEX>(),
                     style = CS_HREDRAW | CS_VREDRAW,
-                    lpfnWndProc = Marshal.GetFunctionPointerForDelegate(_wndProc),
+                    lpfnWndProc = _wndProc,
                     hInstance = hInstance,
                     hCursor = LoadCursor(IntPtr.Zero, (char*)(IDC_ARROW)),
                     lpszClassName = lpszClassName
                 };
-
                 RegisterClassEx(&windowClass);
 
                 var windowRect = new RECT {
-                    left = 0,
-                    top = 0,
                     right = unchecked((int)(pSample.Width)),
                     bottom = unchecked((int)(pSample.Height))
                 };
-
                 AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
 
                 // Create the window and store a handle to it.
@@ -120,10 +117,7 @@ namespace TerraFX.Samples.DirectX.D3D12
 
                 case WM_KEYDOWN:
                 {
-                    if (pSample != null)
-                    {
-                        pSample.OnKeyDown((byte)(wParam));
-                    }
+                    pSample?.OnKeyDown((byte)(wParam));
                     return 0;
                 }
 

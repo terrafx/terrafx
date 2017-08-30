@@ -41,9 +41,8 @@ namespace TerraFX.Samples.DirectX.D3D12
             _width = width;
             _height = height;
             _title = name;
-            _useWarpDevice = false;
             _assetsPath = GetAssetsPath();
-            _aspectRatio = ((float)(width)) / ((float)(height));
+            _aspectRatio = width / ((float)(height));
         }
         #endregion
 
@@ -90,10 +89,15 @@ namespace TerraFX.Samples.DirectX.D3D12
         public abstract void OnDestroy();
 
         // Samples override the event handlers to handle specific messages
-        public virtual void OnKeyDown(byte key) { }
+        public virtual void OnKeyDown(byte key)
+        {
+        }
 
-        public virtual void OnKeyUp(byte key) { }
+        public virtual void OnKeyUp(byte key)
+        {
+        }
 
+        // Helper function for parsing any supplied command line args.
         public void ParseCommandLineArgs(string[] args)
         {
             foreach (var arg in args)
@@ -108,7 +112,6 @@ namespace TerraFX.Samples.DirectX.D3D12
 
         protected virtual void Dispose(bool isDisposing)
         {
-
         }
 
         // Helper function for resolving the full path of assets
@@ -122,6 +125,7 @@ namespace TerraFX.Samples.DirectX.D3D12
         protected IDXGIAdapter* GetHardwareAdapter(IDXGIFactory4* pFactory)
         {
             IDXGIAdapter1* adapter;
+
             for (var adapterIndex = 0u; DXGI_ERROR_NOT_FOUND != pFactory->EnumAdapters1(adapterIndex, &adapter); ++adapterIndex)
             {
                 DXGI_ADAPTER_DESC1 desc;
@@ -146,6 +150,7 @@ namespace TerraFX.Samples.DirectX.D3D12
             return (IDXGIAdapter*)(adapter);
         }
 
+        // Helper function for setting the window's title text.
         protected void SetCustomWindowText(string text)
         {
             fixed (char* windowText = $"{_title}: {text}")

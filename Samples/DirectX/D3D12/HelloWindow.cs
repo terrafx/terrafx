@@ -54,9 +54,6 @@ namespace TerraFX.Samples.DirectX.D3D12
         public HelloWindow(uint width, uint height, string name)
             : base(width, height, name)
         {
-            _frameIndex = 0;
-            _rtvDescriptorSize = 0;
-            _pipelineState = null;
         }
         #endregion
 
@@ -80,8 +77,9 @@ namespace TerraFX.Samples.DirectX.D3D12
 
             // Execute the command list.
             var ppCommandLists = stackalloc ID3D12CommandList*[1];
-            ppCommandLists[0] = (ID3D12CommandList*)(_commandList);
-
+            {
+                ppCommandLists[0] = (ID3D12CommandList*)(_commandList);
+            }
             _commandQueue->ExecuteCommandLists(1, ppCommandLists);
 
             // Present the frame.
@@ -103,26 +101,27 @@ namespace TerraFX.Samples.DirectX.D3D12
         private void LoadPipeline()
         {
             Guid iid;
-            ID3D12Debug* debugController;
-            IDXGIFactory4* factory;
-            IDXGIAdapter* adapter;
-            ID3D12Device* device;
-            IDXGISwapChain1* swapChain;
-
-            var dxgiFactoryFlags = 0u;
+            ID3D12Debug* debugController = null;
+            IDXGIFactory4* factory = null;
+            IDXGIAdapter* adapter = null;
+            IDXGISwapChain1* swapChain = null;
 
             try
             {
+                var dxgiFactoryFlags = 0u;
+
 #if DEBUG
                 // Enable the debug layer (requires the Graphics Tools "optional feature").
                 // NOTE: Enabling the debug layer after device creation will invalidate the active device.
-                iid = IID_ID3D12Debug;
-                if (SUCCEEDED(D3D12GetDebugInterface(&iid, (void**)(&debugController))))
                 {
-                    debugController->EnableDebugLayer();
+                    iid = IID_ID3D12Debug;
+                    if (SUCCEEDED(D3D12GetDebugInterface(&iid, (void**)(&debugController))))
+                    {
+                        debugController->EnableDebugLayer();
 
-                    // Enable additional debug layers.
-                    dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
+                        // Enable additional debug layers.
+                        dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
+                    }
                 }
 #endif
 
@@ -139,9 +138,11 @@ namespace TerraFX.Samples.DirectX.D3D12
                     adapter = GetHardwareAdapter(factory);
                 }
 
-                iid = IID_ID3D12Device;
-                ThrowIfFailed(nameof(D3D12CreateDevice), D3D12CreateDevice((IUnknown*)(adapter), D3D_FEATURE_LEVEL_11_0, &iid, (void**)(&device)));
-                _device = device;
+                fixed (ID3D12Device** device = &_device)
+                {
+                    iid = IID_ID3D12Device;
+                    ThrowIfFailed(nameof(D3D12CreateDevice), D3D12CreateDevice((IUnknown*)(adapter), D3D_FEATURE_LEVEL_11_0, &iid, (void**)(device)));
+                }
 
                 // Describe and create the command queue.
                 var queueDesc = new D3D12_COMMAND_QUEUE_DESC {
@@ -149,11 +150,11 @@ namespace TerraFX.Samples.DirectX.D3D12
                     Type = D3D12_COMMAND_LIST_TYPE_DIRECT
                 };
 
-                iid = IID_ID3D12CommandQueue;
-                ID3D12CommandQueue* commandQueue;
-
-                ThrowIfFailed(nameof(ID3D12Device.CreateCommandQueue), _device->CreateCommandQueue(&queueDesc, &iid, (void**)(&commandQueue)));
-                _commandQueue = commandQueue;
+                fixed (ID3D12CommandQueue** commandQueue = &_commandQueue)
+                {
+                    iid = IID_ID3D12CommandQueue;
+                    ThrowIfFailed(nameof(ID3D12Device.CreateCommandQueue), _device->CreateCommandQueue(&queueDesc, &iid, (void**)(commandQueue)));
+                }
 
                 // Describe and create the swap chain.
                 var swapChainDesc = new DXGI_SWAP_CHAIN_DESC1 {
@@ -162,9 +163,11 @@ namespace TerraFX.Samples.DirectX.D3D12
                     Height = _height,
                     Format = DXGI_FORMAT_R8G8B8A8_UNORM,
                     BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT,
-                    SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD
+                    SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD,
+                    SampleDesc = new DXGI_SAMPLE_DESC {
+                        Count = 1
+                    }
                 };
-                swapChainDesc.SampleDesc.Count = 1;
 
                 ThrowIfFailed(nameof(IDXGIFactory4.CreateSwapChainForHwnd), factory->CreateSwapChainForHwnd(
                     (IUnknown*)(_commandQueue),         // Swap chain needs the queue so that it can force a flush on it.
@@ -178,13 +181,12 @@ namespace TerraFX.Samples.DirectX.D3D12
                 // This sample does not support fullscreen transitions.
                 ThrowIfFailed(nameof(IDXGIFactory4.MakeWindowAssociation), factory->MakeWindowAssociation(Win32Application.Hwnd, DXGI_MWA_NO_ALT_ENTER));
 
-                iid = IID_IDXGISwapChain3;
-                IDXGISwapChain3* pvObject;
-
-                ThrowIfFailed(nameof(IDXGISwapChain1.QueryInterface), swapChain->QueryInterface(&iid, (void**)(&pvObject)));
-                _swapChain = pvObject;
-
-                _frameIndex = _swapChain->GetCurrentBackBufferIndex();
+                fixed (IDXGISwapChain3** swapChain3 = &_swapChain)
+                {
+                    iid = IID_IDXGISwapChain3;
+                    ThrowIfFailed(nameof(IDXGISwapChain1.QueryInterface), swapChain->QueryInterface(&iid, (void**)(swapChain3)));
+                    _frameIndex = _swapChain->GetCurrentBackBufferIndex();
+                }
 
                 // Create descriptor heaps.
                 {
@@ -195,11 +197,12 @@ namespace TerraFX.Samples.DirectX.D3D12
                         Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE
                     };
 
-                    iid = IID_ID3D12DescriptorHeap;
-                    ID3D12DescriptorHeap* pvHeap;
+                    fixed (ID3D12DescriptorHeap** rtvHeap = &_rtvHeap)
+                    {
+                        iid = IID_ID3D12DescriptorHeap;
+                        ThrowIfFailed(nameof(ID3D12Device.CreateDescriptorHeap), _device->CreateDescriptorHeap(&rtvHeapDesc, &iid, (void**)(rtvHeap)));
+                    }
 
-                    ThrowIfFailed(nameof(ID3D12Device.CreateDescriptorHeap), _device->CreateDescriptorHeap(&rtvHeapDesc, &iid, (void**)(&pvHeap)));
-                    _rtvHeap = pvHeap;
                     _rtvDescriptorSize = _device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
                 }
 
@@ -208,29 +211,48 @@ namespace TerraFX.Samples.DirectX.D3D12
                     D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
                     _rtvHeap->GetCPUDescriptorHandleForHeapStart(&rtvHandle);
 
+                    // Create a RTV for each frame.
                     iid = IID_ID3D12Resource;
 
-                    // Create a RTV for each frame.
                     for (var n = 0u; n < FrameCount; n++)
                     {
-                        ID3D12Resource* pSurface;
-                        ThrowIfFailed(nameof(IDXGISwapChain3.GetBuffer), _swapChain->GetBuffer(n, &iid, (void**)(&pSurface)));
-                        _renderTargets[unchecked((int)(n))] = pSurface;
-
-                        _device->CreateRenderTargetView(_renderTargets[unchecked((int)(n))], null, rtvHandle);
-                        rtvHandle.ptr += _rtvDescriptorSize;
+                        ID3D12Resource* renderTarget;
+                        {
+                            ThrowIfFailed(nameof(IDXGISwapChain3.GetBuffer), _swapChain->GetBuffer(n, &iid, (void**)(&renderTarget)));
+                            _device->CreateRenderTargetView(renderTarget, null, rtvHandle);
+                            rtvHandle.ptr += _rtvDescriptorSize;
+                        }
+                        _renderTargets[unchecked((int)(n))] = renderTarget;
                     }
                 }
 
-                iid = IID_ID3D12CommandAllocator;
-                ID3D12CommandAllocator* pCommandAllocator;
-
-                ThrowIfFailed(nameof(ID3D12Device.CreateRenderTargetView), _device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, &iid, (void**)(&pCommandAllocator)));
-                _commandAllocator = pCommandAllocator;
+                fixed (ID3D12CommandAllocator** commandAllocator = &_commandAllocator)
+                {
+                    iid = IID_ID3D12CommandAllocator;
+                    ThrowIfFailed(nameof(ID3D12Device.CreateRenderTargetView), _device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, &iid, (void**)(commandAllocator)));
+                }
             }
             finally
             {
+                if (debugController != null)
+                {
+                    debugController->Release();
+                }
 
+                if (factory != null)
+                {
+                    factory->Release();
+                }
+
+                if (adapter != null)
+                {
+                    adapter->Release();
+                }
+
+                if (swapChain != null)
+                {
+                    swapChain->Release();
+                }
             }
         }
 
@@ -238,11 +260,11 @@ namespace TerraFX.Samples.DirectX.D3D12
         private void LoadAssets()
         {
             // Create the command list.
-            var iid = IID_ID3D12GraphicsCommandList;
-            ID3D12GraphicsCommandList* pCommandList;
-
-            ThrowIfFailed(nameof(ID3D12Device.CreateCommandList), _device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, _commandAllocator, null, &iid, (void**)(&pCommandList)));
-            _commandList = pCommandList;
+            fixed (ID3D12GraphicsCommandList** commandList = &_commandList)
+            {
+                var iid = IID_ID3D12GraphicsCommandList;
+                ThrowIfFailed(nameof(ID3D12Device.CreateCommandList), _device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, _commandAllocator, null, &iid, (void**)(commandList)));
+            }
 
             // Command lists are created in the recording state, but there is nothing
             // to record yet. The main loop expects it to be closed, so close it now.
@@ -250,13 +272,12 @@ namespace TerraFX.Samples.DirectX.D3D12
 
             // Create synchronization objects.
             {
-                iid = IID_ID3D12Fence;
-                ID3D12Fence* pFence;
-
-                ThrowIfFailed(nameof(ID3D12Device.CreateFence), _device->CreateFence(0, D3D12_FENCE_FLAG_NONE, &iid, (void**)(&pFence)));
-                _fence = pFence;
-
-                _fenceValue = 1;
+                fixed (ID3D12Fence** fence = &_fence)
+                {
+                    var iid = IID_ID3D12Fence;
+                    ThrowIfFailed(nameof(ID3D12Device.CreateFence), _device->CreateFence(0, D3D12_FENCE_FLAG_NONE, &iid, (void**)(fence)));
+                    _fenceValue = 1;
+                }
 
                 // Create an event handle to use for frame synchronization.
                 _fenceEvent = CreateEvent(null, FALSE, FALSE, null);
@@ -282,14 +303,14 @@ namespace TerraFX.Samples.DirectX.D3D12
             // Indicate that the back buffer will be used as a render target.
             var barrier = new D3D12_RESOURCE_BARRIER {
                 Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION,
-                Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE
+                Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE,
+                Transition = new D3D12_RESOURCE_TRANSITION_BARRIER {
+                    pResource = _renderTargets[unchecked((int)(_frameIndex))],
+                    StateBefore = D3D12_RESOURCE_STATE_PRESENT,
+                    StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET,
+                    Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES
+                }
             };
-
-            barrier.Transition.pResource = _renderTargets[unchecked((int)(_frameIndex))];
-            barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-            barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-            barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-
             _commandList->ResourceBarrier(1, &barrier);
 
             D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
@@ -298,20 +319,19 @@ namespace TerraFX.Samples.DirectX.D3D12
 
             // Record commands.
             var clearColor = stackalloc float[4];
-
-            clearColor[0] = 0.0f;
-            clearColor[1] = 0.2f;
-            clearColor[2] = 0.4f;
-            clearColor[3] = 1.0f;
-
+            {
+                clearColor[0] = 0.0f;
+                clearColor[1] = 0.2f;
+                clearColor[2] = 0.4f;
+                clearColor[3] = 1.0f;
+            }
             _commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, null);
 
             // Indicate that the back buffer will now be used to present.
-
-            barrier.Transition.pResource = _renderTargets[unchecked((int)(_frameIndex))];
-            barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-            barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-
+            {
+                barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+                barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+            }
             _commandList->ResourceBarrier(1, &barrier);
 
             ThrowIfFailed(nameof(ID3D12GraphicsCommandList.Close), _commandList->Close());
@@ -327,7 +347,6 @@ namespace TerraFX.Samples.DirectX.D3D12
             // Signal and increment the fence value.
             var fence = _fenceValue;
             ThrowIfFailed(nameof(ID3D12CommandQueue.Signal), _commandQueue->Signal(_fence, fence));
-
             _fenceValue++;
 
             // Wait until the previous frame is finished.
@@ -339,15 +358,97 @@ namespace TerraFX.Samples.DirectX.D3D12
 
             _frameIndex = _swapChain->GetCurrentBackBufferIndex();
         }
+
+        protected override void Dispose(bool isDisposing)
+        {
+            var swapChain = _swapChain;
+
+            if (swapChain != null)
+            {
+                _swapChain = null;
+                swapChain->Release();
+            }
+
+            var device = _device;
+
+            if (device != null)
+            {
+                _device = null;
+                device->Release();
+            }
+
+            for (var index = 0; index < FrameCount; index++)
+            {
+                var renderTarget = _renderTargets[index];
+
+                if (renderTarget != null)
+                {
+                    _renderTargets[index] = null;
+                    renderTarget->Release();
+                }
+            }
+
+            var commandAllocator = _commandAllocator;
+
+            if (commandAllocator != null)
+            {
+                _commandAllocator = null;
+                commandAllocator->Release();
+            }
+
+            var commandQueue = _commandQueue;
+
+            if (commandQueue != null)
+            {
+                _commandQueue = null;
+                commandQueue->Release();
+            }
+
+            var rtvHeap = _rtvHeap;
+
+            if (rtvHeap != null)
+            {
+                _rtvHeap = null;
+                rtvHeap->Release();
+            }
+
+            var pipelineState = _pipelineState;
+
+            if (pipelineState != null)
+            {
+                _pipelineState = null;
+                pipelineState->Release();
+            }
+
+            var commandList = _commandList;
+
+            if (commandList != null)
+            {
+                _commandList = null;
+                commandList->Release();
+            }
+
+            var fence = _fence;
+
+            if (fence != null)
+            {
+                _fence = null;
+                fence->Release();
+            }
+
+            base.Dispose(isDisposing);
+        }
         #endregion
 
         #region Structs
-        public /* blittable */ unsafe struct _renderTargets_e__FixedBuffer
+        private /* blittable */ unsafe struct _renderTargets_e__FixedBuffer
         {
             #region Fields
+#pragma warning disable CS0649
             public ID3D12Resource* e0;
 
             public ID3D12Resource* e1;
+#pragma warning restore CS0649
             #endregion
 
             #region Properties
