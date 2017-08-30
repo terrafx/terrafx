@@ -20,7 +20,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
     [Export(typeof(IGraphicsManager))]
     [Export(typeof(GraphicsManager))]
     [Shared]
-    unsafe public sealed class GraphicsManager : IDisposable, IGraphicsManager
+    public sealed unsafe class GraphicsManager : IDisposable, IGraphicsManager
     {
         #region State Constants
         /// <summary>Indicates the graphics manager is not disposing or disposed.</summary>
@@ -37,6 +37,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
         /// <summary>The Vulkan instance.</summary>
         internal IntPtr _instance;
 
+        /// <summary>The <see cref="GraphicsAdapter" /> instances available in the system.</summary>
         internal ImmutableArray<GraphicsAdapter> _adapters;
 
         /// <summary>The state for the instance.</summary>
@@ -50,6 +51,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="GraphicsManager" /> class.</summary>
         /// <exception cref="ExternalException">The call to <see cref="vkCreateInstance(VkInstanceCreateInfo*, VkAllocationCallbacks*, IntPtr*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkEnumeratePhysicalDevices(IntPtr, uint*, IntPtr*)" /> failed.</exception>
         [ImportingConstructor]
         internal GraphicsManager()
         {
@@ -94,6 +96,11 @@ namespace TerraFX.Provider.Vulkan.Graphics
             return instance;
         }
 
+        /// <summary>Gets the <see cref="GraphicsAdapter" /> instances available in the system.</summary>
+        /// <param name="graphicsManager">The <see cref="GraphicsManager" /> the adapters belong to.</param>
+        /// <param name="instance">The Vulkan instance used to enumerate the available adapters.</param>
+        /// <returns>The <see cref="GraphicsAdapter" /> instances available in the system.</returns>
+        /// <exception cref="ExternalException">The call to <see cref="vkEnumeratePhysicalDevices(IntPtr, uint*, IntPtr*)" /> failed.</exception>
         internal static ImmutableArray<GraphicsAdapter> GetGraphicsAdapters(GraphicsManager graphicsManager, IntPtr instance)
         {
             var physicalDeviceCount = 0u;
