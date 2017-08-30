@@ -11,7 +11,8 @@ namespace TerraFX.Samples.DirectX
     public static unsafe class Program
     {
         private static readonly DXSample[] Samples = {
-            new HelloWindow(1280, 720, "D3D12.HelloWindow")
+            new HelloWindow(1280, 720, "D3D12.HelloWindow"),
+            new HelloTriangle(1280, 720, "D3D12.HelloTriangle")
         };
 
         public static void Main(string[] args)
