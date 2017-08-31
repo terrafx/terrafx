@@ -1,7 +1,8 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Diagnostics;
+using TerraFX;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 #pragma warning disable IDE1006
@@ -10,6 +11,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEquatable<nint>, IFormattable
 {
     #region Fields
+    /// <summary>The value for the instance.</summary>
     internal readonly void* _value;
     #endregion
 
@@ -25,7 +27,7 @@ public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEqu
     /// <param name="value">The <see cref="long" /> used to initialize the instance.</param>
     public nint(long value)
     {
-        Debug.Assert(IntPtr.Size == sizeof(long));
+        AssertIntPtrSizeIsSameAsInt64();
         _value = (void*)(value);
     }
 
@@ -56,7 +58,7 @@ public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEqu
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(long));
+            AssertIntPtrSizeIsSameAsInt64();
             var result = -((long)(value._value));
             return (nint)(result);
         }
@@ -73,7 +75,7 @@ public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEqu
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(long));
+            AssertIntPtrSizeIsSameAsInt64();
             var result = ~((long)(value._value));
             return (nint)(result);
         }
@@ -90,7 +92,7 @@ public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEqu
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(long));
+            AssertIntPtrSizeIsSameAsInt64();
             var result = ((long)(value._value)) + 1;
             return (nint)(result);
         }
@@ -107,7 +109,7 @@ public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEqu
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(long));
+            AssertIntPtrSizeIsSameAsInt64();
             var result = ((long)(value._value)) - 1;
             return (nint)(result);
         }
@@ -127,7 +129,7 @@ public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEqu
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(long));
+            AssertIntPtrSizeIsSameAsInt64();
             var result = ((long)(left._value)) + ((long)(right._value));
             return (nint)(result);
         }
@@ -145,7 +147,7 @@ public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEqu
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(long));
+            AssertIntPtrSizeIsSameAsInt64();
             var result = ((long)(left._value)) - ((long)(right._value));
             return (nint)(result);
         }
@@ -163,7 +165,7 @@ public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEqu
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(long));
+            AssertIntPtrSizeIsSameAsInt64();
             var result = ((long)(left._value)) * ((long)(right._value));
             return (nint)(result);
         }
@@ -181,7 +183,7 @@ public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEqu
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(long));
+            AssertIntPtrSizeIsSameAsInt64();
             var result = ((long)(left._value)) / ((long)(right._value));
             return (nint)(result);
         }
@@ -199,7 +201,7 @@ public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEqu
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(long));
+            AssertIntPtrSizeIsSameAsInt64();
             var result = ((long)(left._value)) % ((long)(right._value));
             return (nint)(result);
         }
@@ -217,7 +219,7 @@ public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEqu
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(long));
+            AssertIntPtrSizeIsSameAsInt64();
             var result = ((long)(left._value)) & ((long)(right._value));
             return (nint)(result);
         }
@@ -235,7 +237,7 @@ public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEqu
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(long));
+            AssertIntPtrSizeIsSameAsInt64();
             var result = ((long)(left._value)) | ((long)(right._value));
             return (nint)(result);
         }
@@ -253,7 +255,7 @@ public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEqu
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(long));
+            AssertIntPtrSizeIsSameAsInt64();
             var result = ((long)(left._value)) ^ ((long)(right._value));
             return (nint)(result);
         }
@@ -271,7 +273,7 @@ public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEqu
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(long));
+            AssertIntPtrSizeIsSameAsInt64();
             var result = ((long)(value._value)) << bits;
             return (nint)(result);
         }
@@ -289,7 +291,7 @@ public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEqu
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(long));
+            AssertIntPtrSizeIsSameAsInt64();
             var result = ((long)(value._value)) >> bits;
             return (nint)(result);
         }
@@ -309,7 +311,7 @@ public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEqu
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(long));
+            AssertIntPtrSizeIsSameAsInt64();
             return ((long)(left._value)) == ((long)(right._value));
         }
     }
@@ -326,7 +328,7 @@ public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEqu
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(long));
+            AssertIntPtrSizeIsSameAsInt64();
             return ((long)(left._value)) != ((long)(right._value));
         }
     }
@@ -343,7 +345,7 @@ public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEqu
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(long));
+            AssertIntPtrSizeIsSameAsInt64();
             return ((long)(left._value)) < ((long)(right._value));
         }
     }
@@ -360,7 +362,7 @@ public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEqu
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(long));
+            AssertIntPtrSizeIsSameAsInt64();
             return ((long)(left._value)) > ((long)(right._value));
         }
     }
@@ -377,7 +379,7 @@ public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEqu
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(long));
+            AssertIntPtrSizeIsSameAsInt64();
             return ((long)(left._value)) <= ((long)(right._value));
         }
     }
@@ -394,7 +396,7 @@ public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEqu
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(long));
+            AssertIntPtrSizeIsSameAsInt64();
             return ((long)(left._value)) >= ((long)(right._value));
         }
     }
@@ -563,6 +565,14 @@ public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEqu
     }
     #endregion
 
+    #region Static Methods
+    /// <summary>Asserts that <see cref="IntPtr.Size" /> is <c>sizeof(long)</c>.</summary>
+    internal static void AssertIntPtrSizeIsSameAsInt64()
+    {
+        Assert(IntPtr.Size == sizeof(long), Resources.InvalidOperationExceptionMessage, nameof(IntPtr.Size), IntPtr.Size);
+    }
+    #endregion
+
     #region System.IComparable Methods
     /// <summary>Compares a <see cref="object" /> with the current instance to determine relative sort-order.</summary>
     /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
@@ -632,7 +642,7 @@ public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEqu
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(long));
+            AssertIntPtrSizeIsSameAsInt64();
             return ((long)(_value)).ToString(format, formatProvider);
         }
     }
@@ -658,7 +668,7 @@ public /* blittable */ unsafe struct nint : IComparable, IComparable<nint>, IEqu
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(long));
+            AssertIntPtrSizeIsSameAsInt64();
             return ((long)(_value)).GetHashCode();
         }
     }

@@ -1,7 +1,8 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Diagnostics;
+using TerraFX;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 #pragma warning disable IDE1006
@@ -10,6 +11,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 public /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IEquatable<nuint>, IFormattable
 {
     #region Fields
+    /// <summary>The value for the instance.</summary>
     internal readonly void* _value;
     #endregion
 
@@ -25,7 +27,7 @@ public /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IE
     /// <param name="value">The <see cref="ulong" /> used to initialize the instance.</param>
     public nuint(ulong value)
     {
-        Debug.Assert(IntPtr.Size == sizeof(ulong));
+        AssertUIntPtrSizeIsSameAsUInt64();
         _value = (void*)(value);
     }
 
@@ -56,7 +58,7 @@ public /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IE
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(ulong));
+            AssertUIntPtrSizeIsSameAsUInt64();
             var result = ~((ulong)(value._value));
             return (nuint)(result);
         }
@@ -73,7 +75,7 @@ public /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IE
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(ulong));
+            AssertUIntPtrSizeIsSameAsUInt64();
             var result = ((ulong)(value._value)) + 1;
             return (nuint)(result);
         }
@@ -90,7 +92,7 @@ public /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IE
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(ulong));
+            AssertUIntPtrSizeIsSameAsUInt64();
             var result = ((ulong)(value._value)) - 1;
             return (nuint)(result);
         }
@@ -110,7 +112,7 @@ public /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IE
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(ulong));
+            AssertUIntPtrSizeIsSameAsUInt64();
             var result = ((ulong)(left._value)) + ((ulong)(right._value));
             return (nuint)(result);
         }
@@ -128,7 +130,7 @@ public /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IE
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(ulong));
+            AssertUIntPtrSizeIsSameAsUInt64();
             var result = ((ulong)(left._value)) - ((ulong)(right._value));
             return (nuint)(result);
         }
@@ -146,7 +148,7 @@ public /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IE
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(ulong));
+            AssertUIntPtrSizeIsSameAsUInt64();
             var result = ((ulong)(left._value)) * ((ulong)(right._value));
             return (nuint)(result);
         }
@@ -164,7 +166,7 @@ public /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IE
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(ulong));
+            AssertUIntPtrSizeIsSameAsUInt64();
             var result = ((ulong)(left._value)) / ((ulong)(right._value));
             return (nuint)(result);
         }
@@ -182,7 +184,7 @@ public /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IE
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(ulong));
+            AssertUIntPtrSizeIsSameAsUInt64();
             var result = ((ulong)(left._value)) % ((ulong)(right._value));
             return (nuint)(result);
         }
@@ -200,7 +202,7 @@ public /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IE
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(ulong));
+            AssertUIntPtrSizeIsSameAsUInt64();
             var result = ((ulong)(left._value)) & ((ulong)(right._value));
             return (nuint)(result);
         }
@@ -218,7 +220,7 @@ public /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IE
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(ulong));
+            AssertUIntPtrSizeIsSameAsUInt64();
             var result = ((ulong)(left._value)) | ((ulong)(right._value));
             return (nuint)(result);
         }
@@ -236,7 +238,7 @@ public /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IE
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(ulong));
+            AssertUIntPtrSizeIsSameAsUInt64();
             var result = ((ulong)(left._value)) ^ ((ulong)(right._value));
             return (nuint)(result);
         }
@@ -254,7 +256,7 @@ public /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IE
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(ulong));
+            AssertUIntPtrSizeIsSameAsUInt64();
             var result = ((ulong)(value._value)) << bits;
             return (nuint)(result);
         }
@@ -272,7 +274,7 @@ public /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IE
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(ulong));
+            AssertUIntPtrSizeIsSameAsUInt64();
             var result = ((ulong)(value._value)) >> bits;
             return (nuint)(result);
         }
@@ -292,7 +294,7 @@ public /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IE
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(ulong));
+            AssertUIntPtrSizeIsSameAsUInt64();
             return ((ulong)(left._value)) == ((ulong)(right._value));
         }
     }
@@ -309,7 +311,7 @@ public /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IE
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(ulong));
+            AssertUIntPtrSizeIsSameAsUInt64();
             return ((ulong)(left._value)) != ((ulong)(right._value));
         }
     }
@@ -326,7 +328,7 @@ public /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IE
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(ulong));
+            AssertUIntPtrSizeIsSameAsUInt64();
             return ((ulong)(left._value)) < ((ulong)(right._value));
         }
     }
@@ -343,7 +345,7 @@ public /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IE
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(ulong));
+            AssertUIntPtrSizeIsSameAsUInt64();
             return ((ulong)(left._value)) > ((ulong)(right._value));
         }
     }
@@ -360,7 +362,7 @@ public /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IE
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(ulong));
+            AssertUIntPtrSizeIsSameAsUInt64();
             return ((ulong)(left._value)) <= ((ulong)(right._value));
         }
     }
@@ -377,7 +379,7 @@ public /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IE
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(ulong));
+            AssertUIntPtrSizeIsSameAsUInt64();
             return ((ulong)(left._value)) >= ((ulong)(right._value));
         }
     }
@@ -546,6 +548,14 @@ public /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IE
     }
     #endregion
 
+    #region Static Methods
+    /// <summary>Asserts that <see cref="UIntPtr.Size" /> is <c>sizeof(ulong)</c>.</summary>
+    internal static void AssertUIntPtrSizeIsSameAsUInt64()
+    {
+        Assert(UIntPtr.Size == sizeof(ulong), Resources.InvalidOperationExceptionMessage, nameof(UIntPtr.Size), UIntPtr.Size);
+    }
+    #endregion
+
     #region System.IComparable Methods
     /// <summary>Compares a <see cref="object" /> with the current instance to determine relative sort-order.</summary>
     /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
@@ -615,7 +625,7 @@ public /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IE
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(ulong));
+            AssertUIntPtrSizeIsSameAsUInt64();
             return ((ulong)(_value)).ToString(format, formatProvider);
         }
     }
@@ -641,7 +651,7 @@ public /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IE
         }
         else
         {
-            Debug.Assert(IntPtr.Size == sizeof(ulong));
+            AssertUIntPtrSizeIsSameAsUInt64();
             return ((ulong)(_value)).GetHashCode();
         }
     }

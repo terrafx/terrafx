@@ -81,7 +81,7 @@ namespace TerraFX.Provider.Win32.UI
             _dispatcher = (Dispatcher)(dispatchManager.DispatcherForCurrentThread);
             _properties = new PropertySet();
             _windowManager = windowManager;
-            _handle = CreateWindowHandle((char*)((IntPtr)(windowManager.ClassName)), (char*)((IntPtr)(windowManager.DefaultWindowTitle)), entryModuleHandle);
+            _handle = CreateWindowHandle(windowManager.ClassName, windowManager.DefaultWindowTitle, entryModuleHandle);
         }
         #endregion
 
@@ -183,22 +183,28 @@ namespace TerraFX.Provider.Win32.UI
         /// <param name="instanceHandle">A handle to the instance that the created native window will be associated with.</param>
         /// <returns>A HWND for the created native window.</returns>
         /// <exception cref="ExternalException">The call to <see cref="CreateWindowEx(uint, char*, char*, uint, int, int, int, int, IntPtr, IntPtr, IntPtr, void*)" /> failed.</exception>
-        internal static IntPtr CreateWindowHandle(char* className, char* windowTitle, IntPtr instanceHandle)
+        internal static IntPtr CreateWindowHandle(string className, string windowTitle, IntPtr instanceHandle)
         {
-            var hWnd = CreateWindowEx(
-                WS_EX_OVERLAPPEDWINDOW,
-                className,
-                windowTitle,
-                WS_OVERLAPPEDWINDOW,
-                X: CW_USEDEFAULT,
-                Y: CW_USEDEFAULT,
-                nWidth: CW_USEDEFAULT,
-                nHeight: CW_USEDEFAULT,
-                hWndParent: default,
-                hMenu: default,
-                hInstance: instanceHandle,
-                lpParam: null
-            );
+            IntPtr hWnd;
+
+            fixed (char* lpClassName = className)
+            fixed (char* lpWindowName = windowTitle)
+            {
+                hWnd = CreateWindowEx(
+                    WS_EX_OVERLAPPEDWINDOW,
+                    lpClassName,
+                    lpWindowName,
+                    WS_OVERLAPPEDWINDOW,
+                    X: CW_USEDEFAULT,
+                    Y: CW_USEDEFAULT,
+                    nWidth: CW_USEDEFAULT,
+                    nHeight: CW_USEDEFAULT,
+                    hWndParent: default,
+                    hMenu: default,
+                    hInstance: instanceHandle,
+                    lpParam: null
+                );
+            }
 
             if (hWnd == IntPtr.Zero)
             {

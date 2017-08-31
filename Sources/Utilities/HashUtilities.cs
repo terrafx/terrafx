@@ -1,8 +1,8 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.IntegerUtilities;
 
@@ -127,7 +127,7 @@ namespace TerraFX.Utilities
 
                     default:
                     {
-                        Debug.Assert((remainingByteCount == 0), string.Format(Resources.ArgumentExceptionForInvalidTypeMessage, nameof(remainingByteCount), remainingByteCount));
+                        Assert((remainingByteCount == 0), Resources.ArgumentExceptionForInvalidTypeMessage, nameof(remainingByteCount), remainingByteCount);
                         break;
                     }
                 }

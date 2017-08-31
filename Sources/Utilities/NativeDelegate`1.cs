@@ -1,7 +1,8 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Runtime.InteropServices;
+using System.Diagnostics.Contracts;
+using static System.Runtime.InteropServices.Marshal;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Utilities
@@ -11,12 +12,15 @@ namespace TerraFX.Utilities
     public struct NativeDelegate<TDelegate> where TDelegate : class
     {
         #region Fields
+        /// <summary>The native handle to <see cref="_value" />.</summary>
         internal readonly IntPtr _handle;
 
+        /// <summary>The managed delegate that was marshalled.</summary>
         internal readonly TDelegate _value;
         #endregion
 
         #region Static Constructors
+        /// <summary>Initializes the static members of the <see cref="NativeDelegate{TDelegate}" /> struct.</summary>
         static NativeDelegate()
         {
             // Validate `TDelegate is Delegate` in the static constructor so that
@@ -54,23 +58,10 @@ namespace TerraFX.Utilities
             {
                 ThrowArgumentOutOfRangeException(nameof(value), value);
             }
+            Contract.EndContractBlock();
 
             _value = value;
-            _handle = Marshal.GetFunctionPointerForDelegate(value);
-        }
-
-        /// <summary>Initializes a new instance of the <see cref="NativeDelegate{TDelegate}" /> struct.</summary>
-        /// <param name="handle">The handle represented by the instance.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="handle" /> is <see cref="IntPtr.Zero"/>.</exception>
-        public NativeDelegate(IntPtr handle)
-        {
-            if (handle == IntPtr.Zero)
-            {
-                ThrowArgumentNullException(nameof(handle));
-            }
-
-            _value = Marshal.GetDelegateForFunctionPointer<TDelegate>(handle);
-            _handle = handle;
+            _handle = GetFunctionPointerForDelegate(value);
         }
         #endregion
 

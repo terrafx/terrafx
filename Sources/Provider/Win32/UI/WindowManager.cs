@@ -51,11 +51,11 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>The <see cref="DispatchManager" /> for the instance.</summary>
         internal readonly Lazy<DispatchManager> _dispatchManager;
 
-        /// <summary>The <see cref="NativeStringUni" /> of the registered class for the instance.</summary>
-        internal readonly NativeStringUni _className;
+        /// <summary>The name of the registered class for the instance.</summary>
+        internal readonly string _className;
 
-        /// <summary>The <see cref="NativeStringUni" /> of the default window name for the instance.</summary>
-        internal readonly NativeStringUni _defaultWindowTitle;
+        /// <summary>The default window title for the instance.</summary>
+        internal readonly string _defaultWindowTitle;
 
         /// <summary>The ATOM of the registered class for the instance.</summary>
         internal ushort _classAtom;
@@ -76,9 +76,9 @@ namespace TerraFX.Provider.Win32.UI
         )
         {
             _dispatchManager = dispatchManager;
-            _className = new NativeStringUni($"TerraFX.Interop.Provider.Win32.UI.WindowManager.{(IntPtr)(EntryModuleHandle)}");
-            _defaultWindowTitle = new NativeStringUni("TerraFX Win32 Window");
-            _classAtom = CreateClassAtom((char*)((IntPtr)(_className)));
+            _className = $"TerraFX.Interop.Provider.Win32.UI.WindowManager.{EntryModuleHandle}";
+            _defaultWindowTitle = "TerraFX Win32 Window";
+            _classAtom = CreateClassAtom(_className);
         }
         #endregion
 
@@ -91,8 +91,8 @@ namespace TerraFX.Provider.Win32.UI
         #endregion
 
         #region Properties
-        /// <summary>Gets the <see cref="NativeStringUni" /> of the registered class for the instance.</summary>
-        public NativeStringUni ClassName
+        /// <summary>Gets the name of the registered class for the instance.</summary>
+        public string ClassName
         {
             get
             {
@@ -100,8 +100,8 @@ namespace TerraFX.Provider.Win32.UI
             }
         }
 
-        /// <summary>Gets the <see cref="NativeStringUni" /> of the default window name for the instance.</summary>
-        public NativeStringUni DefaultWindowTitle
+        /// <summary>Gets the default window title for the instance.</summary>
+        public string DefaultWindowTitle
         {
             get
             {
@@ -149,24 +149,29 @@ namespace TerraFX.Provider.Win32.UI
         /// <exception cref="ExternalException">The call to <see cref="GetClassInfoEx(IntPtr, char*, WNDCLASSEX*)" /> failed.</exception>
         /// <exception cref="ExternalException">The call to <see cref="RegisterClassEx(WNDCLASSEX*)" /> failed.</exception>
         /// <returns>A ATOM for the native window class that was created.</returns>
-        internal static ushort CreateClassAtom(char* className)
+        internal static ushort CreateClassAtom(string className)
         {
-            var wndClassEx = new WNDCLASSEX() {
-                cbSize = SizeOf<WNDCLASSEX>(),
-                style = (CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS),
-                lpfnWndProc = WindowProcedure,
-                cbClsExtra = 0,
-                cbWndExtra = 0,
-                hInstance = EntryModuleHandle,
-                hIcon = IntPtr.Zero,
-                hCursor = GetDesktopCursor(),
-                hbrBackground = (IntPtr)(COLOR_WINDOW + 1),
-                lpszMenuName = null,
-                lpszClassName = className,
-                hIconSm = IntPtr.Zero
-            };
+            ushort classAtom;
 
-            var classAtom = RegisterClassEx(&wndClassEx);
+            fixed (char* lpszClassName = className)
+            {
+                var wndClassEx = new WNDCLASSEX() {
+                    cbSize = SizeOf<WNDCLASSEX>(),
+                    style = (CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS),
+                    lpfnWndProc = WindowProcedure,
+                    cbClsExtra = 0,
+                    cbWndExtra = 0,
+                    hInstance = EntryModuleHandle,
+                    hIcon = IntPtr.Zero,
+                    hCursor = GetDesktopCursor(),
+                    hbrBackground = (IntPtr)(COLOR_WINDOW + 1),
+                    lpszMenuName = null,
+                    lpszClassName = lpszClassName,
+                    hIconSm = IntPtr.Zero
+                };
+
+                classAtom = RegisterClassEx(&wndClassEx);
+            }
 
             if (classAtom == 0)
             {
@@ -253,16 +258,10 @@ namespace TerraFX.Provider.Win32.UI
             if (previousState < Disposing) // (previousState != Disposing) && (previousState != Disposed)
             {
                 DisposeCreatedWindows(isDisposing);
-
-                _defaultWindowTitle.Dispose();
-                _className.Dispose();
-
                 DisposeClassAtom();
             }
 
             Debug.Assert(CreatedWindows.IsEmpty);
-            Debug.Assert(_className == IntPtr.Zero);
-            Debug.Assert(_defaultWindowTitle == IntPtr.Zero);
             Debug.Assert(_classAtom == 0);
 
             _state = Disposed;
