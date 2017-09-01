@@ -2,6 +2,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace TerraFX.Utilities
 {
@@ -85,61 +86,96 @@ namespace TerraFX.Utilities
             return new ObjectDisposedException(objectName, message);
         }
 
-        /// <summary>Throws a new instance of the <see cref="ArgumentException" /> class.</summary>
+        /// <summary>Throws an instance of the <see cref="ArgumentException" /> class.</summary>
         /// <param name="paramName">The name of the parameter that caused the exception.</param>
         /// <param name="paramType">The type of the parameter that caused the exception.</param>
+        /// <exception cref="ArgumentException"><paramref name="paramName" /> is an instance of <paramref name="paramType" />.</exception>
         public static void ThrowArgumentExceptionForInvalidType(string paramName, Type paramType)
         {
             throw NewArgumentExceptionForInvalidType(paramName, paramType);
         }
 
-        /// <summary>Throws a new instance of the <see cref="ArgumentNullException" /> class.</summary>
+        /// <summary>Throws an instance of the <see cref="ArgumentNullException" /> class.</summary>
         /// <param name="paramName">The name of the parameter that caused the exception.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="paramName" /> is <c>null</c>.</exception>
         public static void ThrowArgumentNullException(string paramName)
         {
             throw NewArgumentNullException(paramName);
         }
 
-        /// <summary>Throws a new instance of the <see cref="ArgumentOutOfRangeException" /> class.</summary>
+        /// <summary>Throws an instance of the <see cref="ArgumentOutOfRangeException" /> class.</summary>
         /// <param name="paramName">The name of the parameter that caused the exception.</param>
         /// <param name="value">The value of the parameter that caused the exception.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="paramName" /> has a value of <paramref name="value" />.</exception>
         public static void ThrowArgumentOutOfRangeException(string paramName, object value)
         {
             throw NewArgumentOutOfRangeException(paramName, value);
         }
 
-        /// <summary>Throws a new instance of the <see cref="ExternalException" /> class.</summary>
+        /// <summary>Throws an instance of the <see cref="ExternalException" /> class.</summary>
         /// <param name="methodName">The name of the method that caused the exception.</param>
         /// <param name="errorCode">The error code that caused the exception.</param>
+        /// <exception cref="ExternalException"><paramref name="methodName" /> failed with an exit code of <paramref name="errorCode" />.</exception>
         public static void ThrowExternalException(string methodName, int errorCode)
         {
             throw NewExternalException(methodName, errorCode);
         }
 
-        /// <summary>Throws a new instance of the <see cref="ExternalException" /> class.</summary>
+        /// <summary>Throws an instance of the <see cref="ExternalException" /> class.</summary>
         /// <param name="methodName">The name of the method that caused the exception.</param>
+        /// <exception cref="ExternalException"><paramref name="methodName" /> failed with an exit code of <see cref="Marshal.GetLastWin32Error()" />.</exception>
         public static void ThrowExternalExceptionForLastError(string methodName)
         {
             throw NewExternalExceptionForLastError(methodName);
         }
 
-        /// <summary>Throws a new instance of the <see cref="ExternalException" /> class.</summary>
+        /// <summary>Throws an instance of the <see cref="ExternalException" /> class.</summary>
         /// <param name="methodName">The name of the method that caused the exception.</param>
+        /// <exception cref="ExternalException"><paramref name="methodName" /> failed with an exit code of <see cref="Marshal.GetHRForLastWin32Error()" />.</exception>
         public static void ThrowExternalExceptionForLastHRESULT(string methodName)
         {
             throw NewExternalExceptionForLastHRESULT(methodName);
         }
 
-        /// <summary>Throws a new instance of the <see cref="InvalidOperationException" /> class.</summary>
+        /// <summary>Throws a <see cref="ArgumentNullException" /> if <paramref name="value" /> is <c>null</c>.</summary>
+        /// <typeparam name="T">The type of <paramref name="value" />.</typeparam>
+        /// <param name="paramName">The name of the parameter being checked.</param>
+        /// <param name="value">The value to be checked for <c>null</c>.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="value" /> is <c>null</c>.</exception>
+        public static void ThrowIfNull<T>(string paramName, T value)
+            where T : class
+        {
+            if (value is null)
+            {
+                ThrowArgumentNullException(paramName);
+            }
+        }
+
+        /// <summary>Throws a <see cref="InvalidOperationException" /> if <see cref="Thread.CurrentThread" /> is not <paramref name="thread" />.</summary>
+        /// <param name="thread">The <see cref="Thread" /> to check against <see cref="Thread.CurrentThread" />.</param>
+        /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <paramref name="thread" />.</exception>
+        public static void ThrowIfNotThread(Thread thread)
+        {
+            var currentThread = Thread.CurrentThread;
+
+            if (currentThread != thread)
+            {
+                ThrowInvalidOperationException(nameof(Thread.CurrentThread), currentThread);
+            }
+        }
+
+        /// <summary>Throws an instance of the <see cref="InvalidOperationException" /> class.</summary>
         /// <param name="paramName">The name of the parameter that caused the exception.</param>
         /// <param name="value">The value of the parameter that caused the exception.</param>
+        /// <exception cref="InvalidOperationException"><paramref name="paramName" /> has a value of <paramref name="value" />.</exception>
         public static void ThrowInvalidOperationException(string paramName, object value)
         {
             throw NewInvalidOperationException(paramName, value);
         }
 
-        /// <summary>Throws a new instance of the <see cref="ObjectDisposedException" /> class.</summary>
+        /// <summary>Throws an instance of the <see cref="ObjectDisposedException" /> class.</summary>
         /// <param name="objectName">The name of the object that caused the exception.</param>
+        /// <exception cref="ObjectDisposedException"><paramref name="objectName" /> is disposed.</exception>
         public static void ThrowObjectDisposedException(string objectName)
         {
             throw NewObjectDisposedException(objectName);

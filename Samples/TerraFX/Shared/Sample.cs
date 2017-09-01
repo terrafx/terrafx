@@ -17,23 +17,25 @@ namespace TerraFX.Samples
 
         #region Fields
         private string _name;
-        private List<Assembly> _compositionAssemblies;
+        private Assembly[] _compositionAssemblies;
         #endregion
 
         #region Constructors
-        protected Sample(string name, IEnumerable<Assembly> compositionAssemblies)
+        protected Sample(string name, Assembly[] compositionAssemblies)
         {
             _name = name;
-            _compositionAssemblies = new List<Assembly>(compositionAssemblies);
+            _compositionAssemblies = new Assembly[compositionAssemblies.Length + 1];
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                _compositionAssemblies.Add(Win32Provider);
+                compositionAssemblies[0] = Win32Provider;
             }
             else
             {
-                _compositionAssemblies.Add(libX11Provider);
+                compositionAssemblies[0] = libX11Provider;
             }
+
+            Array.Copy(compositionAssemblies, 0, _compositionAssemblies, 1, compositionAssemblies.Length);
         }
         #endregion
 
@@ -45,7 +47,7 @@ namespace TerraFX.Samples
         #endregion
 
         #region Properties
-        public IEnumerable<Assembly> CompositionAssemblies
+        public Assembly[] CompositionAssemblies
         {
             get
             {

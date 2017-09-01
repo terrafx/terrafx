@@ -14,6 +14,9 @@ namespace TerraFX.Utilities
         /// <summary>The object is uninitialized.</summary>
         public const int Uninitialized = 0;
 
+        /// <summary>The object is initialized to its default state.</summary>
+        public const int Initialized = 1;
+
         /// <summary>The object is being disposed.</summary>
         public const int Disposing = (Disposed - 1);
 
@@ -23,7 +26,7 @@ namespace TerraFX.Utilities
 
         #region Fields
         /// <summary>The value of the instance.</summary>
-        private volatile int _value;
+        internal volatile int _value;
         #endregion
 
         #region Operators
@@ -85,7 +88,7 @@ namespace TerraFX.Utilities
         /// <summary>Attempts to transition the object to a new state.</summary>
         /// <param name="from">The state to transition from.</param>
         /// <param name="to">The state to transition to.</param>
-        /// <returns>The state of the object before the attempted transition.</returns>
+        /// <returns>The state of the object prior to the attempted transition.</returns>
         public int TryTransition(int from, int to)
         {
             return CompareExchange(ref _value, to, from);

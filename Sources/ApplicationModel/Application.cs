@@ -1,16 +1,16 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Collections.Generic;
 using System.Composition.Hosting;
-using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 using TerraFX.Graphics;
 using TerraFX.Threading;
 using TerraFX.UI;
-using static System.Threading.Interlocked;
+using TerraFX.Utilities;
+using static TerraFX.Utilities.DisposeUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.State;
 
 namespace TerraFX.ApplicationModel
 {
@@ -18,28 +18,28 @@ namespace TerraFX.ApplicationModel
     public sealed class Application : IDisposable, IServiceProvider
     {
         #region State Constants
-        /// <summary>The event loop for the instance is stopped.</summary>
-        internal const int Stopped = 0;
+        /// <summary>The event loop is stopped.</summary>
+        internal const int Stopped = 1;
 
-        /// <summary>The event loop for the instance is running.</summary>
-        internal const int Running = 1;
+        /// <summary>The event loop is running.</summary>
+        internal const int Running = 2;
 
-        /// <summary>The event loop for the instance is exiting.</summary>
-        internal const int Exiting = 2;
-
-        /// <summary>The instance is being disposed.</summary>
-        internal const int Disposing = 3;
-
-        /// <summary>The instance has been disposed.</summary>
-        internal const int Disposed = 4;
+        /// <summary>The event loop is exiting.</summary>
+        internal const int Exiting = 3;
         #endregion
 
         #region Fields
-        /// <summary>The <see cref="CompositionHost" /> for the instance.</summary>
-        internal readonly CompositionHost _compositionHost;
+        /// <summary>The <see cref="Assembly" /> instances to search for type exports.</summary>
+        internal readonly Assembly[] _compositionAssemblies;
 
-        /// <summary>The <see cref="IDispatcher" /> for the <see cref="Thread" /> that was used to create the instance.</summary>
-        internal readonly IDispatcher _dispatcher;
+        /// <summary>The <see cref="Thread" /> that was used to create the instance.</summary>
+        internal readonly Thread _parentThread;
+
+        /// <summary>The <see cref="CompositionHost" /> for the instance.</summary>
+        internal readonly Lazy<CompositionHost> _compositionHost;
+
+        /// <summary>The <see cref="IDispatchManager" /> for the instance.</summary>
+        internal readonly Lazy<IDispatchManager> _dispatchManager;
 
         /// <summary>The <see cref="IGraphicsManager" /> for the instance.</summary>
         internal readonly Lazy<IGraphicsManager> _graphicsManager;
@@ -47,27 +47,27 @@ namespace TerraFX.ApplicationModel
         /// <summary>The <see cref="IWindowManager" /> for the instance.</summary>
         internal readonly Lazy<IWindowManager> _windowManager;
 
-        /// <summary>The state for the instance.</summary>
-        /// <remarks>
-        ///     <para>This field is <c>volatile</c> to ensure state changes update all threads simultaneously.</para>
-        ///     <para><c>volatile</c> does add a read/write barrier at every access, but the state transitions are believed to be infrequent enough for this to not be a problem.</para>
-        /// </remarks>
-        internal volatile int _state;
+        /// <summary>The <see cref="State" /> of the instance.</summary>
+        internal readonly State _state;
         #endregion
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Application" /> class.</summary>
-        /// <param name="compositionAssemblies">The set of <see cref="Assembly" /> instances to search for type exports.</param>
+        /// <param name="compositionAssemblies">The <see cref="Assembly" /> instances to search for type exports.</param>
         /// <exception cref="ArgumentNullException"><paramref name="compositionAssemblies" /> is <c>null</c>.</exception>
-        public Application(IEnumerable<Assembly> compositionAssemblies)
+        public Application(params Assembly[] compositionAssemblies)
         {
-            _compositionHost = CreateCompositionHost(compositionAssemblies);
+            ThrowIfNull(nameof(compositionAssemblies), compositionAssemblies);
 
-            var dispatchManager = _compositionHost.GetExport<IDispatchManager>();
-            _dispatcher = dispatchManager.DispatcherForCurrentThread;
+            _compositionAssemblies = compositionAssemblies;
+            _parentThread = Thread.CurrentThread;
 
-            _graphicsManager = new Lazy<IGraphicsManager>(_compositionHost.GetExport<IGraphicsManager>, isThreadSafe: true);
-            _windowManager = new Lazy<IWindowManager>(_compositionHost.GetExport<IWindowManager>, isThreadSafe: true);
+            _compositionHost = new Lazy<CompositionHost>(CreateCompositionHost, isThreadSafe: true);
+            _dispatchManager = new Lazy<IDispatchManager>(_compositionHost.Value.GetExport<IDispatchManager>, isThreadSafe: true);
+            _graphicsManager = new Lazy<IGraphicsManager>(_compositionHost.Value.GetExport<IGraphicsManager>, isThreadSafe: true);
+            _windowManager = new Lazy<IWindowManager>(_compositionHost.Value.GetExport<IWindowManager>, isThreadSafe: true);
+
+            _state.Transition(to: Stopped);
         }
         #endregion
 
@@ -85,21 +85,12 @@ namespace TerraFX.ApplicationModel
         #endregion
 
         #region Properties
-        /// <summary>Gets the <see cref="IDispatcher" /> for the <see cref="Thread" /> that was used to create the instance.</summary>
-        public IDispatcher Dispatcher
-        {
-            get
-            {
-                return _dispatcher;
-            }
-        }
-
         /// <summary>Gets the <see cref="IDispatchManager" /> for the instance.</summary>
         public IDispatchManager DispatchManager
         {
             get
             {
-                return _dispatcher.DispatchManager;
+                return _dispatchManager.Value;
             }
         }
 
@@ -126,7 +117,7 @@ namespace TerraFX.ApplicationModel
         {
             get
             {
-                return _dispatcher.ParentThread;
+                return _parentThread;
             }
         }
 
@@ -140,72 +131,18 @@ namespace TerraFX.ApplicationModel
         }
         #endregion
 
-        #region Static Methods
+        #region Methods
         /// <summary>Creates a new instance of the <see cref="CompositionHost" /> class.</summary>
-        /// <param name="compositionAssemblies">The set of <see cref="Assembly" /> instances to search for type exports.</param>
-        /// <returns>A new instance of the <see cref="CompositionHost" /> configured to use <paramref name="compositionAssemblies" />.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="compositionAssemblies" /> is <c>null</c>.</exception>
-        internal static CompositionHost CreateCompositionHost(IEnumerable<Assembly> compositionAssemblies)
+        /// <returns>A new instance of the <see cref="CompositionHost" /> configured to use <see cref="_compositionAssemblies" />.</returns>
+        internal CompositionHost CreateCompositionHost()
         {
-            if (compositionAssemblies is null)
-            {
-                ThrowArgumentNullException(nameof(compositionAssemblies));
-            }
+            _state.ThrowIfDisposed();
 
             var containerConfiguration = new ContainerConfiguration();
             {
-                containerConfiguration = containerConfiguration.WithAssemblies(compositionAssemblies);
+                containerConfiguration = containerConfiguration.WithAssemblies(_compositionAssemblies);
             }
             return containerConfiguration.CreateContainer();
-        }
-
-        /// <summary>Throws a <see cref="ObjectDisposedException" /> if the instance has already been disposed.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        internal static void ThrowIfDisposed(int state)
-        {
-            if (state >= Disposing) // (_state == Disposing) || (_state == Disposed)
-            {
-                ThrowObjectDisposedException(nameof(Application));
-            }
-        }
-        #endregion
-
-        #region Methods
-        /// <summary>Requests that the instance exits the event loop.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        /// <remarks>
-        ///     <para>This method does nothing if <see cref="IsRunning" /> is <c>false</c>.</para>
-        ///     <para>This method can be called from any thread.</para>
-        /// </remarks>
-        public void RequestExit()
-        {
-            var previousState = CompareExchange(ref _state, Exiting, Running); // if (_state == Running) { _state = ExitRequested; }
-            ThrowIfDisposed(previousState);
-        }
-
-        /// <summary>Runs the event loop for the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</exception>
-        /// <remarks>This method does nothing if an exit is requested before the first iteration of the event loop has started.</remarks>
-        public void Run()
-        {
-            var previousState = CompareExchange(ref _state, Running, Stopped); // if (_state == Stopped) { _state = Running; }
-
-            ThrowIfDisposed(previousState);
-            ThrowIfNotParentThread();
-
-            RunEventLoop();
-
-            CompareExchange(ref _state, Stopped, Exiting); // if (_state == ExitRequested) { _state = Stopped; }
-        }
-
-        /// <summary>Gets the service object of the specified type.</summary>
-        /// <typeparam name="TService">The type of the service object to get.</typeparam>
-        /// <returns>A service object of <typeparamref name="TService" /> if one exists; otherwise, <c>default</c>.</returns>
-        public TService GetService<TService>()
-        {
-            _compositionHost.TryGetExport<TService>(out var service);
-            return service;
         }
 
         /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
@@ -213,17 +150,23 @@ namespace TerraFX.ApplicationModel
         /// <remarks>This method exits the event loop for the instance if it is running.</remarks>
         internal void Dispose(bool isDisposing)
         {
-            var previousState = Exchange(ref _state, Disposing);
+            var priorState = _state.BeginDispose();
 
-            if (previousState < Disposing) // (previousState != Disposing) && (previousState != Disposed)
+            if (priorState < Disposing) // (previousState != Disposing) && (previousState != Disposed)
             {
-                if (isDisposing)
-                {
-                    _compositionHost?.Dispose();
-                }
+                DisposeIfValueCreated(isDisposing, _compositionHost);
             }
 
-            _state = Disposed;
+            _state.EndDispose();
+        }
+
+        /// <summary>Gets the service object of the specified type.</summary>
+        /// <typeparam name="TService">The type of the service object to get.</typeparam>
+        /// <returns>A service object of <typeparamref name="TService" /> if one exists; otherwise, <c>default</c>.</returns>
+        public TService GetService<TService>()
+        {
+            _compositionHost.Value.TryGetExport<TService>(out var service);
+            return service;
         }
 
         /// <summary>Raises the <see cref="Idle" /> event.</summary>
@@ -240,38 +183,46 @@ namespace TerraFX.ApplicationModel
             }
         }
 
-        /// <summary>Runs the event loop for the instance.</summary>
-        internal void RunEventLoop()
+        /// <summary>Requests that the instance exits the event loop.</summary>
+        /// <remarks>
+        ///     <para>This method does nothing if <see cref="IsRunning" /> is <c>false</c>.</para>
+        ///     <para>This method can be called from any thread.</para>
+        /// </remarks>
+        public void RequestExit()
         {
-            var dispatcher = _dispatcher;
-            Debug.Assert(Thread.CurrentThread == dispatcher.ParentThread);
-
-            var dispatchManager = dispatcher.DispatchManager;
-            var previousTimestamp = dispatchManager.CurrentTimestamp;
-
-            while (_state == Running)
-            {
-                dispatcher.DispatchPending();
-
-                var currentTimestamp = dispatchManager.CurrentTimestamp;
-                {
-                    var delta = currentTimestamp - previousTimestamp;
-                    OnIdle(delta);
-                }
-                previousTimestamp = currentTimestamp;
-            }
+            _state.TryTransition(from: Running, to: Exiting);
         }
 
-        /// <summary>Throws a <see cref="InvalidOperationException" /> if <see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</summary>
+        /// <summary>Runs the event loop for the instance.</summary>
         /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</exception>
-        internal void ThrowIfNotParentThread()
+        /// <exception cref="InvalidOperationException">The state of the object is not <see cref="Stopped" />.</exception>
+        /// <remarks>This method does nothing if an exit is requested before the first iteration of the event loop has started.</remarks>
+        public void Run()
         {
-            var currentThread = Thread.CurrentThread;
+            ThrowIfNotThread(_parentThread);
 
-            if (currentThread != _dispatcher.ParentThread)
+            // We enforce the starting transition to be Stopped, which also covers attempting to run a disposed object.
+            // However, we do not enforce the ending transition to also be Stopped, as we may have stopped due to disposal.
+
+            _state.Transition(from: Stopped, to: Running);
             {
-                ThrowInvalidOperationException(nameof(Thread.CurrentThread), currentThread);
+                var dispatchManager = _dispatchManager.Value;
+                var dispatcher = dispatchManager.DispatcherForCurrentThread;
+                var previousTimestamp = dispatchManager.CurrentTimestamp;
+
+                while (_state == Running)
+                {
+                    dispatcher.DispatchPending();
+
+                    var currentTimestamp = dispatchManager.CurrentTimestamp;
+                    {
+                        var delta = currentTimestamp - previousTimestamp;
+                        OnIdle(delta);
+                    }
+                    previousTimestamp = currentTimestamp;
+                }
             }
+            _state.TryTransition(from: Exiting, to: Stopped);
         }
         #endregion
 
@@ -290,7 +241,7 @@ namespace TerraFX.ApplicationModel
         /// <returns>A service object of <paramref name="serviceType" /> if one exists; otherwise, <c>null</c>.</returns>
         public object GetService(Type serviceType)
         {
-            _compositionHost.TryGetExport(serviceType, out var service);
+            _compositionHost.Value.TryGetExport(serviceType, out var service);
             return service;
         }
         #endregion
