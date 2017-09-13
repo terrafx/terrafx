@@ -1,15 +1,23 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26823.1
+VisualStudioVersion = 15.0.26906.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2F337CB6-0B9E-4765-A277-487E429DE9F1}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
-		License.md = License.md
+		CHANGELOG.md = CHANGELOG.md
+		CODE_OF_CONDUCT.md = CODE_OF_CONDUCT.md
+		CODEOWNERS = CODEOWNERS
+		CONTRIBUTING.md = CONTRIBUTING.md
+		FAQ.md = FAQ.md
+		ISSUE_TEMPLATE.md = ISSUE_TEMPLATE.md
+		LICENSE.md = LICENSE.md
 		NuGet.config = NuGet.config
-		ReadMe.md = ReadMe.md
+		PULL_REQUEST_TEMPLATE.md = PULL_REQUEST_TEMPLATE.md
+		README.md = README.md
+		SUPPORT.md = SUPPORT.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Imports", "Imports", "{4FCA2F8C-0299-455F-973F-84970BD71193}"
