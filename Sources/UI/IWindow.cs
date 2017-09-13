@@ -2,7 +2,7 @@
 
 using System;
 using TerraFX.Collections;
-using TerraFX.Threading;
+using System.Threading;
 
 namespace TerraFX.UI
 {
@@ -12,9 +12,6 @@ namespace TerraFX.UI
         #region Properties
         /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
         Rectangle Bounds { get; }
-
-        /// <summary>Gets the <see cref="IDispatcher" /> for the instance.</summary>
-        IDispatcher Dispatcher { get; }
 
         /// <summary>Gets <see cref="FlowDirection" /> for the instance.</summary>
         FlowDirection FlowDirection { get; }
@@ -28,11 +25,17 @@ namespace TerraFX.UI
         /// <summary>Gets a value that indicates whether the instance is visible.</summary>
         bool IsVisible { get; }
 
+        /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
+        Thread ParentThread { get; }
+
         /// <summary>Gets the <see cref="IPropertySet" /> for the instance.</summary>
         IPropertySet Properties { get; }
 
         /// <summary>Gets the <see cref="ReadingDirection" /> for the instance.</summary>
         ReadingDirection ReadingDirection { get; }
+
+        /// <summary>Gets the title for the instance.</summary>
+        string Title { get; }
 
         /// <summary>Gets the <see cref="IWindowManager" /> for the instance.</summary>
         IWindowManager WindowManager { get; }

@@ -3,13 +3,15 @@
 using System;
 using System.Collections.Concurrent;
 using System.Composition;
-using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.Interop;
 using TerraFX.Threading;
+using TerraFX.Utilities;
 using static TerraFX.Interop.libc;
 using static TerraFX.Interop.libX11;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.State;
 
 namespace TerraFX.Provider.libX11.Threading
 {
@@ -20,18 +22,25 @@ namespace TerraFX.Provider.libX11.Threading
     public sealed unsafe class DispatchManager : IDisposable, IDispatchManager
     {
         #region Fields
-        internal IntPtr _display;
+        /// <summary>The <c>Display</c> that was created for the instance.</summary>
+        internal readonly Lazy<IntPtr> _display;
 
-        internal readonly ConcurrentDictionary<Thread, Dispatcher> _dispatchers;
+        /// <summary>The <see cref="IDispatcher" /> instances that have been created by the instance.</summary>
+        internal readonly ConcurrentDictionary<Thread, IDispatcher> _dispatchers;
+
+        /// <summary>The <see cref="State" /> of the instance.</summary>
+        internal readonly State _state;
         #endregion
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="DispatchManager" /> class.</summary>
+        /// <exception cref="ExternalException">The call to <see cref="XOpenDisplay(byte*)" /> failed.</exception>
         [ImportingConstructor]
         public DispatchManager()
         {
-            _display = CreateDisplay();
-            _dispatchers = new ConcurrentDictionary<Thread, Dispatcher>();
+            _display = new Lazy<IntPtr>(CreateDisplay, isThreadSafe: true);
+            _dispatchers = new ConcurrentDictionary<Thread, IDispatcher>();
+            _state.Transition(to: Initialized);
         }
         #endregion
 
@@ -44,12 +53,12 @@ namespace TerraFX.Provider.libX11.Threading
         #endregion
 
         #region Properties
-        /// <summary>Gets a pointer to the <see cref="Display" /> instance.</summary>
+        /// <summary>Gets the <c>Display</c> that was created for the instance.</summary>
         public IntPtr Display
         {
             get
             {
-                return _display;
+                return _display.Value;
             }
         }
         #endregion
@@ -65,7 +74,6 @@ namespace TerraFX.Provider.libX11.Threading
 
                 if (result != 0)
                 {
-                    Debug.Assert(result == -1);
                     ThrowExternalExceptionForLastError(nameof(clock_gettime));
                 }
 
@@ -88,12 +96,15 @@ namespace TerraFX.Provider.libX11.Threading
         {
             get
             {
-                return _dispatchers.GetOrAdd(Thread.CurrentThread, (thread) => new Dispatcher(this, thread));
+                return GetDispatcher(Thread.CurrentThread);
             }
         }
         #endregion
 
         #region Static Methods
+        /// <summary>Creates a <see cref="Display" />.</summary>
+        /// <returns>The created <see cref="Display" />.</returns>
+        /// <exception cref="ExternalException">The call to <see cref="XOpenDisplay(byte*)" /> failed.</exception>
         internal static IntPtr CreateDisplay()
         {
             var display = XOpenDisplay(display_name: null);
@@ -108,12 +119,26 @@ namespace TerraFX.Provider.libX11.Threading
         #endregion
 
         #region Methods
+        /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
+        /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
         internal void Dispose(bool isDisposing)
         {
-            if (_display != IntPtr.Zero)
+            var priorState = _state.BeginDispose();
+
+            if (priorState < Disposing) // (previousState != Disposing) && (previousState != Disposed)
             {
-                XCloseDisplay(_display);
-                _display = IntPtr.Zero;
+                DisposeDisplay();
+            }
+
+            _state.EndDispose();
+        }
+
+        /// <summary>Disposes of the <c>Display</c> that was created for the instance.</summary>
+        internal void DisposeDisplay()
+        {
+            if (_display.IsValueCreated)
+            {
+                XCloseDisplay(_display.Value);
             }
         }
         #endregion
@@ -128,19 +153,34 @@ namespace TerraFX.Provider.libX11.Threading
         #endregion
 
         #region TerraFX.Threading.IDispatchManager Methods
-        /// <summary>Gets the <see cref="IDispatcher" /> instance associated with a <see cref="Thread" />.</summary>
+        /// <summary>Gets the <see cref="IDispatcher" /> instance associated with a <see cref="Thread" />, creating one if it does not exist.</summary>
         /// <param name="thread">The <see cref="Thread" /> for which the <see cref="IDispatcher" /> instance should be retrieved.</param>
-        /// <returns>The <see cref="IDispatcher" /> instance associated with <paramref name="thread" /> or <c>null</c> if an instance does not exist.</returns>
+        /// <returns>The <see cref="IDispatcher" /> instance associated with <paramref name="thread" />.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="thread" /> is <c>null</c>.</exception>
-        public IDispatcher GetDispatcherForThread(Thread thread)
+        /// <exception cref="ArgumentOutOfRangeException">A <see cref="IDispatcher" /> instance for <paramref name="thread" /> could not be found.</exception>
+        public IDispatcher GetDispatcher(Thread thread)
         {
             if (thread is null)
             {
                 ThrowArgumentNullException(nameof(thread));
             }
 
-            _dispatchers.TryGetValue(thread, out var dispatcher);
-            return dispatcher;
+            return _dispatchers.GetOrAdd(thread, (parentThread) => new Dispatcher(this, parentThread));
+        }
+
+        /// <summary>Gets the <see cref="IDispatcher" /> instance associated with a <see cref="Thread" /> or <c>null</c> if one does not exist.</summary>
+        /// <param name="thread">The <see cref="Thread" /> for which the <see cref="IDispatcher" /> instance should be retrieved.</param>
+        /// <param name="dispatcher">The <see cref="IDispatcher" /> instance associated with <paramref name="thread" />.</param>
+        /// <returns><c>true</c> if a <see cref="IDispatcher" /> instance was found for <paramref name="thread" />; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="thread" /> is <c>null</c>.</exception>
+        public bool TryGetDispatcher(Thread thread, out IDispatcher dispatcher)
+        {
+            if (thread is null)
+            {
+                ThrowArgumentNullException(nameof(thread));
+            }
+
+            return _dispatchers.TryGetValue(thread, out dispatcher);
         }
         #endregion
     }

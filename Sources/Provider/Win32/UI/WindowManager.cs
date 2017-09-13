@@ -2,20 +2,20 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Composition;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using TerraFX.Interop.Desktop;
 using TerraFX.Provider.Win32.Threading;
 using TerraFX.UI;
 using TerraFX.Utilities;
-using static System.Threading.Interlocked;
 using static TerraFX.Interop.Kernel32;
 using static TerraFX.Interop.User32;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Interop.Desktop.User32;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.InteropUtilities;
+using static TerraFX.Utilities.State;
 
 namespace TerraFX.Provider.Win32.UI
 {
@@ -25,47 +25,26 @@ namespace TerraFX.Provider.Win32.UI
     [Shared]
     public sealed unsafe class WindowManager : IDisposable, IWindowManager
     {
-        #region State Constants
-        /// <summary>Indicates the window manager is not disposing or disposed..</summary>
-        internal const int NotDisposingOrDisposed = 0;
-
-        /// <summary>Indicates the window manager is being disposed.</summary>
-        internal const int Disposing = 1;
-
-        /// <summary>Indicates the window manager has been disposed.</summary>
-        internal const int Disposed = 2;
-        #endregion
-
         #region Static Fields
-        /// <summary>The <see cref="Window" /> instances that have been created.</summary>
-        internal static readonly ConcurrentDictionary<IntPtr, Window> CreatedWindows = new ConcurrentDictionary<IntPtr, Window>();
-
-        /// <summary>The HINSTANCE for the entry-point module.</summary>
-        internal static readonly IntPtr EntryModuleHandle = GetModuleHandle(); 
+        /// <summary>A <c>HMODULE</c> to the entry point module.</summary>
+        internal static readonly IntPtr EntryPointModule = GetModuleHandle();
 
         /// <summary>The <see cref="NativeDelegate{TDelegate}" /> for the <see cref="WNDPROC" /> method.</summary>
-        internal static readonly NativeDelegate<WNDPROC> WindowProcedure = new NativeDelegate<WNDPROC>(ProcessWindowMessage);
+        internal static readonly NativeDelegate<WNDPROC> ForwardWndProc = new NativeDelegate<WNDPROC>(ForwardWindowMessage);
         #endregion
 
         #region Fields
+        /// <summary>The <c>ATOM</c> of the <see cref="WNDCLASSEX" /> registered for the instance.</summary>
+        internal readonly Lazy<ushort> _classAtom;
+
         /// <summary>The <see cref="DispatchManager" /> for the instance.</summary>
         internal readonly Lazy<DispatchManager> _dispatchManager;
 
-        /// <summary>The name of the registered class for the instance.</summary>
-        internal readonly string _className;
+        /// <summary>A map of <c>HWND</c> to <see cref="Window" /> objects created for the instance.</summary>
+        internal readonly ConcurrentDictionary<IntPtr, Window> _windows;
 
-        /// <summary>The default window title for the instance.</summary>
-        internal readonly string _defaultWindowTitle;
-
-        /// <summary>The ATOM of the registered class for the instance.</summary>
-        internal ushort _classAtom;
-
-        /// <summary>The state for the instance.</summary>
-        /// <remarks>
-        ///     <para>This field is <c>volatile</c> to ensure state changes update all threads simultaneously.</para>
-        ///     <para><c>volatile</c> does add a read/write barrier at every access, but the state transitions are believed to be infrequent enough for this to not be a problem.</para>
-        /// </remarks>
-        internal volatile int _state;
+        /// <summary>The <see cref="State" /> of the instance.</summary>
+        internal readonly State _state;
         #endregion
 
         #region Constructors
@@ -75,10 +54,11 @@ namespace TerraFX.Provider.Win32.UI
             [Import] Lazy<DispatchManager> dispatchManager
         )
         {
+            _classAtom = new Lazy<ushort>(CreateClassAtom, isThreadSafe: true);
             _dispatchManager = dispatchManager;
-            _className = $"TerraFX.Interop.Provider.Win32.UI.WindowManager.{EntryModuleHandle}";
-            _defaultWindowTitle = "TerraFX Win32 Window";
-            _classAtom = CreateClassAtom(_className);
+
+            _windows = new ConcurrentDictionary<IntPtr, Window>();
+            _state.Transition(to: Initialized);
         }
         #endregion
 
@@ -91,21 +71,12 @@ namespace TerraFX.Provider.Win32.UI
         #endregion
 
         #region Properties
-        /// <summary>Gets the name of the registered class for the instance.</summary>
-        public string ClassName
+        /// <summary>Gets the <c>ATOM</c> of the <see cref="WNDCLASSEX" /> registered for the instance.</summary>
+        public ushort ClassAtom
         {
             get
             {
-                return _className;
-            }
-        }
-
-        /// <summary>Gets the default window title for the instance.</summary>
-        public string DefaultWindowTitle
-        {
-            get
-            {
-                return _defaultWindowTitle;
+                return _classAtom.Value;
             }
         }
 
@@ -119,77 +90,81 @@ namespace TerraFX.Provider.Win32.UI
         }
         #endregion
 
-        #region Static Methods
-        /// <summary>Disposes of all <see cref="Window" /> instances that have been created.</summary>
-        /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
-        /// <exception cref="ExternalException">The call to <see cref="DestroyWindow(IntPtr)" /> failed.</exception>
-        internal static void DisposeCreatedWindows(bool isDisposing)
+        #region TerraFX.UI.IWindowManager Properties
+        /// <summary>Gets the <see cref="IWindow" /> objects created by the instance.</summary>
+        public IEnumerable<IWindow> Windows
         {
-            if (isDisposing)
+            get
             {
-                foreach (var createdWindowHandle in CreatedWindows.Keys)
-                {
-                    if (CreatedWindows.TryRemove(createdWindowHandle, out var createdWindow))
-                    {
-                        createdWindow.Dispose();
-                    }
-                }
+                return (IEnumerable<IWindow>)(_windows);
+            }
+        }
+        #endregion
+
+        #region Static Methods
+        /// <summary>Forwards native window messages to the appropriate <see cref="Window" /> instance for processing.</summary>
+        /// <param name="hWnd">The <c>HWND</c> of the <see cref="Window" /> the message should be forwarded to.</param>
+        /// <param name="Msg">The message to be processed.</param>
+        /// <param name="wParam">The first parameter of the message to be processed.</param>
+        /// <param name="lParam">The second parameter of the message to be processed.</param>
+        /// <returns>A value that varies based on the exact message that was processed.</returns>
+        internal static nint ForwardWindowMessage(IntPtr hWnd, uint Msg, nuint wParam, nint lParam)
+        {
+            nint result, userData;
+
+            if (Msg == WM_CREATE)
+            {
+                // We allow the WM_CREATE message to be forwarded to the Window instance
+                // for hWnd. This allows some delayed initialization to occur since most
+                // of the fields in Window are lazy.
+
+                var pCreateStruct = (CREATESTRUCT*)(lParam);
+                userData = (nint)(pCreateStruct->lpCreateParams);
+                SetWindowLongPtr(hWnd, GWLP_USERDATA, userData);
             }
             else
             {
-                CreatedWindows.Clear();
+                    userData = GetWindowLongPtr(hWnd, GWLP_USERDATA);
             }
 
-            Debug.Assert(CreatedWindows.IsEmpty);
+            // We are assuming that userData will definitely be set here and that it will be set
+            // to a GCHandle for a WindowManager instance. It is certainly possible, although unsupported,
+            // for a user to get our registered class information and to create a new window from that
+            // without passing in a GCHandle as the lParam to CreateWindowEx. We will just fail
+            // by allowing the runtime to throw an exception in that scenario.
+
+            var windowManager = (WindowManager)(GCHandle.FromIntPtr(userData).Target);
+
+            if (windowManager._windows.TryGetValue(hWnd, out var window))
+            {
+                if (Msg == WM_DESTROY)
+                {
+                    // We forward the WM_DESTROY message to the corresponding Window instance
+                    // so that it can still be properly disposed of in the scenario that the
+                    // hWnd was destroyed externally.
+
+                    windowManager._windows.TryRemove(hWnd, out window);
+                }
+
+                result = window.ProcessWindowMessage(Msg, wParam, lParam);
+            }
+            else
+            {
+                result = DefWindowProc(hWnd, Msg, wParam, lParam);
+            }
+
+            return result;
         }
 
-        /// <summary>Creates a ATOM for a native window class.</summary>
-        /// <param name="className">The name of the native window class to create.</param>
-        /// <exception cref="ExternalException">The call to <see cref="GetClassName(IntPtr, char*, int)" /> failed.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="GetClassInfoEx(IntPtr, char*, WNDCLASSEX*)" /> failed.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="RegisterClassEx(WNDCLASSEX*)" /> failed.</exception>
-        /// <returns>A ATOM for the native window class that was created.</returns>
-        internal static ushort CreateClassAtom(string className)
-        {
-            ushort classAtom;
-
-            fixed (char* lpszClassName = className)
-            {
-                var wndClassEx = new WNDCLASSEX() {
-                    cbSize = SizeOf<WNDCLASSEX>(),
-                    style = (CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS),
-                    lpfnWndProc = WindowProcedure,
-                    cbClsExtra = 0,
-                    cbWndExtra = 0,
-                    hInstance = EntryModuleHandle,
-                    hIcon = IntPtr.Zero,
-                    hCursor = GetDesktopCursor(),
-                    hbrBackground = (IntPtr)(COLOR_WINDOW + 1),
-                    lpszMenuName = null,
-                    lpszClassName = lpszClassName,
-                    hIconSm = IntPtr.Zero
-                };
-
-                classAtom = RegisterClassEx(&wndClassEx);
-            }
-
-            if (classAtom == 0)
-            {
-                ThrowExternalExceptionForLastError(nameof(RegisterClassEx));
-            }
-
-            return classAtom;
-        }
-
-        /// <summary>Gets the HICON for the desktop window.</summary>
-        /// <returns>The HICON for the desktop window.</returns>
+        /// <summary>Gets the <c>HCURSOR</c> for the desktop window.</summary>
+        /// <returns>The <c>HCURSOR</c> for the desktop window.</returns>
         /// <exception cref="ExternalException">The call to <see cref="GetClassName(IntPtr, char*, int)" /> failed.</exception>
         /// <exception cref="ExternalException">The call to <see cref="GetClassInfoEx(IntPtr, char*, WNDCLASSEX*)" /> failed.</exception>
         internal static IntPtr GetDesktopCursor()
         {
             var desktopWindowHandle = GetDesktopWindow();
 
-            var desktopClassName = stackalloc char[256];
+            var desktopClassName = stackalloc char[256]; // 256 is the maximum length of WNDCLASSEX.lpszClassName
             var desktopClassNameLength = GetClassName(desktopWindowHandle, desktopClassName, 256);
 
             if (desktopClassNameLength == 0)
@@ -198,6 +173,7 @@ namespace TerraFX.Provider.Win32.UI
             }
 
             WNDCLASSEX desktopWindowClass;
+
             var succeeded = GetClassInfoEx(
                 lpszClass: desktopClassName,
                 lpwcx: &desktopWindowClass
@@ -210,41 +186,47 @@ namespace TerraFX.Provider.Win32.UI
 
             return desktopWindowClass.hCursor;
         }
-
-        /// <summary>Forwards native window messages to the appropriate <see cref="Window" /> instance for processing.</summary>
-        /// <param name="hWnd">The HWND of the <see cref="Window" /> the message should be forwarded to.</param>
-        /// <param name="Msg">The message to be processed.</param>
-        /// <param name="wParam">The first parameter of the message to be processed.</param>
-        /// <param name="lParam">The second parameter of the message to be processed.</param>
-        /// <returns>A value that varies based on the exact message that was processed.</returns>
-        internal static nint ProcessWindowMessage(IntPtr hWnd, uint Msg, nuint wParam, nint lParam)
-        {
-            if (CreatedWindows.TryGetValue((IntPtr)(hWnd), out var window))
-            {
-                return window.ProcessWindowMessage(Msg, wParam, lParam);
-            }
-
-            return DefWindowProc(hWnd, Msg, wParam, lParam);
-        }
-
-        /// <summary>Throws a <see cref="ObjectDisposedException" /> if the instance has already been disposed.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        internal static void ThrowIfDisposed(int state)
-        {
-            if (state >= Disposing) // (_state == Disposing) || (_state == Disposed)
-            {
-                ThrowObjectDisposedException(nameof(WindowManager));
-            }
-        }
         #endregion
 
         #region Methods
-        /// <summary>Removes a <see cref="Window" /> instance from the list of created windows.</summary>
-        /// <param name="window">The <see cref="Window" /> to remove.</param>
-        internal void RemoveWindow(Window window)
+        /// <summary>Creates an <c>ATOM</c> by registering a <see cref="WNDCLASSEX" /> for the entry point module.</summary>
+        /// <exception cref="ExternalException">The call to <see cref="GetClassName(IntPtr, char*, int)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="GetClassInfoEx(IntPtr, char*, WNDCLASSEX*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="RegisterClassEx(WNDCLASSEX*)" /> failed.</exception>
+        /// <returns>The <c>ATOM</c> created by registering a <see cref="WNDCLASSEX" /> for the entry point module.</returns>
+        internal ushort CreateClassAtom()
         {
-            CreatedWindows.TryRemove(window.Handle, out var destroyedWindow);
-            Debug.Assert(destroyedWindow == window);
+            ushort classAtom;
+            {
+                // lpszClassName should be less than 256 characters (this includes the null terminator)
+                // Currently, we are well below this limit and should be hitting 74 characters + the null terminator
+
+                fixed (char* lpszClassName = $"{GetType().FullName}.{EntryPointModule:X16}.{GetHashCode():X8}")
+                {
+                    var wndClassEx = new WNDCLASSEX {
+                        cbSize = SizeOf<WNDCLASSEX>(),
+                        style = (CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS),
+                        lpfnWndProc = ForwardWndProc,
+                        /* cbClsExtra = 0, */
+                        /* cbWndExtra = 0, */
+                        hInstance = EntryPointModule,
+                        /* hIcon = IntPtr.Zero, */
+                        hCursor = GetDesktopCursor(),
+                        hbrBackground = (IntPtr)(COLOR_WINDOW + 1),
+                        /* lpszMenuName = null, */
+                        lpszClassName = lpszClassName,
+                        /* hIconSm = IntPtr.Zero */
+                    };
+
+                    classAtom = RegisterClassEx(&wndClassEx);
+                }
+
+                if (classAtom == 0)
+                {
+                    ThrowExternalExceptionForLastError(nameof(RegisterClassEx));
+                }
+            }
+            return classAtom;
         }
 
         /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
@@ -253,36 +235,50 @@ namespace TerraFX.Provider.Win32.UI
         /// <exception cref="ExternalException">The call to <see cref="UnregisterClass(char*, IntPtr)" /> failed.</exception>
         internal void Dispose(bool isDisposing)
         {
-            var previousState = Exchange(ref _state, Disposing);
+            var priorState = _state.BeginDispose();
 
-            if (previousState < Disposing) // (previousState != Disposing) && (previousState != Disposed)
+            if (priorState < Disposing) // (previousState != Disposing) && (previousState != Disposed)
             {
-                DisposeCreatedWindows(isDisposing);
+                DisposeWindows(isDisposing);
                 DisposeClassAtom();
             }
 
-            Debug.Assert(CreatedWindows.IsEmpty);
-            Debug.Assert(_classAtom == 0);
-
-            _state = Disposed;
+            _state.EndDispose();
         }
 
-        /// <summary>Disposes of the ATOM that was created for the native window class.</summary>
+        /// <summary>Disposes of the <c>ATOM</c> of the <see cref="WNDCLASSEX" /> registered for the instance.</summary>
         /// <exception cref="ExternalException">The call to <see cref="UnregisterClass(char*, IntPtr)" /> failed.</exception>
         internal void DisposeClassAtom()
         {
-            Debug.Assert(_state == Disposing);
-
-            if (_classAtom != 0)
+            if (_classAtom.IsValueCreated)
             {
-                var result = UnregisterClass((char*)((IntPtr)(_classAtom)), EntryModuleHandle);
+                var result = UnregisterClass((char*)(_classAtom.Value), EntryPointModule);
 
                 if (result == FALSE)
                 {
                     ThrowExternalExceptionForLastError(nameof(UnregisterClass));
                 }
+            }
+        }
 
-                _classAtom = 0;
+        /// <summary>Disposes of all <see cref="Window" /> objects that were created by the instance.</summary>
+        /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
+        /// <exception cref="ExternalException">The call to <see cref="DestroyWindow(IntPtr)" /> failed.</exception>
+        internal void DisposeWindows(bool isDisposing)
+        {
+            if (isDisposing)
+            {
+                foreach (var windowHandle in _windows.Keys)
+                {
+                    if (_windows.TryRemove(windowHandle, out var createdWindow))
+                    {
+                        createdWindow.Dispose();
+                    }
+                }
+            }
+            else
+            {
+                _windows.Clear();
             }
         }
         #endregion
@@ -302,11 +298,10 @@ namespace TerraFX.Provider.Win32.UI
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public IWindow CreateWindow()
         {
-            ThrowIfDisposed(_state);
-            var window = new Window(this, _dispatchManager.Value, EntryModuleHandle);
+            _state.ThrowIfDisposed();
 
-            var succeeded = CreatedWindows.TryAdd(window.Handle, window);
-            Debug.Assert(succeeded);
+            var window = new Window(this);
+            _windows.TryAdd(window.Handle, window);
 
             return window;
         }

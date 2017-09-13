@@ -2,13 +2,16 @@
 
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Threading;
 using TerraFX.Collections;
 using TerraFX.Interop;
 using TerraFX.Provider.libX11.Threading;
-using TerraFX.Threading;
 using TerraFX.UI;
+using TerraFX.Utilities;
 using static TerraFX.Interop.libX11;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.State;
 
 namespace TerraFX.Provider.libX11.UI
 {
@@ -16,48 +19,53 @@ namespace TerraFX.Provider.libX11.UI
     public sealed unsafe class Window : IDisposable, IWindow
     {
         #region Fields
-        internal readonly IntPtr _display;
+        /// <summary>The native window handle for the instance.</summary>
+        internal readonly Lazy<nuint> _handle;
 
-        internal readonly Dispatcher _dispatcher;
+        /// <summary>The <see cref="Thread" /> that was used to create the instance.</summary>
+        internal readonly Thread _parentThread;
 
+        /// <summary>The <see cref="PropertySet" /> for the instance.</summary>
         internal readonly PropertySet _properties;
 
+        /// <summary>The title for the instance.</summary>
+        internal string _title;
+
+        /// <summary>The <see cref="WindowManager" /> for the instance.</summary>
         internal readonly WindowManager _windowManager;
 
-        internal nuint _handle;
-
+        /// <summary>A <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
         internal Rectangle _bounds;
 
+        /// <summary>The <see cref="FlowDirection" /> for the instance.</summary>
         internal FlowDirection _flowDirection;
 
+        /// <summary>The <see cref="ReadingDirection" /> for the instance.</summary>
         internal ReadingDirection _readingDirection;
 
+        /// <summary>The <see cref="State" /> of the instance.</summary>
+        internal readonly State _state;
+
+        /// <summary>A value that indicates whether the instance is the active window.</summary>
         internal bool _isActive;
 
+        /// <summary>A value that indicates whether the instance is visible.</summary>
         internal bool _isVisible;
         #endregion
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Window" /> class.</summary>
-        internal Window(WindowManager windowManager, DispatchManager dispatchManager)
+        /// <param name="windowManager">The <see cref="WindowManager" /> for the instance.</param>
+        internal Window(WindowManager windowManager)
         {
-            _display = dispatchManager.Display;
-            _dispatcher = (Dispatcher)(dispatchManager.DispatcherForCurrentThread);
+            _handle = new Lazy<nuint>(CreateWindowHandle, isThreadSafe: true);
+
+            _parentThread = Thread.CurrentThread;
             _properties = new PropertySet();
+            _title = typeof(Window).FullName;
+
             _windowManager = windowManager;
-
-            _handle = CreateWindowHandle(_display);
-
-            XWindowAttributes windowAttributes;
-            var status = XGetWindowAttributes(_display, _handle, &windowAttributes);
-
-            if (status == 0)
-            {
-                ThrowExternalException(nameof(XGetWindowAttributes), status);
-            }
-
-            _bounds = new Rectangle(windowAttributes.x, windowAttributes.y, windowAttributes.width, windowAttributes.height);
-            _isVisible = (windowAttributes.map_state == IsViewable);
+            _state.Transition(to: Initialized);
         }
         #endregion
 
@@ -79,15 +87,6 @@ namespace TerraFX.Provider.libX11.UI
             }
         }
 
-        /// <summary>Gets the dispatcher for the instance.</summary>
-        public IDispatcher Dispatcher
-        {
-            get
-            {
-                return _dispatcher;
-            }
-        }
-
         /// <summary>Gets <see cref="FlowDirection" /> for the instance.</summary>
         public FlowDirection FlowDirection
         {
@@ -102,7 +101,7 @@ namespace TerraFX.Provider.libX11.UI
         {
             get
             {
-                return (IntPtr)((void*)(_handle));
+                return (IntPtr)(_handle.Value);
             }
         }
 
@@ -124,6 +123,15 @@ namespace TerraFX.Provider.libX11.UI
             }
         }
 
+        /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
+        public Thread ParentThread
+        {
+            get
+            {
+                return _parentThread;
+            }
+        }
+
         /// <summary>Gets the set of properties for the instance.</summary>
         public IPropertySet Properties
         {
@@ -142,6 +150,15 @@ namespace TerraFX.Provider.libX11.UI
             }
         }
 
+        /// <summary>Gets the title for the instance.</summary>
+        public string Title
+        {
+            get
+            {
+                return _title;
+            }
+        }
+
         /// <summary>Gets the <see cref="IWindowManager" /> for the instance.</summary>
         public IWindowManager WindowManager
         {
@@ -152,9 +169,14 @@ namespace TerraFX.Provider.libX11.UI
         }
         #endregion
 
-        #region Static Methods
-        internal static nuint CreateWindowHandle(IntPtr display)
+        #region Methods
+        /// <summary>Creates a <c>Window</c> for the instance.</summary>
+        /// <returns>A <c>Window</c> for the created native window.</returns>
+        /// <exception cref="ExternalException">The call to <see cref="XCreateWindow(IntPtr, nuint, int, int, uint, uint, uint, int, uint, Visual*, nuint, XSetWindowAttributes*)" /> failed.</exception>
+        internal nuint CreateWindowHandle()
         {
+            var display = _windowManager.DispatchManager.Display;
+
             var defaultScreen = XDefaultScreenOfDisplay(display);
             var rootWindow = XRootWindowOfScreen(defaultScreen);
 
@@ -189,39 +211,58 @@ namespace TerraFX.Provider.libX11.UI
 
             return window;
         }
-        #endregion
 
-        #region Methods
+        /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
+        /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
         internal void Dispose(bool isDisposing)
         {
-            if (_handle != None)
+            var priorState = _state.BeginDispose();
+
+            if (priorState < Disposing) // (previousState != Disposing) && (previousState != Disposed)
             {
-                XDestroyWindow(_display, _handle);
-                _windowManager.DestroyWindow(_handle);
-                _handle = None;
+                DisposeWindowHandle();
+            }
+
+            _state.EndDispose();
+        }
+
+        /// <summary>Disposes of the <c>Window</c> for the instance.</summary>
+        internal void DisposeWindowHandle()
+        {
+            if (_handle.IsValueCreated)
+            {
+                var display = _windowManager.DispatchManager.Display;
+                XDestroyWindow(display, _handle.Value);
             }
         }
 
-        internal void HandleXVisibility(ref /* readonly */ XVisibilityEvent xvisibility)
-        {
-            Debug.Assert(xvisibility.window == _handle);
-            _isVisible = (xvisibility.state != VisibilityFullyObscured);
-        }
-
-        internal void HandleXConfigure(ref /* readonly */ XConfigureEvent xconfigure)
-        {
-            Debug.Assert(xconfigure.window == _handle);
-            _bounds = new Rectangle(xconfigure.x, xconfigure.y, xconfigure.width, xconfigure.height);
-        }
-
+        /// <summary>Handles the <c>XCirculate</c> event.</summary>
+        /// <param name="xcirculate">The <c>XCirculate</c> event.</param>
         internal void HandleXCirculate(ref /* readonly */ XCirculateEvent xcirculate)
         {
-            Debug.Assert(xcirculate.window == _handle);
             _isActive = (xcirculate.place == PlaceOnTop);
         }
 
-        internal void ProcessXEvent(ref /* readonly */ XEvent xevent)
+        /// <summary>Handles the <c>XConfigure</c> event.</summary>
+        /// <param name="xconfigure">The <c>XConfigure</c> event.</param>
+        internal void HandleXConfigure(ref /* readonly */ XConfigureEvent xconfigure)
         {
+            _bounds = new Rectangle(xconfigure.x, xconfigure.y, xconfigure.width, xconfigure.height);
+        }
+
+        /// <summary>Handles the <c>XVisiblity</c> event.</summary>
+        /// <param name="xvisibility">The <c>XVisibility</c> event.</param>
+        internal void HandleXVisibility(ref /* readonly */ XVisibilityEvent xvisibility)
+        {
+            _isVisible = (xvisibility.state != VisibilityFullyObscured);
+        }
+
+        /// <summary>Processes a window event sent to the instance.</summary>
+        /// <param name="xevent">The event to be processed.</param>
+        internal void ProcessWindowEvent(ref /* readonly */ XEvent xevent)
+        {
+            ThrowIfNotThread(_parentThread);
+
             switch (xevent.type)
             {
                 case VisibilityNotify:
@@ -260,7 +301,8 @@ namespace TerraFX.Provider.libX11.UI
         {
             if (_isActive == false)
             {
-                XRaiseWindow(_display, _handle);
+                var display = _windowManager.DispatchManager.Display;
+                XRaiseWindow(display, _handle.Value);
             }
         }
 
@@ -275,7 +317,8 @@ namespace TerraFX.Provider.libX11.UI
         {
             if (_isVisible)
             {
-                XUnmapWindow(_display, _handle);
+                var display = _windowManager.DispatchManager.Display;
+                XUnmapWindow(display, _handle.Value);
             }
         }
 
@@ -284,7 +327,8 @@ namespace TerraFX.Provider.libX11.UI
         {
             if (_isVisible == false)
             {
-                XMapWindow(_display, _handle);
+                var display = _windowManager.DispatchManager.Display;
+                XMapWindow(display, _handle.Value);
             }
         }
         #endregion

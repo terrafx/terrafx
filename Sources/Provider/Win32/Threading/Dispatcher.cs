@@ -1,13 +1,13 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Diagnostics;
 using System.Threading;
 using TerraFX.Interop;
 using TerraFX.Threading;
 using static TerraFX.Interop.User32;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Interop.Desktop.User32;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Provider.Win32.Threading
@@ -29,8 +29,8 @@ namespace TerraFX.Provider.Win32.Threading
         /// <param name="parentThread">The <see cref="Thread" /> that was used to create the instance.</param>
         internal Dispatcher(DispatchManager dispatchManager, Thread parentThread)
         {
-            Debug.Assert(dispatchManager != null);
-            Debug.Assert(parentThread == Thread.CurrentThread);
+            Assert(dispatchManager != null, Resources.ArgumentNullExceptionMessage, nameof(dispatchManager));
+            Assert(parentThread != null, Resources.ArgumentNullExceptionMessage, nameof(parentThread));
 
             _dispatchManager = dispatchManager;
             _parentThread = parentThread;
@@ -47,18 +47,6 @@ namespace TerraFX.Provider.Win32.Threading
         internal void OnExitRequested()
         {
             ExitRequested?.Invoke(this, EventArgs.Empty);
-        }
-
-        /// <summary>Throws a <see cref="InvalidOperationException" /> if <see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</summary>
-        /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</exception>
-        internal void ThrowIfNotParentThread()
-        {
-            var currentThread = Thread.CurrentThread;
-
-            if (currentThread != _parentThread)
-            {
-                ThrowInvalidOperationException(nameof(Thread.CurrentThread), currentThread);
-            }
         }
         #endregion
 
@@ -92,7 +80,7 @@ namespace TerraFX.Provider.Win32.Threading
         /// </remarks>
         public void DispatchPending()
         {
-            ThrowIfNotParentThread();
+            ThrowIfNotThread(_parentThread);
 
             MSG msg;
 

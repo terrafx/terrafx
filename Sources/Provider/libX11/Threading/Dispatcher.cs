@@ -1,12 +1,12 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Diagnostics;
 using System.Threading;
 using TerraFX.Interop;
-using TerraFX.Provider.libX11.UI;
 using TerraFX.Threading;
+using TerraFX.Provider.libX11.UI;
 using static TerraFX.Interop.libX11;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Provider.libX11.Threading
@@ -20,6 +20,9 @@ namespace TerraFX.Provider.libX11.Threading
 
         /// <summary>The <see cref="Thread" /> that was used to create the instance.</summary>
         internal readonly Thread _parentThread;
+
+        /// <summary>The <c>Atom</c> used to access the <c>Window</c> property containing the associated <see cref="WindowManager" />.</summary>
+        internal readonly Lazy<nuint> _windowManagerProperty;
         #endregion
 
         #region Constructors
@@ -28,11 +31,12 @@ namespace TerraFX.Provider.libX11.Threading
         /// <param name="parentThread">The <see cref="Thread" /> that was used to create the instance.</param>
         internal Dispatcher(DispatchManager dispatchManager, Thread parentThread)
         {
-            Debug.Assert(dispatchManager != null);
-            Debug.Assert(parentThread == Thread.CurrentThread);
+            Assert(dispatchManager != null, Resources.ArgumentNullExceptionMessage, nameof(dispatchManager));
+            Assert(parentThread != null, Resources.ArgumentNullExceptionMessage, nameof(parentThread));
 
             _dispatchManager = dispatchManager;
             _parentThread = parentThread;
+            _windowManagerProperty = new Lazy<nuint>(CreateWindowManagerProperty, isThreadSafe: true);
         }
         #endregion
 
@@ -42,22 +46,32 @@ namespace TerraFX.Provider.libX11.Threading
         #endregion
 
         #region Methods
+        /// <summary>Creates an <c>Atom</c> for the window manager property.</summary>
+        /// <returns>An <c>Atom</c> for the window manager property.</returns>
+        internal nuint CreateWindowManagerProperty()
+        {
+            var display = _dispatchManager.Display;
+
+            var name = stackalloc ulong[6]; {
+                name[0] = 0x2E58466172726554;   // TerraFX.
+                name[1] = 0x72656469766F7250;   // Provider
+                name[2] = 0x2E31315862696C2E;   // .libX11.
+                name[3] = 0x572E776F646E6957;   // Window.W
+                name[4] = 0x6E614D776F646E69;   // indowMan
+                name[5] = 0x0000000072656761;   // ager
+            };
+
+            return XInternAtom(
+                display,
+                (sbyte*)(name),
+                only_if_exists: False
+            );
+        }
+
         /// <summary>Raises the <see cref="ExitRequested" /> event.</summary>
         internal void OnExitRequested()
         {
             ExitRequested?.Invoke(this, EventArgs.Empty);
-        }
-
-        /// <summary>Throws a <see cref="InvalidOperationException" /> if <see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</summary>
-        /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</exception>
-        internal void ThrowIfNotParentThread()
-        {
-            var currentThread = Thread.CurrentThread;
-
-            if (currentThread != _parentThread)
-            {
-                ThrowInvalidOperationException(nameof(Thread.CurrentThread), currentThread);
-            }
         }
         #endregion
 
@@ -91,24 +105,19 @@ namespace TerraFX.Provider.libX11.Threading
         /// </remarks>
         public void DispatchPending()
         {
-            ThrowIfNotParentThread();
+            ThrowIfNotThread(_parentThread);
 
             var display = _dispatchManager.Display;
-            var createdWindows = WindowManager.CreatedWindows;
-
             XEvent xevent;
 
             while (XPending(display) != 0)
             {
                 XNextEvent(display, &xevent);
-                Debug.Assert(xevent.xany.display == display);
 
-                if (createdWindows.TryGetValue(xevent.xany.window, out var window))
+                if (xevent.type != NoExpose)
                 {
-                    window.ProcessXEvent(ref xevent);
+                    WindowManager.ForwardWindowEvent(_windowManagerProperty.Value, ref xevent);
                 }
-
-                // TODO: There are likely some events we should process even if there is no associated window
             }
         }
         #endregion
