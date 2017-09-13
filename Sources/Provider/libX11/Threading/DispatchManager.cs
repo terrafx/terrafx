@@ -34,7 +34,6 @@ namespace TerraFX.Provider.libX11.Threading
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="DispatchManager" /> class.</summary>
-        /// <exception cref="ExternalException">The call to <see cref="XOpenDisplay(byte*)" /> failed.</exception>
         [ImportingConstructor]
         public DispatchManager()
         {

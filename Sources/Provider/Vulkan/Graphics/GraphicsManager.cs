@@ -8,11 +8,13 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using TerraFX.Graphics;
 using TerraFX.Interop;
+using TerraFX.Utilities;
 using static System.Threading.Interlocked;
 using static TerraFX.Interop.Vulkan;
 using static TerraFX.Interop.VkResult;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.State;
 
 namespace TerraFX.Provider.Vulkan.Graphics
 {
@@ -22,30 +24,15 @@ namespace TerraFX.Provider.Vulkan.Graphics
     [Shared]
     public sealed unsafe class GraphicsManager : IDisposable, IGraphicsManager
     {
-        #region State Constants
-        /// <summary>Indicates the graphics manager is not disposing or disposed.</summary>
-        internal const int NotDisposingOrDisposed = 0;
-
-        /// <summary>Indicates the graphics manager is being disposed.</summary>
-        internal const int Disposing = 1;
-
-        /// <summary>Indicates the graphics manager has been disposed.</summary>
-        internal const int Disposed = 2;
-        #endregion
-
         #region Fields
         /// <summary>The Vulkan instance.</summary>
-        internal IntPtr _instance;
+        internal readonly Lazy<IntPtr> _instance;
 
         /// <summary>The <see cref="GraphicsAdapter" /> instances available in the system.</summary>
-        internal ImmutableArray<GraphicsAdapter> _adapters;
+        internal readonly Lazy<ImmutableArray<GraphicsAdapter>> _adapters;
 
-        /// <summary>The state for the instance.</summary>
-        /// <remarks>
-        ///     <para>This field is <c>volatile</c> to ensure state changes update all threads simultaneously.</para>
-        ///     <para><c>volatile</c> does add a read/write barrier at every access, but the state transitions are believed to be infrequent enough for this to not be a problem.</para>
-        /// </remarks>
-        internal volatile int _state;
+        /// <summary>The <see cref="State" /> of the instance.</summary>
+        internal readonly State _state;
         #endregion
 
         #region Constructors
@@ -55,8 +42,9 @@ namespace TerraFX.Provider.Vulkan.Graphics
         [ImportingConstructor]
         public GraphicsManager()
         {
-            _instance = CreateVulkanInstance();
-            _adapters = GetGraphicsAdapters(this, _instance);
+            _instance = new Lazy<IntPtr>(CreateInstance, isThreadSafe: true);
+            _adapters = new Lazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters, isThreadSafe: true);
+            _state.Transition(to: Initialized);
         }
         #endregion
 
@@ -72,7 +60,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
         /// <summary>Creates a Vulkan instance.</summary>
         /// <returns>A Vulkan instance.</returns>
         /// <exception cref="ExternalException">The call to <see cref="vkCreateInstance(VkInstanceCreateInfo*, VkAllocationCallbacks*, IntPtr*)" /> failed.</exception>
-        internal static IntPtr CreateVulkanInstance()
+        internal static IntPtr CreateInstance()
         {
             var createInfo = new VkInstanceCreateInfo() {
                 sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
@@ -95,14 +83,41 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
             return instance;
         }
+        #endregion
+
+        #region Methods
+        /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
+        /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
+        /// <exception cref="ExternalException">The call to <see cref="vkDestroyInstance(IntPtr, VkAllocationCallbacks*)" /> failed.</exception>
+        internal void Dispose(bool isDisposing)
+        {
+            var priorState = _state.BeginDispose();
+
+            if (priorState < Disposing)
+            {
+                DisposeInstance();
+            }
+
+            _state.EndDispose();
+        }
+
+        /// <summary>Disposes of the Vulkan instance that was created.</summary>
+        /// <exception cref="ExternalException">The call to <see cref="vkDestroyInstance(IntPtr, VkAllocationCallbacks*)" /> failed.</exception>
+        internal void DisposeInstance()
+        {
+            if (_instance.IsValueCreated)
+            {
+                vkDestroyInstance(_instance.Value, null);
+            }
+        }
 
         /// <summary>Gets the <see cref="GraphicsAdapter" /> instances available in the system.</summary>
-        /// <param name="graphicsManager">The <see cref="GraphicsManager" /> the adapters belong to.</param>
-        /// <param name="instance">The Vulkan instance used to enumerate the available adapters.</param>
         /// <returns>The <see cref="GraphicsAdapter" /> instances available in the system.</returns>
         /// <exception cref="ExternalException">The call to <see cref="vkEnumeratePhysicalDevices(IntPtr, uint*, IntPtr*)" /> failed.</exception>
-        internal static ImmutableArray<GraphicsAdapter> GetGraphicsAdapters(GraphicsManager graphicsManager, IntPtr instance)
+        internal ImmutableArray<GraphicsAdapter> GetGraphicsAdapters()
         {
+            var instance = _instance.Value;
+
             var physicalDeviceCount = 0u;
             var result = vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, null);
 
@@ -123,52 +138,11 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
             for (var index = 0u; index < physicalDeviceCount; index++)
             {
-                var adapter = new GraphicsAdapter(graphicsManager, physicalDevices[index]);
+                var adapter = new GraphicsAdapter(this, physicalDevices[index]);
                 adapters.Add(adapter);
             }
 
             return adapters.ToImmutable();
-        }
-
-        /// <summary>Throws a <see cref="ObjectDisposedException" /> if the instance has already been disposed.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        internal static void ThrowIfDisposed(int state)
-        {
-            if (state >= Disposing) // (_state == Disposing) || (_state == Disposed)
-            {
-                ThrowObjectDisposedException(nameof(GraphicsManager));
-            }
-        }
-        #endregion
-
-        #region Methods
-        /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
-        /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
-        /// <exception cref="ExternalException">The call to <see cref="vkDestroyInstance(IntPtr, VkAllocationCallbacks*)" /> failed.</exception>
-        internal void Dispose(bool isDisposing)
-        {
-            var previousState = Exchange(ref _state, Disposing);
-
-            if (previousState < Disposing) // (previousState != Disposing) && (previousState != Disposed)
-            {
-                DisposeVulkanInstance();
-            }
-
-            Debug.Assert(_instance == IntPtr.Zero);
-            _state = Disposed;
-        }
-
-        /// <summary>Disposes of the Vulkan instance that was created.</summary>
-        /// <exception cref="ExternalException">The call to <see cref="vkDestroyInstance(IntPtr, VkAllocationCallbacks*)" /> failed.</exception>
-        internal void DisposeVulkanInstance()
-        {
-            Debug.Assert(_state == Disposing);
-
-            if (_instance != IntPtr.Zero)
-            {
-                vkDestroyInstance(_instance, null);
-                _instance = IntPtr.Zero;
-            }
         }
         #endregion
 
@@ -178,8 +152,8 @@ namespace TerraFX.Provider.Vulkan.Graphics
         {
             get
             {
-                ThrowIfDisposed(_state);
-                return _adapters;
+                _state.ThrowIfDisposed();
+                return _adapters.Value;
             }
         }
         #endregion

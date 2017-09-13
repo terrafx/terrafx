@@ -5,32 +5,23 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using TerraFX.Graphics;
 using TerraFX.Interop;
+using TerraFX.Utilities;
 using static System.Threading.Interlocked;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.State;
 
 namespace TerraFX.Provider.D3D12.Graphics
 {
     /// <summary>Represents a graphics adapter.</summary>
     public sealed unsafe class GraphicsAdapter : IDisposable, IGraphicsAdapter
     {
-        #region State Constants
-        /// <summary>Indicates the graphics adapter is not disposing or disposed.</summary>
-        internal const int NotDisposingOrDisposed = 0;
-
-        /// <summary>Indicates the graphics adapter is being disposed.</summary>
-        internal const int Disposing = 1;
-
-        /// <summary>Indicates the graphics adapter has been disposed.</summary>
-        internal const int Disposed = 2;
-        #endregion
-
         #region Fields
         /// <summary>The <see cref="GraphicsManager" /> for the instance.</summary>
         internal readonly GraphicsManager _graphicsManager;
 
         /// <summary>The <see cref="IDXGIAdapter1" /> for the instance.</summary>
-        internal IDXGIAdapter1* _adapter;
+        internal readonly IDXGIAdapter1* _adapter;
 
         /// <summary>The name of the device.</summary>
         internal string _deviceName;
@@ -41,12 +32,8 @@ namespace TerraFX.Provider.D3D12.Graphics
         /// <summary>The PCI ID of the device.</summary>
         internal uint _deviceId;
 
-        /// <summary>The state for the instance.</summary>
-        /// <remarks>
-        ///     <para>This field is <c>volatile</c> to ensure state changes update all threads simultaneously.</para>
-        ///     <para><c>volatile</c> does add a read/write barrier at every access, but the state transitions are believed to be infrequent enough for this to not be a problem.</para>
-        /// </remarks>
-        internal volatile int _state;
+        /// <summary>The <see cref="State" /> of the instance.</summary>
+        internal readonly State _state;
         #endregion
 
         #region Constructors
@@ -65,6 +52,8 @@ namespace TerraFX.Provider.D3D12.Graphics
             _deviceName = Marshal.PtrToStringUni((IntPtr)(desc.Description));
             _vendorId = desc.VendorId;
             _deviceId = desc.DeviceId;
+
+            _state.Transition(to: Initialized);
         }
         #endregion
 
@@ -85,27 +74,24 @@ namespace TerraFX.Provider.D3D12.Graphics
         /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
         internal void Dispose(bool isDisposing)
         {
-            var previousState = Exchange(ref _state, Disposing);
+            var priorState = _state.BeginDispose();
 
-            if (previousState < Disposing) // (previousState != Disposing) && (previousState != Disposed)
+            if (priorState < Disposing)
             {
-                DisposeDXGIAdapter();
+                DisposeAdapter();
             }
 
-            Debug.Assert(_adapter == null);
-
-            _state = Disposed;
+            _state.EndDispose();
         }
 
         /// <summary>Disposes of the DXGI adapter associated with the instance.</summary>
-        internal void DisposeDXGIAdapter()
+        internal void DisposeAdapter()
         {
             Debug.Assert(_state == Disposing);
 
             if (_adapter != null)
             {
                 _adapter->Release();
-                _adapter = null;
             }
         }
         #endregion
