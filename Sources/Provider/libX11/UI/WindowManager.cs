@@ -4,7 +4,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Composition;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using TerraFX.Interop;
 using TerraFX.Provider.libX11.Threading;

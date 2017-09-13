@@ -4,7 +4,6 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Reflection;
-using System.Threading;
 using TerraFX.ApplicationModel;
 using TerraFX.Samples.Graphics;
 

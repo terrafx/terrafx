@@ -1,12 +1,10 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.Collections;
 using TerraFX.Interop;
-using TerraFX.Provider.libX11.Threading;
 using TerraFX.UI;
 using TerraFX.Utilities;
 using static TerraFX.Interop.libX11;

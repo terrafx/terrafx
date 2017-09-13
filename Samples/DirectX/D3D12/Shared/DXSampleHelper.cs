@@ -3,7 +3,6 @@
 // Ported from DXSampleHelper.h in https://github.com/Microsoft/DirectX-Graphics-Samples
 // Original source is Copyright © Microsoft. All rights reserved. Licensed under the MIT License (MIT).
 
-using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
