@@ -4,12 +4,12 @@ The following is a set of guidelines for contributing to TerraFX.
 
 ## Table of Contents
 
-[Code of Conduct](#code-of-conduct)
-[License](#license)
-[What should I know?](#what-should-i-know)
-[Pull Requests](#pull-requests)
-[Issues](#issues)
-[Questions](#questions)
+* [Code of Conduct](#code-of-conduct)
+* [License](#license)
+* [What should I know?](#what-should-i-know)
+* [Pull Requests](#pull-requests)
+* [Issues](#issues)
+* [Questions](#questions)
 
 
 ### Code of Conduct

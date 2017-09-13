@@ -4,10 +4,10 @@ A framework for developing multimedia-based applications.
 
 ## Table of Contents
 
-[Code of Conduct](#code-of-conduct)
-[License](#license)
-[Contributing)(#contributing)
-[Goals](#goals)
+* [Code of Conduct](#code-of-conduct)
+* [License](#license)
+* [Contributing](#contributing)
+* [Goals](#goals)
 
 ### Code of Conduct
 
