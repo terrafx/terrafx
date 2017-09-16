@@ -2,6 +2,8 @@
 
 A framework for developing multimedia-based applications.
 
+[![Gitter](https://badges.gitter.im/terrafx/terrafx.svg)](https://gitter.im/terrafx/terrafx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 ## Table of Contents
 
 * [Code of Conduct](#code-of-conduct)
