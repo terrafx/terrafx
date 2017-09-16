@@ -8,10 +8,11 @@ A framework for developing multimedia-based applications.
 * [License](#license)
 * [Contributing](#contributing)
 * [Goals](#goals)
+* [Languages and Frameworks](#languages-and-frameworks)
 
 ### Code of Conduct
 
-TerraFX and everyone contributing (this includes issues, pull requests, the wiki, etc) must abide by the [Code of Conduct](CODE_OF_CONDUCT.md). Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project team at tagoo@outlook.com.
+TerraFX and everyone contributing (this includes issues, pull requests, the wiki, etc) must abide by the [Code of Conduct](CODE_OF_CONDUCT.md). Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project team at terrafx@outlook.com.
 
 ### License
 

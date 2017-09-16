@@ -1,6 +1,6 @@
 # Code of Conduct
 
-TerraFX and everyone contributing (this includes issues, pull requests, the wiki, etc) must abide by the [Code of Conduct](CODE_OF_CONDUCT.md). Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project team at tagoo@outlook.com.
+TerraFX and everyone contributing (this includes issues, pull requests, the wiki, etc) must abide by the [Code of Conduct](CODE_OF_CONDUCT.md). Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project team at terrafx@outlook.com.
 
 # Issue Template
 
@@ -37,7 +37,7 @@ Regressions are similar to bugs but represent functionality that worked in a pri
 
 ## Ideas
 
-Requests would ideally always be well thought and come with a full proposal; however, this is not always possible and sometimes you want input from others before actually proposing something. Please prefix your issue title with `[IDEA]` and give a brief summary of what you want. 
+Requests would ideally always be well thought and come with a full proposal; however, this is not always possible and sometimes you want input from others before actually proposing something. Please prefix your issue title with `[IDEA]` and give a brief summary of what you want.
 
 ## Proposals
 
