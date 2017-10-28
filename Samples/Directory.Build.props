@@ -21,7 +21,7 @@
   
   <ItemGroup>
     <Content Include="**\*.hlsl" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="${MSBuildProjectDirectory)\Properties\launchSettings.json" />
+    <Content Include="$(MSBuildProjectDirectory)\Properties\launchSettings.json" />
   </ItemGroup>
 
   <PropertyGroup>
