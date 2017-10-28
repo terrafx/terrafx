@@ -15,6 +15,8 @@
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.props" />
 
   <PropertyGroup>
+    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)..\Artifacts\obj\Tests\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(MSBuildThisFileDirectory)..\Artifacts\bin\Tests\$(MSBuildProjectName)\</BaseOutputPath>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 

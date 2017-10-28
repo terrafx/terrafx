@@ -14,6 +14,11 @@
 
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.props" />
 
+  <PropertyGroup>
+    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)..\Artifacts\obj\Sources\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(MSBuildThisFileDirectory)..\Artifacts\bin\Sources\$(MSBuildProjectName)\</BaseOutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <InternalsVisibleTo Include="$(MSBuildProjectName).UnitTests" />
   </ItemGroup>

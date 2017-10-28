@@ -9,11 +9,6 @@
   -->
 
   <PropertyGroup>
-    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)Artifacts\obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
-    <BaseOutputPath>$(MSBuildThisFileDirectory)Artifacts\bin\$(MSBuildProjectName)\</BaseOutputPath>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)TerraFX.snk</AssemblyOriginatorKeyFile>
     <Authors>Tanner Gooding and Contributors</Authors>

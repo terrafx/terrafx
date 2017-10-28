@@ -14,6 +14,11 @@
 
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.props" />
 
+  <PropertyGroup>
+    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)..\Artifacts\obj\Samples\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(MSBuildThisFileDirectory)..\Artifacts\bin\Samples\$(MSBuildProjectName)\</BaseOutputPath>
+  </PropertyGroup>
+  
   <ItemGroup>
     <Content Include="**\*.hlsl" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="${MSBuildProjectDirectory)\Properties\launchSettings.json" />
