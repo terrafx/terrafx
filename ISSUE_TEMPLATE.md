@@ -30,7 +30,6 @@ This section should contain a description of the behavior that is expected.
 
 This section should contain a description of the actual behavior being observed.
 
-
 ## Regression
 
 Regressions are similar to bugs but represent functionality that worked in a prior release but is no longer functioning as expected. Please prefix your issue title with `[REGRESSION]` and fill out the same sections as for a [Bug](#bug).

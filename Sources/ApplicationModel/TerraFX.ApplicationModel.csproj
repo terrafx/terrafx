@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information. -->
-<Project>
-
-  <Import Project="$(MSBuildThisFileDirectory)..\..\Imports\TerraFX.Common.props" />
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>TerraFX.ApplicationModel</AssemblyName>
   </PropertyGroup>
-
-  <ItemGroup>
-    <InternalsVisibleTo Include="$(MSBuildProjectName).UnitTests" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Graphics\TerraFX.Graphics.csproj" />
@@ -19,7 +12,5 @@
     <ProjectReference Include="..\UI\TerraFX.UI.csproj" />
     <ProjectReference Include="..\Utilities\TerraFX.Utilities.csproj" />
   </ItemGroup>
-
-  <Import Project="$(MSBuildThisFileDirectory)..\..\Imports\TerraFX.Common.targets" />
 
 </Project>

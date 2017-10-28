@@ -1,8 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information. -->
-<Project>
-
-  <Import Project="$(MSBuildThisFileDirectory)..\..\Imports\TerraFX.UnitTests.props" />
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <RootNamespace>TerraFX.UnitTests</RootNamespace>
@@ -12,7 +10,5 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Sources\Resources\TerraFX.Resources.csproj" />
   </ItemGroup>
-
-  <Import Project="$(MSBuildThisFileDirectory)..\..\Imports\TerraFX.UnitTests.targets" />
 
 </Project>

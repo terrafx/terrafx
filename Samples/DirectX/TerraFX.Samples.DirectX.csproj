@@ -1,27 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information. -->
-<Project>
-
-  <Import Project="$(MSBuildThisFileDirectory)..\..\Imports\TerraFX.Common.props" />
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <HasRuntimeOutput>true</HasRuntimeOutput>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Content Include="D3D12\Assets\Shaders\HelloTriangle.hlsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Properties\launchSettings.json" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Sources\Interop\Windows\TerraFX.Interop.Windows.csproj" />
   </ItemGroup>
-  
-  <Import Project="$(MSBuildThisFileDirectory)..\..\Imports\TerraFX.Common.targets" />
 
 </Project>

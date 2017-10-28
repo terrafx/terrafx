@@ -2,36 +2,30 @@
 <!-- Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information. -->
 <Project>
 
-  <PropertyGroup>
-    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-  </PropertyGroup>
+  <!--
+    Directory.Build.props is automatically picked up and imported by Microsoft.Common.props
+    This file needs to exist, even if empty, so that files in the parent directory tree, with the same name, are not imported instead.
+    The import happens fairly early, so most properties will not be set before we define them below.
+  -->
 
   <PropertyGroup>
-    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)' == ''">$(MSBuildThisFileDirectory)..\Artifacts\obj\$(Configuration)\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
-    <BaseOutputPath Condition="'$(BaseOutputPath)' == ''">$(MSBuildThisFileDirectory)..\Artifacts\bin\$(Configuration)\$(MSBuildProjectName)\</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)Artifacts\obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(MSBuildThisFileDirectory)Artifacts\bin\$(MSBuildProjectName)\</BaseOutputPath>
   </PropertyGroup>
 
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Shared\Common\TerraFX.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)TerraFX.snk</AssemblyOriginatorKeyFile>
     <Authors>Tanner Gooding and Contributors</Authors>
     <Company>TerraFX</Company>
-    <CompileUsingReferenceAssemblies>true</CompileUsingReferenceAssemblies>
     <Copyright>Copyright © Tanner Gooding and Contributors</Copyright>
     <Description>A framework for developing multimedia-based applications.</Description>
     <EnableDefaultNoneItems>false</EnableDefaultNoneItems>
     <Features>strict</Features>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <HighEntropyVA>true</HighEntropyVA>
-    <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
     <LangVersion>latest</LangVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <OutputPath>$(BaseOutputPath)</OutputPath>
     <OverwriteReadOnlyFiles>true</OverwriteReadOnlyFiles>
     <PackageLicenseUrl>https://github.com/tannergooding/terrafx/blob/master/License.md</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/tannergooding/terrafx</PackageProjectUrl>
@@ -48,18 +42,12 @@
     <VersionSuffix>alpha</VersionSuffix>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-  </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Microsoft.Net.Compilers" Version="2.3.2" />
+    <PackageReference Include="Microsoft.Net.Compilers" Version="2.4.0" />
     <PackageReference Include="System.Collections.Immutable" Version="1.4.0" />
     <PackageReference Include="System.Composition" Version="1.1.0" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.4.0" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.4.0" />
   </ItemGroup>
-
-  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
 
 </Project>

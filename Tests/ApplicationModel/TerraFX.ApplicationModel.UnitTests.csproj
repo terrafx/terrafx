@@ -1,8 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information. -->
-<Project>
-
-  <Import Project="$(MSBuildThisFileDirectory)..\..\Imports\TerraFX.UnitTests.props" />
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
@@ -11,7 +9,5 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Sources\ApplicationModel\TerraFX.ApplicationModel.csproj" />
   </ItemGroup>
-
-  <Import Project="$(MSBuildThisFileDirectory)..\..\Imports\TerraFX.UnitTests.targets" />
 
 </Project>

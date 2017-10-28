@@ -2,20 +2,24 @@
 <!-- Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information. -->
 <Project>
 
+  <!--
+    Directory.Build.props is automatically picked up and imported by Microsoft.Common.props
+    This file needs to exist, even if empty, so that files in the parent directory tree, with the same name, are not imported instead.
+    The import happens fairly early, so most properties will not be set before we define them below.
+  -->
+
   <PropertyGroup>
-    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileDirectory)..\Directory.Build.props</MSBuildAllProjects>
   </PropertyGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.props" />
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <HasRuntimeOutput>true</HasRuntimeOutput>
-    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
-  <Import Project="$(MSBuildThisFileDirectory)TerraFX.Common.props" />
-
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Shared\UnitTests\Program.cs" Link="Program.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Shared\Program.cs" Link="Program.cs" />
   </ItemGroup>
 
   <ItemGroup>

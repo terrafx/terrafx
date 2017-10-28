@@ -20,7 +20,6 @@ TerraFX and everyone contributing (this includes issues, pull requests, the wiki
 
 Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See [License](LICENSE.md) in the repository root for more information.
 
-
 ### Contributing
 
 If you are looking to contribute you should read our [Contributing](CONTRIBUTING.md) documentation.
