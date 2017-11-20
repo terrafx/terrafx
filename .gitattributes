@@ -1,27 +1,37 @@
-# Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
-
 ###############################################################################
 # Set default behavior to:
-#   automatically normalize line endings on check-in
+#   treat as text and
+#   normalize to Unix-style line endings
 ###############################################################################
-*           text=auto
+*           text        eol=lf
 
 ###############################################################################
-# Set file behavior to:
-#   treat as text
+# Set explicit file behavior to:
+#   treat as text and
+#   normalize to Unix-style line endings
 ###############################################################################
-*.config    text
-*.cs        text
-*.csproj    text
-*.json      text
-*.md        text
-*.props     text
-*.resx      text
-*.sln       text
-*.targets   text
+*.cmd       text        eol=lf
+*.config    text        eol=lf
+*.cs        text        eol=lf
+*.csproj    text        eol=lf
+*.json      text        eol=lf
+*.md        text        eol=lf
+*.props     text        eol=lf
+*.ps1       text        eol=lf
+*.resx      text        eol=lf
+*.sh        text        eol=lf
+*.sln       text        eol=lf
+*.targets   text        eol=lf
 
 ###############################################################################
-# Set file behavior to:
+# Set explicit file behavior to:
+#   treat as text and
+#   normalize to Windows-style line endings
+###############################################################################
+*.sln       text        eol=crlf
+
+###############################################################################
+# Set explicit file behavior to:
 #   treat as binary
 ###############################################################################
 *.snk       binary

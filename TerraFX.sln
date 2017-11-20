@@ -1,29 +1,29 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27019.1
+VisualStudioVersion = 15.0.27110.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2F337CB6-0B9E-4765-A277-487E429DE9F1}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".root", ".root", "{2F337CB6-0B9E-4765-A277-487E429DE9F1}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
-		CHANGELOG.md = CHANGELOG.md
-		CODE_OF_CONDUCT.md = CODE_OF_CONDUCT.md
-		CODEOWNERS = CODEOWNERS
-		CONTRIBUTING.md = CONTRIBUTING.md
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
-		FAQ.md = FAQ.md
-		ISSUE_TEMPLATE.md = ISSUE_TEMPLATE.md
 		LICENSE.md = LICENSE.md
-		NuGet.config = NuGet.config
-		PULL_REQUEST_TEMPLATE.md = PULL_REQUEST_TEMPLATE.md
-		README.md = README.md
-		SUPPORT.md = SUPPORT.md
 		TerraFX.snk = TerraFX.snk
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{1054E499-981F-4EFA-855B-EC6FA604C6FB}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{8793898A-6542-4606-AA82-AB14151D2D20}"
+	ProjectSection(SolutionItems) = preProject
+		docs\CODE_OF_CONDUCT.md = docs\CODE_OF_CONDUCT.md
+		docs\CODEOWNERS = docs\CODEOWNERS
+		docs\CONTRIBUTING.md = docs\CONTRIBUTING.md
+		docs\ISSUE_TEMPLATE.md = docs\ISSUE_TEMPLATE.md
+		docs\PULL_REQUEST_TEMPLATE.md = docs\PULL_REQUEST_TEMPLATE.md
+		docs\README.md = docs\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{1054E499-981F-4EFA-855B-EC6FA604C6FB}"
 	ProjectSection(SolutionItems) = preProject
 		Samples\Directory.Build.props = Samples\Directory.Build.props
 		Samples\Directory.Build.targets = Samples\Directory.Build.targets
@@ -37,7 +37,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TerraFX", "TerraFX", "{99F1
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Samples", "Samples\TerraFX\TerraFX.Samples.csproj", "{1935CEF0-59AB-48F8-AD4D-E6419BF35EE6}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sources", "Sources", "{0B821858-8E47-4485-AC06-D2E971A53EB2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sources", "sources", "{0B821858-8E47-4485-AC06-D2E971A53EB2}"
 	ProjectSection(SolutionItems) = preProject
 		Sources\Directory.Build.props = Sources\Directory.Build.props
 		Sources\Directory.Build.targets = Sources\Directory.Build.targets
@@ -110,7 +110,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Utilities", "Sources\Utilities\TerraFX.Utilities.csproj", "{1C369A34-8580-424F-A446-7623E9F4FEC3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{EFB05081-EC44-49D3-B6D1-52AE42085B5B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{EFB05081-EC44-49D3-B6D1-52AE42085B5B}"
 	ProjectSection(SolutionItems) = preProject
 		Tests\Directory.Build.props = Tests\Directory.Build.props
 		Tests\Directory.Build.targets = Tests\Directory.Build.targets

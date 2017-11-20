@@ -1,5 +1,3 @@
-# Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
-
 ###############################################################################
 # EditorConfig is awesome: http://EditorConfig.org
 ###############################################################################
@@ -12,14 +10,14 @@ root = true
 ###############################################################################
 # Set default behavior to:
 #   a UTF-8 encoding,
-#   Windows-style line endings,
+#   Unix-style line endings,
 #   a newline ending the file,
 #   4 space indentation, and
 #   trimming of trailing whitespace
 ###############################################################################
 [*]
 charset = utf-8
-end_of_line = crlf
+end_of_line = lf
 insert_final_newline = true
 indent_style = space
 indent_size = 4
@@ -29,14 +27,16 @@ trim_trailing_whitespace = true
 # Set file behavior to:
 #   2 space indentation
 ###############################################################################
-[*.{config,csproj,json,props,resx,targets}]
+[*.{cmd,config,csproj,json,props,ps1,resx,sh,targets}]
 indent_size = 2
 
 ###############################################################################
 # Set file behavior to:
+#   Windows-style line endings, and
 #   tabular indentation
 ###############################################################################
 [*.sln]
+end_of_line = crlf
 indent_style = tab
 
 ###############################################################################
