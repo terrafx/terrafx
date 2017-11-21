@@ -3,10 +3,11 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+
 using TerraFX.Graphics;
 using TerraFX.Interop;
 using TerraFX.Utilities;
-using static System.Threading.Interlocked;
+
 using static TerraFX.Interop.Windows;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
@@ -57,6 +58,53 @@ namespace TerraFX.Provider.D3D12.Graphics
         }
         #endregion
 
+        #region TerraFX.Graphics.IGraphicsAdapter Properties
+        /// <summary>Gets the PCI ID of the device.</summary>
+        public uint DeviceId
+        {
+            get
+            {
+                return _deviceId;
+            }
+        }
+
+        /// <summary>Gets the name of the device.</summary>
+        public string DeviceName
+        {
+            get
+            {
+                return _deviceName;
+            }
+        }
+
+        /// <summary>Gets the <see cref="IGraphicsManager" /> for the instance.</summary>
+        public IGraphicsManager GraphicsManager
+        {
+            get
+            {
+                return _graphicsManager;
+            }
+        }
+
+        /// <summary>Gets the underlying handle for the instance.</summary>
+        public IntPtr Handle
+        {
+            get
+            {
+                return (IntPtr)(_adapter);
+            }
+        }
+
+        /// <summary>Gets the PCI ID of the vendor.</summary>
+        public uint VendorId
+        {
+            get
+            {
+                return _vendorId;
+            }
+        }
+        #endregion
+
         #region Static Methods
         /// <summary>Throws a <see cref="ObjectDisposedException" /> if the instance has already been disposed.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
@@ -102,35 +150,6 @@ namespace TerraFX.Provider.D3D12.Graphics
         {
             Dispose(isDisposing: true);
             GC.SuppressFinalize(this);
-        }
-        #endregion
-
-        #region TerraFX.Graphics.IGraphicsAdapter Properties
-        /// <summary>Gets the name of the device.</summary>
-        public string DeviceName
-        {
-            get
-            {
-                return _deviceName;
-            }
-        }
-
-        /// <summary>Gets the PCI ID of the vendor.</summary>
-        public uint VendorId
-        {
-            get
-            {
-                return _vendorId;
-            }
-        }
-
-        /// <summary>Gets the PCI ID of the device.</summary>
-        public uint DeviceId
-        {
-            get
-            {
-                return _deviceId;
-            }
         }
         #endregion
     }

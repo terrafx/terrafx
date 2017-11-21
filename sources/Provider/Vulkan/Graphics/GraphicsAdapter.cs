@@ -2,8 +2,10 @@
 
 using System;
 using System.Runtime.InteropServices;
+
 using TerraFX.Graphics;
 using TerraFX.Interop;
+
 using static TerraFX.Interop.Vulkan;
 
 namespace TerraFX.Provider.Vulkan.Graphics
@@ -47,6 +49,15 @@ namespace TerraFX.Provider.Vulkan.Graphics
         #endregion
 
         #region TerraFX.Graphics.IGraphicsAdapter Properties
+        /// <summary>Gets the PCI ID of the device.</summary>
+        public uint DeviceId
+        {
+            get
+            {
+                return _deviceId;
+            }
+        }
+
         /// <summary>Gets the name of the device.</summary>
         public string DeviceName
         {
@@ -56,21 +67,30 @@ namespace TerraFX.Provider.Vulkan.Graphics
             }
         }
 
+        /// <summary>Gets the <see cref="IGraphicsManager" /> for the instance.</summary>
+        public IGraphicsManager GraphicsManager
+        {
+            get
+            {
+                return _graphicsManager;
+            }
+        }
+
+        /// <summary>Gets the underlying handle for the instance.</summary>
+        public IntPtr Handle
+        {
+            get
+            {
+                return _physicalDevice;
+            }
+        }
+
         /// <summary>Gets the PCI ID of the vendor.</summary>
         public uint VendorId
         {
             get
             {
                 return _vendorId;
-            }
-        }
-
-        /// <summary>Gets the PCI ID of the device.</summary>
-        public uint DeviceId
-        {
-            get
-            {
-                return _deviceId;
             }
         }
         #endregion

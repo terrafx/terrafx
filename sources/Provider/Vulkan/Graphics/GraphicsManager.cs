@@ -4,15 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
+
 using TerraFX.Graphics;
 using TerraFX.Interop;
 using TerraFX.Utilities;
-using static System.Threading.Interlocked;
-using static TerraFX.Interop.Vulkan;
+
 using static TerraFX.Interop.VkResult;
 using static TerraFX.Interop.VkStructureType;
+using static TerraFX.Interop.Vulkan;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
@@ -53,6 +53,27 @@ namespace TerraFX.Provider.Vulkan.Graphics
         ~GraphicsManager()
         {
             Dispose(isDisposing: false);
+        }
+        #endregion
+
+        #region TerraFX.Graphics.IGraphicsManager Properties
+        /// <summary>Gets the <see cref="IGraphicsAdapter" /> instances currently available.</summary>
+        public IEnumerable<IGraphicsAdapter> GraphicsAdapters
+        {
+            get
+            {
+                _state.ThrowIfDisposed();
+                return _adapters.Value;
+            }
+        }
+
+        /// <summary>Gets the underlying handle for the instance.</summary>
+        public IntPtr Handle
+        {
+            get
+            {
+                return _instance.Value;
+            }
         }
         #endregion
 
@@ -143,18 +164,6 @@ namespace TerraFX.Provider.Vulkan.Graphics
             }
 
             return adapters.ToImmutable();
-        }
-        #endregion
-
-        #region TerraFX.Graphics.IGraphicsManager Properties
-        /// <summary>Gets the <see cref="IGraphicsAdapter" /> instances currently available.</summary>
-        public IEnumerable<IGraphicsAdapter> GraphicsAdapters
-        {
-            get
-            {
-                _state.ThrowIfDisposed();
-                return _adapters.Value;
-            }
         }
         #endregion
 

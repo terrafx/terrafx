@@ -1,5 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+using System;
 using System.Collections.Generic;
 
 namespace TerraFX.Graphics
@@ -10,6 +11,9 @@ namespace TerraFX.Graphics
         #region Properties
         /// <summary>Gets the <see cref="IGraphicsAdapter" /> instances currently available.</summary>
         IEnumerable<IGraphicsAdapter> GraphicsAdapters { get; }
+
+        /// <summary>Gets the underlying handle for the instance.</summary>
+        IntPtr Handle { get; }
         #endregion
     }
 }

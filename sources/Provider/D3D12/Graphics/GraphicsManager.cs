@@ -5,9 +5,11 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
 using System.Runtime.InteropServices;
+
 using TerraFX.Graphics;
 using TerraFX.Interop;
 using TerraFX.Utilities;
+
 using static TerraFX.Interop.DXGI;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -56,6 +58,27 @@ namespace TerraFX.Provider.D3D12.Graphics
         ~GraphicsManager()
         {
             Dispose(isDisposing: false);
+        }
+        #endregion
+
+        #region TerraFX.Graphics.IGraphicsManager Properties
+        /// <summary>Gets the <see cref="IGraphicsAdapter" /> instances currently available.</summary>
+        public IEnumerable<IGraphicsAdapter> GraphicsAdapters
+        {
+            get
+            {
+                _state.ThrowIfDisposed();
+                return _adapters.Value;
+            }
+        }
+
+        /// <summary>Gets the underlying handle for the instance.</summary>
+        public IntPtr Handle
+        {
+            get
+            {
+                return IntPtr.Zero;
+            }
         }
         #endregion
 
@@ -163,18 +186,6 @@ namespace TerraFX.Provider.D3D12.Graphics
             }
 
             return graphicsAdapters.ToImmutable();
-        }
-        #endregion
-
-        #region TerraFX.Graphics.IGraphicsManager Properties
-        /// <summary>Gets the <see cref="IGraphicsAdapter" /> instances currently available.</summary>
-        public IEnumerable<IGraphicsAdapter> GraphicsAdapters
-        {
-            get
-            {
-                _state.ThrowIfDisposed();
-                return _adapters.Value;
-            }
         }
         #endregion
 
