@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Sources\Provider\libX11\TerraFX.Provider.libX11.csproj" />
+    <ProjectReference Include="..\..\..\sources\Provider\libX11\TerraFX.Provider.libX11.csproj" />
   </ItemGroup>
 
 </Project>

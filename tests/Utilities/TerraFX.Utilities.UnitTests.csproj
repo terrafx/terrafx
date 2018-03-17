@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Sources\Utilities\TerraFX.Utilities.csproj" />
+    <ProjectReference Include="..\..\sources\Utilities\TerraFX.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

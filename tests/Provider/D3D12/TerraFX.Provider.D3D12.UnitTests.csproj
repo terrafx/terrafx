@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Sources\Provider\D3D12\TerraFX.Provider.D3D12.csproj" />
+    <ProjectReference Include="..\..\..\sources\Provider\D3D12\TerraFX.Provider.D3D12.csproj" />
   </ItemGroup>
 
 </Project>
