@@ -55,6 +55,9 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>A value that indicates whether the instance is the active window.</summary>
         internal bool _isActive;
 
+        /// <summary>A value that indicates whether the instance is enabled.</summary>
+        internal bool _isEnabled;
+
         /// <summary>A value that indicates whether the instance is visible.</summary>
         internal bool _isVisible;
         #endregion
@@ -118,6 +121,15 @@ namespace TerraFX.Provider.Win32.UI
             get
             {
                 return _isActive;
+            }
+        }
+
+        /// <summary>Gets a value that indicates whether the instance is enabled.</summary>
+        public bool IsEnabled
+        {
+            get
+            {
+                return _isEnabled;
             }
         }
 
@@ -237,6 +249,11 @@ namespace TerraFX.Provider.Win32.UI
                 Assert(_windowState == WindowState.Restored, Resources.ArgumentOutOfRangeExceptionMessage, nameof(WindowState), _windowState);
             }
 
+            if (_isEnabled == false)
+            {
+                windowStyle |= WS_DISABLED;
+            }
+
             if (_isVisible)
             {
                 windowStyle |= WS_VISIBLE;
@@ -246,12 +263,12 @@ namespace TerraFX.Provider.Win32.UI
 
             if (_flowDirection == FlowDirection.RightToLeft)
             {
-                windowStyleEx |= (WS_EX_LAYOUTRTL | WS_EX_LEFTSCROLLBAR);
+                windowStyleEx |= WS_EX_LAYOUTRTL;
             }
 
             if (_readingDirection == ReadingDirection.RightToLeft)
             {
-                windowStyleEx |= (WS_EX_RIGHT | WS_EX_RTLREADING);
+                windowStyleEx |= (WS_EX_RIGHT | WS_EX_RTLREADING | WS_EX_LEFTSCROLLBAR);
             }
 
             fixed (char* lpWindowName = _title)
@@ -370,6 +387,15 @@ namespace TerraFX.Provider.Win32.UI
             return 0;
         }
 
+        /// <summary>Handles the <see cref="WM_ENABLE" /> message.</summary>
+        /// <param name="wParam">A value that indicates whether the instance is being enabled or disabled.</param>
+        /// <returns>0</returns>
+        internal nint HandleWmEnable(nuint wParam)
+        {
+            _isEnabled = (wParam != FALSE);
+            return 0;
+        }
+
         /// <summary>Handles the <see cref="WM_MOVE" /> message.</summary>
         /// <param name="lParam">A value that represents the x and y coordinates of the upper-left corner of the client area of the window.</param>
         /// <returns>0</returns>
@@ -449,6 +475,11 @@ namespace TerraFX.Provider.Win32.UI
                     return HandleWmActivate(wParam);
                 }
 
+                case WM_ENABLE:
+                {
+                    return HandleWmEnable(wParam);
+                }
+
                 case WM_SETTEXT:
                 {
                     return HandleWmSetText(wParam, lParam);
@@ -508,6 +539,30 @@ namespace TerraFX.Provider.Win32.UI
             if (_handle.IsValueCreated)
             {
                 SendMessage(_handle.Value, WM_CLOSE, wParam: 0, lParam: 0);
+            }
+        }
+
+        /// <summary>Disables the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public void Disable()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            if (_isEnabled)
+            {
+                EnableWindow(_handle.Value, FALSE);
+            }
+        }
+
+        /// <summary>Enables the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public void Enable()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            if (_isEnabled == false)
+            {
+                EnableWindow(_handle.Value, TRUE);
             }
         }
 

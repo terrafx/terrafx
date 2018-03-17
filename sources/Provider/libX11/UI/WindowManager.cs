@@ -10,6 +10,7 @@ using TerraFX.Provider.libX11.Threading;
 using TerraFX.UI;
 using TerraFX.Utilities;
 using static TerraFX.Interop.libX11;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
@@ -59,7 +60,7 @@ namespace TerraFX.Provider.libX11.UI
         {
             get
             {
-                return _dispatchManager.Value;
+                return _state.IsNotDisposedOrDisposing ? _dispatchManager.Value : null;
             }
         }
         #endregion
@@ -70,7 +71,7 @@ namespace TerraFX.Provider.libX11.UI
         {
             get
             {
-                return (IEnumerable<IWindow>)(_windows);
+                return _state.IsNotDisposedOrDisposing ? (IEnumerable<IWindow>)(_windows) : Array.Empty<IWindow>();
             }
         }
         #endregion
@@ -79,13 +80,9 @@ namespace TerraFX.Provider.libX11.UI
         /// <summary>Forwards native window messages to the appropriate <see cref="Window" /> instance for processing.</summary>
         /// <param name="windowManagerProperty">The property used to get the <see cref="WindowManager" /> associated with the event.</param>
         /// <param name="xevent">The event to be processed.</param>
-        /// <exception cref="ExternalException">The call to <see cref="XGetWindowProperty(IntPtr, nuint, nuint, nint, nint, int, nuint, nuint*, int*, nuint*, nuint*, byte**)" /> failed.</exception>
-        internal static void ForwardWindowEvent(nuint windowManagerProperty, ref /* readonly */ XEvent xevent)
+        /// <exception cref="ExternalException">The call to <see cref="XGetWindowProperty(IntPtr, nuint, nuint, nint, nint, int, nuint, out nuint, out int, out nuint, out nuint, out byte*)" /> failed.</exception>
+        internal static void ForwardWindowEvent(nuint windowManagerProperty, in XEvent xevent)
         {
-            nuint actualType, nitems, bytesAfter;
-            int actualFormat;
-            IntPtr* prop;
-
             var result = XGetWindowProperty(
                 xevent.xany.display,
                 xevent.xany.window,
@@ -94,11 +91,11 @@ namespace TerraFX.Provider.libX11.UI
                 long_length: (IntPtr.Size >> 2),
                 delete: False,
                 req_type: 32,
-                actual_type_return: &actualType,
-                actual_format_return: &actualFormat,
-                nitems_return: &nitems,
-                bytes_after_return: &bytesAfter,
-                prop_return: (byte**)(&prop)
+                actual_type_return: out var actualType,
+                actual_format_return: out var actualFormat,
+                nitems_return: out var nitems,
+                bytes_after_return: out var bytesAfter,
+                prop_return: out var prop
             );
 
             if (result != Success)
@@ -106,11 +103,11 @@ namespace TerraFX.Provider.libX11.UI
                 ThrowExternalException(nameof(XGetWindowProperty), result);
             }
 
-            var windowManager = (WindowManager)(GCHandle.FromIntPtr(*prop).Target);
+            var windowManager = (WindowManager)(GCHandle.FromIntPtr((IntPtr)(prop)).Target);
 
             if (windowManager._windows.TryGetValue((IntPtr)(xevent.xany.window), out var window))
             {
-                window.ProcessWindowEvent(ref xevent);
+                window.ProcessWindowEvent(in xevent);
             }
         }
         #endregion
@@ -134,11 +131,13 @@ namespace TerraFX.Provider.libX11.UI
         /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
         internal void DisposeWindows(bool isDisposing)
         {
+            _state.AssertDisposing();
+
             if (isDisposing)
             {
-                foreach (var createdWindowHandle in _windows.Keys)
+                foreach (var windowHandle in _windows.Keys)
                 {
-                    if (_windows.TryRemove(createdWindowHandle, out var createdWindow))
+                    if (_windows.TryRemove(windowHandle, out var createdWindow))
                     {
                         createdWindow.Dispose();
                     }
@@ -148,6 +147,8 @@ namespace TerraFX.Provider.libX11.UI
             {
                 _windows.Clear();
             }
+
+            Assert(_windows.IsEmpty, Resources.ArgumentOutOfRangeExceptionMessage, nameof(_windows.IsEmpty), _windows.IsEmpty);
         }
         #endregion
 

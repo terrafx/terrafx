@@ -914,6 +914,14 @@ namespace TerraFX.Interop
         #endregion
 
         #region External Methods
+        [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "EnableWindow", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [SuppressUnmanagedCodeSecurity]
+        [return: ComAliasName("BOOL")]
+        public static extern int EnableWindow(
+            [In, ComAliasName("HWND")] IntPtr hWnd,
+            [In, ComAliasName("BOOL")] int bEnable
+        );
+
         [DllImport("User32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "SetWindowTextW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("BOOL")]

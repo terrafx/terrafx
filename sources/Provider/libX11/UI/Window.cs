@@ -35,6 +35,9 @@ namespace TerraFX.Provider.libX11.UI
         /// <summary>A <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
         internal Rectangle _bounds;
 
+        /// <summary>A <see cref="Rectangle" /> that represents the restored bounds of the instance.</summary>
+        internal Rectangle _restoredBounds;
+
         /// <summary>The <see cref="FlowDirection" /> for the instance.</summary>
         internal FlowDirection _flowDirection;
 
@@ -49,6 +52,9 @@ namespace TerraFX.Provider.libX11.UI
 
         /// <summary>A value that indicates whether the instance is the active window.</summary>
         internal bool _isActive;
+
+        /// <summary>A value that indicates whether the instance is enabled.</summary>
+        internal bool _isEnabled;
 
         /// <summary>A value that indicates whether the instance is visible.</summary>
         internal bool _isVisible;
@@ -103,7 +109,7 @@ namespace TerraFX.Provider.libX11.UI
         {
             get
             {
-                return (IntPtr)(_handle.Value);
+                return _state.IsNotDisposedOrDisposing ? (IntPtr)(_handle.Value) : IntPtr.Zero;
             }
         }
 
@@ -113,6 +119,15 @@ namespace TerraFX.Provider.libX11.UI
             get
             {
                 return _isActive;
+            }
+        }
+
+        /// <summary>Gets a value that indicates whether the instance is enabled.</summary>
+        public bool IsEnabled
+        {
+            get
+            {
+                return _isEnabled;
             }
         }
 
@@ -240,6 +255,8 @@ namespace TerraFX.Provider.libX11.UI
         /// <summary>Disposes of the <c>Window</c> for the instance.</summary>
         internal void DisposeWindowHandle()
         {
+            _state.AssertDisposing();
+
             if (_handle.IsValueCreated)
             {
                 var display = _windowManager.DispatchManager.Display;
@@ -249,28 +266,28 @@ namespace TerraFX.Provider.libX11.UI
 
         /// <summary>Handles the <c>XCirculate</c> event.</summary>
         /// <param name="xcirculate">The <c>XCirculate</c> event.</param>
-        internal void HandleXCirculate(ref /* readonly */ XCirculateEvent xcirculate)
+        internal void HandleXCirculate(in XCirculateEvent xcirculate)
         {
             _isActive = (xcirculate.place == PlaceOnTop);
         }
 
         /// <summary>Handles the <c>XConfigure</c> event.</summary>
         /// <param name="xconfigure">The <c>XConfigure</c> event.</param>
-        internal void HandleXConfigure(ref /* readonly */ XConfigureEvent xconfigure)
+        internal void HandleXConfigure(in XConfigureEvent xconfigure)
         {
             _bounds = new Rectangle(xconfigure.x, xconfigure.y, xconfigure.width, xconfigure.height);
         }
 
         /// <summary>Handles the <c>XVisiblity</c> event.</summary>
         /// <param name="xvisibility">The <c>XVisibility</c> event.</param>
-        internal void HandleXVisibility(ref /* readonly */ XVisibilityEvent xvisibility)
+        internal void HandleXVisibility(in XVisibilityEvent xvisibility)
         {
             _isVisible = (xvisibility.state != VisibilityFullyObscured);
         }
 
         /// <summary>Processes a window event sent to the instance.</summary>
         /// <param name="xevent">The event to be processed.</param>
-        internal void ProcessWindowEvent(ref /* readonly */ XEvent xevent)
+        internal void ProcessWindowEvent(in XEvent xevent)
         {
             ThrowIfNotThread(_parentThread);
 
@@ -278,19 +295,19 @@ namespace TerraFX.Provider.libX11.UI
             {
                 case VisibilityNotify:
                 {
-                    HandleXVisibility(ref xevent.xvisibility);
+                    HandleXVisibility(in xevent.xvisibility);
                     break;
                 }
 
                 case ConfigureNotify:
                 {
-                    HandleXConfigure(ref xevent.xconfigure);
+                    HandleXConfigure(in xevent.xconfigure);
                     break;
                 }
 
                 case CirculateNotify:
                 {
-                    HandleXCirculate(ref xevent.xcirculate);
+                    HandleXCirculate(in xevent.xcirculate);
                     break;
                 }
             }
@@ -325,6 +342,20 @@ namespace TerraFX.Provider.libX11.UI
             Dispose();
         }
 
+        /// <summary>Disables the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public void Disable()
+        {
+            _isEnabled = false;
+        }
+
+        /// <summary>Enables the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public void Enable()
+        {
+            _isEnabled = true;
+        }
+
         /// <summary>Hides the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public void Hide()
@@ -346,7 +377,15 @@ namespace TerraFX.Provider.libX11.UI
 
             if (_windowState != WindowState.Maximized)
             {
-                throw new NotImplementedException();
+                var display = _windowManager.DispatchManager.Display;
+                XGetWindowAttributes(display, _handle.Value, out var windowAttributes);
+                _restoredBounds = new Rectangle(windowAttributes.x, windowAttributes.y, windowAttributes.width, windowAttributes.height);
+
+                var screenWidth = XWidthOfScreen(windowAttributes.screen);
+                var screenHeight = XHeightOfScreen(windowAttributes.screen);
+
+                XMoveResizeWindow(display, _handle.Value, 0, 0, (uint)(screenWidth), (uint)(screenHeight));
+                _windowState = WindowState.Maximized;
             }
         }
 
@@ -358,7 +397,13 @@ namespace TerraFX.Provider.libX11.UI
 
             if (_windowState != WindowState.Minimized)
             {
-                throw new NotImplementedException();
+                var display = _windowManager.DispatchManager.Display;
+                XGetWindowAttributes(display, _handle.Value, out var windowAttributes);
+
+                var screenNumber = XScreenNumberOfScreen(windowAttributes.screen);
+
+                XIconifyWindow(display, _handle.Value, screenNumber);
+                _windowState = WindowState.Minimized;
             }
         }
 
@@ -370,7 +415,14 @@ namespace TerraFX.Provider.libX11.UI
 
             if (_windowState != WindowState.Restored)
             {
-                throw new NotImplementedException();
+                if (_windowState == WindowState.Maximized)
+                {
+                    var display = _windowManager.DispatchManager.Display;
+                    XMoveResizeWindow(display, _handle.Value, (int)(_restoredBounds.X), (int)(_restoredBounds.Y), (uint)(_restoredBounds.Width), (uint)(_restoredBounds.Height));
+                }
+
+                Show();
+                _windowState = WindowState.Restored;
             }
         }
 
@@ -385,6 +437,8 @@ namespace TerraFX.Provider.libX11.UI
                 var display = _windowManager.DispatchManager.Display;
                 XMapWindow(display, _handle.Value);
             }
+
+            TryActivate();
         }
 
         /// <summary>Tries to activate the instance.</summary>

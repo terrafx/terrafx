@@ -970,7 +970,7 @@ namespace TerraFX.Interop
         public static extern int XGetWindowAttributes(
             [In, ComAliasName("Display")] IntPtr display,
             [In, ComAliasName("Window")] nuint w,
-            [Out] XWindowAttributes* window_attributes_return
+            [Out] out XWindowAttributes window_attributes_return
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XGetWindowProperty", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -983,11 +983,11 @@ namespace TerraFX.Interop
             [In] nint long_length,
             [In, ComAliasName("Bool")] int delete,
             [In, ComAliasName("Atom")] nuint req_type,
-            [Out, ComAliasName("Atom")] nuint* actual_type_return,
-            [Out] int* actual_format_return,
-            [Out] nuint* nitems_return,
-            [Out] nuint* bytes_after_return,
-            [Out] byte** prop_return
+            [Out, ComAliasName("Atom")] out nuint actual_type_return,
+            [Out] out int actual_format_return,
+            [Out] out nuint nitems_return,
+            [Out] out nuint bytes_after_return,
+            [Out] out byte* prop_return
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XHeightOfScreen", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -1000,6 +1000,15 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         public static extern int XHeightMMOfScreen(
             [In] Screen* screen
+        );
+
+        [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XIconifyWindow", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [SuppressUnmanagedCodeSecurity]
+        [return: ComAliasName("Status")]
+        public static extern nuint XIconifyWindow(
+            [In, ComAliasName("Display")] IntPtr display,
+            [In, ComAliasName("Window")] nuint w,
+            [In] int screen_number
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XIfEvent", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -1158,7 +1167,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         public static extern int XNextEvent(
             [In, ComAliasName("Display")] IntPtr display,
-            [Out] XEvent* event_return
+            [Out] out XEvent event_return
         );
 
         [DllImport("libX11", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XNextRequest", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]

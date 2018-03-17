@@ -22,6 +22,9 @@ namespace TerraFX.UI
         /// <summary>Gets a value that indicates whether the instance is the active window.</summary>
         bool IsActive { get; }
 
+        /// <summary>Gets a value that indicates whether the instance is enabled.</summary>
+        bool IsEnabled { get; }
+
         /// <summary>Gets a value that indicates whether the instance is visible.</summary>
         bool IsVisible { get; }
 
@@ -50,6 +53,12 @@ namespace TerraFX.UI
 
         /// <summary>Closes the instance.</summary>
         void Close();
+
+        /// <summary>Disables the instance.</summary>
+        void Disable();
+
+        /// <summary>Enables the instance.</summary>
+        void Enable();
 
         /// <summary>Hides the instance.</summary>
         void Hide();

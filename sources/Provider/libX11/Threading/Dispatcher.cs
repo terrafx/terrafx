@@ -2,7 +2,6 @@
 
 using System;
 using System.Threading;
-using TerraFX.Interop;
 using TerraFX.Threading;
 using TerraFX.Provider.libX11.UI;
 using static TerraFX.Interop.libX11;
@@ -85,6 +84,15 @@ namespace TerraFX.Provider.libX11.Threading
             }
         }
 
+        /// <summary>Gets the handle for the instance.</summary>
+        public IntPtr Handle
+        {
+            get
+            {
+                return (IntPtr)(_windowManagerProperty.Value);
+            }
+        }
+
         /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
         public Thread ParentThread
         {
@@ -108,15 +116,14 @@ namespace TerraFX.Provider.libX11.Threading
             ThrowIfNotThread(_parentThread);
 
             var display = _dispatchManager.Display;
-            XEvent xevent;
 
             while (XPending(display) != 0)
             {
-                XNextEvent(display, &xevent);
+                XNextEvent(display, out var xevent);
 
                 if (xevent.type != NoExpose)
                 {
-                    WindowManager.ForwardWindowEvent(_windowManagerProperty.Value, ref xevent);
+                    WindowManager.ForwardWindowEvent(_windowManagerProperty.Value, in xevent);
                 }
             }
         }

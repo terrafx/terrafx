@@ -10,6 +10,7 @@ using TerraFX.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Interop.libc;
 using static TerraFX.Interop.libX11;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
@@ -57,7 +58,7 @@ namespace TerraFX.Provider.libX11.Threading
         {
             get
             {
-                return _display.Value;
+                return _state.IsNotDisposedOrDisposing ? _display.Value : IntPtr.Zero;
             }
         }
         #endregion
@@ -68,15 +69,15 @@ namespace TerraFX.Provider.libX11.Threading
         {
             get
             {
-                timespec timespec;
-                var result = clock_gettime(CLOCK_MONOTONIC, &timespec);
+                var result = clock_gettime(CLOCK_MONOTONIC, out var timespec);
 
                 if (result != 0)
                 {
                     ThrowExternalExceptionForLastError(nameof(clock_gettime));
                 }
 
-                const long NanosecondsPerSecond = 1000000000;
+                const long NanosecondsPerSecond = (TimeSpan.TicksPerSecond * 100);
+                Assert(NanosecondsPerSecond == 1000000000, Resources.ArgumentOutOfRangeExceptionMessage, nameof(NanosecondsPerSecond), NanosecondsPerSecond);
 
                 var ticks = (long)(timespec.tv_sec);
                 {
@@ -135,6 +136,8 @@ namespace TerraFX.Provider.libX11.Threading
         /// <summary>Disposes of the <c>Display</c> that was created for the instance.</summary>
         internal void DisposeDisplay()
         {
+            _state.AssertDisposing();
+
             if (_display.IsValueCreated)
             {
                 XCloseDisplay(_display.Value);

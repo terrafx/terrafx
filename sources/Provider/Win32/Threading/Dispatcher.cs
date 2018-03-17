@@ -2,7 +2,6 @@
 
 using System;
 using System.Threading;
-using TerraFX.Interop;
 using TerraFX.Threading;
 using static TerraFX.Interop.User32;
 using static TerraFX.Interop.Windows;

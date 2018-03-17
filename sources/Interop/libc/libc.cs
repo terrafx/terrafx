@@ -15,7 +15,7 @@ namespace TerraFX.Interop
         /// <summary>The identifier of the system-wide clock measuring real time.</summary>
         public const int CLOCK_REALTIME = 0;
 
-        /// <summary>The identifier for the system-wide monotonic clock, which is defined as a clock measuring real time, whose value cannot be set via <see cref="libc.clock_settime(int, timespec*)" /> and which cannot have negative clock jumps.</summary>
+        /// <summary>The identifier for the system-wide monotonic clock, which is defined as a clock measuring real time, whose value cannot be set via <see cref="libc.clock_settime(int, in timespec)" /> and which cannot have negative clock jumps.</summary>
         /// <remarks>The maximum possible clock jump shall be implementation-defined.</remarks>
         public const int CLOCK_MONOTONIC = 1;
 
@@ -36,7 +36,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         public static extern int clock_getres(
             [In, ComAliasName("clockid_t")] int clock_id,
-            [Out] timespec* res
+            [Out] out timespec res
         );
 
         /// <summary>Gets the current value of a clock.</summary>
@@ -47,7 +47,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         public static extern int clock_gettime(
             [In, ComAliasName("clockid_t")] int clock_id,
-            [Out] timespec* tp
+            [Out] out timespec tp
         );
 
         /// <summary>Sets the value of a clock.</summary>
@@ -58,7 +58,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         public static extern int clock_settime(
             [In, ComAliasName("clockid_t")] int clock_id,
-            [In] timespec* tp
+            [In] in timespec tp
         );
         #endregion
     }
