@@ -27,11 +27,11 @@ namespace TerraFX.Samples
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                compositionAssemblies[0] = Win32Provider;
+                _compositionAssemblies[0] = Win32Provider;
             }
             else
             {
-                compositionAssemblies[0] = libX11Provider;
+                _compositionAssemblies[0] = libX11Provider;
             }
 
             Array.Copy(compositionAssemblies, 0, _compositionAssemblies, 1, compositionAssemblies.Length);
