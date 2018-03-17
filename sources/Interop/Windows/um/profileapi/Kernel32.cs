@@ -15,14 +15,14 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("BOOL")]
         public static extern int QueryPerformanceCounter(
-            [Out] LARGE_INTEGER* lpPerformanceCount
+            [Out] out LARGE_INTEGER lpPerformanceCount
         );
 
         [DllImport("Kernel32", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "QueryPerformanceFrequency", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("BOOL")]
         public static extern int QueryPerformanceFrequency(
-            [Out] LARGE_INTEGER* lpFrequency
+            [Out] out LARGE_INTEGER lpFrequency
         );
         #endregion
     }

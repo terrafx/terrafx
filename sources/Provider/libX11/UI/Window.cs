@@ -41,6 +41,9 @@ namespace TerraFX.Provider.libX11.UI
         /// <summary>The <see cref="ReadingDirection" /> for the instance.</summary>
         internal ReadingDirection _readingDirection;
 
+        /// <summary>The <see cref="WindowState" /> for the instance.</summary>
+        internal WindowState _windowState;
+
         /// <summary>The <see cref="State" /> of the instance.</summary>
         internal readonly State _state;
 
@@ -61,6 +64,7 @@ namespace TerraFX.Provider.libX11.UI
             _parentThread = Thread.CurrentThread;
             _properties = new PropertySet();
             _title = typeof(Window).FullName;
+            _bounds = new Rectangle(float.NaN, float.NaN, float.NaN, float.NaN);
 
             _windowManager = windowManager;
             _state.Transition(to: Initialized);
@@ -165,6 +169,15 @@ namespace TerraFX.Provider.libX11.UI
                 return _windowManager;
             }
         }
+
+        /// <summary>Gets the <see cref="WindowState" /> for the instance.</summary>
+        public WindowState WindowState
+        {
+            get
+            {
+                return _windowState;
+            }
+        }
         #endregion
 
         #region Methods
@@ -184,10 +197,10 @@ namespace TerraFX.Provider.libX11.UI
             var window = XCreateWindow(
                 display,
                 parent: rootWindow,
-                x: (int)(screenWidth * 0.75f),
-                y: (int)(screenHeight * 0.75f),
-                width: (uint)(screenWidth * 0.125f),
-                height: (uint)(screenHeight * 0.125f),
+                x: float.IsNaN(Bounds.X) ? (int)(screenWidth * 0.75f) : (int)(Bounds.X),
+                y: float.IsNaN(Bounds.Y) ? (int)(screenHeight * 0.75f) : (int)(Bounds.Y),
+                width: float.IsNaN(Bounds.Width) ? (uint)(screenWidth * 0.125f) : (uint)(Bounds.Width),
+                height: float.IsNaN(Bounds.Height) ? (uint)(screenHeight * 0.125f) : (uint)(Bounds.Height),
                 border_width: 0,
                 depth: CopyFromParent,
                 @class: InputOutput,
@@ -295,12 +308,14 @@ namespace TerraFX.Provider.libX11.UI
 
         #region TerraFX.UI.IWindow Methods
         /// <summary>Activates the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public void Activate()
         {
-            if (_isActive == false)
+            var succeeded = TryActivate();
+
+            if (succeeded == false)
             {
-                var display = _windowManager.DispatchManager.Display;
-                XRaiseWindow(display, _handle.Value);
+                ThrowExternalExceptionForLastError(nameof(XRaiseWindow));
             }
         }
 
@@ -311,8 +326,11 @@ namespace TerraFX.Provider.libX11.UI
         }
 
         /// <summary>Hides the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public void Hide()
         {
+            _state.ThrowIfDisposedOrDisposing();
+
             if (_isVisible)
             {
                 var display = _windowManager.DispatchManager.Display;
@@ -320,14 +338,68 @@ namespace TerraFX.Provider.libX11.UI
             }
         }
 
+        /// <summary>Maximizes the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public void Maximize()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            if (_windowState != WindowState.Maximized)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>Minimizes the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public void Minimize()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            if (_windowState != WindowState.Minimized)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>Restores the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public void Restore()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            if (_windowState != WindowState.Restored)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         /// <summary>Shows the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public void Show()
         {
+            _state.ThrowIfDisposedOrDisposing();
+
             if (_isVisible == false)
             {
                 var display = _windowManager.DispatchManager.Display;
                 XMapWindow(display, _handle.Value);
             }
+        }
+
+        /// <summary>Tries to activate the instance.</summary>
+        /// <returns><c>true</c> if the instance was succesfully activated; otherwise, <c>false</c>.</returns>
+        public bool TryActivate()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            if (_isActive == false)
+            {
+                var display = _windowManager.DispatchManager.Display;
+                XRaiseWindow(display, _handle.Value);
+            }
+
+            return true;
         }
         #endregion
     }

@@ -136,7 +136,7 @@ namespace TerraFX.ApplicationModel
         /// <returns>A new instance of the <see cref="CompositionHost" /> configured to use <see cref="_compositionAssemblies" />.</returns>
         internal CompositionHost CreateCompositionHost()
         {
-            _state.ThrowIfDisposed();
+            _state.ThrowIfDisposedOrDisposing();
 
             var containerConfiguration = new ContainerConfiguration();
             {
@@ -210,16 +210,23 @@ namespace TerraFX.ApplicationModel
                 var dispatcher = dispatchManager.DispatcherForCurrentThread;
                 var previousTimestamp = dispatchManager.CurrentTimestamp;
 
+                // We need to do an initial dispatch to cover the case where a quit
+                // message was posted before the message pump was started, otherwise
+                // we can end up with a NullReferenceException when we try to execute
+                // OnIdle
+
+                dispatcher.DispatchPending();
+
                 while (_state == Running)
                 {
-                    dispatcher.DispatchPending();
-
                     var currentTimestamp = dispatchManager.CurrentTimestamp;
                     {
                         var delta = currentTimestamp - previousTimestamp;
                         OnIdle(delta);
                     }
                     previousTimestamp = currentTimestamp;
+
+                    dispatcher.DispatchPending();
                 }
             }
             _state.TryTransition(from: Exiting, to: Stopped);

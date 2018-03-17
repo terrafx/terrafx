@@ -13,6 +13,7 @@ using static TerraFX.Interop.Kernel32;
 using static TerraFX.Interop.User32;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Interop.Desktop.User32;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.InteropUtilities;
 using static TerraFX.Utilities.State;
@@ -40,6 +41,9 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>The <see cref="DispatchManager" /> for the instance.</summary>
         internal readonly Lazy<DispatchManager> _dispatchManager;
 
+        /// <summary>The <see cref="GCHandle" /> containing the native handle for the instance.</summary>
+        internal readonly Lazy<GCHandle> _nativeHandle;
+
         /// <summary>A map of <c>HWND</c> to <see cref="Window" /> objects created for the instance.</summary>
         internal readonly ConcurrentDictionary<IntPtr, Window> _windows;
 
@@ -56,6 +60,7 @@ namespace TerraFX.Provider.Win32.UI
         {
             _classAtom = new Lazy<ushort>(CreateClassAtom, isThreadSafe: true);
             _dispatchManager = dispatchManager;
+            _nativeHandle = new Lazy<GCHandle>(() => GCHandle.Alloc(this, GCHandleType.Normal), isThreadSafe: true);
 
             _windows = new ConcurrentDictionary<IntPtr, Window>();
             _state.Transition(to: Initialized);
@@ -76,7 +81,7 @@ namespace TerraFX.Provider.Win32.UI
         {
             get
             {
-                return _classAtom.Value;
+                return _state.IsNotDisposedOrDisposing ? _classAtom.Value : (ushort)(0);
             }
         }
 
@@ -85,7 +90,17 @@ namespace TerraFX.Provider.Win32.UI
         {
             get
             {
-                return _dispatchManager.Value;
+                return _state.IsNotDisposedOrDisposing ? _dispatchManager.Value : null;
+            }
+        }
+
+        /// <summary>Gets the <see cref="GCHandle" /> containing the native handle for the instance.</summary>
+        internal GCHandle NativeHandle
+        {
+            get
+            {
+                _state.AssertNotDisposedOrDisposing();
+                return _nativeHandle.Value;
             }
         }
         #endregion
@@ -96,7 +111,7 @@ namespace TerraFX.Provider.Win32.UI
         {
             get
             {
-                return (IEnumerable<IWindow>)(_windows);
+                return _state.IsNotDisposedOrDisposing ? (IEnumerable<IWindow>)(_windows) : Array.Empty<IWindow>();
             }
         }
         #endregion
@@ -118,13 +133,13 @@ namespace TerraFX.Provider.Win32.UI
                 // for hWnd. This allows some delayed initialization to occur since most
                 // of the fields in Window are lazy.
 
-                var pCreateStruct = (CREATESTRUCT*)(lParam);
-                userData = (nint)(pCreateStruct->lpCreateParams);
+                ref var pCreateStruct = ref AsRef<CREATESTRUCT>(lParam);
+                userData = (nint)(pCreateStruct.lpCreateParams);
                 SetWindowLongPtr(hWnd, GWLP_USERDATA, userData);
             }
             else
             {
-                    userData = GetWindowLongPtr(hWnd, GWLP_USERDATA);
+                userData = GetWindowLongPtr(hWnd, GWLP_USERDATA);
             }
 
             // We are assuming that userData will definitely be set here and that it will be set
@@ -159,7 +174,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Gets the <c>HCURSOR</c> for the desktop window.</summary>
         /// <returns>The <c>HCURSOR</c> for the desktop window.</returns>
         /// <exception cref="ExternalException">The call to <see cref="GetClassName(IntPtr, char*, int)" /> failed.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="GetClassInfoEx(IntPtr, char*, WNDCLASSEX*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="GetClassInfoEx(IntPtr, char*, out WNDCLASSEX)" /> failed.</exception>
         internal static IntPtr GetDesktopCursor()
         {
             var desktopWindowHandle = GetDesktopWindow();
@@ -172,11 +187,9 @@ namespace TerraFX.Provider.Win32.UI
                 ThrowExternalExceptionForLastError(nameof(GetClassName));
             }
 
-            WNDCLASSEX desktopWindowClass;
-
             var succeeded = GetClassInfoEx(
                 lpszClass: desktopClassName,
-                lpwcx: &desktopWindowClass
+                lpwcx: out var desktopWindowClass
             );
 
             if (succeeded == FALSE)
@@ -191,17 +204,22 @@ namespace TerraFX.Provider.Win32.UI
         #region Methods
         /// <summary>Creates an <c>ATOM</c> by registering a <see cref="WNDCLASSEX" /> for the entry point module.</summary>
         /// <exception cref="ExternalException">The call to <see cref="GetClassName(IntPtr, char*, int)" /> failed.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="GetClassInfoEx(IntPtr, char*, WNDCLASSEX*)" /> failed.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="RegisterClassEx(WNDCLASSEX*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="GetClassInfoEx(IntPtr, char*, out WNDCLASSEX)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="RegisterClassEx(in WNDCLASSEX)" /> failed.</exception>
         /// <returns>The <c>ATOM</c> created by registering a <see cref="WNDCLASSEX" /> for the entry point module.</returns>
         internal ushort CreateClassAtom()
         {
+            _state.AssertNotDisposedOrDisposing();
+
             ushort classAtom;
             {
                 // lpszClassName should be less than 256 characters (this includes the null terminator)
                 // Currently, we are well below this limit and should be hitting 74 characters + the null terminator
 
-                fixed (char* lpszClassName = $"{GetType().FullName}.{EntryPointModule:X16}.{GetHashCode():X8}")
+                var className = $"{GetType().FullName}.{EntryPointModule:X16}.{GetHashCode():X8}";
+                Assert(className.Length < byte.MaxValue, Resources.ArgumentOutOfRangeExceptionMessage, nameof(className), className);
+
+                fixed (char* lpszClassName = className)
                 {
                     var wndClassEx = new WNDCLASSEX {
                         cbSize = SizeOf<WNDCLASSEX>(),
@@ -218,7 +236,7 @@ namespace TerraFX.Provider.Win32.UI
                         /* hIconSm = IntPtr.Zero */
                     };
 
-                    classAtom = RegisterClassEx(&wndClassEx);
+                    classAtom = RegisterClassEx(in wndClassEx);
                 }
 
                 if (classAtom == 0)
@@ -241,6 +259,7 @@ namespace TerraFX.Provider.Win32.UI
             {
                 DisposeWindows(isDisposing);
                 DisposeClassAtom();
+                DisposeNativeHandle();
             }
 
             _state.EndDispose();
@@ -250,6 +269,8 @@ namespace TerraFX.Provider.Win32.UI
         /// <exception cref="ExternalException">The call to <see cref="UnregisterClass(char*, IntPtr)" /> failed.</exception>
         internal void DisposeClassAtom()
         {
+            _state.AssertDisposing();
+
             if (_classAtom.IsValueCreated)
             {
                 var result = UnregisterClass((char*)(_classAtom.Value), EntryPointModule);
@@ -261,11 +282,24 @@ namespace TerraFX.Provider.Win32.UI
             }
         }
 
+        /// <summary>Disposes of the <see cref="GCHandle" /> containing the native handle of the instance.</summary>
+        internal void DisposeNativeHandle()
+        {
+            _state.AssertDisposing();
+
+            if (_nativeHandle.IsValueCreated)
+            {
+                _nativeHandle.Value.Free();
+            }
+        }
+
         /// <summary>Disposes of all <see cref="Window" /> objects that were created by the instance.</summary>
         /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
         /// <exception cref="ExternalException">The call to <see cref="DestroyWindow(IntPtr)" /> failed.</exception>
         internal void DisposeWindows(bool isDisposing)
         {
+            _state.AssertDisposing();
+
             if (isDisposing)
             {
                 foreach (var windowHandle in _windows.Keys)
@@ -280,6 +314,8 @@ namespace TerraFX.Provider.Win32.UI
             {
                 _windows.Clear();
             }
+
+            Assert(_windows.IsEmpty, Resources.ArgumentOutOfRangeExceptionMessage, nameof(_windows.IsEmpty), _windows.IsEmpty);
         }
         #endregion
 
@@ -298,7 +334,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public IWindow CreateWindow()
         {
-            _state.ThrowIfDisposed();
+            _state.ThrowIfDisposedOrDisposing();
 
             var window = new Window(this);
             _windows.TryAdd(window.Handle, window);

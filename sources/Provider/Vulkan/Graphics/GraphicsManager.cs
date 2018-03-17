@@ -62,7 +62,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
         {
             get
             {
-                _state.ThrowIfDisposed();
+                _state.ThrowIfDisposedOrDisposing();
                 return _adapters.Value;
             }
         }

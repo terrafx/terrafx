@@ -12,6 +12,7 @@ using static TerraFX.Interop.User32;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Interop.Desktop.User32;
 using static TerraFX.Provider.Win32.UI.WindowManager;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
@@ -45,6 +46,9 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>The <see cref="ReadingDirection" /> for the instance.</summary>
         internal ReadingDirection _readingDirection;
 
+        /// <summary>The <see cref="WindowState" /> for the instance.</summary>
+        internal WindowState _windowState;
+
         /// <summary>The <see cref="State" /> of the instance.</summary>
         internal readonly State _state;
 
@@ -65,6 +69,7 @@ namespace TerraFX.Provider.Win32.UI
             _parentThread = Thread.CurrentThread;
             _properties = new PropertySet();
             _title = typeof(Window).FullName;
+            _bounds = new Rectangle(float.NaN, float.NaN, float.NaN, float.NaN);
 
             _windowManager = windowManager;
             _state.Transition(to: Initialized);
@@ -103,7 +108,7 @@ namespace TerraFX.Provider.Win32.UI
         {
             get
             {
-                return _handle.Value;
+                return _state.IsNotDisposedOrDisposing ? _handle.Value : IntPtr.Zero;
             }
         }
 
@@ -169,24 +174,31 @@ namespace TerraFX.Provider.Win32.UI
                 return _windowManager;
             }
         }
+
+        /// <summary>Gets the <see cref="WindowState" /> for the instance.</summary>
+        public WindowState WindowState
+        {
+            get
+            {
+                return _windowState;
+            }
+        }
         #endregion
 
         #region Static Methods
         /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of a native window.</summary>
         /// <param name="handle">A handle to the native window to get the bounds for.</param>
         /// <returns>A <see cref="Rectangle" /> that represents the bounds of <paramref name="handle" />.</returns>
-        /// <exception cref="ExternalException">The call to <see cref="GetWindowRect(IntPtr, RECT*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="GetWindowRect(IntPtr, out RECT)" /> failed.</exception>
         internal static Rectangle GetWindowBounds(IntPtr handle)
         {
-            RECT rect;
-            {
-                var succeeded = GetWindowRect(handle, &rect);
+            var succeeded = GetWindowRect(handle, out var rect);
 
-                if (succeeded == FALSE)
-                {
-                    ThrowExternalExceptionForLastError(nameof(GetWindowRect));
-                }
+            if (succeeded == FALSE)
+            {
+                ThrowExternalExceptionForLastError(nameof(GetWindowRect));
             }
+
             return new Rectangle(rect.left, rect.top, (rect.right - rect.left), (rect.bottom - rect.top));
         }
 
@@ -206,23 +218,57 @@ namespace TerraFX.Provider.Win32.UI
         /// <exception cref="ExternalException">The call to <see cref="CreateWindowEx(uint, char*, char*, uint, int, int, int, int, IntPtr, IntPtr, IntPtr, void*)" /> failed.</exception>
         internal IntPtr CreateWindowHandle()
         {
+            _state.AssertNotDisposedOrDisposing();
+
             IntPtr hWnd;
+
+            var windowStyle = WS_OVERLAPPEDWINDOW;
+
+            if (_windowState == WindowState.Minimized)
+            {
+                windowStyle |= WS_MAXIMIZE;
+            }
+            else if (_windowState == WindowState.Maximized)
+            {
+                windowStyle |= WS_MINIMIZE;
+            }
+            else
+            {
+                Assert(_windowState == WindowState.Restored, Resources.ArgumentOutOfRangeExceptionMessage, nameof(WindowState), _windowState);
+            }
+
+            if (_isVisible)
+            {
+                windowStyle |= WS_VISIBLE;
+            }
+
+            var windowStyleEx = WS_EX_OVERLAPPEDWINDOW;
+
+            if (_flowDirection == FlowDirection.RightToLeft)
+            {
+                windowStyleEx |= (WS_EX_LAYOUTRTL | WS_EX_LEFTSCROLLBAR);
+            }
+
+            if (_readingDirection == ReadingDirection.RightToLeft)
+            {
+                windowStyleEx |= (WS_EX_RIGHT | WS_EX_RTLREADING);
+            }
 
             fixed (char* lpWindowName = _title)
             {
                 hWnd = CreateWindowEx(
-                    WS_EX_OVERLAPPEDWINDOW,
+                    windowStyleEx,
                     (char*)(_windowManager.ClassAtom),
                     lpWindowName,
-                    WS_OVERLAPPEDWINDOW,
-                    X: CW_USEDEFAULT,
-                    Y: CW_USEDEFAULT,
-                    nWidth: CW_USEDEFAULT,
-                    nHeight: CW_USEDEFAULT,
+                    windowStyle,
+                    X: float.IsNaN(Bounds.X) ? CW_USEDEFAULT : (int)(Bounds.X),
+                    Y: float.IsNaN(Bounds.Y) ? CW_USEDEFAULT : (int)(Bounds.Y),
+                    nWidth: float.IsNaN(Bounds.Width) ? CW_USEDEFAULT : (int)(Bounds.Width),
+                    nHeight: float.IsNaN(Bounds.Height) ? CW_USEDEFAULT : (int)(Bounds.Height),
                     hWndParent: default,
                     hMenu: default,
                     hInstance: EntryPointModule,
-                    lpParam: null
+                    lpParam: GCHandle.ToIntPtr(_windowManager.NativeHandle).ToPointer()
                 );
             }
 
@@ -243,7 +289,18 @@ namespace TerraFX.Provider.Win32.UI
 
             if (priorState < Disposing) // (previousState != Disposing) && (previousState != Disposed)
             {
-                DisposeWindowHandle();
+                // We are only allowed to dispose of the window handle from the parent
+                // thread. So, if we are on the wrong thread, we will close the window
+                // and call DisposeWindowHandle from the appropriate thread.
+
+                if (Thread.CurrentThread != _parentThread)
+                {
+                    Close();
+                }
+                else
+                {
+                    DisposeWindowHandle();
+                }
             }
 
             _state.EndDispose();
@@ -253,6 +310,9 @@ namespace TerraFX.Provider.Win32.UI
         /// <exception cref="ExternalException">The call to <see cref="DestroyWindow(IntPtr)" /> failed.</exception>
         internal void DisposeWindowHandle()
         {
+            Assert(Thread.CurrentThread == _parentThread, Resources.InvalidOperationExceptionMessage, nameof(Thread.CurrentThread), Thread.CurrentThread);
+            _state.AssertDisposing();
+
             if (_handle.IsValueCreated)
             {
                 var result = DestroyWindow(_handle.Value);
@@ -277,7 +337,19 @@ namespace TerraFX.Provider.Win32.UI
         /// <returns>0</returns>
         internal nint HandleWmClose()
         {
-            Dispose();
+            // If we are already disposing, then Dispose is happening on some other thread
+            // and Close was called in order for us to continue disposal on the parent thread.
+            // Otherwise, this is a normal close call and we should ensure we step through the
+            // various states properly.
+
+            if (_state == Disposing)
+            {
+                DisposeWindowHandle();
+            }
+            else
+            {
+                Dispose();
+            }
             return 0;
         }
 
@@ -285,7 +357,16 @@ namespace TerraFX.Provider.Win32.UI
         /// <returns>0</returns>
         internal nint HandleWmDestroy()
         {
-            Dispose();
+            // We handle this here to ensure we transition to the appropriate state in the case
+            // an end-user called DestroyWindow themselves. The assumption here is that this was
+            // done "properly" if we are Disposing, in which case we don't need to do anything.
+            // Otherwise, this was triggered externally and we should just switch the state to
+            // be disposed.
+
+            if (_state != Disposing)
+            {
+                _state.Transition(to: Disposed);
+            }
             return 0;
         }
 
@@ -304,8 +385,15 @@ namespace TerraFX.Provider.Win32.UI
         /// <returns>A value dependent on the default processing for <see cref="WM_SETTEXT" />.</returns>
         internal nint HandleWmSetText(nuint wParam, nint lParam)
         {
-            _title = Marshal.PtrToStringUni(lParam);
-            return DefWindowProc(_handle.Value, WM_SETTEXT, wParam, lParam);
+            var result = DefWindowProc(_handle.Value, WM_SETTEXT, wParam, lParam);
+
+            if (result == TRUE)
+            {
+                // We only need to update the title if the text was set
+                _title = Marshal.PtrToStringUni(lParam);
+            }
+
+            return result;
         }
 
         /// <summary>Handles the <see cref="WM_SHOWWINDOW" /> message.</summary>
@@ -318,10 +406,14 @@ namespace TerraFX.Provider.Win32.UI
         }
 
         /// <summary>Handles the <see cref="WM_SIZE" /> message.</summary>
+        /// <param name="wParam">A value that represents the state of the window.</param>
         /// <param name="lParam">A value that represents the width and height of the client area of the window.</param>
         /// <returns>0</returns>
-        internal nint HandleWmSize(nint lParam)
+        internal nint HandleWmSize(nuint wParam, nint lParam)
         {
+            _windowState = (WindowState)((uint)(wParam));
+            Assert(Enum.IsDefined(typeof(WindowState), _windowState), Resources.ArgumentOutOfRangeExceptionMessage, nameof(wParam), wParam);
+
             _bounds.Size = new Size2D(width: LOWORD(lParam), height: HIWORD(lParam));
             return 0;
         }
@@ -349,7 +441,7 @@ namespace TerraFX.Provider.Win32.UI
 
                 case WM_SIZE:
                 {
-                    return HandleWmSize(lParam);
+                    return HandleWmSize(wParam, lParam);
                 }
 
                 case WM_ACTIVATE:
@@ -391,22 +483,15 @@ namespace TerraFX.Provider.Win32.UI
 
         #region TerraFX.UI.IWindow Methods
         /// <summary>Activates the instance.</summary>
-        /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="Dispatcher.ParentThread" />.</exception>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         /// <exception cref="ExternalException">The call to <see cref="SetForegroundWindow(IntPtr)" /> failed.</exception>
         public void Activate()
         {
-            ThrowIfNotThread(_parentThread);
-            _state.ThrowIfDisposed();
+            var succeeded = TryActivate();
 
-            if (IsVisible)
+            if (succeeded == false)
             {
-                var succeeded = SetForegroundWindow(_handle.Value);
-
-                if (succeeded == FALSE)
-                {
-                    ThrowExternalExceptionForLastError(nameof(SetForegroundWindow));
-                }
+                ThrowExternalExceptionForLastError(nameof(SetForegroundWindow));
             }
         }
 
@@ -418,7 +503,7 @@ namespace TerraFX.Provider.Win32.UI
         /// </remarks>
         public void Close()
         {
-            _state.ThrowIfDisposed();
+            _state.ThrowIfDisposedOrDisposing();
 
             if (_handle.IsValueCreated)
             {
@@ -427,43 +512,73 @@ namespace TerraFX.Provider.Win32.UI
         }
 
         /// <summary>Hides the instance.</summary>
-        /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="Dispatcher.ParentThread" />.</exception>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="ShowWindow(IntPtr, int)" /> failed.</exception>
         public void Hide()
         {
-            ThrowIfNotThread(_parentThread);
-            _state.ThrowIfDisposed();
+            _state.ThrowIfDisposedOrDisposing();
 
             if (_isVisible)
             {
-                var succeeded = ShowWindow(_handle.Value, SW_HIDE);
+                ShowWindow(_handle.Value, SW_HIDE);
+            }
+        }
 
-                if (succeeded == FALSE)
-                {
-                    ThrowExternalExceptionForLastError(nameof(ShowWindow));
-                }
+        /// <summary>Maximizes the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public void Maximize()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            if (_windowState != WindowState.Maximized)
+            {
+                ShowWindow(_handle.Value, SW_MAXIMIZE);
+            }
+        }
+
+        /// <summary>Minimizes the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public void Minimize()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            if (_windowState != WindowState.Minimized)
+            {
+                ShowWindow(_handle.Value, SW_MINIMIZE);
+            }
+        }
+
+        /// <summary>Restores the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public void Restore()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            if (_windowState != WindowState.Restored)
+            {
+                ShowWindow(_handle.Value, SW_RESTORE);
             }
         }
 
         /// <summary>Shows the instance.</summary>
-        /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="Dispatcher.ParentThread" />.</exception>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="ShowWindow(IntPtr, int)" /> failed.</exception>
         public void Show()
         {
-            ThrowIfNotThread(_parentThread);
-            _state.ThrowIfDisposed();
+            _state.ThrowIfDisposedOrDisposing();
 
             if (_isVisible == false)
             {
-                var succeeded = ShowWindow(_handle.Value, SW_SHOW);
-
-                if (succeeded == FALSE)
-                {
-                    ThrowExternalExceptionForLastError(nameof(ShowWindow));
-                }
+                ShowWindow(_handle.Value, SW_SHOW);
             }
+        }
+
+        /// <summary>Tries to activate the instance.</summary>
+        /// <returns><c>true</c> if the instance was succesfully activated; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public bool TryActivate()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            return _isActive || (SetForegroundWindow(_handle.Value) != FALSE);
         }
         #endregion
     }

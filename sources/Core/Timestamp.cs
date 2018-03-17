@@ -1,7 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Diagnostics;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX
@@ -114,7 +114,7 @@ namespace TerraFX
         /// <returns>The delta of <paramref name="right" /> subtracted from <paramref name="left" />.</returns>
         public static TimeSpan operator -(Timestamp left, Timestamp right)
         {
-            Debug.Assert(left > right);
+            Assert(left > right, Resources.ArgumentOutOfRangeExceptionMessage, nameof(left), left);
             var deltaTicks = unchecked(left._ticks - right._ticks);
             return new TimeSpan(deltaTicks);
         }

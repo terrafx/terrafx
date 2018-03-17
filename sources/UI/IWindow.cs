@@ -39,6 +39,9 @@ namespace TerraFX.UI
 
         /// <summary>Gets the <see cref="IWindowManager" /> for the instance.</summary>
         IWindowManager WindowManager { get; }
+
+        /// <summary>Gets the <see cref="WindowState" /> for the instance.</summary>
+        WindowState WindowState { get; }
         #endregion
 
         #region Methods
@@ -51,8 +54,21 @@ namespace TerraFX.UI
         /// <summary>Hides the instance.</summary>
         void Hide();
 
+        /// <summary>Maximizes the instance.</summary>
+        void Maximize();
+
+        /// <summary>Minimizes the instance.</summary>
+        void Minimize();
+
+        /// <summary>Restores the instance.</summary>
+        void Restore();
+
         /// <summary>Shows the instance.</summary>
         void Show();
+
+        /// <summary>Tries to activate the instance.</summary>
+        /// <returns><c>true</c> if the instance was succesfully activated; otherwise, <c>false</c>.</returns>
+        bool TryActivate();
         #endregion
     }
 }

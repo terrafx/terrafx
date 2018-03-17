@@ -29,7 +29,7 @@ namespace TerraFX.Provider.Win32.Threading
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="DispatchManager" /> class.</summary>
-        /// <exception cref="ExternalException">The call to <see cref="QueryPerformanceFrequency(LARGE_INTEGER*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="QueryPerformanceFrequency(out LARGE_INTEGER)" /> failed.</exception>
         public DispatchManager()
         {
             _tickFrequency = GetTickFrequency();
@@ -40,11 +40,10 @@ namespace TerraFX.Provider.Win32.Threading
         #region Static Methods
         /// <summary>Gets the tick frequency for the system's monotonic timer.</summary>
         /// <returns>The tick frequency for the system's monotonic timer.</returns>
-        /// <exception cref="ExternalException">The call to <see cref="QueryPerformanceFrequency(LARGE_INTEGER*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="QueryPerformanceFrequency(out LARGE_INTEGER)" /> failed.</exception>
         internal static double GetTickFrequency()
         {
-            LARGE_INTEGER frequency;
-            var succeeded = QueryPerformanceFrequency(&frequency);
+            var succeeded = QueryPerformanceFrequency(out var frequency);
 
             if (succeeded == FALSE)
             {
@@ -58,13 +57,12 @@ namespace TerraFX.Provider.Win32.Threading
 
         #region TerraFX.Threading.IDispatchManager Properties
         /// <summary>Gets the current <see cref="Timestamp" /> for the instance.</summary>
-        /// <exception cref="ExternalException">The call to <see cref="QueryPerformanceCounter(LARGE_INTEGER*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="QueryPerformanceCounter(out LARGE_INTEGER)" /> failed.</exception>
         public Timestamp CurrentTimestamp
         {
             get
             {
-                LARGE_INTEGER performanceCount;
-                var succeeded = QueryPerformanceCounter(&performanceCount);
+                var succeeded = QueryPerformanceCounter(out var performanceCount);
 
                 if (succeeded == FALSE)
                 {

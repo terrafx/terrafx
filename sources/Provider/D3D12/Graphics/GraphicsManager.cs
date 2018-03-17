@@ -67,7 +67,7 @@ namespace TerraFX.Provider.D3D12.Graphics
         {
             get
             {
-                _state.ThrowIfDisposed();
+                _state.ThrowIfDisposedOrDisposing();
                 return _adapters.Value;
             }
         }

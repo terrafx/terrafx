@@ -595,6 +595,18 @@ namespace TerraFX.Interop
         public const int WA_CLICKACTIVE = 2;
         #endregion
 
+        #region SIZE_* Constants
+        public const int SIZE_RESTORED = 0;
+
+        public const int SIZE_MINIMIZED = 1;
+
+        public const int SIZE_MAXIMIZED = 2;
+
+        public const int SIZE_MAXSHOW = 3;
+
+        public const int SIZE_MAXHIDE = 4;
+        #endregion
+
         #region WS_* Constants
         public const uint WS_OVERLAPPED = 0x00000000;
 

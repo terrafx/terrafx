@@ -166,7 +166,7 @@ namespace TerraFX.Provider.libX11.UI
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public IWindow CreateWindow()
         {
-            _state.ThrowIfDisposed();
+            _state.ThrowIfDisposedOrDisposing();
 
             var window = new Window(this);
             _windows.TryAdd(window.Handle, window);

@@ -135,7 +135,7 @@ namespace TerraFX.Provider.D3D12.Graphics
         /// <summary>Disposes of the DXGI adapter associated with the instance.</summary>
         internal void DisposeAdapter()
         {
-            Debug.Assert(_state == Disposing);
+            _state.AssertDisposing();
 
             if (_adapter != null)
             {

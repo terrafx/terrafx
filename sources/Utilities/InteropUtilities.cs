@@ -26,6 +26,26 @@ namespace TerraFX.Utilities
             return ref Unsafe.AsRef<T>((void*)(source));
         }
 
+        /// <summary>Gets a reference of <typeparamref name="T" /> from a given <see cref="nint" />.</summary>
+        /// <typeparam name="T">The type of the reference to retrieve.</typeparam>
+        /// <param name="source">The <see cref="nint" /> for which to get the reference from.</param>
+        /// <returns>A reference of <typeparamref name="T" /> from <paramref name="source" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ref T AsRef<T>(nint source)
+        {
+            return ref Unsafe.AsRef<T>((void*)(source));
+        }
+
+        /// <summary>Gets a reference of <typeparamref name="T" /> from a given <see cref="nuint" />.</summary>
+        /// <typeparam name="T">The type of the reference to retrieve.</typeparam>
+        /// <param name="source">The <see cref="nuint" /> for which to get the reference from.</param>
+        /// <returns>A reference of <typeparamref name="T" /> from <paramref name="source" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ref T AsRef<T>(nuint source)
+        {
+            return ref Unsafe.AsRef<T>((void*)(source));
+        }
+
         /// <summary>Gets a reference of <typeparamref name="T" /> from a given pointer.</summary>
         /// <typeparam name="T">The type of the reference to retrieve.</typeparam>
         /// <param name="source">The pointer for which to get the reference from.</param>

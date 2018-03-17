@@ -82,13 +82,11 @@ namespace TerraFX.Provider.Win32.Threading
         {
             ThrowIfNotThread(_parentThread);
 
-            MSG msg;
-
-            while (PeekMessage(&msg, wMsgFilterMin: WM_NULL, wMsgFilterMax: WM_NULL, wRemoveMsg: PM_REMOVE) != FALSE)
+            while (PeekMessage(out var msg, wMsgFilterMin: WM_NULL, wMsgFilterMax: WM_NULL, wRemoveMsg: PM_REMOVE) != FALSE)
             {
                 if (msg.message != WM_QUIT)
                 {
-                    DispatchMessage(&msg);
+                    DispatchMessage(in msg);
                 }
                 else
                 {
