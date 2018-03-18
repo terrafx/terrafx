@@ -39,7 +39,7 @@ namespace TerraFX.Provider.D3D12.Graphics
         internal readonly Lazy<ImmutableArray<GraphicsAdapter>> _adapters;
 
         /// <summary>The <see cref="State" /> of the instance.</summary>
-        internal readonly State _state;
+        internal State _state;
         #endregion
 
         #region Constructors

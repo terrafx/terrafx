@@ -30,7 +30,7 @@ namespace TerraFX.Provider.libX11.Threading
         internal readonly ConcurrentDictionary<Thread, IDispatcher> _dispatchers;
 
         /// <summary>The <see cref="State" /> of the instance.</summary>
-        internal readonly State _state;
+        internal State _state;
         #endregion
 
         #region Constructors

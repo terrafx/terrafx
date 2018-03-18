@@ -48,7 +48,7 @@ namespace TerraFX.Provider.Win32.UI
         internal readonly ConcurrentDictionary<IntPtr, Window> _windows;
 
         /// <summary>The <see cref="State" /> of the instance.</summary>
-        internal readonly State _state;
+        internal State _state;
         #endregion
 
         #region Constructors

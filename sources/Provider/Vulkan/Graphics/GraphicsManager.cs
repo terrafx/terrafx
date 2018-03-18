@@ -32,12 +32,12 @@ namespace TerraFX.Provider.Vulkan.Graphics
         internal readonly Lazy<ImmutableArray<GraphicsAdapter>> _adapters;
 
         /// <summary>The <see cref="State" /> of the instance.</summary>
-        internal readonly State _state;
+        internal State _state;
         #endregion
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="GraphicsManager" /> class.</summary>
-        /// <exception cref="ExternalException">The call to <see cref="vkCreateInstance(VkInstanceCreateInfo*, VkAllocationCallbacks*, IntPtr*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkCreateInstance(in VkInstanceCreateInfo, VkAllocationCallbacks*, out IntPtr)" /> failed.</exception>
         /// <exception cref="ExternalException">The call to <see cref="vkEnumeratePhysicalDevices(IntPtr, uint*, IntPtr*)" /> failed.</exception>
         [ImportingConstructor]
         public GraphicsManager()
@@ -80,7 +80,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
         #region Static Methods
         /// <summary>Creates a Vulkan instance.</summary>
         /// <returns>A Vulkan instance.</returns>
-        /// <exception cref="ExternalException">The call to <see cref="vkCreateInstance(VkInstanceCreateInfo*, VkAllocationCallbacks*, IntPtr*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkCreateInstance(in VkInstanceCreateInfo, VkAllocationCallbacks*, out IntPtr)" /> failed.</exception>
         internal static IntPtr CreateInstance()
         {
             var createInfo = new VkInstanceCreateInfo() {
@@ -94,8 +94,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 ppEnabledExtensionNames = null
             };
 
-            IntPtr instance;
-            var result = vkCreateInstance(&createInfo, null, &instance);
+            var result = vkCreateInstance(in createInfo, null, out var instance);
 
             if (result != VK_SUCCESS)
             {

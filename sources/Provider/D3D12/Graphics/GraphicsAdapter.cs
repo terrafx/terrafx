@@ -34,7 +34,7 @@ namespace TerraFX.Provider.D3D12.Graphics
         internal uint _deviceId;
 
         /// <summary>The <see cref="State" /> of the instance.</summary>
-        internal readonly State _state;
+        internal State _state;
         #endregion
 
         #region Constructors

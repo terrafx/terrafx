@@ -50,7 +50,7 @@ namespace TerraFX.Provider.Win32.UI
         internal WindowState _windowState;
 
         /// <summary>The <see cref="State" /> of the instance.</summary>
-        internal readonly State _state;
+        internal State _state;
 
         /// <summary>A value that indicates whether the instance is the active window.</summary>
         internal bool _isActive;

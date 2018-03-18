@@ -79,9 +79,9 @@ namespace TerraFX.Interop
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateInstance", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateInstance(
-            [In] VkInstanceCreateInfo* pCreateInfo,
+            [In] in VkInstanceCreateInfo pCreateInfo,
             [In, Optional] VkAllocationCallbacks* pAllocator,
-            [Out, ComAliasName("VkInstance")] IntPtr* pInstance
+            [Out, ComAliasName("VkInstance")] out IntPtr pInstance
         );
 
         [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDestroyInstance", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]

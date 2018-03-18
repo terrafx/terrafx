@@ -48,7 +48,7 @@ namespace TerraFX.ApplicationModel
         internal readonly Lazy<IWindowManager> _windowManager;
 
         /// <summary>The <see cref="State" /> of the instance.</summary>
-        internal readonly State _state;
+        internal State _state;
         #endregion
 
         #region Constructors
