@@ -11,6 +11,8 @@ namespace TerraFX.Interop
     /// <summary>Exposes methods exported by <c>libc</c>.</summary>
     public static unsafe partial class libc
     {
+        private const string DllName = nameof(libc);
+
         #region CLOCK_* Constants
         /// <summary>The identifier of the system-wide clock measuring real time.</summary>
         public const int CLOCK_REALTIME = 0;
@@ -32,7 +34,7 @@ namespace TerraFX.Interop
         /// <param name="res">On return, contains the resolution of <paramref name="clock_id" />.</param>
         /// <returns><c>0</c> to indicate the call succeeded; otherwise, <c>-1</c> to indicate that an error occurred. The error can be retrieved via <see cref="Marshal.GetLastWin32Error()" />.</returns>
         /// <remarks>Clock resolutions are implementation-defined and cannot be set by a process.</remarks>
-        [DllImport("libc", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "clock_getres", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "clock_getres", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int clock_getres(
             [In, ComAliasName("clockid_t")] int clock_id,
@@ -43,7 +45,7 @@ namespace TerraFX.Interop
         /// <param name="clock_id">The clock for which to get the current value.</param>
         /// <param name="tp">On return, contains the current value of <paramref name="clock_id" />.</param>
         /// <returns><c>0</c> to indicate the call succeeded; otherwise, <c>-1</c> to indicate that an error occurred. The error can be retrieved via <see cref="Marshal.GetLastWin32Error()" />.</returns>
-        [DllImport("libc", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "clock_gettime", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "clock_gettime", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int clock_gettime(
             [In, ComAliasName("clockid_t")] int clock_id,
@@ -54,7 +56,7 @@ namespace TerraFX.Interop
         /// <param name="clock_id">The clock for which to set the value.</param>
         /// <param name="tp">The value which will be assigned to <paramref name="clock_id" />.</param>
         /// <returns><c>0</c> to indicate the call succeeded; otherwise, <c>-1</c> to indicate that an error occurred. The error can be retrieved via <see cref="Marshal.GetLastWin32Error()" />.</returns>
-        [DllImport("libc", BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "clock_settime", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "clock_settime", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int clock_settime(
             [In, ComAliasName("clockid_t")] int clock_id,

@@ -11,6 +11,8 @@ namespace TerraFX.Interop
 {
     public static unsafe partial class DXGI
     {
+        private const string DllName = nameof(DXGI);
+
         #region Constants
         public const uint DXGI_MAX_SWAP_CHAIN_BUFFERS = 16;
         #endregion
@@ -118,7 +120,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region External Methods
-        [DllImport("DXGI", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CreateDXGIFactory1", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CreateDXGIFactory1", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HRESULT")]
         public static extern int CreateDXGIFactory1(

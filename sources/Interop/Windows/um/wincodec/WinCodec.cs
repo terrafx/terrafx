@@ -12,6 +12,8 @@ namespace TerraFX.Interop
 {
     public static unsafe partial class WinCodec
     {
+        private const string DllName = nameof(WinCodec);
+
         #region CLSID_* Constants
         public static readonly Guid CLSID_WICImagingFactory = CLSID_WICImagingFactory2; // Prior to Win8 = new Guid(0xCACAF262, 0x9370, 0x4615, 0xA1, 0x3B, 0x9F, 0x55, 0x39, 0xDA, 0x4C, 0x0A)
 
@@ -461,7 +463,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region External Methods
-        [DllImport("WinCodec", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "WICConvertBitmapSource", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "WICConvertBitmapSource", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HRESULT")]
         public static extern int WICConvertBitmapSource(
@@ -470,7 +472,7 @@ namespace TerraFX.Interop
             [Out] IWICBitmapSource** ppIDst
         );
 
-        [DllImport("WinCodec", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "WICCreateBitmapFromSection", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "WICCreateBitmapFromSection", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HRESULT")]
         public static extern int WICCreateBitmapFromSection(
@@ -483,7 +485,7 @@ namespace TerraFX.Interop
              [Out] IWICBitmap** ppIBitmap
         );
 
-        [DllImport("WinCodec", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "WICCreateBitmapFromSectionEx", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "WICCreateBitmapFromSectionEx", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HRESULT")]
         public static extern int WICCreateBitmapFromSectionEx(
@@ -497,7 +499,7 @@ namespace TerraFX.Interop
              [Out] IWICBitmap** ppIBitmap
         );
 
-        [DllImport("WinCodec", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "WICMapGuidToShortName", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "WICMapGuidToShortName", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HRESULT")]
         public static extern int WICMapGuidToShortName(
@@ -507,7 +509,7 @@ namespace TerraFX.Interop
             [Out, ComAliasName("UINT")] uint* pcchActual
         );
 
-        [DllImport("WinCodec", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "WICMapShortNameToGuid", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "WICMapShortNameToGuid", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HRESULT")]
         public static extern int WICMapShortNameToGuid(
@@ -515,7 +517,7 @@ namespace TerraFX.Interop
             [Out, ComAliasName("GUID")] Guid* pguid
         );
 
-        [DllImport("WinCodec", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "WICMapSchemaToName", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "WICMapSchemaToName", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("HRESULT")]
         public static extern int WICMapSchemaToName(

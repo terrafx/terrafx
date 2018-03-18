@@ -20,7 +20,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region External Methods
-        [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetPhysicalDeviceDisplayPropertiesKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetPhysicalDeviceDisplayPropertiesKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkGetPhysicalDeviceDisplayPropertiesKHR(
             [In, ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
@@ -28,7 +28,7 @@ namespace TerraFX.Interop
             [Out, Optional, ComAliasName("VkDisplayPropertiesKHR[]")] VkDisplayPropertiesKHR* pProperties
         );
 
-        [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetPhysicalDeviceDisplayPlanePropertiesKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetPhysicalDeviceDisplayPlanePropertiesKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkGetPhysicalDeviceDisplayPlanePropertiesKHR(
             [In, ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
@@ -36,7 +36,7 @@ namespace TerraFX.Interop
             [Out, Optional, ComAliasName("VkDisplayPlanePropertiesKHR[]")] VkDisplayPlanePropertiesKHR* pProperties
         );
 
-        [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetDisplayPlaneSupportedDisplaysKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetDisplayPlaneSupportedDisplaysKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkGetDisplayPlaneSupportedDisplaysKHR(
             [In, ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
@@ -45,7 +45,7 @@ namespace TerraFX.Interop
             [Out, Optional, ComAliasName("VkDisplayKHR[]")] IntPtr* pDisplays
         );
 
-        [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetDisplayModePropertiesKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetDisplayModePropertiesKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkGetDisplayModePropertiesKHR(
             [In, ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
@@ -54,7 +54,7 @@ namespace TerraFX.Interop
             [Out, Optional, ComAliasName("VkDisplayModePropertiesKHR[]")] VkDisplayModePropertiesKHR* pProperties
         );
 
-        [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateDisplayModeKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateDisplayModeKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateDisplayModeKHR(
             [In, ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
@@ -64,7 +64,7 @@ namespace TerraFX.Interop
             [Out, ComAliasName("VkDisplayModeKHR")] IntPtr* pMode
         );
 
-        [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetDisplayPlaneCapabilitiesKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetDisplayPlaneCapabilitiesKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkGetDisplayPlaneCapabilitiesKHR(
             [In, ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
@@ -73,7 +73,7 @@ namespace TerraFX.Interop
             [Out] VkDisplayPlaneCapabilitiesKHR* pCapabilities
         );
 
-        [DllImport("Vulkan-1", BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateDisplayPlaneSurfaceKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateDisplayPlaneSurfaceKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateDisplayPlaneSurfaceKHR(
             [In, ComAliasName("VkInstance")] IntPtr instance,
