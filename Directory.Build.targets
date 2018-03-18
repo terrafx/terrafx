@@ -10,4 +10,9 @@
     MSBuildAllProjects, as that is done by the file that imports us.
   -->
 
+  <!-- Settings that append the existing setting value -->
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);$(OS)</DefineConstants>
+  </PropertyGroup>
+
 </Project>
