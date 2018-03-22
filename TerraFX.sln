@@ -185,6 +185,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Utilities.UnitTests", "tests\Utilities\TerraFX.Utilities.UnitTests.csproj", "{1E2FD09A-6C12-439A-A6E0-E4F0FE24AE42}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mathematics", "Mathematics", "{128F2028-6CCC-48A4-A997-45B1B42046D3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Mathematics", "sources\Mathematics\TerraFX.Mathematics.csproj", "{DE86939D-2FD9-4260-975E-8435748EBC2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -319,6 +323,10 @@ Global
 		{1E2FD09A-6C12-439A-A6E0-E4F0FE24AE42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E2FD09A-6C12-439A-A6E0-E4F0FE24AE42}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E2FD09A-6C12-439A-A6E0-E4F0FE24AE42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE86939D-2FD9-4260-975E-8435748EBC2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE86939D-2FD9-4260-975E-8435748EBC2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE86939D-2FD9-4260-975E-8435748EBC2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE86939D-2FD9-4260-975E-8435748EBC2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -393,6 +401,8 @@ Global
 		{F81C3272-3809-46F3-8954-8E5B5F603699} = {D7FDC089-3AB5-4A13-8495-60CA01CBA609}
 		{07436576-8F5B-4B59-9EE9-B47ED375FF4D} = {EFB05081-EC44-49D3-B6D1-52AE42085B5B}
 		{1E2FD09A-6C12-439A-A6E0-E4F0FE24AE42} = {07436576-8F5B-4B59-9EE9-B47ED375FF4D}
+		{128F2028-6CCC-48A4-A997-45B1B42046D3} = {0B821858-8E47-4485-AC06-D2E971A53EB2}
+		{DE86939D-2FD9-4260-975E-8435748EBC2B} = {128F2028-6CCC-48A4-A997-45B1B42046D3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2FE36DF8-2D9C-4F20-8787-45DC74B57461}
