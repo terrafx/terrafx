@@ -10,8 +10,9 @@ namespace TerraFX
     {
         #region Static Fields
         /// <summary>The <see cref="ResourceManager" /> instance that is used to lookup the localized resources.</summary>
-        public static readonly ResourceManager ResourceManager = new ResourceManager(typeof(Resources));
+        internal static readonly ResourceManager _resourceManager = new ResourceManager(typeof(Resources));
 
+        /// <summary>The <see cref="CultureInfo" /> used during resource lookup.</summary>
         internal static CultureInfo _culture;
         #endregion
 
@@ -82,6 +83,15 @@ namespace TerraFX
             get
             {
                 return ResourceManager.GetString(nameof(ObjectDisposedExceptionMessage), Culture);
+            }
+        }
+
+        /// <summary>Gets the <see cref="ResourceManager" /> instance that is used to lookup the localized resources.</summary>
+        public static ResourceManager ResourceManager
+        {
+            get
+            {
+                return _resourceManager;
             }
         }
         #endregion

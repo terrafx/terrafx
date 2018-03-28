@@ -7,7 +7,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX
 {
     /// <summary>Defines a timestamp.</summary>
-    public /* blittable */ struct Timestamp : IComparable, IComparable<Timestamp>, IEquatable<Timestamp>, IFormattable
+    public readonly /* blittable */ struct Timestamp : IComparable, IComparable<Timestamp>, IEquatable<Timestamp>, IFormattable
     {
         #region Constants
         /// <summary>The number of ticks that occur per day.</summary>

@@ -9,7 +9,7 @@ namespace TerraFX.Utilities
 {
     /// <summary>Defines a delegate that can be passed to native code.</summary>
     /// <typeparam name="TDelegate">The type of the delegate.</typeparam>
-    public struct NativeDelegate<TDelegate> where TDelegate : class
+    public readonly struct NativeDelegate<TDelegate> where TDelegate : class
     {
         #region Fields
         /// <summary>The native handle to <see cref="_value" />.</summary>

@@ -8,14 +8,14 @@ using static TerraFX.Utilities.HashUtilities;
 namespace TerraFX
 {
     /// <summary>Defines a size in two-dimensional space.</summary>
-    public struct Size2D : IEquatable<Size2D>, IFormattable
+    public readonly struct Size2D : IEquatable<Size2D>, IFormattable
     {
         #region Fields
         /// <summary>The width of the instance.</summary>
-        internal float _width;
+        internal readonly float _width;
 
         /// <summary>The height of the instance.</summary>
-        internal float _height;
+        internal readonly float _height;
         #endregion
 
         #region Constructors
@@ -37,11 +37,6 @@ namespace TerraFX
             {
                 return _width;
             }
-
-            set
-            {
-                _width = value;
-            }
         }
 
         /// <summary>Gets or sets the height of the instance.</summary>
@@ -50,11 +45,6 @@ namespace TerraFX
             get
             {
                 return _height;
-            }
-
-            set
-            {
-                _height = value;
             }
         }
         #endregion
@@ -78,6 +68,24 @@ namespace TerraFX
         {
             return (left.Width != right.Width)
                 || (left.Height != right.Height);
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>Creates a new <see cref="Rectangle" /> instance with <see cref="Height" /> set to the specified value.</summary>
+        /// <param name="value">The new height of the instance.</param>
+        /// <returns>A new <see cref="Rectangle" /> instance with <see cref="Height" /> set to <paramref name="value" />.</returns>
+        public Size2D WithHeight(float value)
+        {
+            return new Size2D(Width, value);
+        }
+
+        /// <summary>Creates a new <see cref="Size2D" /> instance with <see cref="Width" /> set to the specified value.</summary>
+        /// <param name="value">The new width of the instance.</param>
+        /// <returns>A new <see cref="Size2D" /> instance with <see cref="Width" /> set to <paramref name="value" />.</returns>
+        public Size2D WithWidth(float value)
+        {
+            return new Size2D(value, Height);
         }
         #endregion
 

@@ -401,7 +401,8 @@ namespace TerraFX.Provider.Win32.UI
         /// <returns>0</returns>
         internal nint HandleWmMove(nint lParam)
         {
-            _bounds.Location = new Point2D(x: LOWORD(lParam), y: HIWORD(lParam));
+            var location = new Point2D(x: LOWORD(lParam), y: HIWORD(lParam));
+            _bounds = _bounds.WithLocation(location);
             return 0;
         }
 
@@ -440,7 +441,8 @@ namespace TerraFX.Provider.Win32.UI
             _windowState = (WindowState)((uint)(wParam));
             Assert(Enum.IsDefined(typeof(WindowState), _windowState), Resources.ArgumentOutOfRangeExceptionMessage, nameof(wParam), wParam);
 
-            _bounds.Size = new Size2D(width: LOWORD(lParam), height: HIWORD(lParam));
+            var size = new Size2D(width: LOWORD(lParam), height: HIWORD(lParam));
+            _bounds = _bounds.WithSize(size);
             return 0;
         }
 

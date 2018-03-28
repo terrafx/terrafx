@@ -8,14 +8,14 @@ using static TerraFX.Utilities.HashUtilities;
 namespace TerraFX
 {
     /// <summary>Defines a rectangle.</summary>
-    public struct Rectangle : IEquatable<Rectangle>, IFormattable
+    public readonly struct Rectangle : IEquatable<Rectangle>, IFormattable
     {
         #region Fields
         /// <summary>The location of the instance.</summary>
-        internal Point2D _location;
+        internal readonly Point2D _location;
 
         /// <summary>The size of the instance.</summary>
-        internal Size2D _size;
+        internal readonly Size2D _size;
         #endregion
 
         #region Constructors
@@ -41,87 +41,57 @@ namespace TerraFX
         #endregion
 
         #region Properties
-        /// <summary>Gets or sets the height of the instance.</summary>
+        /// <summary>Gets the height of the instance.</summary>
         public float Height
         {
             get
             {
                 return _size.Height;
             }
-
-            set
-            {
-                _size.Height = value;
-            }
         }
 
-        /// <summary>Gets or sets the location of the instance.</summary>
+        /// <summary>Gets the location of the instance.</summary>
         public Point2D Location
         {
             get
             {
                 return _location;
             }
-
-            set
-            {
-                _location = value;
-            }
         }
 
-        /// <summary>Gets or sets the size of the instance.</summary>
+        /// <summary>Gets the size of the instance.</summary>
         public Size2D Size
         {
             get
             {
                 return _size;
             }
-
-            set
-            {
-                _size = value;
-            }
         }
 
-        /// <summary>Gets or sets the width of the instance.</summary>
+        /// <summary>Gets the width of the instance.</summary>
         public float Width
         {
             get
             {
                 return _size.Width;
             }
-
-            set
-            {
-                _size.Width = value;
-            }
         }
 
-        /// <summary>Gets or sets the value of the x-coordinate.</summary>
+        /// <summary>Gets the value of the x-coordinate.</summary>
         public float X
         {
             get
             {
                 return _location.X;
             }
-
-            set
-            {
-                _location.X = value;
-            }
         }
 
-        /// <summary>Gets or sets the value of the x-coordinate.</summary>
+        /// <summary>Gets the value of the x-coordinate.</summary>
         public float Y
         {
             get
             {
                 return _location.Y;
-            }
-
-            set
-            {
-                _location.Y = value;
             }
         }
         #endregion
@@ -145,6 +115,60 @@ namespace TerraFX
         {
             return (left.Location != right.Location)
                 || (left.Size != right.Size);
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>Creates a new <see cref="Rectangle" /> instance with <see cref="Height" /> set to the specified value.</summary>
+        /// <param name="value">The new height of the instance.</param>
+        /// <returns>A new <see cref="Rectangle" /> instance with <see cref="Height" /> set to <paramref name="value" />.</returns>
+        public Rectangle WithHeight(float value)
+        {
+            var size = new Size2D(Width, value);
+            return new Rectangle(Location, size);
+        }
+
+        /// <summary>Creates a new <see cref="Rectangle" /> instance with <see cref="Location" /> set to the specified value.</summary>
+        /// <param name="value">The new location of the instance.</param>
+        /// <returns>A new <see cref="Rectangle" /> instance with <see cref="Location" /> set to <paramref name="value" />.</returns>
+        public Rectangle WithLocation(Point2D value)
+        {
+            return new Rectangle(value, Size);
+        }
+
+        /// <summary>Creates a new <see cref="Rectangle" /> instance with <see cref="Size" /> set to the specified value.</summary>
+        /// <param name="value">The new size of the instance.</param>
+        /// <returns>A new <see cref="Rectangle" /> instance with <see cref="Size" /> set to <paramref name="value" />.</returns>
+        public Rectangle WithSize(Size2D value)
+        {
+            return new Rectangle(Location, value);
+        }
+
+        /// <summary>Creates a new <see cref="Rectangle" /> instance with <see cref="Width" /> set to the specified value.</summary>
+        /// <param name="value">The new width of the instance.</param>
+        /// <returns>A new <see cref="Rectangle" /> instance with <see cref="Width" /> set to <paramref name="value" />.</returns>
+        public Rectangle WithWidth(float value)
+        {
+            var size = new Size2D(value, Height);
+            return new Rectangle(Location, size);
+        }
+
+        /// <summary>Creates a new <see cref="Rectangle" /> instance with <see cref="X" /> set to the specified value.</summary>
+        /// <param name="value">The new value of the x-coordinate.</param>
+        /// <returns>A new <see cref="Rectangle" /> instance with <see cref="X" /> set to <paramref name="value" />.</returns>
+        public Rectangle WithX(float value)
+        {
+            var location = new Point2D(value, Y);
+            return new Rectangle(location, Size);
+        }
+
+        /// <summary>Creates a new <see cref="Rectangle" /> instance with <see cref="Y" /> set to the specified value.</summary>
+        /// <param name="value">The new value of the y-coordinate.</param>
+        /// <returns>A new <see cref="Rectangle" /> instance with <see cref="Y" /> set to <paramref name="value" />.</returns>
+        public Rectangle WithY(float value)
+        {
+            var location = new Point2D(X, value);
+            return new Rectangle(location, Size);
         }
         #endregion
 

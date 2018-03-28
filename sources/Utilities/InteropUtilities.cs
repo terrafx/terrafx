@@ -12,7 +12,7 @@ namespace TerraFX.Utilities
     {
         #region Static Fields
         /// <summary>Holds a mapping of all of the managed delegates created for the various function pointers.</summary>
-        internal static readonly Dictionary<IntPtr, Delegate> MarshalledFunctions = new Dictionary<IntPtr, Delegate>();
+        internal static readonly Dictionary<IntPtr, Delegate> _marshalledFunctions = new Dictionary<IntPtr, Delegate>();
         #endregion
 
         #region Static Methods
@@ -62,14 +62,14 @@ namespace TerraFX.Utilities
         /// <returns>A managed delegate that invokes <paramref name="function" />.</returns>
         public static TDelegate MarshalFunction<TDelegate>(IntPtr function)
         {
-            if (MarshalledFunctions.TryGetValue(function, out var value) == false)
+            if (_marshalledFunctions.TryGetValue(function, out var value) == false)
             {
                 // In the case where two threads marshal the same function simultaneously,
                 // we will end up with an existing entry. We will just overwrite since both
                 // the delegates will do the same thing. The GC will just end up having some
                 // extra work.
                 value = Marshal.GetDelegateForFunctionPointer(function, typeof(TDelegate));
-                MarshalledFunctions[function] = value;
+                _marshalledFunctions[function] = value;
             }
 
             return (TDelegate)((object)(value));

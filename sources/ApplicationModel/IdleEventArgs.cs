@@ -6,7 +6,7 @@ namespace TerraFX.ApplicationModel
 {
     /// <summary>Represents the event args that occur during an <see cref="Application.Idle" /> event.</summary>
     /// <remarks>This is a struct, rather than derived from <see cref="EventArgs" />, to prevent unecessary heap allocations.</remarks>
-    public struct IdleEventArgs
+    public readonly struct IdleEventArgs
     {
         #region Fields
         /// <summary>The delta between the current and previous <see cref="Application.Idle" /> events.</summary>

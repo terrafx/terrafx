@@ -8,14 +8,14 @@ using static TerraFX.Utilities.HashUtilities;
 namespace TerraFX
 {
     /// <summary>Defines a point in two-dimensional space.</summary>
-    public struct Point2D : IEquatable<Point2D>, IFormattable
+    public readonly struct Point2D : IEquatable<Point2D>, IFormattable
     {
         #region Fields
         /// <summary>The value of the x-coordinate.</summary>
-        internal float _x;
+        internal readonly float _x;
 
         /// <summary>The value of the y-coordinate.</summary>
-        internal float _y;
+        internal readonly float _y;
         #endregion
 
         #region Constructors
@@ -30,31 +30,21 @@ namespace TerraFX
         #endregion
 
         #region Properties
-        /// <summary>Gets or sets the value of the x-coordinate.</summary>
+        /// <summary>Gets the value of the x-coordinate.</summary>
         public float X
         {
             get
             {
                 return _x;
             }
-
-            set
-            {
-                _x = value;
-            }
         }
 
-        /// <summary>Gets or sets the value of the x-coordinate.</summary>
+        /// <summary>Gets the value of the x-coordinate.</summary>
         public float Y
         {
             get
             {
                 return _y;
-            }
-
-            set
-            {
-                _y = value;
             }
         }
         #endregion
@@ -78,6 +68,24 @@ namespace TerraFX
         {
             return (left.X != right.X)
                 || (left.Y != right.Y);
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>Creates a new <see cref="Point2D" /> instance with <see cref="X" /> set to the specified value.</summary>
+        /// <param name="value">The new value of the x-coordinate.</param>
+        /// <returns>A new <see cref="Point2D" /> instance with <see cref="X" /> set to <paramref name="value" />.</returns>
+        public Point2D WithX(float value)
+        {
+            return new Point2D(value, Y);
+        }
+
+        /// <summary>Creates a new <see cref="Point2D" /> instance with <see cref="Y" /> set to the specified value.</summary>
+        /// <param name="value">The new value of the y-coordinate.</param>
+        /// <returns>A new <see cref="Point2D" /> instance with <see cref="Y" /> set to <paramref name="value" />.</returns>
+        public Point2D WithY(float value)
+        {
+            return new Point2D(X, value);
         }
         #endregion
 
