@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct VkSpecializationInfo
+    public /* unmanaged */ unsafe struct VkSpecializationInfo
     {
         #region Fields
         public uint mapEntryCount;

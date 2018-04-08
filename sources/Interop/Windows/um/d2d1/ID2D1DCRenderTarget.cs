@@ -15,7 +15,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Issues drawing commands to a GDI device context.</summary>
     [Guid("1C51BC64-DE61-46FD-9899-63A5D8F03950")]
-    public /* blittable */ unsafe struct ID2D1DCRenderTarget
+    public /* unmanaged */ unsafe struct ID2D1DCRenderTarget
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -1486,7 +1486,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

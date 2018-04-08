@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>The DWRITE_CLUSTER_METRICS public structure contains information about a glyph cluster.</summary>
-    public /* blittable */ struct DWRITE_CLUSTER_METRICS
+    public /* unmanaged */ struct DWRITE_CLUSTER_METRICS
     {
         #region Fields
         /// <summary>The total advance width of all glyphs in the cluster.</summary>

@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>This describes the drawing state.</summary>
-    public /* blittable */ struct D2D1_DRAWING_STATE_DESCRIPTION1
+    public /* unmanaged */ struct D2D1_DRAWING_STATE_DESCRIPTION1
     {
         #region Fields
         public D2D1_ANTIALIAS_MODE antialiasMode;

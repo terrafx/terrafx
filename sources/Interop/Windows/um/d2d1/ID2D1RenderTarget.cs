@@ -15,7 +15,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Represents an object that can receive drawing commands. Interfaces that inherit from ID2D1RenderTarget render the drawing commands they receive in different ways.</summary>
     [Guid("2CD90694-12E2-11DC-9FED-001143A055F9")]
-    public /* blittable */ unsafe struct ID2D1RenderTarget
+    public /* unmanaged */ unsafe struct ID2D1RenderTarget
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -1457,7 +1457,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

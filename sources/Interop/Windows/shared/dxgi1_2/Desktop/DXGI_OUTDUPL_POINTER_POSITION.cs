@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.Desktop
 {
-    public /* blittable */ struct DXGI_OUTDUPL_POINTER_POSITION
+    public /* unmanaged */ struct DXGI_OUTDUPL_POINTER_POSITION
     {
         #region Fields
         public POINT Position;

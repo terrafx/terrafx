@@ -17,7 +17,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Enables creation and drawing of geometry realization objects.</summary>
     [Guid("D37F57E4-6908-459F-A199-E72F24F79987")]
-    public /* blittable */ unsafe struct ID2D1DeviceContext1
+    public /* unmanaged */ unsafe struct ID2D1DeviceContext1
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -2497,7 +2497,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

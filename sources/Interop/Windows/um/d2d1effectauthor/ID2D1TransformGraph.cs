@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The implementation of the actual graph.</summary>
     [Guid("13D29038-C3E6-4034-9081-13B53A417992")]
-    public /* blittable */ unsafe struct ID2D1TransformGraph
+    public /* unmanaged */ unsafe struct ID2D1TransformGraph
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -297,7 +297,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

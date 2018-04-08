@@ -9,7 +9,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Represents a 3-by-2 matrix.</summary>
     [StructLayout(LayoutKind.Explicit)]
-    public /* blittable */ unsafe struct D2D_MATRIX_3X2_F
+    public /* unmanaged */ unsafe struct D2D_MATRIX_3X2_F
     {
         #region Fields
         #region struct

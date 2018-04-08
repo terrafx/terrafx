@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct WICRect
+    public /* unmanaged */ struct WICRect
     {
         #region Fields
         [ComAliasName("INT")]

@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Describes the pixel format and dpi of a bitmap.</summary>
-    public /* blittable */ struct D2D1_BITMAP_PROPERTIES
+    public /* unmanaged */ struct D2D1_BITMAP_PROPERTIES
     {
         #region Fields
         public D2D1_PIXEL_FORMAT pixelFormat;

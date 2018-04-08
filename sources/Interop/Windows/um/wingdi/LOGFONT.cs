@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    public /* blittable */ unsafe struct LOGFONT
+    public /* unmanaged */ unsafe struct LOGFONT
     {
         #region Fields
         [ComAliasName("LONG")]

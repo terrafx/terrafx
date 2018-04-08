@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Indicates whether shader support for doubles is present on the underlying hardware.  This may be populated using CheckFeatureSupport.</summary>
-    public /* blittable */ struct D2D1_FEATURE_DATA_DOUBLES
+    public /* unmanaged */ struct D2D1_FEATURE_DATA_DOUBLES
     {
         #region Fields
         [ComAliasName("BOOL")]

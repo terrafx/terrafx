@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct WICJpegScanHeader
+    public /* unmanaged */ struct WICJpegScanHeader
     {
         #region Fields
         [ComAliasName("UINT")]

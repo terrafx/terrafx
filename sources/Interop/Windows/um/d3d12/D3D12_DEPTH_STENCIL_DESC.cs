@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_DEPTH_STENCIL_DESC
+    public /* unmanaged */ struct D3D12_DEPTH_STENCIL_DESC
     {
         #region Fields
         [ComAliasName("BOOL")]

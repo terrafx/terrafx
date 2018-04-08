@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkBufferCopy
+    public /* unmanaged */ struct VkBufferCopy
     {
         #region Fields
         [ComAliasName("VkDeviceSize")]

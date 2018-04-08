@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Justification information per glyph.</summary>
-    public /* blittable */ struct DWRITE_JUSTIFICATION_OPPORTUNITY
+    public /* unmanaged */ struct DWRITE_JUSTIFICATION_OPPORTUNITY
     {
         #region Fields
         /// <summary>Minimum amount of expansion to apply to the side of the glyph. This may vary from 0 to infinity, typically being zero except for kashida.</summary>

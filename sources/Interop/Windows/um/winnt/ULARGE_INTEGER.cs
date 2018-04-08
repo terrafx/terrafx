@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit)]
-    public /* blittable */ struct ULARGE_INTEGER
+    public /* unmanaged */ struct ULARGE_INTEGER
     {
         #region Fields
         #region struct
@@ -30,7 +30,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct _u__e__Struct
+        public /* unmanaged */ struct _u__e__Struct
         {
             #region Fields
             [ComAliasName("DWORD")]

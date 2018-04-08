@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Contains rendering options (hardware or software), pixel format, DPI information, remoting options, and Direct3D support requirements for a render target.</summary>
-    public /* blittable */ struct D2D1_RENDER_TARGET_PROPERTIES
+    public /* unmanaged */ struct D2D1_RENDER_TARGET_PROPERTIES
     {
         #region Fields
         public D2D1_RENDER_TARGET_TYPE type;

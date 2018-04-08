@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>This is used to define a resource texture when that resource texture is created.</summary>
-    public /* blittable */ unsafe struct D2D1_RESOURCE_TEXTURE_PROPERTIES
+    public /* unmanaged */ unsafe struct D2D1_RESOURCE_TEXTURE_PROPERTIES
     {
         #region Fields
         [ComAliasName("UINT32[]")]

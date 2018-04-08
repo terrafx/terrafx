@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkExtent2D
+    public /* unmanaged */ struct VkExtent2D
     {
         #region Fields
         public uint width;

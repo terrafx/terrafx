@@ -10,7 +10,7 @@ namespace TerraFX.Interop
     /// <summary>Typeface classification values, used for font selection and matching.</summary>
     /// <remarks> Note the family type (index 0) is the only stable entry in the 10-byte array, as all the following entries can change dynamically depending on context of the first field.</remarks>
     [StructLayout(LayoutKind.Explicit)]
-    public /* blittable */ unsafe struct DWRITE_PANOSE
+    public /* unmanaged */ unsafe struct DWRITE_PANOSE
     {
         #region Fields
         [FieldOffset(0)]
@@ -35,7 +35,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct _text_e__Struct
+        public /* unmanaged */ struct _text_e__Struct
         {
             #region Fields
             [ComAliasName("UINT8")]
@@ -70,7 +70,7 @@ namespace TerraFX.Interop
             #endregion
         };
 
-        public /* blittable */ struct _script_e__Struct
+        public /* unmanaged */ struct _script_e__Struct
         {
             #region Fields
             [ComAliasName("UINT8")]
@@ -105,7 +105,7 @@ namespace TerraFX.Interop
             #endregion
         }
 
-        public /* blittable */ struct _decorative_e__Struct
+        public /* unmanaged */ struct _decorative_e__Struct
         {
             #region Fields
             [ComAliasName("UINT8")]
@@ -140,7 +140,7 @@ namespace TerraFX.Interop
             #endregion
         }
 
-        public /* blittable */ struct _symbol_e__Struct
+        public /* unmanaged */ struct _symbol_e__Struct
         {
             #region Fields
             [ComAliasName("UINT8")]

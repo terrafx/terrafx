@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Metrics for caret placement in a font.</summary>
-    public /* blittable */ struct DWRITE_CARET_METRICS
+    public /* unmanaged */ struct DWRITE_CARET_METRICS
     {
         #region Fields
         /// <summary>Vertical rise of the caret. Rise / Run yields the caret angle. Rise = 1 for perfectly upright fonts (non-italic).</summary>

@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Represents all SVG preserveAspectRatio settings.</summary>
-    public /* blittable */ struct D2D1_SVG_PRESERVE_ASPECT_RATIO
+    public /* unmanaged */ struct D2D1_SVG_PRESERVE_ASPECT_RATIO
     {
         #region Fields
         /// <summary>Sets the 'defer' portion of the preserveAspectRatio settings. This field only has an effect on an 'image' element that references another SVG document. As this is not currently supported, the field has no impact on rendering.</summary>

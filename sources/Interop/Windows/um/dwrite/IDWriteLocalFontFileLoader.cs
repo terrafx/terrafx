@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>A built-in implementation of IDWriteFontFileLoader interface that operates on local font files and exposes local font file information from the font file reference key. Font file references created using CreateFontFileReference use this font file loader.</summary>
     [Guid("B2D9F3EC-C9FE-4A11-A2EC-D86208F7C0A2")]
-    public /* blittable */ unsafe struct IDWriteLocalFontFileLoader
+    public /* unmanaged */ unsafe struct IDWriteLocalFontFileLoader
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -228,7 +228,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

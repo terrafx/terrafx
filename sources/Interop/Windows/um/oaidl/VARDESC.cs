@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    public /* blittable */ unsafe struct VARDESC
+    public /* unmanaged */ unsafe struct VARDESC
     {
         #region Fields
         [ComAliasName("MEMBERID")]
@@ -29,7 +29,7 @@ namespace TerraFX.Interop
 
         #region Structs
         [StructLayout(LayoutKind.Explicit)]
-        public /* blittable */ struct _u_e__Union
+        public /* unmanaged */ struct _u_e__Union
         {
             #region Fields
             [FieldOffset(0)]

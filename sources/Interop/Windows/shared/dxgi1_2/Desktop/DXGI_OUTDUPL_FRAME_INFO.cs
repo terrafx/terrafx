@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.Desktop
 {
-    public /* blittable */ struct DXGI_OUTDUPL_FRAME_INFO
+    public /* unmanaged */ struct DXGI_OUTDUPL_FRAME_INFO
     {
         #region Fields
         public LARGE_INTEGER LastPresentTime;

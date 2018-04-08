@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_TEX2D_RTV
+    public /* unmanaged */ struct D3D12_TEX2D_RTV
     {
         #region Fields
         [ComAliasName("UINT")]

@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct DXGI_INFO_QUEUE_FILTER_DESC
+    public /* unmanaged */ unsafe struct DXGI_INFO_QUEUE_FILTER_DESC
     {
         #region Fields
         [ComAliasName("UINT")]

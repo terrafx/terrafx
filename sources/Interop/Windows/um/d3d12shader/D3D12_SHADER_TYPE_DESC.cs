@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct D3D12_SHADER_TYPE_DESC
+    public /* unmanaged */ unsafe struct D3D12_SHADER_TYPE_DESC
     {
         #region Fields
         public D3D_SHADER_VARIABLE_CLASS Class;

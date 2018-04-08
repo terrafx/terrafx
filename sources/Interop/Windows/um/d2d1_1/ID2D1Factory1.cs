@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Creates Direct2D resources.</summary>
     [Guid("BB12D362-DAEE-4B9A-AA1D-14BA401CFA1F")]
-    public /* blittable */ unsafe struct ID2D1Factory1
+    public /* unmanaged */ unsafe struct ID2D1Factory1
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -756,7 +756,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

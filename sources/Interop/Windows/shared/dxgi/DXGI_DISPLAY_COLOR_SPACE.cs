@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct DXGI_DISPLAY_COLOR_SPACE
+    public /* unmanaged */ unsafe struct DXGI_DISPLAY_COLOR_SPACE
     {
         #region Fields
         [ComAliasName("FLOAT[8][2]")]

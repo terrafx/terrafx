@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct D3D12_SIGNATURE_PARAMETER_DESC
+    public /* unmanaged */ unsafe struct D3D12_SIGNATURE_PARAMETER_DESC
     {
         #region Fields
         [ComAliasName("LPCSTR")]

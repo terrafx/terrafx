@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_FEATURE_DATA_ROOT_SIGNATURE
+    public /* unmanaged */ struct D3D12_FEATURE_DATA_ROOT_SIGNATURE
     {
         #region Fields
         public D3D_ROOT_SIGNATURE_VERSION HighestVersion;

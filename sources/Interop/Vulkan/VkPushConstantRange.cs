@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkPushConstantRange
+    public /* unmanaged */ struct VkPushConstantRange
     {
         #region Fields
         [ComAliasName("VkShaderStageFlags")]

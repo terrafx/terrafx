@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Blend description which configures a blend transform object.</summary>
-    public /* blittable */ unsafe struct D2D1_BLEND_DESCRIPTION
+    public /* unmanaged */ unsafe struct D2D1_BLEND_DESCRIPTION
     {
         #region Fields
         public D2D1_BLEND sourceBlend;

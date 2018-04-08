@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Describes a triangle.</summary>
-    public /* blittable */ struct D2D1_TRIANGLE
+    public /* unmanaged */ struct D2D1_TRIANGLE
     {
         #region Fields
         [ComAliasName("D2D1_POINT_2F")]

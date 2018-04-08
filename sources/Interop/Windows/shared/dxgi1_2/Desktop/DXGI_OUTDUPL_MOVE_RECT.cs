@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop.Desktop
 {
-    public /* blittable */ struct DXGI_OUTDUPL_MOVE_RECT
+    public /* unmanaged */ struct DXGI_OUTDUPL_MOVE_RECT
     {
         #region Fields
         public POINT SourcePoint;

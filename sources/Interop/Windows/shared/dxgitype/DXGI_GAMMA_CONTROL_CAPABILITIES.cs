@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct DXGI_GAMMA_CONTROL_CAPABILITIES
+    public /* unmanaged */ unsafe struct DXGI_GAMMA_CONTROL_CAPABILITIES
     {
         #region Fields
         [ComAliasName("BOOL")]

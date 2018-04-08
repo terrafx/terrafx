@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit)]
-    public /* blittable */ struct D3D12_RESOURCE_BARRIER
+    public /* unmanaged */ struct D3D12_RESOURCE_BARRIER
     {
         #region Fields
         [FieldOffset(0)]

@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_DEPTH_STENCILOP_DESC
+    public /* unmanaged */ struct D3D12_DEPTH_STENCILOP_DESC
     {
         #region Fields
         public D3D12_STENCIL_OP StencilFailOp;

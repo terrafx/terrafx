@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct DXGI_RGB
+    public /* unmanaged */ struct DXGI_RGB
     {
         #region Fields
         public float Red;

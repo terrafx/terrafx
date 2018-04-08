@@ -6,7 +6,7 @@
 using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct DXGI_MAPPED_RECT
+    public /* unmanaged */ unsafe struct DXGI_MAPPED_RECT
     {
         #region Fields
         [ComAliasName("INT")]

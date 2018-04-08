@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct D3D12_GRAPHICS_PIPELINE_STATE_DESC
+    public /* unmanaged */ unsafe struct D3D12_GRAPHICS_PIPELINE_STATE_DESC
     {
         #region Fields
         public ID3D12RootSignature* pRootSignature;
@@ -58,7 +58,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct _RTVFormats_e__FixedBuffer
+        public /* unmanaged */ struct _RTVFormats_e__FixedBuffer
         {
             #region Fields
             public DXGI_FORMAT e0;

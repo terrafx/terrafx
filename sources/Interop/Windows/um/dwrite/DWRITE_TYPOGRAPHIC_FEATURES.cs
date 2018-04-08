@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Defines a set of typographic features to be applied during shaping. Notice the character range which this feature list spans is specified as a separate parameter to GetGlyphs.</summary>
-    public /* blittable */ unsafe struct DWRITE_TYPOGRAPHIC_FEATURES
+    public /* unmanaged */ unsafe struct DWRITE_TYPOGRAPHIC_FEATURES
     {
         #region Fields
         /// <summary>Array of font features.</summary>

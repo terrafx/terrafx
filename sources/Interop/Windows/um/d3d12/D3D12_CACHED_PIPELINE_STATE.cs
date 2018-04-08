@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct D3D12_CACHED_PIPELINE_STATE
+    public /* unmanaged */ unsafe struct D3D12_CACHED_PIPELINE_STATE
     {
         #region Fields
         public void* pCachedBlob;

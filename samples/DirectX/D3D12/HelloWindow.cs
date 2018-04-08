@@ -441,7 +441,7 @@ namespace TerraFX.Samples.DirectX.D3D12
         #endregion
 
         #region Structs
-        private /* blittable */ unsafe struct _renderTargets_e__FixedBuffer
+        private /* unmanaged */ unsafe struct _renderTargets_e__FixedBuffer
         {
             #region Fields
 #pragma warning disable CS0649

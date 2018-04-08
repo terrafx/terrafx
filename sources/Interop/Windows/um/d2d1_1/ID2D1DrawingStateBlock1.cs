@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Represents drawing state.</summary>
     [Guid("689F1F85-C72E-4E33-8F19-85754EFD5ACE")]
-    public /* blittable */ unsafe struct ID2D1DrawingStateBlock1
+    public /* unmanaged */ unsafe struct ID2D1DrawingStateBlock1
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -243,7 +243,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

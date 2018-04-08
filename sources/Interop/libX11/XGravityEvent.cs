@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct XGravityEvent
+    public /* unmanaged */ unsafe struct XGravityEvent
     {
         #region Fields
         public int type;

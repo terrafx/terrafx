@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkVertexInputBindingDescription
+    public /* unmanaged */ struct VkVertexInputBindingDescription
     {
         #region Fields
         public uint binding;

@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>A transform uses this interface to write new vertices to a vertex buffer.</summary>
     [Guid("9B8B1336-00A5-4668-92B7-CED5D8BF9B7B")]
-    public /* blittable */ unsafe struct ID2D1VertexBuffer
+    public /* unmanaged */ unsafe struct ID2D1VertexBuffer
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -131,7 +131,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

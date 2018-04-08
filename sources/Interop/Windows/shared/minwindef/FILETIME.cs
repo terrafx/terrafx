@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct FILETIME
+    public /* unmanaged */ struct FILETIME
     {
         #region Fields
         [ComAliasName("DWORD")]

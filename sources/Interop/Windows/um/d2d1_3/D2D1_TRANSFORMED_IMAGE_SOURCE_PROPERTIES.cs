@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Properties of a transformed image source.</summary>
-    public /* blittable */ struct D2D1_TRANSFORMED_IMAGE_SOURCE_PROPERTIES
+    public /* unmanaged */ struct D2D1_TRANSFORMED_IMAGE_SOURCE_PROPERTIES
     {
         #region Fields
         /// <summary>The orientation at which the image source is drawn.</summary>

@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.Desktop
 {
-    public /* blittable */ struct DXGI_OUTDUPL_POINTER_SHAPE_INFO
+    public /* unmanaged */ struct DXGI_OUTDUPL_POINTER_SHAPE_INFO
     {
         #region Fields
         [ComAliasName("UINT")]

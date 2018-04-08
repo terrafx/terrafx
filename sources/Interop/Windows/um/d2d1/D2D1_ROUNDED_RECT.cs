@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Contains the dimensions and corner radii of a rounded rectangle.</summary>
-    public /* blittable */ struct D2D1_ROUNDED_RECT
+    public /* unmanaged */ struct D2D1_ROUNDED_RECT
     {
         #region Fields
         [ComAliasName("D2D1_RECT_F")]

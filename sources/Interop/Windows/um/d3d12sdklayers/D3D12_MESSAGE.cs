@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct D3D12_MESSAGE
+    public /* unmanaged */ unsafe struct D3D12_MESSAGE
     {
         #region Fields
         public D3D12_MESSAGE_CATEGORY Category;

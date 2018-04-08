@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Overall metrics associated with text after layout. All coordinates are in device independent pixels (DIPs).</summary>
-    public /* blittable */ struct DWRITE_TEXT_METRICS
+    public /* unmanaged */ struct DWRITE_TEXT_METRICS
     {
         #region Fields
         /// <summary>Left-most point of formatted text relative to layout box (excluding any glyph overhang).</summary>

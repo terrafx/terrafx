@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkSurfaceCapabilitiesKHR
+    public /* unmanaged */ struct VkSurfaceCapabilitiesKHR
     {
         #region Fields
         public uint minImageCount;

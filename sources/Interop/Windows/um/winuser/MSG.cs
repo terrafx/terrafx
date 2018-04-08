@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct MSG
+    public /* unmanaged */ unsafe struct MSG
     {
         #region Fields
         [ComAliasName("HWND")]

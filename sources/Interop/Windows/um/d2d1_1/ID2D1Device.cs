@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The device defines a resource domain whose objects and device contexts can be used together.</summary>
     [Guid("47DD575D-AC05-4CDD-8049-9B02CD16F44C")]
-    public /* blittable */ unsafe struct ID2D1Device
+    public /* unmanaged */ unsafe struct ID2D1Device
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -232,7 +232,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

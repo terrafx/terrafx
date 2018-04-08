@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>A time specification.</summary>
-    public /* blittable */ struct timespec
+    public /* unmanaged */ struct timespec
     {
         #region Fields
         /// <summary>Seconds.</summary>

@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>This defines the properties of a vertex buffer which uses the default vertex layout.</summary>
-    public /* blittable */ unsafe struct D2D1_VERTEX_BUFFER_PROPERTIES
+    public /* unmanaged */ unsafe struct D2D1_VERTEX_BUFFER_PROPERTIES
     {
         #region Fields
         [ComAliasName("UINT32")]

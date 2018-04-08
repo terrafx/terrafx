@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Script-specific properties for caret navigation and justification.</summary>
-    public /* blittable */ struct DWRITE_SCRIPT_PROPERTIES
+    public /* unmanaged */ struct DWRITE_SCRIPT_PROPERTIES
     {
         #region Fields
         /// <summary>The standardized four character code for the given script. Note these only include the general Unicode scripts, not any additional ISO 15924 scripts for bibliographic distinction (for example, Fraktur Latin vs Gaelic Latin). http://unicode.org/iso15924/iso15924-codes.html</summary>

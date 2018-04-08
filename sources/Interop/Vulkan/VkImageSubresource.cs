@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkImageSubresource
+    public /* unmanaged */ struct VkImageSubresource
     {
         #region Fields
         [ComAliasName("VkImageAspectFlags")]

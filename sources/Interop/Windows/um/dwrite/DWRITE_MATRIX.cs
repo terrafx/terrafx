@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>The DWRITE_MATRIX public structure specifies the graphics transform to be applied to rendered glyphs.</summary>
-    public /* blittable */ struct DWRITE_MATRIX
+    public /* unmanaged */ struct DWRITE_MATRIX
     {
         #region Fields
         /// <summary>Horizontal scaling / cosine of rotation</summary>

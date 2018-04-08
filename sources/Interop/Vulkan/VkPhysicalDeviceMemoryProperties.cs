@@ -7,7 +7,7 @@ using static System.Runtime.CompilerServices.Unsafe;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkPhysicalDeviceMemoryProperties
+    public /* unmanaged */ struct VkPhysicalDeviceMemoryProperties
     {
         #region Fields
         public uint memoryTypeCount;
@@ -20,7 +20,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ unsafe struct _memoryTypes_e__FixedBuffer
+        public /* unmanaged */ unsafe struct _memoryTypes_e__FixedBuffer
         {
             #region Fields
             public VkMemoryType e0;
@@ -102,7 +102,7 @@ namespace TerraFX.Interop
             #endregion
         }
 
-        public /* blittable */ unsafe struct _memoryHeaps_e__FixedBuffer
+        public /* unmanaged */ unsafe struct _memoryHeaps_e__FixedBuffer
         {
             #region Fields
             public VkMemoryHeap e0;

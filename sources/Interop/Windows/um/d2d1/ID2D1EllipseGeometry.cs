@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Represents an ellipse.</summary>
     [Guid("2CD906A4-12E2-11DC-9FED-001143A055F9")]
-    public /* blittable */ unsafe struct ID2D1EllipseGeometry
+    public /* unmanaged */ unsafe struct ID2D1EllipseGeometry
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -553,7 +553,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

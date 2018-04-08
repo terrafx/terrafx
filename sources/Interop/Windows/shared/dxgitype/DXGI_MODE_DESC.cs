@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct DXGI_MODE_DESC
+    public /* unmanaged */ struct DXGI_MODE_DESC
     {
         #region Fields
         [ComAliasName("UINT")]

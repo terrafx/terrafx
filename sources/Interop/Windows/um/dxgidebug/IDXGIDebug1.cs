@@ -11,7 +11,7 @@ using static TerraFX.Utilities.InteropUtilities;
 namespace TerraFX.Interop
 {
     [Guid("C5A05F0C-16F2-4ADF-9F4D-A8C4D58AC550")]
-    public /* blittable */ unsafe struct IDXGIDebug1
+    public /* unmanaged */ unsafe struct IDXGIDebug1
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -166,7 +166,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

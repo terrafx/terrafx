@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct DXGI_SWAP_CHAIN_DESC
+    public /* unmanaged */ unsafe struct DXGI_SWAP_CHAIN_DESC
     {
         #region Fields
         public DXGI_MODE_DESC BufferDesc;

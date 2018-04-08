@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit)]
-    public /* blittable */ struct CY
+    public /* unmanaged */ struct CY
     {
         #region Fields
         #region struct

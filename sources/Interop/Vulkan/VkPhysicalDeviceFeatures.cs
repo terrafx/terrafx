@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkPhysicalDeviceFeatures
+    public /* unmanaged */ struct VkPhysicalDeviceFeatures
     {
         #region Fields
         [ComAliasName("VkBool32")]

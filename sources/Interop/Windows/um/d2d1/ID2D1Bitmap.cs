@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Root bitmap resource, linearly scaled on a draw call.</summary>
     [Guid("A2296057-EA42-4099-983B-539FB6505426")]
-    public /* blittable */ unsafe struct ID2D1Bitmap
+    public /* unmanaged */ unsafe struct ID2D1Bitmap
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -284,7 +284,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

@@ -9,7 +9,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Font property used for filtering font sets and building a font set with explicit properties.</summary>
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    public /* blittable */ unsafe struct DWRITE_FONT_PROPERTY
+    public /* unmanaged */ unsafe struct DWRITE_FONT_PROPERTY
     {
         #region Fields
         /// <summary>Specifies the requested font property, such as DWRITE_FONT_PROPERTY_ID_FAMILY_NAME.</summary>

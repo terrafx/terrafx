@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkSparseImageMemoryRequirements
+    public /* unmanaged */ struct VkSparseImageMemoryRequirements
     {
         #region Fields
         public VkSparseImageFormatProperties formatProperties;

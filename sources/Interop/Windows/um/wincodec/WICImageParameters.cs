@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct WICImageParameters
+    public /* unmanaged */ struct WICImageParameters
     {
         #region Fields
         public D2D1_PIXEL_FORMAT pixelFormat;

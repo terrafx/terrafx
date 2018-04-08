@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct DXGI_QUERY_VIDEO_MEMORY_INFO
+    public /* unmanaged */ struct DXGI_QUERY_VIDEO_MEMORY_INFO
     {
         #region Fields
         [ComAliasName("UINT64")]

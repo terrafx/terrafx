@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Enumerator for an ordered collection of color glyph runs.</summary>
     [Guid("7C5F86DA-C7A1-4F05-B8E1-55A179FE5A35")]
-    public /* blittable */ unsafe struct IDWriteColorGlyphRunEnumerator1
+    public /* unmanaged */ unsafe struct IDWriteColorGlyphRunEnumerator1
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -167,7 +167,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

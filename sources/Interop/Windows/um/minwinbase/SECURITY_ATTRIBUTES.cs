@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct SECURITY_ATTRIBUTES
+    public /* unmanaged */ unsafe struct SECURITY_ATTRIBUTES
     {
         #region Fields
         [ComAliasName("DWORD")]

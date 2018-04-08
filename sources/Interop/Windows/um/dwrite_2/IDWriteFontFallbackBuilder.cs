@@ -13,7 +13,7 @@ namespace TerraFX.Interop
     /// <summary>Builder used to create a font fallback definition by appending a series of fallback mappings, followed by a creation call.</summary>
     /// <remarks> This object may not be thread-safe.</remarks>
     [Guid("FD882D06-8ABA-4FB8-B849-8BE8B73E14DE")]
-    public /* blittable */ unsafe struct IDWriteFontFallbackBuilder
+    public /* unmanaged */ unsafe struct IDWriteFontFallbackBuilder
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -192,7 +192,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

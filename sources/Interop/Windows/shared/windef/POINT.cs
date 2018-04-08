@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct POINT
+    public /* unmanaged */ struct POINT
     {
         #region Fields
         [ComAliasName("LONG")]

@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct DXGI_RGBA
+    public /* unmanaged */ struct DXGI_RGBA
     {
         #region Fields
         public float r;

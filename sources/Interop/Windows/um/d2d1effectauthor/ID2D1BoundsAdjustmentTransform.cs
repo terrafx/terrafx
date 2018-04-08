@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>An effect uses this interface to alter the image rectangle of its input.</summary>
     [Guid("90F732E2-5092-4606-A819-8651970BACCD")]
-    public /* blittable */ unsafe struct ID2D1BoundsAdjustmentTransform
+    public /* unmanaged */ unsafe struct ID2D1BoundsAdjustmentTransform
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -151,7 +151,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct WICRawToneCurvePoint
+    public /* unmanaged */ struct WICRawToneCurvePoint
     {
         #region Fields
         public double Input;

@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    public /* blittable */ unsafe struct EXCEPINFO
+    public /* unmanaged */ unsafe struct EXCEPINFO
     {
         #region Fields
         [ComAliasName("WORD")]

@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop.Desktop
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    public /* blittable */ unsafe struct WNDCLASSEX
+    public /* unmanaged */ unsafe struct WNDCLASSEX
     {
         #region Fields
         [ComAliasName("UINT")]

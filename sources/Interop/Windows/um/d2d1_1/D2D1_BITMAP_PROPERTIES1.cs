@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Extended bitmap properties.</summary>
-    public /* blittable */ unsafe struct D2D1_BITMAP_PROPERTIES1
+    public /* unmanaged */ unsafe struct D2D1_BITMAP_PROPERTIES1
     {
         #region Fields
         public D2D1_PIXEL_FORMAT pixelFormat;

@@ -8,7 +8,7 @@ using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_BLEND_DESC
+    public /* unmanaged */ struct D3D12_BLEND_DESC
     {
         #region Fields
         [ComAliasName("BOOL")]
@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ unsafe struct _RenderTarget_e__FixedBuffer
+        public /* unmanaged */ unsafe struct _RenderTarget_e__FixedBuffer
         {
             #region Fields
             public D3D12_RENDER_TARGET_BLEND_DESC e0;

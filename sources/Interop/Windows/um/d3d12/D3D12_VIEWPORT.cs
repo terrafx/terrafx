@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_VIEWPORT
+    public /* unmanaged */ struct D3D12_VIEWPORT
     {
         #region Fields
         [ComAliasName("FLOAT")]

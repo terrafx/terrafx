@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit)]
-    public /* blittable */ struct XEvent
+    public /* unmanaged */ struct XEvent
     {
         #region Fields
         [FieldOffset(0)]
@@ -118,7 +118,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ unsafe struct _pad_e__FixedBuffer
+        public /* unmanaged */ unsafe struct _pad_e__FixedBuffer
         {
             #region Fields
             public nint e0;

@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct DWRITE_FONT_METRICS1
+    public /* unmanaged */ struct DWRITE_FONT_METRICS1
     {
         #region Fields
         public DWRITE_FONT_METRICS BaseValue;

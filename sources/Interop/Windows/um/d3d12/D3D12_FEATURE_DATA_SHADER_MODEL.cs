@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_FEATURE_DATA_SHADER_MODEL
+    public /* unmanaged */ struct D3D12_FEATURE_DATA_SHADER_MODEL
     {
         #region Fields
         public D3D_SHADER_MODEL HighestShaderModel;

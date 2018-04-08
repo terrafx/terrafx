@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The interface that represents text rendering settings for glyph rasterization and filtering.</summary>
     [Guid("B7924BAA-391B-412A-8C5C-E44CC2D867DC")]
-    public /* blittable */ unsafe struct IDWriteRenderingParams3
+    public /* unmanaged */ unsafe struct IDWriteRenderingParams3
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -242,7 +242,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

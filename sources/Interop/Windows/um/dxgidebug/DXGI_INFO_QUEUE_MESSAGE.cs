@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct DXGI_INFO_QUEUE_MESSAGE
+    public /* unmanaged */ unsafe struct DXGI_INFO_QUEUE_MESSAGE
     {
         #region Fields
         [ComAliasName("DXGI_DEBUG_ID")]

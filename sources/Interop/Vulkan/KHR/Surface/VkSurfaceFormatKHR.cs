@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkSurfaceFormatKHR
+    public /* unmanaged */ struct VkSurfaceFormatKHR
     {
         #region Fields
         public VkFormat format;

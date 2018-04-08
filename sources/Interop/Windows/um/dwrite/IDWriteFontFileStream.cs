@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The interface for loading font file data.</summary>
     [Guid("6D4865FE-0AB8-4D91-8F62-5DD6BE34A3E0")]
-    public /* blittable */ unsafe struct IDWriteFontFileStream
+    public /* unmanaged */ unsafe struct IDWriteFontFileStream
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -199,7 +199,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkFormatProperties
+    public /* unmanaged */ struct VkFormatProperties
     {
         #region Fields
         [ComAliasName("VkFormatFeatureFlags")]

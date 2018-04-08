@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct DXGI_JPEG_AC_HUFFMAN_TABLE
+    public /* unmanaged */ unsafe struct DXGI_JPEG_AC_HUFFMAN_TABLE
     {
         #region Fields
         [ComAliasName("BYTE[16]")]

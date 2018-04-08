@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct DISPPARAMS
+    public /* unmanaged */ unsafe struct DISPPARAMS
     {
         #region Fields
         [ComAliasName("VARIANTARG[]")]

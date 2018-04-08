@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Range of Unicode codepoints.</summary>
-    public /* blittable */ struct DWRITE_UNICODE_RANGE
+    public /* unmanaged */ struct DWRITE_UNICODE_RANGE
     {
         #region Fields
         /// <summary>The first codepoint in the Unicode range.</summary>

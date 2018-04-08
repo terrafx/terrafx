@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>A uniquely identifying reference to a font, from which you can create a font face to query font metrics and use for rendering. A font face reference consists of a font file, font face index, and font face simulation. The file data may or may not be physically present on the local machine yet.</summary>
     [Guid("5E7FA7CA-DDE3-424C-89F0-9FCD6FED58CD")]
-    public /* blittable */ unsafe struct IDWriteFontFaceReference
+    public /* unmanaged */ unsafe struct IDWriteFontFaceReference
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -416,7 +416,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Defines the general pen tip shape and the transform used in an ID2D1InkStyle object.</summary>
-    public /* blittable */ struct D2D1_INK_STYLE_PROPERTIES
+    public /* unmanaged */ struct D2D1_INK_STYLE_PROPERTIES
     {
         #region Fields
         /// <summary>The general shape of the nib used to draw a given ink object.</summary>

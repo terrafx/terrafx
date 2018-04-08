@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Represents a device-dependent representation of a gradient mesh composed of patches. Use the ID2D1DeviceContext2::CreateGradientMesh method to create an instance of ID2D1GradientMesh.</summary>
     [Guid("F292E401-C050-4CDE-83D7-04962D3B23C2")]
-    public /* blittable */ unsafe struct ID2D1GradientMesh
+    public /* unmanaged */ unsafe struct ID2D1GradientMesh
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -161,7 +161,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

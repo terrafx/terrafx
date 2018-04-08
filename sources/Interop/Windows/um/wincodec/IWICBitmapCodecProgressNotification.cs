@@ -11,7 +11,7 @@ using static TerraFX.Utilities.InteropUtilities;
 namespace TerraFX.Interop
 {
     [Guid("64C1024E-C3CF-4462-8078-88C2B11C46D9")]
-    public /* blittable */ unsafe struct IWICBitmapCodecProgressNotification
+    public /* unmanaged */ unsafe struct IWICBitmapCodecProgressNotification
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -115,7 +115,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

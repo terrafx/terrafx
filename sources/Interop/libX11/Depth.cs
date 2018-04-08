@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct Depth
+    public /* unmanaged */ unsafe struct Depth
     {
         #region Fields
         public int depth;

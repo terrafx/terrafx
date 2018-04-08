@@ -11,7 +11,7 @@ using static TerraFX.Utilities.InteropUtilities;
 namespace TerraFX.Interop
 {
     [Guid("8337A8A6-A216-444A-B2F4-314733A73AEA")]
-    public /* blittable */ unsafe struct ID3D12ShaderReflectionVariable
+    public /* unmanaged */ unsafe struct ID3D12ShaderReflectionVariable
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -96,7 +96,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region Fields
             public IntPtr GetDesc;

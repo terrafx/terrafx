@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Interface encapsulating a GDI/GDI+ metafile.</summary>
     [Guid("2F543DC3-CFC1-4211-864F-CFD91C6F3395")]
-    public /* blittable */ unsafe struct ID2D1GdiMetafile
+    public /* unmanaged */ unsafe struct ID2D1GdiMetafile
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -159,7 +159,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

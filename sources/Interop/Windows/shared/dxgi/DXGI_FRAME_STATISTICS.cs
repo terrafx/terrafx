@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct DXGI_FRAME_STATISTICS
+    public /* unmanaged */ struct DXGI_FRAME_STATISTICS
     {
         #region Fields
         [ComAliasName("UINT")]

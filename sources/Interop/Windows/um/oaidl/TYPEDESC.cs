@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct TYPEDESC
+    public /* unmanaged */ unsafe struct TYPEDESC
     {
         #region Fields
         internal _u_e__Union u;
@@ -18,7 +18,7 @@ namespace TerraFX.Interop
 
         #region Structs
         [StructLayout(LayoutKind.Explicit)]
-        public /* blittable */ struct _u_e__Union
+        public /* unmanaged */ struct _u_e__Union
         {
             #region Fields
             [FieldOffset(0)]

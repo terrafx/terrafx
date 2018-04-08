@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkDescriptorPoolSize
+    public /* unmanaged */ struct VkDescriptorPoolSize
     {
         #region Fields
         public VkDescriptorType type;

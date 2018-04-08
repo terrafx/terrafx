@@ -8,7 +8,7 @@ using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct DXGI_GAMMA_CONTROL
+    public /* unmanaged */ struct DXGI_GAMMA_CONTROL
     {
         #region Fields
         public DXGI_RGB Scale;
@@ -20,7 +20,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ unsafe struct _GammaCurve_e__FixedBuffer
+        public /* unmanaged */ unsafe struct _GammaCurve_e__FixedBuffer
         {
             #region Fields
             public DXGI_RGB e0;

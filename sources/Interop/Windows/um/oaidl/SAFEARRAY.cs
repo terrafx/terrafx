@@ -8,7 +8,7 @@ using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct SAFEARRAY
+    public /* unmanaged */ unsafe struct SAFEARRAY
     {
         #region Fields
         [ComAliasName("USHORT")]
@@ -31,7 +31,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ unsafe struct _rgsabound_e__FixedBuffer
+        public /* unmanaged */ unsafe struct _rgsabound_e__FixedBuffer
         {
             #region Fields
             public SAFEARRAYBOUND e0;

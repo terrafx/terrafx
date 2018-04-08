@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Describes the opacity and transformation of a brush.</summary>
-    public /* blittable */ struct D2D1_BRUSH_PROPERTIES
+    public /* unmanaged */ struct D2D1_BRUSH_PROPERTIES
     {
         #region Fields
         [ComAliasName("FLOAT")]

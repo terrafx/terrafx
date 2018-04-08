@@ -17,7 +17,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The device context represents a set of state and a command buffer that is used to render to a target bitmap.</summary>
     [Guid("E8F7FE7A-191C-466D-AD95-975678BDA998")]
-    public /* blittable */ unsafe struct ID2D1DeviceContext
+    public /* unmanaged */ unsafe struct ID2D1DeviceContext
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -2408,7 +2408,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

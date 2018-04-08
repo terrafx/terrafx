@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>This is the interface implemented by an effect author, along with the constructor and registration information.</summary>
     [Guid("A248FD3F-3E6C-4E63-9F03-7F68ECC91DB9")]
-    public /* blittable */ unsafe struct ID2D1EffectImpl
+    public /* unmanaged */ unsafe struct ID2D1EffectImpl
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -160,7 +160,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

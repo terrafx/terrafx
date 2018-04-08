@@ -11,7 +11,7 @@ using static TerraFX.Utilities.InteropUtilities;
 namespace TerraFX.Interop
 {
     [Guid("E4FBCF03-223D-4E81-9333-D635556DD1B5")]
-    public /* blittable */ unsafe struct IWICBitmapClipper
+    public /* unmanaged */ unsafe struct IWICBitmapClipper
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -241,7 +241,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

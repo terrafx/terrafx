@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct CAUB
+    public /* unmanaged */ unsafe struct CAUB
     {
         #region Fields
         [ComAliasName("ULONG")]

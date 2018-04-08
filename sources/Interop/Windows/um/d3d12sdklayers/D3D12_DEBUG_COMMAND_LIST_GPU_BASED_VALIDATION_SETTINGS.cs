@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_DEBUG_COMMAND_LIST_GPU_BASED_VALIDATION_SETTINGS
+    public /* unmanaged */ struct D3D12_DEBUG_COMMAND_LIST_GPU_BASED_VALIDATION_SETTINGS
     {
         #region Fields
         public D3D12_GPU_BASED_VALIDATION_SHADER_PATCH_MODE ShaderPatchMode;

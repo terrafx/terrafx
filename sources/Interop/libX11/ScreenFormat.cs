@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct ScreenFormat
+    public /* unmanaged */ unsafe struct ScreenFormat
     {
         #region Fields
         public XExtData* ext_data;

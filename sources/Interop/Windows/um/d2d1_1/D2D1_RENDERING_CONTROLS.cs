@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>This controls advanced settings of the Direct2D imaging pipeline.</summary>
-    public /* blittable */ struct D2D1_RENDERING_CONTROLS
+    public /* unmanaged */ struct D2D1_RENDERING_CONTROLS
     {
         #region Fields
         /// <summary>The default buffer precision, used if the precision isn't otherwise specified.</summary>

@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The root factory interface for all of D2D's objects.</summary>
     [Guid("06152247-6F50-465A-9245-118BFD3B6007")]
-    public /* blittable */ unsafe struct ID2D1Factory
+    public /* unmanaged */ unsafe struct ID2D1Factory
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -463,7 +463,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

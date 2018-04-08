@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit)]
-    public /* blittable */ struct DECIMAL
+    public /* unmanaged */ struct DECIMAL
     {
         #region Fields
         [FieldOffset(0)]

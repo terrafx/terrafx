@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Interface for all SVG elements.</summary>
     [Guid("AC7B67A6-183E-49C1-A823-0EBE40B0DB29")]
-    public /* blittable */ unsafe struct ID2D1SvgElement
+    public /* unmanaged */ unsafe struct ID2D1SvgElement
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -886,7 +886,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct XWindowAttributes
+    public /* unmanaged */ unsafe struct XWindowAttributes
     {
         #region Fields
         public int x, y;

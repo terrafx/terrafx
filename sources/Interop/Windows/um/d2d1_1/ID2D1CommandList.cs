@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The commandList interface.</summary>
     [Guid("B4F34A19-2383-4D76-94F6-EC343657C3DC")]
-    public /* blittable */ unsafe struct ID2D1CommandList
+    public /* unmanaged */ unsafe struct ID2D1CommandList
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -155,7 +155,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

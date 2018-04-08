@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_DESCRIPTOR_HEAP_DESC
+    public /* unmanaged */ struct D3D12_DESCRIPTOR_HEAP_DESC
     {
         #region Fields
         public D3D12_DESCRIPTOR_HEAP_TYPE Type;

@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct IDLDESC
+    public /* unmanaged */ struct IDLDESC
     {
         #region Fields
         [ComAliasName("ULONG_PTR")]

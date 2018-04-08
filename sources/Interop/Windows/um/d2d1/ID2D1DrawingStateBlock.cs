@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Represents the drawing state of a render target: the antialiasing mode, transform, tags, and text-rendering options.</summary>
     [Guid("28506E39-EBF6-46A1-BB47-FD85565AB957")]
-    public /* blittable */ unsafe struct ID2D1DrawingStateBlock
+    public /* unmanaged */ unsafe struct ID2D1DrawingStateBlock
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -197,7 +197,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

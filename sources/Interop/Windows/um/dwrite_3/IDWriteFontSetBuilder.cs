@@ -11,7 +11,7 @@ using static TerraFX.Utilities.InteropUtilities;
 namespace TerraFX.Interop
 {
     [Guid("2F642AFE-9C68-4F40-B8BE-457401AFCB3D")]
-    public /* blittable */ unsafe struct IDWriteFontSetBuilder
+    public /* unmanaged */ unsafe struct IDWriteFontSetBuilder
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -196,7 +196,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

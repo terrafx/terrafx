@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_FEATURE_DATA_SHADER_CACHE
+    public /* unmanaged */ struct D3D12_FEATURE_DATA_SHADER_CACHE
     {
         #region Fields
         public D3D12_SHADER_CACHE_SUPPORT_FLAGS SupportFlags;

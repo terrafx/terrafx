@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>An effect uses this interface to offset an image without inserting a rendering pass.</summary>
     [Guid("3FE6ADEA-7643-4F53-BD14-A0CE63F24042")]
-    public /* blittable */ unsafe struct ID2D1OffsetTransform
+    public /* unmanaged */ unsafe struct ID2D1OffsetTransform
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -151,7 +151,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

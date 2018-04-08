@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct BRECORD
+    public /* unmanaged */ unsafe struct BRECORD
     {
         #region Fields
         [ComAliasName("PVOID")]

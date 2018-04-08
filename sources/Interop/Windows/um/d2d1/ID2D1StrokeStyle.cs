@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Resource interface that holds pen style properties.</summary>
     [Guid("2CD9069D-12E2-11DC-9FED-001143A055F9")]
-    public /* blittable */ unsafe struct ID2D1StrokeStyle
+    public /* unmanaged */ unsafe struct ID2D1StrokeStyle
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -271,7 +271,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

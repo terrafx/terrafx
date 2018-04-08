@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkDrawIndexedIndirectCommand
+    public /* unmanaged */ struct VkDrawIndexedIndirectCommand
     {
         #region Fields
         public uint indexCount;

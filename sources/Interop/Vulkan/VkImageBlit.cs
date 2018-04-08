@@ -7,7 +7,7 @@ using static System.Runtime.CompilerServices.Unsafe;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkImageBlit
+    public /* unmanaged */ struct VkImageBlit
     {
         #region Fields
         public VkImageSubresourceLayers srcSubresource;
@@ -20,7 +20,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ unsafe struct _srcOffsets_e__FixedBuffer
+        public /* unmanaged */ unsafe struct _srcOffsets_e__FixedBuffer
         {
             #region Fields
             public VkOffset3D e0;
@@ -42,7 +42,7 @@ namespace TerraFX.Interop
             #endregion
         }
 
-        public /* blittable */ unsafe struct _dstOffsets_e__FixedBuffer
+        public /* unmanaged */ unsafe struct _dstOffsets_e__FixedBuffer
         {
             #region Fields
             public VkOffset3D e0;

@@ -10,7 +10,7 @@ using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct ID3DInclude
+    public /* unmanaged */ unsafe struct ID3DInclude
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -77,7 +77,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region Fields
             public IntPtr Open;

@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The IDWriteFontFamily interface represents a set of fonts that share the same design but are differentiated by weight, stretch, and style.</summary>
     [Guid("DA20D8EF-812A-4C43-9802-62EC4ABD7ADD")]
-    public /* blittable */ unsafe struct IDWriteFontFamily
+    public /* unmanaged */ unsafe struct IDWriteFontFamily
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -264,7 +264,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

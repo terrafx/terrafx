@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Represents a rectangle defined by the coordinates of the upper-left corner (left, top) and the coordinates of the lower-right corner (right, bottom).</summary>
-    public /* blittable */ struct D2D_RECT_U
+    public /* unmanaged */ struct D2D_RECT_U
     {
         #region Fields
         [ComAliasName("UINT32")]

@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>The creation properties for a ID2D1PrintControl object.</summary>
-    public /* blittable */ struct D2D1_PRINT_CONTROL_PROPERTIES
+    public /* unmanaged */ struct D2D1_PRINT_CONTROL_PROPERTIES
     {
         #region Fields
         public D2D1_PRINT_FONT_SUBSET_MODE fontSubset;

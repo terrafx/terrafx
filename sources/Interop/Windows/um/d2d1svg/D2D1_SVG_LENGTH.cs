@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Represents an SVG length.</summary>
-    public /* blittable */ struct D2D1_SVG_LENGTH
+    public /* unmanaged */ struct D2D1_SVG_LENGTH
     {
         #region Fields
         [ComAliasName("FLOAT")]

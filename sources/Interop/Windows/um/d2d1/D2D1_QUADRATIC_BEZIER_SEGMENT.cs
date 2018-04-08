@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Contains the control point and end point for a quadratic Bezier segment.</summary>
-    public /* blittable */ struct D2D1_QUADRATIC_BEZIER_SEGMENT
+    public /* unmanaged */ struct D2D1_QUADRATIC_BEZIER_SEGMENT
     {
         #region Fields
         [ComAliasName("D2D1_POINT_2F")]

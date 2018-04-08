@@ -13,7 +13,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The root factory interface for all DWrite objects.</summary>
     [Guid("0439FC60-CA44-4994-8DEE-3A9AF7B732EC")]
-    public /* blittable */ unsafe struct IDWriteFactory2
+    public /* unmanaged */ unsafe struct IDWriteFactory2
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -98,8 +98,8 @@ namespace TerraFX.Interop
         );
 
         /// <summary>CreateFontFileReference creates a font file reference object from a local font file.</summary>
-        /// <param name="filePath">Absolute file path. Subsequent operations on the conpublic /* blittable */ structed object may fail if the user provided filePath doesn't correspond to a valid file on the disk.</param>
-        /// <param name="lastWriteTime">Last modified time of the input file path. If the parameter is omitted, the function will access the font file to obtain its last write time, so the clients are encouraged to specify this value to avoid extra disk access. Subsequent operations on the conpublic /* blittable */ structed object may fail if the user provided lastWriteTime doesn't match the file on the disk.</param>
+        /// <param name="filePath">Absolute file path. Subsequent operations on the conpublic /* unmanaged */ structed object may fail if the user provided filePath doesn't correspond to a valid file on the disk.</param>
+        /// <param name="lastWriteTime">Last modified time of the input file path. If the parameter is omitted, the function will access the font file to obtain its last write time, so the clients are encouraged to specify this value to avoid extra disk access. Subsequent operations on the conpublic /* unmanaged */ structed object may fail if the user provided lastWriteTime doesn't match the file on the disk.</param>
         /// <param name="fontFile">Contains newly created font file reference object, or NULL in case of failure.</param>
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
@@ -199,7 +199,7 @@ namespace TerraFX.Interop
         /// <summary>Registers a font file loader with DirectWrite.</summary>
         /// <param name="fontFileLoader">Pointer to the implementation of the IDWriteFontFileLoader for a particular file resource type.</param>
         /// <returns>Standard HRESULT error code.</returns>
-        /// <remarks> This function registers a font file loader with DirectWrite. Font file loader interface handles loading font file resources of a particular type from a key. The font file loader interface is recommended to be implemented by a singleton object. A given instance can only be registered once. Succeeding attempts will return an error that it has already been registered. IMPORTANT: font file loader implementations must not register themselves with DirectWrite inside their conpublic /* blittable */ structors and must not unregister themselves in their depublic /* blittable */ structors, because registration and unregistration operations increment and decrement the object reference count respectively. Instead, registration and unregistration of font file loaders with DirectWrite should be performed outside of the font file loader implementation as a separate step.</remarks>
+        /// <remarks> This function registers a font file loader with DirectWrite. Font file loader interface handles loading font file resources of a particular type from a key. The font file loader interface is recommended to be implemented by a singleton object. A given instance can only be registered once. Succeeding attempts will return an error that it has already been registered. IMPORTANT: font file loader implementations must not register themselves with DirectWrite inside their conpublic /* unmanaged */ structors and must not unregister themselves in their depublic /* unmanaged */ structors, because registration and unregistration operations increment and decrement the object reference count respectively. Instead, registration and unregistration of font file loaders with DirectWrite should be performed outside of the font file loader implementation as a separate step.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
@@ -211,7 +211,7 @@ namespace TerraFX.Interop
         /// <summary>Unregisters a font file loader that was previously registered with the DirectWrite font system using RegisterFontFileLoader.</summary>
         /// <param name="fontFileLoader">Pointer to the file loader that was previously registered with the DirectWrite font system using RegisterFontFileLoader.</param>
         /// <returns>This function will succeed if the user loader is requested to be removed. It will fail if the pointer to the file loader identifies a standard DirectWrite loader, or a loader that is never registered or has already been unregistered.</returns>
-        /// <remarks> This function unregisters font file loader callbacks with the DirectWrite font system. The font file loader interface is recommended to be implemented by a singleton object. IMPORTANT: font file loader implementations must not register themselves with DirectWrite inside their conpublic /* blittable */ structors and must not unregister themselves in their depublic /* blittable */ structors, because registration and unregistration operations increment and decrement the object reference count respectively. Instead, registration and unregistration of font file loaders with DirectWrite should be performed outside of the font file loader implementation as a separate step.</remarks>
+        /// <remarks> This function unregisters font file loader callbacks with the DirectWrite font system. The font file loader interface is recommended to be implemented by a singleton object. IMPORTANT: font file loader implementations must not register themselves with DirectWrite inside their conpublic /* unmanaged */ structors and must not unregister themselves in their depublic /* unmanaged */ structors, because registration and unregistration operations increment and decrement the object reference count respectively. Instead, registration and unregistration of font file loaders with DirectWrite should be performed outside of the font file loader implementation as a separate step.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
@@ -296,7 +296,7 @@ namespace TerraFX.Interop
         /// <param name="layoutHeight">Height of the layout box.</param>
         /// <param name="pixelsPerDip">Number of physical pixels per DIP. For example, if rendering onto a 96 DPI device then pixelsPerDip is 1. If rendering onto a 120 DPI device then pixelsPerDip is 120/96.</param>
         /// <param name="transform">Optional transform applied to the glyphs and their positions. This transform is applied after the scaling specified the font size and pixelsPerDip.</param>
-        /// <param name="useGdiNatural"> When set to FALSE, inpublic /* blittable */ structs the text layout to use the same metrics as GDI aliased text. When set to TRUE, inpublic /* blittable */ structs the text layout to use the same metrics as text measured by GDI using a font created with CLEARTYPE_NATURAL_QUALITY.</param>
+        /// <param name="useGdiNatural"> When set to FALSE, inpublic /* unmanaged */ structs the text layout to use the same metrics as GDI aliased text. When set to TRUE, inpublic /* unmanaged */ structs the text layout to use the same metrics as text measured by GDI using a font created with CLEARTYPE_NATURAL_QUALITY.</param>
         /// <param name="textLayout">The resultant object.</param>
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
@@ -1119,7 +1119,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

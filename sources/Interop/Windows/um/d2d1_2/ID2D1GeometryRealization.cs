@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Encapsulates a device- and transform-dependent representation of a filled or stroked geometry.</summary>
     [Guid("A16907D7-BC02-4801-99E8-8CF7F485F774")]
-    public /* blittable */ unsafe struct ID2D1GeometryRealization
+    public /* unmanaged */ unsafe struct ID2D1GeometryRealization
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -113,7 +113,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

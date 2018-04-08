@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkDisplayModeParametersKHR
+    public /* unmanaged */ struct VkDisplayModeParametersKHR
     {
         #region Fields
         public VkExtent2D visibleRegion;

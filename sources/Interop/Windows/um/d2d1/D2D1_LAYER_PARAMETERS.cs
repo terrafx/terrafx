@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Contains the content bounds, mask information, opacity settings, and other options for a layer resource.</summary>
-    public /* blittable */ unsafe struct D2D1_LAYER_PARAMETERS
+    public /* unmanaged */ unsafe struct D2D1_LAYER_PARAMETERS
     {
         #region Fields
         /// <summary>The rectangular clip that will be applied to the layer. The clip is affected by the world transform. Content outside of the content bounds will not render.</summary>

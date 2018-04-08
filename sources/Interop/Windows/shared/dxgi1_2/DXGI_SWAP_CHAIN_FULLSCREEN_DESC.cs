@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct DXGI_SWAP_CHAIN_FULLSCREEN_DESC
+    public /* unmanaged */ struct DXGI_SWAP_CHAIN_FULLSCREEN_DESC
     {
         #region Fields
         public DXGI_RATIONAL RefreshRate;

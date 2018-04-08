@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Represents an SVG viewBox.</summary>
-    public /* blittable */ struct D2D1_SVG_VIEWBOX
+    public /* unmanaged */ struct D2D1_SVG_VIEWBOX
     {
         #region Fields
         [ComAliasName("FLOAT")]

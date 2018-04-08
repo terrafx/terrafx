@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>This defines a single element of the vertex layout.</summary>
-    public /* blittable */ unsafe struct D2D1_INPUT_ELEMENT_DESC
+    public /* unmanaged */ unsafe struct D2D1_INPUT_ELEMENT_DESC
     {
         #region Fields
         [ComAliasName("PCSTR")]

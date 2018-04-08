@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The IDWriteFont interface represents a font in a font collection.</summary>
     [Guid("29748ED6-8C9C-4A6A-BE0B-D912E8538944")]
-    public /* blittable */ unsafe struct IDWriteFont3
+    public /* unmanaged */ unsafe struct IDWriteFont3
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -209,7 +209,7 @@ namespace TerraFX.Interop
         #region Delegates
         /// <summary>Creates a font face object for the font.</summary>
         /// <param name="fontFace">Receives a pointer to the newly created font face object.</param>
-        /// <returns> Standard HRESULT error code. The function returns DWRITE_E_REMOTEFONT if it could not conpublic /* blittable */ struct a remote font.</returns>
+        /// <returns> Standard HRESULT error code. The function returns DWRITE_E_REMOTEFONT if it could not conpublic /* unmanaged */ struct a remote font.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
@@ -580,7 +580,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

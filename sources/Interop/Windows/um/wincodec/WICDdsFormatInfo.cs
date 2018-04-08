@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct WICDdsFormatInfo
+    public /* unmanaged */ struct WICDdsFormatInfo
     {
         #region Fields
         public DXGI_FORMAT DxgiFormat;

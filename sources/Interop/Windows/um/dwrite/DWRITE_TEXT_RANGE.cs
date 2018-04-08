@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>The DWRITE_TEXT_RANGE public structure specifies a range of text positions where format is applied.</summary>
-    public /* blittable */ struct DWRITE_TEXT_RANGE
+    public /* unmanaged */ struct DWRITE_TEXT_RANGE
     {
         #region Fields
         /// <summary>The start text position of the range.</summary>

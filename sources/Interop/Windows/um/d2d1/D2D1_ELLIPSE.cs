@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Contains the center point, x-radius, and y-radius of an ellipse.</summary>
-    public /* blittable */ struct D2D1_ELLIPSE
+    public /* unmanaged */ struct D2D1_ELLIPSE
     {
         #region Fields
         [ComAliasName("D2D1_POINT_2F")]

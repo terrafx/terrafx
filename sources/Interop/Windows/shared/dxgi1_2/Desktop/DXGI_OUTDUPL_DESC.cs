@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.Desktop
 {
-    public /* blittable */ struct DXGI_OUTDUPL_DESC
+    public /* unmanaged */ struct DXGI_OUTDUPL_DESC
     {
         #region Fields
         public DXGI_MODE_DESC ModeDesc;

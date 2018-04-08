@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>A vector of 4 float values (x, y, z, w).</summary>
-    public /* blittable */ struct D2D_VECTOR_4F
+    public /* unmanaged */ struct D2D_VECTOR_4F
     {
         #region Fields
         [ComAliasName("FLOAT")]

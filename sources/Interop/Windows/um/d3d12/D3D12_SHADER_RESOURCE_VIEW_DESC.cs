@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit)]
-    public /* blittable */ struct D3D12_SHADER_RESOURCE_VIEW_DESC
+    public /* unmanaged */ struct D3D12_SHADER_RESOURCE_VIEW_DESC
     {
         #region Fields
         [FieldOffset(0)]

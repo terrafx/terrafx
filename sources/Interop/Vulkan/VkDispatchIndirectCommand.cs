@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkDispatchIndirectCommand
+    public /* unmanaged */ struct VkDispatchIndirectCommand
     {
         #region Fields
         public uint x;

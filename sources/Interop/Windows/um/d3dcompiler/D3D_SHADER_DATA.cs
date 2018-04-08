@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct D3D_SHADER_DATA
+    public /* unmanaged */ unsafe struct D3D_SHADER_DATA
     {
         #region Fields
         [ComAliasName("LPCVOID")]

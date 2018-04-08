@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Represents an x-coordinate and y-coordinate pair in two-dimensional space.</summary>
-    public /* blittable */ struct D2D_POINT_2F
+    public /* unmanaged */ struct D2D_POINT_2F
     {
         #region Fields
         [ComAliasName("FLOAT")]

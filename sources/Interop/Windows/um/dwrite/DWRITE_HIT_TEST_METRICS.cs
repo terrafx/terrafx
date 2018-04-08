@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Geometry enclosing of text positions.</summary>
-    public /* blittable */ struct DWRITE_HIT_TEST_METRICS
+    public /* unmanaged */ struct DWRITE_HIT_TEST_METRICS
     {
         #region Fields
         /// <summary>First text position within the geometry.</summary>

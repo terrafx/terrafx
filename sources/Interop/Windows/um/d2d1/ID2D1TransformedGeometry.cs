@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Represents a geometry that has been transformed.</summary>
     [Guid("2CD906BB-12E2-11DC-9FED-001143A055F9")]
-    public /* blittable */ unsafe struct ID2D1TransformedGeometry
+    public /* unmanaged */ unsafe struct ID2D1TransformedGeometry
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -573,7 +573,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

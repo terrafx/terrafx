@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Line breakpoint characteristics of a character.</summary>
-    public /* blittable */ struct DWRITE_LINE_BREAKPOINT
+    public /* unmanaged */ struct DWRITE_LINE_BREAKPOINT
     {
         #region Fields
         internal byte _bitField;

@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Base interface for built-in transforms on which precision and caching may be controlled.</summary>
     [Guid("1A799D8A-69F7-4E4C-9FED-437CCC6684CC")]
-    public /* blittable */ unsafe struct ID2D1ConcreteTransform
+    public /* unmanaged */ unsafe struct ID2D1ConcreteTransform
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -158,7 +158,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

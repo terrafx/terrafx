@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkMemoryType
+    public /* unmanaged */ struct VkMemoryType
     {
         #region Fields
         [ComAliasName("VkMemoryPropertyFlags")]

@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The font file enumerator interface encapsulates a collection of font files. The font system uses this interface to enumerate font files when building a font collection.</summary>
     [Guid("72755049-5FF7-435D-8348-4BE97CFA6C7C")]
-    public /* blittable */ unsafe struct IDWriteFontFileEnumerator
+    public /* unmanaged */ unsafe struct IDWriteFontFileEnumerator
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -138,7 +138,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

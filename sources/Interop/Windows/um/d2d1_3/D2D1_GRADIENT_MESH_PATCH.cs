@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Represents a tensor patch with 16 control points, 4 corner colors, and boundary flags. An ID2D1GradientMesh is made up of 1 or more gradient mesh patches. Use the GradientMeshPatch function or the GradientMeshPatchFromCoonsPatch function to create one.</summary>
-    public /* blittable */ struct D2D1_GRADIENT_MESH_PATCH
+    public /* unmanaged */ struct D2D1_GRADIENT_MESH_PATCH
     {
         #region Fields
         /// <summary>The gradient mesh patch control point at position 00.</summary>

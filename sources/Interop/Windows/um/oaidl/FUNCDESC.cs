@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct FUNCDESC
+    public /* unmanaged */ unsafe struct FUNCDESC
     {
         #region Fields
         [ComAliasName("MEMBERID")]

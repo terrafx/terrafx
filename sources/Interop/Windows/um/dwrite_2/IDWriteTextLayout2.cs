@@ -13,7 +13,7 @@ namespace TerraFX.Interop
     /// <summary>The text layout interface represents a block of text after it has been fully analyzed and formatted.
     /// All coordinates are in device independent pixels (DIPs).</summary>
     [Guid("1093C18F-8D5E-43F0-B064-0917311B525E")]
-    public /* blittable */ unsafe struct IDWriteTextLayout2
+    public /* unmanaged */ unsafe struct IDWriteTextLayout2
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -2239,7 +2239,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

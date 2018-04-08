@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit)]
-    public /* blittable */ struct VkClearValue
+    public /* unmanaged */ struct VkClearValue
     {
         #region Fields
         [FieldOffset(0)]

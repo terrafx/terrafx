@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>The DWRITE_TRIMMING public structure specifies the trimming option for text overflowing the layout box.</summary>
-    public /* blittable */ struct DWRITE_TRIMMING
+    public /* unmanaged */ struct DWRITE_TRIMMING
     {
         #region Fields
         /// <summary>Text granularity of which trimming applies.</summary>

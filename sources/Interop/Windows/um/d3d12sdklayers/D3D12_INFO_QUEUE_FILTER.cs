@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_INFO_QUEUE_FILTER
+    public /* unmanaged */ struct D3D12_INFO_QUEUE_FILTER
     {
         #region Fields
         public D3D12_INFO_QUEUE_FILTER_DESC AllowList;

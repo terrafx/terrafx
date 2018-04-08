@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_STREAM_OUTPUT_BUFFER_VIEW
+    public /* unmanaged */ struct D3D12_STREAM_OUTPUT_BUFFER_VIEW
     {
         #region Fields
         [ComAliasName("D3D12_GPU_VIRTUAL_ADDRESS")]

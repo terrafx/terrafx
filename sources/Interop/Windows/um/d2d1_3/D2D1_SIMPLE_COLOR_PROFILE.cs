@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Simple description of a color space.</summary>
-    public /* blittable */ struct D2D1_SIMPLE_COLOR_PROFILE
+    public /* unmanaged */ struct D2D1_SIMPLE_COLOR_PROFILE
     {
         #region Fields
         /// <summary>The XY coordinates of the red primary in CIEXYZ space.</summary>

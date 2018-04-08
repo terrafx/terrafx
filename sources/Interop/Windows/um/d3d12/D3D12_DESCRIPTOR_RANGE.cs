@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_DESCRIPTOR_RANGE
+    public /* unmanaged */ struct D3D12_DESCRIPTOR_RANGE
     {
         #region Fields
         public D3D12_DESCRIPTOR_RANGE_TYPE RangeType;

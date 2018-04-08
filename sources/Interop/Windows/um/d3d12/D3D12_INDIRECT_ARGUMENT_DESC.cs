@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit)]
-    public /* blittable */ struct D3D12_INDIRECT_ARGUMENT_DESC
+    public /* unmanaged */ struct D3D12_INDIRECT_ARGUMENT_DESC
     {
         #region Fields
         [FieldOffset(0)]
@@ -33,14 +33,14 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct _VertexBuffer_e__Struct
+        public /* unmanaged */ struct _VertexBuffer_e__Struct
         {
             #region Fields
             public uint Slot;
             #endregion
         }
 
-        public /* blittable */ struct _Constant_e__Struct
+        public /* unmanaged */ struct _Constant_e__Struct
         {
             #region Fields
             public uint RootParameterIndex;
@@ -49,21 +49,21 @@ namespace TerraFX.Interop
             #endregion
         }
 
-        public /* blittable */ struct _ConstantBufferView_e__Struct
+        public /* unmanaged */ struct _ConstantBufferView_e__Struct
         {
             #region Fields
             public uint RootParameterIndex;
             #endregion
         }
 
-        public /* blittable */ struct _ShaderResourceView_e__Struct
+        public /* unmanaged */ struct _ShaderResourceView_e__Struct
         {
             #region Fields
             public uint RootParameterIndex;
             #endregion
         }
 
-        public /* blittable */ struct _UnorderedAccessView_e__Struct
+        public /* unmanaged */ struct _UnorderedAccessView_e__Struct
         {
             #region Fields
             public uint RootParameterIndex;

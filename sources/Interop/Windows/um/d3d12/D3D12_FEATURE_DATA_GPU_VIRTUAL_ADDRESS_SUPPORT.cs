@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_FEATURE_DATA_GPU_VIRTUAL_ADDRESS_SUPPORT
+    public /* unmanaged */ struct D3D12_FEATURE_DATA_GPU_VIRTUAL_ADDRESS_SUPPORT
     {
         #region Fields
         [ComAliasName("UINT")]

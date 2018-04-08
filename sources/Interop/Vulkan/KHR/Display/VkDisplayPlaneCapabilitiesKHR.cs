@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkDisplayPlaneCapabilitiesKHR
+    public /* unmanaged */ struct VkDisplayPlaneCapabilitiesKHR
     {
         #region Fields
         [ComAliasName("VkDisplayPlaneAlphaFlagsKHR")]

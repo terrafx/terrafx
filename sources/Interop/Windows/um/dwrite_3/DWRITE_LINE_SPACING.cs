@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>The DWRITE_LINE_SPACING public structure specifies the parameters used to specify how to manage space between lines.</summary>
-    public /* blittable */ struct DWRITE_LINE_SPACING
+    public /* unmanaged */ struct DWRITE_LINE_SPACING
     {
         #region Fields
         /// <summary>Method used to determine line spacing.</summary>

@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Describes options transforms may select to use on their input textures.</summary>
-    public /* blittable */ struct D2D1_INPUT_DESCRIPTION
+    public /* unmanaged */ struct D2D1_INPUT_DESCRIPTION
     {
         #region Fields
         public D2D1_FILTER filter;

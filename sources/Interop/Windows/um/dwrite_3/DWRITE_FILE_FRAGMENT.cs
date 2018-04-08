@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>DWRITE_FILE_FRAGMENT represents a range of bytes in a font file.</summary>
-    public /* blittable */ struct DWRITE_FILE_FRAGMENT
+    public /* unmanaged */ struct DWRITE_FILE_FRAGMENT
     {
         #region Fields
         /// <summary>Starting offset of the fragment from the beginning of the file.</summary>

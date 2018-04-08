@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Creation properties for an image brush.</summary>
-    public /* blittable */ struct D2D1_IMAGE_BRUSH_PROPERTIES
+    public /* unmanaged */ struct D2D1_IMAGE_BRUSH_PROPERTIES
     {
         #region Fields
         [ComAliasName("D2D1_RECT_F")]

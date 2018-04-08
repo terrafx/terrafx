@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct TLIBATTR
+    public /* unmanaged */ struct TLIBATTR
     {
         #region Fields
         [ComAliasName("GUID")]

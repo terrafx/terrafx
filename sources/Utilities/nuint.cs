@@ -8,7 +8,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 #pragma warning disable IDE1006
 
 /// <summary>Defines a native-sized unsigned integer.</summary>
-public readonly /* blittable */ unsafe struct nuint : IComparable, IComparable<nuint>, IEquatable<nuint>, IFormattable
+public readonly /* unmanaged */ unsafe struct nuint : IComparable, IComparable<nuint>, IEquatable<nuint>, IFormattable
 {
     #region Fields
     /// <summary>The value for the instance.</summary>

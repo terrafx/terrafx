@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkDisplayModePropertiesKHR
+    public /* unmanaged */ struct VkDisplayModePropertiesKHR
     {
         #region Fields
         [ComAliasName("VkDisplayModeKHR")]

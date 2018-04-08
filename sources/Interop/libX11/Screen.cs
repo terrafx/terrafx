@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct Screen
+    public /* unmanaged */ unsafe struct Screen
     {
         #region Fields
         public XExtData* ext_data;

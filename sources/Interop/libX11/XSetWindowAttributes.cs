@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct XSetWindowAttributes
+    public /* unmanaged */ struct XSetWindowAttributes
     {
         #region Fields
         [ComAliasName("Pixmap")]

@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Properties describing the geometric measurement of an application-defined inline object.</summary>
-    public /* blittable */ struct DWRITE_INLINE_OBJECT_METRICS
+    public /* unmanaged */ struct DWRITE_INLINE_OBJECT_METRICS
     {
         #region Fields
         /// <summary>Width of the inline object.</summary>

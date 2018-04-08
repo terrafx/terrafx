@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct D3D12_MEMCPY_DEST
+    public /* unmanaged */ unsafe struct D3D12_MEMCPY_DEST
     {
         #region Fields
         public void* pData;

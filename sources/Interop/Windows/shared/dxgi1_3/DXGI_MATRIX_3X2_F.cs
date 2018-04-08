@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct DXGI_MATRIX_3X2_F
+    public /* unmanaged */ struct DXGI_MATRIX_3X2_F
     {
         #region Fields
         [ComAliasName("FLOAT")]

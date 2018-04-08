@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop.Desktop
 {
-    public /* blittable */ struct DXGI_DECODE_SWAP_CHAIN_DESC
+    public /* unmanaged */ struct DXGI_DECODE_SWAP_CHAIN_DESC
     {
         #region Fields
         [ComAliasName("UINT")]

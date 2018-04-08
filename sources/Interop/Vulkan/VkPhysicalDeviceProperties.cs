@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct VkPhysicalDeviceProperties
+    public /* unmanaged */ unsafe struct VkPhysicalDeviceProperties
     {
         #region Fields
         public uint apiVersion;

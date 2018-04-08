@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>The DWRITE_FONT_FEATURE public structure specifies properties used to identify and execute typographic feature in the font.</summary>
-    public /* blittable */ struct DWRITE_FONT_FEATURE
+    public /* unmanaged */ struct DWRITE_FONT_FEATURE
     {
         #region Fields
         /// <summary>The feature OpenType name identifier.</summary>

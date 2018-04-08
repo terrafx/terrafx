@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_FEATURE_DATA_FORMAT_SUPPORT
+    public /* unmanaged */ struct D3D12_FEATURE_DATA_FORMAT_SUPPORT
     {
         #region Fields
         public DXGI_FORMAT Format;

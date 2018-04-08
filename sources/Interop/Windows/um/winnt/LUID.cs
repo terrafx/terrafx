@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct LUID
+    public /* unmanaged */ struct LUID
     {
         #region Fields
         [ComAliasName("DWORD")]

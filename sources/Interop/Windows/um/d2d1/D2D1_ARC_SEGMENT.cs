@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Describes an arc that is defined as part of a path.</summary>
-    public /* blittable */ struct D2D1_ARC_SEGMENT
+    public /* unmanaged */ struct D2D1_ARC_SEGMENT
     {
         #region Fields
         [ComAliasName("D2D1_POINT_2F")]

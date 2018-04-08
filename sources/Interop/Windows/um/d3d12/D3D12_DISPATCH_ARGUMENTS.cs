@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_DISPATCH_ARGUMENTS
+    public /* unmanaged */ struct D3D12_DISPATCH_ARGUMENTS
     {
         #region Fields
         [ComAliasName("UINT")]

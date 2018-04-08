@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Interface describing an SVG 'stroke-dasharray' value.</summary>
     [Guid("F1C0CA52-92A3-4F00-B4CE-F35691EFD9D9")]
-    public /* blittable */ unsafe struct ID2D1SvgStrokeDashArray
+    public /* unmanaged */ unsafe struct ID2D1SvgStrokeDashArray
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -332,7 +332,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

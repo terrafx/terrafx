@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct VkLayerProperties
+    public /* unmanaged */ unsafe struct VkLayerProperties
     {
         #region Fields
         [ComAliasName("string")]

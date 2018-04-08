@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct VkAndroidSurfaceCreateInfoKHR
+    public /* unmanaged */ unsafe struct VkAndroidSurfaceCreateInfoKHR
     {
         #region Fields
         public VkStructureType sType;

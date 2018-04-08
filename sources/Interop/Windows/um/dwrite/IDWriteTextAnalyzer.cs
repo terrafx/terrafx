@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Analyzes various text properties for complex script processing.</summary>
     [Guid("B7E6163E-7F46-43B4-84B3-E4E6249C365D")]
-    public /* blittable */ unsafe struct IDWriteTextAnalyzer
+    public /* unmanaged */ unsafe struct IDWriteTextAnalyzer
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -530,7 +530,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

@@ -13,7 +13,7 @@ namespace TerraFX.Interop
     /// <summary>The format of text used for text layout.</summary>
     /// <remarks> This object may not be thread-safe and it may carry the state of text format change.</remarks>
     [Guid("9C906818-31D7-4FD3-A151-7C5E225DB55A")]
-    public /* blittable */ unsafe struct IDWriteTextFormat
+    public /* unmanaged */ unsafe struct IDWriteTextFormat
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -662,7 +662,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS
+    public /* unmanaged */ struct D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS
     {
         #region Fields
         public DXGI_FORMAT Format;

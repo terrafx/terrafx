@@ -8,7 +8,7 @@ using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct ARRAYDESC
+    public /* unmanaged */ struct ARRAYDESC
     {
         #region Fields
         public TYPEDESC tdescElem;
@@ -21,7 +21,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ unsafe struct _rgbounds_e__FixedBuffer
+        public /* unmanaged */ unsafe struct _rgbounds_e__FixedBuffer
         {
             #region Fields
             public SAFEARRAYBOUND e0;

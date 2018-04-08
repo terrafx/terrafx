@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Shaping output properties per input character.</summary>
-    public /* blittable */ struct DWRITE_SHAPING_TEXT_PROPERTIES
+    public /* unmanaged */ struct DWRITE_SHAPING_TEXT_PROPERTIES
     {
         #region Fields
         internal ushort _bitField;

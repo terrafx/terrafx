@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Describes a point along a path.</summary>
-    public /* blittable */ struct D2D1_POINT_DESCRIPTION
+    public /* unmanaged */ struct D2D1_POINT_DESCRIPTION
     {
         #region Fields
         [ComAliasName("D2D1_POINT_2F")]

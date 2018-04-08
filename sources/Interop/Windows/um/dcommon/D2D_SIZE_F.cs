@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Stores an ordered pair of floats, typically the width and height of a rectangle.</summary>
-    public /* blittable */ struct D2D_SIZE_F
+    public /* unmanaged */ struct D2D_SIZE_F
     {
         #region Fields
         [ComAliasName("FLOAT")]

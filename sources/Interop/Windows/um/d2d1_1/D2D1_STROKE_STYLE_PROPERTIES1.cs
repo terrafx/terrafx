@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>This defines how geometries should be drawn and widened.</summary>
-    public /* blittable */ struct D2D1_STROKE_STYLE_PROPERTIES1
+    public /* unmanaged */ struct D2D1_STROKE_STYLE_PROPERTIES1
     {
         #region Fields
         public D2D1_CAP_STYLE startCap;

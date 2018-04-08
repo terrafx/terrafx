@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_GPU_DESCRIPTOR_HANDLE
+    public /* unmanaged */ struct D3D12_GPU_DESCRIPTOR_HANDLE
     {
         #region Fields
         [ComAliasName("UINT64")]

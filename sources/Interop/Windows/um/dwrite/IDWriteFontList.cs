@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The IDWriteFontList interface represents a list of fonts.</summary>
     [Guid("1A0D8438-1D97-4EC1-AEF9-A2FB86ED6ACB")]
-    public /* blittable */ unsafe struct IDWriteFontList
+    public /* unmanaged */ unsafe struct IDWriteFontList
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -161,7 +161,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

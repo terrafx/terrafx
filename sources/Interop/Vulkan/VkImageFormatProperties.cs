@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkImageFormatProperties
+    public /* unmanaged */ struct VkImageFormatProperties
     {
         #region Fields
         public VkExtent3D maxExtent;

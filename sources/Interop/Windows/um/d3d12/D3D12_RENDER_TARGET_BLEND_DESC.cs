@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_RENDER_TARGET_BLEND_DESC
+    public /* unmanaged */ struct D3D12_RENDER_TARGET_BLEND_DESC
     {
         #region Fields
         [ComAliasName("BOOL")]

@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The IDWriteTextRenderer interface represents a set of application-defined callbacks that perform rendering of text, inline objects, and decorations such as underlines.</summary>
     [Guid("EF8A8135-5CC6-45FE-8825-C5A0724EB819")]
-    public /* blittable */ unsafe struct IDWriteTextRenderer
+    public /* unmanaged */ unsafe struct IDWriteTextRenderer
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -362,7 +362,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

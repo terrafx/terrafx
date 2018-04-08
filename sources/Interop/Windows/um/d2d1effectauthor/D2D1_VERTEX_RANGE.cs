@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>This defines the range of vertices from a vertex buffer to draw.</summary>
-    public /* blittable */ struct D2D1_VERTEX_RANGE
+    public /* unmanaged */ struct D2D1_VERTEX_RANGE
     {
         #region Fields
         [ComAliasName("UINT32")]

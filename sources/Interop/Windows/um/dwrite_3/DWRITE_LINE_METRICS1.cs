@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Information about a formatted line of text.</summary>
-    public /* blittable */ struct DWRITE_LINE_METRICS1
+    public /* unmanaged */ struct DWRITE_LINE_METRICS1
     {
         #region Fields
         public DWRITE_LINE_METRICS BaseValue;

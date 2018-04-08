@@ -8,7 +8,7 @@ using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct WICRawToneCurve
+    public /* unmanaged */ struct WICRawToneCurve
     {
         #region Fields
         [ComAliasName("UINT")]
@@ -19,7 +19,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ unsafe struct _aPoints_e__FixedBuffer
+        public /* unmanaged */ unsafe struct _aPoints_e__FixedBuffer
         {
             #region Fields
             public WICRawToneCurvePoint e0;

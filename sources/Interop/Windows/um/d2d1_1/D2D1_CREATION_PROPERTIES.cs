@@ -6,7 +6,7 @@
 namespace TerraFX.Interop
 {
     /// <summary>This specifies the options while simultaneously creating the device, factory, and device context.</summary>
-    public /* blittable */ struct D2D1_CREATION_PROPERTIES
+    public /* unmanaged */ struct D2D1_CREATION_PROPERTIES
     {
         #region Fields
         /// <summary>Describes locking behavior of D2D resources</summary>

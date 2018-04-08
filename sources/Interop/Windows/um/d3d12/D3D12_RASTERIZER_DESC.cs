@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_RASTERIZER_DESC
+    public /* unmanaged */ struct D3D12_RASTERIZER_DESC
     {
         #region Fields
         public D3D12_FILL_MODE FillMode;

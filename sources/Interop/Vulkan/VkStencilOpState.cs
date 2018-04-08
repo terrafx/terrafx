@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkStencilOpState
+    public /* unmanaged */ struct VkStencilOpState
     {
         #region Fields
         public VkStencilOp failOp;

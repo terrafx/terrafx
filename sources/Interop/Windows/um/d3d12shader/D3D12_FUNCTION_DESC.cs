@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct D3D12_FUNCTION_DESC
+    public /* unmanaged */ unsafe struct D3D12_FUNCTION_DESC
     {
         #region Fields
         [ComAliasName("UINT")]

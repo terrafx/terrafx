@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>Provides a brush that can take any effect, command list or bitmap and use it to fill a 2D shape.</summary>
     [Guid("FE9E984D-3F95-407C-B5DB-CB94D4E8F87C")]
-    public /* blittable */ unsafe struct ID2D1ImageBrush
+    public /* unmanaged */ unsafe struct ID2D1ImageBrush
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -385,7 +385,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

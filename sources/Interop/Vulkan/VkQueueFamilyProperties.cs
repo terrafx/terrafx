@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkQueueFamilyProperties
+    public /* unmanaged */ struct VkQueueFamilyProperties
     {
         #region Fields
         [ComAliasName("VkQueueFlags")]

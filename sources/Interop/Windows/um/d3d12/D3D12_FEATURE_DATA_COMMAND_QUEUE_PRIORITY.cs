@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_FEATURE_DATA_COMMAND_QUEUE_PRIORITY
+    public /* unmanaged */ struct D3D12_FEATURE_DATA_COMMAND_QUEUE_PRIORITY
     {
         #region Fields
         public D3D12_COMMAND_LIST_TYPE CommandListType;

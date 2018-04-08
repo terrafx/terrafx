@@ -5,7 +5,7 @@
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkClearRect
+    public /* unmanaged */ struct VkClearRect
     {
         #region Fields
         public VkRect2D rect;

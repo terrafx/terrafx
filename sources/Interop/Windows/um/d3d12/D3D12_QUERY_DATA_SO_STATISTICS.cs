@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_QUERY_DATA_SO_STATISTICS
+    public /* unmanaged */ struct D3D12_QUERY_DATA_SO_STATISTICS
     {
         #region Fields
         [ComAliasName("UINT64")]

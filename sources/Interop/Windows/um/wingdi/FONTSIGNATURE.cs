@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct FONTSIGNATURE
+    public /* unmanaged */ unsafe struct FONTSIGNATURE
     {
         #region Fields
         [ComAliasName("DWORD[4]")]

@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>The interface implemented by a transform author to provide a CPU based source effect.</summary>
     [Guid("DB1800DD-0C34-4CF9-BE90-31CC0A5653E1")]
-    public /* blittable */ unsafe struct ID2D1SourceTransform
+    public /* unmanaged */ unsafe struct ID2D1SourceTransform
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -255,7 +255,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

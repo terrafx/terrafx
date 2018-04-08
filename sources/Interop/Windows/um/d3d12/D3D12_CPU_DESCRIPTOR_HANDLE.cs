@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_CPU_DESCRIPTOR_HANDLE
+    public /* unmanaged */ struct D3D12_CPU_DESCRIPTOR_HANDLE
     {
         #region Fields
         [ComAliasName("SIZE_T")]

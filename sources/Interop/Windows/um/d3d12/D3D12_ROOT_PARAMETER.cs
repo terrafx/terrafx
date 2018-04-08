@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_ROOT_PARAMETER
+    public /* unmanaged */ struct D3D12_ROOT_PARAMETER
     {
         #region Fields
         public D3D12_ROOT_PARAMETER_TYPE ParameterType;
@@ -19,7 +19,7 @@ namespace TerraFX.Interop
 
         #region Structs
         [StructLayout(LayoutKind.Explicit)]
-        public /* blittable */ struct _Anonymous_e__Union
+        public /* unmanaged */ struct _Anonymous_e__Union
         {
             #region Fields
             [FieldOffset(0)]

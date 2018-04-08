@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop
 {
     /// <summary>Properties, aside from the width, that allow geometric penning to be specified.</summary>
-    public /* blittable */ struct D2D1_STROKE_STYLE_PROPERTIES
+    public /* unmanaged */ struct D2D1_STROKE_STYLE_PROPERTIES
     {
         #region Fields
         public D2D1_CAP_STYLE startCap;

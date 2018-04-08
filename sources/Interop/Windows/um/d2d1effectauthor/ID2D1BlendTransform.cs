@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>An effect uses this interface to configure a blending operation.</summary>
     [Guid("63AC0B32-BA44-450F-8806-7F4CA1FF2F1B")]
-    public /* blittable */ unsafe struct ID2D1BlendTransform
+    public /* unmanaged */ unsafe struct ID2D1BlendTransform
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -202,7 +202,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

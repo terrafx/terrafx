@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkSparseMemoryBind
+    public /* unmanaged */ struct VkSparseMemoryBind
     {
         #region Fields
         [ComAliasName("VkDeviceSize")]

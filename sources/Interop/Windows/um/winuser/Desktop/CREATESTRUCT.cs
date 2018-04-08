@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 namespace TerraFX.Interop.Desktop
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    public /* blittable */ unsafe struct CREATESTRUCT
+    public /* unmanaged */ unsafe struct CREATESTRUCT
     {
         #region Fields
         [ComAliasName("LPVOID")]

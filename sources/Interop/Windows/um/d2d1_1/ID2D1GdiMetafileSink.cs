@@ -12,7 +12,7 @@ namespace TerraFX.Interop
 {
     /// <summary>User-implementable interface for introspecting on a metafile.</summary>
     [Guid("82237326-8111-4F7C-BCF4-B5C1175564FE")]
-    public /* blittable */ unsafe struct ID2D1GdiMetafileSink
+    public /* unmanaged */ unsafe struct ID2D1GdiMetafileSink
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -117,7 +117,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* blittable */ struct Vtbl
+        public /* unmanaged */ struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

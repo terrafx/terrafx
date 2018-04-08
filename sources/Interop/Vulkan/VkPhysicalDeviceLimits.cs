@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ unsafe struct VkPhysicalDeviceLimits
+    public /* unmanaged */ unsafe struct VkPhysicalDeviceLimits
     {
         #region Fields
         public uint maxImageDimension1D;

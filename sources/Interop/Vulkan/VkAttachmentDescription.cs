@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct VkAttachmentDescription
+    public /* unmanaged */ struct VkAttachmentDescription
     {
         #region Fields
         [ComAliasName("VkAttachmentDescriptionFlags")]

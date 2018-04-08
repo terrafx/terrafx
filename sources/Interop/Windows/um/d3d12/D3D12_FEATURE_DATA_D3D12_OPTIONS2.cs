@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace TerraFX.Interop
 {
-    public /* blittable */ struct D3D12_FEATURE_DATA_D3D12_OPTIONS2
+    public /* unmanaged */ struct D3D12_FEATURE_DATA_D3D12_OPTIONS2
     {
         #region Fields
         [ComAliasName("BOOL")]
