@@ -9,7 +9,7 @@ namespace TerraFX.Utilities
 {
     /// <summary>Defines a delegate that can be passed to native code.</summary>
     /// <typeparam name="TDelegate">The type of the delegate.</typeparam>
-    public readonly struct NativeDelegate<TDelegate> where TDelegate : class
+    public readonly struct NativeDelegate<TDelegate> where TDelegate : Delegate
     {
         #region Fields
         /// <summary>The native handle to <see cref="_value" />.</summary>
@@ -17,20 +17,6 @@ namespace TerraFX.Utilities
 
         /// <summary>The managed delegate that was marshalled.</summary>
         internal readonly TDelegate _value;
-        #endregion
-
-        #region Static Constructors
-        /// <summary>Initializes the static members of the <see cref="NativeDelegate{TDelegate}" /> struct.</summary>
-        static NativeDelegate()
-        {
-            // Validate `TDelegate is Delegate` in the static constructor so that
-            // operators and other static methods go through the required checks.
-
-            if ((typeof(Delegate).IsAssignableFrom(typeof(TDelegate))) == false)
-            {
-                ThrowArgumentExceptionForInvalidType(nameof(TDelegate), typeof(TDelegate));
-            }
-        }
         #endregion
 
         #region Constructors
@@ -46,15 +32,12 @@ namespace TerraFX.Utilities
                 ThrowArgumentNullException(nameof(value));
             }
 
-            // The validation that this a valid cast is done in the static constructor.
-            var @delegate = (Delegate)((object)(value));
-
-            if (@delegate.Target != null)
+            if (value.Target != null)
             {
                 ThrowArgumentOutOfRangeException(nameof(value), value);
             }
 
-            if (@delegate.GetInvocationList().Length != 1)
+            if (value.GetInvocationList().Length != 1)
             {
                 ThrowArgumentOutOfRangeException(nameof(value), value);
             }
