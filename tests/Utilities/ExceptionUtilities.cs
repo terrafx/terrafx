@@ -106,9 +106,10 @@ namespace TerraFX.Utilities.UnitTests
         /// <summary>Provides validation of the <see cref="ExceptionUtilities.NewObjectDisposedException(string)" /> static method.</summary>
         [Test]
         public static void NewObjectDisposedExceptionStringObjectTest(
-            [Values(null, "", "object")] string objectName
+            [Values("", "object")] string objectName
         )
         {
+            
             Assert.That(ExceptionUtilities.NewObjectDisposedException(objectName),
                 Is.InstanceOf<ObjectDisposedException>()
                   .With.Property("ObjectName").EqualTo(objectName)
@@ -210,7 +211,7 @@ namespace TerraFX.Utilities.UnitTests
         /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowObjectDisposedException(string)" /> static method.</summary>
         [Test]
         public static void ThrowObjectDisposedExceptionStringObjectTest(
-            [Values(null, "", "object")] string objectName
+            [Values("", "object")] string objectName
         )
         {
             Assert.That(() => ExceptionUtilities.ThrowObjectDisposedException(objectName),

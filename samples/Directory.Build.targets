@@ -16,4 +16,8 @@
 
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
 
+  <!-- Empty target so that `dotnet test` will work on the solution -->
+  <!-- https://github.com/Microsoft/vstest/issues/411 -->
+  <Target Name="VSTest" />
+
 </Project>

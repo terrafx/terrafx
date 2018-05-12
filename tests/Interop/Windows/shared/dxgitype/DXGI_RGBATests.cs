@@ -8,11 +8,11 @@ namespace TerraFX.Interop.UnitTests
     /// <summary>Provides validation of the <see cref="DXGI_RGBA" /> struct.</summary>
     public static class DXGI_RGBATests
     {
-        /// <summary>Validates that the layout of the <see cref="DXGI_RGBA" /> struct is <see cref="LayoutKind.Explicit" />.</summary>
+        /// <summary>Validates that the layout of the <see cref="DXGI_RGBA" /> struct is <see cref="LayoutKind.Sequential" />.</summary>
         [Test]
-        public static void IsLayoutExplicitTest()
+        public static void IsLayoutSequentialTest()
         {
-            Assert.That(typeof(DXGI_RGBA).IsExplicitLayout, Is.True);
+            Assert.That(typeof(DXGI_RGB).IsLayoutSequential, Is.True);
         }
 
         /// <summary>Validates that the size of the <see cref="DXGI_RGBA" /> struct is correct.</summary>
