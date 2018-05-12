@@ -33,7 +33,7 @@ namespace TerraFX.Samples
             }
         }
 
-        internal static bool Matches(string arg, params string[] keywords)
+        private static bool Matches(string arg, params string[] keywords)
         {
             return keywords.Any((keyword) => ((arg.Length == keyword.Length) && arg.Equals(keyword, StringComparison.OrdinalIgnoreCase))
                                           || (((arg.Length - 1) == keyword.Length) && ((arg[0] == '-') || (arg[0] == '/')) && (string.Compare(arg, 1, keyword, 0, keyword.Length, StringComparison.OrdinalIgnoreCase) == 0)));

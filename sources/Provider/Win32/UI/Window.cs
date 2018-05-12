@@ -23,43 +23,43 @@ namespace TerraFX.Provider.Win32.UI
     {
         #region Fields
         /// <summary>The native window handle for the instance.</summary>
-        internal readonly Lazy<IntPtr> _handle;
+        private readonly Lazy<IntPtr> _handle;
 
         /// <summary>The <see cref="Thread" /> that was used to create the instance.</summary>
-        internal readonly Thread _parentThread;
+        private readonly Thread _parentThread;
 
         /// <summary>The <see cref="PropertySet" /> for the instance.</summary>
-        internal readonly PropertySet _properties;
+        private readonly PropertySet _properties;
 
         /// <summary>The title for the instance.</summary>
-        internal string _title;
+        private string _title;
 
         /// <summary>The <see cref="WindowManager" /> for the instance.</summary>
-        internal readonly WindowManager _windowManager;
+        private readonly WindowManager _windowManager;
 
         /// <summary>A <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
-        internal Rectangle _bounds;
+        private Rectangle _bounds;
 
         /// <summary>The <see cref="FlowDirection" /> for the instance.</summary>
-        internal FlowDirection _flowDirection;
+        private FlowDirection _flowDirection;
 
         /// <summary>The <see cref="ReadingDirection" /> for the instance.</summary>
-        internal ReadingDirection _readingDirection;
+        private ReadingDirection _readingDirection;
 
         /// <summary>The <see cref="WindowState" /> for the instance.</summary>
-        internal WindowState _windowState;
+        private WindowState _windowState;
 
         /// <summary>The <see cref="State" /> of the instance.</summary>
-        internal State _state;
+        private State _state;
 
         /// <summary>A value that indicates whether the instance is the active window.</summary>
-        internal bool _isActive;
+        private bool _isActive;
 
         /// <summary>A value that indicates whether the instance is enabled.</summary>
-        internal bool _isEnabled;
+        private bool _isEnabled;
 
         /// <summary>A value that indicates whether the instance is visible.</summary>
-        internal bool _isVisible;
+        private bool _isVisible;
         #endregion
 
         #region Constructors
@@ -73,6 +73,8 @@ namespace TerraFX.Provider.Win32.UI
             _properties = new PropertySet();
             _title = typeof(Window).FullName;
             _bounds = new Rectangle(float.NaN, float.NaN, float.NaN, float.NaN);
+            _flowDirection = FlowDirection.TopToBottom;
+            _readingDirection = ReadingDirection.LeftToRight;
 
             _windowManager = windowManager;
             _state.Transition(to: Initialized);
@@ -202,7 +204,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <param name="handle">A handle to the native window to get the bounds for.</param>
         /// <returns>A <see cref="Rectangle" /> that represents the bounds of <paramref name="handle" />.</returns>
         /// <exception cref="ExternalException">The call to <see cref="GetWindowRect(IntPtr, out RECT)" /> failed.</exception>
-        internal static Rectangle GetWindowBounds(IntPtr handle)
+        private static Rectangle GetWindowBounds(IntPtr handle)
         {
             var succeeded = GetWindowRect(handle, out var rect);
 
@@ -217,7 +219,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Geta a value that indicates whether a native window is active.</summary>
         /// <param name="handle">A handle to the native window to check.</param>
         /// <returns>A value that indicates whether <paramref name="handle" /> is active.</returns>
-        internal static bool IsWindowActive(IntPtr handle)
+        private static bool IsWindowActive(IntPtr handle)
         {
             var activeWindow = GetActiveWindow();
             return (activeWindow == handle);
@@ -228,7 +230,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Creates a <c>HWND</c> for the instance.</summary>
         /// <returns>A <c>HWND</c> for the created native window.</returns>
         /// <exception cref="ExternalException">The call to <see cref="CreateWindowEx(uint, char*, char*, uint, int, int, int, int, IntPtr, IntPtr, IntPtr, void*)" /> failed.</exception>
-        internal IntPtr CreateWindowHandle()
+        private IntPtr CreateWindowHandle()
         {
             _state.AssertNotDisposedOrDisposing();
 
@@ -300,7 +302,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
         /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
         /// <exception cref="ExternalException">The call to <see cref="DestroyWindow(IntPtr)" /> failed.</exception>
-        internal void Dispose(bool isDisposing)
+        private void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
 
@@ -325,7 +327,7 @@ namespace TerraFX.Provider.Win32.UI
 
         /// <summary>Disposes of the <c>HWND</c> for the instance.</summary>
         /// <exception cref="ExternalException">The call to <see cref="DestroyWindow(IntPtr)" /> failed.</exception>
-        internal void DisposeWindowHandle()
+        private void DisposeWindowHandle()
         {
             Assert(Thread.CurrentThread == _parentThread, Resources.InvalidOperationExceptionMessage, nameof(Thread.CurrentThread), Thread.CurrentThread);
             _state.AssertDisposing();
@@ -344,7 +346,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Handles the <see cref="WM_ACTIVATE" /> message.</summary>
         /// <param name="wParam">A value that indicates whether the instance is being activated or deactivated and the minimized state of the instance.</param>
         /// <returns>0</returns>
-        internal nint HandleWmActivate(nuint wParam)
+        private nint HandleWmActivate(nuint wParam)
         {
             _isActive = (LOWORD(wParam) != WA_INACTIVE);
             return 0;
@@ -352,7 +354,7 @@ namespace TerraFX.Provider.Win32.UI
 
         /// <summary>Handles the <see cref="WM_CLOSE" /> message.</summary>
         /// <returns>0</returns>
-        internal nint HandleWmClose()
+        private nint HandleWmClose()
         {
             // If we are already disposing, then Dispose is happening on some other thread
             // and Close was called in order for us to continue disposal on the parent thread.
@@ -372,7 +374,7 @@ namespace TerraFX.Provider.Win32.UI
 
         /// <summary>Handles the <see cref="WM_DESTROY" /> message.</summary>
         /// <returns>0</returns>
-        internal nint HandleWmDestroy()
+        private nint HandleWmDestroy()
         {
             // We handle this here to ensure we transition to the appropriate state in the case
             // an end-user called DestroyWindow themselves. The assumption here is that this was
@@ -390,7 +392,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Handles the <see cref="WM_ENABLE" /> message.</summary>
         /// <param name="wParam">A value that indicates whether the instance is being enabled or disabled.</param>
         /// <returns>0</returns>
-        internal nint HandleWmEnable(nuint wParam)
+        private nint HandleWmEnable(nuint wParam)
         {
             _isEnabled = (wParam != FALSE);
             return 0;
@@ -399,7 +401,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Handles the <see cref="WM_MOVE" /> message.</summary>
         /// <param name="lParam">A value that represents the x and y coordinates of the upper-left corner of the client area of the window.</param>
         /// <returns>0</returns>
-        internal nint HandleWmMove(nint lParam)
+        private nint HandleWmMove(nint lParam)
         {
             var location = new Point2D(x: LOWORD(lParam), y: HIWORD(lParam));
             _bounds = _bounds.WithLocation(location);
@@ -410,7 +412,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <param name="wParam">This parameter is not used.</param>
         /// <param name="lParam">A value that represents a pointer to the new window text.</param>
         /// <returns>A value dependent on the default processing for <see cref="WM_SETTEXT" />.</returns>
-        internal nint HandleWmSetText(nuint wParam, nint lParam)
+        private nint HandleWmSetText(nuint wParam, nint lParam)
         {
             var result = DefWindowProc(_handle.Value, WM_SETTEXT, wParam, lParam);
 
@@ -426,7 +428,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Handles the <see cref="WM_SHOWWINDOW" /> message.</summary>
         /// <param name="wParam">A value that indicates whether the window is being shown or hidden.</param>
         /// <returns>0</returns>
-        internal nint HandleWmShowWindow(nuint wParam)
+        private nint HandleWmShowWindow(nuint wParam)
         {
             _isVisible = (LOWORD(wParam) != FALSE);
             return 0;
@@ -436,7 +438,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <param name="wParam">A value that represents the state of the window.</param>
         /// <param name="lParam">A value that represents the width and height of the client area of the window.</param>
         /// <returns>0</returns>
-        internal nint HandleWmSize(nuint wParam, nint lParam)
+        private nint HandleWmSize(nuint wParam, nint lParam)
         {
             _windowState = (WindowState)((uint)(wParam));
             Assert(Enum.IsDefined(typeof(WindowState), _windowState), Resources.ArgumentOutOfRangeExceptionMessage, nameof(wParam), wParam);

@@ -19,36 +19,36 @@ namespace TerraFX.ApplicationModel
     {
         #region State Constants
         /// <summary>The event loop is stopped.</summary>
-        internal const int Stopped = 1;
+        private const int Stopped = 1;
 
         /// <summary>The event loop is running.</summary>
-        internal const int Running = 2;
+        private const int Running = 2;
 
         /// <summary>The event loop is exiting.</summary>
-        internal const int Exiting = 3;
+        private const int Exiting = 3;
         #endregion
 
         #region Fields
         /// <summary>The <see cref="Assembly" /> instances to search for type exports.</summary>
-        internal readonly Assembly[] _compositionAssemblies;
+        private readonly Assembly[] _compositionAssemblies;
 
         /// <summary>The <see cref="Thread" /> that was used to create the instance.</summary>
-        internal readonly Thread _parentThread;
+        private readonly Thread _parentThread;
 
         /// <summary>The <see cref="CompositionHost" /> for the instance.</summary>
-        internal readonly Lazy<CompositionHost> _compositionHost;
+        private readonly Lazy<CompositionHost> _compositionHost;
 
         /// <summary>The <see cref="IDispatchManager" /> for the instance.</summary>
-        internal readonly Lazy<IDispatchManager> _dispatchManager;
+        private readonly Lazy<IDispatchManager> _dispatchManager;
 
         /// <summary>The <see cref="IGraphicsManager" /> for the instance.</summary>
-        internal readonly Lazy<IGraphicsManager> _graphicsManager;
+        private readonly Lazy<IGraphicsManager> _graphicsManager;
 
         /// <summary>The <see cref="IWindowManager" /> for the instance.</summary>
-        internal readonly Lazy<IWindowManager> _windowManager;
+        private readonly Lazy<IWindowManager> _windowManager;
 
         /// <summary>The <see cref="State" /> of the instance.</summary>
-        internal State _state;
+        private State _state;
         #endregion
 
         #region Constructors
@@ -134,7 +134,7 @@ namespace TerraFX.ApplicationModel
         #region Methods
         /// <summary>Creates a new instance of the <see cref="CompositionHost" /> class.</summary>
         /// <returns>A new instance of the <see cref="CompositionHost" /> configured to use <see cref="_compositionAssemblies" />.</returns>
-        internal CompositionHost CreateCompositionHost()
+        private CompositionHost CreateCompositionHost()
         {
             _state.ThrowIfDisposedOrDisposing();
 
@@ -148,7 +148,7 @@ namespace TerraFX.ApplicationModel
         /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
         /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
         /// <remarks>This method exits the event loop for the instance if it is running.</remarks>
-        internal void Dispose(bool isDisposing)
+        private void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
 
@@ -172,7 +172,7 @@ namespace TerraFX.ApplicationModel
         /// <summary>Raises the <see cref="Idle" /> event.</summary>
         /// <param name="delta">The delta between the current and previous <see cref="Idle" /> events.</param>
         /// <remarks>This method takes a <see cref="TimeSpan" /> rather than a <see cref="IdleEventArgs" /> to help reduce allocations when <see cref="Idle" /> is <c>null</c>.</remarks>
-        internal void OnIdle(TimeSpan delta)
+        private void OnIdle(TimeSpan delta)
         {
             var idle = Idle;
 

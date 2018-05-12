@@ -10,7 +10,7 @@ namespace TerraFX.ApplicationModel
     {
         #region Fields
         /// <summary>The delta between the current and previous <see cref="Application.Idle" /> events.</summary>
-        internal readonly TimeSpan _delta;
+        private readonly TimeSpan _delta;
         #endregion
 
         #region Constructors

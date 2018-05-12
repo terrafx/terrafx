@@ -10,10 +10,10 @@ namespace TerraFX.Collections
     public partial class PropertySet
     {
         /// <summary>Represents a debug-view for an <see cref="IPropertySet" /> instance.</summary>
-        internal sealed class DebugView
+        private sealed class DebugView
         {
             #region Fields
-            internal readonly IPropertySet _propertySet;
+            private readonly IPropertySet _propertySet;
             #endregion
 
             #region Constructors

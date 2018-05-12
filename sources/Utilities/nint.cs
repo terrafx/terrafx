@@ -12,7 +12,7 @@ public readonly /* unmanaged */ unsafe struct nint : IComparable, IComparable<ni
 {
     #region Fields
     /// <summary>The value for the instance.</summary>
-    internal readonly void* _value;
+    private readonly void* _value;
     #endregion
 
     #region Constructors
@@ -567,7 +567,7 @@ public readonly /* unmanaged */ unsafe struct nint : IComparable, IComparable<ni
 
     #region Static Methods
     /// <summary>Asserts that <see cref="IntPtr.Size" /> is <c>sizeof(long)</c>.</summary>
-    internal static void AssertIntPtrSizeIsSameAsInt64()
+    private static void AssertIntPtrSizeIsSameAsInt64()
     {
         Assert(IntPtr.Size == sizeof(long), Resources.InvalidOperationExceptionMessage, nameof(IntPtr.Size), IntPtr.Size);
     }

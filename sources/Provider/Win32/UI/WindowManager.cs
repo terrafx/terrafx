@@ -28,27 +28,27 @@ namespace TerraFX.Provider.Win32.UI
     {
         #region Static Fields
         /// <summary>A <c>HMODULE</c> to the entry point module.</summary>
-        internal static readonly IntPtr EntryPointModule = GetModuleHandle();
+        public static readonly IntPtr EntryPointModule = GetModuleHandle();
 
         /// <summary>The <see cref="NativeDelegate{TDelegate}" /> for the <see cref="WNDPROC" /> method.</summary>
-        internal static readonly NativeDelegate<WNDPROC> ForwardWndProc = new NativeDelegate<WNDPROC>(ForwardWindowMessage);
+        private static readonly NativeDelegate<WNDPROC> ForwardWndProc = new NativeDelegate<WNDPROC>(ForwardWindowMessage);
         #endregion
 
         #region Fields
         /// <summary>The <c>ATOM</c> of the <see cref="WNDCLASSEX" /> registered for the instance.</summary>
-        internal readonly Lazy<ushort> _classAtom;
+        private readonly Lazy<ushort> _classAtom;
 
         /// <summary>The <see cref="DispatchManager" /> for the instance.</summary>
-        internal readonly Lazy<DispatchManager> _dispatchManager;
+        private readonly Lazy<DispatchManager> _dispatchManager;
 
         /// <summary>The <see cref="GCHandle" /> containing the native handle for the instance.</summary>
-        internal readonly Lazy<GCHandle> _nativeHandle;
+        private readonly Lazy<GCHandle> _nativeHandle;
 
         /// <summary>A map of <c>HWND</c> to <see cref="Window" /> objects created for the instance.</summary>
-        internal readonly ConcurrentDictionary<IntPtr, Window> _windows;
+        private readonly ConcurrentDictionary<IntPtr, Window> _windows;
 
         /// <summary>The <see cref="State" /> of the instance.</summary>
-        internal State _state;
+        private State _state;
         #endregion
 
         #region Constructors
@@ -95,7 +95,7 @@ namespace TerraFX.Provider.Win32.UI
         }
 
         /// <summary>Gets the <see cref="GCHandle" /> containing the native handle for the instance.</summary>
-        internal GCHandle NativeHandle
+        public GCHandle NativeHandle
         {
             get
             {
@@ -123,7 +123,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <param name="wParam">The first parameter of the message to be processed.</param>
         /// <param name="lParam">The second parameter of the message to be processed.</param>
         /// <returns>A value that varies based on the exact message that was processed.</returns>
-        internal static nint ForwardWindowMessage(IntPtr hWnd, uint Msg, nuint wParam, nint lParam)
+        private static nint ForwardWindowMessage(IntPtr hWnd, uint Msg, nuint wParam, nint lParam)
         {
             nint result, userData;
 
@@ -175,7 +175,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <returns>The <c>HCURSOR</c> for the desktop window.</returns>
         /// <exception cref="ExternalException">The call to <see cref="GetClassName(IntPtr, char*, int)" /> failed.</exception>
         /// <exception cref="ExternalException">The call to <see cref="GetClassInfoEx(IntPtr, char*, out WNDCLASSEX)" /> failed.</exception>
-        internal static IntPtr GetDesktopCursor()
+        private static IntPtr GetDesktopCursor()
         {
             var desktopWindowHandle = GetDesktopWindow();
 
@@ -207,7 +207,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <exception cref="ExternalException">The call to <see cref="GetClassInfoEx(IntPtr, char*, out WNDCLASSEX)" /> failed.</exception>
         /// <exception cref="ExternalException">The call to <see cref="RegisterClassEx(in WNDCLASSEX)" /> failed.</exception>
         /// <returns>The <c>ATOM</c> created by registering a <see cref="WNDCLASSEX" /> for the entry point module.</returns>
-        internal ushort CreateClassAtom()
+        private ushort CreateClassAtom()
         {
             _state.AssertNotDisposedOrDisposing();
 
@@ -251,7 +251,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
         /// <exception cref="ExternalException">The call to <see cref="DestroyWindow(IntPtr)" /> failed.</exception>
         /// <exception cref="ExternalException">The call to <see cref="UnregisterClass(char*, IntPtr)" /> failed.</exception>
-        internal void Dispose(bool isDisposing)
+        private void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
 
@@ -267,7 +267,7 @@ namespace TerraFX.Provider.Win32.UI
 
         /// <summary>Disposes of the <c>ATOM</c> of the <see cref="WNDCLASSEX" /> registered for the instance.</summary>
         /// <exception cref="ExternalException">The call to <see cref="UnregisterClass(char*, IntPtr)" /> failed.</exception>
-        internal void DisposeClassAtom()
+        private void DisposeClassAtom()
         {
             _state.AssertDisposing();
 
@@ -283,7 +283,7 @@ namespace TerraFX.Provider.Win32.UI
         }
 
         /// <summary>Disposes of the <see cref="GCHandle" /> containing the native handle of the instance.</summary>
-        internal void DisposeNativeHandle()
+        private void DisposeNativeHandle()
         {
             _state.AssertDisposing();
 
@@ -296,7 +296,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Disposes of all <see cref="Window" /> objects that were created by the instance.</summary>
         /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
         /// <exception cref="ExternalException">The call to <see cref="DestroyWindow(IntPtr)" /> failed.</exception>
-        internal void DisposeWindows(bool isDisposing)
+        private void DisposeWindows(bool isDisposing)
         {
             _state.AssertDisposing();
 

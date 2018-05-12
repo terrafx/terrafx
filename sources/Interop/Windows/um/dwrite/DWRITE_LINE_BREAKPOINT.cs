@@ -11,7 +11,7 @@ namespace TerraFX.Interop
     public /* unmanaged */ struct DWRITE_LINE_BREAKPOINT
     {
         #region Fields
-        internal byte _bitField;
+        private byte _bitField;
         #endregion
 
         #region Properties

@@ -16,7 +16,7 @@ namespace TerraFX.Collections
     {
         #region Fields
         /// <summary>The <see cref="IDictionary{TKey, TValue}" /> that is wrapped by the instance.</summary>
-        internal readonly IDictionary<string, object> _items;
+        private readonly IDictionary<string, object> _items;
         #endregion
 
         #region Constructors
@@ -119,7 +119,7 @@ namespace TerraFX.Collections
         #region Methods
         /// <summary>Raises the <see cref="DictionaryChanged" /> event for the <see cref="NotifyDictionaryChangedAction.Reset" /> action.</summary>
         /// <remarks>This method takes no parameters rather than a <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> to help reduce allocations when <see cref="DictionaryChanged" /> is <c>null</c>.</remarks>
-        internal void OnDictionaryReset()
+        private void OnDictionaryReset()
         {
             if (DictionaryChanged != null)
             {
@@ -131,7 +131,7 @@ namespace TerraFX.Collections
         /// <summary>Raises the <see cref="DictionaryChanged" /> event for the <see cref="NotifyDictionaryChangedAction.Add" /> action.</summary>
         /// <param name="key">The key of the item that caused the event.</param>
         /// <remarks>This method takes a <see cref="string" /> rather than a <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> to help reduce allocations when <see cref="DictionaryChanged" /> is <c>null</c>.</remarks>
-        internal void OnDictionaryItemAdded(string key)
+        private void OnDictionaryItemAdded(string key)
         {
             if (DictionaryChanged != null)
             {
@@ -145,7 +145,7 @@ namespace TerraFX.Collections
         /// <param name="oldValue">The old value of the item that caused the event.</param>
         /// <param name="newValue">The new value of the item that caused the event.</param>
         /// <remarks>This method takes a set of parameters rather than a <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> to help reduce allocations when <see cref="DictionaryChanged" /> is <c>null</c>.</remarks>
-        internal void OnDictionaryItemChanged(string key, object oldValue, object newValue)
+        private void OnDictionaryItemChanged(string key, object oldValue, object newValue)
         {
             if (DictionaryChanged != null)
             {
@@ -157,7 +157,7 @@ namespace TerraFX.Collections
         /// <summary>Raises the <see cref="DictionaryChanged" /> event for the <see cref="NotifyDictionaryChangedAction.Remove" /> action.</summary>
         /// <param name="key">The key of the item that caused the event.</param>
         /// <remarks>This method takes a <see cref="string" /> rather than a <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> to help reduce allocations when <see cref="DictionaryChanged" /> is <c>null</c>.</remarks>
-        internal void OnDictionaryItemRemoved(string key)
+        private void OnDictionaryItemRemoved(string key)
         {
             if (DictionaryChanged != null)
             {

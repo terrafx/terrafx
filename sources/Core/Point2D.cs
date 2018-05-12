@@ -12,10 +12,10 @@ namespace TerraFX
     {
         #region Fields
         /// <summary>The value of the x-coordinate.</summary>
-        internal readonly float _x;
+        private readonly float _x;
 
         /// <summary>The value of the y-coordinate.</summary>
-        internal readonly float _y;
+        private readonly float _y;
         #endregion
 
         #region Constructors

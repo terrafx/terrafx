@@ -24,13 +24,13 @@ namespace TerraFX.Provider.libX11.Threading
     {
         #region Fields
         /// <summary>The <c>Display</c> that was created for the instance.</summary>
-        internal readonly Lazy<IntPtr> _display;
+        private readonly Lazy<IntPtr> _display;
 
         /// <summary>The <see cref="IDispatcher" /> instances that have been created by the instance.</summary>
-        internal readonly ConcurrentDictionary<Thread, IDispatcher> _dispatchers;
+        private readonly ConcurrentDictionary<Thread, IDispatcher> _dispatchers;
 
         /// <summary>The <see cref="State" /> of the instance.</summary>
-        internal State _state;
+        private State _state;
         #endregion
 
         #region Constructors
@@ -105,7 +105,7 @@ namespace TerraFX.Provider.libX11.Threading
         /// <summary>Creates a <see cref="Display" />.</summary>
         /// <returns>The created <see cref="Display" />.</returns>
         /// <exception cref="ExternalException">The call to <see cref="XOpenDisplay(byte*)" /> failed.</exception>
-        internal static IntPtr CreateDisplay()
+        private static IntPtr CreateDisplay()
         {
             var display = XOpenDisplay(display_name: null);
 
@@ -121,7 +121,7 @@ namespace TerraFX.Provider.libX11.Threading
         #region Methods
         /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
         /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
-        internal void Dispose(bool isDisposing)
+        private void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
 
@@ -134,7 +134,7 @@ namespace TerraFX.Provider.libX11.Threading
         }
 
         /// <summary>Disposes of the <c>Display</c> that was created for the instance.</summary>
-        internal void DisposeDisplay()
+        private void DisposeDisplay()
         {
             _state.AssertDisposing();
 

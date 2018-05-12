@@ -19,22 +19,22 @@ namespace TerraFX.Provider.D3D12.Graphics
     {
         #region Fields
         /// <summary>The <see cref="GraphicsManager" /> for the instance.</summary>
-        internal readonly GraphicsManager _graphicsManager;
+        private readonly GraphicsManager _graphicsManager;
 
         /// <summary>The <see cref="IDXGIAdapter1" /> for the instance.</summary>
-        internal readonly IDXGIAdapter1* _adapter;
+        private readonly IDXGIAdapter1* _adapter;
 
         /// <summary>The name of the device.</summary>
-        internal string _deviceName;
+        private string _deviceName;
 
         /// <summary>The PCI ID of the vendor.</summary>
-        internal uint _vendorId;
+        private uint _vendorId;
 
         /// <summary>The PCI ID of the device.</summary>
-        internal uint _deviceId;
+        private uint _deviceId;
 
         /// <summary>The <see cref="State" /> of the instance.</summary>
-        internal State _state;
+        private State _state;
         #endregion
 
         #region Constructors
@@ -108,7 +108,7 @@ namespace TerraFX.Provider.D3D12.Graphics
         #region Static Methods
         /// <summary>Throws a <see cref="ObjectDisposedException" /> if the instance has already been disposed.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        internal static void ThrowIfDisposed(int state)
+        private static void ThrowIfDisposed(int state)
         {
             if (state >= Disposing) // (_state == Disposing) || (_state == Disposed)
             {
@@ -120,7 +120,7 @@ namespace TerraFX.Provider.D3D12.Graphics
         #region Methods
         /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
         /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
-        internal void Dispose(bool isDisposing)
+        private void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
 
@@ -133,7 +133,7 @@ namespace TerraFX.Provider.D3D12.Graphics
         }
 
         /// <summary>Disposes of the DXGI adapter associated with the instance.</summary>
-        internal void DisposeAdapter()
+        private void DisposeAdapter()
         {
             _state.AssertDisposing();
 

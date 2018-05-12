@@ -10,10 +10,51 @@ namespace TerraFX.Interop
     public /* unmanaged */ unsafe struct TYPEDESC
     {
         #region Fields
-        internal _u_e__Union u;
+        private _u_e__Union u;
 
         [ComAliasName("VARTYPE")]
         public ushort vt;
+        #endregion
+
+        #region Properties
+        public TYPEDESC* lptdesc
+        {
+            get
+            {
+                return u.lptdesc;
+            }
+
+            set
+            {
+                u.lptdesc = value;
+            }
+        }
+
+        public ARRAYDESC* lpadesc
+        {
+            get
+            {
+                return u.lpadesc;
+            }
+
+            set
+            {
+                u.lpadesc = value;
+            }
+        }
+
+        public uint hreftype
+        {
+            get
+            {
+                return u.hreftype;
+            }
+
+            set
+            {
+                u.hreftype = value;
+            }
+        }
         #endregion
 
         #region Structs

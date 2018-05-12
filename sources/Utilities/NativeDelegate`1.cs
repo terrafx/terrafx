@@ -13,10 +13,10 @@ namespace TerraFX.Utilities
     {
         #region Fields
         /// <summary>The native handle to <see cref="_value" />.</summary>
-        internal readonly IntPtr _handle;
+        private readonly IntPtr _handle;
 
         /// <summary>The managed delegate that was marshalled.</summary>
-        internal readonly TDelegate _value;
+        private readonly TDelegate _value;
         #endregion
 
         #region Constructors

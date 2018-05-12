@@ -28,7 +28,7 @@ namespace TerraFX.Interop
         [ComAliasName("UINT32")]
         public uint justificationCharacter;
 
-        internal uint _bitField;
+        private uint _bitField;
         #endregion
 
         #region Properties

@@ -28,7 +28,7 @@ namespace TerraFX
 
         #region Fields
         /// <summary>The number of 100-nanosecond ticks represented by the instance.</summary>
-        internal readonly long _ticks;
+        private readonly long _ticks;
         #endregion
 
         #region Constructors

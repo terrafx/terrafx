@@ -24,13 +24,13 @@ namespace TerraFX.Provider.libX11.UI
     {
         #region Fields
         /// <summary>The <see cref="DispatchManager" /> for the instance.</summary>
-        internal readonly Lazy<DispatchManager> _dispatchManager;
+        private readonly Lazy<DispatchManager> _dispatchManager;
 
         /// <summary>A map of <c>Window</c> to <see cref="Window" /> objects created for the instance.</summary>
-        internal readonly ConcurrentDictionary<IntPtr, Window> _windows;
+        private readonly ConcurrentDictionary<IntPtr, Window> _windows;
 
         /// <summary>The <see cref="State" /> of the instance.</summary>
-        internal State _state;
+        private State _state;
         #endregion
 
         #region Constructors
@@ -115,7 +115,7 @@ namespace TerraFX.Provider.libX11.UI
         #region Methods
         /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
         /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
-        internal void Dispose(bool isDisposing)
+        private void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
 
@@ -129,7 +129,7 @@ namespace TerraFX.Provider.libX11.UI
 
         /// <summary>Disposes of all <see cref="Window" /> objects that were created by the instance.</summary>
         /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
-        internal void DisposeWindows(bool isDisposing)
+        private void DisposeWindows(bool isDisposing)
         {
             _state.AssertDisposing();
 

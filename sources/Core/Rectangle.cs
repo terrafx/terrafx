@@ -12,10 +12,10 @@ namespace TerraFX
     {
         #region Fields
         /// <summary>The location of the instance.</summary>
-        internal readonly Point2D _location;
+        private readonly Point2D _location;
 
         /// <summary>The size of the instance.</summary>
-        internal readonly Size2D _size;
+        private readonly Size2D _size;
         #endregion
 
         #region Constructors

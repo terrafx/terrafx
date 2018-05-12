@@ -19,7 +19,7 @@ namespace TerraFX.Interop
         [ComAliasName("UINT16")]
         public ushort length;
 
-        internal ushort _bitField;
+        private ushort _bitField;
         #endregion
 
         #region Properties

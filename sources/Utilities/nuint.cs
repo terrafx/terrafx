@@ -12,7 +12,7 @@ public readonly /* unmanaged */ unsafe struct nuint : IComparable, IComparable<n
 {
     #region Fields
     /// <summary>The value for the instance.</summary>
-    internal readonly void* _value;
+    private readonly void* _value;
     #endregion
 
     #region Constructors
@@ -550,7 +550,7 @@ public readonly /* unmanaged */ unsafe struct nuint : IComparable, IComparable<n
 
     #region Static Methods
     /// <summary>Asserts that <see cref="UIntPtr.Size" /> is <c>sizeof(ulong)</c>.</summary>
-    internal static void AssertUIntPtrSizeIsSameAsUInt64()
+    private static void AssertUIntPtrSizeIsSameAsUInt64()
     {
         Assert(UIntPtr.Size == sizeof(ulong), Resources.InvalidOperationExceptionMessage, nameof(UIntPtr.Size), UIntPtr.Size);
     }

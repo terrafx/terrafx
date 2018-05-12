@@ -26,13 +26,13 @@ namespace TerraFX.Provider.Vulkan.Graphics
     {
         #region Fields
         /// <summary>The Vulkan instance.</summary>
-        internal readonly Lazy<IntPtr> _instance;
+        private readonly Lazy<IntPtr> _instance;
 
         /// <summary>The <see cref="GraphicsAdapter" /> instances available in the system.</summary>
-        internal readonly Lazy<ImmutableArray<GraphicsAdapter>> _adapters;
+        private readonly Lazy<ImmutableArray<GraphicsAdapter>> _adapters;
 
         /// <summary>The <see cref="State" /> of the instance.</summary>
-        internal State _state;
+        private State _state;
         #endregion
 
         #region Constructors
@@ -81,7 +81,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
         /// <summary>Creates a Vulkan instance.</summary>
         /// <returns>A Vulkan instance.</returns>
         /// <exception cref="ExternalException">The call to <see cref="vkCreateInstance(in VkInstanceCreateInfo, VkAllocationCallbacks*, out IntPtr)" /> failed.</exception>
-        internal static IntPtr CreateInstance()
+        private static IntPtr CreateInstance()
         {
             var createInfo = new VkInstanceCreateInfo() {
                 sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
@@ -109,7 +109,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
         /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
         /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
         /// <exception cref="ExternalException">The call to <see cref="vkDestroyInstance(IntPtr, VkAllocationCallbacks*)" /> failed.</exception>
-        internal void Dispose(bool isDisposing)
+        private void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
 
@@ -123,7 +123,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
         /// <summary>Disposes of the Vulkan instance that was created.</summary>
         /// <exception cref="ExternalException">The call to <see cref="vkDestroyInstance(IntPtr, VkAllocationCallbacks*)" /> failed.</exception>
-        internal void DisposeInstance()
+        private void DisposeInstance()
         {
             if (_instance.IsValueCreated)
             {
@@ -134,7 +134,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
         /// <summary>Gets the <see cref="GraphicsAdapter" /> instances available in the system.</summary>
         /// <returns>The <see cref="GraphicsAdapter" /> instances available in the system.</returns>
         /// <exception cref="ExternalException">The call to <see cref="vkEnumeratePhysicalDevices(IntPtr, uint*, IntPtr*)" /> failed.</exception>
-        internal ImmutableArray<GraphicsAdapter> GetGraphicsAdapters()
+        private ImmutableArray<GraphicsAdapter> GetGraphicsAdapters()
         {
             var instance = _instance.Value;
 

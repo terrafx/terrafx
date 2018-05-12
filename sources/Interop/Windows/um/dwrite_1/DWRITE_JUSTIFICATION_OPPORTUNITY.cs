@@ -23,7 +23,7 @@ namespace TerraFX.Interop
         [ComAliasName("FLOAT")]
         public float compressionMaximum;
 
-        internal uint _bitField;
+        private uint _bitField;
         #endregion
 
         #region Properties

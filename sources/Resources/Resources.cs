@@ -10,10 +10,10 @@ namespace TerraFX
     {
         #region Static Fields
         /// <summary>The <see cref="ResourceManager" /> instance that is used to lookup the localized resources.</summary>
-        internal static readonly ResourceManager _resourceManager = new ResourceManager(typeof(Resources));
+        private static readonly ResourceManager _resourceManager = new ResourceManager(typeof(Resources));
 
         /// <summary>The <see cref="CultureInfo" /> used during resource lookup.</summary>
-        internal static CultureInfo _culture;
+        private static CultureInfo _culture;
         #endregion
 
         #region Static Properties

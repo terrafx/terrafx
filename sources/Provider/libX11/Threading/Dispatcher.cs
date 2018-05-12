@@ -15,13 +15,13 @@ namespace TerraFX.Provider.libX11.Threading
     {
         #region Fields
         /// <summary>The <see cref="DispatchManager" /> for the instance.</summary>
-        internal readonly DispatchManager _dispatchManager;
+        private readonly DispatchManager _dispatchManager;
 
         /// <summary>The <see cref="Thread" /> that was used to create the instance.</summary>
-        internal readonly Thread _parentThread;
+        private readonly Thread _parentThread;
 
         /// <summary>The <c>Atom</c> used to access the <c>Window</c> property containing the associated <see cref="WindowManager" />.</summary>
-        internal readonly Lazy<nuint> _windowManagerProperty;
+        private readonly Lazy<nuint> _windowManagerProperty;
         #endregion
 
         #region Constructors
@@ -47,7 +47,7 @@ namespace TerraFX.Provider.libX11.Threading
         #region Methods
         /// <summary>Creates an <c>Atom</c> for the window manager property.</summary>
         /// <returns>An <c>Atom</c> for the window manager property.</returns>
-        internal nuint CreateWindowManagerProperty()
+        private nuint CreateWindowManagerProperty()
         {
             var display = _dispatchManager.Display;
 
@@ -68,7 +68,7 @@ namespace TerraFX.Provider.libX11.Threading
         }
 
         /// <summary>Raises the <see cref="ExitRequested" /> event.</summary>
-        internal void OnExitRequested()
+        private void OnExitRequested()
         {
             ExitRequested?.Invoke(this, EventArgs.Empty);
         }

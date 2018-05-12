@@ -13,21 +13,21 @@ namespace TerraFX.Collections
     {
         #region Static Fields
         /// <summary>The <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> instance that is returned for the <see cref="NotifyDictionaryChangedAction.Reset" /> action.</summary>
-        internal static readonly NotifyDictionaryChangedEventArgs<TKey, TValue> Reset = new NotifyDictionaryChangedEventArgs<TKey, TValue>(NotifyDictionaryChangedAction.Reset);
+        private static readonly NotifyDictionaryChangedEventArgs<TKey, TValue> Reset = new NotifyDictionaryChangedEventArgs<TKey, TValue>(NotifyDictionaryChangedAction.Reset);
         #endregion
 
         #region Fields
         /// <summary>The action that caused the event.</summary>
-        internal readonly NotifyDictionaryChangedAction _action;
+        private readonly NotifyDictionaryChangedAction _action;
 
         /// <summary>The key of the item that caused the event.</summary>
-        internal readonly TKey _key;
+        private readonly TKey _key;
 
         /// <summary>The old value of the item that caused the event.</summary>
-        internal readonly TValue _oldValue;
+        private readonly TValue _oldValue;
 
         /// <summary>The new value of the item that caused the event.</summary>
-        internal readonly TValue _newValue;
+        private readonly TValue _newValue;
         #endregion
 
         #region Constructors
@@ -36,7 +36,7 @@ namespace TerraFX.Collections
         /// <param name="key">The key of the item that caused the event.</param>
         /// <param name="oldValue">The old value of the item that caused the event.</param>
         /// <param name="newValue">The new value of the item that caused the event.</param>
-        internal NotifyDictionaryChangedEventArgs(NotifyDictionaryChangedAction action, TKey key = default, TValue oldValue = default, TValue newValue = default)
+        private NotifyDictionaryChangedEventArgs(NotifyDictionaryChangedAction action, TKey key = default, TValue oldValue = default, TValue newValue = default)
         {
             Debug.Assert(Enum.IsDefined(typeof(NotifyDictionaryChangedAction), action));
 

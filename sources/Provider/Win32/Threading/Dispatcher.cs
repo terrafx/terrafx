@@ -16,10 +16,10 @@ namespace TerraFX.Provider.Win32.Threading
     {
         #region Fields
         /// <summary>The <see cref="DispatchManager" /> for the instance.</summary>
-        internal readonly DispatchManager _dispatchManager;
+        private readonly DispatchManager _dispatchManager;
 
         /// <summary>The <see cref="Thread" /> that was used to create the instance.</summary>
-        internal readonly Thread _parentThread;
+        private readonly Thread _parentThread;
         #endregion
 
         #region Constructors
@@ -43,7 +43,7 @@ namespace TerraFX.Provider.Win32.Threading
 
         #region Methods
         /// <summary>Raises the <see cref="ExitRequested" /> event.</summary>
-        internal void OnExitRequested()
+        private void OnExitRequested()
         {
             ExitRequested?.Invoke(this, EventArgs.Empty);
         }

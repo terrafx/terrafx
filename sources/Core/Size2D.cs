@@ -12,10 +12,10 @@ namespace TerraFX
     {
         #region Fields
         /// <summary>The width of the instance.</summary>
-        internal readonly float _width;
+        private readonly float _width;
 
         /// <summary>The height of the instance.</summary>
-        internal readonly float _height;
+        private readonly float _height;
         #endregion
 
         #region Constructors

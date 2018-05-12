@@ -27,7 +27,7 @@ namespace TerraFX.Utilities
 
         #region Fields
         /// <summary>The value of the instance.</summary>
-        internal volatile int _value;
+        private volatile int _value;
         #endregion
 
         #region Properties

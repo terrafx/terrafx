@@ -17,7 +17,7 @@ namespace TerraFX.Interop
         [ComAliasName("LPOLESTR")]
         public char* lpstrSchema;
 
-        internal _u_e__Union u;
+        private _u_e__Union u;
 
         public ELEMDESC elemdescVar;
 
@@ -25,6 +25,34 @@ namespace TerraFX.Interop
         public ushort wVarFlags;
 
         public VARKIND varkind;
+        #endregion
+
+        #region Properties
+        public uint oInst
+        {
+            get
+            {
+                return u.oInst;
+            }
+
+            set
+            {
+                u.oInst = value;
+            }
+        }
+
+        public VARIANT* lpvarValue
+        {
+            get
+            {
+                return u.lpvarValue;
+            }
+
+            set
+            {
+                u.lpvarValue = value;
+            }
+        }
         #endregion
 
         #region Structs

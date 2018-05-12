@@ -15,19 +15,19 @@ namespace TerraFX.Provider.Vulkan.Graphics
     {
         #region Fields
         /// <summary>The <see cref="GraphicsManager" /> for the instance.</summary>
-        internal readonly GraphicsManager _graphicsManager;
+        private readonly GraphicsManager _graphicsManager;
 
         /// <summary>The Vulkan device for the instance.</summary>
-        internal IntPtr _physicalDevice;
+        private IntPtr _physicalDevice;
 
         /// <summary>The name of the device.</summary>
-        internal string _deviceName;
+        private string _deviceName;
 
         /// <summary>The PCI ID of the vendor.</summary>
-        internal uint _vendorId;
+        private uint _vendorId;
 
         /// <summary>The PCI ID of the device.</summary>
-        internal uint _deviceId;
+        private uint _deviceId;
         #endregion
 
         #region Constructors

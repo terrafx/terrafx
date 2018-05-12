@@ -21,10 +21,10 @@ namespace TerraFX.Provider.Win32.Threading
     {
         #region Fields
         /// <summary>The tick frequency for the system's monotonic timer.</summary>
-        internal readonly double _tickFrequency;
+        private readonly double _tickFrequency;
 
         /// <summary>The <see cref="IDispatcher" /> instances that have been created by the instance.</summary>
-        internal readonly ConcurrentDictionary<Thread, IDispatcher> _dispatchers;
+        private readonly ConcurrentDictionary<Thread, IDispatcher> _dispatchers;
         #endregion
 
         #region Constructors
@@ -41,7 +41,7 @@ namespace TerraFX.Provider.Win32.Threading
         /// <summary>Gets the tick frequency for the system's monotonic timer.</summary>
         /// <returns>The tick frequency for the system's monotonic timer.</returns>
         /// <exception cref="ExternalException">The call to <see cref="QueryPerformanceFrequency(out LARGE_INTEGER)" /> failed.</exception>
-        internal static double GetTickFrequency()
+        private static double GetTickFrequency()
         {
             var succeeded = QueryPerformanceFrequency(out var frequency);
 

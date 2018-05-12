@@ -11,7 +11,7 @@ namespace TerraFX.Interop
     public /* unmanaged */ struct DWRITE_SHAPING_TEXT_PROPERTIES
     {
         #region Fields
-        internal ushort _bitField;
+        private ushort _bitField;
         #endregion
 
         #region Properties

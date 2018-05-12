@@ -12,7 +12,7 @@ namespace TerraFX.Utilities
     {
         #region Static Fields
         /// <summary>Holds a mapping of all of the managed delegates created for the various function pointers.</summary>
-        internal static readonly Dictionary<IntPtr, Delegate> _marshalledFunctions = new Dictionary<IntPtr, Delegate>();
+        private static readonly Dictionary<IntPtr, Delegate> _marshalledFunctions = new Dictionary<IntPtr, Delegate>();
         #endregion
 
         #region Static Methods
