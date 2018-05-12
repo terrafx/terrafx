@@ -8,9 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Update="Resources.cs">
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
+    <Compile Update="Resources.cs" DependentUpon="Resources.resx" />
   </ItemGroup>
 
 </Project>

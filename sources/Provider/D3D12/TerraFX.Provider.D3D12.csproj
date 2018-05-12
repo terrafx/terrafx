@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Composition" Version="$(SystemCompositionPackageVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Interop\Windows\TerraFX.Interop.Windows.csproj" />
     <ProjectReference Include="..\..\Graphics\TerraFX.Graphics.csproj" />
   </ItemGroup>
