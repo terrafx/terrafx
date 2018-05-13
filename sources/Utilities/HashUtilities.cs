@@ -195,6 +195,16 @@ namespace TerraFX.Utilities
 
             return finalizedHashCode;
         }
+
+        /// <summary>Finalizes a value to produce a hashcode.</summary>
+        /// <param name="combinedValue">The combined value that will be finalized.</param>
+        /// <param name="bytesCombined">The total number of bytes that were combined to produce <paramref name="combinedValue" />.</param>
+        /// <returns>The finalized hashcode for <paramref name="combinedValue" /> and <paramref name="bytesCombined" />.</returns>
+        [Pure]
+        public static int FinalizeValue(int combinedValue, uint bytesCombined)
+        {
+            return FinalizeValue(combinedValue, unchecked((int)(bytesCombined)));
+        }
         #endregion
     }
 }
