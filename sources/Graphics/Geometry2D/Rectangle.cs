@@ -3,6 +3,7 @@
 using System;
 using System.Globalization;
 using System.Text;
+using TerraFX.Numerics;
 using static TerraFX.Utilities.HashUtilities;
 
 namespace TerraFX.Graphics.Geometry2D
@@ -11,15 +12,15 @@ namespace TerraFX.Graphics.Geometry2D
     public readonly struct Rectangle : IEquatable<Rectangle>, IFormattable
     {
         #region Fields
-        private readonly Point _location;
-        private readonly Size _size;
+        private readonly Vector2 _location;
+        private readonly Vector2 _size;
         #endregion
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Rectangle" /> struct.</summary>
         /// <param name="location">The location of the instance.</param>
         /// <param name="size">The size of the instance.</param>
-        public Rectangle(Point location, Size size)
+        public Rectangle(Vector2 location, Vector2 size)
         {
             _location = location;
             _size = size;
@@ -32,8 +33,8 @@ namespace TerraFX.Graphics.Geometry2D
         /// <param name="height">The height of the instance.</param>
         public Rectangle(float x, float y, float width, float height)
         {
-            _location = new Point(x, y);
-            _size = new Size(width, height);
+            _location = new Vector2(x, y);
+            _size = new Vector2(width, height);
         }
         #endregion
 
@@ -43,12 +44,12 @@ namespace TerraFX.Graphics.Geometry2D
         {
             get
             {
-                return _size.Height;
+                return _size.Y;
             }
         }
 
         /// <summary>Gets the location of the instance.</summary>
-        public Point Location
+        public Vector2 Location
         {
             get
             {
@@ -57,7 +58,7 @@ namespace TerraFX.Graphics.Geometry2D
         }
 
         /// <summary>Gets the size of the instance.</summary>
-        public Size Size
+        public Vector2 Size
         {
             get
             {
@@ -70,7 +71,7 @@ namespace TerraFX.Graphics.Geometry2D
         {
             get
             {
-                return _size.Width;
+                return _size.X;
             }
         }
 
@@ -121,14 +122,14 @@ namespace TerraFX.Graphics.Geometry2D
         /// <returns>A new <see cref="Rectangle" /> instance with <see cref="Height" /> set to <paramref name="value" />.</returns>
         public Rectangle WithHeight(float value)
         {
-            var size = new Size(Width, value);
+            var size = new Vector2(Width, value);
             return new Rectangle(Location, size);
         }
 
         /// <summary>Creates a new <see cref="Rectangle" /> instance with <see cref="Location" /> set to the specified value.</summary>
         /// <param name="value">The new location of the instance.</param>
         /// <returns>A new <see cref="Rectangle" /> instance with <see cref="Location" /> set to <paramref name="value" />.</returns>
-        public Rectangle WithLocation(Point value)
+        public Rectangle WithLocation(Vector2 value)
         {
             return new Rectangle(value, Size);
         }
@@ -136,7 +137,7 @@ namespace TerraFX.Graphics.Geometry2D
         /// <summary>Creates a new <see cref="Rectangle" /> instance with <see cref="Size" /> set to the specified value.</summary>
         /// <param name="value">The new size of the instance.</param>
         /// <returns>A new <see cref="Rectangle" /> instance with <see cref="Size" /> set to <paramref name="value" />.</returns>
-        public Rectangle WithSize(Size value)
+        public Rectangle WithSize(Vector2 value)
         {
             return new Rectangle(Location, value);
         }
@@ -146,7 +147,7 @@ namespace TerraFX.Graphics.Geometry2D
         /// <returns>A new <see cref="Rectangle" /> instance with <see cref="Width" /> set to <paramref name="value" />.</returns>
         public Rectangle WithWidth(float value)
         {
-            var size = new Size(value, Height);
+            var size = new Vector2(value, Height);
             return new Rectangle(Location, size);
         }
 
@@ -155,7 +156,7 @@ namespace TerraFX.Graphics.Geometry2D
         /// <returns>A new <see cref="Rectangle" /> instance with <see cref="X" /> set to <paramref name="value" />.</returns>
         public Rectangle WithX(float value)
         {
-            var location = new Point(value, Y);
+            var location = new Vector2(value, Y);
             return new Rectangle(location, Size);
         }
 
@@ -164,7 +165,7 @@ namespace TerraFX.Graphics.Geometry2D
         /// <returns>A new <see cref="Rectangle" /> instance with <see cref="Y" /> set to <paramref name="value" />.</returns>
         public Rectangle WithY(float value)
         {
-            var location = new Point(X, value);
+            var location = new Vector2(X, value);
             return new Rectangle(location, Size);
         }
         #endregion

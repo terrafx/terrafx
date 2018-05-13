@@ -6,7 +6,7 @@ using System.Threading;
 using TerraFX.Collections;
 using TerraFX.Graphics.Geometry2D;
 using TerraFX.Interop;
-using TerraFX.Provider.Win32.Threading;
+using TerraFX.Numerics;
 using TerraFX.UI;
 using TerraFX.Utilities;
 using static TerraFX.Interop.User32;
@@ -404,7 +404,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <returns>0</returns>
         private nint HandleWmMove(nint lParam)
         {
-            var location = new Point(x: LOWORD(lParam), y: HIWORD(lParam));
+            var location = new Vector2(x: LOWORD(lParam), y: HIWORD(lParam));
             _bounds = _bounds.WithLocation(location);
             return 0;
         }
@@ -444,7 +444,7 @@ namespace TerraFX.Provider.Win32.UI
             _windowState = (WindowState)((uint)(wParam));
             Assert(Enum.IsDefined(typeof(WindowState), _windowState), Resources.ArgumentOutOfRangeExceptionMessage, nameof(wParam), wParam);
 
-            var size = new Size(width: LOWORD(lParam), height: HIWORD(lParam));
+            var size = new Vector2(x: LOWORD(lParam), y: HIWORD(lParam));
             _bounds = _bounds.WithSize(size);
             return 0;
         }
