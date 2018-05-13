@@ -2,6 +2,7 @@
 
 using System;
 using TerraFX.Collections;
+using TerraFX.Graphics.Geometry2D;
 using System.Threading;
 
 namespace TerraFX.UI

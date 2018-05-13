@@ -4,6 +4,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.Collections;
+using TerraFX.Graphics.Geometry2D;
 using TerraFX.Interop;
 using TerraFX.UI;
 using TerraFX.Utilities;

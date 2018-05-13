@@ -5,24 +5,21 @@ using System.Globalization;
 using System.Text;
 using static TerraFX.Utilities.HashUtilities;
 
-namespace TerraFX
+namespace TerraFX.Graphics.Geometry2D
 {
     /// <summary>Defines a point in two-dimensional space.</summary>
-    public readonly struct Point2D : IEquatable<Point2D>, IFormattable
+    public readonly struct Point : IEquatable<Point>, IFormattable
     {
         #region Fields
-        /// <summary>The value of the x-coordinate.</summary>
         private readonly float _x;
-
-        /// <summary>The value of the y-coordinate.</summary>
         private readonly float _y;
         #endregion
 
         #region Constructors
-        /// <summary>Initializes a new instance of the <see cref="Point2D" /> struct.</summary>
+        /// <summary>Initializes a new instance of the <see cref="Point" /> struct.</summary>
         /// <param name="x">The value of the x-coordinate.</param>
         /// <param name="y">The value of the y-coordinate.</param>
-        public Point2D(float x, float y)
+        public Point(float x, float y)
         {
             _x = x;
             _y = y;
@@ -39,7 +36,7 @@ namespace TerraFX
             }
         }
 
-        /// <summary>Gets the value of the x-coordinate.</summary>
+        /// <summary>Gets the value of the y-coordinate.</summary>
         public float Y
         {
             get
@@ -50,21 +47,21 @@ namespace TerraFX
         #endregion
 
         #region Comparison Operators
-        /// <summary>Compares two <see cref="Point2D" /> instances to determine equality.</summary>
-        /// <param name="left">The <see cref="Point2D" /> to compare with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="Point2D" /> to compare with <paramref name="left" />.</param>
+        /// <summary>Compares two <see cref="Point" /> instances to determine equality.</summary>
+        /// <param name="left">The <see cref="Point" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="Point" /> to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
-        public static bool operator ==(Point2D left, Point2D right)
+        public static bool operator ==(Point left, Point right)
         {
             return (left.X == right.X)
                 && (left.Y == right.Y);
         }
 
-        /// <summary>Compares two <see cref="Point2D" /> instances to determine inequality.</summary>
-        /// <param name="left">The <see cref="Point2D" /> to compare with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="Point2D" /> to compare with <paramref name="left" />.</param>
+        /// <summary>Compares two <see cref="Point" /> instances to determine inequality.</summary>
+        /// <param name="left">The <see cref="Point" /> to compare with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="Point" /> to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
-        public static bool operator !=(Point2D left, Point2D right)
+        public static bool operator !=(Point left, Point right)
         {
             return (left.X != right.X)
                 || (left.Y != right.Y);
@@ -72,28 +69,28 @@ namespace TerraFX
         #endregion
 
         #region Methods
-        /// <summary>Creates a new <see cref="Point2D" /> instance with <see cref="X" /> set to the specified value.</summary>
+        /// <summary>Creates a new <see cref="Point" /> instance with <see cref="X" /> set to the specified value.</summary>
         /// <param name="value">The new value of the x-coordinate.</param>
-        /// <returns>A new <see cref="Point2D" /> instance with <see cref="X" /> set to <paramref name="value" />.</returns>
-        public Point2D WithX(float value)
+        /// <returns>A new <see cref="Point" /> instance with <see cref="X" /> set to <paramref name="value" />.</returns>
+        public Point WithX(float value)
         {
-            return new Point2D(value, Y);
+            return new Point(value, Y);
         }
 
-        /// <summary>Creates a new <see cref="Point2D" /> instance with <see cref="Y" /> set to the specified value.</summary>
+        /// <summary>Creates a new <see cref="Point" /> instance with <see cref="Y" /> set to the specified value.</summary>
         /// <param name="value">The new value of the y-coordinate.</param>
-        /// <returns>A new <see cref="Point2D" /> instance with <see cref="Y" /> set to <paramref name="value" />.</returns>
-        public Point2D WithY(float value)
+        /// <returns>A new <see cref="Point" /> instance with <see cref="Y" /> set to <paramref name="value" />.</returns>
+        public Point WithY(float value)
         {
-            return new Point2D(X, value);
+            return new Point(X, value);
         }
         #endregion
 
         #region System.IEquatable<Point2D> Methods
-        /// <summary>Compares a <see cref="Point2D" /> with the current instance to determine equality.</summary>
-        /// <param name="other">The <see cref="Point2D" /> to compare with the current instance.</param>
+        /// <summary>Compares a <see cref="Point" /> with the current instance to determine equality.</summary>
+        /// <param name="other">The <see cref="Point" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
-        public bool Equals(Point2D other)
+        public bool Equals(Point other)
         {
             return (this == other);
         }
@@ -124,10 +121,10 @@ namespace TerraFX
         #region System.Object Methods
         /// <summary>Compares a <see cref="object" /> with the current instance to determine equality.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
-        /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="Point2D" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>
+        /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="Point" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>
         public override bool Equals(object obj)
         {
-            return (obj is Point2D other)
+            return (obj is Point other)
                 && Equals(other);
         }
 
