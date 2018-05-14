@@ -132,6 +132,9 @@
   <data name="InvalidOperationExceptionMessage" xml:space="preserve">
     <value>{0} has a value of {1}</value>
   </data>
+  <data name="NotSupportedExceptionForReadOnlyCollectionMessage" xml:space="preserve">
+    <value>The collection is read-only</value>
+  </data>
   <data name="ObjectDisposedExceptionMessage" xml:space="preserve">
     <value>{0} is disposed</value>
   </data>

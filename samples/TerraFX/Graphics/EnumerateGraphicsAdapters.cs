@@ -3,6 +3,7 @@
 using System;
 using System.Reflection;
 using TerraFX.ApplicationModel;
+using TerraFX.Graphics;
 
 namespace TerraFX.Samples.Graphics
 {
@@ -16,11 +17,11 @@ namespace TerraFX.Samples.Graphics
         #endregion
 
         #region Methods
-        public override void OnIdle(object sender, IdleEventArgs eventArgs)
+        public override void OnIdle(object sender, ApplicationIdleEventArgs eventArgs)
         {
             var application = (Application)(sender);
             {
-                var graphicsManager = application.GraphicsManager;
+                var graphicsManager = application.GetService<IGraphicsManager>();
 
                 foreach (var graphicsAdapter in graphicsManager.GraphicsAdapters)
                 {

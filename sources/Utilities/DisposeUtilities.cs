@@ -10,12 +10,11 @@ namespace TerraFX.Utilities
         #region Static Methods
         /// <summary>Disposes of a <see cref="Lazy{T}" /> instance if <see cref="Lazy{T}.IsValueCreated" /> is <c>true</c>.</summary>
         /// <typeparam name="T">The type of <paramref name="value" />.</typeparam>
-        /// <param name="isDisposing"><c>true</c> if called from <see cref="IDisposable.Dispose" />; otherwise, <c>false</c>.</param>
         /// <param name="value">The <see cref="Lazy{T}" /> instance to dispose.</param>
-        public static void DisposeIfValueCreated<T>(bool isDisposing, Lazy<T> value)
+        public static void Dispose<T>(this Lazy<T> value)
             where T : IDisposable
         {
-            if (isDisposing && (bool)(value?.IsValueCreated))
+            if (value.IsValueCreated)
             {
                 value.Value.Dispose();
             }

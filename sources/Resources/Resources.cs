@@ -77,6 +77,15 @@ namespace TerraFX
             }
         }
 
+        /// <summary>Gets a localized <see cref="string" /> similar to <c>The collection is read-only</c>.</summary>
+        public static string NotSupportedExceptionForReadOnlyCollectionMessage
+        {
+            get
+            {
+                return ResourceManager.GetString(nameof(NotSupportedExceptionForReadOnlyCollectionMessage), Culture);
+            }
+        }
+
         /// <summary>Gets a localized <see cref="string" /> similar to <c>{0} is disposed</c>.</summary>
         public static string ObjectDisposedExceptionMessage
         {

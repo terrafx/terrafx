@@ -77,6 +77,14 @@ namespace TerraFX.Utilities
             return new InvalidOperationException(message);
         }
 
+        /// <summary>Creates a new instance of the <see cref="NotSupportedException" /> class.</summary>
+        /// <param name="message">A string that describes the error.</param>
+        /// <returns>A new instance of the <see cref="ObjectDisposedException" /> class.</returns>
+        public static NotSupportedException NewNotSupportedException(string message)
+        {
+            return new NotSupportedException(message);
+        }
+
         /// <summary>Creates a new instance of the <see cref="ObjectDisposedException" /> class.</summary>
         /// <param name="objectName">The name of the object that caused the exception.</param>
         /// <returns>A new instance of the <see cref="ObjectDisposedException" /> class.</returns>
@@ -171,6 +179,14 @@ namespace TerraFX.Utilities
         public static void ThrowInvalidOperationException(string paramName, object value)
         {
             throw NewInvalidOperationException(paramName, value);
+        }
+
+        /// <summary>Throws an instance of the <see cref="NotSupportedException" /> class.</summary>
+        /// <exception cref="ExternalException">The collection is read-only.</exception>
+        public static void ThrowNotSupportedExceptionForReadOnlyCollection()
+        {
+            var message = Resources.NotSupportedExceptionForReadOnlyCollectionMessage;
+            throw NewNotSupportedException(message);
         }
 
         /// <summary>Throws an instance of the <see cref="ObjectDisposedException" /> class.</summary>

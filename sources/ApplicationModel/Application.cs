@@ -4,9 +4,7 @@ using System;
 using System.Composition.Hosting;
 using System.Reflection;
 using System.Threading;
-using TerraFX.Graphics;
 using TerraFX.Threading;
-using TerraFX.UI;
 using TerraFX.Utilities;
 using static TerraFX.Utilities.DisposeUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -18,36 +16,15 @@ namespace TerraFX.ApplicationModel
     public sealed class Application : IDisposable, IServiceProvider
     {
         #region State Constants
-        /// <summary>The event loop is stopped.</summary>
         private const int Stopped = 1;
-
-        /// <summary>The event loop is running.</summary>
         private const int Running = 2;
-
-        /// <summary>The event loop is exiting.</summary>
         private const int Exiting = 3;
         #endregion
 
         #region Fields
-        /// <summary>The <see cref="Assembly" /> instances to search for type exports.</summary>
         private readonly Assembly[] _compositionAssemblies;
-
-        /// <summary>The <see cref="Thread" /> that was used to create the instance.</summary>
         private readonly Thread _parentThread;
-
-        /// <summary>The <see cref="CompositionHost" /> for the instance.</summary>
         private readonly Lazy<CompositionHost> _compositionHost;
-
-        /// <summary>The <see cref="IDispatchManager" /> for the instance.</summary>
-        private readonly Lazy<IDispatchManager> _dispatchManager;
-
-        /// <summary>The <see cref="IGraphicsManager" /> for the instance.</summary>
-        private readonly Lazy<IGraphicsManager> _graphicsManager;
-
-        /// <summary>The <see cref="IWindowManager" /> for the instance.</summary>
-        private readonly Lazy<IWindowManager> _windowManager;
-
-        /// <summary>The <see cref="State" /> of the instance.</summary>
         private State _state;
         #endregion
 
@@ -61,48 +38,18 @@ namespace TerraFX.ApplicationModel
 
             _compositionAssemblies = compositionAssemblies;
             _parentThread = Thread.CurrentThread;
-
             _compositionHost = new Lazy<CompositionHost>(CreateCompositionHost, isThreadSafe: true);
-            _dispatchManager = new Lazy<IDispatchManager>(_compositionHost.Value.GetExport<IDispatchManager>, isThreadSafe: true);
-            _graphicsManager = new Lazy<IGraphicsManager>(_compositionHost.Value.GetExport<IGraphicsManager>, isThreadSafe: true);
-            _windowManager = new Lazy<IWindowManager>(_compositionHost.Value.GetExport<IWindowManager>, isThreadSafe: true);
 
             _state.Transition(to: Stopped);
         }
         #endregion
 
-        #region Destructors
-        /// <summary>Finalizes an instance of the <see cref="Application" /> class.</summary>
-        ~Application()
-        {
-            Dispose(isDisposing: false);
-        }
-        #endregion
-
         #region Events
         /// <summary>Occurs when the event loop for the current instance becomes idle.</summary>
-        public event EventHandler<IdleEventArgs> Idle;
+        public event EventHandler<ApplicationIdleEventArgs> Idle;
         #endregion
 
         #region Properties
-        /// <summary>Gets the <see cref="IDispatchManager" /> for the instance.</summary>
-        public IDispatchManager DispatchManager
-        {
-            get
-            {
-                return _dispatchManager.Value;
-            }
-        }
-
-        /// <summary>Gets the <see cref="IGraphicsManager" /> for the instance.</summary>
-        public IGraphicsManager GraphicsManager
-        {
-            get
-            {
-                return _graphicsManager.Value;
-            }
-        }
-
         /// <summary>Gets a value that indicates whether the event loop for the instance is running.</summary>
         public bool IsRunning
         {
@@ -120,20 +67,9 @@ namespace TerraFX.ApplicationModel
                 return _parentThread;
             }
         }
-
-        /// <summary>Gets the <see cref="IWindowManager" /> for the current instance.</summary>
-        public IWindowManager WindowManager
-        {
-            get
-            {
-                return _windowManager.Value;
-            }
-        }
         #endregion
 
         #region Methods
-        /// <summary>Creates a new instance of the <see cref="CompositionHost" /> class.</summary>
-        /// <returns>A new instance of the <see cref="CompositionHost" /> configured to use <see cref="_compositionAssemblies" />.</returns>
         private CompositionHost CreateCompositionHost()
         {
             _state.ThrowIfDisposedOrDisposing();
@@ -145,21 +81,6 @@ namespace TerraFX.ApplicationModel
             return containerConfiguration.CreateContainer();
         }
 
-        /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
-        /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
-        /// <remarks>This method exits the event loop for the instance if it is running.</remarks>
-        private void Dispose(bool isDisposing)
-        {
-            var priorState = _state.BeginDispose();
-
-            if (priorState < Disposing) // (previousState != Disposing) && (previousState != Disposed)
-            {
-                DisposeIfValueCreated(isDisposing, _compositionHost);
-            }
-
-            _state.EndDispose();
-        }
-
         /// <summary>Gets the service object of the specified type.</summary>
         /// <typeparam name="TService">The type of the service object to get.</typeparam>
         /// <returns>A service object of <typeparamref name="TService" /> if one exists; otherwise, <c>default</c>.</returns>
@@ -169,16 +90,13 @@ namespace TerraFX.ApplicationModel
             return service;
         }
 
-        /// <summary>Raises the <see cref="Idle" /> event.</summary>
-        /// <param name="delta">The delta between the current and previous <see cref="Idle" /> events.</param>
-        /// <remarks>This method takes a <see cref="TimeSpan" /> rather than a <see cref="IdleEventArgs" /> to help reduce allocations when <see cref="Idle" /> is <c>null</c>.</remarks>
         private void OnIdle(TimeSpan delta)
         {
             var idle = Idle;
 
             if (idle != null)
             {
-                var eventArgs = new IdleEventArgs(delta);
+                var eventArgs = new ApplicationIdleEventArgs(delta);
                 idle(this, eventArgs);
             }
         }
@@ -206,7 +124,7 @@ namespace TerraFX.ApplicationModel
 
             _state.Transition(from: Stopped, to: Running);
             {
-                var dispatchManager = _dispatchManager.Value;
+                var dispatchManager = _compositionHost.Value.GetExport<IDispatchManager>();
                 var dispatcher = dispatchManager.DispatcherForCurrentThread;
                 var previousTimestamp = dispatchManager.CurrentTimestamp;
 
@@ -237,8 +155,14 @@ namespace TerraFX.ApplicationModel
         /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
         public void Dispose()
         {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
+            var priorState = _state.BeginDispose();
+
+            if (priorState < Disposing) // (previousState != Disposing) && (previousState != Disposed)
+            {
+                _compositionHost?.Dispose();
+            }
+
+            _state.EndDispose();
         }
         #endregion
 

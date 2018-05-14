@@ -64,7 +64,7 @@ namespace TerraFX.Samples
         #endregion
 
         #region Methods
-        public abstract void OnIdle(object sender, IdleEventArgs eventArgs);
+        public abstract void OnIdle(object sender, ApplicationIdleEventArgs eventArgs);
 
         protected virtual void Dispose(bool isDisposing)
         {
