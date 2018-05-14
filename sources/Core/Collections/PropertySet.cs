@@ -15,7 +15,6 @@ namespace TerraFX.Collections
     public sealed partial class PropertySet : IPropertySet
     {
         #region Fields
-        /// <summary>The <see cref="IDictionary{TKey, TValue}" /> that is wrapped by the instance.</summary>
         private readonly IDictionary<string, object> _items;
         #endregion
 
@@ -28,7 +27,28 @@ namespace TerraFX.Collections
         }
 
         /// <summary>Initializes a new instance of the <see cref="PropertySet" /> class.</summary>
-        /// <param name="items">The <see cref="IDictionary{TKey, TValue}" /> that is wrapped by the instance.</param>
+        /// <param name="capacity">The initial size of the set.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than zero.</exception>
+        public PropertySet(int capacity)
+        {
+            _items = new Dictionary<string, object>(capacity);
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="PropertySet" /> class.</summary>
+        /// <param name="items">The <see cref="IEnumerable{T}" /> whose elements are copied to the set.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="items" /> is <c>null</c>.</exception>
+        public PropertySet(IEnumerable<KeyValuePair<string, object>> items)
+        {
+            if (items is null)
+            {
+                ThrowArgumentNullException(nameof(items));
+            }
+
+            _items = new Dictionary<string, object>(items);
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="PropertySet" /> class.</summary>
+        /// <param name="items">The <see cref="IDictionary{TKey, TValue}" /> whose elements are copied to the set.</param>
         /// <exception cref="ArgumentNullException"><paramref name="items" /> is <c>null</c>.</exception>
         public PropertySet(IDictionary<string, object> items)
         {
@@ -37,13 +57,13 @@ namespace TerraFX.Collections
                 ThrowArgumentNullException(nameof(items));
             }
 
-            _items = items;
+            _items = new Dictionary<string, object>(items);
         }
         #endregion
 
         #region TerraFX.Collections.INotifyDictionaryChanged<string, object> Events
-        /// <summary>Occurs when underlying dictionary changes.</summary>
-        public event NotifyDictionaryChangedEventHandler<string, object> DictionaryChanged;
+        /// <summary>Occurs when the underlying dictionary changes.</summary>
+        public event EventHandler<NotifyDictionaryChangedEventArgs<string, object>> DictionaryChanged;
         #endregion
 
         #region System.Collections.Generic.ICollection<KeyValuePair<string, object>> Properties
@@ -117,8 +137,6 @@ namespace TerraFX.Collections
         #endregion
 
         #region Methods
-        /// <summary>Raises the <see cref="DictionaryChanged" /> event for the <see cref="NotifyDictionaryChangedAction.Reset" /> action.</summary>
-        /// <remarks>This method takes no parameters rather than a <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> to help reduce allocations when <see cref="DictionaryChanged" /> is <c>null</c>.</remarks>
         private void OnDictionaryReset()
         {
             if (DictionaryChanged != null)
@@ -128,9 +146,6 @@ namespace TerraFX.Collections
             }
         }
 
-        /// <summary>Raises the <see cref="DictionaryChanged" /> event for the <see cref="NotifyDictionaryChangedAction.Add" /> action.</summary>
-        /// <param name="key">The key of the item that caused the event.</param>
-        /// <remarks>This method takes a <see cref="string" /> rather than a <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> to help reduce allocations when <see cref="DictionaryChanged" /> is <c>null</c>.</remarks>
         private void OnDictionaryItemAdded(string key)
         {
             if (DictionaryChanged != null)
@@ -140,11 +155,6 @@ namespace TerraFX.Collections
             }
         }
 
-        /// <summary>Raises the <see cref="DictionaryChanged" /> event for the <see cref="NotifyDictionaryChangedAction.Add" /> action.</summary>
-        /// <param name="key">The key of the item that caused the event.</param>
-        /// <param name="oldValue">The old value of the item that caused the event.</param>
-        /// <param name="newValue">The new value of the item that caused the event.</param>
-        /// <remarks>This method takes a set of parameters rather than a <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> to help reduce allocations when <see cref="DictionaryChanged" /> is <c>null</c>.</remarks>
         private void OnDictionaryItemChanged(string key, object oldValue, object newValue)
         {
             if (DictionaryChanged != null)
@@ -154,9 +164,6 @@ namespace TerraFX.Collections
             }
         }
 
-        /// <summary>Raises the <see cref="DictionaryChanged" /> event for the <see cref="NotifyDictionaryChangedAction.Remove" /> action.</summary>
-        /// <param name="key">The key of the item that caused the event.</param>
-        /// <remarks>This method takes a <see cref="string" /> rather than a <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> to help reduce allocations when <see cref="DictionaryChanged" /> is <c>null</c>.</remarks>
         private void OnDictionaryItemRemoved(string key)
         {
             if (DictionaryChanged != null)
@@ -168,8 +175,6 @@ namespace TerraFX.Collections
         #endregion
 
         #region System.Collections.IEnumerable Methods
-        /// <summary>Gets an <see cref="IEnumerator" /> that can iterate through the items contained by the instance.</summary>
-        /// <returns>An <see cref="IEnumerator" /> that can iterate through the items contained by the instance.</returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
@@ -185,42 +190,22 @@ namespace TerraFX.Collections
             OnDictionaryReset();
         }
 
-        /// <summary>Adds an item to the instance.</summary>
-        /// <param name="item">The item to add to the instance.</param>
-        /// <exception cref="ArgumentException">An item with the same <paramref name="item" />.<see cref="KeyValuePair{TKey, TValue}.Key" /> already exists in the instance.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="item" />.<see cref="KeyValuePair{TKey, TValue}.Key" /> is <c>null</c>.</exception>
-        /// <exception cref="NotSupportedException">The instance is <c>read-only</c>.</exception>
         void ICollection<KeyValuePair<string, object>>.Add(KeyValuePair<string, object> item)
         {
             _items.Add(item);
             OnDictionaryItemAdded(item.Key);
         }
 
-        /// <summary>Determines whether the instance contains a specific item.</summary>
-        /// <param name="item">The item for which to check.</param>
-        /// <returns><c>true</c> if the instance contains <paramref name="item" />; otherwise, <c>false</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="item" />.<see cref="KeyValuePair{TKey, TValue}.Key" /> is <c>null</c>.</exception>
         bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> item)
         {
             return _items.Contains(item);
         }
 
-        /// <summary>Copies items from the instance to another <see cref="Array" />.</summary>
-        /// <param name="array">The <see cref="Array" /> that is the destination of the copy.</param>
-        /// <param name="arrayIndex">The <c>zero-based</c> index in <paramref name="array" /> at which copying begins.</param>
-        /// <exception cref="ArgumentException">The number of items in the instance is greater than the available space in <paramref name="array" /> when starting at <paramref name="arrayIndex" />.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="array" /> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="arrayIndex" /> is less than zero.</exception>
         void ICollection<KeyValuePair<string, object>>.CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
         {
             _items.CopyTo(array, arrayIndex);
         }
 
-        /// <summary>Removes an item from the instance.</summary>
-        /// <param name="item">The item to remove from the instance.</param>
-        /// <returns><c>true</c> if the item was succesfully removed; otherwise, <c>false</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="item" />.<see cref="KeyValuePair{TKey, TValue}.Key" /> is <c>null</c>.</exception>
-        /// <exception cref="NotSupportedException">The instance is <c>read-only</c>.</exception>
         bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item)
         {
             var removed = _items.Remove(item);

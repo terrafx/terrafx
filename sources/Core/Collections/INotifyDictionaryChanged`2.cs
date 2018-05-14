@@ -1,5 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+using System;
 using System.Collections.Generic;
 
 namespace TerraFX.Collections
@@ -11,7 +12,7 @@ namespace TerraFX.Collections
     {
         #region Events
         /// <summary>Occurs when the underlying <see cref="IDictionary{TKey, TValue}" /> changes.</summary>
-        event NotifyDictionaryChangedEventHandler<TKey, TValue> DictionaryChanged;
+        event EventHandler<NotifyDictionaryChangedEventArgs<TKey, TValue>> DictionaryChanged;
         #endregion
     }
 }
