@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Composition;
 using System.Runtime.InteropServices;
 using TerraFX.Interop.Desktop;
-using TerraFX.Provider.Win32.Threading;
 using TerraFX.UI;
 using TerraFX.Utilities;
 using static TerraFX.Interop.Kernel32;

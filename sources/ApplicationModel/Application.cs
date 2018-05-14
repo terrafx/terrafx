@@ -4,7 +4,7 @@ using System;
 using System.Composition.Hosting;
 using System.Reflection;
 using System.Threading;
-using TerraFX.Threading;
+using TerraFX.UI;
 using TerraFX.Utilities;
 using static TerraFX.Utilities.DisposeUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;

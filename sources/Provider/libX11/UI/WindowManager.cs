@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Composition;
 using System.Runtime.InteropServices;
 using TerraFX.Interop;
-using TerraFX.Provider.libX11.Threading;
 using TerraFX.UI;
 using TerraFX.Utilities;
 using static TerraFX.Interop.libX11;

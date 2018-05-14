@@ -6,12 +6,12 @@ using System.Composition;
 using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.Interop;
-using TerraFX.Threading;
+using TerraFX.UI;
 using static TerraFX.Interop.Kernel32;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Utilities.ExceptionUtilities;
 
-namespace TerraFX.Provider.Win32.Threading
+namespace TerraFX.Provider.Win32.UI
 {
     /// <summary>Provides a means of managing the message dispatch objects for an application.</summary>
     [Export(typeof(IDispatchManager))]
@@ -55,7 +55,7 @@ namespace TerraFX.Provider.Win32.Threading
         }
         #endregion
 
-        #region TerraFX.Threading.IDispatchManager Properties
+        #region TerraFX.UI.IDispatchManager Properties
         /// <summary>Gets the current <see cref="Timestamp" /> for the instance.</summary>
         /// <exception cref="ExternalException">The call to <see cref="QueryPerformanceCounter(out LARGE_INTEGER)" /> failed.</exception>
         public Timestamp CurrentTimestamp
@@ -86,7 +86,7 @@ namespace TerraFX.Provider.Win32.Threading
         }
         #endregion
 
-        #region TerraFX.Threading.IDispatchManager Methods
+        #region TerraFX.UI.IDispatchManager Methods
         /// <summary>Gets the <see cref="IDispatcher" /> instance associated with a <see cref="Thread" />, creating one if it does not exist.</summary>
         /// <param name="thread">The <see cref="Thread" /> for which the <see cref="IDispatcher" /> instance should be retrieved.</param>
         /// <returns>The <see cref="IDispatcher" /> instance associated with <paramref name="thread" />.</returns>

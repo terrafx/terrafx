@@ -3,7 +3,7 @@
 using System;
 using System.Threading;
 
-namespace TerraFX.Threading
+namespace TerraFX.UI
 {
     /// <summary>Provides a means of dispatching events for a thread.</summary>
     public interface IDispatcher

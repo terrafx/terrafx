@@ -3,7 +3,7 @@
 using System;
 using System.Threading;
 
-namespace TerraFX.Threading
+namespace TerraFX.UI
 {
     /// <summary>Provides a means of managing the message dispatch objects for an application.</summary>
     public interface IDispatchManager

@@ -2,13 +2,14 @@
 
 using System;
 using System.Threading;
-using TerraFX.Threading;
-using TerraFX.Provider.libX11.UI;
-using static TerraFX.Interop.libX11;
+using TerraFX.UI;
+using static TerraFX.Interop.User32;
+using static TerraFX.Interop.Windows;
+using static TerraFX.Interop.Desktop.User32;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
-namespace TerraFX.Provider.libX11.Threading
+namespace TerraFX.Provider.Win32.UI
 {
     /// <summary>Provides a means of dispatching events for a thread.</summary>
     public sealed unsafe class Dispatcher : IDispatcher
@@ -19,14 +20,11 @@ namespace TerraFX.Provider.libX11.Threading
 
         /// <summary>The <see cref="Thread" /> that was used to create the instance.</summary>
         private readonly Thread _parentThread;
-
-        /// <summary>The <c>Atom</c> used to access the <c>Window</c> property containing the associated <see cref="WindowManager" />.</summary>
-        private readonly Lazy<nuint> _windowManagerProperty;
         #endregion
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Dispatcher" /> class.</summary>
-        /// <param name="dispatchManager">The <see cref="DispatchManager" /> the instance is associated with.</param>
+        /// <param name="dispatchManager">The <see cref="DispatchManager" /> for the instance.</param>
         /// <param name="parentThread">The <see cref="Thread" /> that was used to create the instance.</param>
         internal Dispatcher(DispatchManager dispatchManager, Thread parentThread)
         {
@@ -35,38 +33,15 @@ namespace TerraFX.Provider.libX11.Threading
 
             _dispatchManager = dispatchManager;
             _parentThread = parentThread;
-            _windowManagerProperty = new Lazy<nuint>(CreateWindowManagerProperty, isThreadSafe: true);
         }
         #endregion
 
-        #region TerraFX.Threading.IDispatcher Events
+        #region TerraFX.UI.IDispatcher Events
         /// <summary>Occurs when an exit event is dispatched from the queue.</summary>
         public event EventHandler ExitRequested;
         #endregion
 
         #region Methods
-        /// <summary>Creates an <c>Atom</c> for the window manager property.</summary>
-        /// <returns>An <c>Atom</c> for the window manager property.</returns>
-        private nuint CreateWindowManagerProperty()
-        {
-            var display = _dispatchManager.Display;
-
-            var name = stackalloc ulong[6]; {
-                name[0] = 0x2E58466172726554;   // TerraFX.
-                name[1] = 0x72656469766F7250;   // Provider
-                name[2] = 0x2E31315862696C2E;   // .libX11.
-                name[3] = 0x572E776F646E6957;   // Window.W
-                name[4] = 0x6E614D776F646E69;   // indowMan
-                name[5] = 0x0000000072656761;   // ager
-            };
-
-            return XInternAtom(
-                display,
-                (sbyte*)(name),
-                only_if_exists: False
-            );
-        }
-
         /// <summary>Raises the <see cref="ExitRequested" /> event.</summary>
         private void OnExitRequested()
         {
@@ -74,22 +49,13 @@ namespace TerraFX.Provider.libX11.Threading
         }
         #endregion
 
-        #region TerraFX.Threading.IDispatcher Properties
-        /// <summary>Gets the <see cref="IDispatchManager" /> associated with the instance.</summary>
+        #region TerraFX.UI.IDispatcher Properties
+        /// <summary>Gets the <see cref="IDispatchManager" /> for the instance.</summary>
         public IDispatchManager DispatchManager
         {
             get
             {
                 return _dispatchManager;
-            }
-        }
-
-        /// <summary>Gets the handle for the instance.</summary>
-        public IntPtr Handle
-        {
-            get
-            {
-                return (IntPtr)(_windowManagerProperty.Value);
             }
         }
 
@@ -103,7 +69,7 @@ namespace TerraFX.Provider.libX11.Threading
         }
         #endregion
 
-        #region TerraFX.Threading.IDispatcher Methods
+        #region TerraFX.UI.IDispatcher Methods
         /// <summary>Dispatches all events currently pending in the queue.</summary>
         /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</exception>
         /// <remarks>
@@ -115,15 +81,15 @@ namespace TerraFX.Provider.libX11.Threading
         {
             ThrowIfNotThread(_parentThread);
 
-            var display = _dispatchManager.Display;
-
-            while (XPending(display) != 0)
+            while (PeekMessage(out var msg, wMsgFilterMin: WM_NULL, wMsgFilterMax: WM_NULL, wRemoveMsg: PM_REMOVE) != FALSE)
             {
-                XNextEvent(display, out var xevent);
-
-                if (xevent.type != NoExpose)
+                if (msg.message != WM_QUIT)
                 {
-                    WindowManager.ForwardWindowEvent(_windowManagerProperty.Value, in xevent);
+                    DispatchMessage(in msg);
+                }
+                else
+                {
+                    OnExitRequested();
                 }
             }
         }
