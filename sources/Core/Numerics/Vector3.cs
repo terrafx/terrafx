@@ -8,7 +8,7 @@ using static TerraFX.Utilities.HashUtilities;
 namespace TerraFX.Numerics
 {
     /// <summary>Defines a three-dimensional Euclidean vector.</summary>
-    public struct Vector3 : IEquatable<Vector3>, IFormattable
+    public readonly struct Vector3 : IEquatable<Vector3>, IFormattable
     {
         #region Defaults
         /// <summary>Defines a <see cref="Vector3" /> where all components are zero.</summary>
@@ -28,13 +28,8 @@ namespace TerraFX.Numerics
         #endregion
 
         #region Fields
-        /// <summary>The value of the x-dimension.</summary>
         private readonly float _x;
-
-        /// <summary>The value of the y-dimension.</summary>
         private readonly float _y;
-
-        /// <summary>The value of the z-dimension.</summary>
         private readonly float _z;
         #endregion
 

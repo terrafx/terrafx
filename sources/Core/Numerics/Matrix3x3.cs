@@ -9,7 +9,7 @@ using static TerraFX.Utilities.HashUtilities;
 namespace TerraFX.Numerics
 {
     /// <summary>Defines a 3x3 row-major matrix.</summary>
-    public struct Matrix3x3 : IEquatable<Matrix3x3>, IFormattable
+    public readonly struct Matrix3x3 : IEquatable<Matrix3x3>, IFormattable
     {
         #region Defaults
         /// <summary>Defines the identity matrix.</summary>
@@ -17,13 +17,8 @@ namespace TerraFX.Numerics
         #endregion
 
         #region Fields
-        /// <summary>The value of the x-dimension.</summary>
         private readonly Vector3 _x;
-
-        /// <summary>The value of the y-dimension.</summary>
         private readonly Vector3 _y;
-
-        /// <summary>The value of the z-dimension.</summary>
         private readonly Vector3 _z;
         #endregion
 

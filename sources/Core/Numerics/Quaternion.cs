@@ -8,19 +8,12 @@ using static TerraFX.Utilities.HashUtilities;
 namespace TerraFX.Numerics
 {
     /// <summary>Defines a quaternion.</summary>
-    public struct Quaternion : IEquatable<Quaternion>, IFormattable
+    public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
     {
         #region Fields
-        /// <summary>The value of the x-component.</summary>
         private readonly float _x;
-
-        /// <summary>The value of the y-component.</summary>
         private readonly float _y;
-
-        /// <summary>The value of the z-component.</summary>
         private readonly float _z;
-
-        /// <summary>The value of the w-component.</summary>
         private readonly float _w;
         #endregion
 
