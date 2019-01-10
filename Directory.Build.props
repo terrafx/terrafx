@@ -61,21 +61,19 @@
     <RepositoryType>git</RepositoryType>
     <RestoreSources>
       https://api.nuget.org/v3/index.json;
-      https://dotnet.myget.org/F/roslyn/api/v3/index.json;
-      https://dotnet.myget.org/F/dotnet-core/api/v3/index.json;
     </RestoreSources>
     <UseSharedCompilation>true</UseSharedCompilation>
   </PropertyGroup>
 
   <!-- Package versions for package references across all projects -->
   <PropertyGroup>
-    <MicrosoftNetCompilersPackageVersion>2.8.0</MicrosoftNetCompilersPackageVersion>
+    <MicrosoftNetCompilersPackageVersion>2.10.0</MicrosoftNetCompilersPackageVersion>
     <MicrosoftNetCoreCompilersPackageVersion>$(MicrosoftNetCompilersPackageVersion)</MicrosoftNetCoreCompilersPackageVersion>
-    <MicrosoftNetTestSdkPackageVersion>15.7.0</MicrosoftNetTestSdkPackageVersion>
-    <NUnitPackageVersion>3.10.1</NUnitPackageVersion>
-    <NUnit3TestAdapterPackageVersion>3.10.0</NUnit3TestAdapterPackageVersion>
-    <SystemCompositionPackageVersion>1.2.0-rc1</SystemCompositionPackageVersion>
-    <SystemRuntimeCompilerServicesUnsafePackageVersion>4.5.0-rc1</SystemRuntimeCompilerServicesUnsafePackageVersion>
+    <MicrosoftNetTestSdkPackageVersion>15.9.0</MicrosoftNetTestSdkPackageVersion>
+    <NUnitPackageVersion>3.11.0</NUnitPackageVersion>
+    <NUnit3TestAdapterPackageVersion>3.12.0</NUnit3TestAdapterPackageVersion>
+    <SystemCompositionPackageVersion>1.2.0</SystemCompositionPackageVersion>
+    <SystemRuntimeCompilerServicesUnsafePackageVersion>4.5.2</SystemRuntimeCompilerServicesUnsafePackageVersion>
   </PropertyGroup>
 
   <!-- Package references which are consumed by all projects -->
@@ -83,4 +81,5 @@
     <PackageReference Include="Microsoft.Net.Compilers" Version="$(MicrosoftNetCompilersPackageVersion)" Condition="'$(MSBuildRuntimeType)' != 'Core'" />
     <PackageReference Include="Microsoft.NETCore.Compilers" Version="$(MicrosoftNetCoreCompilersPackageVersion)" Condition="'$(MSBuildRuntimeType)' == 'Core'" />
   </ItemGroup>
+
 </Project>
