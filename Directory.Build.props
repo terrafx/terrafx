@@ -74,7 +74,7 @@
     <NUnitPackageVersion>3.11.0</NUnitPackageVersion>
     <NUnit3TestAdapterPackageVersion>3.13.0</NUnit3TestAdapterPackageVersion>
     <SystemCompositionPackageVersion>1.3.0-preview3.19128.7</SystemCompositionPackageVersion>
-    <SystemRuntimeCompilerServicesUnsafePackageVersion>4.5.2</SystemRuntimeCompilerServicesUnsafePackageVersion>
+    <SystemRuntimeCompilerServicesUnsafePackageVersion>4.6.0-preview3.19128.7</SystemRuntimeCompilerServicesUnsafePackageVersion>
   </PropertyGroup>
 
   <!-- Package references which are consumed by all projects -->
