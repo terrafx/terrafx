@@ -14,7 +14,7 @@ namespace TerraFX.Interop
         #region Fields
         private _u_e__Union u;
 
-        [ComAliasName("VARTYPE")]
+        [NativeTypeName("VARTYPE")]
         public ushort vt;
         #endregion
 
@@ -72,7 +72,7 @@ namespace TerraFX.Interop
             public ARRAYDESC* lpadesc;
 
             [FieldOffset(0)]
-            [ComAliasName("HREFTYPE")]
+            [NativeTypeName("HREFTYPE")]
             public uint hreftype;
             #endregion
         }

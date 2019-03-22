@@ -22,23 +22,23 @@ namespace TerraFX.Interop.Desktop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDXGIFactoryMedia* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDXGIFactoryMedia* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDXGIFactoryMedia* This
         );
@@ -47,11 +47,11 @@ namespace TerraFX.Interop.Desktop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateSwapChainForCompositionSurfaceHandle(
             [In] IDXGIFactoryMedia* This,
             [In] IUnknown* pDevice,
-            [In, Optional, ComAliasName("HANDLE")] IntPtr hSurface,
+            [In, Optional, NativeTypeName("HANDLE")] IntPtr hSurface,
             [In] DXGI_SWAP_CHAIN_DESC1* pDesc,
             [In, Optional] IDXGIOutput* pRestrictToOutput,
             [Out] IDXGISwapChain1** ppSwapChain
@@ -59,11 +59,11 @@ namespace TerraFX.Interop.Desktop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateDecodeSwapChainForCompositionSurfaceHandle(
             [In] IDXGIFactoryMedia* This,
             [In] IUnknown* pDevice,
-            [In, Optional, ComAliasName("HANDLE")] IntPtr hSurface,
+            [In, Optional, NativeTypeName("HANDLE")] IntPtr hSurface,
             [In] DXGI_DECODE_SWAP_CHAIN_DESC* pDesc,
             [In] IDXGIResource* pYuvDecodeBuffers,
             [In, Optional] IDXGIOutput* pRestrictToOutput,
@@ -72,9 +72,9 @@ namespace TerraFX.Interop.Desktop
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -88,7 +88,7 @@ namespace TerraFX.Interop.Desktop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDXGIFactoryMedia* This = &this)
@@ -99,7 +99,7 @@ namespace TerraFX.Interop.Desktop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDXGIFactoryMedia* This = &this)
@@ -112,10 +112,10 @@ namespace TerraFX.Interop.Desktop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateSwapChainForCompositionSurfaceHandle(
             [In] IUnknown* pDevice,
-            [In, Optional, ComAliasName("HANDLE")] IntPtr hSurface,
+            [In, Optional, NativeTypeName("HANDLE")] IntPtr hSurface,
             [In] DXGI_SWAP_CHAIN_DESC1* pDesc,
             [In, Optional] IDXGIOutput* pRestrictToOutput,
             [Out] IDXGISwapChain1** ppSwapChain
@@ -134,10 +134,10 @@ namespace TerraFX.Interop.Desktop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateDecodeSwapChainForCompositionSurfaceHandle(
             [In] IUnknown* pDevice,
-            [In, Optional, ComAliasName("HANDLE")] IntPtr hSurface,
+            [In, Optional, NativeTypeName("HANDLE")] IntPtr hSurface,
             [In] DXGI_DECODE_SWAP_CHAIN_DESC* pDesc,
             [In] IDXGIResource* pYuvDecodeBuffers,
             [In, Optional] IDXGIOutput* pRestrictToOutput,

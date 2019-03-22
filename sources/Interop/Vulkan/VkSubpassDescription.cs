@@ -3,7 +3,6 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,29 +11,29 @@ namespace TerraFX.Interop
     public unsafe struct VkSubpassDescription
     {
         #region Fields
-        [ComAliasName("VkSubpassDescriptionFlags")]
+        [NativeTypeName("VkSubpassDescriptionFlags")]
         public uint flags;
 
         public VkPipelineBindPoint pipelineBindPoint;
 
         public uint inputAttachmentCount;
 
-        [ComAliasName("VkAttachmentReference[]")]
+        [NativeTypeName("VkAttachmentReference[]")]
         public VkAttachmentReference* pInputAttachments;
 
         public uint colorAttachmentCount;
 
-        [ComAliasName("VkAttachmentReference[]")]
+        [NativeTypeName("VkAttachmentReference[]")]
         public VkAttachmentReference* pColorAttachments;
 
-        [ComAliasName("VkAttachmentReference[]")]
+        [NativeTypeName("VkAttachmentReference[]")]
         public VkAttachmentReference* pResolveAttachments;
 
         public VkAttachmentReference* pDepthStencilAttachment;
 
         public uint preserveAttachmentCount;
 
-        [ComAliasName("uint[]")]
+        [NativeTypeName("uint[]")]
         public uint* pPreserveAttachments;
         #endregion
     }

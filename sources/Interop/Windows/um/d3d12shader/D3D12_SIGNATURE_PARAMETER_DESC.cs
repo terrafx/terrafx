@@ -3,7 +3,6 @@
 // Ported from um\d3d12shader.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,26 +11,26 @@ namespace TerraFX.Interop
     public unsafe struct D3D12_SIGNATURE_PARAMETER_DESC
     {
         #region Fields
-        [ComAliasName("LPCSTR")]
+        [NativeTypeName("LPCSTR")]
         public sbyte* SemanticName;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint SemanticIndex;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Register;
 
         public D3D_NAME SystemValueType;
 
         public D3D_REGISTER_COMPONENT_TYPE ComponentType;
 
-        [ComAliasName("BYTE")]
+        [NativeTypeName("BYTE")]
         public byte Mask;
 
-        [ComAliasName("BYTE")]
+        [NativeTypeName("BYTE")]
         public byte ReadWriteMask;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Stream;
 
         public D3D_MIN_PRECISION MinPrecision;

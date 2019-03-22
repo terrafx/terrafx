@@ -4,7 +4,6 @@
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
 using System;
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -17,10 +16,10 @@ namespace TerraFX.Interop
 
         public void* pNext;
 
-        [ComAliasName("VkDisplaySurfaceCreateFlagsKHR")]
+        [NativeTypeName("VkDisplaySurfaceCreateFlagsKHR")]
         public uint flags;
 
-        [ComAliasName("VkDisplayModeKHR")]
+        [NativeTypeName("VkDisplayModeKHR")]
         public IntPtr displayMode;
 
         public uint planeIndex;

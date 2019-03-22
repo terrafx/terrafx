@@ -5,17 +5,18 @@
 
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Function pointer that gets a property from an effect.</summary>
     [SuppressUnmanagedCodeSecurity]
     [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-    [return: ComAliasName("HRESULT")]
+    [return: NativeTypeName("HRESULT")]
     public /* static */ unsafe delegate int PD2D1_PROPERTY_GET_FUNCTION(
         [In] IUnknown* effect,
-        [Out, Optional, ComAliasName("BYTE[]")] byte* data,
-        [In, ComAliasName("UINT32")] uint dataSize,
-        [Out, ComAliasName("UINT32")] uint* actualSize = null
+        [Out, Optional, NativeTypeName("BYTE[]")] byte* data,
+        [In, NativeTypeName("UINT32")] uint dataSize,
+        [Out, NativeTypeName("UINT32")] uint* actualSize = null
     );
 }

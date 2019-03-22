@@ -3,7 +3,6 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -16,13 +15,13 @@ namespace TerraFX.Interop
 
         public uint imageMipTailFirstLod;
 
-        [ComAliasName("VkDeviceSize")]
+        [NativeTypeName("VkDeviceSize")]
         public ulong imageMipTailSize;
 
-        [ComAliasName("VkDeviceSize")]
+        [NativeTypeName("VkDeviceSize")]
         public ulong imageMipTailOffset;
 
-        [ComAliasName("VkDeviceSize")]
+        [NativeTypeName("VkDeviceSize")]
         public ulong imageMipTailStride;
         #endregion
     }

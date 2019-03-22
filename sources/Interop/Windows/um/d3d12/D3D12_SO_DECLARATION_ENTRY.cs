@@ -3,7 +3,6 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,22 +11,22 @@ namespace TerraFX.Interop
     public unsafe struct D3D12_SO_DECLARATION_ENTRY
     {
         #region Fields
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Stream;
 
-        [ComAliasName("LPCSTR")]
+        [NativeTypeName("LPCSTR")]
         public sbyte* SemanticName;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint SemanticIndex;
 
-        [ComAliasName("BYTE")]
+        [NativeTypeName("BYTE")]
         public byte StartComponent;
 
-        [ComAliasName("BYTE")]
+        [NativeTypeName("BYTE")]
         public byte ComponentCount;
 
-        [ComAliasName("BYTE")]
+        [NativeTypeName("BYTE")]
         public byte OutputSlot;
         #endregion
     }

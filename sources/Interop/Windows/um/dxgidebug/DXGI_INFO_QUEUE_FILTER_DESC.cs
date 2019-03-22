@@ -3,7 +3,6 @@
 // Ported from um\dxgidebug.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,22 +11,22 @@ namespace TerraFX.Interop
     public unsafe struct DXGI_INFO_QUEUE_FILTER_DESC
     {
         #region Fields
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint NumCategories;
 
-        [ComAliasName("DXGI_INFO_QUEUE_MESSAGE_CATEGORY[]")]
+        [NativeTypeName("DXGI_INFO_QUEUE_MESSAGE_CATEGORY[]")]
         public DXGI_INFO_QUEUE_MESSAGE_CATEGORY* pCategoryList;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint NumSeverities;
 
-        [ComAliasName("DXGI_INFO_QUEUE_MESSAGE_SEVERITY[]")]
+        [NativeTypeName("DXGI_INFO_QUEUE_MESSAGE_SEVERITY[]")]
         public DXGI_INFO_QUEUE_MESSAGE_SEVERITY* pSeverityList;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint NumIDs;
 
-        [ComAliasName("DXGI_INFO_QUEUE_MESSAGE_ID[]")]
+        [NativeTypeName("DXGI_INFO_QUEUE_MESSAGE_ID[]")]
         public int* pIDList;
         #endregion
     }

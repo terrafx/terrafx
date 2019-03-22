@@ -3,7 +3,6 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,19 +11,19 @@ namespace TerraFX.Interop
     public struct D3D12_FEATURE_DATA_ARCHITECTURE1
     {
         #region Fields
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint NodeIndex;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int TileBasedRenderer;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int UMA;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int CacheCoherentUMA;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int IsolatedMMU;
         #endregion
     }

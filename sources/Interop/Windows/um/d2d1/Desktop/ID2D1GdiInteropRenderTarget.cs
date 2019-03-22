@@ -23,23 +23,23 @@ namespace TerraFX.Interop.Desktop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID2D1GdiInteropRenderTarget* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID2D1GdiInteropRenderTarget* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID2D1GdiInteropRenderTarget* This
         );
@@ -48,16 +48,16 @@ namespace TerraFX.Interop.Desktop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetDC(
             [In] ID2D1GdiInteropRenderTarget* This,
             [In] D2D1_DC_INITIALIZE_MODE mode,
-            [Out, ComAliasName("HDC")] IntPtr* hdc
+            [Out, NativeTypeName("HDC")] IntPtr* hdc
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _ReleaseDC(
             [In] ID2D1GdiInteropRenderTarget* This,
             [In] RECT* update = null
@@ -65,9 +65,9 @@ namespace TerraFX.Interop.Desktop
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -81,7 +81,7 @@ namespace TerraFX.Interop.Desktop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID2D1GdiInteropRenderTarget* This = &this)
@@ -92,7 +92,7 @@ namespace TerraFX.Interop.Desktop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID2D1GdiInteropRenderTarget* This = &this)
@@ -105,10 +105,10 @@ namespace TerraFX.Interop.Desktop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetDC(
             [In] D2D1_DC_INITIALIZE_MODE mode,
-            [Out, ComAliasName("HDC")] IntPtr* hdc
+            [Out, NativeTypeName("HDC")] IntPtr* hdc
         )
         {
             fixed (ID2D1GdiInteropRenderTarget* This = &this)
@@ -121,7 +121,7 @@ namespace TerraFX.Interop.Desktop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int ReleaseDC(
             [In] RECT* update = null
         )

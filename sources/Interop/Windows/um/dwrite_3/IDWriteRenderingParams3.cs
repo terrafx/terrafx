@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDWriteRenderingParams3* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDWriteRenderingParams3* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDWriteRenderingParams3* This
         );
@@ -49,7 +49,7 @@ namespace TerraFX.Interop
         /// <summary>Gets the gamma value used for gamma correction. Valid values must be greater than zero and cannot exceed 256.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("FLOAT")]
+        [return: NativeTypeName("FLOAT")]
         public /* static */ delegate float _GetGamma(
             [In] IDWriteRenderingParams3* This
         );
@@ -57,7 +57,7 @@ namespace TerraFX.Interop
         /// <summary>Gets the amount of contrast enhancement. Valid values are greater than or equal to zero.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("FLOAT")]
+        [return: NativeTypeName("FLOAT")]
         public /* static */ delegate float _GetEnhancedContrast(
             [In] IDWriteRenderingParams3* This
         );
@@ -88,7 +88,7 @@ namespace TerraFX.Interop
         /// <summary>Gets the amount of contrast enhancement to use for grayscale antialiasing. Valid values are greater than or equal to zero.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("FLOAT")]
+        [return: NativeTypeName("FLOAT")]
         public /* static */ delegate float _GetGrayscaleEnhancedContrast(
             [In] IDWriteRenderingParams3* This
         );
@@ -113,9 +113,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -129,7 +129,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDWriteRenderingParams3* This = &this)
@@ -140,7 +140,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDWriteRenderingParams3* This = &this)
@@ -153,7 +153,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region IDWriteRenderingParams Methods
-        [return: ComAliasName("FLOAT")]
+        [return: NativeTypeName("FLOAT")]
         public float GetGamma()
         {
             fixed (IDWriteRenderingParams3* This = &this)
@@ -164,7 +164,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("FLOAT")]
+        [return: NativeTypeName("FLOAT")]
         public float GetEnhancedContrast()
         {
             fixed (IDWriteRenderingParams3* This = &this)
@@ -207,7 +207,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region IDWriteRenderingParams1 Methods
-        [return: ComAliasName("FLOAT")]
+        [return: NativeTypeName("FLOAT")]
         public float GetGrayscaleEnhancedContrast()
         {
             fixed (IDWriteRenderingParams3* This = &this)

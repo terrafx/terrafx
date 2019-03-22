@@ -3,7 +3,6 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,13 +11,13 @@ namespace TerraFX.Interop
     public struct D3D12_DISPATCH_ARGUMENTS
     {
         #region Fields
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint ThreadGroupCountX;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint ThreadGroupCountY;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint ThreadGroupCountZ;
         #endregion
     }

@@ -3,7 +3,6 @@
 // Ported from shared\wtypes.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,13 +11,13 @@ namespace TerraFX.Interop
     public unsafe struct CLIPDATA
     {
         #region Fields
-        [ComAliasName("ULONG")]
+        [NativeTypeName("ULONG")]
         public uint cbSize;
 
-        [ComAliasName("LONG")]
+        [NativeTypeName("LONG")]
         public int ulClipFmt;
 
-        [ComAliasName("BYTE[]")]
+        [NativeTypeName("BYTE[]")]
         public byte* pClipDAta;
         #endregion
     }

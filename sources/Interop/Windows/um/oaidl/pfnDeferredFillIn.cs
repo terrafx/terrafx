@@ -5,12 +5,13 @@
 
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     [SuppressUnmanagedCodeSecurity]
     [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-    [return: ComAliasName("HRESULT")]
+    [return: NativeTypeName("HRESULT")]
     public /* static */ unsafe delegate int pfnDeferredFillIn(
         [In] EXCEPINFO* pExcepInfo
     );

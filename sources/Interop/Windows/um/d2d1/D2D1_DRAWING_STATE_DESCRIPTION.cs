@@ -3,7 +3,6 @@
 // Ported from um\d2d1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -17,13 +16,13 @@ namespace TerraFX.Interop
 
         public D2D1_TEXT_ANTIALIAS_MODE textAntialiasMode;
 
-        [ComAliasName("D2D1_TAG")]
+        [NativeTypeName("D2D1_TAG")]
         public ulong tag1;
 
-        [ComAliasName("D2D1_TAG")]
+        [NativeTypeName("D2D1_TAG")]
         public ulong tag2;
 
-        [ComAliasName("D2D1_MATRIX_3X2_F")]
+        [NativeTypeName("D2D1_MATRIX_3X2_F")]
         public D2D_MATRIX_3X2_F transform;
         #endregion
     }

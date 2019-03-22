@@ -15,15 +15,15 @@ namespace TerraFX.Interop
     {
         #region Fields
         /// <summary>Width of the strikethrough, measured parallel to the baseline.</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float width;
 
         /// <summary>Thickness of the strikethrough, measured perpendicular to the baseline.</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float thickness;
 
         /// <summary>Offset of the strikethrough from the baseline. A positive offset represents a position below the baseline and a negative offset is above.</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float offset;
 
         /// <summary>Reading direction of the text associated with the strikethrough. This value is used to interpret whether the width value runs horizontally or vertically.</summary>
@@ -33,7 +33,7 @@ namespace TerraFX.Interop
         public DWRITE_FLOW_DIRECTION flowDirection;
 
         /// <summary>Locale of the range. Can be pertinent where the locale affects the style.</summary>
-        [ComAliasName("WCHAR[]")]
+        [NativeTypeName("WCHAR[]")]
         public char* localeName;
 
         /// <summary>The measuring mode can be useful to the renderer to determine how

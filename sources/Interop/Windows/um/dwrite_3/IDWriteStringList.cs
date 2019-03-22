@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDWriteStringList* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDWriteStringList* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDWriteStringList* This
         );
@@ -49,7 +49,7 @@ namespace TerraFX.Interop
         /// <summary>Gets the number of strings.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public /* static */ delegate uint _GetCount(
             [In] IDWriteStringList* This
         );
@@ -60,11 +60,11 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetLocaleNameLength(
             [In] IDWriteStringList* This,
-            [In, ComAliasName("UINT32")] uint listIndex,
-            [Out, ComAliasName("UINT32")] uint* length
+            [In, NativeTypeName("UINT32")] uint listIndex,
+            [Out, NativeTypeName("UINT32")] uint* length
         );
 
         /// <summary>Copies the locale name with the specified index to the specified array.</summary>
@@ -74,12 +74,12 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetLocaleName(
             [In] IDWriteStringList* This,
-            [In, ComAliasName("UINT32")] uint listIndex,
-            [Out, ComAliasName("WCHAR[]")] char* localeName,
-            [In, ComAliasName("UINT32")] uint size
+            [In, NativeTypeName("UINT32")] uint listIndex,
+            [Out, NativeTypeName("WCHAR[]")] char* localeName,
+            [In, NativeTypeName("UINT32")] uint size
         );
 
         /// <summary>Gets the length in characters (not including the null terminator) of the string with the specified index.</summary>
@@ -88,11 +88,11 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetStringLength(
             [In] IDWriteStringList* This,
-            [In, ComAliasName("UINT32")] uint listIndex,
-            [Out, ComAliasName("UINT32")] uint* length
+            [In, NativeTypeName("UINT32")] uint listIndex,
+            [Out, NativeTypeName("UINT32")] uint* length
         );
 
         /// <summary>Copies the string with the specified index to the specified array.</summary>
@@ -102,19 +102,19 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetString(
             [In] IDWriteStringList* This,
-            [In, ComAliasName("UINT32")] uint listIndex,
-            [Out, ComAliasName("WCHAR[]")] char* stringBuffer,
-            [In, ComAliasName("UINT32")] uint stringBufferSize
+            [In, NativeTypeName("UINT32")] uint listIndex,
+            [Out, NativeTypeName("WCHAR[]")] char* stringBuffer,
+            [In, NativeTypeName("UINT32")] uint stringBufferSize
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -128,7 +128,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDWriteStringList* This = &this)
@@ -139,7 +139,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDWriteStringList* This = &this)
@@ -152,7 +152,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public uint GetCount()
         {
             fixed (IDWriteStringList* This = &this)
@@ -163,10 +163,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetLocaleNameLength(
-            [In, ComAliasName("UINT32")] uint listIndex,
-            [Out, ComAliasName("UINT32")] uint* length
+            [In, NativeTypeName("UINT32")] uint listIndex,
+            [Out, NativeTypeName("UINT32")] uint* length
         )
         {
             fixed (IDWriteStringList* This = &this)
@@ -179,11 +179,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetLocaleName(
-            [In, ComAliasName("UINT32")] uint listIndex,
-            [Out, ComAliasName("WCHAR[]")] char* localeName,
-            [In, ComAliasName("UINT32")] uint size
+            [In, NativeTypeName("UINT32")] uint listIndex,
+            [Out, NativeTypeName("WCHAR[]")] char* localeName,
+            [In, NativeTypeName("UINT32")] uint size
         )
         {
             fixed (IDWriteStringList* This = &this)
@@ -197,10 +197,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetStringLength(
-            [In, ComAliasName("UINT32")] uint listIndex,
-            [Out, ComAliasName("UINT32")] uint* length
+            [In, NativeTypeName("UINT32")] uint listIndex,
+            [Out, NativeTypeName("UINT32")] uint* length
         )
         {
             fixed (IDWriteStringList* This = &this)
@@ -213,11 +213,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetString(
-            [In, ComAliasName("UINT32")] uint listIndex,
-            [Out, ComAliasName("WCHAR[]")] char* stringBuffer,
-            [In, ComAliasName("UINT32")] uint stringBufferSize
+            [In, NativeTypeName("UINT32")] uint listIndex,
+            [Out, NativeTypeName("WCHAR[]")] char* stringBuffer,
+            [In, NativeTypeName("UINT32")] uint stringBufferSize
         )
         {
             fixed (IDWriteStringList* This = &this)

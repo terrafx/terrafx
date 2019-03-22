@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID2D1ResourceTexture* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID2D1ResourceTexture* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID2D1ResourceTexture* This
         );
@@ -48,22 +48,22 @@ namespace TerraFX.Interop
         /// <summary>Update the vertex text.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Update(
             [In] ID2D1ResourceTexture* This,
-            [In, Optional, ComAliasName("UINT32[]")] uint* minimumExtents,
-            [In, Optional, ComAliasName("UINT32[]")] uint* maximimumExtents,
-            [In, Optional, ComAliasName("UINT32[]")] uint* strides,
-            [In, ComAliasName("UINT32")] uint dimensions,
-            [In, ComAliasName("BYTE[]")]  byte* data,
-            [In, ComAliasName("UINT32")] uint dataCount
+            [In, Optional, NativeTypeName("UINT32[]")] uint* minimumExtents,
+            [In, Optional, NativeTypeName("UINT32[]")] uint* maximimumExtents,
+            [In, Optional, NativeTypeName("UINT32[]")] uint* strides,
+            [In, NativeTypeName("UINT32")] uint dimensions,
+            [In, NativeTypeName("BYTE[]")]  byte* data,
+            [In, NativeTypeName("UINT32")] uint dataCount
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -77,7 +77,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID2D1ResourceTexture* This = &this)
@@ -88,7 +88,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID2D1ResourceTexture* This = &this)
@@ -101,14 +101,14 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Update(
-            [In, Optional, ComAliasName("UINT32[]")] uint* minimumExtents,
-            [In, Optional, ComAliasName("UINT32[]")] uint* maximimumExtents,
-            [In, Optional, ComAliasName("UINT32[]")] uint* strides,
-            [In, ComAliasName("UINT32")] uint dimensions,
-            [In, ComAliasName("BYTE[]")]  byte* data,
-            [In, ComAliasName("UINT32")] uint dataCount
+            [In, Optional, NativeTypeName("UINT32[]")] uint* minimumExtents,
+            [In, Optional, NativeTypeName("UINT32[]")] uint* maximimumExtents,
+            [In, Optional, NativeTypeName("UINT32[]")] uint* strides,
+            [In, NativeTypeName("UINT32")] uint dimensions,
+            [In, NativeTypeName("BYTE[]")]  byte* data,
+            [In, NativeTypeName("UINT32")] uint dataCount
         )
         {
             fixed (ID2D1ResourceTexture* This = &this)

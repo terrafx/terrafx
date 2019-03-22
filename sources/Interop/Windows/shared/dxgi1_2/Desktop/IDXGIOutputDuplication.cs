@@ -22,23 +22,23 @@ namespace TerraFX.Interop.Desktop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDXGIOutputDuplication* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDXGIOutputDuplication* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDXGIOutputDuplication* This
         );
@@ -47,39 +47,39 @@ namespace TerraFX.Interop.Desktop
         #region IDXGIObject Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetPrivateData(
             [In] IDXGIOutputDuplication* This,
-            [In, ComAliasName("REFGUID")] Guid* Name,
-            [In, ComAliasName("UINT")] uint DataSize,
+            [In, NativeTypeName("REFGUID")] Guid* Name,
+            [In, NativeTypeName("UINT")] uint DataSize,
             [In] void* pData
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetPrivateDataInterface(
             [In] IDXGIOutputDuplication* This,
-            [In, ComAliasName("REFGUID")] Guid* Name,
+            [In, NativeTypeName("REFGUID")] Guid* Name,
             [In] IUnknown* pUnknown = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetPrivateData(
             [In] IDXGIOutputDuplication* This,
-            [In, ComAliasName("REFGUID")] Guid* Name,
-            [In, Out, ComAliasName("UINT")] uint* pDataSize,
+            [In, NativeTypeName("REFGUID")] Guid* Name,
+            [In, Out, NativeTypeName("UINT")] uint* pDataSize,
             [Out] void* pData
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetParent(
             [In] IDXGIOutputDuplication* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppParent
         );
         #endregion
@@ -94,48 +94,48 @@ namespace TerraFX.Interop.Desktop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _AcquireNextFrame(
             [In] IDXGIOutputDuplication* This,
-            [In, ComAliasName("UINT")] uint TimeoutInMilliseconds,
+            [In, NativeTypeName("UINT")] uint TimeoutInMilliseconds,
             [Out] DXGI_OUTDUPL_FRAME_INFO* pFrameInfo,
             [Out] IDXGIResource** ppDesktopResource
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetFrameDirtyRects(
             [In] IDXGIOutputDuplication* This,
-            [In, ComAliasName("UINT")] uint DirtyRectsBufferSize,
-            [Out, ComAliasName("RECT[]")] RECT* pDirtyRectsBuffer,
-            [Out, ComAliasName("UINT")] uint* pDirtyRectsBufferSizeRequired
+            [In, NativeTypeName("UINT")] uint DirtyRectsBufferSize,
+            [Out, NativeTypeName("RECT[]")] RECT* pDirtyRectsBuffer,
+            [Out, NativeTypeName("UINT")] uint* pDirtyRectsBufferSizeRequired
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetFrameMoveRects(
             [In] IDXGIOutputDuplication* This,
-            [In, ComAliasName("UINT")] uint MoveRectsBufferSize,
-            [Out, ComAliasName("DXGI_OUTDUPL_MOVE_RECT[]")] DXGI_OUTDUPL_MOVE_RECT* pMoveRectBuffer,
-            [Out, ComAliasName("UINT")] uint* pMoveRectsBufferSizeRequired
+            [In, NativeTypeName("UINT")] uint MoveRectsBufferSize,
+            [Out, NativeTypeName("DXGI_OUTDUPL_MOVE_RECT[]")] DXGI_OUTDUPL_MOVE_RECT* pMoveRectBuffer,
+            [Out, NativeTypeName("UINT")] uint* pMoveRectsBufferSizeRequired
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetFramePointerShape(
             [In] IDXGIOutputDuplication* This,
-            [In, ComAliasName("UINT")] uint PointerShapeBufferSize,
+            [In, NativeTypeName("UINT")] uint PointerShapeBufferSize,
             [Out] void* pPointerShapeBuffer,
-            [Out, ComAliasName("UINT")] uint* pPointerShapeBufferSizeRequired,
+            [Out, NativeTypeName("UINT")] uint* pPointerShapeBufferSizeRequired,
             [Out] DXGI_OUTDUPL_POINTER_SHAPE_INFO* pPointerShapeInfo
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _MapDesktopSurface(
             [In] IDXGIOutputDuplication* This,
             [Out] DXGI_MAPPED_RECT* pLockedRect
@@ -143,23 +143,23 @@ namespace TerraFX.Interop.Desktop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _UnMapDesktopSurface(
             [In] IDXGIOutputDuplication* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _ReleaseFrame(
             [In] IDXGIOutputDuplication* This
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -173,7 +173,7 @@ namespace TerraFX.Interop.Desktop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDXGIOutputDuplication* This = &this)
@@ -184,7 +184,7 @@ namespace TerraFX.Interop.Desktop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDXGIOutputDuplication* This = &this)
@@ -197,10 +197,10 @@ namespace TerraFX.Interop.Desktop
         #endregion
 
         #region IDXGIObject Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetPrivateData(
-            [In, ComAliasName("REFGUID")] Guid* Name,
-            [In, ComAliasName("UINT")] uint DataSize,
+            [In, NativeTypeName("REFGUID")] Guid* Name,
+            [In, NativeTypeName("UINT")] uint DataSize,
             [In] void* pData
         )
         {
@@ -215,9 +215,9 @@ namespace TerraFX.Interop.Desktop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetPrivateDataInterface(
-            [In, ComAliasName("REFGUID")] Guid* Name,
+            [In, NativeTypeName("REFGUID")] Guid* Name,
             [In] IUnknown* pUnknown = null
         )
         {
@@ -231,10 +231,10 @@ namespace TerraFX.Interop.Desktop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetPrivateData(
-            [In, ComAliasName("REFGUID")] Guid* Name,
-            [In, Out, ComAliasName("UINT")] uint* pDataSize,
+            [In, NativeTypeName("REFGUID")] Guid* Name,
+            [In, Out, NativeTypeName("UINT")] uint* pDataSize,
             [Out] void* pData
         )
         {
@@ -249,9 +249,9 @@ namespace TerraFX.Interop.Desktop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetParent(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppParent
         )
         {
@@ -280,9 +280,9 @@ namespace TerraFX.Interop.Desktop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int AcquireNextFrame(
-            [In, ComAliasName("UINT")] uint TimeoutInMilliseconds,
+            [In, NativeTypeName("UINT")] uint TimeoutInMilliseconds,
             [Out] DXGI_OUTDUPL_FRAME_INFO* pFrameInfo,
             [Out] IDXGIResource** ppDesktopResource
         )
@@ -298,11 +298,11 @@ namespace TerraFX.Interop.Desktop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetFrameDirtyRects(
-            [In, ComAliasName("UINT")] uint DirtyRectsBufferSize,
-            [Out, ComAliasName("RECT[]")] RECT* pDirtyRectsBuffer,
-            [Out, ComAliasName("UINT")] uint* pDirtyRectsBufferSizeRequired
+            [In, NativeTypeName("UINT")] uint DirtyRectsBufferSize,
+            [Out, NativeTypeName("RECT[]")] RECT* pDirtyRectsBuffer,
+            [Out, NativeTypeName("UINT")] uint* pDirtyRectsBufferSizeRequired
         )
         {
             fixed (IDXGIOutputDuplication* This = &this)
@@ -316,11 +316,11 @@ namespace TerraFX.Interop.Desktop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetFrameMoveRects(
-            [In, ComAliasName("UINT")] uint MoveRectsBufferSize,
-            [Out, ComAliasName("DXGI_OUTDUPL_MOVE_RECT[]")] DXGI_OUTDUPL_MOVE_RECT* pMoveRectBuffer,
-            [Out, ComAliasName("UINT")] uint* pMoveRectsBufferSizeRequired
+            [In, NativeTypeName("UINT")] uint MoveRectsBufferSize,
+            [Out, NativeTypeName("DXGI_OUTDUPL_MOVE_RECT[]")] DXGI_OUTDUPL_MOVE_RECT* pMoveRectBuffer,
+            [Out, NativeTypeName("UINT")] uint* pMoveRectsBufferSizeRequired
         )
         {
             fixed (IDXGIOutputDuplication* This = &this)
@@ -334,11 +334,11 @@ namespace TerraFX.Interop.Desktop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetFramePointerShape(
-            [In, ComAliasName("UINT")] uint PointerShapeBufferSize,
+            [In, NativeTypeName("UINT")] uint PointerShapeBufferSize,
             [Out] void* pPointerShapeBuffer,
-            [Out, ComAliasName("UINT")] uint* pPointerShapeBufferSizeRequired,
+            [Out, NativeTypeName("UINT")] uint* pPointerShapeBufferSizeRequired,
             [Out] DXGI_OUTDUPL_POINTER_SHAPE_INFO* pPointerShapeInfo
         )
         {
@@ -354,7 +354,7 @@ namespace TerraFX.Interop.Desktop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int MapDesktopSurface(
             [Out] DXGI_MAPPED_RECT* pLockedRect
         )
@@ -368,7 +368,7 @@ namespace TerraFX.Interop.Desktop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int UnMapDesktopSurface()
         {
             fixed (IDXGIOutputDuplication* This = &this)
@@ -379,7 +379,7 @@ namespace TerraFX.Interop.Desktop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int ReleaseFrame()
         {
             fixed (IDXGIOutputDuplication* This = &this)

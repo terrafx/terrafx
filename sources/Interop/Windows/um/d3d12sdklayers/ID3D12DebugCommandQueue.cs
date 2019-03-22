@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID3D12DebugCommandQueue* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID3D12DebugCommandQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID3D12DebugCommandQueue* This
         );
@@ -47,19 +47,19 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public /* static */ delegate int _AssertResourceState(
             [In] ID3D12DebugCommandQueue* This,
             [In] ID3D12Resource* pResource,
-            [In, ComAliasName("UINT")] uint Subresource,
-            [In, ComAliasName("UINT")] uint State
+            [In, NativeTypeName("UINT")] uint Subresource,
+            [In, NativeTypeName("UINT")] uint State
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -73,7 +73,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID3D12DebugCommandQueue* This = &this)
@@ -84,7 +84,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID3D12DebugCommandQueue* This = &this)
@@ -97,11 +97,11 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public int AssertResourceState(
             [In] ID3D12Resource* pResource,
-            [In, ComAliasName("UINT")] uint Subresource,
-            [In, ComAliasName("UINT")] uint State
+            [In, NativeTypeName("UINT")] uint Subresource,
+            [In, NativeTypeName("UINT")] uint State
         )
         {
             fixed (ID3D12DebugCommandQueue* This = &this)

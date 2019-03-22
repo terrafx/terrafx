@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID3D12PipelineLibrary1* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID3D12PipelineLibrary1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID3D12PipelineLibrary1* This
         );
@@ -47,49 +47,49 @@ namespace TerraFX.Interop
         #region ID3D12Object Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetPrivateData(
             [In] ID3D12PipelineLibrary1* This,
-            [In, ComAliasName("REFGUID")] Guid* guid,
-            [In, Out, ComAliasName("UINT")] uint* pDataSize,
+            [In, NativeTypeName("REFGUID")] Guid* guid,
+            [In, Out, NativeTypeName("UINT")] uint* pDataSize,
             [Out] void* pData = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetPrivateData(
             [In] ID3D12PipelineLibrary1* This,
-            [In, ComAliasName("REFGUID")] Guid* guid,
-            [In, ComAliasName("UINT")] uint DataSize,
+            [In, NativeTypeName("REFGUID")] Guid* guid,
+            [In, NativeTypeName("UINT")] uint DataSize,
             [In] void* pData = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetPrivateDataInterface(
             [In] ID3D12PipelineLibrary1* This,
-            [In, ComAliasName("REFGUID")] Guid* guid,
+            [In, NativeTypeName("REFGUID")] Guid* guid,
             [In] IUnknown* pData = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetName(
             [In] ID3D12PipelineLibrary1* This,
-            [In, ComAliasName("LPCWSTR")] char* Name
+            [In, NativeTypeName("LPCWSTR")] char* Name
         );
         #endregion
 
         #region ID3D12DeviceChild Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetDevice(
             [In] ID3D12PipelineLibrary1* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvDevice = null
         );
         #endregion
@@ -97,69 +97,69 @@ namespace TerraFX.Interop
         #region ID3D12PipelineLibrary Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _StorePipeline(
             [In] ID3D12PipelineLibrary1* This,
-            [In, Optional, ComAliasName("LPCWSTR")] char* pName,
+            [In, Optional, NativeTypeName("LPCWSTR")] char* pName,
             [In] ID3D12PipelineState* pPipeline
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _LoadGraphicsPipeline(
             [In] ID3D12PipelineLibrary1* This,
-            [In, ComAliasName("LPCWSTR")] char* pName,
+            [In, NativeTypeName("LPCWSTR")] char* pName,
             [In] D3D12_GRAPHICS_PIPELINE_STATE_DESC* pDesc,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppPipelineState
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _LoadComputePipeline(
             [In] ID3D12PipelineLibrary1* This,
-            [In, ComAliasName("LPCWSTR")] char* pName,
+            [In, NativeTypeName("LPCWSTR")] char* pName,
             [In] D3D12_COMPUTE_PIPELINE_STATE_DESC* pDesc,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppPipelineState
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("SIZE_T")]
+        [return: NativeTypeName("SIZE_T")]
         public /* static */ delegate nuint _GetSerializedSize(
             [In] ID3D12PipelineLibrary1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Serialize(
             [In] ID3D12PipelineLibrary1* This,
             [Out] void* pData,
-            [In, ComAliasName("SIZE_T")] nuint DataSizeInBytes
+            [In, NativeTypeName("SIZE_T")] nuint DataSizeInBytes
         );
         #endregion
 
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _LoadPipeline(
             [In] ID3D12PipelineLibrary1* This,
-            [In, ComAliasName("LPCWSTR")] char* pName,
+            [In, NativeTypeName("LPCWSTR")] char* pName,
             [In] D3D12_PIPELINE_STATE_STREAM_DESC* pDesc,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppPipelineState
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -173,7 +173,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID3D12PipelineLibrary1* This = &this)
@@ -184,7 +184,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID3D12PipelineLibrary1* This = &this)
@@ -197,10 +197,10 @@ namespace TerraFX.Interop
         #endregion
 
         #region ID3D12Object Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetPrivateData(
-            [In, ComAliasName("REFGUID")] Guid* guid,
-            [In, Out, ComAliasName("UINT")] uint* pDataSize,
+            [In, NativeTypeName("REFGUID")] Guid* guid,
+            [In, Out, NativeTypeName("UINT")] uint* pDataSize,
             [Out] void* pData = null
         )
         {
@@ -215,10 +215,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetPrivateData(
-            [In, ComAliasName("REFGUID")] Guid* guid,
-            [In, ComAliasName("UINT")] uint DataSize,
+            [In, NativeTypeName("REFGUID")] Guid* guid,
+            [In, NativeTypeName("UINT")] uint DataSize,
             [In] void* pData = null
         )
         {
@@ -233,9 +233,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetPrivateDataInterface(
-            [In, ComAliasName("REFGUID")] Guid* guid,
+            [In, NativeTypeName("REFGUID")] Guid* guid,
             [In] IUnknown* pData = null
         )
         {
@@ -249,9 +249,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetName(
-            [In, ComAliasName("LPCWSTR")] char* Name
+            [In, NativeTypeName("LPCWSTR")] char* Name
         )
         {
             fixed (ID3D12PipelineLibrary1* This = &this)
@@ -265,9 +265,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region ID3D12DeviceChild Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetDevice(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvDevice = null
         )
         {
@@ -283,9 +283,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region ID3D12PipelineLibrary Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int StorePipeline(
-            [In, Optional, ComAliasName("LPCWSTR")] char* pName,
+            [In, Optional, NativeTypeName("LPCWSTR")] char* pName,
             [In] ID3D12PipelineState* pPipeline
         )
         {
@@ -299,11 +299,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int LoadGraphicsPipeline(
-            [In, ComAliasName("LPCWSTR")] char* pName,
+            [In, NativeTypeName("LPCWSTR")] char* pName,
             [In] D3D12_GRAPHICS_PIPELINE_STATE_DESC* pDesc,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppPipelineState
         )
         {
@@ -319,11 +319,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int LoadComputePipeline(
-            [In, ComAliasName("LPCWSTR")] char* pName,
+            [In, NativeTypeName("LPCWSTR")] char* pName,
             [In] D3D12_COMPUTE_PIPELINE_STATE_DESC* pDesc,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppPipelineState
         )
         {
@@ -339,7 +339,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("SIZE_T")]
+        [return: NativeTypeName("SIZE_T")]
         public nuint GetSerializedSize()
         {
             fixed (ID3D12PipelineLibrary1* This = &this)
@@ -350,10 +350,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Serialize(
             [Out] void* pData,
-            [In, ComAliasName("SIZE_T")] nuint DataSizeInBytes
+            [In, NativeTypeName("SIZE_T")] nuint DataSizeInBytes
         )
         {
             fixed (ID3D12PipelineLibrary1* This = &this)
@@ -368,11 +368,11 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int LoadPipeline(
-            [In, ComAliasName("LPCWSTR")] char* pName,
+            [In, NativeTypeName("LPCWSTR")] char* pName,
             [In] D3D12_PIPELINE_STATE_STREAM_DESC* pDesc,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppPipelineState
         )
         {

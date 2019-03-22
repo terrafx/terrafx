@@ -3,7 +3,6 @@
 // Ported from um\d3d12shader.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,31 +11,31 @@ namespace TerraFX.Interop
     public unsafe struct D3D12_SHADER_INPUT_BIND_DESC
     {
         #region Fields
-        [ComAliasName("LPCSTR")]
+        [NativeTypeName("LPCSTR")]
         public sbyte* Name;
 
         public D3D_SHADER_INPUT_TYPE Type;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint BindPoint;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint BindCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint uFlags;
 
         public D3D_RESOURCE_RETURN_TYPE ReturnType;
 
         public D3D_SRV_DIMENSION Dimension;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint NumSamples;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Space;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint uID;
         #endregion
     }

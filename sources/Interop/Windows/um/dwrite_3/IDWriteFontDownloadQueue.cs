@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDWriteFontDownloadQueue* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDWriteFontDownloadQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDWriteFontDownloadQueue* This
         );
@@ -53,11 +53,11 @@ namespace TerraFX.Interop
         /// <remarks> An IDWriteFontDownloadListener can also be passed to BeginDownload via the context parameter, rather than globally registered to the queue.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _AddListener(
             [In] IDWriteFontDownloadQueue* This,
             [In] IDWriteFontDownloadListener* listener,
-            [Out, ComAliasName("UINT32")] uint* token
+            [Out, NativeTypeName("UINT32")] uint* token
         );
 
         /// <summary>Unregisters a notification handler that was previously registered using AddListener.</summary>
@@ -65,17 +65,17 @@ namespace TerraFX.Interop
         /// <returns> Returns S_OK if successful or E_INVALIDARG if the specified token does not correspond to a registered listener.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _RemoveListener(
             [In] IDWriteFontDownloadQueue* This,
-            [In, ComAliasName("UINT32")] uint token
+            [In, NativeTypeName("UINT32")] uint token
         );
 
         /// <summary>Determines whether the download queue is empty. Note that the queue does not include requests that are already being downloaded. In other words, BeginDownload clears the queue.</summary>
         /// <returns> TRUE if the queue is empty, FALSE if there are requests pending for BeginDownload.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public /* static */ delegate int _IsEmpty(
             [In] IDWriteFontDownloadQueue* This
         );
@@ -86,7 +86,7 @@ namespace TerraFX.Interop
         /// <remarks> BeginDownload removes all download requests from the queue, transferring them to a background download operation. If any previous downloads are still ongoing when BeginDownload is called again, the new download does not complete until the previous downloads have finished. If the queue is empty and no active downloads are pending, the DownloadCompleted callback is called immediately with DWRITE_DOWNLOAD_RESULT_NONE.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _BeginDownload(
             [In] IDWriteFontDownloadQueue* This,
             [In] IUnknown* context = null
@@ -96,7 +96,7 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CancelDownload(
             [In] IDWriteFontDownloadQueue* This
         );
@@ -105,16 +105,16 @@ namespace TerraFX.Interop
         /// <returns> The number of download queue generations.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT64")]
+        [return: NativeTypeName("UINT64")]
         public /* static */ delegate ulong _GetGenerationCount(
             [In] IDWriteFontDownloadQueue* This
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -128,7 +128,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDWriteFontDownloadQueue* This = &this)
@@ -139,7 +139,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDWriteFontDownloadQueue* This = &this)
@@ -152,10 +152,10 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int AddListener(
             [In] IDWriteFontDownloadListener* listener,
-            [Out, ComAliasName("UINT32")] uint* token
+            [Out, NativeTypeName("UINT32")] uint* token
         )
         {
             fixed (IDWriteFontDownloadQueue* This = &this)
@@ -168,9 +168,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int RemoveListener(
-            [In, ComAliasName("UINT32")] uint token
+            [In, NativeTypeName("UINT32")] uint token
         )
         {
             fixed (IDWriteFontDownloadQueue* This = &this)
@@ -182,7 +182,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public int IsEmpty()
         {
             fixed (IDWriteFontDownloadQueue* This = &this)
@@ -193,7 +193,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int BeginDownload(
             [In] IUnknown* context = null
         )
@@ -207,7 +207,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CancelDownload()
         {
             fixed (IDWriteFontDownloadQueue* This = &this)
@@ -218,7 +218,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("UINT64")]
+        [return: NativeTypeName("UINT64")]
         public ulong GetGenerationCount()
         {
             fixed (IDWriteFontDownloadQueue* This = &this)

@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
@@ -266,29 +267,29 @@ namespace TerraFX.Interop
         #region Methods
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "WICMatchMetadataContent", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public static extern int WICMatchMetadataContent(
-            [In, ComAliasName("REFGUID")] Guid* guidContainerFormat,
-            [In, Optional, ComAliasName("GUID")] Guid* pguidVendor,
+            [In, NativeTypeName("REFGUID")] Guid* guidContainerFormat,
+            [In, Optional, NativeTypeName("GUID")] Guid* pguidVendor,
             [In] IStream* pIStream,
-            [Out, ComAliasName("GUID")] Guid* pguidMetadataFormat
+            [Out, NativeTypeName("GUID")] Guid* pguidMetadataFormat
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "WICSerializeMetadataContent", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public static extern int WICSerializeMetadataContent(
-            [In, ComAliasName("REFGUID")] Guid* guidContainerFormat,
+            [In, NativeTypeName("REFGUID")] Guid* guidContainerFormat,
             [In] IWICMetadataWriter* pIWriter,
-            [In, ComAliasName("DWORD")] uint dwPersistOptions,
+            [In, NativeTypeName("DWORD")] uint dwPersistOptions,
             [In] IStream* pIStream
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "WICGetMetadataContentSize", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public static extern int WICGetMetadataContentSize(
-            [In, ComAliasName("REFGUID")] Guid* guidContainerFormat,
+            [In, NativeTypeName("REFGUID")] Guid* guidContainerFormat,
             [In] IWICMetadataWriter* pIWriter,
             [Out] ULARGE_INTEGER* pcbSize
         );

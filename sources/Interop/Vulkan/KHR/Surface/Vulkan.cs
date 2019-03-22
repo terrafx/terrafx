@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Interop.VkColorSpaceKHR;
 
 namespace TerraFX.Interop
@@ -26,44 +27,44 @@ namespace TerraFX.Interop
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDestroySurfaceKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void vkDestroySurfaceKHR(
-            [In, ComAliasName("VkInstance")] IntPtr instance,
-            [In, ComAliasName("VkSurfaceKHR")] IntPtr surface,
+            [In, NativeTypeName("VkInstance")] IntPtr instance,
+            [In, NativeTypeName("VkSurfaceKHR")] IntPtr surface,
             [In, Optional] VkAllocationCallbacks* pAllocator
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetPhysicalDeviceSurfaceSupportKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkGetPhysicalDeviceSurfaceSupportKHR(
-            [In, ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
+            [In, NativeTypeName("VkPhysicalDevice")] IntPtr physicalDevice,
             [In] uint queueFamilyIndex,
-            [In, ComAliasName("VkSurfaceKHR")] IntPtr surface,
-            [Out, ComAliasName("VkBool32")] uint* pSupported
+            [In, NativeTypeName("VkSurfaceKHR")] IntPtr surface,
+            [Out, NativeTypeName("VkBool32")] uint* pSupported
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetPhysicalDeviceSurfaceCapabilitiesKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
-            [In, ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
-            [In, ComAliasName("VkSurfaceKHR")] IntPtr surface,
+            [In, NativeTypeName("VkPhysicalDevice")] IntPtr physicalDevice,
+            [In, NativeTypeName("VkSurfaceKHR")] IntPtr surface,
             [Out] VkSurfaceCapabilitiesKHR* pSurfaceCapabilities
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetPhysicalDeviceSurfaceFormatsKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkGetPhysicalDeviceSurfaceFormatsKHR(
-            [In, ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
-            [In, ComAliasName("VkSurfaceKHR")] IntPtr surface,
+            [In, NativeTypeName("VkPhysicalDevice")] IntPtr physicalDevice,
+            [In, NativeTypeName("VkSurfaceKHR")] IntPtr surface,
             [In, Out] uint* pSurfaceFormatCount,
-            [Out, Optional, ComAliasName("VkSurfaceFormatKHR[]")] VkSurfaceFormatKHR* pSurfaceFormats
+            [Out, Optional, NativeTypeName("VkSurfaceFormatKHR[]")] VkSurfaceFormatKHR* pSurfaceFormats
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetPhysicalDeviceSurfacePresentModesKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkGetPhysicalDeviceSurfacePresentModesKHR(
-            [In, ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
-            [In, ComAliasName("VkSurfaceKHR")] IntPtr surface,
+            [In, NativeTypeName("VkPhysicalDevice")] IntPtr physicalDevice,
+            [In, NativeTypeName("VkSurfaceKHR")] IntPtr surface,
             [In, Out] uint* pPresentModeCount,
-            [Out, Optional, ComAliasName("VkPresentModeKHR[]")] VkPresentModeKHR* pPresentModes
+            [Out, Optional, NativeTypeName("VkPresentModeKHR[]")] VkPresentModeKHR* pPresentModes
         );
         #endregion
     }

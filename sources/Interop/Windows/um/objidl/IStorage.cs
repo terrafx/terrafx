@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IStorage* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IStorage* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IStorage* This
         );
@@ -47,124 +47,124 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateStream(
             [In] IStorage* This,
-            [In, ComAliasName("OLECHAR")] char* pwcsName,
-            [In, ComAliasName("DWORD")] uint grfMode,
-            [In, ComAliasName("DWORD")] uint reserved1,
-            [In, ComAliasName("DWORD")] uint reserved2,
+            [In, NativeTypeName("OLECHAR")] char* pwcsName,
+            [In, NativeTypeName("DWORD")] uint grfMode,
+            [In, NativeTypeName("DWORD")] uint reserved1,
+            [In, NativeTypeName("DWORD")] uint reserved2,
             [Out] IStream** ppstm = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _OpenStream(
             [In] IStorage* This,
-            [In, ComAliasName("OLECHAR")] char* pwcsName,
+            [In, NativeTypeName("OLECHAR")] char* pwcsName,
             [In] void* reserved1,
-            [In, ComAliasName("DWORD")] uint grfMode,
-            [In, ComAliasName("DWORD")] uint reserved2,
+            [In, NativeTypeName("DWORD")] uint grfMode,
+            [In, NativeTypeName("DWORD")] uint reserved2,
             [Out] IStream** ppstm
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateStorage(
             [In] IStorage* This,
-            [In, ComAliasName("OLECHAR")] char* pwcsName,
-            [In, ComAliasName("DWORD")] uint grfMode,
-            [In, ComAliasName("DWORD")] uint reserved1,
-            [In, ComAliasName("DWORD")] uint reserved2,
+            [In, NativeTypeName("OLECHAR")] char* pwcsName,
+            [In, NativeTypeName("DWORD")] uint grfMode,
+            [In, NativeTypeName("DWORD")] uint reserved1,
+            [In, NativeTypeName("DWORD")] uint reserved2,
             [Out] IStorage** ppstg = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _OpenStorage(
             [In] IStorage* This,
-            [In, Optional, ComAliasName("OLECHAR")] char* pwcsName,
+            [In, Optional, NativeTypeName("OLECHAR")] char* pwcsName,
             [In, Optional] IStorage* pstgPriority,
-            [In, ComAliasName("DWORD")] uint grfMode,
-            [In, Optional, ComAliasName("SNB")] char** snbExclude,
-            [In, ComAliasName("DWORD")] uint reserved,
+            [In, NativeTypeName("DWORD")] uint grfMode,
+            [In, Optional, NativeTypeName("SNB")] char** snbExclude,
+            [In, NativeTypeName("DWORD")] uint reserved,
             [Out] IStorage** ppstg = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CopyTo(
             [In] IStorage* This,
-            [In, ComAliasName("IID")] Guid* ciidExclude,
+            [In, NativeTypeName("IID")] Guid* ciidExclude,
             [In, Optional] Guid* rgiidExclude,
-            [In, Optional, ComAliasName("SNB")] char** snbExclude,
+            [In, Optional, NativeTypeName("SNB")] char** snbExclude,
             [In] IStorage* pstgDest
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _MoveElementTo(
             [In] IStorage* This,
-            [In, ComAliasName("OLECHAR")] char* pwcsName,
+            [In, NativeTypeName("OLECHAR")] char* pwcsName,
             [In, Optional] IStorage* pstgDest,
-            [In, ComAliasName("OLECHAR")] char* pwcsNewName,
-            [In, ComAliasName("DWORD")] uint grfFlags
+            [In, NativeTypeName("OLECHAR")] char* pwcsNewName,
+            [In, NativeTypeName("DWORD")] uint grfFlags
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Commit(
             [In] IStorage* This,
-            [In, ComAliasName("DWORD")] uint grfCommitFlags
+            [In, NativeTypeName("DWORD")] uint grfCommitFlags
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Revert(
             [In] IStorage* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _EnumElements(
             [In] IStorage* This,
-            [In, ComAliasName("DWORD")] uint reserved1,
+            [In, NativeTypeName("DWORD")] uint reserved1,
             [In] void* reserved2,
-            [In, ComAliasName("DWORD")] uint reserved3,
+            [In, NativeTypeName("DWORD")] uint reserved3,
             [Out] IEnumSTATSTG** ppenum
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _DestroyElement(
             [In] IStorage* This,
-            [In, ComAliasName("OLECHAR")] char* pwcsName
+            [In, NativeTypeName("OLECHAR")] char* pwcsName
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _RenameElement(
             [In] IStorage* This,
-            [In, ComAliasName("OLECHAR")] char* pwcsOldName,
-            [In, ComAliasName("OLECHAR")] char* pwcsNewName
+            [In, NativeTypeName("OLECHAR")] char* pwcsOldName,
+            [In, NativeTypeName("OLECHAR")] char* pwcsNewName
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetElementTimes(
             [In] IStorage* This,
-            [In, ComAliasName("OLECHAR")] char* pwcsName = null,
+            [In, NativeTypeName("OLECHAR")] char* pwcsName = null,
             [In] FILETIME* pctime = null,
             [In] FILETIME* patime = null,
             [In] FILETIME* pmtime = null
@@ -172,35 +172,35 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetClass(
             [In] IStorage* This,
-            [In, ComAliasName("REFCLSID")] Guid* clsid
+            [In, NativeTypeName("REFCLSID")] Guid* clsid
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetStateBits(
             [In] IStorage* This,
-            [In, ComAliasName("DWORD")] uint grfStateBits,
-            [In, ComAliasName("DWORD")] uint grfMask
+            [In, NativeTypeName("DWORD")] uint grfStateBits,
+            [In, NativeTypeName("DWORD")] uint grfMask
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Stat(
             [In] IStorage* This,
             [Out] STATSTG* pstatstg,
-            [In, ComAliasName("DWORD")] uint grfStatFlag
+            [In, NativeTypeName("DWORD")] uint grfStatFlag
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -214,7 +214,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IStorage* This = &this)
@@ -225,7 +225,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IStorage* This = &this)
@@ -238,12 +238,12 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateStream(
-            [In, ComAliasName("OLECHAR")] char* pwcsName,
-            [In, ComAliasName("DWORD")] uint grfMode,
-            [In, ComAliasName("DWORD")] uint reserved1,
-            [In, ComAliasName("DWORD")] uint reserved2,
+            [In, NativeTypeName("OLECHAR")] char* pwcsName,
+            [In, NativeTypeName("DWORD")] uint grfMode,
+            [In, NativeTypeName("DWORD")] uint reserved1,
+            [In, NativeTypeName("DWORD")] uint reserved2,
             [Out] IStream** ppstm = null
         )
         {
@@ -260,12 +260,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int OpenStream(
-            [In, ComAliasName("OLECHAR")] char* pwcsName,
+            [In, NativeTypeName("OLECHAR")] char* pwcsName,
             [In] void* reserved1,
-            [In, ComAliasName("DWORD")] uint grfMode,
-            [In, ComAliasName("DWORD")] uint reserved2,
+            [In, NativeTypeName("DWORD")] uint grfMode,
+            [In, NativeTypeName("DWORD")] uint reserved2,
             [Out] IStream** ppstm
         )
         {
@@ -282,12 +282,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateStorage(
-            [In, ComAliasName("OLECHAR")] char* pwcsName,
-            [In, ComAliasName("DWORD")] uint grfMode,
-            [In, ComAliasName("DWORD")] uint reserved1,
-            [In, ComAliasName("DWORD")] uint reserved2,
+            [In, NativeTypeName("OLECHAR")] char* pwcsName,
+            [In, NativeTypeName("DWORD")] uint grfMode,
+            [In, NativeTypeName("DWORD")] uint reserved1,
+            [In, NativeTypeName("DWORD")] uint reserved2,
             [Out] IStorage** ppstg = null
         )
         {
@@ -304,13 +304,13 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int OpenStorage(
-            [In, Optional, ComAliasName("OLECHAR")] char* pwcsName,
+            [In, Optional, NativeTypeName("OLECHAR")] char* pwcsName,
             [In, Optional] IStorage* pstgPriority,
-            [In, ComAliasName("DWORD")] uint grfMode,
-            [In, Optional, ComAliasName("SNB")] char** snbExclude,
-            [In, ComAliasName("DWORD")] uint reserved,
+            [In, NativeTypeName("DWORD")] uint grfMode,
+            [In, Optional, NativeTypeName("SNB")] char** snbExclude,
+            [In, NativeTypeName("DWORD")] uint reserved,
             [Out] IStorage** ppstg = null
         )
         {
@@ -328,11 +328,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CopyTo(
-            [In, ComAliasName("IID")] Guid* ciidExclude,
+            [In, NativeTypeName("IID")] Guid* ciidExclude,
             [In, Optional] Guid* rgiidExclude,
-            [In, Optional, ComAliasName("SNB")] char** snbExclude,
+            [In, Optional, NativeTypeName("SNB")] char** snbExclude,
             [In] IStorage* pstgDest
         )
         {
@@ -348,12 +348,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int MoveElementTo(
-            [In, ComAliasName("OLECHAR")] char* pwcsName,
+            [In, NativeTypeName("OLECHAR")] char* pwcsName,
             [In, Optional] IStorage* pstgDest,
-            [In, ComAliasName("OLECHAR")] char* pwcsNewName,
-            [In, ComAliasName("DWORD")] uint grfFlags
+            [In, NativeTypeName("OLECHAR")] char* pwcsNewName,
+            [In, NativeTypeName("DWORD")] uint grfFlags
         )
         {
             fixed (IStorage* This = &this)
@@ -368,9 +368,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Commit(
-            [In, ComAliasName("DWORD")] uint grfCommitFlags
+            [In, NativeTypeName("DWORD")] uint grfCommitFlags
         )
         {
             fixed (IStorage* This = &this)
@@ -382,7 +382,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Revert()
         {
             fixed (IStorage* This = &this)
@@ -393,11 +393,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int EnumElements(
-            [In, ComAliasName("DWORD")] uint reserved1,
+            [In, NativeTypeName("DWORD")] uint reserved1,
             [In] void* reserved2,
-            [In, ComAliasName("DWORD")] uint reserved3,
+            [In, NativeTypeName("DWORD")] uint reserved3,
             [Out] IEnumSTATSTG** ppenum
         )
         {
@@ -413,9 +413,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int DestroyElement(
-            [In, ComAliasName("OLECHAR")] char* pwcsName
+            [In, NativeTypeName("OLECHAR")] char* pwcsName
         )
         {
             fixed (IStorage* This = &this)
@@ -427,10 +427,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int RenameElement(
-            [In, ComAliasName("OLECHAR")] char* pwcsOldName,
-            [In, ComAliasName("OLECHAR")] char* pwcsNewName
+            [In, NativeTypeName("OLECHAR")] char* pwcsOldName,
+            [In, NativeTypeName("OLECHAR")] char* pwcsNewName
         )
         {
             fixed (IStorage* This = &this)
@@ -443,9 +443,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetElementTimes(
-            [In, ComAliasName("OLECHAR")] char* pwcsName = null,
+            [In, NativeTypeName("OLECHAR")] char* pwcsName = null,
             [In] FILETIME* pctime = null,
             [In] FILETIME* patime = null,
             [In] FILETIME* pmtime = null
@@ -463,9 +463,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetClass(
-            [In, ComAliasName("REFCLSID")] Guid* clsid
+            [In, NativeTypeName("REFCLSID")] Guid* clsid
         )
         {
             fixed (IStorage* This = &this)
@@ -477,10 +477,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetStateBits(
-            [In, ComAliasName("DWORD")] uint grfStateBits,
-            [In, ComAliasName("DWORD")] uint grfMask
+            [In, NativeTypeName("DWORD")] uint grfStateBits,
+            [In, NativeTypeName("DWORD")] uint grfMask
         )
         {
             fixed (IStorage* This = &this)
@@ -493,10 +493,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Stat(
             [Out] STATSTG* pstatstg,
-            [In, ComAliasName("DWORD")] uint grfStatFlag
+            [In, NativeTypeName("DWORD")] uint grfStatFlag
         )
         {
             fixed (IStorage* This = &this)

@@ -3,7 +3,6 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,16 +11,16 @@ namespace TerraFX.Interop
     public struct D3D12_SUBRESOURCE_TILING
     {
         #region Fields
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint WidthInTiles;
 
-        [ComAliasName("UINT16")]
+        [NativeTypeName("UINT16")]
         public ushort HeightInTiles;
 
-        [ComAliasName("UINT16")]
+        [NativeTypeName("UINT16")]
         public ushort DepthInTiles;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint StartTileIndexInOverallResource;
         #endregion
     }

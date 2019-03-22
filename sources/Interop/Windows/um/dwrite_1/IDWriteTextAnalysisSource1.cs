@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDWriteTextAnalysisSource1* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDWriteTextAnalysisSource1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDWriteTextAnalysisSource1* This
         );
@@ -54,12 +54,12 @@ namespace TerraFX.Interop
         /// <remarks> Although apps can implement sparse textual content that only maps part of the backing store, the app must map any text that is in the range passed to any analysis functions.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetTextAtPosition(
             [In] IDWriteTextAnalysisSource1* This,
-            [In, ComAliasName("UINT32")] uint textPosition,
-            [Out, ComAliasName("WCHAR[]")] char** textString,
-            [Out, ComAliasName("UINT32")] uint* textLength
+            [In, NativeTypeName("UINT32")] uint textPosition,
+            [Out, NativeTypeName("WCHAR[]")] char** textString,
+            [Out, NativeTypeName("UINT32")] uint* textLength
         );
 
         /// <summary>Get a block of text immediately preceding the specified position.</summary>
@@ -70,12 +70,12 @@ namespace TerraFX.Interop
         /// <remarks> Although apps can implement sparse textual content that only maps part of the backing store, the app must map any text that is in the range passed to any analysis functions.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetTextBeforePosition(
             [In] IDWriteTextAnalysisSource1* This,
-            [In, ComAliasName("UINT32")] uint textPosition,
-            [Out, ComAliasName("WCHAR[]")] char** textString,
-            [Out, ComAliasName("UINT32")] uint* textLength
+            [In, NativeTypeName("UINT32")] uint textPosition,
+            [Out, NativeTypeName("WCHAR[]")] char** textString,
+            [Out, NativeTypeName("UINT32")] uint* textLength
         );
 
         /// <summary>Get paragraph reading direction.</summary>
@@ -92,12 +92,12 @@ namespace TerraFX.Interop
         /// <remarks> The localeName pointer must remain valid until the next call or until the analysis returns.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetLocaleName(
             [In] IDWriteTextAnalysisSource1* This,
-            [In, ComAliasName("UINT32")] uint textPosition,
-            [Out, ComAliasName("UINT32")] uint* textLength,
-            [Out, ComAliasName("WCHAR[]")] char** localeName
+            [In, NativeTypeName("UINT32")] uint textPosition,
+            [Out, NativeTypeName("UINT32")] uint* textLength,
+            [Out, NativeTypeName("WCHAR[]")] char** localeName
         );
 
         /// <summary>Get number substitution on the range affected by it.</summary>
@@ -107,11 +107,11 @@ namespace TerraFX.Interop
         /// <remarks> Any implementation should return the number substitution with an incremented ref count, and the analysis will release when finished with it (either before the next call or before it returns). However, the sink callback may hold onto it after that.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetNumberSubstitution(
             [In] IDWriteTextAnalysisSource1* This,
-            [In, ComAliasName("UINT32")] uint textPosition,
-            [Out, ComAliasName("UINT32")] uint* textLength,
+            [In, NativeTypeName("UINT32")] uint textPosition,
+            [Out, NativeTypeName("UINT32")] uint* textLength,
             [Out] IDWriteNumberSubstitution** numberSubstitution
         );
         #endregion
@@ -125,20 +125,20 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code. Returning an error will abort the analysis.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetVerticalGlyphOrientation(
             [In] IDWriteTextAnalysisSource1* This,
-            [In, ComAliasName("UINT32")] uint textPosition,
-            [Out, ComAliasName("UINT32")] uint* textLength,
+            [In, NativeTypeName("UINT32")] uint textPosition,
+            [Out, NativeTypeName("UINT32")] uint* textLength,
             [Out] DWRITE_VERTICAL_GLYPH_ORIENTATION* glyphOrientation,
-            [Out, ComAliasName("UINT8")] byte* bidiLevel
+            [Out, NativeTypeName("UINT8")] byte* bidiLevel
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -152,7 +152,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDWriteTextAnalysisSource1* This = &this)
@@ -163,7 +163,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDWriteTextAnalysisSource1* This = &this)
@@ -176,11 +176,11 @@ namespace TerraFX.Interop
         #endregion
 
         #region IDWriteTextAnalysisSource Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetTextAtPosition(
-            [In, ComAliasName("UINT32")] uint textPosition,
-            [Out, ComAliasName("WCHAR[]")] char** textString,
-            [Out, ComAliasName("UINT32")] uint* textLength
+            [In, NativeTypeName("UINT32")] uint textPosition,
+            [Out, NativeTypeName("WCHAR[]")] char** textString,
+            [Out, NativeTypeName("UINT32")] uint* textLength
         )
         {
             fixed (IDWriteTextAnalysisSource1* This = &this)
@@ -194,11 +194,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetTextBeforePosition(
-            [In, ComAliasName("UINT32")] uint textPosition,
-            [Out, ComAliasName("WCHAR[]")] char** textString,
-            [Out, ComAliasName("UINT32")] uint* textLength
+            [In, NativeTypeName("UINT32")] uint textPosition,
+            [Out, NativeTypeName("WCHAR[]")] char** textString,
+            [Out, NativeTypeName("UINT32")] uint* textLength
         )
         {
             fixed (IDWriteTextAnalysisSource1* This = &this)
@@ -222,11 +222,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetLocaleName(
-            [In, ComAliasName("UINT32")] uint textPosition,
-            [Out, ComAliasName("UINT32")] uint* textLength,
-            [Out, ComAliasName("WCHAR[]")] char** localeName
+            [In, NativeTypeName("UINT32")] uint textPosition,
+            [Out, NativeTypeName("UINT32")] uint* textLength,
+            [Out, NativeTypeName("WCHAR[]")] char** localeName
         )
         {
             fixed (IDWriteTextAnalysisSource1* This = &this)
@@ -240,10 +240,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetNumberSubstitution(
-            [In, ComAliasName("UINT32")] uint textPosition,
-            [Out, ComAliasName("UINT32")] uint* textLength,
+            [In, NativeTypeName("UINT32")] uint textPosition,
+            [Out, NativeTypeName("UINT32")] uint* textLength,
             [Out] IDWriteNumberSubstitution** numberSubstitution
         )
         {
@@ -260,12 +260,12 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetVerticalGlyphOrientation(
-            [In, ComAliasName("UINT32")] uint textPosition,
-            [Out, ComAliasName("UINT32")] uint* textLength,
+            [In, NativeTypeName("UINT32")] uint textPosition,
+            [Out, NativeTypeName("UINT32")] uint* textLength,
             [Out] DWRITE_VERTICAL_GLYPH_ORIENTATION* glyphOrientation,
-            [Out, ComAliasName("UINT8")] byte* bidiLevel
+            [Out, NativeTypeName("UINT8")] byte* bidiLevel
         )
         {
             fixed (IDWriteTextAnalysisSource1* This = &this)

@@ -15,11 +15,11 @@ namespace TerraFX.Interop
         #region Fields
         #region struct
         [FieldOffset(0)]
-        [ComAliasName("DWORD")]
+        [NativeTypeName("DWORD")]
         public uint LowPart;
 
         [FieldOffset(4)]
-        [ComAliasName("DWORD")]
+        [NativeTypeName("DWORD")]
         public uint HighPart;
         #endregion
 
@@ -27,7 +27,7 @@ namespace TerraFX.Interop
         public _u__e__Struct u;
 
         [FieldOffset(0)]
-        [ComAliasName("ULONGLONG")]
+        [NativeTypeName("ULONGLONG")]
         public ulong QuadPart;
         #endregion
 
@@ -36,10 +36,10 @@ namespace TerraFX.Interop
         public struct _u__e__Struct
         {
             #region Fields
-            [ComAliasName("DWORD")]
+            [NativeTypeName("DWORD")]
             public uint LowPart;
 
-            [ComAliasName("DWORD")]
+            [NativeTypeName("DWORD")]
             public uint HighPart;
             #endregion
         }

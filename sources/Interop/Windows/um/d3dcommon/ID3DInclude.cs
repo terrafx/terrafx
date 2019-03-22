@@ -21,33 +21,33 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Open(
             [In] ID3DInclude* This,
             [In] D3D_INCLUDE_TYPE IncludeType,
-            [In, ComAliasName("LPCSTR")] sbyte* pFileName,
-            [In, ComAliasName("LPCVOID")] void* pParentData,
-            [Out, ComAliasName("LPCVOID")] void** ppData,
-            [Out, ComAliasName("UINT")] uint* pBytes
+            [In, NativeTypeName("LPCSTR")] sbyte* pFileName,
+            [In, NativeTypeName("LPCVOID")] void* pParentData,
+            [Out, NativeTypeName("LPCVOID")] void** ppData,
+            [Out, NativeTypeName("UINT")] uint* pBytes
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Close(
             [In] ID3DInclude* This,
-            [In, ComAliasName("LPCVOID")] void* pData
+            [In, NativeTypeName("LPCVOID")] void* pData
         );
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Open(
             [In] D3D_INCLUDE_TYPE IncludeType,
-            [In, ComAliasName("LPCSTR")] sbyte* pFileName,
-            [In, ComAliasName("LPCVOID")] void* pParentData,
-            [Out, ComAliasName("LPCVOID")] void** ppData,
-            [Out, ComAliasName("UINT")] uint* pBytes
+            [In, NativeTypeName("LPCSTR")] sbyte* pFileName,
+            [In, NativeTypeName("LPCVOID")] void* pParentData,
+            [Out, NativeTypeName("LPCVOID")] void** ppData,
+            [Out, NativeTypeName("UINT")] uint* pBytes
         )
         {
             fixed (ID3DInclude* This = &this)
@@ -63,9 +63,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Close(
-            [In, ComAliasName("LPCVOID")] void* pData
+            [In, NativeTypeName("LPCVOID")] void* pData
         )
         {
             fixed (ID3DInclude* This = &this)

@@ -4,7 +4,6 @@
 // Original source is Copyright © The Open Group.
 
 using System;
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -17,13 +16,13 @@ namespace TerraFX.Interop
 
         public nuint serial;
 
-        [ComAliasName("Bool")]
+        [NativeTypeName("Bool")]
         public int send_event;
 
-        [ComAliasName("Display")]
+        [NativeTypeName("Display")]
         public IntPtr display;
 
-        [ComAliasName("Drawable")]
+        [NativeTypeName("Drawable")]
         public nuint drawable;
 
         public int major_code;

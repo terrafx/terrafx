@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID2D1SvgPointCollection* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID2D1SvgPointCollection* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID2D1SvgPointCollection* This
         );
@@ -67,7 +67,7 @@ namespace TerraFX.Interop
         /// <summary>Creates a clone of this attribute value. On creation, the cloned attribute is not set on any element.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Clone(
             [In] ID2D1SvgPointCollection* This,
             [Out] ID2D1SvgAttribute** attribute
@@ -79,10 +79,10 @@ namespace TerraFX.Interop
         /// <param name="pointsCount">Specifies how many points to remove.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _RemovePointsAtEnd(
             [In] ID2D1SvgPointCollection* This,
-            [In, ComAliasName("UINT32")] uint pointsCount
+            [In, NativeTypeName("UINT32")] uint pointsCount
         );
 
         /// <summary>Updates the points array. Existing points not updated by this method are preserved. The array is resized larger if necessary to accomodate the new points.</summary>
@@ -91,12 +91,12 @@ namespace TerraFX.Interop
         /// <param name="startIndex">The index at which to begin updating points. Must be less than or equal to the size of the array.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _UpdatePoints(
             [In] ID2D1SvgPointCollection* This,
-            [In, ComAliasName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
-            [In, ComAliasName("UINT32")] uint pointsCount,
-            [In, ComAliasName("UINT32")] uint startIndex = 0
+            [In, NativeTypeName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
+            [In, NativeTypeName("UINT32")] uint pointsCount,
+            [In, NativeTypeName("UINT32")] uint startIndex = 0
         );
 
         /// <summary>Gets points from the points array.</summary>
@@ -105,27 +105,27 @@ namespace TerraFX.Interop
         /// <param name="startIndex">The index of the first point to retrieve.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetPoints(
             [In] ID2D1SvgPointCollection* This,
-            [Out, ComAliasName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
-            [In, ComAliasName("UINT32")] uint pointsCount,
-            [In, ComAliasName("UINT32")] uint startIndex = 0
+            [Out, NativeTypeName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
+            [In, NativeTypeName("UINT32")] uint pointsCount,
+            [In, NativeTypeName("UINT32")] uint startIndex = 0
         );
 
         /// <summary>Gets the number of points in the array.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public /* static */ delegate uint _GetPointsCount(
             [In] ID2D1SvgPointCollection* This
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -139,7 +139,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID2D1SvgPointCollection* This = &this)
@@ -150,7 +150,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID2D1SvgPointCollection* This = &this)
@@ -191,7 +191,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Clone(
             [Out] ID2D1SvgAttribute** attribute
         )
@@ -207,9 +207,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int RemovePointsAtEnd(
-            [In, ComAliasName("UINT32")] uint pointsCount
+            [In, NativeTypeName("UINT32")] uint pointsCount
         )
         {
             fixed (ID2D1SvgPointCollection* This = &this)
@@ -221,11 +221,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int UpdatePoints(
-            [In, ComAliasName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
-            [In, ComAliasName("UINT32")] uint pointsCount,
-            [In, ComAliasName("UINT32")] uint startIndex = 0
+            [In, NativeTypeName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
+            [In, NativeTypeName("UINT32")] uint pointsCount,
+            [In, NativeTypeName("UINT32")] uint startIndex = 0
         )
         {
             fixed (ID2D1SvgPointCollection* This = &this)
@@ -239,11 +239,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetPoints(
-            [Out, ComAliasName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
-            [In, ComAliasName("UINT32")] uint pointsCount,
-            [In, ComAliasName("UINT32")] uint startIndex = 0
+            [Out, NativeTypeName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
+            [In, NativeTypeName("UINT32")] uint pointsCount,
+            [In, NativeTypeName("UINT32")] uint startIndex = 0
         )
         {
             fixed (ID2D1SvgPointCollection* This = &this)
@@ -257,7 +257,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public uint GetPointsCount()
         {
             fixed (ID2D1SvgPointCollection* This = &this)

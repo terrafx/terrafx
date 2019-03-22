@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDWriteFactory4* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDWriteFactory4* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDWriteFactory4* This
         );
@@ -52,11 +52,11 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetSystemFontCollection(
             [In] IDWriteFactory4* This,
             [Out] IDWriteFontCollection** fontCollection,
-            [In, ComAliasName("BOOL")] int checkForUpdates = FALSE
+            [In, NativeTypeName("BOOL")] int checkForUpdates = FALSE
         );
 
         /// <summary>Creates a font collection using a custom font collection loader.</summary>
@@ -67,12 +67,12 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateCustomFontCollection(
             [In] IDWriteFactory4* This,
             [In] IDWriteFontCollectionLoader* collectionLoader,
             [In] void* collectionKey,
-            [In, ComAliasName("UINT32")] uint collectionKeySize,
+            [In, NativeTypeName("UINT32")] uint collectionKeySize,
             [Out] IDWriteFontCollection** fontCollection
         );
 
@@ -81,7 +81,7 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _RegisterFontCollectionLoader(
             [In] IDWriteFactory4* This,
             [In] IDWriteFontCollectionLoader* fontCollectionLoader
@@ -92,7 +92,7 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _UnregisterFontCollectionLoader(
             [In] IDWriteFactory4* This,
             [In] IDWriteFontCollectionLoader* fontCollectionLoader
@@ -105,10 +105,10 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateFontFileReference(
             [In] IDWriteFactory4* This,
-            [In, ComAliasName("WCHAR[]")] char* filePath,
+            [In, NativeTypeName("WCHAR[]")] char* filePath,
             [In, Optional] FILETIME* lastWriteTime,
             [Out] IDWriteFontFile** fontFile
         );
@@ -122,11 +122,11 @@ namespace TerraFX.Interop
         /// <remarks> This function is provided for cases when an application or a document needs to use a font without having to install it on the system. fontFileReferenceKey has to be unique only in the scope of the fontFileLoader used in this call.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateCustomFontFileReference(
             [In] IDWriteFactory4* This,
             [In] void* fontFileReferenceKey,
-            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [In, NativeTypeName("UINT32")] uint fontFileReferenceKeySize,
             [In] IDWriteFontFileLoader* fontFileLoader,
             [Out] IDWriteFontFile** fontFile
         );
@@ -141,13 +141,13 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateFontFace(
             [In] IDWriteFactory4* This,
             [In] DWRITE_FONT_FACE_TYPE fontFaceType,
-            [In, ComAliasName("UINT32")] uint numberOfFiles,
-            [In, ComAliasName("IDWriteFontFile*[]")] IDWriteFontFile** fontFiles,
-            [In, ComAliasName("UINT32")] uint faceIndex,
+            [In, NativeTypeName("UINT32")] uint numberOfFiles,
+            [In, NativeTypeName("IDWriteFontFile*[]")] IDWriteFontFile** fontFiles,
+            [In, NativeTypeName("UINT32")] uint faceIndex,
             [In] DWRITE_FONT_SIMULATIONS fontFaceSimulationFlags,
             [Out] IDWriteFontFace** fontFace
         );
@@ -157,7 +157,7 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateRenderingParams(
             [In] IDWriteFactory4* This,
             [Out] IDWriteRenderingParams** renderingParams
@@ -169,10 +169,10 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateMonitorRenderingParams(
             [In] IDWriteFactory4* This,
-            [In, ComAliasName("HMONITOR")] IntPtr monitor,
+            [In, NativeTypeName("HMONITOR")] IntPtr monitor,
             [Out] IDWriteRenderingParams** renderingParams
         );
 
@@ -186,12 +186,12 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateCustomRenderingParams(
             [In] IDWriteFactory4* This,
-            [In, ComAliasName("FLOAT")] float gamma,
-            [In, ComAliasName("FLOAT")] float enhancedContrast,
-            [In, ComAliasName("FLOAT")] float clearTypeLevel,
+            [In, NativeTypeName("FLOAT")] float gamma,
+            [In, NativeTypeName("FLOAT")] float enhancedContrast,
+            [In, NativeTypeName("FLOAT")] float clearTypeLevel,
             [In] DWRITE_PIXEL_GEOMETRY pixelGeometry,
             [In] DWRITE_RENDERING_MODE renderingMode,
             [Out] IDWriteRenderingParams** renderingParams
@@ -203,7 +203,7 @@ namespace TerraFX.Interop
         /// <remarks> This function registers a font file loader with DirectWrite. Font file loader interface handles loading font file resources of a particular type from a key. The font file loader interface is recommended to be implemented by a singleton object. A given instance can only be registered once. Succeeding attempts will return an error that it has already been registered. IMPORTANT: font file loader implementations must not register themselves with DirectWrite inside their constructors and must not unregister themselves in their destructors, because registration and unregistration operations increment and decrement the object reference count respectively. Instead, registration and unregistration of font file loaders with DirectWrite should be performed outside of the font file loader implementation as a separate step.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _RegisterFontFileLoader(
             [In] IDWriteFactory4* This,
             [In] IDWriteFontFileLoader* fontFileLoader
@@ -215,7 +215,7 @@ namespace TerraFX.Interop
         /// <remarks> This function unregisters font file loader callbacks with the DirectWrite font system. The font file loader interface is recommended to be implemented by a singleton object. IMPORTANT: font file loader implementations must not register themselves with DirectWrite inside their constructors and must not unregister themselves in their destructors, because registration and unregistration operations increment and decrement the object reference count respectively. Instead, registration and unregistration of font file loaders with DirectWrite should be performed outside of the font file loader implementation as a separate step.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _UnregisterFontFileLoader(
             [In] IDWriteFactory4* This,
             [In] IDWriteFontFileLoader* fontFileLoader
@@ -233,16 +233,16 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateTextFormat(
             [In] IDWriteFactory4* This,
-            [In, ComAliasName("WCHAR[]")] char* fontFamilyName,
+            [In, NativeTypeName("WCHAR[]")] char* fontFamilyName,
             [In, Optional] IDWriteFontCollection* fontCollection,
             [In] DWRITE_FONT_WEIGHT fontWeight,
             [In] DWRITE_FONT_STYLE fontStyle,
             [In] DWRITE_FONT_STRETCH fontStretch,
-            [In, ComAliasName("FLOAT")] float fontSize,
-            [In, ComAliasName("WCHAR[]")] char* localeName,
+            [In, NativeTypeName("FLOAT")] float fontSize,
+            [In, NativeTypeName("WCHAR[]")] char* localeName,
             [Out] IDWriteTextFormat** textFormat
         );
 
@@ -251,7 +251,7 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateTypography(
             [In] IDWriteFactory4* This,
             [Out] IDWriteTypography** typography
@@ -262,7 +262,7 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetGdiInterop(
             [In] IDWriteFactory4* This,
             [Out] IDWriteGdiInterop** gdiInterop
@@ -278,14 +278,14 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateTextLayout(
             [In] IDWriteFactory4* This,
-            [In, ComAliasName("WCHAR[]")] char* @string,
-            [In, ComAliasName("UINT32")] uint stringLength,
+            [In, NativeTypeName("WCHAR[]")] char* @string,
+            [In, NativeTypeName("UINT32")] uint stringLength,
             [In] IDWriteTextFormat* textFormat,
-            [In, ComAliasName("FLOAT")] float maxWidth,
-            [In, ComAliasName("FLOAT")] float maxHeight,
+            [In, NativeTypeName("FLOAT")] float maxWidth,
+            [In, NativeTypeName("FLOAT")] float maxHeight,
             [Out] IDWriteTextLayout** textLayout
         );
 
@@ -302,17 +302,17 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateGdiCompatibleTextLayout(
             [In] IDWriteFactory4* This,
-            [In, ComAliasName("WCHAR[]")] char* @string,
-            [In, ComAliasName("UINT32")] uint stringLength,
+            [In, NativeTypeName("WCHAR[]")] char* @string,
+            [In, NativeTypeName("UINT32")] uint stringLength,
             [In] IDWriteTextFormat* textFormat,
-            [In, ComAliasName("FLOAT")] float layoutWidth,
-            [In, ComAliasName("FLOAT")] float layoutHeight,
-            [In, ComAliasName("FLOAT")] float pixelsPerDip,
+            [In, NativeTypeName("FLOAT")] float layoutWidth,
+            [In, NativeTypeName("FLOAT")] float layoutHeight,
+            [In, NativeTypeName("FLOAT")] float pixelsPerDip,
             [In, Optional] DWRITE_MATRIX* transform,
-            [In, ComAliasName("BOOL")] int useGdiNatural,
+            [In, NativeTypeName("BOOL")] int useGdiNatural,
             [Out] IDWriteTextLayout** textLayout
         );
 
@@ -322,7 +322,7 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateEllipsisTrimmingSign(
             [In] IDWriteFactory4* This,
             [In] IDWriteTextFormat* textFormat,
@@ -334,7 +334,7 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateTextAnalyzer(
             [In] IDWriteFactory4* This,
             [Out] IDWriteTextAnalyzer** textAnalyzer
@@ -347,12 +347,12 @@ namespace TerraFX.Interop
         /// <param name="numberSubstitution">Receives a pointer to the newly created object.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateNumberSubstitution(
             [In] IDWriteFactory4* This,
             [In] DWRITE_NUMBER_SUBSTITUTION_METHOD substitutionMethod,
-            [In, ComAliasName("WCHAR[]")] char* localeName,
-            [In, ComAliasName("BOOL")] int ignoreUserOverride,
+            [In, NativeTypeName("WCHAR[]")] char* localeName,
+            [In, NativeTypeName("BOOL")] int ignoreUserOverride,
             [Out] IDWriteNumberSubstitution** numberSubstitution
         );
 
@@ -368,16 +368,16 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateGlyphRunAnalysis(
             [In] IDWriteFactory4* This,
             [In] DWRITE_GLYPH_RUN* glyphRun,
-            [In, ComAliasName("FLOAT")] float pixelsPerDip,
+            [In, NativeTypeName("FLOAT")] float pixelsPerDip,
             [In, Optional] DWRITE_MATRIX* transform,
             [In] DWRITE_RENDERING_MODE renderingMode,
             [In] DWRITE_MEASURING_MODE measuringMode,
-            [In, ComAliasName("FLOAT")] float baselineOriginX,
-            [In, ComAliasName("FLOAT")] float baselineOriginY,
+            [In, NativeTypeName("FLOAT")] float baselineOriginX,
+            [In, NativeTypeName("FLOAT")] float baselineOriginY,
             [Out] IDWriteGlyphRunAnalysis** glyphRunAnalysis
         );
         #endregion
@@ -391,11 +391,11 @@ namespace TerraFX.Interop
         /// Be aware that eudcedit.exe can create placeholder empty glyphs that have zero advance width and no glyph outline. Although they are present in the font (HasCharacter returns true), you are best to ignore these and continue on with font fallback in your layout if the metrics for the glyph are zero.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetEudcFontCollection(
             [In] IDWriteFactory4* This,
             [Out] IDWriteFontCollection** fontCollection,
-            [In, ComAliasName("BOOL")] int checkForUpdates = FALSE
+            [In, NativeTypeName("BOOL")] int checkForUpdates = FALSE
     );
 
         /// <summary>Creates a rendering parameters object with the specified properties.</summary>
@@ -409,13 +409,13 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateCustomRenderingParams1(
             [In] IDWriteFactory4* This,
-            [In, ComAliasName("FLOAT")] float gamma,
-            [In, ComAliasName("FLOAT")] float enhancedContrast,
-            [In, ComAliasName("FLOAT")] float enhancedContrastGrayscale,
-            [In, ComAliasName("FLOAT")] float clearTypeLevel,
+            [In, NativeTypeName("FLOAT")] float gamma,
+            [In, NativeTypeName("FLOAT")] float enhancedContrast,
+            [In, NativeTypeName("FLOAT")] float enhancedContrastGrayscale,
+            [In, NativeTypeName("FLOAT")] float clearTypeLevel,
             [In] DWRITE_PIXEL_GEOMETRY pixelGeometry,
             [In] DWRITE_RENDERING_MODE renderingMode,
             [Out] IDWriteRenderingParams1** renderingParams
@@ -428,7 +428,7 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetSystemFontFallback(
             [In] IDWriteFactory4* This,
             [Out] IDWriteFontFallback** fontFallback
@@ -439,7 +439,7 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateFontFallbackBuilder(
             [In] IDWriteFactory4* This,
             [Out] IDWriteFontFallbackBuilder** fontFallbackBuilder
@@ -457,16 +457,16 @@ namespace TerraFX.Interop
         /// <returns> Returns DWRITE_E_NOCOLOR if the font has no color information, the base glyph run does not contain any color glyphs, or the specified color palette index is out of range. In this case, the client should render the base glyph run. Otherwise, returns a standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _TranslateColorGlyphRun(
             [In] IDWriteFactory4* This,
-            [In, ComAliasName("FLOAT")] float baselineOriginX,
-            [In, ComAliasName("FLOAT")] float baselineOriginY,
+            [In, NativeTypeName("FLOAT")] float baselineOriginX,
+            [In, NativeTypeName("FLOAT")] float baselineOriginY,
             [In] DWRITE_GLYPH_RUN* glyphRun,
             [In, Optional] DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
             [In] DWRITE_MEASURING_MODE measuringMode,
             [In, Optional] DWRITE_MATRIX* worldToDeviceTransform,
-            [In, ComAliasName("UINT32")] uint colorPaletteIndex,
+            [In, NativeTypeName("UINT32")] uint colorPaletteIndex,
             [Out] IDWriteColorGlyphRunEnumerator** colorLayers
         );
 
@@ -481,13 +481,13 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateCustomRenderingParams2(
             [In] IDWriteFactory4* This,
-            [In, ComAliasName("FLOAT")] float gamma,
-            [In, ComAliasName("FLOAT")] float enhancedContrast,
-            [In, ComAliasName("FLOAT")] float grayscaleEnhancedContrast,
-            [In, ComAliasName("FLOAT")] float clearTypeLevel,
+            [In, NativeTypeName("FLOAT")] float gamma,
+            [In, NativeTypeName("FLOAT")] float enhancedContrast,
+            [In, NativeTypeName("FLOAT")] float grayscaleEnhancedContrast,
+            [In, NativeTypeName("FLOAT")] float clearTypeLevel,
             [In] DWRITE_PIXEL_GEOMETRY pixelGeometry,
             [In] DWRITE_RENDERING_MODE renderingMode,
             [In] DWRITE_GRID_FIT_MODE gridFitMode,
@@ -506,7 +506,7 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateGlyphRunAnalysis1(
             [In] IDWriteFactory4* This,
             [In] DWRITE_GLYPH_RUN* glyphRun,
@@ -515,8 +515,8 @@ namespace TerraFX.Interop
             [In] DWRITE_MEASURING_MODE measuringMode,
             [In] DWRITE_GRID_FIT_MODE gridFitMode,
             [In] DWRITE_TEXT_ANTIALIAS_MODE antialiasMode,
-            [In, ComAliasName("FLOAT")] float baselineOriginX,
-            [In, ComAliasName("FLOAT")] float baselineOriginY,
+            [In, NativeTypeName("FLOAT")] float baselineOriginX,
+            [In, NativeTypeName("FLOAT")] float baselineOriginY,
             [Out] IDWriteGlyphRunAnalysis** glyphRunAnalysis
         );
         #endregion
@@ -534,7 +534,7 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateGlyphRunAnalysis2(
             [In] IDWriteFactory4* This,
             [In] DWRITE_GLYPH_RUN* glyphRun,
@@ -543,8 +543,8 @@ namespace TerraFX.Interop
             [In] DWRITE_MEASURING_MODE measuringMode,
             [In] DWRITE_GRID_FIT_MODE gridFitMode,
             [In] DWRITE_TEXT_ANTIALIAS_MODE antialiasMode,
-            [In, ComAliasName("FLOAT")] float baselineOriginX,
-            [In, ComAliasName("FLOAT")] float baselineOriginY,
+            [In, NativeTypeName("FLOAT")] float baselineOriginX,
+            [In, NativeTypeName("FLOAT")] float baselineOriginY,
             [Out] IDWriteGlyphRunAnalysis** glyphRunAnalysis
         );
 
@@ -560,13 +560,13 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateCustomRenderingParams3(
             [In] IDWriteFactory4* This,
-            [In, ComAliasName("FLOAT")] float gamma,
-            [In, ComAliasName("FLOAT")] float enhancedContrast,
-            [In, ComAliasName("FLOAT")] float grayscaleEnhancedContrast,
-            [In, ComAliasName("FLOAT")] float clearTypeLevel,
+            [In, NativeTypeName("FLOAT")] float gamma,
+            [In, NativeTypeName("FLOAT")] float enhancedContrast,
+            [In, NativeTypeName("FLOAT")] float grayscaleEnhancedContrast,
+            [In, NativeTypeName("FLOAT")] float clearTypeLevel,
             [In] DWRITE_PIXEL_GEOMETRY pixelGeometry,
             [In] DWRITE_RENDERING_MODE1 renderingMode,
             [In] DWRITE_GRID_FIT_MODE gridFitMode,
@@ -582,12 +582,12 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateFontFaceReference(
             [In] IDWriteFactory4* This,
-            [In, ComAliasName("WCHAR[]")] char* filePath,
+            [In, NativeTypeName("WCHAR[]")] char* filePath,
             [In, Optional] FILETIME* lastWriteTime,
-            [In, ComAliasName("UINT32")] uint faceIndex,
+            [In, NativeTypeName("UINT32")] uint faceIndex,
             [In] DWRITE_FONT_SIMULATIONS fontSimulations,
             [Out] IDWriteFontFaceReference** fontFaceReference
         );
@@ -600,11 +600,11 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateFontFaceReference1(
             [In] IDWriteFactory4* This,
             [In] IDWriteFontFile* fontFile,
-            [In, ComAliasName("UINT32")] uint faceIndex,
+            [In, NativeTypeName("UINT32")] uint faceIndex,
             [In] DWRITE_FONT_SIMULATIONS fontSimulations,
             [Out] IDWriteFontFaceReference** fontFaceReference
         );
@@ -614,7 +614,7 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetSystemFontSet(
             [In] IDWriteFactory4* This,
             [Out] IDWriteFontSet** fontSet
@@ -625,7 +625,7 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateFontSetBuilder(
             [In] IDWriteFactory4* This,
             [Out] IDWriteFontSetBuilder** fontSetBuilder
@@ -637,7 +637,7 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateFontCollectionFromFontSet(
             [In] IDWriteFactory4* This,
             [In] IDWriteFontSet* fontSet,
@@ -651,12 +651,12 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetSystemFontCollection1(
             [In] IDWriteFactory4* This,
-            [In, ComAliasName("BOOL")] int includeDownloadableFonts,
+            [In, NativeTypeName("BOOL")] int includeDownloadableFonts,
             [Out] IDWriteFontCollection1** fontCollection,
-            [In, ComAliasName("BOOL")] int checkForUpdates = FALSE
+            [In, NativeTypeName("BOOL")] int checkForUpdates = FALSE
         );
 
         /// <summary>Gets the font download queue associated with this factory object.</summary>
@@ -664,7 +664,7 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetFontDownloadQueue(
             [In] IDWriteFactory4* This,
             [Out] IDWriteFontDownloadQueue** fontDownloadQueue
@@ -685,16 +685,16 @@ namespace TerraFX.Interop
         /// <remarks> The old IDWriteFactory2::TranslateColorGlyphRun is equivalent to passing DWRITE_GLYPH_IMAGE_FORMATS_TRUETYPE|CFF|COLR.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _TranslateColorGlyphRun1(
             [In] IDWriteFactory4* This,
-            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
+            [In, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
             [In] DWRITE_GLYPH_RUN* glyphRun,
             [In, Optional] DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
             [In] DWRITE_GLYPH_IMAGE_FORMATS desiredGlyphImageFormats,
             [In] DWRITE_MEASURING_MODE measuringMode,
             [In, Optional] DWRITE_MATRIX* worldAndDpiTransform,
-            [In, ComAliasName("UINT32")] uint colorPaletteIndex,
+            [In, NativeTypeName("UINT32")] uint colorPaletteIndex,
             [Out] IDWriteColorGlyphRunEnumerator1** colorLayers
         );
 
@@ -703,32 +703,32 @@ namespace TerraFX.Interop
         /// <remarks> The transform and DPI have no affect on the origin scaling. They are solely used to compute glyph advances when not supplied and align glyphs in pixel aligned measuring modes.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _ComputeGlyphOrigins(
             [In] IDWriteFactory4* This,
             [In] DWRITE_GLYPH_RUN* glyphRun,
             [In] DWRITE_MEASURING_MODE measuringMode,
-            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
+            [In, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
             [In, Optional] DWRITE_MATRIX* worldAndDpiTransform,
-            [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* glyphOrigins
+            [Out, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F* glyphOrigins
         );
 
         /// <summary>Converts glyph run placements to glyph origins. This overload is for natural metrics, which includes SVG, TrueType natural modes, and bitmap placement.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _ComputeGlyphOrigins1(
             [In] IDWriteFactory4* This,
             [In] DWRITE_GLYPH_RUN* glyphRun,
-            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
-            [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* glyphOrigins
+            [In, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
+            [Out, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F* glyphOrigins
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -742,7 +742,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDWriteFactory4* This = &this)
@@ -753,7 +753,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDWriteFactory4* This = &this)
@@ -766,10 +766,10 @@ namespace TerraFX.Interop
         #endregion
 
         #region IDWriteFactory Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetSystemFontCollection(
             [Out] IDWriteFontCollection** fontCollection,
-            [In, ComAliasName("BOOL")] int checkForUpdates = FALSE
+            [In, NativeTypeName("BOOL")] int checkForUpdates = FALSE
         )
         {
             fixed (IDWriteFactory4* This = &this)
@@ -782,11 +782,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateCustomFontCollection(
             [In] IDWriteFontCollectionLoader* collectionLoader,
             [In] void* collectionKey,
-            [In, ComAliasName("UINT32")] uint collectionKeySize,
+            [In, NativeTypeName("UINT32")] uint collectionKeySize,
             [Out] IDWriteFontCollection** fontCollection
         )
         {
@@ -802,7 +802,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int RegisterFontCollectionLoader(
             [In] IDWriteFontCollectionLoader* fontCollectionLoader
         )
@@ -816,7 +816,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int UnregisterFontCollectionLoader(
             [In] IDWriteFontCollectionLoader* fontCollectionLoader
         )
@@ -830,9 +830,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateFontFileReference(
-            [In, ComAliasName("WCHAR[]")] char* filePath,
+            [In, NativeTypeName("WCHAR[]")] char* filePath,
             [In, Optional] FILETIME* lastWriteTime,
             [Out] IDWriteFontFile** fontFile
         )
@@ -848,10 +848,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateCustomFontFileReference(
             [In] void* fontFileReferenceKey,
-            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [In, NativeTypeName("UINT32")] uint fontFileReferenceKeySize,
             [In] IDWriteFontFileLoader* fontFileLoader,
             [Out] IDWriteFontFile** fontFile
         )
@@ -868,12 +868,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateFontFace(
             [In] DWRITE_FONT_FACE_TYPE fontFaceType,
-            [In, ComAliasName("UINT32")] uint numberOfFiles,
-            [In, ComAliasName("IDWriteFontFile*[]")] IDWriteFontFile** fontFiles,
-            [In, ComAliasName("UINT32")] uint faceIndex,
+            [In, NativeTypeName("UINT32")] uint numberOfFiles,
+            [In, NativeTypeName("IDWriteFontFile*[]")] IDWriteFontFile** fontFiles,
+            [In, NativeTypeName("UINT32")] uint faceIndex,
             [In] DWRITE_FONT_SIMULATIONS fontFaceSimulationFlags,
             [Out] IDWriteFontFace** fontFace
         )
@@ -892,7 +892,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateRenderingParams(
             [Out] IDWriteRenderingParams** renderingParams
         )
@@ -906,9 +906,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateMonitorRenderingParams(
-            [In, ComAliasName("HMONITOR")] IntPtr monitor,
+            [In, NativeTypeName("HMONITOR")] IntPtr monitor,
             [Out] IDWriteRenderingParams** renderingParams
         )
         {
@@ -922,11 +922,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateCustomRenderingParams(
-            [In, ComAliasName("FLOAT")] float gamma,
-            [In, ComAliasName("FLOAT")] float enhancedContrast,
-            [In, ComAliasName("FLOAT")] float clearTypeLevel,
+            [In, NativeTypeName("FLOAT")] float gamma,
+            [In, NativeTypeName("FLOAT")] float enhancedContrast,
+            [In, NativeTypeName("FLOAT")] float clearTypeLevel,
             [In] DWRITE_PIXEL_GEOMETRY pixelGeometry,
             [In] DWRITE_RENDERING_MODE renderingMode,
             [Out] IDWriteRenderingParams** renderingParams
@@ -946,7 +946,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int RegisterFontFileLoader(
             [In] IDWriteFontFileLoader* fontFileLoader
         )
@@ -960,7 +960,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int UnregisterFontFileLoader(
             [In] IDWriteFontFileLoader* fontFileLoader
         )
@@ -974,15 +974,15 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateTextFormat(
-            [In, ComAliasName("WCHAR[]")] char* fontFamilyName,
+            [In, NativeTypeName("WCHAR[]")] char* fontFamilyName,
             [In, Optional] IDWriteFontCollection* fontCollection,
             [In] DWRITE_FONT_WEIGHT fontWeight,
             [In] DWRITE_FONT_STYLE fontStyle,
             [In] DWRITE_FONT_STRETCH fontStretch,
-            [In, ComAliasName("FLOAT")] float fontSize,
-            [In, ComAliasName("WCHAR[]")] char* localeName,
+            [In, NativeTypeName("FLOAT")] float fontSize,
+            [In, NativeTypeName("WCHAR[]")] char* localeName,
             [Out] IDWriteTextFormat** textFormat
         )
         {
@@ -1002,7 +1002,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateTypography(
             [Out] IDWriteTypography** typography
         )
@@ -1016,7 +1016,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetGdiInterop(
             [Out] IDWriteGdiInterop** gdiInterop
         )
@@ -1030,13 +1030,13 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateTextLayout(
-            [In, ComAliasName("WCHAR[]")] char* @string,
-            [In, ComAliasName("UINT32")] uint stringLength,
+            [In, NativeTypeName("WCHAR[]")] char* @string,
+            [In, NativeTypeName("UINT32")] uint stringLength,
             [In] IDWriteTextFormat* textFormat,
-            [In, ComAliasName("FLOAT")] float maxWidth,
-            [In, ComAliasName("FLOAT")] float maxHeight,
+            [In, NativeTypeName("FLOAT")] float maxWidth,
+            [In, NativeTypeName("FLOAT")] float maxHeight,
             [Out] IDWriteTextLayout** textLayout
         )
         {
@@ -1054,16 +1054,16 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateGdiCompatibleTextLayout(
-            [In, ComAliasName("WCHAR[]")] char* @string,
-            [In, ComAliasName("UINT32")] uint stringLength,
+            [In, NativeTypeName("WCHAR[]")] char* @string,
+            [In, NativeTypeName("UINT32")] uint stringLength,
             [In] IDWriteTextFormat* textFormat,
-            [In, ComAliasName("FLOAT")] float layoutWidth,
-            [In, ComAliasName("FLOAT")] float layoutHeight,
-            [In, ComAliasName("FLOAT")] float pixelsPerDip,
+            [In, NativeTypeName("FLOAT")] float layoutWidth,
+            [In, NativeTypeName("FLOAT")] float layoutHeight,
+            [In, NativeTypeName("FLOAT")] float pixelsPerDip,
             [In, Optional] DWRITE_MATRIX* transform,
-            [In, ComAliasName("BOOL")] int useGdiNatural,
+            [In, NativeTypeName("BOOL")] int useGdiNatural,
             [Out] IDWriteTextLayout** textLayout
         )
         {
@@ -1084,7 +1084,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateEllipsisTrimmingSign(
             [In] IDWriteTextFormat* textFormat,
             [Out] IDWriteInlineObject** trimmingSign
@@ -1100,7 +1100,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateTextAnalyzer(
             [Out] IDWriteTextAnalyzer** textAnalyzer
         )
@@ -1114,11 +1114,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateNumberSubstitution(
             [In] DWRITE_NUMBER_SUBSTITUTION_METHOD substitutionMethod,
-            [In, ComAliasName("WCHAR[]")] char* localeName,
-            [In, ComAliasName("BOOL")] int ignoreUserOverride,
+            [In, NativeTypeName("WCHAR[]")] char* localeName,
+            [In, NativeTypeName("BOOL")] int ignoreUserOverride,
             [Out] IDWriteNumberSubstitution** numberSubstitution
         )
         {
@@ -1134,15 +1134,15 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateGlyphRunAnalysis(
             [In] DWRITE_GLYPH_RUN* glyphRun,
-            [In, ComAliasName("FLOAT")] float pixelsPerDip,
+            [In, NativeTypeName("FLOAT")] float pixelsPerDip,
             [In, Optional] DWRITE_MATRIX* transform,
             [In] DWRITE_RENDERING_MODE renderingMode,
             [In] DWRITE_MEASURING_MODE measuringMode,
-            [In, ComAliasName("FLOAT")] float baselineOriginX,
-            [In, ComAliasName("FLOAT")] float baselineOriginY,
+            [In, NativeTypeName("FLOAT")] float baselineOriginX,
+            [In, NativeTypeName("FLOAT")] float baselineOriginY,
             [Out] IDWriteGlyphRunAnalysis** glyphRunAnalysis
         )
         {
@@ -1164,10 +1164,10 @@ namespace TerraFX.Interop
         #endregion
 
         #region IDWriteFactory1 Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetEudcFontCollection(
             [Out] IDWriteFontCollection** fontCollection,
-            [In, ComAliasName("BOOL")] int checkForUpdates = FALSE
+            [In, NativeTypeName("BOOL")] int checkForUpdates = FALSE
         )
         {
             fixed (IDWriteFactory4* This = &this)
@@ -1180,12 +1180,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateCustomRenderingParams1(
-            [In, ComAliasName("FLOAT")] float gamma,
-            [In, ComAliasName("FLOAT")] float enhancedContrast,
-            [In, ComAliasName("FLOAT")] float enhancedContrastGrayscale,
-            [In, ComAliasName("FLOAT")] float clearTypeLevel,
+            [In, NativeTypeName("FLOAT")] float gamma,
+            [In, NativeTypeName("FLOAT")] float enhancedContrast,
+            [In, NativeTypeName("FLOAT")] float enhancedContrastGrayscale,
+            [In, NativeTypeName("FLOAT")] float clearTypeLevel,
             [In] DWRITE_PIXEL_GEOMETRY pixelGeometry,
             [In] DWRITE_RENDERING_MODE renderingMode,
             [Out] IDWriteRenderingParams1** renderingParams
@@ -1208,7 +1208,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region IDWriteFactory2 Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetSystemFontFallback(
             [Out] IDWriteFontFallback** fontFallback
         )
@@ -1222,7 +1222,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateFontFallbackBuilder(
             [Out] IDWriteFontFallbackBuilder** fontFallbackBuilder
         )
@@ -1236,15 +1236,15 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int TranslateColorGlyphRun(
-            [In, ComAliasName("FLOAT")] float baselineOriginX,
-            [In, ComAliasName("FLOAT")] float baselineOriginY,
+            [In, NativeTypeName("FLOAT")] float baselineOriginX,
+            [In, NativeTypeName("FLOAT")] float baselineOriginY,
             [In] DWRITE_GLYPH_RUN* glyphRun,
             [In, Optional] DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
             [In] DWRITE_MEASURING_MODE measuringMode,
             [In, Optional] DWRITE_MATRIX* worldToDeviceTransform,
-            [In, ComAliasName("UINT32")] uint colorPaletteIndex,
+            [In, NativeTypeName("UINT32")] uint colorPaletteIndex,
             [Out] IDWriteColorGlyphRunEnumerator** colorLayers
         )
         {
@@ -1264,12 +1264,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateCustomRenderingParams2(
-            [In, ComAliasName("FLOAT")] float gamma,
-            [In, ComAliasName("FLOAT")] float enhancedContrast,
-            [In, ComAliasName("FLOAT")] float grayscaleEnhancedContrast,
-            [In, ComAliasName("FLOAT")] float clearTypeLevel,
+            [In, NativeTypeName("FLOAT")] float gamma,
+            [In, NativeTypeName("FLOAT")] float enhancedContrast,
+            [In, NativeTypeName("FLOAT")] float grayscaleEnhancedContrast,
+            [In, NativeTypeName("FLOAT")] float clearTypeLevel,
             [In] DWRITE_PIXEL_GEOMETRY pixelGeometry,
             [In] DWRITE_RENDERING_MODE renderingMode,
             [In] DWRITE_GRID_FIT_MODE gridFitMode,
@@ -1292,7 +1292,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateGlyphRunAnalysis1(
             [In] DWRITE_GLYPH_RUN* glyphRun,
             [In, Optional] DWRITE_MATRIX* transform,
@@ -1300,8 +1300,8 @@ namespace TerraFX.Interop
             [In] DWRITE_MEASURING_MODE measuringMode,
             [In] DWRITE_GRID_FIT_MODE gridFitMode,
             [In] DWRITE_TEXT_ANTIALIAS_MODE antialiasMode,
-            [In, ComAliasName("FLOAT")] float baselineOriginX,
-            [In, ComAliasName("FLOAT")] float baselineOriginY,
+            [In, NativeTypeName("FLOAT")] float baselineOriginX,
+            [In, NativeTypeName("FLOAT")] float baselineOriginY,
             [Out] IDWriteGlyphRunAnalysis** glyphRunAnalysis
         )
         {
@@ -1324,7 +1324,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region IDWriteFactory3 Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateGlyphRunAnalysis2(
             [In] DWRITE_GLYPH_RUN* glyphRun,
             [In, Optional] DWRITE_MATRIX* transform,
@@ -1332,8 +1332,8 @@ namespace TerraFX.Interop
             [In] DWRITE_MEASURING_MODE measuringMode,
             [In] DWRITE_GRID_FIT_MODE gridFitMode,
             [In] DWRITE_TEXT_ANTIALIAS_MODE antialiasMode,
-            [In, ComAliasName("FLOAT")] float baselineOriginX,
-            [In, ComAliasName("FLOAT")] float baselineOriginY,
+            [In, NativeTypeName("FLOAT")] float baselineOriginX,
+            [In, NativeTypeName("FLOAT")] float baselineOriginY,
             [Out] IDWriteGlyphRunAnalysis** glyphRunAnalysis
         )
         {
@@ -1354,12 +1354,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateCustomRenderingParams3(
-            [In, ComAliasName("FLOAT")] float gamma,
-            [In, ComAliasName("FLOAT")] float enhancedContrast,
-            [In, ComAliasName("FLOAT")] float grayscaleEnhancedContrast,
-            [In, ComAliasName("FLOAT")] float clearTypeLevel,
+            [In, NativeTypeName("FLOAT")] float gamma,
+            [In, NativeTypeName("FLOAT")] float enhancedContrast,
+            [In, NativeTypeName("FLOAT")] float grayscaleEnhancedContrast,
+            [In, NativeTypeName("FLOAT")] float clearTypeLevel,
             [In] DWRITE_PIXEL_GEOMETRY pixelGeometry,
             [In] DWRITE_RENDERING_MODE1 renderingMode,
             [In] DWRITE_GRID_FIT_MODE gridFitMode,
@@ -1382,11 +1382,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateFontFaceReference(
-            [In, ComAliasName("WCHAR[]")] char* filePath,
+            [In, NativeTypeName("WCHAR[]")] char* filePath,
             [In, Optional] FILETIME* lastWriteTime,
-            [In, ComAliasName("UINT32")] uint faceIndex,
+            [In, NativeTypeName("UINT32")] uint faceIndex,
             [In] DWRITE_FONT_SIMULATIONS fontSimulations,
             [Out] IDWriteFontFaceReference** fontFaceReference
         )
@@ -1404,10 +1404,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateFontFaceReference1(
             [In] IDWriteFontFile* fontFile,
-            [In, ComAliasName("UINT32")] uint faceIndex,
+            [In, NativeTypeName("UINT32")] uint faceIndex,
             [In] DWRITE_FONT_SIMULATIONS fontSimulations,
             [Out] IDWriteFontFaceReference** fontFaceReference
         )
@@ -1424,7 +1424,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetSystemFontSet(
             [Out] IDWriteFontSet** fontSet
         )
@@ -1438,7 +1438,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateFontSetBuilder(
             [Out] IDWriteFontSetBuilder** fontSetBuilder
         )
@@ -1452,7 +1452,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateFontCollectionFromFontSet(
             [In] IDWriteFontSet* fontSet,
             [Out] IDWriteFontCollection1** fontCollection
@@ -1468,11 +1468,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetSystemFontCollection1(
-            [In, ComAliasName("BOOL")] int includeDownloadableFonts,
+            [In, NativeTypeName("BOOL")] int includeDownloadableFonts,
             [Out] IDWriteFontCollection1** fontCollection,
-            [In, ComAliasName("BOOL")] int checkForUpdates = FALSE
+            [In, NativeTypeName("BOOL")] int checkForUpdates = FALSE
         )
         {
             fixed (IDWriteFactory4* This = &this)
@@ -1486,7 +1486,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetFontDownloadQueue(
             [Out] IDWriteFontDownloadQueue** fontDownloadQueue
         )
@@ -1502,15 +1502,15 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int TranslateColorGlyphRun1(
-            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
+            [In, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
             [In] DWRITE_GLYPH_RUN* glyphRun,
             [In, Optional] DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
             [In] DWRITE_GLYPH_IMAGE_FORMATS desiredGlyphImageFormats,
             [In] DWRITE_MEASURING_MODE measuringMode,
             [In, Optional] DWRITE_MATRIX* worldAndDpiTransform,
-            [In, ComAliasName("UINT32")] uint colorPaletteIndex,
+            [In, NativeTypeName("UINT32")] uint colorPaletteIndex,
             [Out] IDWriteColorGlyphRunEnumerator1** colorLayers
         )
         {
@@ -1530,13 +1530,13 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int ComputeGlyphOrigins(
             [In] DWRITE_GLYPH_RUN* glyphRun,
             [In] DWRITE_MEASURING_MODE measuringMode,
-            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
+            [In, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
             [In, Optional] DWRITE_MATRIX* worldAndDpiTransform,
-            [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* glyphOrigins
+            [Out, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F* glyphOrigins
         )
         {
             fixed (IDWriteFactory4* This = &this)
@@ -1552,11 +1552,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int ComputeGlyphOrigins1(
             [In] DWRITE_GLYPH_RUN* glyphRun,
-            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
-            [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* glyphOrigins
+            [In, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F baselineOrigin,
+            [Out, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F* glyphOrigins
         )
         {
             fixed (IDWriteFactory4* This = &this)

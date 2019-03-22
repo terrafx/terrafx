@@ -4,7 +4,6 @@
 // Original source is Copyright © The Open Group.
 
 using System;
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -17,10 +16,10 @@ namespace TerraFX.Interop
 
         public XExtData* next;
 
-        [ComAliasName("free_private")]
+        [NativeTypeName("free_private")]
         public IntPtr free_private;
 
-        [ComAliasName("XPointer")]
+        [NativeTypeName("XPointer")]
         public sbyte* private_data;
         #endregion
     }

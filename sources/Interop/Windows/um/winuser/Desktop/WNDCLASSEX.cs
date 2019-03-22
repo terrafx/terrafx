@@ -14,38 +14,38 @@ namespace TerraFX.Interop.Desktop
     public unsafe struct WNDCLASSEX
     {
         #region Fields
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint cbSize;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint style;
 
-        [ComAliasName("WNDPROC")]
+        [NativeTypeName("WNDPROC")]
         public IntPtr lpfnWndProc;
 
         public int cbClsExtra;
 
         public int cbWndExtra;
 
-        [ComAliasName("HINSTANCE")]
+        [NativeTypeName("HINSTANCE")]
         public IntPtr hInstance;
 
-        [ComAliasName("HICON")]
+        [NativeTypeName("HICON")]
         public IntPtr hIcon;
 
-        [ComAliasName("HCURSOR")]
+        [NativeTypeName("HCURSOR")]
         public IntPtr hCursor;
 
-        [ComAliasName("HBRUSH")]
+        [NativeTypeName("HBRUSH")]
         public IntPtr hbrBackground;
 
-        [ComAliasName("LPCWSTR")]
+        [NativeTypeName("LPCWSTR")]
         public char* lpszMenuName;
 
-        [ComAliasName("LPCWSTR")]
+        [NativeTypeName("LPCWSTR")]
         public char* lpszClassName;
 
-        [ComAliasName("HICON")]
+        [NativeTypeName("HICON")]
         public IntPtr hIconSm;
         #endregion
     }

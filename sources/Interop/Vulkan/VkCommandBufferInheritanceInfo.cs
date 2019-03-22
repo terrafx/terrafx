@@ -3,7 +3,6 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -16,21 +15,21 @@ namespace TerraFX.Interop
 
         public void* pNext;
 
-        [ComAliasName("VkRenderPass")]
+        [NativeTypeName("VkRenderPass")]
         public ulong renderPass;
 
         public uint subpass;
 
-        [ComAliasName("VkFramebuffer")]
+        [NativeTypeName("VkFramebuffer")]
         public ulong framebuffer;
 
-        [ComAliasName("VkBool32")]
+        [NativeTypeName("VkBool32")]
         public uint occlusionQueryEnable;
 
-        [ComAliasName("VkQueryControlFlags")]
+        [NativeTypeName("VkQueryControlFlags")]
         public uint queryFlags;
 
-        [ComAliasName("VkQueryPipelineStatisticFlags")]
+        [NativeTypeName("VkQueryPipelineStatisticFlags")]
         public uint pipelineStatistics;
         #endregion
     }

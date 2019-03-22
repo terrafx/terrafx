@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDWriteTextRenderer* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDWriteTextRenderer* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDWriteTextRenderer* This
         );
@@ -52,11 +52,11 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _IsPixelSnappingDisabled(
             [In] IDWriteTextRenderer* This,
             [In, Optional] void* clientDrawingContext,
-            [Out, ComAliasName("BOOL")] int* isDisabled
+            [Out, NativeTypeName("BOOL")] int* isDisabled
         );
 
         /// <summary>Gets the current transform that maps abstract coordinates to DIPs, which may disable pixel snapping upon any rotation or shear.</summary>
@@ -65,7 +65,7 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetCurrentTransform(
             [In] IDWriteTextRenderer* This,
             [In, Optional] void* clientDrawingContext,
@@ -78,11 +78,11 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetPixelsPerDip(
             [In] IDWriteTextRenderer* This,
             [In, Optional] void* clientDrawingContext,
-            [Out, ComAliasName("FLOAT")] float* pixelsPerDip
+            [Out, NativeTypeName("FLOAT")] float* pixelsPerDip
         );
         #endregion
 
@@ -98,12 +98,12 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _DrawGlyphRun(
             [In] IDWriteTextRenderer* This,
             [In, Optional] void* clientDrawingContext,
-            [In, ComAliasName("FLOAT")] float baselineOriginX,
-            [In, ComAliasName("FLOAT")] float baselineOriginY,
+            [In, NativeTypeName("FLOAT")] float baselineOriginX,
+            [In, NativeTypeName("FLOAT")] float baselineOriginY,
             [In] DWRITE_MEASURING_MODE measuringMode,
             [In] DWRITE_GLYPH_RUN* glyphRun,
             [In] DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
@@ -120,12 +120,12 @@ namespace TerraFX.Interop
         /// <remarks> A single underline can be broken into multiple calls, depending on how the formatting changes attributes. If font sizes/styles change within an underline, the thickness and offset will be averaged weighted according to characters. To get the correct top coordinate of the underline rect, add underline::offset to the baseline's Y. Otherwise the underline will be immediately under the text. The x coordinate will always be passed as the left side, regardless of text directionality. This simplifies drawing and reduces the problem of round-off that could potentially cause gaps or a double stamped alpha blend. To avoid alpha overlap, round the end points to the nearest device pixel.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _DrawUnderline(
             [In] IDWriteTextRenderer* This,
             [In, Optional] void* clientDrawingContext,
-            [In, ComAliasName("FLOAT")] float baselineOriginX,
-            [In, ComAliasName("FLOAT")] float baselineOriginY,
+            [In, NativeTypeName("FLOAT")] float baselineOriginX,
+            [In, NativeTypeName("FLOAT")] float baselineOriginY,
             [In] DWRITE_UNDERLINE* underline,
             [In] IUnknown* clientDrawingEffect = null
         );
@@ -140,12 +140,12 @@ namespace TerraFX.Interop
         /// <remarks> A single strikethrough can be broken into multiple calls, depending on how the formatting changes attributes. Strikethrough is not averaged across font sizes/styles changes. To get the correct top coordinate of the strikethrough rect, add strikethrough::offset to the baseline's Y. Like underlines, the x coordinate will always be passed as the left side, regardless of text directionality.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _DrawStrikethrough(
             [In] IDWriteTextRenderer* This,
             [In, Optional] void* clientDrawingContext,
-            [In, ComAliasName("FLOAT")] float baselineOriginX,
-            [In, ComAliasName("FLOAT")] float baselineOriginY,
+            [In, NativeTypeName("FLOAT")] float baselineOriginX,
+            [In, NativeTypeName("FLOAT")] float baselineOriginY,
             [In] DWRITE_STRIKETHROUGH* strikethrough,
             [In] IUnknown* clientDrawingEffect = null
         );
@@ -162,23 +162,23 @@ namespace TerraFX.Interop
         /// <remarks> The right-to-left flag is a hint for those cases where it would look strange for the image to be shown normally (like an arrow pointing to right to indicate a submenu).</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _DrawInlineObject(
             [In] IDWriteTextRenderer* This,
             [In, Optional] void* clientDrawingContext,
-            [In, ComAliasName("FLOAT")] float originX,
-            [In, ComAliasName("FLOAT")] float originY,
+            [In, NativeTypeName("FLOAT")] float originX,
+            [In, NativeTypeName("FLOAT")] float originY,
             [In] IDWriteInlineObject* inlineObject,
-            [In, ComAliasName("BOOL")] int isSideways,
-            [In, ComAliasName("BOOL")] int isRightToLeft,
+            [In, NativeTypeName("BOOL")] int isSideways,
+            [In, NativeTypeName("BOOL")] int isRightToLeft,
             [In] IUnknown* clientDrawingEffect = null
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -192,7 +192,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDWriteTextRenderer* This = &this)
@@ -203,7 +203,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDWriteTextRenderer* This = &this)
@@ -216,10 +216,10 @@ namespace TerraFX.Interop
         #endregion
 
         #region IDWritePixelSnapping Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int IsPixelSnappingDisabled(
             [In, Optional] void* clientDrawingContext,
-            [Out, ComAliasName("BOOL")] int* isDisabled
+            [Out, NativeTypeName("BOOL")] int* isDisabled
         )
         {
             fixed (IDWriteTextRenderer* This = &this)
@@ -232,7 +232,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetCurrentTransform(
             [In, Optional] void* clientDrawingContext,
             [Out] DWRITE_MATRIX* transform
@@ -248,10 +248,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetPixelsPerDip(
             [In, Optional] void* clientDrawingContext,
-            [Out, ComAliasName("FLOAT")] float* pixelsPerDip
+            [Out, NativeTypeName("FLOAT")] float* pixelsPerDip
         )
         {
             fixed (IDWriteTextRenderer* This = &this)
@@ -266,11 +266,11 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int DrawGlyphRun(
             [In, Optional] void* clientDrawingContext,
-            [In, ComAliasName("FLOAT")] float baselineOriginX,
-            [In, ComAliasName("FLOAT")] float baselineOriginY,
+            [In, NativeTypeName("FLOAT")] float baselineOriginX,
+            [In, NativeTypeName("FLOAT")] float baselineOriginY,
             [In] DWRITE_MEASURING_MODE measuringMode,
             [In] DWRITE_GLYPH_RUN* glyphRun,
             [In] DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription,
@@ -292,11 +292,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int DrawUnderline(
             [In, Optional] void* clientDrawingContext,
-            [In, ComAliasName("FLOAT")] float baselineOriginX,
-            [In, ComAliasName("FLOAT")] float baselineOriginY,
+            [In, NativeTypeName("FLOAT")] float baselineOriginX,
+            [In, NativeTypeName("FLOAT")] float baselineOriginY,
             [In] DWRITE_UNDERLINE* underline,
             [In] IUnknown* clientDrawingEffect = null
         )
@@ -314,11 +314,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int DrawStrikethrough(
             [In, Optional] void* clientDrawingContext,
-            [In, ComAliasName("FLOAT")] float baselineOriginX,
-            [In, ComAliasName("FLOAT")] float baselineOriginY,
+            [In, NativeTypeName("FLOAT")] float baselineOriginX,
+            [In, NativeTypeName("FLOAT")] float baselineOriginY,
             [In] DWRITE_STRIKETHROUGH* strikethrough,
             [In] IUnknown* clientDrawingEffect = null
         )
@@ -336,14 +336,14 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int DrawInlineObject(
             [In, Optional] void* clientDrawingContext,
-            [In, ComAliasName("FLOAT")] float originX,
-            [In, ComAliasName("FLOAT")] float originY,
+            [In, NativeTypeName("FLOAT")] float originX,
+            [In, NativeTypeName("FLOAT")] float originY,
             [In] IDWriteInlineObject* inlineObject,
-            [In, ComAliasName("BOOL")] int isSideways,
-            [In, ComAliasName("BOOL")] int isRightToLeft,
+            [In, NativeTypeName("BOOL")] int isSideways,
+            [In, NativeTypeName("BOOL")] int isRightToLeft,
             [In] IUnknown* clientDrawingEffect = null
         )
         {

@@ -3,7 +3,6 @@
 // Ported from um\d2d1_3.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -17,11 +16,11 @@ namespace TerraFX.Interop
         public D2D1_ORIENTATION orientation;
 
         /// <summary>The horizontal scale factor at which the image source is drawn.</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float scaleX;
 
         /// <summary>The vertical scale factor at which the image source is drawn.</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float scaleY;
 
         /// <summary>The interpolation mode used when the image source is drawn.  This is ignored if the image source is drawn using the DrawImage method, or using an image brush.</summary>

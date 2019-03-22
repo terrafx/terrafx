@@ -18,7 +18,7 @@ namespace TerraFX.Interop
 
         #region union
         [FieldOffset(4)]
-        [ComAliasName("FLOAT[4]")]
+        [NativeTypeName("FLOAT[4]")]
         public fixed float Color[4];
 
         [FieldOffset(4)]

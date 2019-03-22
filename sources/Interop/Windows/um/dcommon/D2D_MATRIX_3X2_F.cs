@@ -42,32 +42,32 @@ namespace TerraFX.Interop
 
         #region struct
         [FieldOffset(0)]
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float _11;
 
         [FieldOffset(4)]
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float _12;
 
         [FieldOffset(8)]
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float _21;
 
         [FieldOffset(12)]
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float _22;
 
         [FieldOffset(16)]
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float _31;
 
         [FieldOffset(20)]
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float _32;
         #endregion
 
         [FieldOffset(0)]
-        [ComAliasName("FLOAT[3][2]")]
+        [NativeTypeName("FLOAT[3][2]")]
         public fixed float m[3 * 2];
         #endregion
     }

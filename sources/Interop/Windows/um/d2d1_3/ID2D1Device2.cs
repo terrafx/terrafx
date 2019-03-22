@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID2D1Device2* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID2D1Device2* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID2D1Device2* This
         );
@@ -59,7 +59,7 @@ namespace TerraFX.Interop
         /// <summary>Creates a new device context with no initially assigned target.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateDeviceContext(
             [In] ID2D1Device2* This,
             [In] D2D1_DEVICE_CONTEXT_OPTIONS options,
@@ -69,7 +69,7 @@ namespace TerraFX.Interop
         /// <summary>Creates a D2D print control.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreatePrintControl(
             [In] ID2D1Device2* This,
             [In] IWICImagingFactory* wicFactory,
@@ -83,13 +83,13 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _SetMaximumTextureMemory(
             [In] ID2D1Device2* This,
-            [In, ComAliasName("UINT64")] ulong maximumInBytes
+            [In, NativeTypeName("UINT64")] ulong maximumInBytes
         );
 
         /// <summary>Gets the maximum amount of texture memory to maintain before evicting caches.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT64")]
+        [return: NativeTypeName("UINT64")]
         public /* static */ delegate ulong _GetMaximumTextureMemory(
             [In] ID2D1Device2* This
         );
@@ -99,7 +99,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _ClearResources(
             [In] ID2D1Device2* This,
-            [In, ComAliasName("UINT32")] uint millisecondsSinceUse = 0
+            [In, NativeTypeName("UINT32")] uint millisecondsSinceUse = 0
         );
         #endregion
 
@@ -122,7 +122,7 @@ namespace TerraFX.Interop
         /// <summary>Creates a new device context with no initially assigned target.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateDeviceContext1(
             [In] ID2D1Device2* This,
             [In] D2D1_DEVICE_CONTEXT_OPTIONS options,
@@ -134,7 +134,7 @@ namespace TerraFX.Interop
         /// <summary>Creates a new device context with no initially assigned target.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateDeviceContext2(
             [In] ID2D1Device2* This,
             [In] D2D1_DEVICE_CONTEXT_OPTIONS options,
@@ -152,7 +152,7 @@ namespace TerraFX.Interop
         /// <summary>Returns the DXGI device associated with this D2D device.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetDxgiDevice(
             [In] ID2D1Device2* This,
             [Out] IDXGIDevice** dxgiDevice
@@ -160,9 +160,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -176,7 +176,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID2D1Device2* This = &this)
@@ -187,7 +187,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID2D1Device2* This = &this)
@@ -215,7 +215,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region ID2D1Device Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateDeviceContext(
             [In] D2D1_DEVICE_CONTEXT_OPTIONS options,
             [Out] ID2D1DeviceContext** deviceContext
@@ -231,7 +231,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreatePrintControl(
             [In] IWICImagingFactory* wicFactory,
             [In] IPrintDocumentPackageTarget* documentTarget,
@@ -252,7 +252,7 @@ namespace TerraFX.Interop
         }
 
         public void SetMaximumTextureMemory(
-            [In, ComAliasName("UINT64")] ulong maximumInBytes
+            [In, NativeTypeName("UINT64")] ulong maximumInBytes
         )
         {
             fixed (ID2D1Device2* This = &this)
@@ -264,7 +264,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("UINT64")]
+        [return: NativeTypeName("UINT64")]
         public ulong GetMaximumTextureMemory()
         {
             fixed (ID2D1Device2* This = &this)
@@ -276,7 +276,7 @@ namespace TerraFX.Interop
         }
 
         public void ClearResources(
-            [In, ComAliasName("UINT32")] uint millisecondsSinceUse = 0
+            [In, NativeTypeName("UINT32")] uint millisecondsSinceUse = 0
         )
         {
             fixed (ID2D1Device2* This = &this)
@@ -313,7 +313,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateDeviceContext1(
             [In] D2D1_DEVICE_CONTEXT_OPTIONS options,
             [Out] ID2D1DeviceContext1** deviceContext1
@@ -331,7 +331,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateDeviceContext2(
             [In] D2D1_DEVICE_CONTEXT_OPTIONS options,
             [Out] ID2D1DeviceContext2** deviceContext2
@@ -360,7 +360,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetDxgiDevice(
             [Out] IDXGIDevice** dxgiDevice
         )

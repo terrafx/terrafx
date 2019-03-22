@@ -3,7 +3,6 @@
 // Ported from um\wingdi.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,10 +11,10 @@ namespace TerraFX.Interop
     public unsafe struct FONTSIGNATURE
     {
         #region Fields
-        [ComAliasName("DWORD[4]")]
+        [NativeTypeName("DWORD[4]")]
         public fixed uint fsUsb[4];
 
-        [ComAliasName("DWORD[2]")]
+        [NativeTypeName("DWORD[2]")]
         public fixed uint fsCsb[2];
         #endregion
     }

@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IWICPalette* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IWICPalette* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IWICPalette* This
         );
@@ -47,35 +47,35 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _InitializePredefined(
             [In] IWICPalette* This,
             [In] WICBitmapPaletteType ePaletteType,
-            [In, ComAliasName("BOOL")] int fAddTransparentColor
+            [In, NativeTypeName("BOOL")] int fAddTransparentColor
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _InitializeCustom(
             [In] IWICPalette* This,
-            [In, ComAliasName("WICColor[]")] uint* pColors,
-            [In, ComAliasName("UINT")] uint cCount
+            [In, NativeTypeName("WICColor[]")] uint* pColors,
+            [In, NativeTypeName("UINT")] uint cCount
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _InitializeFromBitmap(
             [In] IWICPalette* This,
             [In, Optional] IWICBitmapSource* pISurface,
-            [In, ComAliasName("UINT")] uint cCount,
-            [In, ComAliasName("BOOL")] int fAddTransparentColor
+            [In, NativeTypeName("UINT")] uint cCount,
+            [In, NativeTypeName("BOOL")] int fAddTransparentColor
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _InitializeFromPalette(
             [In] IWICPalette* This,
             [In] IWICPalette* pIPalette = null
@@ -83,7 +83,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int __GetType(
             [In] IWICPalette* This,
             [Out] WICBitmapPaletteType* pePaletteType
@@ -91,51 +91,51 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetColorCount(
             [In] IWICPalette* This,
-            [Out, ComAliasName("UINT")] uint* pcCount
+            [Out, NativeTypeName("UINT")] uint* pcCount
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetColors(
             [In] IWICPalette* This,
-            [In, ComAliasName("UINT")] uint cCount,
-            [Out, ComAliasName("WICColor[]")] uint* pColors,
-            [Out, ComAliasName("UINT")] uint* pcActualColors
+            [In, NativeTypeName("UINT")] uint cCount,
+            [Out, NativeTypeName("WICColor[]")] uint* pColors,
+            [Out, NativeTypeName("UINT")] uint* pcActualColors
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _IsBlackWhite(
             [In] IWICPalette* This,
-            [Out, ComAliasName("BOOL")] int* pfIsBlackWhite
+            [Out, NativeTypeName("BOOL")] int* pfIsBlackWhite
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _IsGrayscale(
             [In] IWICPalette* This,
-            [Out, ComAliasName("BOOL")] int* pfIsGrayscale
+            [Out, NativeTypeName("BOOL")] int* pfIsGrayscale
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _HasAlpha(
             [In] IWICPalette* This,
-            [Out, ComAliasName("BOOL")] int* pfHasAlpha
+            [Out, NativeTypeName("BOOL")] int* pfHasAlpha
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -149,7 +149,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IWICPalette* This = &this)
@@ -160,7 +160,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IWICPalette* This = &this)
@@ -173,10 +173,10 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int InitializePredefined(
             [In] WICBitmapPaletteType ePaletteType,
-            [In, ComAliasName("BOOL")] int fAddTransparentColor
+            [In, NativeTypeName("BOOL")] int fAddTransparentColor
         )
         {
             fixed (IWICPalette* This = &this)
@@ -189,10 +189,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int InitializeCustom(
-            [In, ComAliasName("WICColor[]")] uint* pColors,
-            [In, ComAliasName("UINT")] uint cCount
+            [In, NativeTypeName("WICColor[]")] uint* pColors,
+            [In, NativeTypeName("UINT")] uint cCount
         )
         {
             fixed (IWICPalette* This = &this)
@@ -205,11 +205,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int InitializeFromBitmap(
             [In, Optional] IWICBitmapSource* pISurface,
-            [In, ComAliasName("UINT")] uint cCount,
-            [In, ComAliasName("BOOL")] int fAddTransparentColor
+            [In, NativeTypeName("UINT")] uint cCount,
+            [In, NativeTypeName("BOOL")] int fAddTransparentColor
         )
         {
             fixed (IWICPalette* This = &this)
@@ -223,7 +223,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int InitializeFromPalette(
             [In] IWICPalette* pIPalette = null
         )
@@ -237,7 +237,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int _GetType(
             [Out] WICBitmapPaletteType* pePaletteType
         )
@@ -251,9 +251,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetColorCount(
-            [Out, ComAliasName("UINT")] uint* pcCount
+            [Out, NativeTypeName("UINT")] uint* pcCount
         )
         {
             fixed (IWICPalette* This = &this)
@@ -265,11 +265,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetColors(
-            [In, ComAliasName("UINT")] uint cCount,
-            [Out, ComAliasName("WICColor[]")] uint* pColors,
-            [Out, ComAliasName("UINT")] uint* pcActualColors
+            [In, NativeTypeName("UINT")] uint cCount,
+            [Out, NativeTypeName("WICColor[]")] uint* pColors,
+            [Out, NativeTypeName("UINT")] uint* pcActualColors
         )
         {
             fixed (IWICPalette* This = &this)
@@ -283,9 +283,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int IsBlackWhite(
-            [Out, ComAliasName("BOOL")] int* pfIsBlackWhite
+            [Out, NativeTypeName("BOOL")] int* pfIsBlackWhite
         )
         {
             fixed (IWICPalette* This = &this)
@@ -297,9 +297,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int IsGrayscale(
-            [Out, ComAliasName("BOOL")] int* pfIsGrayscale
+            [Out, NativeTypeName("BOOL")] int* pfIsGrayscale
         )
         {
             fixed (IWICPalette* This = &this)
@@ -311,9 +311,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int HasAlpha(
-            [Out, ComAliasName("BOOL")] int* pfHasAlpha
+            [Out, NativeTypeName("BOOL")] int* pfHasAlpha
         )
         {
             fixed (IWICPalette* This = &this)

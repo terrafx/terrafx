@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IWICMetadataBlockWriter* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IWICMetadataBlockWriter* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IWICMetadataBlockWriter* This
         );
@@ -47,32 +47,32 @@ namespace TerraFX.Interop
         #region IWICMetadataBlockReader Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetContainerFormat(
             [In] IWICMetadataBlockWriter* This,
-            [Out, ComAliasName("GUID")] Guid* pguidContainerFormat
+            [Out, NativeTypeName("GUID")] Guid* pguidContainerFormat
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetCount(
             [In] IWICMetadataBlockWriter* This,
-            [Out, ComAliasName("UINT")] uint* pcCount
+            [Out, NativeTypeName("UINT")] uint* pcCount
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetReaderByIndex(
             [In] IWICMetadataBlockWriter* This,
-            [In, ComAliasName("UINT")] uint nIndex,
+            [In, NativeTypeName("UINT")] uint nIndex,
             [Out] IWICMetadataReader** ppIMetadataReader = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetEnumerator(
             [In] IWICMetadataBlockWriter* This,
             [Out] IEnumUnknown** ppIEnumMetadata = null
@@ -82,7 +82,7 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _InitializeFromBlockReader(
             [In] IWICMetadataBlockWriter* This,
             [In] IWICMetadataBlockReader* pIMDBlockReader = null
@@ -90,16 +90,16 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetWriterByIndex(
             [In] IWICMetadataBlockWriter* This,
-            [In, ComAliasName("UINT")] uint nIndex,
+            [In, NativeTypeName("UINT")] uint nIndex,
             [Out] IWICMetadataWriter** ppIMetadataWriter = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _AddWriter(
             [In] IWICMetadataBlockWriter* This,
             [In] IWICMetadataWriter* pIMetadataWriter = null
@@ -107,26 +107,26 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetWriterByIndex(
             [In] IWICMetadataBlockWriter* This,
-            [In, ComAliasName("UINT")] uint nIndex,
+            [In, NativeTypeName("UINT")] uint nIndex,
             [In] IWICMetadataWriter* pIMetadataWriter = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _RemoveWriterByIndex(
             [In] IWICMetadataBlockWriter* This,
-            [In, ComAliasName("UINT")] uint nIndex
+            [In, NativeTypeName("UINT")] uint nIndex
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -140,7 +140,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IWICMetadataBlockWriter* This = &this)
@@ -151,7 +151,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IWICMetadataBlockWriter* This = &this)
@@ -164,9 +164,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region IWICMetadataBlockReader Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetContainerFormat(
-            [Out, ComAliasName("GUID")] Guid* pguidContainerFormat
+            [Out, NativeTypeName("GUID")] Guid* pguidContainerFormat
         )
         {
             fixed (IWICMetadataBlockWriter* This = &this)
@@ -178,9 +178,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetCount(
-            [Out, ComAliasName("UINT")] uint* pcCount
+            [Out, NativeTypeName("UINT")] uint* pcCount
         )
         {
             fixed (IWICMetadataBlockWriter* This = &this)
@@ -192,9 +192,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetReaderByIndex(
-            [In, ComAliasName("UINT")] uint nIndex,
+            [In, NativeTypeName("UINT")] uint nIndex,
             [Out] IWICMetadataReader** ppIMetadataReader = null
         )
         {
@@ -208,7 +208,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetEnumerator(
             [Out] IEnumUnknown** ppIEnumMetadata = null
         )
@@ -224,7 +224,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int InitializeFromBlockReader(
             [In] IWICMetadataBlockReader* pIMDBlockReader = null
         )
@@ -238,9 +238,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetWriterByIndex(
-            [In, ComAliasName("UINT")] uint nIndex,
+            [In, NativeTypeName("UINT")] uint nIndex,
             [Out] IWICMetadataWriter** ppIMetadataWriter = null
         )
         {
@@ -254,7 +254,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int AddWriter(
             [In] IWICMetadataWriter* pIMetadataWriter = null
         )
@@ -268,9 +268,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetWriterByIndex(
-            [In, ComAliasName("UINT")] uint nIndex,
+            [In, NativeTypeName("UINT")] uint nIndex,
             [In] IWICMetadataWriter* pIMetadataWriter = null
         )
         {
@@ -284,9 +284,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int RemoveWriterByIndex(
-            [In, ComAliasName("UINT")] uint nIndex
+            [In, NativeTypeName("UINT")] uint nIndex
         )
         {
             fixed (IWICMetadataBlockWriter* This = &this)

@@ -3,7 +3,6 @@
 // Ported from um\dcommon.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -13,10 +12,10 @@ namespace TerraFX.Interop
     public struct D2D_POINT_2U
     {
         #region Fields
-        [ComAliasName("UINT32")]
+        [NativeTypeName("UINT32")]
         public uint x;
 
-        [ComAliasName("UINT32")]
+        [NativeTypeName("UINT32")]
         public uint y;
         #endregion
     }

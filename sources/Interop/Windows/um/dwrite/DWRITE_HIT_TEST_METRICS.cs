@@ -3,7 +3,6 @@
 // Ported from um\dwrite.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -14,39 +13,39 @@ namespace TerraFX.Interop
     {
         #region Fields
         /// <summary>First text position within the geometry.</summary>
-        [ComAliasName("UINT32")]
+        [NativeTypeName("UINT32")]
         public uint textPosition;
 
         /// <summary>Number of text positions within the geometry.</summary>
-        [ComAliasName("UINT32")]
+        [NativeTypeName("UINT32")]
         public uint length;
 
         /// <summary>Left position of the top-left coordinate of the geometry.</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float left;
 
         /// <summary>Top position of the top-left coordinate of the geometry.</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float top;
 
         /// <summary>Geometry's width.</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float width;
 
         /// <summary>Geometry's height.</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float height;
 
         /// <summary>Bidi level of text positions enclosed within the geometry.</summary>
-        [ComAliasName("UINT32")]
+        [NativeTypeName("UINT32")]
         public uint bidiLevel;
 
         /// <summary>Geometry encloses text?</summary>
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int isText;
 
         /// <summary>Range is trimmed.</summary>
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int isTrimmed;
         #endregion
     }

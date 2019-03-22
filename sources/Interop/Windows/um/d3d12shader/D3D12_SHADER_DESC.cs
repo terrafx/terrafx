@@ -3,7 +3,6 @@
 // Ported from um\d3d12shader.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,98 +11,98 @@ namespace TerraFX.Interop
     public unsafe struct D3D12_SHADER_DESC
     {
         #region Fields
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Version;
 
-        [ComAliasName("LPCSTR")]
+        [NativeTypeName("LPCSTR")]
         public sbyte* Creator;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Flags;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint ConstantBuffers;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint BoundResources;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint InputParameters;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint OutputParameters;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint InstructionCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint TempRegisterCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint TempArrayCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint DefCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint DclCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint TextureNormalInstructions;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint TextureLoadInstructions;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint TextureCompInstructions;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint TextureBiasInstructions;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint TextureGradientInstructions;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint FloatInstructionCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint IntInstructionCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint UintInstructionCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint StaticFlowControlCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint DynamicFlowControlCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint MacroInstructionCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint ArrayInstructionCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint CutInstructionCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint EmitInstructionCount;
 
         public D3D_PRIMITIVE_TOPOLOGY GSOutputTopology;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint GSMaxOutputVertexCount;
 
         public D3D_PRIMITIVE InputPrimitive;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint PatchConstantParameters;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint cGSInstanceCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint cControlPoints;
 
         public D3D_TESSELLATOR_OUTPUT_PRIMITIVE HSOutputPrimitive;
@@ -112,13 +111,13 @@ namespace TerraFX.Interop
 
         public D3D_TESSELLATOR_DOMAIN TessellatorDomain;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint cBarrierInstructions;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint cInterlockedInstructions;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint cTextureStoreInstructions;
         #endregion
     }

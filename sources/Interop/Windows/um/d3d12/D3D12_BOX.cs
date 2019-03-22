@@ -3,7 +3,6 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,22 +11,22 @@ namespace TerraFX.Interop
     public struct D3D12_BOX
     {
         #region Fields
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint left;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint top;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint front;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint right;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint bottom;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint back;
         #endregion
     }

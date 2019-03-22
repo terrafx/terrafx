@@ -3,7 +3,6 @@
 // Ported from shared\windef.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,16 +11,16 @@ namespace TerraFX.Interop
     public struct RECT
     {
         #region Fields
-        [ComAliasName("LONG")]
+        [NativeTypeName("LONG")]
         public int left;
 
-        [ComAliasName("LONG")]
+        [NativeTypeName("LONG")]
         public int top;
 
-        [ComAliasName("LONG")]
+        [NativeTypeName("LONG")]
         public int right;
 
-        [ComAliasName("LONG")]
+        [NativeTypeName("LONG")]
         public int bottom;
         #endregion
     }

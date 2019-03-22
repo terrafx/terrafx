@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDWriteTextAnalysisSink1* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDWriteTextAnalysisSink1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDWriteTextAnalysisSink1* This
         );
@@ -53,11 +53,11 @@ namespace TerraFX.Interop
         /// <returns>A successful code or error code to abort analysis.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetScriptAnalysis(
             [In] IDWriteTextAnalysisSink1* This,
-            [In, ComAliasName("UINT32")] uint textPosition,
-            [In, ComAliasName("UINT32")] uint textLength,
+            [In, NativeTypeName("UINT32")] uint textPosition,
+            [In, NativeTypeName("UINT32")] uint textLength,
             [In] DWRITE_SCRIPT_ANALYSIS* scriptAnalysis
         );
 
@@ -68,11 +68,11 @@ namespace TerraFX.Interop
         /// <returns>A successful code or error code to abort analysis.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetLineBreakpoints(
             [In] IDWriteTextAnalysisSink1* This,
-            [In, ComAliasName("UINT32")] uint textPosition,
-            [In, ComAliasName("UINT32")] uint textLength,
+            [In, NativeTypeName("UINT32")] uint textPosition,
+            [In, NativeTypeName("UINT32")] uint textLength,
             [In] DWRITE_LINE_BREAKPOINT* lineBreakpoints
         );
 
@@ -84,13 +84,13 @@ namespace TerraFX.Interop
         /// <returns>A successful code or error code to abort analysis.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetBidiLevel(
             [In] IDWriteTextAnalysisSink1* This,
-            [In, ComAliasName("UINT32")] uint textPosition,
-            [In, ComAliasName("UINT32")] uint textLength,
-            [In, ComAliasName("UINT8")] byte explicitLevel,
-            [In, ComAliasName("UINT8")] byte resolvedLevel
+            [In, NativeTypeName("UINT32")] uint textPosition,
+            [In, NativeTypeName("UINT32")] uint textLength,
+            [In, NativeTypeName("UINT8")] byte explicitLevel,
+            [In, NativeTypeName("UINT8")] byte resolvedLevel
         );
 
         /// <summary>Set number substitution on the range.</summary>
@@ -101,11 +101,11 @@ namespace TerraFX.Interop
         /// <remark> Unlike script and bidi analysis, where every character passed to the analyzer has a result, this will only be called for those ranges where substitution is applicable. For any other range, you will simply not be called.</remark>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetNumberSubstitution(
             [In] IDWriteTextAnalysisSink1* This,
-            [In, ComAliasName("UINT32")] uint textPosition,
-            [In, ComAliasName("UINT32")] uint textLength,
+            [In, NativeTypeName("UINT32")] uint textPosition,
+            [In, NativeTypeName("UINT32")] uint textLength,
             [In] IDWriteNumberSubstitution* numberSubstitution
         );
         #endregion
@@ -121,22 +121,22 @@ namespace TerraFX.Interop
         /// <returns> A successful code or error code to abort analysis.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetGlyphOrientation(
             [In] IDWriteTextAnalysisSink1* This,
-            [In, ComAliasName("UINT32")] uint textPosition,
-            [In, ComAliasName("UINT32")] uint textLength,
+            [In, NativeTypeName("UINT32")] uint textPosition,
+            [In, NativeTypeName("UINT32")] uint textLength,
             [In] DWRITE_GLYPH_ORIENTATION_ANGLE glyphOrientationAngle,
-            [In, ComAliasName("UINT8")] byte adjustedBidiLevel,
-            [In, ComAliasName("BOOL")] int isSideways,
-            [In, ComAliasName("BOOL")] int isRightToLeft
+            [In, NativeTypeName("UINT8")] byte adjustedBidiLevel,
+            [In, NativeTypeName("BOOL")] int isSideways,
+            [In, NativeTypeName("BOOL")] int isRightToLeft
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -150,7 +150,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDWriteTextAnalysisSink1* This = &this)
@@ -161,7 +161,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDWriteTextAnalysisSink1* This = &this)
@@ -174,10 +174,10 @@ namespace TerraFX.Interop
         #endregion
 
         #region IDWriteTextAnalysisSink Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetScriptAnalysis(
-            [In, ComAliasName("UINT32")] uint textPosition,
-            [In, ComAliasName("UINT32")] uint textLength,
+            [In, NativeTypeName("UINT32")] uint textPosition,
+            [In, NativeTypeName("UINT32")] uint textLength,
             [In] DWRITE_SCRIPT_ANALYSIS* scriptAnalysis
         )
         {
@@ -192,10 +192,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetLineBreakpoints(
-            [In, ComAliasName("UINT32")] uint textPosition,
-            [In, ComAliasName("UINT32")] uint textLength,
+            [In, NativeTypeName("UINT32")] uint textPosition,
+            [In, NativeTypeName("UINT32")] uint textLength,
             [In] DWRITE_LINE_BREAKPOINT* lineBreakpoints
         )
         {
@@ -210,12 +210,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetBidiLevel(
-            [In, ComAliasName("UINT32")] uint textPosition,
-            [In, ComAliasName("UINT32")] uint textLength,
-            [In, ComAliasName("UINT8")] byte explicitLevel,
-            [In, ComAliasName("UINT8")] byte resolvedLevel
+            [In, NativeTypeName("UINT32")] uint textPosition,
+            [In, NativeTypeName("UINT32")] uint textLength,
+            [In, NativeTypeName("UINT8")] byte explicitLevel,
+            [In, NativeTypeName("UINT8")] byte resolvedLevel
         )
         {
             fixed (IDWriteTextAnalysisSink1* This = &this)
@@ -230,10 +230,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetNumberSubstitution(
-            [In, ComAliasName("UINT32")] uint textPosition,
-            [In, ComAliasName("UINT32")] uint textLength,
+            [In, NativeTypeName("UINT32")] uint textPosition,
+            [In, NativeTypeName("UINT32")] uint textLength,
             [In] IDWriteNumberSubstitution* numberSubstitution
         )
         {
@@ -250,14 +250,14 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetGlyphOrientation(
-            [In, ComAliasName("UINT32")] uint textPosition,
-            [In, ComAliasName("UINT32")] uint textLength,
+            [In, NativeTypeName("UINT32")] uint textPosition,
+            [In, NativeTypeName("UINT32")] uint textLength,
             [In] DWRITE_GLYPH_ORIENTATION_ANGLE glyphOrientationAngle,
-            [In, ComAliasName("UINT8")] byte adjustedBidiLevel,
-            [In, ComAliasName("BOOL")] int isSideways,
-            [In, ComAliasName("BOOL")] int isRightToLeft
+            [In, NativeTypeName("UINT8")] byte adjustedBidiLevel,
+            [In, NativeTypeName("BOOL")] int isSideways,
+            [In, NativeTypeName("BOOL")] int isRightToLeft
         )
         {
             fixed (IDWriteTextAnalysisSink1* This = &this)

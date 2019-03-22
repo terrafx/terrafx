@@ -3,7 +3,6 @@
 // Ported from um\d2d1_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -13,7 +12,7 @@ namespace TerraFX.Interop
     public struct D2D1_IMAGE_BRUSH_PROPERTIES
     {
         #region Fields
-        [ComAliasName("D2D1_RECT_F")]
+        [NativeTypeName("D2D1_RECT_F")]
         public D2D_RECT_F sourceRectangle;
 
         public D2D1_EXTEND_MODE extendModeX;

@@ -3,7 +3,6 @@
 // Ported from um\propidlbase.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,10 +11,10 @@ namespace TerraFX.Interop
     public unsafe struct CADATE
     {
         #region Fields
-        [ComAliasName("ULONG")]
+        [NativeTypeName("ULONG")]
         public uint cElems;
 
-        [ComAliasName("DATE[]")]
+        [NativeTypeName("DATE[]")]
         public double* pElems;
         #endregion
     }

@@ -3,7 +3,6 @@
 // Ported from um\dwrite_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -14,20 +13,20 @@ namespace TerraFX.Interop
     {
         #region Fields
         /// <summary>The standardized four character code for the given script. Note these only include the general Unicode scripts, not any additional ISO 15924 scripts for bibliographic distinction (for example, Fraktur Latin vs Gaelic Latin). http://unicode.org/iso15924/iso15924-codes.html</summary>
-        [ComAliasName("UINT32")]
+        [NativeTypeName("UINT32")]
         public uint isoScriptCode;
 
         /// <summary>The standardized numeric code, ranging 0-999. http://unicode.org/iso15924/iso15924-codes.html</summary>
-        [ComAliasName("UINT32")]
+        [NativeTypeName("UINT32")]
         public uint isoScriptNumber;
 
         /// <summary>Number of characters to estimate look-ahead for complex scripts. Latin and all Kana are generally 1. Indic scripts are up to 15, and most others are 8. Note that combining marks and variation selectors can produce clusters longer than these look-aheads, so this estimate is considered typical language use. Diacritics must be tested explicitly separately.</summary>
-        [ComAliasName("UINT32")]
+        [NativeTypeName("UINT32")]
         public uint clusterLookahead;
 
         /// <summary>Appropriate character to elongate the given script for justification.
         /// Examples: Arabic    - U+0640 Tatweel Ogham     - U+1680 Ogham Space Mark</summary>
-        [ComAliasName("UINT32")]
+        [NativeTypeName("UINT32")]
         public uint justificationCharacter;
 
         private uint _bitField;
@@ -35,7 +34,7 @@ namespace TerraFX.Interop
 
         #region Properties
         /// <summary>Restrict the caret to whole clusters, like Thai and Devanagari. Scripts such as Arabic by default allow navigation between clusters. Others like Thai always navigate across whole clusters.</summary>
-        [ComAliasName("UINT32:1")]
+        [NativeTypeName("UINT32:1")]
         public uint restrictCaretToClusters
         {
             get
@@ -51,7 +50,7 @@ namespace TerraFX.Interop
 
         /// <summary>The language uses dividers between words, such as spaces between Latin or the Ethiopic wordspace.
         /// Examples: Latin, Greek, Devanagari, Ethiopic Excludes: Chinese, Korean, Thai.</summary>
-        [ComAliasName("UINT32:1")]
+        [NativeTypeName("UINT32:1")]
         public uint usesWordDividers
         {
             get
@@ -67,7 +66,7 @@ namespace TerraFX.Interop
 
         /// <summary>The characters are discrete units from each other. This includes both block scripts and clustered scripts.
         /// Examples: Latin, Greek, Cyrillic, Hebrew, Chinese, Thai</summary>
-        [ComAliasName("UINT32:1")]
+        [NativeTypeName("UINT32:1")]
         public uint isDiscreteWriting
         {
             get
@@ -83,7 +82,7 @@ namespace TerraFX.Interop
 
         /// <summary>The language is a block script, expanding between characters.
         /// Examples: Chinese, Japanese, Korean, Bopomofo.</summary>
-        [ComAliasName("UINT32:1")]
+        [NativeTypeName("UINT32:1")]
         public uint isBlockWriting
         {
             get
@@ -99,7 +98,7 @@ namespace TerraFX.Interop
 
         /// <summary>The language is justified within glyph clusters, not just between glyph clusters. One such as the character sequence is Thai Lu and Sara Am (U+E026, U+E033) which form a single cluster but still expand between them.
         /// Examples: Thai, Lao, Khmer</summary>
-        [ComAliasName("UINT32:1")]
+        [NativeTypeName("UINT32:1")]
         public uint isDistributedWithinCluster
         {
             get
@@ -115,7 +114,7 @@ namespace TerraFX.Interop
 
         /// <summary>The script's clusters are connected to each other (such as the baseline-linked Devanagari), and no separation should be added between characters. Note that cursively linked scripts like Arabic are also connected (but not all connected scripts are cursive).
         /// Examples: Devanagari, Arabic, Syriac, Bengali, Gurmukhi, Ogham Excludes: Latin, Chinese, Thaana</summary>
-        [ComAliasName("UINT32:1")]
+        [NativeTypeName("UINT32:1")]
         public uint isConnectedWriting
         {
             get
@@ -131,7 +130,7 @@ namespace TerraFX.Interop
 
         /// <summary>The script is naturally cursive (Arabic/Syriac), meaning it uses other justification methods like kashida extension rather than intercharacter spacing. Note that although other scripts like Latin and Japanese may actually support handwritten cursive forms, they are not considered cursive scripts.
         /// Examples: Arabic, Syriac, Mongolian Excludes: Thaana, Devanagari, Latin, Chinese</summary>
-        [ComAliasName("UINT32:1")]
+        [NativeTypeName("UINT32:1")]
         public uint isCursiveWriting
         {
             get
@@ -145,7 +144,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [ComAliasName("UINT32:25")]
+        [NativeTypeName("UINT32:25")]
         public uint reserved
         {
             get

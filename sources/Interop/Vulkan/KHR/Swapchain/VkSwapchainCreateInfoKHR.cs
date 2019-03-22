@@ -4,7 +4,6 @@
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
 using System;
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -17,10 +16,10 @@ namespace TerraFX.Interop
 
         public void* pNext;
 
-        [ComAliasName("VkSwapchainCreateFlagsKHR")]
+        [NativeTypeName("VkSwapchainCreateFlagsKHR")]
         public uint flags;
 
-        [ComAliasName("VkSurfaceKHR")]
+        [NativeTypeName("VkSurfaceKHR")]
         public IntPtr surface;
 
         public uint minImageCount;
@@ -33,14 +32,14 @@ namespace TerraFX.Interop
 
         public uint imageArrayLayers;
 
-        [ComAliasName("VkImageUsageFlags")]
+        [NativeTypeName("VkImageUsageFlags")]
         public uint imageUsage;
 
         public VkSharingMode imageSharingMode;
 
         public uint queueFamilyIndexCount;
 
-        [ComAliasName("uint[]")]
+        [NativeTypeName("uint[]")]
         public uint* pQueueFamilyIndices;
 
         public VkSurfaceTransformFlagBitsKHR preTransform;
@@ -49,10 +48,10 @@ namespace TerraFX.Interop
 
         public VkPresentModeKHR presentMode;
 
-        [ComAliasName("VkBool32")]
+        [NativeTypeName("VkBool32")]
         public uint clipped;
 
-        [ComAliasName("VkSwapchainKHR")]
+        [NativeTypeName("VkSwapchainKHR")]
         public IntPtr oldSwapchain;
         #endregion
     }

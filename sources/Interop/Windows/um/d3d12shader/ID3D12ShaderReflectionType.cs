@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetDesc(
             [In] ID3D12ShaderReflectionType* This,
             [Out] D3D12_SHADER_TYPE_DESC* pDesc
@@ -32,27 +32,27 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate ID3D12ShaderReflectionType* _GetMemberTypeByIndex(
             [In] ID3D12ShaderReflectionType* This,
-            [In, ComAliasName("UINT")] uint Index
+            [In, NativeTypeName("UINT")] uint Index
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate ID3D12ShaderReflectionType* _GetMemberTypeByName(
             [In] ID3D12ShaderReflectionType* This,
-            [In, ComAliasName("LPCSTR")] sbyte* Name
+            [In, NativeTypeName("LPCSTR")] sbyte* Name
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("LPSTR")]
+        [return: NativeTypeName("LPSTR")]
         public /* static */ delegate sbyte* _GetMemberTypeName(
             [In] ID3D12ShaderReflectionType* This,
-            [In, ComAliasName("UINT")] uint Index
+            [In, NativeTypeName("UINT")] uint Index
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _IsEqual(
             [In] ID3D12ShaderReflectionType* This,
             [In] ID3D12ShaderReflectionType* pType
@@ -80,12 +80,12 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate ID3D12ShaderReflectionType* _GetInterfaceByIndex(
             [In] ID3D12ShaderReflectionType* This,
-            [In, ComAliasName("UINT")] uint uIndex
+            [In, NativeTypeName("UINT")] uint uIndex
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _IsOfType(
             [In] ID3D12ShaderReflectionType* This,
             [In] ID3D12ShaderReflectionType* pType
@@ -93,7 +93,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _ImplementsInterface(
             [In] ID3D12ShaderReflectionType* This,
             [In] ID3D12ShaderReflectionType* pBase
@@ -101,7 +101,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetDesc(
             [Out] D3D12_SHADER_TYPE_DESC* pDesc
         )
@@ -116,7 +116,7 @@ namespace TerraFX.Interop
         }
 
         public ID3D12ShaderReflectionType* GetMemberTypeByIndex(
-            [In, ComAliasName("UINT")] uint Index
+            [In, NativeTypeName("UINT")] uint Index
         )
         {
             fixed (ID3D12ShaderReflectionType* This = &this)
@@ -129,7 +129,7 @@ namespace TerraFX.Interop
         }
 
         public ID3D12ShaderReflectionType* GetMemberTypeByName(
-            [In, ComAliasName("LPCSTR")] sbyte* Name
+            [In, NativeTypeName("LPCSTR")] sbyte* Name
         )
         {
             fixed (ID3D12ShaderReflectionType* This = &this)
@@ -141,9 +141,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("LPSTR")]
+        [return: NativeTypeName("LPSTR")]
         public sbyte* GetMemberTypeName(
-            [In, ComAliasName("UINT")] uint Index
+            [In, NativeTypeName("UINT")] uint Index
         )
         {
             fixed (ID3D12ShaderReflectionType* This = &this)
@@ -155,7 +155,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int IsEqual(
             [In] ID3D12ShaderReflectionType* pType
         )
@@ -200,7 +200,7 @@ namespace TerraFX.Interop
         }
 
         public ID3D12ShaderReflectionType* GetInterfaceByIndex(
-            [In, ComAliasName("UINT")] uint uIndex
+            [In, NativeTypeName("UINT")] uint uIndex
         )
         {
             fixed (ID3D12ShaderReflectionType* This = &this)
@@ -212,7 +212,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int IsOfType(
             [In] ID3D12ShaderReflectionType* pType
         )
@@ -226,7 +226,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int ImplementsInterface(
             [In] ID3D12ShaderReflectionType* pBase
         )

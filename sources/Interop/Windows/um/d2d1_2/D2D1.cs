@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
@@ -26,9 +27,9 @@ namespace TerraFX.Interop
         #region External Methods
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1ComputeMaximumScaleFactor", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("FLOAT")]
+        [return: NativeTypeName("FLOAT")]
         public static extern float D2D1ComputeMaximumScaleFactor(
-            [In, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* matrix
+            [In, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* matrix
         );
         #endregion
     }

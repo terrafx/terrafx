@@ -3,7 +3,6 @@
 // Ported from um\d2d1_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -17,7 +16,7 @@ namespace TerraFX.Interop
         public D2D1_BUFFER_PRECISION bufferPrecision;
 
         /// <summary>The size of allocated tiles used to render imaging effects.</summary>
-        [ComAliasName("D2D1_SIZE_U")]
+        [NativeTypeName("D2D1_SIZE_U")]
         public D2D_SIZE_U tileSize;
         #endregion
     }

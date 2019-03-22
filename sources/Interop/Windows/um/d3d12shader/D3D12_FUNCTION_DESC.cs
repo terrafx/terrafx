@@ -3,7 +3,6 @@
 // Ported from um\d3d12shader.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,102 +11,102 @@ namespace TerraFX.Interop
     public unsafe struct D3D12_FUNCTION_DESC
     {
         #region Fields
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Version;
 
-        [ComAliasName("LPCSTR")]
+        [NativeTypeName("LPCSTR")]
         public sbyte* Creator;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Flags;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint ConstantBuffers;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint BoundResources;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint InstructionCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint TempRegisterCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint TempArrayCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint DefCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint DclCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint TextureNormalInstructions;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint TextureLoadInstructions;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint TextureCompInstructions;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint TextureBiasInstructions;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint TextureGradientInstructions;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint FloatInstructionCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint IntInstructionCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint UintInstructionCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint StaticFlowControlCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint DynamicFlowControlCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint MacroInstructionCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint ArrayInstructionCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint MovInstructionCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint MovcInstructionCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint ConversionInstructionCount;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint BitwiseInstructionCount;
 
         public D3D_FEATURE_LEVEL MinFeatureLevel;
 
-        [ComAliasName("UINT64")]
+        [NativeTypeName("UINT64")]
         public ulong RequiredFeatureFlags;
 
-        [ComAliasName("LPCSTR")]
+        [NativeTypeName("LPCSTR")]
         public sbyte* Name;
 
-        [ComAliasName("INT")]
+        [NativeTypeName("INT")]
         public int FunctionParameterCount;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int HasReturn;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int Has10Level9VertexShader;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int Has10Level9PixelShader;
         #endregion
     }

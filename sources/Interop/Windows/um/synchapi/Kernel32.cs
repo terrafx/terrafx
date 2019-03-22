@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
@@ -14,20 +15,20 @@ namespace TerraFX.Interop
         #region Extern Methods
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CreateEventW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("HANDLE")]
+        [return: NativeTypeName("HANDLE")]
         public static extern IntPtr CreateEvent(
-            [In, Optional, ComAliasName("LPSECURITY_ATTRIBUTES")] SECURITY_ATTRIBUTES* lpEventAttributes,
-            [In, ComAliasName("BOOL")] int bManualReset,
-            [In, ComAliasName("BOOL")] int bInitialState,
-            [In, ComAliasName("LPCWSTR")] char* lpName = null
+            [In, Optional, NativeTypeName("LPSECURITY_ATTRIBUTES")] SECURITY_ATTRIBUTES* lpEventAttributes,
+            [In, NativeTypeName("BOOL")] int bManualReset,
+            [In, NativeTypeName("BOOL")] int bInitialState,
+            [In, NativeTypeName("LPCWSTR")] char* lpName = null
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "WaitForSingleObject", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("DWORD")]
+        [return: NativeTypeName("DWORD")]
         public static extern uint WaitForSingleObject(
-            [In, ComAliasName("HANDLE")] IntPtr hHandle,
-            [In, ComAliasName("DWORD")] uint dwMilliseconds
+            [In, NativeTypeName("HANDLE")] IntPtr hHandle,
+            [In, NativeTypeName("DWORD")] uint dwMilliseconds
         );
         #endregion
     }

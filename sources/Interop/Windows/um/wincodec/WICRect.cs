@@ -3,7 +3,6 @@
 // Ported from um\wincodec.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,16 +11,16 @@ namespace TerraFX.Interop
     public struct WICRect
     {
         #region Fields
-        [ComAliasName("INT")]
+        [NativeTypeName("INT")]
         public int X;
 
-        [ComAliasName("INT")]
+        [NativeTypeName("INT")]
         public int Y;
 
-        [ComAliasName("INT")]
+        [NativeTypeName("INT")]
         public int Width;
 
-        [ComAliasName("INT")]
+        [NativeTypeName("INT")]
         public int Height;
         #endregion
     }

@@ -5,16 +5,17 @@
 
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Function pointer that sets a property on an effect.</summary>
     [SuppressUnmanagedCodeSecurity]
     [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-    [return: ComAliasName("HRESULT")]
+    [return: NativeTypeName("HRESULT")]
     public /* static */ unsafe delegate int PD2D1_PROPERTY_SET_FUNCTION(
         [In] IUnknown* effect,
-        [In, ComAliasName("BYTE[]")] byte* data,
-        [In, ComAliasName("UINT32")] uint dataSize
+        [In, NativeTypeName("BYTE[]")] byte* data,
+        [In, NativeTypeName("UINT32")] uint dataSize
     );
 }

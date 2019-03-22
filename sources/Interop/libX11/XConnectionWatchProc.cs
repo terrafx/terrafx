@@ -6,16 +6,17 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     [SuppressUnmanagedCodeSecurity]
     [UnmanagedFunctionPointer(CallingConvention.Cdecl, BestFitMapping = false, CharSet = CharSet.Ansi, SetLastError = false, ThrowOnUnmappableChar = false)]
     public /* static */ unsafe delegate void XConnectionWatchProc(
-        [In, ComAliasName("Display")] IntPtr display,
-        [In, ComAliasName("XPointer")] sbyte* client_data,
+        [In, NativeTypeName("Display")] IntPtr display,
+        [In, NativeTypeName("XPointer")] sbyte* client_data,
         [In] int fx,
-        [In, ComAliasName("Bool")] int opening,
-        [In, ComAliasName("XPointer")] sbyte** watch_data
+        [In, NativeTypeName("Bool")] int opening,
+        [In, NativeTypeName("XPointer")] sbyte** watch_data
     );
 }

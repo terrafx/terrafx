@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDWriteGdiInterop1* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDWriteGdiInterop1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDWriteGdiInterop1* This
         );
@@ -52,7 +52,7 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateFontFromLOGFONT(
             [In] IDWriteGdiInterop1* This,
             [In] LOGFONT* logFont,
@@ -66,12 +66,12 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _ConvertFontToLOGFONT(
             [In] IDWriteGdiInterop1* This,
             [In] IDWriteFont* font,
             [Out] LOGFONT* logFont,
-            [Out, ComAliasName("BOOL")] int* isSystemFont
+            [Out, NativeTypeName("BOOL")] int* isSystemFont
         );
 
         /// <summary>Initializes a LOGFONT public structure based on the GDI-compatible properties of the specified font.</summary>
@@ -80,7 +80,7 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _ConvertFontFaceToLOGFONT(
             [In] IDWriteGdiInterop1* This,
             [In] IDWriteFontFace* font,
@@ -93,10 +93,10 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateFontFaceFromHdc(
             [In] IDWriteGdiInterop1* This,
-            [In, ComAliasName("HDC")] IntPtr hdc,
+            [In, NativeTypeName("HDC")] IntPtr hdc,
             [Out] IDWriteFontFace** fontFace
         );
 
@@ -107,12 +107,12 @@ namespace TerraFX.Interop
         /// <param name="renderTarget">Receives a pointer to the newly created render target.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateBitmapRenderTarget(
             [In] IDWriteGdiInterop1* This,
-            [In, Optional, ComAliasName("HDC")] IntPtr hdc,
-            [In, ComAliasName("UINT32")] uint width,
-            [In, ComAliasName("UINT32")] uint height,
+            [In, Optional, NativeTypeName("HDC")] IntPtr hdc,
+            [In, NativeTypeName("UINT32")] uint width,
+            [In, NativeTypeName("UINT32")] uint height,
             [Out] IDWriteBitmapRenderTarget** renderTarget
         );
         #endregion
@@ -126,7 +126,7 @@ namespace TerraFX.Interop
         /// <remarks> The only fields that matter include: lfFaceName, lfCharSet, lfWeight, lfItalic. Font size and rendering mode are a rendering time property, not a font property, and text decorations like underline are drawn separately from the text. If no font matches the given weight, slope, and character set, the best match within the given GDI family name will be returned. DWRITE_E_NOFONT is returned if there is no matching font name using either the GDI family name (e.g. Arial) or the full font name (e.g. Arial Bold Italic).</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateFontFromLOGFONT1(
             [In] IDWriteGdiInterop1* This,
             [In] LOGFONT* logFont,
@@ -140,7 +140,7 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetFontSignature(
             [In] IDWriteGdiInterop1* This,
             [In] IDWriteFont* font,
@@ -153,7 +153,7 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetFontSignature1(
             [In] IDWriteGdiInterop1* This,
             [In] IDWriteFontFace* fontFace,
@@ -164,7 +164,7 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetMatchingFontsByLOGFONT(
             [In] IDWriteGdiInterop1* This,
             [In] LOGFONT* logFont,
@@ -174,9 +174,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -190,7 +190,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDWriteGdiInterop1* This = &this)
@@ -201,7 +201,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDWriteGdiInterop1* This = &this)
@@ -214,7 +214,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region IDWriteGdiInterop Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateFontFromLOGFONT(
             [In] LOGFONT* logFont,
             [Out] IDWriteFont** font
@@ -230,11 +230,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int ConvertFontToLOGFONT(
             [In] IDWriteFont* font,
             [Out] LOGFONT* logFont,
-            [Out, ComAliasName("BOOL")] int* isSystemFont
+            [Out, NativeTypeName("BOOL")] int* isSystemFont
         )
         {
             fixed (IDWriteGdiInterop1* This = &this)
@@ -248,7 +248,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int ConvertFontFaceToLOGFONT(
             [In] IDWriteFontFace* font,
             [Out] LOGFONT* logFont
@@ -264,9 +264,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateFontFaceFromHdc(
-            [In, ComAliasName("HDC")] IntPtr hdc,
+            [In, NativeTypeName("HDC")] IntPtr hdc,
             [Out] IDWriteFontFace** fontFace
         )
         {
@@ -280,11 +280,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateBitmapRenderTarget(
-            [In, Optional, ComAliasName("HDC")] IntPtr hdc,
-            [In, ComAliasName("UINT32")] uint width,
-            [In, ComAliasName("UINT32")] uint height,
+            [In, Optional, NativeTypeName("HDC")] IntPtr hdc,
+            [In, NativeTypeName("UINT32")] uint width,
+            [In, NativeTypeName("UINT32")] uint height,
             [Out] IDWriteBitmapRenderTarget** renderTarget
         )
         {
@@ -302,7 +302,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateFontFromLOGFONT1(
             [In] LOGFONT* logFont,
             [In, Optional] IDWriteFontCollection* fontCollection,
@@ -320,7 +320,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetFontSignature(
             [In] IDWriteFont* font,
             [Out] FONTSIGNATURE* fontSignature
@@ -336,7 +336,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetFontSignature1(
             [In] IDWriteFontFace* fontFace,
             [Out] FONTSIGNATURE* fontSignature
@@ -352,7 +352,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetMatchingFontsByLOGFONT(
             [In] LOGFONT* logFont,
             [In] IDWriteFontSet* fontSet,

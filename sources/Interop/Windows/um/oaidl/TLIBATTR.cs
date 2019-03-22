@@ -4,7 +4,6 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System;
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -13,21 +12,21 @@ namespace TerraFX.Interop
     public struct TLIBATTR
     {
         #region Fields
-        [ComAliasName("GUID")]
+        [NativeTypeName("GUID")]
         public Guid guid;
 
-        [ComAliasName("LCID")]
+        [NativeTypeName("LCID")]
         public uint lcid;
 
         public SYSKIND syskind;
 
-        [ComAliasName("WORD")]
+        [NativeTypeName("WORD")]
         public ushort wMajorVerNum;
 
-        [ComAliasName("WORD")]
+        [NativeTypeName("WORD")]
         public ushort wMinorVerNum;
 
-        [ComAliasName("WORD")]
+        [NativeTypeName("WORD")]
         public ushort wLibFlags;
         #endregion
     }

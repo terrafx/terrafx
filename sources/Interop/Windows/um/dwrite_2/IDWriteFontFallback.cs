@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDWriteFontFallback* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDWriteFontFallback* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDWriteFontFallback* This
         );
@@ -60,27 +60,27 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _MapCharacters(
             [In] IDWriteFontFallback* This,
             [In] IDWriteTextAnalysisSource* analysisSource,
-            [In, ComAliasName("UINT32")] uint textPosition,
-            [In, ComAliasName("UINT32")] uint textLength,
+            [In, NativeTypeName("UINT32")] uint textPosition,
+            [In, NativeTypeName("UINT32")] uint textLength,
             [In, Optional] IDWriteFontCollection* baseFontCollection,
-            [In, Optional, ComAliasName("WCHAR[]")] char* baseFamilyName,
+            [In, Optional, NativeTypeName("WCHAR[]")] char* baseFamilyName,
             [In] DWRITE_FONT_WEIGHT baseWeight,
             [In] DWRITE_FONT_STYLE baseStyle,
             [In] DWRITE_FONT_STRETCH baseStretch,
-            [Out, ComAliasName("UINT32")] uint* mappedLength,
+            [Out, NativeTypeName("UINT32")] uint* mappedLength,
             [Out] IDWriteFont** mappedFont,
-            [Out, ComAliasName("FLOAT")] float* scale
+            [Out, NativeTypeName("FLOAT")] float* scale
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -94,7 +94,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDWriteFontFallback* This = &this)
@@ -105,7 +105,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDWriteFontFallback* This = &this)
@@ -118,19 +118,19 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int MapCharacters(
             [In] IDWriteTextAnalysisSource* analysisSource,
-            [In, ComAliasName("UINT32")] uint textPosition,
-            [In, ComAliasName("UINT32")] uint textLength,
+            [In, NativeTypeName("UINT32")] uint textPosition,
+            [In, NativeTypeName("UINT32")] uint textLength,
             [In, Optional] IDWriteFontCollection* baseFontCollection,
-            [In, Optional, ComAliasName("WCHAR[]")] char* baseFamilyName,
+            [In, Optional, NativeTypeName("WCHAR[]")] char* baseFamilyName,
             [In] DWRITE_FONT_WEIGHT baseWeight,
             [In] DWRITE_FONT_STYLE baseStyle,
             [In] DWRITE_FONT_STRETCH baseStretch,
-            [Out, ComAliasName("UINT32")] uint* mappedLength,
+            [Out, NativeTypeName("UINT32")] uint* mappedLength,
             [Out] IDWriteFont** mappedFont,
-            [Out, ComAliasName("FLOAT")] float* scale
+            [Out, NativeTypeName("FLOAT")] float* scale
         )
         {
             fixed (IDWriteFontFallback* This = &this)

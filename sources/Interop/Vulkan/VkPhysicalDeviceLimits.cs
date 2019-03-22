@@ -3,7 +3,6 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -34,10 +33,10 @@ namespace TerraFX.Interop
 
         public uint maxSamplerAllocationCount;
 
-        [ComAliasName("VkDeviceSize")]
+        [NativeTypeName("VkDeviceSize")]
         public ulong bufferImageGranularity;
 
-        [ComAliasName("VkDeviceSize")]
+        [NativeTypeName("VkDeviceSize")]
         public ulong sparseAddressSpaceSize;
 
         public uint maxBoundDescriptorSets;
@@ -148,13 +147,13 @@ namespace TerraFX.Interop
 
         public nuint minMemoryMapAlignment;
 
-        [ComAliasName("VkDeviceSize")]
+        [NativeTypeName("VkDeviceSize")]
         public ulong minTexelBufferOffsetAlignment;
 
-        [ComAliasName("VkDeviceSize")]
+        [NativeTypeName("VkDeviceSize")]
         public ulong minUniformBufferOffsetAlignment;
 
-        [ComAliasName("VkDeviceSize")]
+        [NativeTypeName("VkDeviceSize")]
         public ulong minStorageBufferOffsetAlignment;
 
         public int minTexelOffset;
@@ -177,38 +176,38 @@ namespace TerraFX.Interop
 
         public uint maxFramebufferLayers;
 
-        [ComAliasName("VkSampleCountFlags")]
+        [NativeTypeName("VkSampleCountFlags")]
         public uint framebufferColorSampleCounts;
 
-        [ComAliasName("VkSampleCountFlags")]
+        [NativeTypeName("VkSampleCountFlags")]
         public uint framebufferDepthSampleCounts;
 
-        [ComAliasName("VkSampleCountFlags")]
+        [NativeTypeName("VkSampleCountFlags")]
         public uint framebufferStencilSampleCounts;
 
-        [ComAliasName("VkSampleCountFlags")]
+        [NativeTypeName("VkSampleCountFlags")]
         public uint framebufferNoAttachmentsSampleCounts;
 
         public uint maxColorAttachments;
 
-        [ComAliasName("VkSampleCountFlags")]
+        [NativeTypeName("VkSampleCountFlags")]
         public uint sampledImageColorSampleCounts;
 
-        [ComAliasName("VkSampleCountFlags")]
+        [NativeTypeName("VkSampleCountFlags")]
         public uint sampledImageIntegerSampleCounts;
 
-        [ComAliasName("VkSampleCountFlags")]
+        [NativeTypeName("VkSampleCountFlags")]
         public uint sampledImageDepthSampleCounts;
 
-        [ComAliasName("VkSampleCountFlags")]
+        [NativeTypeName("VkSampleCountFlags")]
         public uint sampledImageStencilSampleCounts;
 
-        [ComAliasName("VkSampleCountFlags")]
+        [NativeTypeName("VkSampleCountFlags")]
         public uint storageImageSampleCounts;
 
         public uint maxSampleMaskWords;
 
-        [ComAliasName("VkBool32")]
+        [NativeTypeName("VkBool32")]
         public uint timestampComputeAndGraphics;
 
         public float timestampPeriod;
@@ -229,19 +228,19 @@ namespace TerraFX.Interop
 
         public float lineWidthGranularity;
 
-        [ComAliasName("VkBool32")]
+        [NativeTypeName("VkBool32")]
         public uint strictLines;
 
-        [ComAliasName("VkBool32")]
+        [NativeTypeName("VkBool32")]
         public uint standardSampleLocations;
 
-        [ComAliasName("VkDeviceSize")]
+        [NativeTypeName("VkDeviceSize")]
         public ulong optimalBufferCopyOffsetAlignment;
 
-        [ComAliasName("VkDeviceSize")]
+        [NativeTypeName("VkDeviceSize")]
         public ulong optimalBufferCopyRowPitchAlignment;
 
-        [ComAliasName("VkDeviceSize")]
+        [NativeTypeName("VkDeviceSize")]
         public ulong nonCoherentAtomSize;
         #endregion
     }

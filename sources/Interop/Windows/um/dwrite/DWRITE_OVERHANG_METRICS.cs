@@ -3,7 +3,6 @@
 // Ported from um\dwrite.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -15,19 +14,19 @@ namespace TerraFX.Interop
     {
         #region Fields
         /// <summary>The distance from the left-most visible DIP to its left alignment edge.</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float left;
 
         /// <summary>The distance from the top-most visible DIP to its top alignment edge.</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float top;
 
         /// <summary>The distance from the right-most visible DIP to its right alignment edge.</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float right;
 
         /// <summary>The distance from the bottom-most visible DIP to its bottom alignment edge.</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float bottom;
         #endregion
     }

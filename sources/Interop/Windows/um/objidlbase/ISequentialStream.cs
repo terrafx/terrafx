@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ISequentialStream* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ISequentialStream* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ISequentialStream* This
         );
@@ -47,29 +47,29 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Read(
             [In] ISequentialStream* This,
             [Out] void* pv,
-            [In, ComAliasName("ULONG")] uint cb,
-            [Out, ComAliasName("ULONG")] uint* pcbRead = null
+            [In, NativeTypeName("ULONG")] uint cb,
+            [Out, NativeTypeName("ULONG")] uint* pcbRead = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Write(
             [In] ISequentialStream* This,
             [In] void* pv,
-            [In, ComAliasName("ULONG")] uint cb,
-            [Out, ComAliasName("ULONG")] uint* pcbWritten = null
+            [In, NativeTypeName("ULONG")] uint cb,
+            [Out, NativeTypeName("ULONG")] uint* pcbWritten = null
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -83,7 +83,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ISequentialStream* This = &this)
@@ -94,7 +94,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ISequentialStream* This = &this)
@@ -107,11 +107,11 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Read(
             [Out] void* pv,
-            [In, ComAliasName("ULONG")] uint cb,
-            [Out, ComAliasName("ULONG")] uint* pcbRead = null
+            [In, NativeTypeName("ULONG")] uint cb,
+            [Out, NativeTypeName("ULONG")] uint* pcbRead = null
         )
         {
             fixed (ISequentialStream* This = &this)
@@ -125,11 +125,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Write(
             [In] void* pv,
-            [In, ComAliasName("ULONG")] uint cb,
-            [Out, ComAliasName("ULONG")] uint* pcbWritten = null
+            [In, NativeTypeName("ULONG")] uint cb,
+            [Out, NativeTypeName("ULONG")] uint* pcbWritten = null
         )
         {
             fixed (ISequentialStream* This = &this)

@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID3D12Object* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID3D12Object* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID3D12Object* This
         );
@@ -47,46 +47,46 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetPrivateData(
             [In] ID3D12Object* This,
-            [In, ComAliasName("REFGUID")] Guid* guid,
-            [In, Out, ComAliasName("UINT")] uint* pDataSize,
+            [In, NativeTypeName("REFGUID")] Guid* guid,
+            [In, Out, NativeTypeName("UINT")] uint* pDataSize,
             [Out] void* pData = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetPrivateData(
             [In] ID3D12Object* This,
-            [In, ComAliasName("REFGUID")] Guid* guid,
-            [In, ComAliasName("UINT")] uint DataSize,
+            [In, NativeTypeName("REFGUID")] Guid* guid,
+            [In, NativeTypeName("UINT")] uint DataSize,
             [In] void* pData = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetPrivateDataInterface(
             [In] ID3D12Object* This,
-            [In, ComAliasName("REFGUID")] Guid* guid,
+            [In, NativeTypeName("REFGUID")] Guid* guid,
             [In] IUnknown* pData = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetName(
             [In] ID3D12Object* This,
-            [In, ComAliasName("LPCWSTR")] char* Name
+            [In, NativeTypeName("LPCWSTR")] char* Name
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -100,7 +100,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID3D12Object* This = &this)
@@ -111,7 +111,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID3D12Object* This = &this)
@@ -124,10 +124,10 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetPrivateData(
-            [In, ComAliasName("REFGUID")] Guid* guid,
-            [In, Out, ComAliasName("UINT")] uint* pDataSize,
+            [In, NativeTypeName("REFGUID")] Guid* guid,
+            [In, Out, NativeTypeName("UINT")] uint* pDataSize,
             [Out] void* pData = null
         )
         {
@@ -142,10 +142,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetPrivateData(
-            [In, ComAliasName("REFGUID")] Guid* guid,
-            [In, ComAliasName("UINT")] uint DataSize,
+            [In, NativeTypeName("REFGUID")] Guid* guid,
+            [In, NativeTypeName("UINT")] uint DataSize,
             [In] void* pData = null
         )
         {
@@ -160,9 +160,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetPrivateDataInterface(
-            [In, ComAliasName("REFGUID")] Guid* guid,
+            [In, NativeTypeName("REFGUID")] Guid* guid,
             [In] IUnknown* pData = null
         )
         {
@@ -176,9 +176,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetName(
-            [In, ComAliasName("LPCWSTR")] char* Name
+            [In, NativeTypeName("LPCWSTR")] char* Name
         )
         {
             fixed (ID3D12Object* This = &this)

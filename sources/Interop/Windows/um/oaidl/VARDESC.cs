@@ -13,17 +13,17 @@ namespace TerraFX.Interop
     public unsafe struct VARDESC
     {
         #region Fields
-        [ComAliasName("MEMBERID")]
+        [NativeTypeName("MEMBERID")]
         public int memid;
 
-        [ComAliasName("LPOLESTR")]
+        [NativeTypeName("LPOLESTR")]
         public char* lpstrSchema;
 
         private _u_e__Union u;
 
         public ELEMDESC elemdescVar;
 
-        [ComAliasName("WORD")]
+        [NativeTypeName("WORD")]
         public ushort wVarFlags;
 
         public VARKIND varkind;
@@ -64,7 +64,7 @@ namespace TerraFX.Interop
         {
             #region Fields
             [FieldOffset(0)]
-            [ComAliasName("ULONG")]
+            [NativeTypeName("ULONG")]
             public uint oInst;
 
             [FieldOffset(0)]

@@ -14,22 +14,22 @@ namespace TerraFX.Interop
     public unsafe struct PROPBAG2
     {
         #region Fields
-        [ComAliasName("DWORD")]
+        [NativeTypeName("DWORD")]
         public uint dwType;
 
-        [ComAliasName("VARTYPE")]
+        [NativeTypeName("VARTYPE")]
         public ushort vt;
 
-        [ComAliasName("CLIPFORMAT")]
+        [NativeTypeName("CLIPFORMAT")]
         public ushort cfType;
 
-        [ComAliasName("DWORD")]
+        [NativeTypeName("DWORD")]
         public uint dwHint;
 
-        [ComAliasName("LPOLESTR")]
+        [NativeTypeName("LPOLESTR")]
         public char* pstrName;
 
-        [ComAliasName("CLSID")]
+        [NativeTypeName("CLSID")]
         public Guid clsid;
         #endregion
     }

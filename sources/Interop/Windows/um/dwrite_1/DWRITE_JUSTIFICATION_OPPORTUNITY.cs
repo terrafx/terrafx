@@ -3,7 +3,6 @@
 // Ported from um\dwrite_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -14,15 +13,15 @@ namespace TerraFX.Interop
     {
         #region Fields
         /// <summary>Minimum amount of expansion to apply to the side of the glyph. This may vary from 0 to infinity, typically being zero except for kashida.</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float expansionMinimum;
 
         /// <summary>Maximum amount of expansion to apply to the side of the glyph. This may vary from 0 to infinity, being zero for fixed-size characters and connected scripts, and non-zero for discrete scripts, and non-zero for cursive scripts at expansion points.</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float expansionMaximum;
 
         /// <summary>Maximum amount of compression to apply to the side of the glyph. This may vary from 0 up to the glyph cluster size.</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float compressionMaximum;
 
         private uint _bitField;
@@ -30,7 +29,7 @@ namespace TerraFX.Interop
 
         #region Properties
         /// <summary>Priority of this expansion point. Larger priorities are applied later, while priority zero does nothing.</summary>
-        [ComAliasName("UINT32:8")]
+        [NativeTypeName("UINT32:8")]
         public uint expansionPriority
         {
             get
@@ -45,7 +44,7 @@ namespace TerraFX.Interop
         }
 
         /// <summary>Priority of this compression point. Larger priorities are applied later, while priority zero does nothing.</summary>
-        [ComAliasName("UINT32:8")]
+        [NativeTypeName("UINT32:8")]
         public uint compressionPriority
         {
             get
@@ -60,7 +59,7 @@ namespace TerraFX.Interop
         }
 
         /// <summary>Allow this expansion point to use up any remaining slack space even after all expansion priorities have been used up.</summary>
-        [ComAliasName("UINT32:1")]
+        [NativeTypeName("UINT32:1")]
         public uint allowResidualExpansion
         {
             get
@@ -75,7 +74,7 @@ namespace TerraFX.Interop
         }
 
         /// <summary>Allow this compression point to use up any remaining space even after all compression priorities have been used up.</summary>
-        [ComAliasName("UINT32:1")]
+        [NativeTypeName("UINT32:1")]
         public uint allowResidualCompression
         {
             get
@@ -90,7 +89,7 @@ namespace TerraFX.Interop
         }
 
         /// <summary>Apply expansion/compression to the leading edge of the glyph. This will be false for connected scripts, fixed-size characters, and diacritics. It is generally false within a multi-glyph cluster, unless the script allows expansion of glyphs within a cluster, like Thai.</summary>
-        [ComAliasName("UINT32:1")]
+        [NativeTypeName("UINT32:1")]
         public uint applyToLeadingEdge
         {
             get
@@ -105,7 +104,7 @@ namespace TerraFX.Interop
         }
 
         /// <summary>Apply expansion/compression to the trailing edge of the glyph. This will be false for connected scripts, fixed-size characters, and diacritics. It is generally false within a multi-glyph cluster, unless the script allows expansion of glyphs within a cluster, like Thai.</summary>
-        [ComAliasName("UINT32:1")]
+        [NativeTypeName("UINT32:1")]
         public uint applyToTrailingEdge
         {
             get
@@ -119,7 +118,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [ComAliasName("UINT32:12")]
+        [NativeTypeName("UINT32:12")]
         public uint reserved
         {
             get

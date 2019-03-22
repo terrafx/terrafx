@@ -3,7 +3,6 @@
 // Ported from um\oaidl.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
@@ -15,10 +14,10 @@ namespace TerraFX.Interop
         #region Fields
         public TYPEDESC tdescElem;
 
-        [ComAliasName("USHORT")]
+        [NativeTypeName("USHORT")]
         public ushort cDims;
 
-        [ComAliasName("SAFEARRAYBOUND[1]")]
+        [NativeTypeName("SAFEARRAYBOUND[1]")]
         public _rgbounds_e__FixedBuffer rgbounds;
         #endregion
 

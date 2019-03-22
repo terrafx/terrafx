@@ -3,7 +3,6 @@
 // Ported from um\oaidl.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,13 +11,13 @@ namespace TerraFX.Interop
     public unsafe struct FUNCDESC
     {
         #region Fields
-        [ComAliasName("MEMBERID")]
+        [NativeTypeName("MEMBERID")]
         public int memid;
 
-        [ComAliasName("SCODE")]
+        [NativeTypeName("SCODE")]
         public int* lprgscode;
 
-        [ComAliasName("ELEMDESC[]")]
+        [NativeTypeName("ELEMDESC[]")]
         public ELEMDESC* lprgelemdescParam;
 
         public FUNCKIND funckind;
@@ -27,21 +26,21 @@ namespace TerraFX.Interop
 
         public CALLCONV callconv;
 
-        [ComAliasName("SHORT")]
+        [NativeTypeName("SHORT")]
         public short cParams;
 
-        [ComAliasName("SHORT")]
+        [NativeTypeName("SHORT")]
         public short cParamsOpt;
 
-        [ComAliasName("SHORT")]
+        [NativeTypeName("SHORT")]
         public short oVft;
 
-        [ComAliasName("SHORT")]
+        [NativeTypeName("SHORT")]
         public short cScodes;
 
         public ELEMDESC elemdescFunc;
 
-        [ComAliasName("WORD")]
+        [NativeTypeName("WORD")]
         public ushort wFuncFlags;
         #endregion
     }

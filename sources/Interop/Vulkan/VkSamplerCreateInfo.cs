@@ -3,7 +3,6 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -16,7 +15,7 @@ namespace TerraFX.Interop
 
         public void* pNext;
 
-        [ComAliasName("VkSamplerCreateFlags")]
+        [NativeTypeName("VkSamplerCreateFlags")]
         public uint flags;
 
         public VkFilter magFilter;
@@ -33,12 +32,12 @@ namespace TerraFX.Interop
 
         public float mipLodBias;
 
-        [ComAliasName("VkBool32")]
+        [NativeTypeName("VkBool32")]
         public uint anisotropyEnable;
 
         public float maxAnisotropy;
 
-        [ComAliasName("VkBool32")]
+        [NativeTypeName("VkBool32")]
         public uint compareEnable;
 
         public VkCompareOp compareOp;
@@ -49,7 +48,7 @@ namespace TerraFX.Interop
 
         public VkBorderColor borderColor;
 
-        [ComAliasName("VkBool32")]
+        [NativeTypeName("VkBool32")]
         public uint unnormalizedCoordinates;
         #endregion
     }

@@ -3,7 +3,6 @@
 // Ported from shared\dxgi1_3.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,22 +11,22 @@ namespace TerraFX.Interop
     public struct DXGI_MATRIX_3X2_F
     {
         #region Fields
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float _11;
 
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float _12;
 
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float _21;
 
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float _22;
 
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float _31;
 
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float _32;
         #endregion
     }

@@ -4,7 +4,6 @@
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
 using System;
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -13,7 +12,7 @@ namespace TerraFX.Interop
     public struct VkDisplayPlanePropertiesKHR
     {
         #region Fields
-        [ComAliasName("VkDisplayKHR")]
+        [NativeTypeName("VkDisplayKHR")]
         public IntPtr currentDisplay;
 
         public uint currentStackIndex;

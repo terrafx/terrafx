@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IStream* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IStream* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IStream* This
         );
@@ -47,39 +47,39 @@ namespace TerraFX.Interop
         #region ISequentialStream Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Read(
             [In] IStream* This,
             [Out] void* pv,
-            [In, ComAliasName("ULONG")] uint cb,
-            [Out, ComAliasName("ULONG")] uint* pcbRead = null
+            [In, NativeTypeName("ULONG")] uint cb,
+            [Out, NativeTypeName("ULONG")] uint* pcbRead = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Write(
             [In] IStream* This,
             [In] void* pv,
-            [In, ComAliasName("ULONG")] uint cb,
-            [Out, ComAliasName("ULONG")] uint* pcbWritten = null
+            [In, NativeTypeName("ULONG")] uint cb,
+            [Out, NativeTypeName("ULONG")] uint* pcbWritten = null
         );
         #endregion
 
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Seek(
             [In] IStream* This,
             [In] LARGE_INTEGER dlibMove,
-            [In, ComAliasName("DWORD")] uint dwOrigin,
+            [In, NativeTypeName("DWORD")] uint dwOrigin,
             [Out] ULARGE_INTEGER* plibNewPosition = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetSize(
             [In] IStream* This,
             [In] ULARGE_INTEGER libNewSize
@@ -87,7 +87,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CopyTo(
             [In] IStream* This,
             [In] IStream* pstm,
@@ -98,51 +98,51 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Commit(
             [In] IStream* This,
-            [In, ComAliasName("DWORD")] uint grfCommitFlags
+            [In, NativeTypeName("DWORD")] uint grfCommitFlags
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Revert(
             [In] IStream* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _LockRegion(
             [In] IStream* This,
             [In] ULARGE_INTEGER libOffset,
             [In] ULARGE_INTEGER cb,
-            [In, ComAliasName("DWORD")] uint dwLockType
+            [In, NativeTypeName("DWORD")] uint dwLockType
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _UnlockRegion(
             [In] IStream* This,
             [In] ULARGE_INTEGER libOffset,
             [In] ULARGE_INTEGER cb,
-            [In, ComAliasName("DWORD")] uint dwLockType
+            [In, NativeTypeName("DWORD")] uint dwLockType
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Stat(
             [In] IStream* This,
             [Out] STATSTG* pstatstg,
-            [In, ComAliasName("DWORD")] uint grfStatFlag
+            [In, NativeTypeName("DWORD")] uint grfStatFlag
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Clone(
             [In] IStream* This,
             [Out] IStream** ppstm = null
@@ -150,9 +150,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -166,7 +166,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IStream* This = &this)
@@ -177,7 +177,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IStream* This = &this)
@@ -190,11 +190,11 @@ namespace TerraFX.Interop
         #endregion
 
         #region ISequentialStream Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Read(
             [Out] void* pv,
-            [In, ComAliasName("ULONG")] uint cb,
-            [Out, ComAliasName("ULONG")] uint* pcbRead = null
+            [In, NativeTypeName("ULONG")] uint cb,
+            [Out, NativeTypeName("ULONG")] uint* pcbRead = null
         )
         {
             fixed (IStream* This = &this)
@@ -208,11 +208,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Write(
             [In] void* pv,
-            [In, ComAliasName("ULONG")] uint cb,
-            [Out, ComAliasName("ULONG")] uint* pcbWritten = null
+            [In, NativeTypeName("ULONG")] uint cb,
+            [Out, NativeTypeName("ULONG")] uint* pcbWritten = null
         )
         {
             fixed (IStream* This = &this)
@@ -228,10 +228,10 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Seek(
             [In] LARGE_INTEGER dlibMove,
-            [In, ComAliasName("DWORD")] uint dwOrigin,
+            [In, NativeTypeName("DWORD")] uint dwOrigin,
             [Out] ULARGE_INTEGER* plibNewPosition = null
         )
         {
@@ -246,7 +246,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetSize(
             [In] ULARGE_INTEGER libNewSize
         )
@@ -260,7 +260,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CopyTo(
             [In] IStream* pstm,
             [In] ULARGE_INTEGER cb,
@@ -280,9 +280,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Commit(
-            [In, ComAliasName("DWORD")] uint grfCommitFlags
+            [In, NativeTypeName("DWORD")] uint grfCommitFlags
         )
         {
             fixed (IStream* This = &this)
@@ -294,7 +294,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Revert()
         {
             fixed (IStream* This = &this)
@@ -305,11 +305,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int LockRegion(
             [In] ULARGE_INTEGER libOffset,
             [In] ULARGE_INTEGER cb,
-            [In, ComAliasName("DWORD")] uint dwLockType
+            [In, NativeTypeName("DWORD")] uint dwLockType
         )
         {
             fixed (IStream* This = &this)
@@ -323,11 +323,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int UnlockRegion(
             [In] ULARGE_INTEGER libOffset,
             [In] ULARGE_INTEGER cb,
-            [In, ComAliasName("DWORD")] uint dwLockType
+            [In, NativeTypeName("DWORD")] uint dwLockType
         )
         {
             fixed (IStream* This = &this)
@@ -341,10 +341,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Stat(
             [Out] STATSTG* pstatstg,
-            [In, ComAliasName("DWORD")] uint grfStatFlag
+            [In, NativeTypeName("DWORD")] uint grfStatFlag
         )
         {
             fixed (IStream* This = &this)
@@ -357,7 +357,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Clone(
             [Out] IStream** ppstm = null
         )

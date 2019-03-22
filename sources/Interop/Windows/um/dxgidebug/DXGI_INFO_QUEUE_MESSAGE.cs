@@ -4,7 +4,6 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System;
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -13,20 +12,20 @@ namespace TerraFX.Interop
     public unsafe struct DXGI_INFO_QUEUE_MESSAGE
     {
         #region Fields
-        [ComAliasName("DXGI_DEBUG_ID")]
+        [NativeTypeName("DXGI_DEBUG_ID")]
         public Guid Producer;
 
         public DXGI_INFO_QUEUE_MESSAGE_CATEGORY Category;
 
         public DXGI_INFO_QUEUE_MESSAGE_SEVERITY Severity;
 
-        [ComAliasName("DXGI_INFO_QUEUE_MESSAGE_ID")]
+        [NativeTypeName("DXGI_INFO_QUEUE_MESSAGE_ID")]
         public int ID;
 
-        [ComAliasName("CHAR")]
+        [NativeTypeName("CHAR")]
         public sbyte* pDescription;
 
-        [ComAliasName("SIZE_T")]
+        [NativeTypeName("SIZE_T")]
         public nuint DescriptionByteLength;
         #endregion
     }

@@ -4,7 +4,6 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System;
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -13,16 +12,16 @@ namespace TerraFX.Interop
     public unsafe struct WICBitmapPlane
     {
         #region Fields
-        [ComAliasName("WICPixelFormatGUID")]
+        [NativeTypeName("WICPixelFormatGUID")]
         public Guid Format;
 
-        [ComAliasName("BYTE[]")]
+        [NativeTypeName("BYTE[]")]
         public byte* pbBuffer;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint cbStride;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint cbBufferSize;
         #endregion
     }

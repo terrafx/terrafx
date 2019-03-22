@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID2D1EffectContext* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID2D1EffectContext* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID2D1EffectContext* This
         );
@@ -50,34 +50,34 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _GetDpi(
             [In] ID2D1EffectContext* This,
-            [Out, ComAliasName("FLOAT")] float* dpiX,
-            [Out, ComAliasName("FLOAT")] float* dpiY
+            [Out, NativeTypeName("FLOAT")] float* dpiX,
+            [Out, NativeTypeName("FLOAT")] float* dpiY
         );
 
         /// <summary>Create a new effect, the effect must either be built in or previously registered through ID2D1Factory1::RegisterEffect.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateEffect(
             [In] ID2D1EffectContext* This,
-            [In, ComAliasName("REFCLSID")] Guid* effectId,
+            [In, NativeTypeName("REFCLSID")] Guid* effectId,
             [Out] ID2D1Effect** effect
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetMaximumSupportedFeatureLevel(
             [In] ID2D1EffectContext* This,
-            [In, ComAliasName("D3D_FEATURE_LEVEL[]")] D3D_FEATURE_LEVEL* featureLevels,
-            [In, ComAliasName("UINT32")] uint featureLevelsCount,
+            [In, NativeTypeName("D3D_FEATURE_LEVEL[]")] D3D_FEATURE_LEVEL* featureLevels,
+            [In, NativeTypeName("UINT32")] uint featureLevelsCount,
             [Out] D3D_FEATURE_LEVEL* maximumSupportedFeatureLevel
         );
 
         /// <summary>Create a transform node from the passed in effect.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateTransformNodeFromEffect(
             [In] ID2D1EffectContext* This,
             [In] ID2D1Effect* effect,
@@ -86,17 +86,17 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateBlendTransform(
             [In] ID2D1EffectContext* This,
-            [In, ComAliasName("UINT32")] uint numInputs,
+            [In, NativeTypeName("UINT32")] uint numInputs,
             [In] D2D1_BLEND_DESCRIPTION* blendDescription,
             [Out] ID2D1BlendTransform** transform
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateBorderTransform(
             [In] ID2D1EffectContext* This,
             [In] D2D1_EXTEND_MODE extendModeX,
@@ -106,126 +106,126 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateOffsetTransform(
             [In] ID2D1EffectContext* This,
-            [In, ComAliasName("D2D1_POINT_2L")] POINT offset,
+            [In, NativeTypeName("D2D1_POINT_2L")] POINT offset,
             [Out] ID2D1OffsetTransform** transform
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateBoundsAdjustmentTransform(
             [In] ID2D1EffectContext* This,
-            [In, ComAliasName("D2D1_RECT_L")] RECT* outputRectangle,
+            [In, NativeTypeName("D2D1_RECT_L")] RECT* outputRectangle,
             [Out] ID2D1BoundsAdjustmentTransform** transform
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _LoadPixelShader(
             [In] ID2D1EffectContext* This,
-            [In, ComAliasName("REFGUID")] Guid* shaderId,
-            [In, ComAliasName("BYTE[]")] byte* shaderBuffer,
-            [In, ComAliasName("UINT32")] uint shaderBufferCount
+            [In, NativeTypeName("REFGUID")] Guid* shaderId,
+            [In, NativeTypeName("BYTE[]")] byte* shaderBuffer,
+            [In, NativeTypeName("UINT32")] uint shaderBufferCount
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _LoadVertexShader(
             [In] ID2D1EffectContext* This,
-            [In, ComAliasName("REFGUID")] Guid* resourceId,
-            [In, ComAliasName("BYTE[]")] byte* shaderBuffer,
-            [In, ComAliasName("UINT32")] uint shaderBufferCount
+            [In, NativeTypeName("REFGUID")] Guid* resourceId,
+            [In, NativeTypeName("BYTE[]")] byte* shaderBuffer,
+            [In, NativeTypeName("UINT32")] uint shaderBufferCount
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _LoadComputeShader(
             [In] ID2D1EffectContext* This,
-            [In, ComAliasName("REFGUID")] Guid* resourceId,
-            [In, ComAliasName("BYTE[]")]  byte* shaderBuffer,
-            [In, ComAliasName("UINT32")] uint shaderBufferCount
+            [In, NativeTypeName("REFGUID")] Guid* resourceId,
+            [In, NativeTypeName("BYTE[]")]  byte* shaderBuffer,
+            [In, NativeTypeName("UINT32")] uint shaderBufferCount
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public /* static */ delegate int _IsShaderLoaded(
             [In] ID2D1EffectContext* This,
-            [In, ComAliasName("REFGUID")] Guid* shaderId
+            [In, NativeTypeName("REFGUID")] Guid* shaderId
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateResourceTexture(
             [In] ID2D1EffectContext* This,
-            [In, Optional, ComAliasName("GUID")] Guid* resourceId,
+            [In, Optional, NativeTypeName("GUID")] Guid* resourceId,
             [In] D2D1_RESOURCE_TEXTURE_PROPERTIES* resourceTextureProperties,
-            [In, Optional, ComAliasName("BYTE[]")] byte* data,
-            [In, Optional, ComAliasName("UINT32[]")] uint* strides,
-            [In, ComAliasName("UINT32")] uint dataSize,
+            [In, Optional, NativeTypeName("BYTE[]")] byte* data,
+            [In, Optional, NativeTypeName("UINT32[]")] uint* strides,
+            [In, NativeTypeName("UINT32")] uint dataSize,
             [Out] ID2D1ResourceTexture** resourceTexture
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _FindResourceTexture(
             [In] ID2D1EffectContext* This,
-            [In, ComAliasName("GUID")] Guid* resourceId,
+            [In, NativeTypeName("GUID")] Guid* resourceId,
             [Out] ID2D1ResourceTexture** resourceTexture
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateVertexBuffer(
             [In] ID2D1EffectContext* This,
             [In] D2D1_VERTEX_BUFFER_PROPERTIES* vertexBufferProperties,
-            [In, Optional, ComAliasName("GUID")] Guid* resourceId,
+            [In, Optional, NativeTypeName("GUID")] Guid* resourceId,
             [In, Optional] D2D1_CUSTOM_VERTEX_BUFFER_PROPERTIES* customVertexBufferProperties,
             [Out] ID2D1VertexBuffer** buffer
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _FindVertexBuffer(
             [In] ID2D1EffectContext* This,
-            [In, ComAliasName("GUID")] Guid* resourceId,
+            [In, NativeTypeName("GUID")] Guid* resourceId,
             [Out] ID2D1VertexBuffer** buffer
         );
 
         /// <summary>Creates a color context from a color space.  If the space is Custom, the context is initialized from the profile/profileSize arguments.  Otherwise the context is initialized with the profile bytes associated with the space and profile/profileSize are ignored.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateColorContext(
             [In] ID2D1EffectContext* This,
             [In] D2D1_COLOR_SPACE space,
-            [In, Optional, ComAliasName("BYTE[]")] byte* profile,
-            [In, ComAliasName("UINT32")] uint profileSize,
+            [In, Optional, NativeTypeName("BYTE[]")] byte* profile,
+            [In, NativeTypeName("UINT32")] uint profileSize,
             [Out] ID2D1ColorContext** colorContext
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateColorContextFromFilename(
             [In] ID2D1EffectContext* This,
-            [In, ComAliasName("PCWSTR")] char* filename,
+            [In, NativeTypeName("PCWSTR")] char* filename,
             [Out] ID2D1ColorContext** colorContext
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateColorContextFromWicColorContext(
             [In] ID2D1EffectContext* This,
             [In] IWICColorContext* wicColorContext,
@@ -234,18 +234,18 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CheckFeatureSupport(
             [In] ID2D1EffectContext* This,
             [In] D2D1_FEATURE feature,
             [Out] void* featureSupportData,
-            [In, ComAliasName("UINT32")] uint featureSupportDataSize
+            [In, NativeTypeName("UINT32")] uint featureSupportDataSize
         );
 
         /// <summary>Indicates whether the buffer precision is supported by D2D.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public /* static */ delegate int _IsBufferPrecisionSupported(
             [In] ID2D1EffectContext* This,
             [In] D2D1_BUFFER_PRECISION bufferPrecision
@@ -253,9 +253,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -269,7 +269,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID2D1EffectContext* This = &this)
@@ -280,7 +280,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID2D1EffectContext* This = &this)
@@ -294,8 +294,8 @@ namespace TerraFX.Interop
 
         #region Methods
         public void GetDpi(
-            [Out, ComAliasName("FLOAT")] float* dpiX,
-            [Out, ComAliasName("FLOAT")] float* dpiY
+            [Out, NativeTypeName("FLOAT")] float* dpiX,
+            [Out, NativeTypeName("FLOAT")] float* dpiY
         )
         {
             fixed (ID2D1EffectContext* This = &this)
@@ -308,9 +308,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateEffect(
-            [In, ComAliasName("REFCLSID")] Guid* effectId,
+            [In, NativeTypeName("REFCLSID")] Guid* effectId,
             [Out] ID2D1Effect** effect
         )
         {
@@ -324,10 +324,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetMaximumSupportedFeatureLevel(
-            [In, ComAliasName("D3D_FEATURE_LEVEL[]")] D3D_FEATURE_LEVEL* featureLevels,
-            [In, ComAliasName("UINT32")] uint featureLevelsCount,
+            [In, NativeTypeName("D3D_FEATURE_LEVEL[]")] D3D_FEATURE_LEVEL* featureLevels,
+            [In, NativeTypeName("UINT32")] uint featureLevelsCount,
             [Out] D3D_FEATURE_LEVEL* maximumSupportedFeatureLevel
         )
         {
@@ -342,7 +342,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateTransformNodeFromEffect(
             [In] ID2D1Effect* effect,
             [Out] ID2D1TransformNode** transformNode
@@ -358,9 +358,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateBlendTransform(
-            [In, ComAliasName("UINT32")] uint numInputs,
+            [In, NativeTypeName("UINT32")] uint numInputs,
             [In] D2D1_BLEND_DESCRIPTION* blendDescription,
             [Out] ID2D1BlendTransform** transform
         )
@@ -376,7 +376,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateBorderTransform(
             [In] D2D1_EXTEND_MODE extendModeX,
             [In] D2D1_EXTEND_MODE extendModeY,
@@ -394,9 +394,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateOffsetTransform(
-            [In, ComAliasName("D2D1_POINT_2L")] POINT offset,
+            [In, NativeTypeName("D2D1_POINT_2L")] POINT offset,
             [Out] ID2D1OffsetTransform** transform
         )
         {
@@ -410,9 +410,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateBoundsAdjustmentTransform(
-            [In, ComAliasName("D2D1_RECT_L")] RECT* outputRectangle,
+            [In, NativeTypeName("D2D1_RECT_L")] RECT* outputRectangle,
             [Out] ID2D1BoundsAdjustmentTransform** transform
         )
         {
@@ -426,11 +426,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int LoadPixelShader(
-            [In, ComAliasName("REFGUID")] Guid* shaderId,
-            [In, ComAliasName("BYTE[]")] byte* shaderBuffer,
-            [In, ComAliasName("UINT32")] uint shaderBufferCount
+            [In, NativeTypeName("REFGUID")] Guid* shaderId,
+            [In, NativeTypeName("BYTE[]")] byte* shaderBuffer,
+            [In, NativeTypeName("UINT32")] uint shaderBufferCount
         )
         {
             fixed (ID2D1EffectContext* This = &this)
@@ -444,11 +444,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int LoadVertexShader(
-            [In, ComAliasName("REFGUID")] Guid* resourceId,
-            [In, ComAliasName("BYTE[]")] byte* shaderBuffer,
-            [In, ComAliasName("UINT32")] uint shaderBufferCount
+            [In, NativeTypeName("REFGUID")] Guid* resourceId,
+            [In, NativeTypeName("BYTE[]")] byte* shaderBuffer,
+            [In, NativeTypeName("UINT32")] uint shaderBufferCount
         )
         {
             fixed (ID2D1EffectContext* This = &this)
@@ -462,11 +462,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int LoadComputeShader(
-            [In, ComAliasName("REFGUID")] Guid* resourceId,
-            [In, ComAliasName("BYTE[]")]  byte* shaderBuffer,
-            [In, ComAliasName("UINT32")] uint shaderBufferCount
+            [In, NativeTypeName("REFGUID")] Guid* resourceId,
+            [In, NativeTypeName("BYTE[]")]  byte* shaderBuffer,
+            [In, NativeTypeName("UINT32")] uint shaderBufferCount
         )
         {
             fixed (ID2D1EffectContext* This = &this)
@@ -480,9 +480,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public int IsShaderLoaded(
-            [In, ComAliasName("REFGUID")] Guid* shaderId
+            [In, NativeTypeName("REFGUID")] Guid* shaderId
         )
         {
             fixed (ID2D1EffectContext* This = &this)
@@ -494,13 +494,13 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateResourceTexture(
-            [In, Optional, ComAliasName("GUID")] Guid* resourceId,
+            [In, Optional, NativeTypeName("GUID")] Guid* resourceId,
             [In] D2D1_RESOURCE_TEXTURE_PROPERTIES* resourceTextureProperties,
-            [In, Optional, ComAliasName("BYTE[]")] byte* data,
-            [In, Optional, ComAliasName("UINT32[]")] uint* strides,
-            [In, ComAliasName("UINT32")] uint dataSize,
+            [In, Optional, NativeTypeName("BYTE[]")] byte* data,
+            [In, Optional, NativeTypeName("UINT32[]")] uint* strides,
+            [In, NativeTypeName("UINT32")] uint dataSize,
             [Out] ID2D1ResourceTexture** resourceTexture
         )
         {
@@ -518,9 +518,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int FindResourceTexture(
-            [In, ComAliasName("GUID")] Guid* resourceId,
+            [In, NativeTypeName("GUID")] Guid* resourceId,
             [Out] ID2D1ResourceTexture** resourceTexture
         )
         {
@@ -534,10 +534,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateVertexBuffer(
             [In] D2D1_VERTEX_BUFFER_PROPERTIES* vertexBufferProperties,
-            [In, Optional, ComAliasName("GUID")] Guid* resourceId,
+            [In, Optional, NativeTypeName("GUID")] Guid* resourceId,
             [In, Optional] D2D1_CUSTOM_VERTEX_BUFFER_PROPERTIES* customVertexBufferProperties,
             [Out] ID2D1VertexBuffer** buffer
         )
@@ -554,9 +554,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int FindVertexBuffer(
-            [In, ComAliasName("GUID")] Guid* resourceId,
+            [In, NativeTypeName("GUID")] Guid* resourceId,
             [Out] ID2D1VertexBuffer** buffer
         )
         {
@@ -570,11 +570,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateColorContext(
             [In] D2D1_COLOR_SPACE space,
-            [In, Optional, ComAliasName("BYTE[]")] byte* profile,
-            [In, ComAliasName("UINT32")] uint profileSize,
+            [In, Optional, NativeTypeName("BYTE[]")] byte* profile,
+            [In, NativeTypeName("UINT32")] uint profileSize,
             [Out] ID2D1ColorContext** colorContext
         )
         {
@@ -590,9 +590,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateColorContextFromFilename(
-            [In, ComAliasName("PCWSTR")] char* filename,
+            [In, NativeTypeName("PCWSTR")] char* filename,
             [Out] ID2D1ColorContext** colorContext
         )
         {
@@ -606,7 +606,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateColorContextFromWicColorContext(
             [In] IWICColorContext* wicColorContext,
             [Out] ID2D1ColorContext** colorContext
@@ -622,11 +622,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CheckFeatureSupport(
             [In] D2D1_FEATURE feature,
             [Out] void* featureSupportData,
-            [In, ComAliasName("UINT32")] uint featureSupportDataSize
+            [In, NativeTypeName("UINT32")] uint featureSupportDataSize
         )
         {
             fixed (ID2D1EffectContext* This = &this)
@@ -640,7 +640,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public int IsBufferPrecisionSupported(
             [In] D2D1_BUFFER_PRECISION bufferPrecision
         )

@@ -3,7 +3,6 @@
 // Ported from shared\dxgi1_2.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,23 +11,23 @@ namespace TerraFX.Interop
     public struct DXGI_SWAP_CHAIN_DESC1
     {
         #region Fields
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Width;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Height;
 
         public DXGI_FORMAT Format;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int Stereo;
 
         public DXGI_SAMPLE_DESC SampleDesc;
 
-        [ComAliasName("DXGI_USAGE")]
+        [NativeTypeName("DXGI_USAGE")]
         public uint BufferUsage;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint BufferCount;
 
         public DXGI_SCALING Scaling;
@@ -37,7 +36,7 @@ namespace TerraFX.Interop
 
         public DXGI_ALPHA_MODE AlphaMode;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Flags;
         #endregion
     }

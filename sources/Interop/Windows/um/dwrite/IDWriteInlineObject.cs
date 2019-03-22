@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDWriteInlineObject* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDWriteInlineObject* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDWriteInlineObject* This
         );
@@ -57,15 +57,15 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Draw(
             [In] IDWriteInlineObject* This,
             [In, Optional] void* clientDrawingContext,
             [In] IDWriteTextRenderer* renderer,
-            [In, ComAliasName("FLOAT")] float originX,
-            [In, ComAliasName("FLOAT")] float originY,
-            [In, ComAliasName("BOOL")] int isSideways,
-            [In, ComAliasName("BOOL")] int isRightToLeft,
+            [In, NativeTypeName("FLOAT")] float originX,
+            [In, NativeTypeName("FLOAT")] float originY,
+            [In, NativeTypeName("BOOL")] int isSideways,
+            [In, NativeTypeName("BOOL")] int isRightToLeft,
             [In] IUnknown* clientDrawingEffect = null
         );
 
@@ -74,7 +74,7 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetMetrics(
             [In] IDWriteInlineObject* This,
             [Out] DWRITE_INLINE_OBJECT_METRICS* metrics
@@ -86,7 +86,7 @@ namespace TerraFX.Interop
         /// <remarks> The overhangs should be returned relative to the reported size of the object (DWRITE_INLINE_OBJECT_METRICS::width/height), and should not be baseline adjusted. If you have an image that is actually 100x100 DIPs, but you want it slightly inset (perhaps it has a glow) by 20 DIPs on each side, you would return a width/height of 60x60 and four overhangs of 20 DIPs.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetOverhangMetrics(
             [In] IDWriteInlineObject* This,
             [Out] DWRITE_OVERHANG_METRICS* overhangs
@@ -98,7 +98,7 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetBreakConditions(
             [In] IDWriteInlineObject* This,
             [Out] DWRITE_BREAK_CONDITION* breakConditionBefore,
@@ -107,9 +107,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -123,7 +123,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDWriteInlineObject* This = &this)
@@ -134,7 +134,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDWriteInlineObject* This = &this)
@@ -147,14 +147,14 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Draw(
             [In, Optional] void* clientDrawingContext,
             [In] IDWriteTextRenderer* renderer,
-            [In, ComAliasName("FLOAT")] float originX,
-            [In, ComAliasName("FLOAT")] float originY,
-            [In, ComAliasName("BOOL")] int isSideways,
-            [In, ComAliasName("BOOL")] int isRightToLeft,
+            [In, NativeTypeName("FLOAT")] float originX,
+            [In, NativeTypeName("FLOAT")] float originY,
+            [In, NativeTypeName("BOOL")] int isSideways,
+            [In, NativeTypeName("BOOL")] int isRightToLeft,
             [In] IUnknown* clientDrawingEffect = null
         )
         {
@@ -173,7 +173,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetMetrics(
             [Out] DWRITE_INLINE_OBJECT_METRICS* metrics
         )
@@ -187,7 +187,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetOverhangMetrics(
             [Out] DWRITE_OVERHANG_METRICS* overhangs
         )
@@ -201,7 +201,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetBreakConditions(
             [Out] DWRITE_BREAK_CONDITION* breakConditionBefore,
             [Out] DWRITE_BREAK_CONDITION* breakConditionAfter

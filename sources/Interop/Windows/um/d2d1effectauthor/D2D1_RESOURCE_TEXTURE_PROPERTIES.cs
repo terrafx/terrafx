@@ -3,7 +3,6 @@
 // Ported from um\d2d1effectauthor.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -13,10 +12,10 @@ namespace TerraFX.Interop
     public unsafe struct D2D1_RESOURCE_TEXTURE_PROPERTIES
     {
         #region Fields
-        [ComAliasName("UINT32[]")]
+        [NativeTypeName("UINT32[]")]
         public uint* extents;
 
-        [ComAliasName("UINT32")]
+        [NativeTypeName("UINT32")]
         public uint dimensions;
 
         public D2D1_BUFFER_PRECISION bufferPrecision;
@@ -25,7 +24,7 @@ namespace TerraFX.Interop
 
         public D2D1_FILTER filter;
 
-        [ComAliasName("D2D1_EXTEND_MODE[]")]
+        [NativeTypeName("D2D1_EXTEND_MODE[]")]
         public D2D1_EXTEND_MODE* extendModes;
         #endregion
     }

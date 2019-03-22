@@ -14,16 +14,16 @@ namespace TerraFX.Interop.Desktop
     public unsafe struct CREATESTRUCT
     {
         #region Fields
-        [ComAliasName("LPVOID")]
+        [NativeTypeName("LPVOID")]
         public void* lpCreateParams;
 
-        [ComAliasName("HINSTANCE")]
+        [NativeTypeName("HINSTANCE")]
         public IntPtr hInstance;
 
-        [ComAliasName("HMENU")]
+        [NativeTypeName("HMENU")]
         public IntPtr hMenu;
 
-        [ComAliasName("HWND")]
+        [NativeTypeName("HWND")]
         public IntPtr hwndParent;
 
         int cy;
@@ -34,16 +34,16 @@ namespace TerraFX.Interop.Desktop
 
         int x;
 
-        [ComAliasName("LONG")]
+        [NativeTypeName("LONG")]
         public int style;
 
-        [ComAliasName("LPCWSTR")]
+        [NativeTypeName("LPCWSTR")]
         public char* lpszName;
 
-        [ComAliasName("LPCWSTR")]
+        [NativeTypeName("LPCWSTR")]
         public char* lpszClass;
 
-        [ComAliasName("DWORD")]
+        [NativeTypeName("DWORD")]
         public uint dwExStyle;
         #endregion
     }

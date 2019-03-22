@@ -3,7 +3,6 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,16 +11,16 @@ namespace TerraFX.Interop
     public unsafe struct D3D12_ROOT_SIGNATURE_DESC
     {
         #region Fields
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint NumParameters;
 
-        [ComAliasName("D3D12_ROOT_PARAMETER[]")]
+        [NativeTypeName("D3D12_ROOT_PARAMETER[]")]
         public D3D12_ROOT_PARAMETER* pParameters;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint NumStaticSamplers;
 
-        [ComAliasName("D3D12_STATIC_SAMPLER_DESC[]")]
+        [NativeTypeName("D3D12_STATIC_SAMPLER_DESC[]")]
         public D3D12_STATIC_SAMPLER_DESC* pStaticSamplers;
 
         public D3D12_ROOT_SIGNATURE_FLAGS Flags;

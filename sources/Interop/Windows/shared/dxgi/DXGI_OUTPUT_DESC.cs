@@ -14,17 +14,17 @@ namespace TerraFX.Interop
     public unsafe struct DXGI_OUTPUT_DESC
     {
         #region Fields
-        [ComAliasName("WCHAR[32]")]
+        [NativeTypeName("WCHAR[32]")]
         public fixed char DeviceName[32];
 
         public RECT DesktopCoordinates;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int AttachedToDesktop;
 
         public DXGI_MODE_ROTATION Rotation;
 
-        [ComAliasName("HMONITOR")]
+        [NativeTypeName("HMONITOR")]
         public IntPtr Monitor;
         #endregion
     }

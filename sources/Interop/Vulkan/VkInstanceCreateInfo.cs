@@ -3,7 +3,6 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -16,19 +15,19 @@ namespace TerraFX.Interop
 
         public void* pNext;
 
-        [ComAliasName("VkInstanceCreateFlags")]
+        [NativeTypeName("VkInstanceCreateFlags")]
         public uint flags;
 
         public VkApplicationInfo* pApplicationInfo;
 
         public uint enabledLayerCount;
 
-        [ComAliasName("string[]")]
+        [NativeTypeName("string[]")]
         public sbyte** ppEnabledLayerNames;
 
         public uint enabledExtensionCount;
 
-        [ComAliasName("string[]")]
+        [NativeTypeName("string[]")]
         public sbyte** ppEnabledExtensionNames;
         #endregion
     }

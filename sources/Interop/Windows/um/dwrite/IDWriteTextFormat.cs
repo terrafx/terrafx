@@ -24,23 +24,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDWriteTextFormat* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDWriteTextFormat* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDWriteTextFormat* This
         );
@@ -52,7 +52,7 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetTextAlignment(
             [In] IDWriteTextFormat* This,
             [In] DWRITE_TEXT_ALIGNMENT textAlignment
@@ -63,7 +63,7 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetParagraphAlignment(
             [In] IDWriteTextFormat* This,
             [In] DWRITE_PARAGRAPH_ALIGNMENT paragraphAlignment
@@ -74,7 +74,7 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetWordWrapping(
             [In] IDWriteTextFormat* This,
             [In] DWRITE_WORD_WRAPPING wordWrapping
@@ -86,7 +86,7 @@ namespace TerraFX.Interop
         /// <remarks> The flow direction must be perpendicular to the reading direction. Setting both to a vertical direction or both to horizontal yields DWRITE_E_FLOWDIRECTIONCONFLICTS when calling GetMetrics or Draw.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetReadingDirection(
             [In] IDWriteTextFormat* This,
             [In] DWRITE_READING_DIRECTION readingDirection
@@ -98,7 +98,7 @@ namespace TerraFX.Interop
         /// <remarks> The flow direction must be perpendicular to the reading direction. Setting both to a vertical direction or both to horizontal yields DWRITE_E_FLOWDIRECTIONCONFLICTS when calling GetMetrics or Draw.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetFlowDirection(
             [In] IDWriteTextFormat* This,
             [In] DWRITE_FLOW_DIRECTION flowDirection
@@ -109,10 +109,10 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetIncrementalTabStop(
             [In] IDWriteTextFormat* This,
-            [In, ComAliasName("FLOAT")] float incrementalTabStop
+            [In, NativeTypeName("FLOAT")] float incrementalTabStop
         );
 
         /// <summary>Set trimming options for any trailing text exceeding the layout width or for any far text exceeding the layout height.</summary>
@@ -122,7 +122,7 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetTrimming(
             [In] IDWriteTextFormat* This,
             [In] DWRITE_TRIMMING* trimmingOptions,
@@ -137,12 +137,12 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetLineSpacing(
             [In] IDWriteTextFormat* This,
             [In] DWRITE_LINE_SPACING_METHOD lineSpacingMethod,
-            [In, ComAliasName("FLOAT")] float lineSpacing,
-            [In, ComAliasName("FLOAT")] float baseline
+            [In, NativeTypeName("FLOAT")] float lineSpacing,
+            [In, NativeTypeName("FLOAT")] float baseline
         );
 
         /// <summary>Get alignment option of text relative to layout box's leading and trailing edge.</summary>
@@ -183,7 +183,7 @@ namespace TerraFX.Interop
         /// <summary>Get incremental tab stop position.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("FLOAT")]
+        [return: NativeTypeName("FLOAT")]
         public /* static */ delegate float _GetIncrementalTabStop(
             [In] IDWriteTextFormat* This
         );
@@ -194,7 +194,7 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetTrimming(
             [In] IDWriteTextFormat* This,
             [Out] DWRITE_TRIMMING* trimmingOptions,
@@ -208,12 +208,12 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetLineSpacing(
             [In] IDWriteTextFormat* This,
             [Out] DWRITE_LINE_SPACING_METHOD* lineSpacingMethod,
-            [Out, ComAliasName("FLOAT")] float* lineSpacing,
-            [Out, ComAliasName("FLOAT")] float* baseline
+            [Out, NativeTypeName("FLOAT")] float* lineSpacing,
+            [Out, NativeTypeName("FLOAT")] float* baseline
         );
 
         /// <summary>Get the font collection.</summary>
@@ -221,7 +221,7 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetFontCollection(
             [In] IDWriteTextFormat* This,
             [Out] IDWriteFontCollection** fontCollection
@@ -230,7 +230,7 @@ namespace TerraFX.Interop
         /// <summary>Get the length of the font family name, in characters, not including the terminating NULL character.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public /* static */ delegate uint _GetFontFamilyNameLength(
             [In] IDWriteTextFormat* This
         );
@@ -241,11 +241,11 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetFontFamilyName(
             [In] IDWriteTextFormat* This,
-            [Out, ComAliasName("WCHAR[]")] char* fontFamilyName,
-            [In, ComAliasName("UINT32")] uint nameSize
+            [Out, NativeTypeName("WCHAR[]")] char* fontFamilyName,
+            [In, NativeTypeName("UINT32")] uint nameSize
         );
 
         /// <summary>Get the font weight.</summary>
@@ -272,7 +272,7 @@ namespace TerraFX.Interop
         /// <summary>Get the font em height.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("FLOAT")]
+        [return: NativeTypeName("FLOAT")]
         public /* static */ delegate float _GetFontSize(
             [In] IDWriteTextFormat* This
         );
@@ -280,7 +280,7 @@ namespace TerraFX.Interop
         /// <summary>Get the length of the locale name, in characters, not including the terminating NULL character.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public /* static */ delegate uint _GetLocaleNameLength(
             [In] IDWriteTextFormat* This
         );
@@ -291,18 +291,18 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetLocaleName(
             [In] IDWriteTextFormat* This,
-            [Out, ComAliasName("WCHAR[]")] char* localeName,
-            [In, ComAliasName("UINT32")] uint nameSize
+            [Out, NativeTypeName("WCHAR[]")] char* localeName,
+            [In, NativeTypeName("UINT32")] uint nameSize
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -316,7 +316,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDWriteTextFormat* This = &this)
@@ -327,7 +327,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDWriteTextFormat* This = &this)
@@ -340,7 +340,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetTextAlignment(
             [In] DWRITE_TEXT_ALIGNMENT textAlignment
         )
@@ -354,7 +354,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetParagraphAlignment(
             [In] DWRITE_PARAGRAPH_ALIGNMENT paragraphAlignment
         )
@@ -368,7 +368,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetWordWrapping(
             [In] DWRITE_WORD_WRAPPING wordWrapping
         )
@@ -382,7 +382,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetReadingDirection(
             [In] DWRITE_READING_DIRECTION readingDirection
         )
@@ -396,7 +396,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetFlowDirection(
             [In] DWRITE_FLOW_DIRECTION flowDirection
         )
@@ -410,9 +410,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetIncrementalTabStop(
-            [In, ComAliasName("FLOAT")] float incrementalTabStop
+            [In, NativeTypeName("FLOAT")] float incrementalTabStop
         )
         {
             fixed (IDWriteTextFormat* This = &this)
@@ -424,7 +424,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetTrimming(
             [In] DWRITE_TRIMMING* trimmingOptions,
             [In] IDWriteInlineObject* trimmingSign = null
@@ -440,11 +440,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetLineSpacing(
             [In] DWRITE_LINE_SPACING_METHOD lineSpacingMethod,
-            [In, ComAliasName("FLOAT")] float lineSpacing,
-            [In, ComAliasName("FLOAT")] float baseline
+            [In, NativeTypeName("FLOAT")] float lineSpacing,
+            [In, NativeTypeName("FLOAT")] float baseline
         )
         {
             fixed (IDWriteTextFormat* This = &this)
@@ -508,7 +508,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("FLOAT")]
+        [return: NativeTypeName("FLOAT")]
         public float GetIncrementalTabStop()
         {
             fixed (IDWriteTextFormat* This = &this)
@@ -519,7 +519,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetTrimming(
             [Out] DWRITE_TRIMMING* trimmingOptions,
             [Out] IDWriteInlineObject** trimmingSign
@@ -535,11 +535,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetLineSpacing(
             [Out] DWRITE_LINE_SPACING_METHOD* lineSpacingMethod,
-            [Out, ComAliasName("FLOAT")] float* lineSpacing,
-            [Out, ComAliasName("FLOAT")] float* baseline
+            [Out, NativeTypeName("FLOAT")] float* lineSpacing,
+            [Out, NativeTypeName("FLOAT")] float* baseline
         )
         {
             fixed (IDWriteTextFormat* This = &this)
@@ -553,7 +553,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetFontCollection(
             [Out] IDWriteFontCollection** fontCollection
         )
@@ -567,7 +567,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public uint GetFontFamilyNameLength()
         {
             fixed (IDWriteTextFormat* This = &this)
@@ -578,10 +578,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetFontFamilyName(
-            [Out, ComAliasName("WCHAR[]")] char* fontFamilyName,
-            [In, ComAliasName("UINT32")] uint nameSize
+            [Out, NativeTypeName("WCHAR[]")] char* fontFamilyName,
+            [In, NativeTypeName("UINT32")] uint nameSize
         )
         {
             fixed (IDWriteTextFormat* This = &this)
@@ -624,7 +624,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("FLOAT")]
+        [return: NativeTypeName("FLOAT")]
         public float GetFontSize()
         {
             fixed (IDWriteTextFormat* This = &this)
@@ -635,7 +635,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public uint GetLocaleNameLength()
         {
             fixed (IDWriteTextFormat* This = &this)
@@ -646,10 +646,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetLocaleName(
-            [Out, ComAliasName("WCHAR[]")] char* localeName,
-            [In, ComAliasName("UINT32")] uint nameSize
+            [Out, NativeTypeName("WCHAR[]")] char* localeName,
+            [In, NativeTypeName("UINT32")] uint nameSize
         )
         {
             fixed (IDWriteTextFormat* This = &this)

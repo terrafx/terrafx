@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDWriteGlyphRunAnalysis* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDWriteGlyphRunAnalysis* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDWriteGlyphRunAnalysis* This
         );
@@ -52,7 +52,7 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetAlphaTextureBounds(
             [In] IDWriteGlyphRunAnalysis* This,
             [In] DWRITE_TEXTURE_TYPE textureType,
@@ -67,13 +67,13 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateAlphaTexture(
             [In] IDWriteGlyphRunAnalysis* This,
             [In] DWRITE_TEXTURE_TYPE textureType,
             [In] RECT* textureBounds,
-            [Out, ComAliasName("BYTE[]")] byte* alphaValues,
-            [In, ComAliasName("UINT32")] uint bufferSize
+            [Out, NativeTypeName("BYTE[]")] byte* alphaValues,
+            [In, NativeTypeName("UINT32")] uint bufferSize
         );
 
         /// <summary>Gets properties required for ClearType blending.</summary>
@@ -83,20 +83,20 @@ namespace TerraFX.Interop
         /// <param name="blendClearTypeLevel">Receives the ClearType level.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetAlphaBlendParams(
             [In] IDWriteGlyphRunAnalysis* This,
             [In] IDWriteRenderingParams* renderingParams,
-            [Out, ComAliasName("FLOAT")] float* blendGamma,
-            [Out, ComAliasName("FLOAT")] float* blendEnhancedContrast,
-            [Out, ComAliasName("FLOAT")] float* blendClearTypeLevel
+            [Out, NativeTypeName("FLOAT")] float* blendGamma,
+            [Out, NativeTypeName("FLOAT")] float* blendEnhancedContrast,
+            [Out, NativeTypeName("FLOAT")] float* blendClearTypeLevel
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -110,7 +110,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDWriteGlyphRunAnalysis* This = &this)
@@ -121,7 +121,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDWriteGlyphRunAnalysis* This = &this)
@@ -134,7 +134,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetAlphaTextureBounds(
             [In] DWRITE_TEXTURE_TYPE textureType,
             [Out] RECT* textureBounds
@@ -150,12 +150,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateAlphaTexture(
             [In] DWRITE_TEXTURE_TYPE textureType,
             [In] RECT* textureBounds,
-            [Out, ComAliasName("BYTE[]")] byte* alphaValues,
-            [In, ComAliasName("UINT32")] uint bufferSize
+            [Out, NativeTypeName("BYTE[]")] byte* alphaValues,
+            [In, NativeTypeName("UINT32")] uint bufferSize
         )
         {
             fixed (IDWriteGlyphRunAnalysis* This = &this)
@@ -170,12 +170,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetAlphaBlendParams(
             [In] IDWriteRenderingParams* renderingParams,
-            [Out, ComAliasName("FLOAT")] float* blendGamma,
-            [Out, ComAliasName("FLOAT")] float* blendEnhancedContrast,
-            [Out, ComAliasName("FLOAT")] float* blendClearTypeLevel
+            [Out, NativeTypeName("FLOAT")] float* blendGamma,
+            [Out, NativeTypeName("FLOAT")] float* blendEnhancedContrast,
+            [Out, NativeTypeName("FLOAT")] float* blendClearTypeLevel
         )
         {
             fixed (IDWriteGlyphRunAnalysis* This = &this)

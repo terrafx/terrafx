@@ -3,7 +3,6 @@
 // Ported from um\d2d1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -17,10 +16,10 @@ namespace TerraFX.Interop
 
         public D2D1_PIXEL_FORMAT pixelFormat;
 
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float dpiX;
 
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float dpiY;
 
         public D2D1_RENDER_TARGET_USAGE usage;

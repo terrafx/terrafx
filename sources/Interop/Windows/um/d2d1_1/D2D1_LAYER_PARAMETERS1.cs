@@ -3,7 +3,6 @@
 // Ported from um\d2d1_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -13,17 +12,17 @@ namespace TerraFX.Interop
     public unsafe struct D2D1_LAYER_PARAMETERS1
     {
         #region Fields
-        [ComAliasName("D2D1_RECT_F")]
+        [NativeTypeName("D2D1_RECT_F")]
         public D2D_RECT_F contentBounds;
 
         public ID2D1Geometry* geometricMask;
 
         public D2D1_ANTIALIAS_MODE maskAntialiasMode;
 
-        [ComAliasName("D2D1_MATRIX_3X2_F")]
+        [NativeTypeName("D2D1_MATRIX_3X2_F")]
         public D2D_MATRIX_3X2_F maskTransform;
 
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float opacity;
 
         public ID2D1Brush* opacityBrush;

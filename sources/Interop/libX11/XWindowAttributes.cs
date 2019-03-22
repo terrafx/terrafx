@@ -3,7 +3,6 @@
 // Ported from X11\xlib.h in the Xlib - C Language X Interface: X Version 11, Release 7.7
 // Original source is Copyright © The Open Group.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -22,7 +21,7 @@ namespace TerraFX.Interop
 
         public Visual* visual;
 
-        [ComAliasName("Window")]
+        [NativeTypeName("Window")]
         public nuint root;
 
         public int @class;
@@ -37,13 +36,13 @@ namespace TerraFX.Interop
 
         public nuint backing_pixel;
 
-        [ComAliasName("Bool")]
+        [NativeTypeName("Bool")]
         public int save_under;
 
-        [ComAliasName("Colormap")]
+        [NativeTypeName("Colormap")]
         public nuint colormap;
 
-        [ComAliasName("Bool")]
+        [NativeTypeName("Bool")]
         public int map_installed;
 
         public int map_state;
@@ -54,7 +53,7 @@ namespace TerraFX.Interop
 
         public nint do_not_propagate_mask;
 
-        [ComAliasName("Bool")]
+        [NativeTypeName("Bool")]
         public int override_redirect;
 
         public Screen* screen;

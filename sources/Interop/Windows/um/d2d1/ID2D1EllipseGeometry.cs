@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID2D1EllipseGeometry* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID2D1EllipseGeometry* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID2D1EllipseGeometry* This
         );
@@ -59,156 +59,156 @@ namespace TerraFX.Interop
         /// <summary>Retrieve the bounds of the geometry, with an optional applied transform.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetBounds(
             [In] ID2D1EllipseGeometry* This,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* bounds
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [Out, NativeTypeName("D2D1_RECT_F")] D2D_RECT_F* bounds
         );
 
         /// <summary>Get the bounds of the corresponding geometry after it has been widened or have an optional pen style applied.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetWidenedBounds(
             [In] ID2D1EllipseGeometry* This,
-            [In, ComAliasName("FLOAT")] float strokeWidth,
+            [In, NativeTypeName("FLOAT")] float strokeWidth,
             [In, Optional] ID2D1StrokeStyle* strokeStyle,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
-            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* bounds
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
+            [Out, NativeTypeName("D2D1_RECT_F")] D2D_RECT_F* bounds
         );
 
         /// <summary>Checks to see whether the corresponding penned and widened geometry contains the given point.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _StrokeContainsPoint(
             [In] ID2D1EllipseGeometry* This,
-            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F point,
-            [In, ComAliasName("FLOAT")] float strokeWidth,
+            [In, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F point,
+            [In, NativeTypeName("FLOAT")] float strokeWidth,
             [In, Optional] ID2D1StrokeStyle* strokeStyle,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
-            [Out, ComAliasName("BOOL")] int* contains
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
+            [Out, NativeTypeName("BOOL")] int* contains
         );
 
         /// <summary>Test whether the given fill of this geometry would contain this point.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _FillContainsPoint(
             [In] ID2D1EllipseGeometry* This,
-            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F point,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
-            [Out, ComAliasName("BOOL")] int* contains
+            [In, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F point,
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
+            [Out, NativeTypeName("BOOL")] int* contains
         );
 
         /// <summary>Compare how one geometry intersects or contains another geometry.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CompareWithGeometry(
             [In] ID2D1EllipseGeometry* This,
             [In] ID2D1Geometry* inputGeometry,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* inputGeometryTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* inputGeometryTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
             [Out] D2D1_GEOMETRY_RELATION* relation
         );
 
         /// <summary>Converts a geometry to a simplified geometry that has arcs and quadratic beziers removed.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Simplify(
             [In] ID2D1EllipseGeometry* This,
             [In] D2D1_GEOMETRY_SIMPLIFICATION_OPTION simplificationOption,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
             [In] ID2D1SimplifiedGeometrySink* geometrySink
         );
 
         /// <summary>Tessellates a geometry into triangles.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Tessellate(
             [In] ID2D1EllipseGeometry* This,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
             [In] ID2D1TessellationSink* tessellationSink
         );
 
         /// <summary>Performs a combine operation between the two geometries to produce a resulting geometry.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CombineWithGeometry(
             [In] ID2D1EllipseGeometry* This,
             [In] ID2D1Geometry* inputGeometry,
             [In] D2D1_COMBINE_MODE combineMode,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* inputGeometryTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* inputGeometryTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
             [In] ID2D1SimplifiedGeometrySink* geometrySink
         );
 
         /// <summary>Computes the outline of the geometry. The result is written back into a simplified geometry sink.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Outline(
             [In] ID2D1EllipseGeometry* This,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
             [In] ID2D1SimplifiedGeometrySink* geometrySink
         );
 
         /// <summary>Computes the area of the geometry.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _ComputeArea(
             [In] ID2D1EllipseGeometry* This,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
-            [Out, ComAliasName("FLOAT")] float* area
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
+            [Out, NativeTypeName("FLOAT")] float* area
         );
 
         /// <summary>Computes the length of the geometry.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _ComputeLength(
             [In] ID2D1EllipseGeometry* This,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
-            [Out, ComAliasName("FLOAT")] float* length
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
+            [Out, NativeTypeName("FLOAT")] float* length
         );
 
         /// <summary>Computes the point and tangent a given distance along the path.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _ComputePointAtLength(
             [In] ID2D1EllipseGeometry* This,
-            [In, ComAliasName("FLOAT")] float length,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
-            [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* point = null,
-            [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* unitTangentVector = null
+            [In, NativeTypeName("FLOAT")] float length,
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
+            [Out, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F* point = null,
+            [Out, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F* unitTangentVector = null
         );
 
         /// <summary>Get the geometry and widen it as well as apply an optional pen style.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Widen(
             [In] ID2D1EllipseGeometry* This,
-            [In, ComAliasName("FLOAT")] float strokeWidth,
+            [In, NativeTypeName("FLOAT")] float strokeWidth,
             [In, Optional] ID2D1StrokeStyle* strokeStyle,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
             [In] ID2D1SimplifiedGeometrySink* geometrySink
         );
         #endregion
@@ -223,9 +223,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -239,7 +239,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID2D1EllipseGeometry* This = &this)
@@ -250,7 +250,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID2D1EllipseGeometry* This = &this)
@@ -278,10 +278,10 @@ namespace TerraFX.Interop
         #endregion
 
         #region ID2D1Geometry Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetBounds(
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* bounds
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [Out, NativeTypeName("D2D1_RECT_F")] D2D_RECT_F* bounds
         )
         {
             fixed (ID2D1EllipseGeometry* This = &this)
@@ -294,13 +294,13 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetWidenedBounds(
-            [In, ComAliasName("FLOAT")] float strokeWidth,
+            [In, NativeTypeName("FLOAT")] float strokeWidth,
             [In, Optional] ID2D1StrokeStyle* strokeStyle,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
-            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* bounds
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
+            [Out, NativeTypeName("D2D1_RECT_F")] D2D_RECT_F* bounds
         )
         {
             fixed (ID2D1EllipseGeometry* This = &this)
@@ -316,14 +316,14 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int StrokeContainsPoint(
-            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F point,
-            [In, ComAliasName("FLOAT")] float strokeWidth,
+            [In, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F point,
+            [In, NativeTypeName("FLOAT")] float strokeWidth,
             [In, Optional] ID2D1StrokeStyle* strokeStyle,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
-            [Out, ComAliasName("BOOL")] int* contains
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
+            [Out, NativeTypeName("BOOL")] int* contains
         )
         {
             fixed (ID2D1EllipseGeometry* This = &this)
@@ -340,12 +340,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int FillContainsPoint(
-            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F point,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
-            [Out, ComAliasName("BOOL")] int* contains
+            [In, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F point,
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
+            [Out, NativeTypeName("BOOL")] int* contains
         )
         {
             fixed (ID2D1EllipseGeometry* This = &this)
@@ -360,11 +360,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CompareWithGeometry(
             [In] ID2D1Geometry* inputGeometry,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* inputGeometryTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* inputGeometryTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
             [Out] D2D1_GEOMETRY_RELATION* relation
         )
         {
@@ -380,11 +380,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Simplify(
             [In] D2D1_GEOMETRY_SIMPLIFICATION_OPTION simplificationOption,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
             [In] ID2D1SimplifiedGeometrySink* geometrySink
         )
         {
@@ -400,10 +400,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Tessellate(
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
             [In] ID2D1TessellationSink* tessellationSink
         )
         {
@@ -418,12 +418,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CombineWithGeometry(
             [In] ID2D1Geometry* inputGeometry,
             [In] D2D1_COMBINE_MODE combineMode,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* inputGeometryTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* inputGeometryTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
             [In] ID2D1SimplifiedGeometrySink* geometrySink
         )
         {
@@ -440,10 +440,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Outline(
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
             [In] ID2D1SimplifiedGeometrySink* geometrySink
         )
         {
@@ -458,11 +458,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int ComputeArea(
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
-            [Out, ComAliasName("FLOAT")] float* area
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
+            [Out, NativeTypeName("FLOAT")] float* area
         )
         {
             fixed (ID2D1EllipseGeometry* This = &this)
@@ -476,11 +476,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int ComputeLength(
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
-            [Out, ComAliasName("FLOAT")] float* length
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
+            [Out, NativeTypeName("FLOAT")] float* length
         )
         {
             fixed (ID2D1EllipseGeometry* This = &this)
@@ -494,13 +494,13 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int ComputePointAtLength(
-            [In, ComAliasName("FLOAT")] float length,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
-            [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* point = null,
-            [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* unitTangentVector = null
+            [In, NativeTypeName("FLOAT")] float length,
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
+            [Out, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F* point = null,
+            [Out, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F* unitTangentVector = null
         )
         {
             fixed (ID2D1EllipseGeometry* This = &this)
@@ -516,12 +516,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Widen(
-            [In, ComAliasName("FLOAT")] float strokeWidth,
+            [In, NativeTypeName("FLOAT")] float strokeWidth,
             [In, Optional] ID2D1StrokeStyle* strokeStyle,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
             [In] ID2D1SimplifiedGeometrySink* geometrySink
         )
         {

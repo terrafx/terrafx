@@ -5,6 +5,7 @@
 
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
@@ -37,7 +38,7 @@ namespace TerraFX.Interop
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "clock_getres", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int clock_getres(
-            [In, ComAliasName("clockid_t")] int clock_id,
+            [In, NativeTypeName("clockid_t")] int clock_id,
             [Out] out timespec res
         );
 
@@ -48,7 +49,7 @@ namespace TerraFX.Interop
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "clock_gettime", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int clock_gettime(
-            [In, ComAliasName("clockid_t")] int clock_id,
+            [In, NativeTypeName("clockid_t")] int clock_id,
             [Out] out timespec tp
         );
 
@@ -59,7 +60,7 @@ namespace TerraFX.Interop
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "clock_settime", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern int clock_settime(
-            [In, ComAliasName("clockid_t")] int clock_id,
+            [In, NativeTypeName("clockid_t")] int clock_id,
             [In] in timespec tp
         );
         #endregion

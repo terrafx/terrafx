@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IWICEnumMetadataItem* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IWICEnumMetadataItem* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IWICEnumMetadataItem* This
         );
@@ -47,34 +47,34 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Next(
             [In] IWICEnumMetadataItem* This,
-            [In, ComAliasName("ULONG")] uint celt,
+            [In, NativeTypeName("ULONG")] uint celt,
             [In, Out, Optional] PROPVARIANT* rgeltSchema,
             [In, Out] PROPVARIANT* rgeltId,
             [In, Out] PROPVARIANT* rgeltValue = null,
-            [Out, ComAliasName("ULONG")] uint* pceltFetched = null
+            [Out, NativeTypeName("ULONG")] uint* pceltFetched = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Skip(
             [In] IWICEnumMetadataItem* This,
-            [In, ComAliasName("ULONG")] uint celt
+            [In, NativeTypeName("ULONG")] uint celt
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Reset(
             [In] IWICEnumMetadataItem* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Clone(
             [In] IWICEnumMetadataItem* This,
             [Out] IWICEnumMetadataItem** ppIEnumMetadataItem = null
@@ -82,9 +82,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -98,7 +98,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IWICEnumMetadataItem* This = &this)
@@ -109,7 +109,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IWICEnumMetadataItem* This = &this)
@@ -122,13 +122,13 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Next(
-            [In, ComAliasName("ULONG")] uint celt,
+            [In, NativeTypeName("ULONG")] uint celt,
             [In, Out, Optional] PROPVARIANT* rgeltSchema,
             [In, Out] PROPVARIANT* rgeltId,
             [In, Out] PROPVARIANT* rgeltValue = null,
-            [Out, ComAliasName("ULONG")] uint* pceltFetched = null
+            [Out, NativeTypeName("ULONG")] uint* pceltFetched = null
         )
         {
             fixed (IWICEnumMetadataItem* This = &this)
@@ -144,9 +144,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Skip(
-            [In, ComAliasName("ULONG")] uint celt
+            [In, NativeTypeName("ULONG")] uint celt
         )
         {
             fixed (IWICEnumMetadataItem* This = &this)
@@ -158,7 +158,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Reset()
         {
             fixed (IWICEnumMetadataItem* This = &this)
@@ -169,7 +169,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Clone(
             [Out] IWICEnumMetadataItem** ppIEnumMetadataItem = null
         )

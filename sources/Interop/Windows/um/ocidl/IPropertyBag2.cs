@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IPropertyBag2* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IPropertyBag2* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IPropertyBag2* This
         );
@@ -47,61 +47,61 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Read(
             [In] IPropertyBag2* This,
-            [In, ComAliasName("ULONG")] uint cProperties,
-            [In, ComAliasName("PROPBAG2[]")] PROPBAG2* pPropBag,
+            [In, NativeTypeName("ULONG")] uint cProperties,
+            [In, NativeTypeName("PROPBAG2[]")] PROPBAG2* pPropBag,
             [In, Optional] IErrorLog* pErrLog,
             [Out] VARIANT* pvarValue,
-            [In, Out, ComAliasName("HRESULT")] int* phrError = null
+            [In, Out, NativeTypeName("HRESULT")] int* phrError = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Write(
             [In] IPropertyBag2* This,
-            [In, ComAliasName("ULONG")] uint cProperties,
-            [In, ComAliasName("PROPBAG2[]")] PROPBAG2* pPropBag,
+            [In, NativeTypeName("ULONG")] uint cProperties,
+            [In, NativeTypeName("PROPBAG2[]")] PROPBAG2* pPropBag,
             [In] VARIANT* pvarValue
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CountProperties(
             [In] IPropertyBag2* This,
-            [Out, ComAliasName("ULONG")] uint* pcProperties
+            [Out, NativeTypeName("ULONG")] uint* pcProperties
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetPropertyInfo(
             [In] IPropertyBag2* This,
-            [In, ComAliasName("ULONG")] uint iProperty,
-            [In, ComAliasName("ULONG")] uint cProperties,
-            [Out, ComAliasName("PROPBAG2")] PROPBAG2* pPropBag,
-            [Out, ComAliasName("ULONG")] uint* pcProperties
+            [In, NativeTypeName("ULONG")] uint iProperty,
+            [In, NativeTypeName("ULONG")] uint cProperties,
+            [Out, NativeTypeName("PROPBAG2")] PROPBAG2* pPropBag,
+            [Out, NativeTypeName("ULONG")] uint* pcProperties
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _LoadObject(
             [In] IPropertyBag2* This,
-            [In, ComAliasName("LPCOLESTR")] char* pstrName,
-            [In, ComAliasName("DWORD")] uint dwHint,
+            [In, NativeTypeName("LPCOLESTR")] char* pstrName,
+            [In, NativeTypeName("DWORD")] uint dwHint,
             [In] IUnknown* pUnkObject = null,
             [In] IErrorLog* pErrLog = null
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -115,7 +115,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IPropertyBag2* This = &this)
@@ -126,7 +126,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IPropertyBag2* This = &this)
@@ -139,13 +139,13 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Read(
-            [In, ComAliasName("ULONG")] uint cProperties,
-            [In, ComAliasName("PROPBAG2[]")] PROPBAG2* pPropBag,
+            [In, NativeTypeName("ULONG")] uint cProperties,
+            [In, NativeTypeName("PROPBAG2[]")] PROPBAG2* pPropBag,
             [In, Optional] IErrorLog* pErrLog,
             [Out] VARIANT* pvarValue,
-            [In, Out, ComAliasName("HRESULT")] int* phrError = null
+            [In, Out, NativeTypeName("HRESULT")] int* phrError = null
         )
         {
             fixed (IPropertyBag2* This = &this)
@@ -161,10 +161,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Write(
-            [In, ComAliasName("ULONG")] uint cProperties,
-            [In, ComAliasName("PROPBAG2[]")] PROPBAG2* pPropBag,
+            [In, NativeTypeName("ULONG")] uint cProperties,
+            [In, NativeTypeName("PROPBAG2[]")] PROPBAG2* pPropBag,
             [In] VARIANT* pvarValue
         )
         {
@@ -179,9 +179,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CountProperties(
-            [Out, ComAliasName("ULONG")] uint* pcProperties
+            [Out, NativeTypeName("ULONG")] uint* pcProperties
         )
         {
             fixed (IPropertyBag2* This = &this)
@@ -193,12 +193,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetPropertyInfo(
-            [In, ComAliasName("ULONG")] uint iProperty,
-            [In, ComAliasName("ULONG")] uint cProperties,
-            [Out, ComAliasName("PROPBAG2")] PROPBAG2* pPropBag,
-            [Out, ComAliasName("ULONG")] uint* pcProperties
+            [In, NativeTypeName("ULONG")] uint iProperty,
+            [In, NativeTypeName("ULONG")] uint cProperties,
+            [Out, NativeTypeName("PROPBAG2")] PROPBAG2* pPropBag,
+            [Out, NativeTypeName("ULONG")] uint* pcProperties
         )
         {
             fixed (IPropertyBag2* This = &this)
@@ -213,10 +213,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int LoadObject(
-            [In, ComAliasName("LPCOLESTR")] char* pstrName,
-            [In, ComAliasName("DWORD")] uint dwHint,
+            [In, NativeTypeName("LPCOLESTR")] char* pstrName,
+            [In, NativeTypeName("DWORD")] uint dwHint,
             [In] IUnknown* pUnkObject = null,
             [In] IErrorLog* pErrLog = null
         )

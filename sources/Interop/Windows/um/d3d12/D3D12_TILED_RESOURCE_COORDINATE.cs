@@ -3,7 +3,6 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,16 +11,16 @@ namespace TerraFX.Interop
     public struct D3D12_TILED_RESOURCE_COORDINATE
     {
         #region Fields
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint X;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Y;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Z;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Subresource;
         #endregion
     }

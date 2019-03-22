@@ -14,10 +14,10 @@ namespace TerraFX.Interop
     public unsafe struct STATSTG
     {
         #region Fields
-        [ComAliasName("LPOLESTR")]
+        [NativeTypeName("LPOLESTR")]
         public char* pwcsName;
 
-        [ComAliasName("DWORD")]
+        [NativeTypeName("DWORD")]
         public uint type;
 
         public ULARGE_INTEGER cbSize;
@@ -28,19 +28,19 @@ namespace TerraFX.Interop
 
         public FILETIME atime;
 
-        [ComAliasName("DWORD")]
+        [NativeTypeName("DWORD")]
         public uint grfMode;
 
-        [ComAliasName("DWORD")]
+        [NativeTypeName("DWORD")]
         public uint grfLocksSupported;
 
-        [ComAliasName("CLSID")]
+        [NativeTypeName("CLSID")]
         public Guid clsid;
 
-        [ComAliasName("DWORD")]
+        [NativeTypeName("DWORD")]
         public uint grfStateBits;
 
-        [ComAliasName("DWORD")]
+        [NativeTypeName("DWORD")]
         public uint reserved;
         #endregion
     }

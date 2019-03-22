@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID2D1SpriteBatch* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID2D1SpriteBatch* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID2D1SpriteBatch* This
         );
@@ -58,56 +58,56 @@ namespace TerraFX.Interop
         /// <summary>Adds sprites to the end of the sprite batch.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _AddSprites(
             [In] ID2D1SpriteBatch* This,
-            [In, ComAliasName("UINT32")] uint spriteCount,
-            [In, ComAliasName("D2D1_RECT_F[]")] D2D_RECT_F* destinationRectangles,
-            [In, ComAliasName("D2D1_RECT_U[]")] D2D_RECT_U* sourceRectangles = null,
-            [In, ComAliasName("D2D1_COLOR_F[]")] DXGI_RGBA* colors = null,
-            [In, ComAliasName("D2D1_MATRIX_3X2_F[]")] D2D_MATRIX_3X2_F* transforms = null,
-            [In, ComAliasName("UINT32")] uint destinationRectanglesStride = 16,
-            [In, ComAliasName("UINT32")] uint sourceRectanglesStride = 16,
-            [In, ComAliasName("UINT32")] uint colorsStride = 16,
-            [In, ComAliasName("UINT32")] uint transformsStride = 24
+            [In, NativeTypeName("UINT32")] uint spriteCount,
+            [In, NativeTypeName("D2D1_RECT_F[]")] D2D_RECT_F* destinationRectangles,
+            [In, NativeTypeName("D2D1_RECT_U[]")] D2D_RECT_U* sourceRectangles = null,
+            [In, NativeTypeName("D2D1_COLOR_F[]")] DXGI_RGBA* colors = null,
+            [In, NativeTypeName("D2D1_MATRIX_3X2_F[]")] D2D_MATRIX_3X2_F* transforms = null,
+            [In, NativeTypeName("UINT32")] uint destinationRectanglesStride = 16,
+            [In, NativeTypeName("UINT32")] uint sourceRectanglesStride = 16,
+            [In, NativeTypeName("UINT32")] uint colorsStride = 16,
+            [In, NativeTypeName("UINT32")] uint transformsStride = 24
         );
 
         /// <summary>Set properties for existing sprites. All properties not specified are unmodified.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetSprites(
             [In] ID2D1SpriteBatch* This,
-            [In, ComAliasName("UINT32")] uint startIndex,
-            [In, ComAliasName("UINT32")] uint spriteCount,
-            [In, ComAliasName("D2D1_RECT_F[]")] D2D_RECT_F* destinationRectangles = null,
-            [In, ComAliasName("D2D1_RECT_U[]")] D2D_RECT_U* sourceRectangles = null,
-            [In, ComAliasName("D2D1_COLOR_F[]")] DXGI_RGBA* colors = null,
-            [In, ComAliasName("D2D1_MATRIX_3X2_F[]")] D2D_MATRIX_3X2_F* transforms = null,
-            [In, ComAliasName("UINT32")] uint destinationRectanglesStride = 16,
-            [In, ComAliasName("UINT32")] uint sourceRectanglesStride = 16,
-            [In, ComAliasName("UINT32")] uint colorsStride = 16,
-            [In, ComAliasName("UINT32")] uint transformsStride = 24
+            [In, NativeTypeName("UINT32")] uint startIndex,
+            [In, NativeTypeName("UINT32")] uint spriteCount,
+            [In, NativeTypeName("D2D1_RECT_F[]")] D2D_RECT_F* destinationRectangles = null,
+            [In, NativeTypeName("D2D1_RECT_U[]")] D2D_RECT_U* sourceRectangles = null,
+            [In, NativeTypeName("D2D1_COLOR_F[]")] DXGI_RGBA* colors = null,
+            [In, NativeTypeName("D2D1_MATRIX_3X2_F[]")] D2D_MATRIX_3X2_F* transforms = null,
+            [In, NativeTypeName("UINT32")] uint destinationRectanglesStride = 16,
+            [In, NativeTypeName("UINT32")] uint sourceRectanglesStride = 16,
+            [In, NativeTypeName("UINT32")] uint colorsStride = 16,
+            [In, NativeTypeName("UINT32")] uint transformsStride = 24
         );
 
         /// <summary>Retrieves sprite properties.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetSprites(
             [In] ID2D1SpriteBatch* This,
-            [In, ComAliasName("UINT32")] uint startIndex,
-            [In, ComAliasName("UINT32")] uint spriteCount,
-            [Out, ComAliasName("D2D1_RECT_F[]")] D2D_RECT_F* destinationRectangles = null,
-            [Out, ComAliasName("D2D1_RECT_U[]")] D2D_RECT_U* sourceRectangles = null,
-            [Out, ComAliasName("D2D1_COLOR_F[]")] DXGI_RGBA* colors = null,
-            [Out, ComAliasName("D2D1_MATRIX_3X2_F[]")] D2D_MATRIX_3X2_F* transforms = null
+            [In, NativeTypeName("UINT32")] uint startIndex,
+            [In, NativeTypeName("UINT32")] uint spriteCount,
+            [Out, NativeTypeName("D2D1_RECT_F[]")] D2D_RECT_F* destinationRectangles = null,
+            [Out, NativeTypeName("D2D1_RECT_U[]")] D2D_RECT_U* sourceRectangles = null,
+            [Out, NativeTypeName("D2D1_COLOR_F[]")] DXGI_RGBA* colors = null,
+            [Out, NativeTypeName("D2D1_MATRIX_3X2_F[]")] D2D_MATRIX_3X2_F* transforms = null
         );
 
         /// <summary>Retrieves the number of sprites in the sprite batch.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public /* static */ delegate uint _GetSpriteCount(
             [In] ID2D1SpriteBatch* This
         );
@@ -121,9 +121,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -137,7 +137,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID2D1SpriteBatch* This = &this)
@@ -148,7 +148,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID2D1SpriteBatch* This = &this)
@@ -176,17 +176,17 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int AddSprites(
-            [In, ComAliasName("UINT32")] uint spriteCount,
-            [In, ComAliasName("D2D1_RECT_F[]")] D2D_RECT_F* destinationRectangles,
-            [In, ComAliasName("D2D1_RECT_U[]")] D2D_RECT_U* sourceRectangles = null,
-            [In, ComAliasName("D2D1_COLOR_F[]")] DXGI_RGBA* colors = null,
-            [In, ComAliasName("D2D1_MATRIX_3X2_F[]")] D2D_MATRIX_3X2_F* transforms = null,
-            [In, ComAliasName("UINT32")] uint destinationRectanglesStride = 16,
-            [In, ComAliasName("UINT32")] uint sourceRectanglesStride = 16,
-            [In, ComAliasName("UINT32")] uint colorsStride = 16,
-            [In, ComAliasName("UINT32")] uint transformsStride = 24
+            [In, NativeTypeName("UINT32")] uint spriteCount,
+            [In, NativeTypeName("D2D1_RECT_F[]")] D2D_RECT_F* destinationRectangles,
+            [In, NativeTypeName("D2D1_RECT_U[]")] D2D_RECT_U* sourceRectangles = null,
+            [In, NativeTypeName("D2D1_COLOR_F[]")] DXGI_RGBA* colors = null,
+            [In, NativeTypeName("D2D1_MATRIX_3X2_F[]")] D2D_MATRIX_3X2_F* transforms = null,
+            [In, NativeTypeName("UINT32")] uint destinationRectanglesStride = 16,
+            [In, NativeTypeName("UINT32")] uint sourceRectanglesStride = 16,
+            [In, NativeTypeName("UINT32")] uint colorsStride = 16,
+            [In, NativeTypeName("UINT32")] uint transformsStride = 24
         )
         {
             fixed (ID2D1SpriteBatch* This = &this)
@@ -206,18 +206,18 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetSprites(
-            [In, ComAliasName("UINT32")] uint startIndex,
-            [In, ComAliasName("UINT32")] uint spriteCount,
-            [In, ComAliasName("D2D1_RECT_F[]")] D2D_RECT_F* destinationRectangles = null,
-            [In, ComAliasName("D2D1_RECT_U[]")] D2D_RECT_U* sourceRectangles = null,
-            [In, ComAliasName("D2D1_COLOR_F[]")] DXGI_RGBA* colors = null,
-            [In, ComAliasName("D2D1_MATRIX_3X2_F[]")] D2D_MATRIX_3X2_F* transforms = null,
-            [In, ComAliasName("UINT32")] uint destinationRectanglesStride = 16,
-            [In, ComAliasName("UINT32")] uint sourceRectanglesStride = 16,
-            [In, ComAliasName("UINT32")] uint colorsStride = 16,
-            [In, ComAliasName("UINT32")] uint transformsStride = 24
+            [In, NativeTypeName("UINT32")] uint startIndex,
+            [In, NativeTypeName("UINT32")] uint spriteCount,
+            [In, NativeTypeName("D2D1_RECT_F[]")] D2D_RECT_F* destinationRectangles = null,
+            [In, NativeTypeName("D2D1_RECT_U[]")] D2D_RECT_U* sourceRectangles = null,
+            [In, NativeTypeName("D2D1_COLOR_F[]")] DXGI_RGBA* colors = null,
+            [In, NativeTypeName("D2D1_MATRIX_3X2_F[]")] D2D_MATRIX_3X2_F* transforms = null,
+            [In, NativeTypeName("UINT32")] uint destinationRectanglesStride = 16,
+            [In, NativeTypeName("UINT32")] uint sourceRectanglesStride = 16,
+            [In, NativeTypeName("UINT32")] uint colorsStride = 16,
+            [In, NativeTypeName("UINT32")] uint transformsStride = 24
         )
         {
             fixed (ID2D1SpriteBatch* This = &this)
@@ -238,14 +238,14 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetSprites(
-            [In, ComAliasName("UINT32")] uint startIndex,
-            [In, ComAliasName("UINT32")] uint spriteCount,
-            [Out, ComAliasName("D2D1_RECT_F[]")] D2D_RECT_F* destinationRectangles = null,
-            [Out, ComAliasName("D2D1_RECT_U[]")] D2D_RECT_U* sourceRectangles = null,
-            [Out, ComAliasName("D2D1_COLOR_F[]")] DXGI_RGBA* colors = null,
-            [Out, ComAliasName("D2D1_MATRIX_3X2_F[]")] D2D_MATRIX_3X2_F* transforms = null
+            [In, NativeTypeName("UINT32")] uint startIndex,
+            [In, NativeTypeName("UINT32")] uint spriteCount,
+            [Out, NativeTypeName("D2D1_RECT_F[]")] D2D_RECT_F* destinationRectangles = null,
+            [Out, NativeTypeName("D2D1_RECT_U[]")] D2D_RECT_U* sourceRectangles = null,
+            [Out, NativeTypeName("D2D1_COLOR_F[]")] DXGI_RGBA* colors = null,
+            [Out, NativeTypeName("D2D1_MATRIX_3X2_F[]")] D2D_MATRIX_3X2_F* transforms = null
         )
         {
             fixed (ID2D1SpriteBatch* This = &this)
@@ -262,7 +262,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public uint GetSpriteCount()
         {
             fixed (ID2D1SpriteBatch* This = &this)

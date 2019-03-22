@@ -4,7 +4,6 @@
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
 using System;
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -13,23 +12,23 @@ namespace TerraFX.Interop
     public unsafe struct VkDisplayPropertiesKHR
     {
         #region Fields
-        [ComAliasName("VkDisplayKHR")]
+        [NativeTypeName("VkDisplayKHR")]
         public IntPtr display;
 
-        [ComAliasName("string")]
+        [NativeTypeName("string")]
         public sbyte* displayName;
 
         public VkExtent2D physicalDimensions;
 
         public VkExtent2D physicalResolution;
 
-        [ComAliasName("VkSurfaceTransformFlagsKHR")]
+        [NativeTypeName("VkSurfaceTransformFlagsKHR")]
         public uint supportedTransforms;
 
-        [ComAliasName("VkBool32")]
+        [NativeTypeName("VkBool32")]
         public uint planeReorderPossible;
 
-        [ComAliasName("VkBool32")]
+        [NativeTypeName("VkBool32")]
         public uint persistentContent;
         #endregion
     }

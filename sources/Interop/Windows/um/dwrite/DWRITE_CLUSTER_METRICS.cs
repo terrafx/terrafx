@@ -3,7 +3,6 @@
 // Ported from um\dwrite.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -14,11 +13,11 @@ namespace TerraFX.Interop
     {
         #region Fields
         /// <summary>The total advance width of all glyphs in the cluster.</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float width;
 
         /// <summary>The number of text positions in the cluster.</summary>
-        [ComAliasName("UINT16")]
+        [NativeTypeName("UINT16")]
         public ushort length;
 
         private ushort _bitField;
@@ -26,7 +25,7 @@ namespace TerraFX.Interop
 
         #region Properties
         /// <summary>Indicate whether line can be broken right after the cluster.</summary>
-        [ComAliasName("UINT16:1")]
+        [NativeTypeName("UINT16:1")]
         public ushort canWrapLineAfter
         {
             get
@@ -41,7 +40,7 @@ namespace TerraFX.Interop
         }
 
         /// <summary>Indicate whether the cluster corresponds to whitespace character.</summary>
-        [ComAliasName("UINT16:1")]
+        [NativeTypeName("UINT16:1")]
         public ushort isWhitespace
         {
             get
@@ -56,7 +55,7 @@ namespace TerraFX.Interop
         }
 
         /// <summary>Indicate whether the cluster corresponds to a newline character.</summary>
-        [ComAliasName("UINT16:1")]
+        [NativeTypeName("UINT16:1")]
         public ushort isNewline
         {
             get
@@ -71,7 +70,7 @@ namespace TerraFX.Interop
         }
 
         /// <summary>Indicate whether the cluster corresponds to soft hyphen character.</summary>
-        [ComAliasName("UINT16:1")]
+        [NativeTypeName("UINT16:1")]
         public ushort isSoftHyphen
         {
             get
@@ -86,7 +85,7 @@ namespace TerraFX.Interop
         }
 
         /// <summary>Indicate whether the cluster is read from right to left.</summary>
-        [ComAliasName("UINT16:1")]
+        [NativeTypeName("UINT16:1")]
         public ushort isRightToLeft
         {
             get
@@ -100,7 +99,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [ComAliasName("UINT16:11")]
+        [NativeTypeName("UINT16:11")]
         public ushort padding
         {
             get

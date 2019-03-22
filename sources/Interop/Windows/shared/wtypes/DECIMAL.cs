@@ -19,36 +19,36 @@ namespace TerraFX.Interop
         #region union
         #region struct
         [FieldOffset(2)]
-        [ComAliasName("BYTE")]
+        [NativeTypeName("BYTE")]
         public byte scale;
 
         [FieldOffset(3)]
-        [ComAliasName("BYTE")]
+        [NativeTypeName("BYTE")]
         public byte sign;
         #endregion
 
         [FieldOffset(2)]
-        [ComAliasName("USHORT")]
+        [NativeTypeName("USHORT")]
         public ushort signscale;
         #endregion
 
         [FieldOffset(4)]
-        [ComAliasName("ULONG")]
+        [NativeTypeName("ULONG")]
         public uint Hi32;
 
         #region union
         #region struct
         [FieldOffset(8)]
-        [ComAliasName("ULONG")]
+        [NativeTypeName("ULONG")]
         public uint Lo32;
 
         [FieldOffset(12)]
-        [ComAliasName("ULONG")]
+        [NativeTypeName("ULONG")]
         public uint Mid32;
         #endregion
 
         [FieldOffset(8)]
-        [ComAliasName("ULONGLONG")]
+        [NativeTypeName("ULONGLONG")]
         public ulong Lo64;
         #endregion
         #endregion

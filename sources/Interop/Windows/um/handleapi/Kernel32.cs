@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
@@ -16,9 +17,9 @@ namespace TerraFX.Interop
         #region Extern Methods
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CloseHandle", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public static extern int CloseHandle(
-            [In, ComAliasName("HANDLE")] IntPtr hObject
+            [In, NativeTypeName("HANDLE")] IntPtr hObject
         );
         #endregion
     }

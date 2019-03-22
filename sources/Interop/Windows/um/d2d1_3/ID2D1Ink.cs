@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID2D1Ink* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID2D1Ink* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID2D1Ink* This
         );
@@ -75,37 +75,37 @@ namespace TerraFX.Interop
         /// <summary>Add one or more segments to the end of the ink.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _AddSegments(
             [In] ID2D1Ink* This,
-            [In, ComAliasName("D2D1_INK_BEZIER_SEGMENT[]")] D2D1_INK_BEZIER_SEGMENT* segments,
-            [In, ComAliasName("UINT32")] uint segmentsCount
+            [In, NativeTypeName("D2D1_INK_BEZIER_SEGMENT[]")] D2D1_INK_BEZIER_SEGMENT* segments,
+            [In, NativeTypeName("UINT32")] uint segmentsCount
         );
 
         /// <summary>Remove one or more segments from the end of the ink.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _RemoveSegmentsAtEnd(
             [In] ID2D1Ink* This,
-            [In, ComAliasName("UINT32")] uint segmentsCount
+            [In, NativeTypeName("UINT32")] uint segmentsCount
         );
 
         /// <summary>Updates the specified segments with new control points.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetSegments(
             [In] ID2D1Ink* This,
-            [In, ComAliasName("UINT32")] uint startSegment,
-            [In, ComAliasName("D2D1_INK_BEZIER_SEGMENT[]")] D2D1_INK_BEZIER_SEGMENT* segments,
-            [In, ComAliasName("UINT32")] uint segmentsCount
+            [In, NativeTypeName("UINT32")] uint startSegment,
+            [In, NativeTypeName("D2D1_INK_BEZIER_SEGMENT[]")] D2D1_INK_BEZIER_SEGMENT* segments,
+            [In, NativeTypeName("UINT32")] uint segmentsCount
         );
 
         /// <summary>Update the last segment with new control points.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetSegmentAtEnd(
             [In] ID2D1Ink* This,
             [In] D2D1_INK_BEZIER_SEGMENT* segment
@@ -114,7 +114,7 @@ namespace TerraFX.Interop
         /// <summary>Returns the number of segments the ink is composed of.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public /* static */ delegate uint _GetSegmentCount(
             [In] ID2D1Ink* This
         );
@@ -122,42 +122,42 @@ namespace TerraFX.Interop
         /// <summary>Retrieve the segments stored in the ink.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetSegments(
             [In] ID2D1Ink* This,
-            [In, ComAliasName("UINT32")] uint startSegment,
-            [Out, ComAliasName("D2D1_INK_BEZIER_SEGMENT[]")] D2D1_INK_BEZIER_SEGMENT* segments,
-            [In, ComAliasName("UINT32")] uint segmentsCount
+            [In, NativeTypeName("UINT32")] uint startSegment,
+            [Out, NativeTypeName("D2D1_INK_BEZIER_SEGMENT[]")] D2D1_INK_BEZIER_SEGMENT* segments,
+            [In, NativeTypeName("UINT32")] uint segmentsCount
         );
 
         /// <summary>Construct a geometric representation of the ink.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _StreamAsGeometry(
             [In] ID2D1Ink* This,
             [In, Optional] ID2D1InkStyle* inkStyle,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
             [In] ID2D1SimplifiedGeometrySink* geometrySink
         );
 
         /// <summary>Retrieve the bounds of the ink, with an optional applied transform.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetBounds(
             [In] ID2D1Ink* This,
             [In, Optional] ID2D1InkStyle* inkStyle,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* bounds
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [Out, NativeTypeName("D2D1_RECT_F")] D2D_RECT_F* bounds
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -171,7 +171,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID2D1Ink* This = &this)
@@ -182,7 +182,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID2D1Ink* This = &this)
@@ -236,10 +236,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int AddSegments(
-            [In, ComAliasName("D2D1_INK_BEZIER_SEGMENT[]")] D2D1_INK_BEZIER_SEGMENT* segments,
-            [In, ComAliasName("UINT32")] uint segmentsCount
+            [In, NativeTypeName("D2D1_INK_BEZIER_SEGMENT[]")] D2D1_INK_BEZIER_SEGMENT* segments,
+            [In, NativeTypeName("UINT32")] uint segmentsCount
         )
         {
             fixed (ID2D1Ink* This = &this)
@@ -252,9 +252,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int RemoveSegmentsAtEnd(
-            [In, ComAliasName("UINT32")] uint segmentsCount
+            [In, NativeTypeName("UINT32")] uint segmentsCount
         )
         {
             fixed (ID2D1Ink* This = &this)
@@ -266,11 +266,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetSegments(
-            [In, ComAliasName("UINT32")] uint startSegment,
-            [In, ComAliasName("D2D1_INK_BEZIER_SEGMENT[]")] D2D1_INK_BEZIER_SEGMENT* segments,
-            [In, ComAliasName("UINT32")] uint segmentsCount
+            [In, NativeTypeName("UINT32")] uint startSegment,
+            [In, NativeTypeName("D2D1_INK_BEZIER_SEGMENT[]")] D2D1_INK_BEZIER_SEGMENT* segments,
+            [In, NativeTypeName("UINT32")] uint segmentsCount
         )
         {
             fixed (ID2D1Ink* This = &this)
@@ -284,7 +284,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetSegmentAtEnd(
             [In] D2D1_INK_BEZIER_SEGMENT* segment
         )
@@ -298,7 +298,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public uint GetSegmentCount()
         {
             fixed (ID2D1Ink* This = &this)
@@ -309,11 +309,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetSegments(
-            [In, ComAliasName("UINT32")] uint startSegment,
-            [Out, ComAliasName("D2D1_INK_BEZIER_SEGMENT[]")] D2D1_INK_BEZIER_SEGMENT* segments,
-            [In, ComAliasName("UINT32")] uint segmentsCount
+            [In, NativeTypeName("UINT32")] uint startSegment,
+            [Out, NativeTypeName("D2D1_INK_BEZIER_SEGMENT[]")] D2D1_INK_BEZIER_SEGMENT* segments,
+            [In, NativeTypeName("UINT32")] uint segmentsCount
         )
         {
             fixed (ID2D1Ink* This = &this)
@@ -327,11 +327,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int StreamAsGeometry(
             [In, Optional] ID2D1InkStyle* inkStyle,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [In, ComAliasName("FLOAT")] float flatteningTolerance,
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [In, NativeTypeName("FLOAT")] float flatteningTolerance,
             [In] ID2D1SimplifiedGeometrySink* geometrySink
         )
         {
@@ -347,11 +347,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetBounds(
             [In, Optional] ID2D1InkStyle* inkStyle,
-            [In, Optional, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
-            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* bounds
+            [In, Optional, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* worldTransform,
+            [Out, NativeTypeName("D2D1_RECT_F")] D2D_RECT_F* bounds
         )
         {
             fixed (ID2D1Ink* This = &this)

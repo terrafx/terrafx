@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ITypeComp* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ITypeComp* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ITypeComp* This
         );
@@ -47,12 +47,12 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Bind(
             [In] ITypeComp* This,
-            [In, ComAliasName("LPOLESTR")] char* szName,
-            [In, ComAliasName("ULONG")] uint lHashVal,
-            [In, ComAliasName("WORD")] ushort wFlags,
+            [In, NativeTypeName("LPOLESTR")] char* szName,
+            [In, NativeTypeName("ULONG")] uint lHashVal,
+            [In, NativeTypeName("WORD")] ushort wFlags,
             [Out] ITypeInfo** ppTInfo,
             [Out] DESCKIND* pDescKind,
             [Out] BINDPTR* pBindPtr
@@ -60,20 +60,20 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _BindType(
             [In] ITypeComp* This,
-            [In, ComAliasName("LPOLESTR")] char* szName,
-            [In, ComAliasName("ULONG")] uint lHashVal,
+            [In, NativeTypeName("LPOLESTR")] char* szName,
+            [In, NativeTypeName("ULONG")] uint lHashVal,
             [Out] ITypeInfo** ppTInfo,
             [Out] ITypeComp** ppTComp
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -87,7 +87,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ITypeComp* This = &this)
@@ -98,7 +98,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ITypeComp* This = &this)
@@ -111,11 +111,11 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Bind(
-            [In, ComAliasName("LPOLESTR")] char* szName,
-            [In, ComAliasName("ULONG")] uint lHashVal,
-            [In, ComAliasName("WORD")] ushort wFlags,
+            [In, NativeTypeName("LPOLESTR")] char* szName,
+            [In, NativeTypeName("ULONG")] uint lHashVal,
+            [In, NativeTypeName("WORD")] ushort wFlags,
             [Out] ITypeInfo** ppTInfo,
             [Out] DESCKIND* pDescKind,
             [Out] BINDPTR* pBindPtr
@@ -135,10 +135,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int BindType(
-            [In, ComAliasName("LPOLESTR")] char* szName,
-            [In, ComAliasName("ULONG")] uint lHashVal,
+            [In, NativeTypeName("LPOLESTR")] char* szName,
+            [In, NativeTypeName("ULONG")] uint lHashVal,
             [Out] ITypeInfo** ppTInfo,
             [Out] ITypeComp** ppTComp
         )

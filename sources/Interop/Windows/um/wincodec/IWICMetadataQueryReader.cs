@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IWICMetadataQueryReader* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IWICMetadataQueryReader* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IWICMetadataQueryReader* This
         );
@@ -47,34 +47,34 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetContainerFormat(
             [In] IWICMetadataQueryReader* This,
-            [Out, ComAliasName("GUID")] Guid* pguidContainerFormat
+            [Out, NativeTypeName("GUID")] Guid* pguidContainerFormat
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetLocation(
             [In] IWICMetadataQueryReader* This,
-            [In, ComAliasName("UINT")] uint cchMaxLength,
-            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzNamespace,
-            [Out, ComAliasName("UINT")] uint* pcchActualLength
+            [In, NativeTypeName("UINT")] uint cchMaxLength,
+            [In, Out, Optional, NativeTypeName("WCHAR[]")] char* wzNamespace,
+            [Out, NativeTypeName("UINT")] uint* pcchActualLength
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetMetadataByName(
             [In] IWICMetadataQueryReader* This,
-            [In, ComAliasName("LPCWSTR")] char* wzName,
+            [In, NativeTypeName("LPCWSTR")] char* wzName,
             [In, Out] PROPVARIANT* pvarValue = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetEnumerator(
             [In] IWICMetadataQueryReader* This,
             [Out] IEnumString** ppIEnumString = null
@@ -82,9 +82,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -98,7 +98,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IWICMetadataQueryReader* This = &this)
@@ -109,7 +109,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IWICMetadataQueryReader* This = &this)
@@ -122,9 +122,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetContainerFormat(
-            [Out, ComAliasName("GUID")] Guid* pguidContainerFormat
+            [Out, NativeTypeName("GUID")] Guid* pguidContainerFormat
         )
         {
             fixed (IWICMetadataQueryReader* This = &this)
@@ -136,11 +136,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetLocation(
-            [In, ComAliasName("UINT")] uint cchMaxLength,
-            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzNamespace,
-            [Out, ComAliasName("UINT")] uint* pcchActualLength
+            [In, NativeTypeName("UINT")] uint cchMaxLength,
+            [In, Out, Optional, NativeTypeName("WCHAR[]")] char* wzNamespace,
+            [Out, NativeTypeName("UINT")] uint* pcchActualLength
         )
         {
             fixed (IWICMetadataQueryReader* This = &this)
@@ -154,9 +154,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetMetadataByName(
-            [In, ComAliasName("LPCWSTR")] char* wzName,
+            [In, NativeTypeName("LPCWSTR")] char* wzName,
             [In, Out] PROPVARIANT* pvarValue = null
         )
         {
@@ -170,7 +170,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetEnumerator(
             [Out] IEnumString** ppIEnumString = null
         )

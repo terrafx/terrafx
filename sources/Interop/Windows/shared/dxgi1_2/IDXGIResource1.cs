@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDXGIResource1* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDXGIResource1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDXGIResource1* This
         );
@@ -47,39 +47,39 @@ namespace TerraFX.Interop
         #region IDXGIObject Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetPrivateData(
             [In] IDXGIResource1* This,
-            [In, ComAliasName("REFGUID")] Guid* Name,
-            [In, ComAliasName("UINT")] uint DataSize,
+            [In, NativeTypeName("REFGUID")] Guid* Name,
+            [In, NativeTypeName("UINT")] uint DataSize,
             [In] void* pData
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetPrivateDataInterface(
             [In] IDXGIResource1* This,
-            [In, ComAliasName("REFGUID")] Guid* Name,
+            [In, NativeTypeName("REFGUID")] Guid* Name,
             [In] IUnknown* pUnknown = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetPrivateData(
             [In] IDXGIResource1* This,
-            [In, ComAliasName("REFGUID")] Guid* Name,
-            [In, Out, ComAliasName("UINT")] uint* pDataSize,
+            [In, NativeTypeName("REFGUID")] Guid* Name,
+            [In, Out, NativeTypeName("UINT")] uint* pDataSize,
             [Out] void* pData
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetParent(
             [In] IDXGIResource1* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppParent
         );
         #endregion
@@ -87,10 +87,10 @@ namespace TerraFX.Interop
         #region IDXGIDeviceSubObject Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetDevice(
             [In] IDXGIResource1* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppDevice
         );
         #endregion
@@ -98,63 +98,63 @@ namespace TerraFX.Interop
         #region IDXGIResource Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetSharedHandle(
             [In] IDXGIResource1* This,
-            [Out, ComAliasName("HANDLE")] IntPtr* pSharedHandle
+            [Out, NativeTypeName("HANDLE")] IntPtr* pSharedHandle
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetUsage(
             [In] IDXGIResource1* This,
-            [Out, ComAliasName("DXGI_USAGE")] uint* pUsage
+            [Out, NativeTypeName("DXGI_USAGE")] uint* pUsage
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetEvictionPriority(
             [In] IDXGIResource1* This,
-            [In, ComAliasName("UINT")] uint EvictionPriority
+            [In, NativeTypeName("UINT")] uint EvictionPriority
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetEvictionPriority(
             [In] IDXGIResource1* This,
-            [Out, ComAliasName("UINT")] uint* pEvictionPriority
+            [Out, NativeTypeName("UINT")] uint* pEvictionPriority
         );
         #endregion
 
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateSubresourceSurface(
             [In] IDXGIResource1* This,
-            [In, ComAliasName("UINT")] uint index,
+            [In, NativeTypeName("UINT")] uint index,
             [Out] IDXGISurface2** ppSurface
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateSharedHandle(
             [In] IDXGIResource1* This,
             [In, Optional] SECURITY_ATTRIBUTES* pAttributes,
-            [In, ComAliasName("DWORD")] uint dwAccess,
-            [In, Optional, ComAliasName("LPCWSTR")] char* lpName,
-            [Out, ComAliasName("HANDLE")] IntPtr* pHandle
+            [In, NativeTypeName("DWORD")] uint dwAccess,
+            [In, Optional, NativeTypeName("LPCWSTR")] char* lpName,
+            [Out, NativeTypeName("HANDLE")] IntPtr* pHandle
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -168,7 +168,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDXGIResource1* This = &this)
@@ -179,7 +179,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDXGIResource1* This = &this)
@@ -192,10 +192,10 @@ namespace TerraFX.Interop
         #endregion
 
         #region IDXGIObject Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetPrivateData(
-            [In, ComAliasName("REFGUID")] Guid* Name,
-            [In, ComAliasName("UINT")] uint DataSize,
+            [In, NativeTypeName("REFGUID")] Guid* Name,
+            [In, NativeTypeName("UINT")] uint DataSize,
             [In] void* pData
         )
         {
@@ -210,9 +210,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetPrivateDataInterface(
-            [In, ComAliasName("REFGUID")] Guid* Name,
+            [In, NativeTypeName("REFGUID")] Guid* Name,
             [In] IUnknown* pUnknown = null
         )
         {
@@ -226,10 +226,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetPrivateData(
-            [In, ComAliasName("REFGUID")] Guid* Name,
-            [In, Out, ComAliasName("UINT")] uint* pDataSize,
+            [In, NativeTypeName("REFGUID")] Guid* Name,
+            [In, Out, NativeTypeName("UINT")] uint* pDataSize,
             [Out] void* pData
         )
         {
@@ -244,9 +244,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetParent(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppParent
         )
         {
@@ -262,9 +262,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region IDXGIDeviceSubObject Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetDevice(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppDevice
         )
         {
@@ -280,9 +280,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region IDXGIResource Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetSharedHandle(
-            [Out, ComAliasName("HANDLE")] IntPtr* pSharedHandle
+            [Out, NativeTypeName("HANDLE")] IntPtr* pSharedHandle
         )
         {
             fixed (IDXGIResource1* This = &this)
@@ -294,9 +294,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetUsage(
-            [Out, ComAliasName("DXGI_USAGE")] uint* pUsage
+            [Out, NativeTypeName("DXGI_USAGE")] uint* pUsage
         )
         {
             fixed (IDXGIResource1* This = &this)
@@ -308,9 +308,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetEvictionPriority(
-            [In, ComAliasName("UINT")] uint EvictionPriority
+            [In, NativeTypeName("UINT")] uint EvictionPriority
         )
         {
             fixed (IDXGIResource1* This = &this)
@@ -322,9 +322,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetEvictionPriority(
-            [Out, ComAliasName("UINT")] uint* pEvictionPriority
+            [Out, NativeTypeName("UINT")] uint* pEvictionPriority
         )
         {
             fixed (IDXGIResource1* This = &this)
@@ -338,9 +338,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateSubresourceSurface(
-            [In, ComAliasName("UINT")] uint index,
+            [In, NativeTypeName("UINT")] uint index,
             [Out] IDXGISurface2** ppSurface
         )
         {
@@ -354,12 +354,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateSharedHandle(
             [In, Optional] SECURITY_ATTRIBUTES* pAttributes,
-            [In, ComAliasName("DWORD")] uint dwAccess,
-            [In, Optional, ComAliasName("LPCWSTR")] char* lpName,
-            [Out, ComAliasName("HANDLE")] IntPtr* pHandle
+            [In, NativeTypeName("DWORD")] uint dwAccess,
+            [In, Optional, NativeTypeName("LPCWSTR")] char* lpName,
+            [Out, NativeTypeName("HANDLE")] IntPtr* pHandle
         )
         {
             fixed (IDXGIResource1* This = &this)

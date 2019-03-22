@@ -16,15 +16,15 @@ namespace TerraFX.Interop
     {
         #region Fields
         /// <summary>The name of the property.</summary>
-        [ComAliasName("PCWSTR")]
+        [NativeTypeName("PCWSTR")]
         public char* propertyName;
 
         /// <summary>The function that will receive the data to set.</summary>
-        [ComAliasName("PD2D1_PROPERTY_SET_FUNCTION")]
+        [NativeTypeName("PD2D1_PROPERTY_SET_FUNCTION")]
         public IntPtr setFunction;
 
         /// <summary>The function that will be asked to write the output data.</summary>
-        [ComAliasName("PD2D1_PROPERTY_GET_FUNCTION")]
+        [NativeTypeName("PD2D1_PROPERTY_GET_FUNCTION")]
         public IntPtr getFunction;
         #endregion
     }

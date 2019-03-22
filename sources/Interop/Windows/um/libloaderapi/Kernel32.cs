@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
@@ -14,9 +15,9 @@ namespace TerraFX.Interop
         #region External Methods
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "GetModuleHandleW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("HMODULE")]
+        [return: NativeTypeName("HMODULE")]
         public static extern IntPtr GetModuleHandle(
-            [In, ComAliasName("LPCWSTR")] char* lpModuleName = null
+            [In, NativeTypeName("LPCWSTR")] char* lpModuleName = null
         );
         #endregion
     }

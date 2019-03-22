@@ -4,7 +4,6 @@
 // Original source is Copyright © The Open Group.
 
 using System;
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -15,10 +14,10 @@ namespace TerraFX.Interop
         #region Fields
         public int type;
 
-        [ComAliasName("Display")]
+        [NativeTypeName("Display")]
         public IntPtr display;
 
-        [ComAliasName("XID")]
+        [NativeTypeName("XID")]
         public nuint resourceid;
 
         public nuint serial;

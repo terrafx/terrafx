@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID2D1GradientStopCollection1* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID2D1GradientStopCollection1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID2D1GradientStopCollection1* This
         );
@@ -59,7 +59,7 @@ namespace TerraFX.Interop
         /// <summary>Returns the number of stops in the gradient.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public /* static */ delegate uint _GetGradientStopCount(
             [In] ID2D1GradientStopCollection1* This
         );
@@ -70,8 +70,8 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _GetGradientStops(
             [In] ID2D1GradientStopCollection1* This,
-            [Out, ComAliasName("D2D1_GRADIENT_STOP[]")] D2D1_GRADIENT_STOP* gradientStops,
-            [In, ComAliasName("UINT32")] uint gradientStopsCount
+            [Out, NativeTypeName("D2D1_GRADIENT_STOP[]")] D2D1_GRADIENT_STOP* gradientStops,
+            [In, NativeTypeName("UINT32")] uint gradientStopsCount
         );
 
         /// <summary>Returns whether the interpolation occurs with 1.0 or 2.2 gamma.</summary>
@@ -94,8 +94,8 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _GetGradientStops1(
             [In] ID2D1GradientStopCollection1* This,
-            [Out, ComAliasName("D2D1_GRADIENT_STOP[]")] D2D1_GRADIENT_STOP* gradientStops,
-            [In, ComAliasName("UINT32")] uint gradientStopsCount
+            [Out, NativeTypeName("D2D1_GRADIENT_STOP[]")] D2D1_GRADIENT_STOP* gradientStops,
+            [In, NativeTypeName("UINT32")] uint gradientStopsCount
         );
 
         /// <summary>Returns the color space in which interpolation occurs. If this object was created using ID2D1RenderTarget::CreateGradientStopCollection, this method returns the color space related to the color interpolation gamma.</summary>
@@ -128,9 +128,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -144,7 +144,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID2D1GradientStopCollection1* This = &this)
@@ -155,7 +155,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID2D1GradientStopCollection1* This = &this)
@@ -183,7 +183,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region ID2D1GradientStopCollection Methods
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public uint GetGradientStopCount()
         {
             fixed (ID2D1GradientStopCollection1* This = &this)
@@ -195,8 +195,8 @@ namespace TerraFX.Interop
         }
 
         public void GetGradientStops(
-            [Out, ComAliasName("D2D1_GRADIENT_STOP[]")] D2D1_GRADIENT_STOP* gradientStops,
-            [In, ComAliasName("UINT32")] uint gradientStopsCount
+            [Out, NativeTypeName("D2D1_GRADIENT_STOP[]")] D2D1_GRADIENT_STOP* gradientStops,
+            [In, NativeTypeName("UINT32")] uint gradientStopsCount
         )
         {
             fixed (ID2D1GradientStopCollection1* This = &this)
@@ -232,8 +232,8 @@ namespace TerraFX.Interop
 
         #region Methods
         public void GetGradientStops1(
-            [Out, ComAliasName("D2D1_GRADIENT_STOP[]")] D2D1_GRADIENT_STOP* gradientStops,
-            [In, ComAliasName("UINT32")] uint gradientStopsCount
+            [Out, NativeTypeName("D2D1_GRADIENT_STOP[]")] D2D1_GRADIENT_STOP* gradientStops,
+            [In, NativeTypeName("UINT32")] uint gradientStopsCount
         )
         {
             fixed (ID2D1GradientStopCollection1* This = &this)

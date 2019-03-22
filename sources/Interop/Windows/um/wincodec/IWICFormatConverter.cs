@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IWICFormatConverter* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IWICFormatConverter* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IWICFormatConverter* This
         );
@@ -47,24 +47,24 @@ namespace TerraFX.Interop
         #region IWICBitmapSource Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetSize(
             [In] IWICFormatConverter* This,
-            [Out, ComAliasName("UINT")] uint* puiWidth,
-            [Out, ComAliasName("UINT")] uint* puiHeight
+            [Out, NativeTypeName("UINT")] uint* puiWidth,
+            [Out, NativeTypeName("UINT")] uint* puiHeight
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetPixelFormat(
             [In] IWICFormatConverter* This,
-            [Out, ComAliasName("WICPixelFormatGUID")] Guid* pPixelFormat
+            [Out, NativeTypeName("WICPixelFormatGUID")] Guid* pPixelFormat
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetResolution(
             [In] IWICFormatConverter* This,
             [Out] double* pDpiX,
@@ -73,7 +73,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CopyPalette(
             [In] IWICFormatConverter* This,
             [In] IWICPalette* pIPalette = null
@@ -81,24 +81,24 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CopyPixels(
             [In] IWICFormatConverter* This,
             [In, Optional] WICRect* prc,
-            [In, ComAliasName("UINT")] uint cbStride,
-            [In, ComAliasName("UINT")] uint cbBufferSize,
-            [Out, ComAliasName("BYTE[]")] byte* pbBuffer
+            [In, NativeTypeName("UINT")] uint cbStride,
+            [In, NativeTypeName("UINT")] uint cbBufferSize,
+            [Out, NativeTypeName("BYTE[]")] byte* pbBuffer
         );
         #endregion
 
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Initialize(
             [In] IWICFormatConverter* This,
             [In, Optional] IWICBitmapSource* pISource,
-            [In, ComAliasName("REFWICPixelFormatGUID")] Guid* dstFormat,
+            [In, NativeTypeName("REFWICPixelFormatGUID")] Guid* dstFormat,
             [In] WICBitmapDitherType dither,
             [In, Optional] IWICPalette* pIPalette,
             [In] double alphaThresholdPercent,
@@ -107,19 +107,19 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CanConvert(
             [In] IWICFormatConverter* This,
-            [In, ComAliasName("REFWICPixelFormatGUID")] Guid* srcPixelFormat,
-            [In, ComAliasName("REFWICPixelFormatGUID")] Guid* dstPixelFormat,
-            [Out, ComAliasName("BOOL")] int* pfCanConvert
+            [In, NativeTypeName("REFWICPixelFormatGUID")] Guid* srcPixelFormat,
+            [In, NativeTypeName("REFWICPixelFormatGUID")] Guid* dstPixelFormat,
+            [Out, NativeTypeName("BOOL")] int* pfCanConvert
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -133,7 +133,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IWICFormatConverter* This = &this)
@@ -144,7 +144,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IWICFormatConverter* This = &this)
@@ -157,10 +157,10 @@ namespace TerraFX.Interop
         #endregion
 
         #region IWICBitmapSource Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetSize(
-            [Out, ComAliasName("UINT")] uint* puiWidth,
-            [Out, ComAliasName("UINT")] uint* puiHeight
+            [Out, NativeTypeName("UINT")] uint* puiWidth,
+            [Out, NativeTypeName("UINT")] uint* puiHeight
         )
         {
             fixed (IWICFormatConverter* This = &this)
@@ -173,9 +173,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetPixelFormat(
-            [Out, ComAliasName("WICPixelFormatGUID")] Guid* pPixelFormat
+            [Out, NativeTypeName("WICPixelFormatGUID")] Guid* pPixelFormat
         )
         {
             fixed (IWICFormatConverter* This = &this)
@@ -187,7 +187,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetResolution(
             [Out] double* pDpiX,
             [Out] double* pDpiY
@@ -203,7 +203,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CopyPalette(
             [In] IWICPalette* pIPalette = null
         )
@@ -217,12 +217,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CopyPixels(
             [In, Optional] WICRect* prc,
-            [In, ComAliasName("UINT")] uint cbStride,
-            [In, ComAliasName("UINT")] uint cbBufferSize,
-            [Out, ComAliasName("BYTE[]")] byte* pbBuffer
+            [In, NativeTypeName("UINT")] uint cbStride,
+            [In, NativeTypeName("UINT")] uint cbBufferSize,
+            [Out, NativeTypeName("BYTE[]")] byte* pbBuffer
         )
         {
             fixed (IWICFormatConverter* This = &this)
@@ -239,10 +239,10 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Initialize(
             [In, Optional] IWICBitmapSource* pISource,
-            [In, ComAliasName("REFWICPixelFormatGUID")] Guid* dstFormat,
+            [In, NativeTypeName("REFWICPixelFormatGUID")] Guid* dstFormat,
             [In] WICBitmapDitherType dither,
             [In, Optional] IWICPalette* pIPalette,
             [In] double alphaThresholdPercent,
@@ -263,11 +263,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CanConvert(
-            [In, ComAliasName("REFWICPixelFormatGUID")] Guid* srcPixelFormat,
-            [In, ComAliasName("REFWICPixelFormatGUID")] Guid* dstPixelFormat,
-            [Out, ComAliasName("BOOL")] int* pfCanConvert
+            [In, NativeTypeName("REFWICPixelFormatGUID")] Guid* srcPixelFormat,
+            [In, NativeTypeName("REFWICPixelFormatGUID")] Guid* dstPixelFormat,
+            [Out, NativeTypeName("BOOL")] int* pfCanConvert
         )
         {
             fixed (IWICFormatConverter* This = &this)

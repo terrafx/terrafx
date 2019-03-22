@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID3D12InfoQueue* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID3D12InfoQueue* This
         );
@@ -47,10 +47,10 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetMessageCountLimit(
             [In] ID3D12InfoQueue* This,
-            [In, ComAliasName("UINT64")] ulong MessageCountLimit
+            [In, NativeTypeName("UINT64")] ulong MessageCountLimit
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -61,59 +61,59 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetMessage(
             [In] ID3D12InfoQueue* This,
-            [In, ComAliasName("UINT64")] ulong MessageIndex,
+            [In, NativeTypeName("UINT64")] ulong MessageIndex,
             [Out, Optional] D3D12_MESSAGE* pMessage,
-            [In, Out, ComAliasName("SIZE_T")] nuint* pMessageByteLength
+            [In, Out, NativeTypeName("SIZE_T")] nuint* pMessageByteLength
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT64")]
+        [return: NativeTypeName("UINT64")]
         public /* static */ delegate ulong _GetNumMessagesAllowedByStorageFilter(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT64")]
+        [return: NativeTypeName("UINT64")]
         public /* static */ delegate ulong _GetNumMessagesDeniedByStorageFilter(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT64")]
+        [return: NativeTypeName("UINT64")]
         public /* static */ delegate ulong _GetNumStoredMessages(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT64")]
+        [return: NativeTypeName("UINT64")]
         public /* static */ delegate ulong _GetNumStoredMessagesAllowedByRetrievalFilter(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT64")]
+        [return: NativeTypeName("UINT64")]
         public /* static */ delegate ulong _GetNumMessagesDiscardedByMessageCountLimit(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT64")]
+        [return: NativeTypeName("UINT64")]
         public /* static */ delegate ulong _GetMessageCountLimit(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _AddStorageFilterEntries(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_INFO_QUEUE_FILTER* pFilter
@@ -121,11 +121,11 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetStorageFilter(
             [In] ID3D12InfoQueue* This,
             [Out, Optional] D3D12_INFO_QUEUE_FILTER* pFilter,
-            [In, Out, ComAliasName("SIZE_T")] nuint* pFilterByteLength
+            [In, Out, NativeTypeName("SIZE_T")] nuint* pFilterByteLength
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -136,21 +136,21 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _PushEmptyStorageFilter(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _PushCopyOfStorageFilter(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _PushStorageFilter(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_INFO_QUEUE_FILTER* pFilter
@@ -164,14 +164,14 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT")]
+        [return: NativeTypeName("UINT")]
         public /* static */ delegate uint _GetStorageFilterStackSize(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _AddRetrievalFilterEntries(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_INFO_QUEUE_FILTER* pFilter
@@ -179,11 +179,11 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetRetrievalFilter(
             [In] ID3D12InfoQueue* This,
             [Out, Optional] D3D12_INFO_QUEUE_FILTER* pFilter,
-            [In, Out, ComAliasName("SIZE_T")] nuint* pFilterByteLength
+            [In, Out, NativeTypeName("SIZE_T")] nuint* pFilterByteLength
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -194,21 +194,21 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _PushEmptyRetrievalFilter(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _PushCopyOfRetrievalFilter(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _PushRetrievalFilter(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_INFO_QUEUE_FILTER* pFilter
@@ -222,61 +222,61 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT")]
+        [return: NativeTypeName("UINT")]
         public /* static */ delegate uint _GetRetrievalFilterStackSize(
             [In] ID3D12InfoQueue* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _AddMessage(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_MESSAGE_CATEGORY Category,
             [In] D3D12_MESSAGE_SEVERITY Severity,
             [In] D3D12_MESSAGE_ID ID,
-            [In, ComAliasName("LPCSTR")] sbyte* pDescription
+            [In, NativeTypeName("LPCSTR")] sbyte* pDescription
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _AddApplicationMessage(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_MESSAGE_SEVERITY Severity,
-            [In, ComAliasName("LPCSTR")] sbyte* pDescription
+            [In, NativeTypeName("LPCSTR")] sbyte* pDescription
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetBreakOnCategory(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_MESSAGE_CATEGORY Category,
-            [In, ComAliasName("BOOL")] int bEnable
+            [In, NativeTypeName("BOOL")] int bEnable
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetBreakOnSeverity(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_MESSAGE_SEVERITY Severity,
-            [In, ComAliasName("BOOL")] int bEnable
+            [In, NativeTypeName("BOOL")] int bEnable
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetBreakOnID(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_MESSAGE_ID ID,
-            [In, ComAliasName("BOOL")] int bEnable
+            [In, NativeTypeName("BOOL")] int bEnable
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public /* static */ delegate int _GetBreakOnCategory(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_MESSAGE_CATEGORY Category
@@ -284,7 +284,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public /* static */ delegate int _GetBreakOnSeverity(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_MESSAGE_SEVERITY Severity
@@ -292,7 +292,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public /* static */ delegate int _GetBreakOnID(
             [In] ID3D12InfoQueue* This,
             [In] D3D12_MESSAGE_ID ID
@@ -302,21 +302,21 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _SetMuteDebugOutput(
             [In] ID3D12InfoQueue* This,
-            [In, ComAliasName("BOOL")] int bMute
+            [In, NativeTypeName("BOOL")] int bMute
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public /* static */ delegate int _GetMuteDebugOutput(
             [In] ID3D12InfoQueue* This
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -330,7 +330,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -341,7 +341,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -354,9 +354,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetMessageCountLimit(
-            [In, ComAliasName("UINT64")] ulong MessageCountLimit
+            [In, NativeTypeName("UINT64")] ulong MessageCountLimit
         )
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -378,11 +378,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetMessage(
-            [In, ComAliasName("UINT64")] ulong MessageIndex,
+            [In, NativeTypeName("UINT64")] ulong MessageIndex,
             [Out, Optional] D3D12_MESSAGE* pMessage,
-            [In, Out, ComAliasName("SIZE_T")] nuint* pMessageByteLength
+            [In, Out, NativeTypeName("SIZE_T")] nuint* pMessageByteLength
         )
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -396,7 +396,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("UINT64")]
+        [return: NativeTypeName("UINT64")]
         public ulong GetNumMessagesAllowedByStorageFilter()
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -407,7 +407,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("UINT64")]
+        [return: NativeTypeName("UINT64")]
         public ulong GetNumMessagesDeniedByStorageFilter()
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -418,7 +418,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("UINT64")]
+        [return: NativeTypeName("UINT64")]
         public ulong GetNumStoredMessages()
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -429,7 +429,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("UINT64")]
+        [return: NativeTypeName("UINT64")]
         public ulong GetNumStoredMessagesAllowedByRetrievalFilter()
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -440,7 +440,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("UINT64")]
+        [return: NativeTypeName("UINT64")]
         public ulong GetNumMessagesDiscardedByMessageCountLimit()
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -451,7 +451,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("UINT64")]
+        [return: NativeTypeName("UINT64")]
         public ulong GetMessageCountLimit()
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -462,7 +462,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int AddStorageFilterEntries(
             [In] D3D12_INFO_QUEUE_FILTER* pFilter
         )
@@ -476,10 +476,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetStorageFilter(
             [Out, Optional] D3D12_INFO_QUEUE_FILTER* pFilter,
-            [In, Out, ComAliasName("SIZE_T")] nuint* pFilterByteLength
+            [In, Out, NativeTypeName("SIZE_T")] nuint* pFilterByteLength
         )
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -502,7 +502,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int PushEmptyStorageFilter()
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -513,7 +513,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int PushCopyOfStorageFilter()
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -524,7 +524,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int PushStorageFilter(
             [In] D3D12_INFO_QUEUE_FILTER* pFilter
         )
@@ -548,7 +548,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("UINT")]
+        [return: NativeTypeName("UINT")]
         public uint GetStorageFilterStackSize()
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -559,7 +559,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int AddRetrievalFilterEntries(
             [In] D3D12_INFO_QUEUE_FILTER* pFilter
         )
@@ -573,10 +573,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetRetrievalFilter(
             [Out, Optional] D3D12_INFO_QUEUE_FILTER* pFilter,
-            [In, Out, ComAliasName("SIZE_T")] nuint* pFilterByteLength
+            [In, Out, NativeTypeName("SIZE_T")] nuint* pFilterByteLength
         )
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -599,7 +599,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int PushEmptyRetrievalFilter()
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -610,7 +610,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int PushCopyOfRetrievalFilter()
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -621,7 +621,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int PushRetrievalFilter(
             [In] D3D12_INFO_QUEUE_FILTER* pFilter
         )
@@ -645,7 +645,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("UINT")]
+        [return: NativeTypeName("UINT")]
         public uint GetRetrievalFilterStackSize()
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -656,12 +656,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int AddMessage(
             [In] D3D12_MESSAGE_CATEGORY Category,
             [In] D3D12_MESSAGE_SEVERITY Severity,
             [In] D3D12_MESSAGE_ID ID,
-            [In, ComAliasName("LPCSTR")] sbyte* pDescription
+            [In, NativeTypeName("LPCSTR")] sbyte* pDescription
         )
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -676,10 +676,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int AddApplicationMessage(
             [In] D3D12_MESSAGE_SEVERITY Severity,
-            [In, ComAliasName("LPCSTR")] sbyte* pDescription
+            [In, NativeTypeName("LPCSTR")] sbyte* pDescription
         )
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -692,10 +692,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetBreakOnCategory(
             [In] D3D12_MESSAGE_CATEGORY Category,
-            [In, ComAliasName("BOOL")] int bEnable
+            [In, NativeTypeName("BOOL")] int bEnable
         )
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -708,10 +708,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetBreakOnSeverity(
             [In] D3D12_MESSAGE_SEVERITY Severity,
-            [In, ComAliasName("BOOL")] int bEnable
+            [In, NativeTypeName("BOOL")] int bEnable
         )
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -724,10 +724,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetBreakOnID(
             [In] D3D12_MESSAGE_ID ID,
-            [In, ComAliasName("BOOL")] int bEnable
+            [In, NativeTypeName("BOOL")] int bEnable
         )
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -740,7 +740,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public int GetBreakOnCategory(
             [In] D3D12_MESSAGE_CATEGORY Category
         )
@@ -754,7 +754,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public int GetBreakOnSeverity(
             [In] D3D12_MESSAGE_SEVERITY Severity
         )
@@ -768,7 +768,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public int GetBreakOnID(
             [In] D3D12_MESSAGE_ID ID
         )
@@ -783,7 +783,7 @@ namespace TerraFX.Interop
         }
 
         public void SetMuteDebugOutput(
-            [In, ComAliasName("BOOL")] int bMute
+            [In, NativeTypeName("BOOL")] int bMute
         )
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -795,7 +795,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public int GetMuteDebugOutput()
         {
             fixed (ID3D12InfoQueue* This = &this)

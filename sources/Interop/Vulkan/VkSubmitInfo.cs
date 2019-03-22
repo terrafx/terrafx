@@ -4,7 +4,6 @@
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
 using System;
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -19,20 +18,20 @@ namespace TerraFX.Interop
 
         public uint waitSemaphoreCount;
 
-        [ComAliasName("VkSemaphore[]")]
+        [NativeTypeName("VkSemaphore[]")]
         public ulong* pWaitSemaphores;
 
-        [ComAliasName("VkPipelineStageFlags[]")]
+        [NativeTypeName("VkPipelineStageFlags[]")]
         public uint* pWaitDstStageMask;
 
         public uint commandBufferCount;
 
-        [ComAliasName("VkCommandBuffer[]")]
+        [NativeTypeName("VkCommandBuffer[]")]
         public IntPtr* pCommandBuffers;
 
         public uint signalSemaphoreCount;
 
-        [ComAliasName("VkSemaphore[]")]
+        [NativeTypeName("VkSemaphore[]")]
         public ulong* pSignalSemaphores;
         #endregion
     }

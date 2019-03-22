@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IRecordInfo* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IRecordInfo* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IRecordInfo* This
         );
@@ -47,56 +47,56 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _RecordInit(
             [In] IRecordInfo* This,
-            [Out, ComAliasName("PVOID")] void* pvNew
+            [Out, NativeTypeName("PVOID")] void* pvNew
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _RecordClear(
             [In] IRecordInfo* This,
-            [In, ComAliasName("PVOID")] void* pvExisting
+            [In, NativeTypeName("PVOID")] void* pvExisting
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _RecordCopy(
             [In] IRecordInfo* This,
-            [In, ComAliasName("PVOID")] void* pvExisting,
-            [Out, ComAliasName("PVOID")] void* pvNew
+            [In, NativeTypeName("PVOID")] void* pvExisting,
+            [Out, NativeTypeName("PVOID")] void* pvNew
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetGuid(
             [In] IRecordInfo* This,
-            [Out, ComAliasName("GUID")] Guid* pGuid
+            [Out, NativeTypeName("GUID")] Guid* pGuid
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetName(
             [In] IRecordInfo* This,
-            [Out, ComAliasName("BSTR")] char** pbstrName = null
+            [Out, NativeTypeName("BSTR")] char** pbstrName = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetSize(
             [In] IRecordInfo* This,
-            [Out, ComAliasName("ULONG")] uint* pcbSize
+            [Out, NativeTypeName("ULONG")] uint* pcbSize
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetTypeInfo(
             [In] IRecordInfo* This,
             [Out] ITypeInfo** ppTypeInfo
@@ -104,59 +104,59 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetField(
             [In] IRecordInfo* This,
-            [In, ComAliasName("PVOID")] void* pvData,
-            [In, ComAliasName("LPCOLESTR")] char* szFieldName,
+            [In, NativeTypeName("PVOID")] void* pvData,
+            [In, NativeTypeName("LPCOLESTR")] char* szFieldName,
             [Out] VARIANT* pvarField
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetFieldNoCopy(
             [In] IRecordInfo* This,
-            [In, ComAliasName("PVOID")] void* pvData,
-            [In, ComAliasName("LPCOLESTR")] char* szFieldName,
+            [In, NativeTypeName("PVOID")] void* pvData,
+            [In, NativeTypeName("LPCOLESTR")] char* szFieldName,
             [Out] VARIANT* pvarField,
-            [Out, ComAliasName("PVOID")] void** ppvDataCArray
+            [Out, NativeTypeName("PVOID")] void** ppvDataCArray
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _PutField(
             [In] IRecordInfo* This,
-            [In, ComAliasName("ULONG")] uint wFlags,
-            [In, Out, ComAliasName("PVOID")] void* pvData,
-            [In, ComAliasName("LPCOLESTR")] char* szFieldName,
+            [In, NativeTypeName("ULONG")] uint wFlags,
+            [In, Out, NativeTypeName("PVOID")] void* pvData,
+            [In, NativeTypeName("LPCOLESTR")] char* szFieldName,
             [In] VARIANT* pvarField
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _PutFieldNoCopy(
             [In] IRecordInfo* This,
-            [In, ComAliasName("ULONG")] uint wFlags,
-            [In, Out, ComAliasName("PVOID")] void* pvData,
-            [In, ComAliasName("LPCOLESTR")] char* szFieldName,
+            [In, NativeTypeName("ULONG")] uint wFlags,
+            [In, Out, NativeTypeName("PVOID")] void* pvData,
+            [In, NativeTypeName("LPCOLESTR")] char* szFieldName,
             [In] VARIANT* pvarField
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetFieldNames(
             [In] IRecordInfo* This,
-            [In, Out, ComAliasName("ULONG")] uint* pcNames,
-            [Out, ComAliasName("BSTR[]")] char** rgBstrNames
+            [In, Out, NativeTypeName("ULONG")] uint* pcNames,
+            [Out, NativeTypeName("BSTR[]")] char** rgBstrNames
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public /* static */ delegate int _IsMatchingType(
             [In] IRecordInfo* This,
             [In] IRecordInfo* pRecordInfo
@@ -170,26 +170,26 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _RecordCreateCopy(
             [In] IRecordInfo* This,
-            [In, ComAliasName("PVOID")] void* pvSource,
-            [Out, ComAliasName("PVOID")] void** ppvDest
+            [In, NativeTypeName("PVOID")] void* pvSource,
+            [Out, NativeTypeName("PVOID")] void** ppvDest
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _RecordDestroy(
             [In] IRecordInfo* This,
-            [In, ComAliasName("PVOID")] void* pvRecord
+            [In, NativeTypeName("PVOID")] void* pvRecord
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -203,7 +203,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IRecordInfo* This = &this)
@@ -214,7 +214,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IRecordInfo* This = &this)
@@ -227,9 +227,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int RecordInit(
-            [Out, ComAliasName("PVOID")] void* pvNew
+            [Out, NativeTypeName("PVOID")] void* pvNew
         )
         {
             fixed (IRecordInfo* This = &this)
@@ -241,9 +241,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int RecordClear(
-            [In, ComAliasName("PVOID")] void* pvExisting
+            [In, NativeTypeName("PVOID")] void* pvExisting
         )
         {
             fixed (IRecordInfo* This = &this)
@@ -255,10 +255,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int RecordCopy(
-            [In, ComAliasName("PVOID")] void* pvExisting,
-            [Out, ComAliasName("PVOID")] void* pvNew
+            [In, NativeTypeName("PVOID")] void* pvExisting,
+            [Out, NativeTypeName("PVOID")] void* pvNew
         )
         {
             fixed (IRecordInfo* This = &this)
@@ -271,9 +271,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetGuid(
-            [Out, ComAliasName("GUID")] Guid* pGuid
+            [Out, NativeTypeName("GUID")] Guid* pGuid
         )
         {
             fixed (IRecordInfo* This = &this)
@@ -285,9 +285,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetName(
-            [Out, ComAliasName("BSTR")] char** pbstrName = null
+            [Out, NativeTypeName("BSTR")] char** pbstrName = null
         )
         {
             fixed (IRecordInfo* This = &this)
@@ -299,9 +299,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetSize(
-            [Out, ComAliasName("ULONG")] uint* pcbSize
+            [Out, NativeTypeName("ULONG")] uint* pcbSize
         )
         {
             fixed (IRecordInfo* This = &this)
@@ -313,7 +313,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetTypeInfo(
             [Out] ITypeInfo** ppTypeInfo
         )
@@ -327,10 +327,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetField(
-            [In, ComAliasName("PVOID")] void* pvData,
-            [In, ComAliasName("LPCOLESTR")] char* szFieldName,
+            [In, NativeTypeName("PVOID")] void* pvData,
+            [In, NativeTypeName("LPCOLESTR")] char* szFieldName,
             [Out] VARIANT* pvarField
         )
         {
@@ -345,12 +345,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetFieldNoCopy(
-            [In, ComAliasName("PVOID")] void* pvData,
-            [In, ComAliasName("LPCOLESTR")] char* szFieldName,
+            [In, NativeTypeName("PVOID")] void* pvData,
+            [In, NativeTypeName("LPCOLESTR")] char* szFieldName,
             [Out] VARIANT* pvarField,
-            [Out, ComAliasName("PVOID")] void** ppvDataCArray
+            [Out, NativeTypeName("PVOID")] void** ppvDataCArray
         )
         {
             fixed (IRecordInfo* This = &this)
@@ -365,11 +365,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int PutField(
-            [In, ComAliasName("ULONG")] uint wFlags,
-            [In, Out, ComAliasName("PVOID")] void* pvData,
-            [In, ComAliasName("LPCOLESTR")] char* szFieldName,
+            [In, NativeTypeName("ULONG")] uint wFlags,
+            [In, Out, NativeTypeName("PVOID")] void* pvData,
+            [In, NativeTypeName("LPCOLESTR")] char* szFieldName,
             [In] VARIANT* pvarField
         )
         {
@@ -385,11 +385,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int PutFieldNoCopy(
-            [In, ComAliasName("ULONG")] uint wFlags,
-            [In, Out, ComAliasName("PVOID")] void* pvData,
-            [In, ComAliasName("LPCOLESTR")] char* szFieldName,
+            [In, NativeTypeName("ULONG")] uint wFlags,
+            [In, Out, NativeTypeName("PVOID")] void* pvData,
+            [In, NativeTypeName("LPCOLESTR")] char* szFieldName,
             [In] VARIANT* pvarField
         )
         {
@@ -405,10 +405,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetFieldNames(
-            [In, Out, ComAliasName("ULONG")] uint* pcNames,
-            [Out, ComAliasName("BSTR[]")] char** rgBstrNames
+            [In, Out, NativeTypeName("ULONG")] uint* pcNames,
+            [Out, NativeTypeName("BSTR[]")] char** rgBstrNames
         )
         {
             fixed (IRecordInfo* This = &this)
@@ -421,7 +421,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public int IsMatchingType(
             [In] IRecordInfo* pRecordInfo
         )
@@ -445,10 +445,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int RecordCreateCopy(
-            [In, ComAliasName("PVOID")] void* pvSource,
-            [Out, ComAliasName("PVOID")] void** ppvDest
+            [In, NativeTypeName("PVOID")] void* pvSource,
+            [Out, NativeTypeName("PVOID")] void** ppvDest
         )
         {
             fixed (IRecordInfo* This = &this)
@@ -461,9 +461,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int RecordDestroy(
-            [In, ComAliasName("PVOID")] void* pvRecord
+            [In, NativeTypeName("PVOID")] void* pvRecord
         )
         {
             fixed (IRecordInfo* This = &this)

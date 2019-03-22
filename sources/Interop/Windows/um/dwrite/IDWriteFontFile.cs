@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDWriteFontFile* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDWriteFontFile* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDWriteFontFile* This
         );
@@ -52,11 +52,11 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetReferenceKey(
             [In] IDWriteFontFile* This,
             [Out] void** fontFileReferenceKey,
-            [Out, ComAliasName("UINT32")] uint* fontFileReferenceKeySize
+            [Out, NativeTypeName("UINT32")] uint* fontFileReferenceKeySize
         );
 
         /// <summary>Obtains the file loader associated with a font file object.</summary>
@@ -64,7 +64,7 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetLoader(
             [In] IDWriteFontFile* This,
             [Out] IDWriteFontFileLoader** fontFileLoader
@@ -79,20 +79,20 @@ namespace TerraFX.Interop
         /// <remarks>IMPORTANT: certain font file types are recognized, but not supported by the font system. For example, the font system will recognize a file as a Type 1 font file, but will not be able to construct a font face object from it. In such situations, Analyze will set isSupportedFontType output parameter to FALSE.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Analyze(
             [In] IDWriteFontFile* This,
-            [Out, ComAliasName("BOOL")] int* isSupportedFontType,
+            [Out, NativeTypeName("BOOL")] int* isSupportedFontType,
             [Out] DWRITE_FONT_FILE_TYPE* fontFileType,
             [Out, Optional] DWRITE_FONT_FACE_TYPE* fontFaceType,
-            [Out, ComAliasName("UINT32")] uint* numberOfFaces
+            [Out, NativeTypeName("UINT32")] uint* numberOfFaces
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -106,7 +106,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDWriteFontFile* This = &this)
@@ -117,7 +117,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDWriteFontFile* This = &this)
@@ -130,10 +130,10 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetReferenceKey(
             [Out] void** fontFileReferenceKey,
-            [Out, ComAliasName("UINT32")] uint* fontFileReferenceKeySize
+            [Out, NativeTypeName("UINT32")] uint* fontFileReferenceKeySize
         )
         {
             fixed (IDWriteFontFile* This = &this)
@@ -146,7 +146,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetLoader(
             [Out] IDWriteFontFileLoader** fontFileLoader
         )
@@ -160,12 +160,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Analyze(
-            [Out, ComAliasName("BOOL")] int* isSupportedFontType,
+            [Out, NativeTypeName("BOOL")] int* isSupportedFontType,
             [Out] DWRITE_FONT_FILE_TYPE* fontFileType,
             [Out, Optional] DWRITE_FONT_FACE_TYPE* fontFaceType,
-            [Out, ComAliasName("UINT32")] uint* numberOfFaces
+            [Out, NativeTypeName("UINT32")] uint* numberOfFaces
         )
         {
             fixed (IDWriteFontFile* This = &this)

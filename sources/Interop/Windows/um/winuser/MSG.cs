@@ -4,7 +4,6 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System;
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -13,19 +12,19 @@ namespace TerraFX.Interop
     public unsafe struct MSG
     {
         #region Fields
-        [ComAliasName("HWND")]
+        [NativeTypeName("HWND")]
         public IntPtr hwnd;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint message;
 
-        [ComAliasName("WPARAM")]
+        [NativeTypeName("WPARAM")]
         public nuint wParam;
 
-        [ComAliasName("LPARAM")]
+        [NativeTypeName("LPARAM")]
         public nint lParam;
 
-        [ComAliasName("DWORD")]
+        [NativeTypeName("DWORD")]
         public uint time;
 
         public POINT pt;

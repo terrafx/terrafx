@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IWICBitmapScaler* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IWICBitmapScaler* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IWICBitmapScaler* This
         );
@@ -47,24 +47,24 @@ namespace TerraFX.Interop
         #region IWICBitmapSource Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetSize(
             [In] IWICBitmapScaler* This,
-            [Out, ComAliasName("UINT")] uint* puiWidth,
-            [Out, ComAliasName("UINT")] uint* puiHeight
+            [Out, NativeTypeName("UINT")] uint* puiWidth,
+            [Out, NativeTypeName("UINT")] uint* puiHeight
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetPixelFormat(
             [In] IWICBitmapScaler* This,
-            [Out, ComAliasName("WICPixelFormatGUID")] Guid* pPixelFormat
+            [Out, NativeTypeName("WICPixelFormatGUID")] Guid* pPixelFormat
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetResolution(
             [In] IWICBitmapScaler* This,
             [Out] double* pDpiX,
@@ -73,7 +73,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CopyPalette(
             [In] IWICBitmapScaler* This,
             [In] IWICPalette* pIPalette = null
@@ -81,33 +81,33 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CopyPixels(
             [In] IWICBitmapScaler* This,
             [In, Optional] WICRect* prc,
-            [In, ComAliasName("UINT")] uint cbStride,
-            [In, ComAliasName("UINT")] uint cbBufferSize,
-            [Out, ComAliasName("BYTE[]")] byte* pbBuffer
+            [In, NativeTypeName("UINT")] uint cbStride,
+            [In, NativeTypeName("UINT")] uint cbBufferSize,
+            [Out, NativeTypeName("BYTE[]")] byte* pbBuffer
         );
         #endregion
 
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Initialize(
             [In] IWICBitmapScaler* This,
             [In, Optional] IWICBitmapSource* pISource,
-            [In, ComAliasName("UINT")] uint uiWidth,
-            [In, ComAliasName("UINT")] uint uiHeight,
+            [In, NativeTypeName("UINT")] uint uiWidth,
+            [In, NativeTypeName("UINT")] uint uiHeight,
             [In] WICBitmapInterpolationMode mode
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -121,7 +121,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IWICBitmapScaler* This = &this)
@@ -132,7 +132,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IWICBitmapScaler* This = &this)
@@ -145,10 +145,10 @@ namespace TerraFX.Interop
         #endregion
 
         #region IWICBitmapSource Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetSize(
-            [Out, ComAliasName("UINT")] uint* puiWidth,
-            [Out, ComAliasName("UINT")] uint* puiHeight
+            [Out, NativeTypeName("UINT")] uint* puiWidth,
+            [Out, NativeTypeName("UINT")] uint* puiHeight
         )
         {
             fixed (IWICBitmapScaler* This = &this)
@@ -161,9 +161,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetPixelFormat(
-            [Out, ComAliasName("WICPixelFormatGUID")] Guid* pPixelFormat
+            [Out, NativeTypeName("WICPixelFormatGUID")] Guid* pPixelFormat
         )
         {
             fixed (IWICBitmapScaler* This = &this)
@@ -175,7 +175,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetResolution(
             [Out] double* pDpiX,
             [Out] double* pDpiY
@@ -191,7 +191,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CopyPalette(
             [In] IWICPalette* pIPalette = null
         )
@@ -205,12 +205,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CopyPixels(
             [In, Optional] WICRect* prc,
-            [In, ComAliasName("UINT")] uint cbStride,
-            [In, ComAliasName("UINT")] uint cbBufferSize,
-            [Out, ComAliasName("BYTE[]")] byte* pbBuffer
+            [In, NativeTypeName("UINT")] uint cbStride,
+            [In, NativeTypeName("UINT")] uint cbBufferSize,
+            [Out, NativeTypeName("BYTE[]")] byte* pbBuffer
         )
         {
             fixed (IWICBitmapScaler* This = &this)
@@ -227,11 +227,11 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Initialize(
             [In, Optional] IWICBitmapSource* pISource,
-            [In, ComAliasName("UINT")] uint uiWidth,
-            [In, ComAliasName("UINT")] uint uiHeight,
+            [In, NativeTypeName("UINT")] uint uiWidth,
+            [In, NativeTypeName("UINT")] uint uiHeight,
             [In] WICBitmapInterpolationMode mode
         )
         {

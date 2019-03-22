@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
@@ -918,18 +919,18 @@ namespace TerraFX.Interop
         #region External Methods
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "EnableWindow", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public static extern int EnableWindow(
-            [In, ComAliasName("HWND")] IntPtr hWnd,
-            [In, ComAliasName("BOOL")] int bEnable
+            [In, NativeTypeName("HWND")] IntPtr hWnd,
+            [In, NativeTypeName("BOOL")] int bEnable
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "SetWindowTextW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public static extern int SetWindowText(
-            [In, ComAliasName("HWND")] IntPtr hWnd,
-            [In, Optional, ComAliasName("LPCWSTR")] char* lpString
+            [In, NativeTypeName("HWND")] IntPtr hWnd,
+            [In, Optional, NativeTypeName("LPCWSTR")] char* lpString
         );
         #endregion
     }

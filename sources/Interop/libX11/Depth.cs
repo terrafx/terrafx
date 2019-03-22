@@ -3,7 +3,6 @@
 // Ported from X11\xlib.h in the Xlib - C Language X Interface: X Version 11, Release 7.7
 // Original source is Copyright © The Open Group.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -16,7 +15,7 @@ namespace TerraFX.Interop
 
         public int nvisuals;
 
-        [ComAliasName("Visual[]")]
+        [NativeTypeName("Visual[]")]
         public Visual* visuals;
         #endregion
     }

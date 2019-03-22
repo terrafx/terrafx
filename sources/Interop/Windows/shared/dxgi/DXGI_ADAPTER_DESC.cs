@@ -13,28 +13,28 @@ namespace TerraFX.Interop
     public unsafe struct DXGI_ADAPTER_DESC
     {
         #region Fields
-        [ComAliasName("WCHAR[128]")]
+        [NativeTypeName("WCHAR[128]")]
         public fixed char Description[128];
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint VendorId;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint DeviceId;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint SubSysId;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Revision;
 
-        [ComAliasName("SIZE_T")]
+        [NativeTypeName("SIZE_T")]
         public nuint DedicatedVideoMemory;
 
-        [ComAliasName("SIZE_T")]
+        [NativeTypeName("SIZE_T")]
         public nuint DedicatedSystemMemory;
 
-        [ComAliasName("SIZE_T")]
+        [NativeTypeName("SIZE_T")]
         public nuint SharedSystemMemory;
 
         public LUID AdapterLuid;

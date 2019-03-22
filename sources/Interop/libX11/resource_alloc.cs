@@ -6,13 +6,14 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     [SuppressUnmanagedCodeSecurity]
     [UnmanagedFunctionPointer(CallingConvention.Cdecl, BestFitMapping = false, CharSet = CharSet.Ansi, SetLastError = false, ThrowOnUnmappableChar = false)]
-    [return: ComAliasName("XID")]
+    [return: NativeTypeName("XID")]
     public /* static */ unsafe delegate nuint resource_alloc(
-        [In, ComAliasName("Display")] IntPtr display
+        [In, NativeTypeName("Display")] IntPtr display
     );
 }

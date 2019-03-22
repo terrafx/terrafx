@@ -24,23 +24,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDWriteRemoteFontFileLoader* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDWriteRemoteFontFileLoader* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDWriteRemoteFontFileLoader* This
         );
@@ -54,11 +54,11 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateStreamFromKey(
             [In] IDWriteRemoteFontFileLoader* This,
             [In] void* fontFileReferenceKey,
-            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [In, NativeTypeName("UINT32")] uint fontFileReferenceKeySize,
             [Out] IDWriteFontFileStream** fontFileStream
         );
         #endregion
@@ -72,11 +72,11 @@ namespace TerraFX.Interop
         /// <remarks> Unlike CreateStreamFromKey, this method can be used to create a stream for a remote file. If the file is remote, the client must call IDWriteRemoteFontFileStream::DownloadFileInformation before the stream can be used to get the file size or access data.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateRemoteStreamFromKey(
             [In] IDWriteRemoteFontFileLoader* This,
             [In] void* fontFileReferenceKey,
-            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [In, NativeTypeName("UINT32")] uint fontFileReferenceKeySize,
             [Out] IDWriteRemoteFontFileStream** fontFileStream
         );
 
@@ -87,11 +87,11 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetLocalityFromKey(
             [In] IDWriteRemoteFontFileLoader* This,
             [In] void* fontFileReferenceKey,
-            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [In, NativeTypeName("UINT32")] uint fontFileReferenceKeySize,
             [Out] DWRITE_LOCALITY* locality
         );
 
@@ -103,20 +103,20 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code, or E_NOTIMPL if the loader does not implement this method.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateFontFileReferenceFromUrl(
             [In] IDWriteRemoteFontFileLoader* This,
             [In] IDWriteFactory* factory,
-            [In, Optional, ComAliasName("WCHAR[]")] char* baseUrl,
-            [In, ComAliasName("WCHAR[]")] char* fontFileUrl,
+            [In, Optional, NativeTypeName("WCHAR[]")] char* baseUrl,
+            [In, NativeTypeName("WCHAR[]")] char* fontFileUrl,
             [Out] IDWriteFontFile** fontFile
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -130,7 +130,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDWriteRemoteFontFileLoader* This = &this)
@@ -141,7 +141,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDWriteRemoteFontFileLoader* This = &this)
@@ -154,10 +154,10 @@ namespace TerraFX.Interop
         #endregion
 
         #region IDWriteFontFileLoader Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateStreamFromKey(
             [In] void* fontFileReferenceKey,
-            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [In, NativeTypeName("UINT32")] uint fontFileReferenceKeySize,
             [Out] IDWriteFontFileStream** fontFileStream
         )
         {
@@ -174,10 +174,10 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateRemoteStreamFromKey(
             [In] void* fontFileReferenceKey,
-            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [In, NativeTypeName("UINT32")] uint fontFileReferenceKeySize,
             [Out] IDWriteRemoteFontFileStream** fontFileStream
         )
         {
@@ -192,10 +192,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetLocalityFromKey(
             [In] void* fontFileReferenceKey,
-            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [In, NativeTypeName("UINT32")] uint fontFileReferenceKeySize,
             [Out] DWRITE_LOCALITY* locality
         )
         {
@@ -210,11 +210,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateFontFileReferenceFromUrl(
             [In] IDWriteFactory* factory,
-            [In, Optional, ComAliasName("WCHAR[]")] char* baseUrl,
-            [In, ComAliasName("WCHAR[]")] char* fontFileUrl,
+            [In, Optional, NativeTypeName("WCHAR[]")] char* baseUrl,
+            [In, NativeTypeName("WCHAR[]")] char* fontFileUrl,
             [Out] IDWriteFontFile** fontFile
         )
         {

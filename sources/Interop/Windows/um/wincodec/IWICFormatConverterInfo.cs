@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IWICFormatConverterInfo* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IWICFormatConverterInfo* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IWICFormatConverterInfo* This
         );
@@ -47,7 +47,7 @@ namespace TerraFX.Interop
         #region IWICComponentInfo Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetComponentType(
             [In] IWICFormatConverterInfo* This,
             [Out] WICComponentType* pType
@@ -55,83 +55,83 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetCLSID(
             [In] IWICFormatConverterInfo* This,
-            [Out, ComAliasName("CLSID")] Guid* pclsid
+            [Out, NativeTypeName("CLSID")] Guid* pclsid
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetSigningStatus(
             [In] IWICFormatConverterInfo* This,
-            [Out, ComAliasName("DWORD")] uint* pStatus
+            [Out, NativeTypeName("DWORD")] uint* pStatus
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetAuthor(
             [In] IWICFormatConverterInfo* This,
-            [In, ComAliasName("UINT")] uint cchAuthor,
-            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzAuthor,
-            [Out, ComAliasName("UINT")] uint* pcchActual
+            [In, NativeTypeName("UINT")] uint cchAuthor,
+            [In, Out, Optional, NativeTypeName("WCHAR[]")] char* wzAuthor,
+            [Out, NativeTypeName("UINT")] uint* pcchActual
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetVendorGUID(
             [In] IWICFormatConverterInfo* This,
-            [Out, ComAliasName("GUID")] Guid* pguidVendor
+            [Out, NativeTypeName("GUID")] Guid* pguidVendor
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetVersion(
             [In] IWICFormatConverterInfo* This,
-            [In, ComAliasName("UINT")] uint cchVersion,
-            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzVersion,
-            [Out, ComAliasName("UINT")] uint* pcchActual
+            [In, NativeTypeName("UINT")] uint cchVersion,
+            [In, Out, Optional, NativeTypeName("WCHAR[]")] char* wzVersion,
+            [Out, NativeTypeName("UINT")] uint* pcchActual
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetSpecVersion(
             [In] IWICFormatConverterInfo* This,
-            [In, ComAliasName("UINT")] uint cchSpecVersion,
-            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzSpecVersion,
-            [Out, ComAliasName("UINT")] uint* pcchActual
+            [In, NativeTypeName("UINT")] uint cchSpecVersion,
+            [In, Out, Optional, NativeTypeName("WCHAR[]")] char* wzSpecVersion,
+            [Out, NativeTypeName("UINT")] uint* pcchActual
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetFriendlyName(
             [In] IWICFormatConverterInfo* This,
-            [In, ComAliasName("UINT")] uint cchFriendlyName,
-            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzFriendlyName,
-            [Out, ComAliasName("UINT")] uint* pcchActual
+            [In, NativeTypeName("UINT")] uint cchFriendlyName,
+            [In, Out, Optional, NativeTypeName("WCHAR[]")] char* wzFriendlyName,
+            [Out, NativeTypeName("UINT")] uint* pcchActual
         );
         #endregion
 
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetPixelFormats(
             [In] IWICFormatConverterInfo* This,
-            [In, ComAliasName("UINT")] uint cFormats,
-            [In, Out, Optional, ComAliasName("WICPixelFormatGUID[]")] Guid* pPixelFormatGUIDs,
-            [Out, ComAliasName("UINT")] uint* pcActual
+            [In, NativeTypeName("UINT")] uint cFormats,
+            [In, Out, Optional, NativeTypeName("WICPixelFormatGUID[]")] Guid* pPixelFormatGUIDs,
+            [Out, NativeTypeName("UINT")] uint* pcActual
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateInstance(
             [In] IWICFormatConverterInfo* This,
             [Out] IWICFormatConverter** ppIConverter = null
@@ -139,9 +139,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -155,7 +155,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IWICFormatConverterInfo* This = &this)
@@ -166,7 +166,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IWICFormatConverterInfo* This = &this)
@@ -179,7 +179,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region IWICComponentInfo Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetComponentType(
             [Out] WICComponentType* pType
         )
@@ -193,9 +193,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetCLSID(
-            [Out, ComAliasName("CLSID")] Guid* pclsid
+            [Out, NativeTypeName("CLSID")] Guid* pclsid
         )
         {
             fixed (IWICFormatConverterInfo* This = &this)
@@ -207,9 +207,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetSigningStatus(
-            [Out, ComAliasName("DWORD")] uint* pStatus
+            [Out, NativeTypeName("DWORD")] uint* pStatus
         )
         {
             fixed (IWICFormatConverterInfo* This = &this)
@@ -221,11 +221,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetAuthor(
-            [In, ComAliasName("UINT")] uint cchAuthor,
-            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzAuthor,
-            [Out, ComAliasName("UINT")] uint* pcchActual
+            [In, NativeTypeName("UINT")] uint cchAuthor,
+            [In, Out, Optional, NativeTypeName("WCHAR[]")] char* wzAuthor,
+            [Out, NativeTypeName("UINT")] uint* pcchActual
         )
         {
             fixed (IWICFormatConverterInfo* This = &this)
@@ -239,9 +239,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetVendorGUID(
-            [Out, ComAliasName("GUID")] Guid* pguidVendor
+            [Out, NativeTypeName("GUID")] Guid* pguidVendor
         )
         {
             fixed (IWICFormatConverterInfo* This = &this)
@@ -253,11 +253,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetVersion(
-            [In, ComAliasName("UINT")] uint cchVersion,
-            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzVersion,
-            [Out, ComAliasName("UINT")] uint* pcchActual
+            [In, NativeTypeName("UINT")] uint cchVersion,
+            [In, Out, Optional, NativeTypeName("WCHAR[]")] char* wzVersion,
+            [Out, NativeTypeName("UINT")] uint* pcchActual
         )
         {
             fixed (IWICFormatConverterInfo* This = &this)
@@ -271,11 +271,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetSpecVersion(
-            [In, ComAliasName("UINT")] uint cchSpecVersion,
-            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzSpecVersion,
-            [Out, ComAliasName("UINT")] uint* pcchActual
+            [In, NativeTypeName("UINT")] uint cchSpecVersion,
+            [In, Out, Optional, NativeTypeName("WCHAR[]")] char* wzSpecVersion,
+            [Out, NativeTypeName("UINT")] uint* pcchActual
         )
         {
             fixed (IWICFormatConverterInfo* This = &this)
@@ -289,11 +289,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetFriendlyName(
-            [In, ComAliasName("UINT")] uint cchFriendlyName,
-            [In, Out, Optional, ComAliasName("WCHAR[]")] char* wzFriendlyName,
-            [Out, ComAliasName("UINT")] uint* pcchActual
+            [In, NativeTypeName("UINT")] uint cchFriendlyName,
+            [In, Out, Optional, NativeTypeName("WCHAR[]")] char* wzFriendlyName,
+            [Out, NativeTypeName("UINT")] uint* pcchActual
         )
         {
             fixed (IWICFormatConverterInfo* This = &this)
@@ -309,11 +309,11 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetPixelFormats(
-            [In, ComAliasName("UINT")] uint cFormats,
-            [In, Out, Optional, ComAliasName("WICPixelFormatGUID[]")] Guid* pPixelFormatGUIDs,
-            [Out, ComAliasName("UINT")] uint* pcActual
+            [In, NativeTypeName("UINT")] uint cFormats,
+            [In, Out, Optional, NativeTypeName("WICPixelFormatGUID[]")] Guid* pPixelFormatGUIDs,
+            [Out, NativeTypeName("UINT")] uint* pcActual
         )
         {
             fixed (IWICFormatConverterInfo* This = &this)
@@ -327,7 +327,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateInstance(
             [Out] IWICFormatConverter** ppIConverter = null
         )

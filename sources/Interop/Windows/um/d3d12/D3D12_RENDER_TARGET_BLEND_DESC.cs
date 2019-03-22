@@ -3,7 +3,6 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,10 +11,10 @@ namespace TerraFX.Interop
     public struct D3D12_RENDER_TARGET_BLEND_DESC
     {
         #region Fields
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int BlendEnable;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int LogicOpEnable;
 
         public D3D12_BLEND SrcBlend;
@@ -32,7 +31,7 @@ namespace TerraFX.Interop
 
         public D3D12_LOGIC_OP LogicOp;
 
-        [ComAliasName("UINT8")]
+        [NativeTypeName("UINT8")]
         public byte RenderTargetWriteMask;
         #endregion
     }

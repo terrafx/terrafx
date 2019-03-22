@@ -5,13 +5,14 @@
 
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Function pointer to construct a new effect once registered.</summary>
     [SuppressUnmanagedCodeSecurity]
     [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-    [return: ComAliasName("HRESULT")]
+    [return: NativeTypeName("HRESULT")]
     public /* static */ unsafe delegate int PD2D1_EFFECT_FACTORY(
         [Out] IUnknown** effectImpl
     );

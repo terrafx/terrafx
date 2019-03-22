@@ -3,7 +3,6 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -18,13 +17,13 @@ namespace TerraFX.Interop
 
         public VkExtent3D extent;
 
-        [ComAliasName("VkDeviceMemory")]
+        [NativeTypeName("VkDeviceMemory")]
         public ulong memory;
 
-        [ComAliasName("VkDeviceSize")]
+        [NativeTypeName("VkDeviceSize")]
         public ulong memoryOffset;
 
-        [ComAliasName("VkSparseMemoryBindFlags")]
+        [NativeTypeName("VkSparseMemoryBindFlags")]
         public uint flags;
         #endregion
     }

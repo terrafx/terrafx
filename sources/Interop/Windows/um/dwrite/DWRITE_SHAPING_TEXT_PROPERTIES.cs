@@ -3,7 +3,6 @@
 // Ported from um\dwrite.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -18,7 +17,7 @@ namespace TerraFX.Interop
 
         #region Properties
         /// <summary>This character can be shaped independently from the others (usually set for the space character).</summary>
-        [ComAliasName("UINT16:1")]
+        [NativeTypeName("UINT16:1")]
         public ushort isShapedAlone
         {
             get
@@ -33,7 +32,7 @@ namespace TerraFX.Interop
         }
 
         /// <summary>Reserved for use by shaping engine.</summary>
-        [ComAliasName("UINT16:15")]
+        [NativeTypeName("UINT16:15")]
         public ushort reserved
         {
             get

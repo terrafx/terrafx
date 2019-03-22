@@ -16,11 +16,11 @@ namespace TerraFX.Interop
     {
         #region Fields
         [FieldOffset(0)]
-        [ComAliasName("UINT8[10]")]
+        [NativeTypeName("UINT8[10]")]
         public fixed byte values[10];
 
         [FieldOffset(0)]
-        [ComAliasName("UINT8")]
+        [NativeTypeName("UINT8")]
         public byte familyKind;
 
         [FieldOffset(0)]
@@ -41,34 +41,34 @@ namespace TerraFX.Interop
         public struct _text_e__Struct
         {
             #region Fields
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte familyKind;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte serifStyle;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte weight;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte proportion;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte contrast;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte strokeVariation;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte armStyle;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte letterform;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte midline;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte xHeight;
             #endregion
         };
@@ -77,34 +77,34 @@ namespace TerraFX.Interop
         public struct _script_e__Struct
         {
             #region Fields
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte familyKind;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte toolKind;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte weight;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte spacing;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte aspectRatio;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte contrast;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte scriptTopology;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte scriptForm;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte finials;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte xAscent;
             #endregion
         }
@@ -113,34 +113,34 @@ namespace TerraFX.Interop
         public struct _decorative_e__Struct
         {
             #region Fields
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte familyKind;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte decorativeClass;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte weight;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte aspect;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte contrast;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte serifVariant;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte fill;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte lining;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte decorativeTopology;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte characterRange;
             #endregion
         }
@@ -149,34 +149,34 @@ namespace TerraFX.Interop
         public struct _symbol_e__Struct
         {
             #region Fields
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte familyKind;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte symbolKind;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte weight;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte spacing;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte aspectRatioAndContrast;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte aspectRatio94;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte aspectRatio119;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte aspectRatio157;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte aspectRatio163;
 
-            [ComAliasName("UINT8")]
+            [NativeTypeName("UINT8")]
             public byte aspectRatio211;
             #endregion
         }

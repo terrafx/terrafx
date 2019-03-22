@@ -3,7 +3,6 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -16,23 +15,23 @@ namespace TerraFX.Interop
 
         public void* pNext;
 
-        [ComAliasName("VkPipelineRasterizationStateCreateFlags")]
+        [NativeTypeName("VkPipelineRasterizationStateCreateFlags")]
         public uint flags;
 
-        [ComAliasName("VkBool32")]
+        [NativeTypeName("VkBool32")]
         public uint depthClampEnable;
 
-        [ComAliasName("VkBool32")]
+        [NativeTypeName("VkBool32")]
         public uint rasterizerDiscardEnable;
 
         public VkPolygonMode polygonMode;
 
-        [ComAliasName("VkCullModeFlags")]
+        [NativeTypeName("VkCullModeFlags")]
         public uint cullMode;
 
         public VkFrontFace frontFace;
 
-        [ComAliasName("VkBool32")]
+        [NativeTypeName("VkBool32")]
         public uint depthBiasEnable;
 
         public float depthBiasConstantFactor;

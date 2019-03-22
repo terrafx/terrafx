@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
@@ -888,7 +889,7 @@ namespace TerraFX.Interop
         #region External Methods
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D3D12SerializeRootSignature", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public static extern int D3D12SerializeRootSignature(
             [In] D3D12_ROOT_SIGNATURE_DESC* pRootSignature,
             [In] D3D_ROOT_SIGNATURE_VERSION Version,
@@ -898,17 +899,17 @@ namespace TerraFX.Interop
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D3D12CreateRootSignatureDeserializer", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public static extern int D3D12CreateRootSignatureDeserializer(
-            [In, ComAliasName("LPCVOID")] void* pSrcData,
-            [In, ComAliasName("SIZE_T")] nuint SrcDataSizeInBytes,
-            [In, ComAliasName("REFIID")] Guid* pRootSignatureDeserializerInterface,
+            [In, NativeTypeName("LPCVOID")] void* pSrcData,
+            [In, NativeTypeName("SIZE_T")] nuint SrcDataSizeInBytes,
+            [In, NativeTypeName("REFIID")] Guid* pRootSignatureDeserializerInterface,
             [Out] void** ppRootSignatureDeserializer
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D3D12CreateVersionedRootSignatureDeserializer", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public static extern int D3D12SerializeVersionedRootSignature(
             [In] D3D12_VERSIONED_ROOT_SIGNATURE_DESC* pRootSignature,
             [Out] ID3DBlob** ppBlob,
@@ -917,40 +918,40 @@ namespace TerraFX.Interop
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D3D12CreateVersionedRootSignatureDeserializer", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public static extern int D3D12CreateVersionedRootSignatureDeserializer(
-            [In, ComAliasName("LPCVOID")] void* pSrcData,
-            [In, ComAliasName("SIZE_T")] nuint SrcDataSizeInBytes,
-            [In, ComAliasName("REFIID")] Guid* pRootSignatureDeserializerInterface,
+            [In, NativeTypeName("LPCVOID")] void* pSrcData,
+            [In, NativeTypeName("SIZE_T")] nuint SrcDataSizeInBytes,
+            [In, NativeTypeName("REFIID")] Guid* pRootSignatureDeserializerInterface,
             [Out] void** ppRootSignatureDeserializer
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D3D12CreateDevice", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public static extern int D3D12CreateDevice(
             [In, Optional] IUnknown* pAdapter,
             [In] D3D_FEATURE_LEVEL MinimumFeatureLevel,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppDevice = null
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D3D12GetDebugInterface", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public static extern int D3D12GetDebugInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvDebug = null
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D3D12EnableExperimentalFeatures", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public static extern int D3D12EnableExperimentalFeatures(
-            [In, ComAliasName("UINT")] uint NumFeatures,
-            [In, ComAliasName("IID[]")] Guid* pIIDs,
+            [In, NativeTypeName("UINT")] uint NumFeatures,
+            [In, NativeTypeName("IID[]")] Guid* pIIDs,
             [In] void* pConfigurationStructs = null,
-            [In, ComAliasName("UINT[]")] uint* pConfigurationStructSizes = null
+            [In, NativeTypeName("UINT[]")] uint* pConfigurationStructSizes = null
         );
         #endregion
     }

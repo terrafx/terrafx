@@ -3,7 +3,6 @@
 // Ported from um\dwrite.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -14,7 +13,7 @@ namespace TerraFX.Interop
     {
         #region Fields
         /// <summary>Zero-based index representation of writing system script.</summary>
-        [ComAliasName("UINT16")]
+        [NativeTypeName("UINT16")]
         public ushort script;
 
         /// <summary>Additional shaping requirement of text.</summary>

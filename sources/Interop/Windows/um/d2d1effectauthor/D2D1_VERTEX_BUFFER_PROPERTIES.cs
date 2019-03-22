@@ -3,7 +3,6 @@
 // Ported from um\d2d1effectauthor.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -13,15 +12,15 @@ namespace TerraFX.Interop
     public unsafe struct D2D1_VERTEX_BUFFER_PROPERTIES
     {
         #region Fields
-        [ComAliasName("UINT32")]
+        [NativeTypeName("UINT32")]
         public uint inputCount;
 
         public D2D1_VERTEX_USAGE usage;
 
-        [ComAliasName("BYTE[]")]
+        [NativeTypeName("BYTE[]")]
         public byte* data;
 
-        [ComAliasName("UINT32")]
+        [NativeTypeName("UINT32")]
         public uint byteWidth;
         #endregion
     }

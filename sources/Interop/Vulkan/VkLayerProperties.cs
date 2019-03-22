@@ -3,7 +3,6 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,14 +11,14 @@ namespace TerraFX.Interop
     public unsafe struct VkLayerProperties
     {
         #region Fields
-        [ComAliasName("string")]
+        [NativeTypeName("string")]
         public fixed sbyte layerName[256];
 
         public uint specVersion;
 
         public uint implementationVersion;
 
-        [ComAliasName("string")]
+        [NativeTypeName("string")]
         public fixed sbyte description[256];
         #endregion
     }

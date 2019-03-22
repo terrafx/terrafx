@@ -3,7 +3,6 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,10 +11,10 @@ namespace TerraFX.Interop
     public struct D3D12_INDEX_BUFFER_VIEW
     {
         #region Fields
-        [ComAliasName("D3D12_GPU_VIRTUAL_ADDRESS")]
+        [NativeTypeName("D3D12_GPU_VIRTUAL_ADDRESS")]
         public ulong BufferLocation;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint SizeInBytes;
 
         public DXGI_FORMAT Format;

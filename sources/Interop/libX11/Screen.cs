@@ -4,7 +4,6 @@
 // Original source is Copyright © The Open Group.
 
 using System;
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -15,10 +14,10 @@ namespace TerraFX.Interop
         #region Fields
         public XExtData* ext_data;
 
-        [ComAliasName("Display")]
+        [NativeTypeName("Display")]
         public IntPtr display;
 
-        [ComAliasName("Window")]
+        [NativeTypeName("Window")]
         public nuint root;
 
         public int width, height;
@@ -27,17 +26,17 @@ namespace TerraFX.Interop
 
         public int ndepths;
 
-        [ComAliasName("Depth[]")]
+        [NativeTypeName("Depth[]")]
         public Depth* depths;
 
         public int root_depth;
 
         public Visual* root_visual;
 
-        [ComAliasName("GC")]
+        [NativeTypeName("GC")]
         public IntPtr default_gc;
 
-        [ComAliasName("Colormap")]
+        [NativeTypeName("Colormap")]
         public nuint cmap;
 
         public nuint white_pixel;
@@ -48,7 +47,7 @@ namespace TerraFX.Interop
 
         public int backing_store;
 
-        [ComAliasName("Bool")]
+        [NativeTypeName("Bool")]
         public int save_unders;
 
         public nint root_input_mask;

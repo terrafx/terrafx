@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID2D1SvgDocument* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID2D1SvgDocument* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID2D1SvgDocument* This
         );
@@ -58,10 +58,10 @@ namespace TerraFX.Interop
         /// <summary>Sets the size of the initial viewport.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetViewportSize(
             [In] ID2D1SvgDocument* This,
-            [In, ComAliasName("D2D1_SIZE_F")] D2D_SIZE_F viewportSize
+            [In, NativeTypeName("D2D1_SIZE_F")] D2D_SIZE_F viewportSize
         );
 
         /// <summary>Returns the size of the initial viewport.</summary>
@@ -69,13 +69,13 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _GetViewportSize(
             [In] ID2D1SvgDocument* This,
-            [Out, ComAliasName("D2D1_SIZE_F")] D2D_SIZE_F* pViewportSize
+            [Out, NativeTypeName("D2D1_SIZE_F")] D2D_SIZE_F* pViewportSize
         );
 
         /// <summary>Sets the root element of the document. The root element must be an 'svg' element. If the element already exists within an svg tree, it is first removed.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetRoot(
             [In] ID2D1SvgDocument* This,
             [In] ID2D1SvgElement* root = null
@@ -92,10 +92,10 @@ namespace TerraFX.Interop
         /// <summary>Gets the SVG element with the specified ID. If the element cannot be found, the returned element will be null.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _FindElementById(
             [In] ID2D1SvgDocument* This,
-            [In, ComAliasName("PCWSTR")] char* id,
+            [In, NativeTypeName("PCWSTR")] char* id,
             [Out] ID2D1SvgElement** svgElement
         );
 
@@ -104,7 +104,7 @@ namespace TerraFX.Interop
         /// <param name="subtree">The root of the subtree. If null, the entire document is serialized.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Serialize(
             [In] ID2D1SvgDocument* This,
             [In] IStream* outputXmlStream,
@@ -116,7 +116,7 @@ namespace TerraFX.Interop
         /// <param name="subtree">The root of the subtree.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Deserialize(
             [In] ID2D1SvgDocument* This,
             [In] IStream* inputXmlStream,
@@ -128,55 +128,55 @@ namespace TerraFX.Interop
         /// <param name="id">The element id which acts as the paint server. This id is used if the paint type is D2D1_SVG_PAINT_TYPE_URI.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreatePaint(
             [In] ID2D1SvgDocument* This,
             [In] D2D1_SVG_PAINT_TYPE paintType,
-            [In, Optional, ComAliasName("D2D1_COLOR_F")] DXGI_RGBA* color,
-            [In, Optional, ComAliasName("PCWSTR")] char* id,
+            [In, Optional, NativeTypeName("D2D1_COLOR_F")] DXGI_RGBA* color,
+            [In, Optional, NativeTypeName("PCWSTR")] char* id,
             [Out] ID2D1SvgPaint** paint
         );
 
         /// <summary>Creates a dash array object which can be used to set the 'stroke-dasharray' property.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateStrokeDashArray(
             [In] ID2D1SvgDocument* This,
-            [In, Optional, ComAliasName("D2D1_SVG_LENGTH[]")] D2D1_SVG_LENGTH* dashes,
-            [In, ComAliasName("UINT32")] uint dashesCount,
+            [In, Optional, NativeTypeName("D2D1_SVG_LENGTH[]")] D2D1_SVG_LENGTH* dashes,
+            [In, NativeTypeName("UINT32")] uint dashesCount,
             [Out] ID2D1SvgStrokeDashArray** strokeDashArray
         );
 
         /// <summary>Creates a points object which can be used to set a 'points' attribute on a 'polygon' or 'polyline' element.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreatePointCollection(
             [In] ID2D1SvgDocument* This,
-            [In, Optional, ComAliasName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
-            [In, ComAliasName("UINT32")] uint pointsCount,
+            [In, Optional, NativeTypeName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
+            [In, NativeTypeName("UINT32")] uint pointsCount,
             [Out] ID2D1SvgPointCollection** pointCollection
         );
 
         /// <summary>Creates a path data object which can be used to set a 'd' attribute on a 'path' element.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreatePathData(
             [In] ID2D1SvgDocument* This,
-            [In, Optional, ComAliasName("FLOAT[]")] float* segmentData,
-            [In, ComAliasName("UINT32")] uint segmentDataCount,
-            [In, Optional, ComAliasName("D2D1_SVG_PATH_COMMAND[]")] D2D1_SVG_PATH_COMMAND* commands,
-            [In, ComAliasName("UINT32")] uint commandsCount,
+            [In, Optional, NativeTypeName("FLOAT[]")] float* segmentData,
+            [In, NativeTypeName("UINT32")] uint segmentDataCount,
+            [In, Optional, NativeTypeName("D2D1_SVG_PATH_COMMAND[]")] D2D1_SVG_PATH_COMMAND* commands,
+            [In, NativeTypeName("UINT32")] uint commandsCount,
             [Out] ID2D1SvgPathData** pathData
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -190,7 +190,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID2D1SvgDocument* This = &this)
@@ -201,7 +201,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID2D1SvgDocument* This = &this)
@@ -229,9 +229,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetViewportSize(
-            [In, ComAliasName("D2D1_SIZE_F")] D2D_SIZE_F viewportSize
+            [In, NativeTypeName("D2D1_SIZE_F")] D2D_SIZE_F viewportSize
         )
         {
             fixed (ID2D1SvgDocument* This = &this)
@@ -244,7 +244,7 @@ namespace TerraFX.Interop
         }
 
         public void GetViewportSize(
-            [Out, ComAliasName("D2D1_SIZE_F")] D2D_SIZE_F* pViewportSize
+            [Out, NativeTypeName("D2D1_SIZE_F")] D2D_SIZE_F* pViewportSize
         )
         {
             fixed (ID2D1SvgDocument* This = &this)
@@ -256,7 +256,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetRoot(
             [In] ID2D1SvgElement* root = null
         )
@@ -283,9 +283,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int FindElementById(
-            [In, ComAliasName("PCWSTR")] char* id,
+            [In, NativeTypeName("PCWSTR")] char* id,
             [Out] ID2D1SvgElement** svgElement
         )
         {
@@ -299,7 +299,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Serialize(
             [In] IStream* outputXmlStream,
             [In] ID2D1SvgElement* subtree = null
@@ -315,7 +315,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Deserialize(
             [In] IStream* inputXmlStream,
             [Out] ID2D1SvgElement** subtree
@@ -331,11 +331,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreatePaint(
             [In] D2D1_SVG_PAINT_TYPE paintType,
-            [In, Optional, ComAliasName("D2D1_COLOR_F")] DXGI_RGBA* color,
-            [In, Optional, ComAliasName("PCWSTR")] char* id,
+            [In, Optional, NativeTypeName("D2D1_COLOR_F")] DXGI_RGBA* color,
+            [In, Optional, NativeTypeName("PCWSTR")] char* id,
             [Out] ID2D1SvgPaint** paint
         )
         {
@@ -351,10 +351,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateStrokeDashArray(
-            [In, Optional, ComAliasName("D2D1_SVG_LENGTH[]")] D2D1_SVG_LENGTH* dashes,
-            [In, ComAliasName("UINT32")] uint dashesCount,
+            [In, Optional, NativeTypeName("D2D1_SVG_LENGTH[]")] D2D1_SVG_LENGTH* dashes,
+            [In, NativeTypeName("UINT32")] uint dashesCount,
             [Out] ID2D1SvgStrokeDashArray** strokeDashArray
         )
         {
@@ -369,10 +369,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreatePointCollection(
-            [In, Optional, ComAliasName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
-            [In, ComAliasName("UINT32")] uint pointsCount,
+            [In, Optional, NativeTypeName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
+            [In, NativeTypeName("UINT32")] uint pointsCount,
             [Out] ID2D1SvgPointCollection** pointCollection
         )
         {
@@ -387,12 +387,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreatePathData(
-            [In, Optional, ComAliasName("FLOAT[]")] float* segmentData,
-            [In, ComAliasName("UINT32")] uint segmentDataCount,
-            [In, Optional, ComAliasName("D2D1_SVG_PATH_COMMAND[]")] D2D1_SVG_PATH_COMMAND* commands,
-            [In, ComAliasName("UINT32")] uint commandsCount,
+            [In, Optional, NativeTypeName("FLOAT[]")] float* segmentData,
+            [In, NativeTypeName("UINT32")] uint segmentDataCount,
+            [In, Optional, NativeTypeName("D2D1_SVG_PATH_COMMAND[]")] D2D1_SVG_PATH_COMMAND* commands,
+            [In, NativeTypeName("UINT32")] uint commandsCount,
             [Out] ID2D1SvgPathData** pathData
         )
         {

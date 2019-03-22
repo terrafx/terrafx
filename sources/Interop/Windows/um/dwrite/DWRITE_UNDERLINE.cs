@@ -15,20 +15,20 @@ namespace TerraFX.Interop
     {
         #region Fields
         /// <summary>Width of the underline, measured parallel to the baseline.</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float width;
 
         /// <summary>Thickness of the underline, measured perpendicular to the
         /// baseline.</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float thickness;
 
         /// <summary>Offset of the underline from the baseline. A positive offset represents a position below the baseline and a negative offset is above.</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float offset;
 
         /// <summary>Height of the tallest run where the underline applies.</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float runHeight;
 
         /// <summary>Reading direction of the text associated with the underline.  This value is used to interpret whether the width value runs horizontally or vertically.</summary>
@@ -38,7 +38,7 @@ namespace TerraFX.Interop
         public DWRITE_FLOW_DIRECTION flowDirection;
 
         /// <summary>Locale of the text the underline is being drawn under. Can be pertinent where the locale affects how the underline is drawn. For example, in vertical text, the underline belongs on the left for Chinese but on the right for Japanese. This choice is completely left up to higher levels.</summary>
-        [ComAliasName("WCHAR[]")]
+        [NativeTypeName("WCHAR[]")]
         public char* localeName;
 
         /// <summary>The measuring mode can be useful to the renderer to determine how

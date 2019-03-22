@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID2D1Bitmap* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID2D1Bitmap* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID2D1Bitmap* This
         );
@@ -61,7 +61,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _GetSize(
             [In] ID2D1Bitmap* This,
-            [Out, ComAliasName("D2D1_SIZE_F")] D2D_SIZE_F* pSize
+            [Out, NativeTypeName("D2D1_SIZE_F")] D2D_SIZE_F* pSize
         );
 
         /// <summary>Returns the size of the bitmap in resolution dependent units, (pixels).</summary>
@@ -69,7 +69,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _GetPixelSize(
             [In] ID2D1Bitmap* This,
-            [Out, ComAliasName("D2D1_SIZE_U")] D2D_SIZE_U pSize
+            [Out, NativeTypeName("D2D1_SIZE_U")] D2D_SIZE_U pSize
         );
 
         /// <summary>Retrieve the format of the bitmap.</summary>
@@ -85,45 +85,45 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _GetDpi(
             [In] ID2D1Bitmap* This,
-            [Out, ComAliasName("FLOAT")] float* dpiX,
-            [Out, ComAliasName("FLOAT")] float* dpiY
+            [Out, NativeTypeName("FLOAT")] float* dpiX,
+            [Out, NativeTypeName("FLOAT")] float* dpiY
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CopyFromBitmap(
             [In] ID2D1Bitmap* This,
-            [In, Optional, ComAliasName("D2D1_POINT_2U")] D2D_POINT_2U* destPoint,
+            [In, Optional, NativeTypeName("D2D1_POINT_2U")] D2D_POINT_2U* destPoint,
             [In] ID2D1Bitmap* bitmap,
-            [In, ComAliasName("D2D1_RECT_U")] D2D_RECT_U* srcRect = null
+            [In, NativeTypeName("D2D1_RECT_U")] D2D_RECT_U* srcRect = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CopyFromRenderTarget(
             [In] ID2D1Bitmap* This,
-            [In, Optional, ComAliasName("D2D1_POINT_2U")] D2D_POINT_2U* destPoint,
+            [In, Optional, NativeTypeName("D2D1_POINT_2U")] D2D_POINT_2U* destPoint,
             [In] ID2D1RenderTarget* renderTarget,
-            [In, ComAliasName("D2D1_RECT_U")] D2D_RECT_U* srcRect = null
+            [In, NativeTypeName("D2D1_RECT_U")] D2D_RECT_U* srcRect = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CopyFromMemory(
             [In] ID2D1Bitmap* This,
-            [In, Optional, ComAliasName("D2D1_RECT_U")] D2D_RECT_U* dstRect,
+            [In, Optional, NativeTypeName("D2D1_RECT_U")] D2D_RECT_U* dstRect,
             [In] void* srcData,
-            [In, ComAliasName("UINT32")] uint pitch
+            [In, NativeTypeName("UINT32")] uint pitch
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -137,7 +137,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID2D1Bitmap* This = &this)
@@ -148,7 +148,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID2D1Bitmap* This = &this)
@@ -177,7 +177,7 @@ namespace TerraFX.Interop
 
         #region Methods
         public void GetSize(
-            [Out, ComAliasName("D2D1_SIZE_F")] D2D_SIZE_F* pSize
+            [Out, NativeTypeName("D2D1_SIZE_F")] D2D_SIZE_F* pSize
         )
         {
             fixed (ID2D1Bitmap* This = &this)
@@ -190,7 +190,7 @@ namespace TerraFX.Interop
         }
 
         public void GetPixelSize(
-            [Out, ComAliasName("D2D1_SIZE_U")] D2D_SIZE_U pSize
+            [Out, NativeTypeName("D2D1_SIZE_U")] D2D_SIZE_U pSize
         )
         {
             fixed (ID2D1Bitmap* This = &this)
@@ -216,8 +216,8 @@ namespace TerraFX.Interop
         }
 
         public void GetDpi(
-            [Out, ComAliasName("FLOAT")] float* dpiX,
-            [Out, ComAliasName("FLOAT")] float* dpiY
+            [Out, NativeTypeName("FLOAT")] float* dpiX,
+            [Out, NativeTypeName("FLOAT")] float* dpiY
         )
         {
             fixed (ID2D1Bitmap* This = &this)
@@ -230,11 +230,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CopyFromBitmap(
-            [In, Optional, ComAliasName("D2D1_POINT_2U")] D2D_POINT_2U* destPoint,
+            [In, Optional, NativeTypeName("D2D1_POINT_2U")] D2D_POINT_2U* destPoint,
             [In] ID2D1Bitmap* bitmap,
-            [In, ComAliasName("D2D1_RECT_U")] D2D_RECT_U* srcRect = null
+            [In, NativeTypeName("D2D1_RECT_U")] D2D_RECT_U* srcRect = null
         )
         {
             fixed (ID2D1Bitmap* This = &this)
@@ -248,11 +248,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CopyFromRenderTarget(
-            [In, Optional, ComAliasName("D2D1_POINT_2U")] D2D_POINT_2U* destPoint,
+            [In, Optional, NativeTypeName("D2D1_POINT_2U")] D2D_POINT_2U* destPoint,
             [In] ID2D1RenderTarget* renderTarget,
-            [In, ComAliasName("D2D1_RECT_U")] D2D_RECT_U* srcRect = null
+            [In, NativeTypeName("D2D1_RECT_U")] D2D_RECT_U* srcRect = null
         )
         {
             fixed (ID2D1Bitmap* This = &this)
@@ -266,11 +266,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CopyFromMemory(
-            [In, Optional, ComAliasName("D2D1_RECT_U")] D2D_RECT_U* dstRect,
+            [In, Optional, NativeTypeName("D2D1_RECT_U")] D2D_RECT_U* dstRect,
             [In] void* srcData,
-            [In, ComAliasName("UINT32")] uint pitch
+            [In, NativeTypeName("UINT32")] uint pitch
         )
         {
             fixed (ID2D1Bitmap* This = &this)

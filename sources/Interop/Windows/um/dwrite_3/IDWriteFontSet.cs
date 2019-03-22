@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDWriteFontSet* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDWriteFontSet* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDWriteFontSet* This
         );
@@ -49,7 +49,7 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public /* static */ delegate uint _GetFontCount(
             [In] IDWriteFontSet* This
         );
@@ -60,10 +60,10 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetFontFaceReference(
             [In] IDWriteFontSet* This,
-            [In, ComAliasName("UINT32")] uint listIndex,
+            [In, NativeTypeName("UINT32")] uint listIndex,
             [Out] IDWriteFontFaceReference** fontFaceReference
         );
 
@@ -74,12 +74,12 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _FindFontFaceReference(
             [In] IDWriteFontSet* This,
             [In] IDWriteFontFaceReference* fontFaceReference,
-            [Out, ComAliasName("UINT32")] uint* listIndex,
-            [Out, ComAliasName("BOOL")] int* exists
+            [Out, NativeTypeName("UINT32")] uint* listIndex,
+            [Out, NativeTypeName("BOOL")] int* exists
         );
 
         /// <summary>Gets the index of the matching font face reference in the font set, with the same file, face index, and simulations.</summary>
@@ -89,12 +89,12 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _FindFontFace(
             [In] IDWriteFontSet* This,
             [In] IDWriteFontFace* fontFace,
-            [Out, ComAliasName("UINT32")] uint* listIndex,
-            [Out, ComAliasName("BOOL")] int* exists
+            [Out, NativeTypeName("UINT32")] uint* listIndex,
+            [Out, NativeTypeName("BOOL")] int* exists
         );
 
         /// <summary>Returns the property values of a specific font item index.</summary>
@@ -105,12 +105,12 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetPropertyValues(
             [In] IDWriteFontSet* This,
-            [In, ComAliasName("UINT32")] uint listIndex,
+            [In, NativeTypeName("UINT32")] uint listIndex,
             [In] DWRITE_FONT_PROPERTY_ID propertyId,
-            [Out, ComAliasName("BOOL")] int* exists,
+            [Out, NativeTypeName("BOOL")] int* exists,
             [Out] IDWriteLocalizedStrings** values
         );
 
@@ -122,11 +122,11 @@ namespace TerraFX.Interop
         /// <remarks> For example, suppose the font set includes the Meiryo family, which has both Japanese and English family names. The returned list of distinct family names would include either the Japanese name (if "ja-jp" was specified as a preferred locale) or the English name (in all other cases).</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetPropertyValues1(
             [In] IDWriteFontSet* This,
             [In] DWRITE_FONT_PROPERTY_ID propertyID,
-            [In, ComAliasName("WCHAR[]")] char* preferredLocaleNames,
+            [In, NativeTypeName("WCHAR[]")] char* preferredLocaleNames,
             [Out] IDWriteStringList** values
         );
 
@@ -137,7 +137,7 @@ namespace TerraFX.Interop
         /// <remarks> For example, suppose the font set includes the Meiryo family, which has both Japanese and English family names. The returned list of distinct family names would include both the Japanese and English names.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetPropertyValues2(
             [In] IDWriteFontSet* This,
             [In] DWRITE_FONT_PROPERTY_ID propertyID,
@@ -151,11 +151,11 @@ namespace TerraFX.Interop
         /// <remarks> For example, the family name "Segoe UI" may return a count of 12, whereas Harrington only has 1.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetPropertyOccurrenceCount(
             [In] IDWriteFontSet* This,
             [In] DWRITE_FONT_PROPERTY* property,
-            [Out, ComAliasName("UINT32")] uint* propertyOccurrenceCount
+            [Out, NativeTypeName("UINT32")] uint* propertyOccurrenceCount
         );
 
         /// <summary>Returns a subset of fonts filtered by the given properties.</summary>
@@ -166,11 +166,11 @@ namespace TerraFX.Interop
         /// <remarks> If no fonts matched the filter, the subset will be empty (GetFontCount returns 0), but the function does not return an error. The subset will always be equal to or less than the original set.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetMatchingFonts(
             [In] IDWriteFontSet* This,
-            [In, ComAliasName("DWRITE_FONT_PROPERTY[]")] DWRITE_FONT_PROPERTY* properties,
-            [In, ComAliasName("UINT32")] uint propertyCount,
+            [In, NativeTypeName("DWRITE_FONT_PROPERTY[]")] DWRITE_FONT_PROPERTY* properties,
+            [In, NativeTypeName("UINT32")] uint propertyCount,
             [Out] IDWriteFontSet** filteredSet
         );
 
@@ -184,10 +184,10 @@ namespace TerraFX.Interop
         /// <remarks> The returned list can include simulated bold and oblique variants, which would be useful for font fallback selection.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetMatchingFonts1(
             [In] IDWriteFontSet* This,
-            [In, ComAliasName("WCHAR[]")] char* familyName,
+            [In, NativeTypeName("WCHAR[]")] char* familyName,
             [In] DWRITE_FONT_WEIGHT fontWeight,
             [In] DWRITE_FONT_STRETCH fontStretch,
             [In] DWRITE_FONT_STYLE fontStyle,
@@ -196,9 +196,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -212,7 +212,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDWriteFontSet* This = &this)
@@ -223,7 +223,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDWriteFontSet* This = &this)
@@ -236,7 +236,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public uint GetFontCount()
         {
             fixed (IDWriteFontSet* This = &this)
@@ -247,9 +247,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetFontFaceReference(
-            [In, ComAliasName("UINT32")] uint listIndex,
+            [In, NativeTypeName("UINT32")] uint listIndex,
             [Out] IDWriteFontFaceReference** fontFaceReference
         )
         {
@@ -263,11 +263,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int FindFontFaceReference(
             [In] IDWriteFontFaceReference* fontFaceReference,
-            [Out, ComAliasName("UINT32")] uint* listIndex,
-            [Out, ComAliasName("BOOL")] int* exists
+            [Out, NativeTypeName("UINT32")] uint* listIndex,
+            [Out, NativeTypeName("BOOL")] int* exists
         )
         {
             fixed (IDWriteFontSet* This = &this)
@@ -281,11 +281,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int FindFontFace(
             [In] IDWriteFontFace* fontFace,
-            [Out, ComAliasName("UINT32")] uint* listIndex,
-            [Out, ComAliasName("BOOL")] int* exists
+            [Out, NativeTypeName("UINT32")] uint* listIndex,
+            [Out, NativeTypeName("BOOL")] int* exists
         )
         {
             fixed (IDWriteFontSet* This = &this)
@@ -299,11 +299,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetPropertyValues(
-            [In, ComAliasName("UINT32")] uint listIndex,
+            [In, NativeTypeName("UINT32")] uint listIndex,
             [In] DWRITE_FONT_PROPERTY_ID propertyId,
-            [Out, ComAliasName("BOOL")] int* exists,
+            [Out, NativeTypeName("BOOL")] int* exists,
             [Out] IDWriteLocalizedStrings** values
         )
         {
@@ -319,10 +319,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetPropertyValues1(
             [In] DWRITE_FONT_PROPERTY_ID propertyID,
-            [In, ComAliasName("WCHAR[]")] char* preferredLocaleNames,
+            [In, NativeTypeName("WCHAR[]")] char* preferredLocaleNames,
             [Out] IDWriteStringList** values
         )
         {
@@ -337,7 +337,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetPropertyValues2(
             [In] DWRITE_FONT_PROPERTY_ID propertyID,
             [Out] IDWriteStringList** values
@@ -353,10 +353,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetPropertyOccurrenceCount(
             [In] DWRITE_FONT_PROPERTY* property,
-            [Out, ComAliasName("UINT32")] uint* propertyOccurrenceCount
+            [Out, NativeTypeName("UINT32")] uint* propertyOccurrenceCount
         )
         {
             fixed (IDWriteFontSet* This = &this)
@@ -369,10 +369,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetMatchingFonts(
-            [In, ComAliasName("DWRITE_FONT_PROPERTY[]")] DWRITE_FONT_PROPERTY* properties,
-            [In, ComAliasName("UINT32")] uint propertyCount,
+            [In, NativeTypeName("DWRITE_FONT_PROPERTY[]")] DWRITE_FONT_PROPERTY* properties,
+            [In, NativeTypeName("UINT32")] uint propertyCount,
             [Out] IDWriteFontSet** filteredSet
         )
         {
@@ -387,9 +387,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetMatchingFonts1(
-            [In, ComAliasName("WCHAR[]")] char* familyName,
+            [In, NativeTypeName("WCHAR[]")] char* familyName,
             [In] DWRITE_FONT_WEIGHT fontWeight,
             [In] DWRITE_FONT_STRETCH fontStretch,
             [In] DWRITE_FONT_STYLE fontStyle,

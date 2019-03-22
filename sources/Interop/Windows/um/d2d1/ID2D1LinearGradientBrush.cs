@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID2D1LinearGradientBrush* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID2D1LinearGradientBrush* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID2D1LinearGradientBrush* This
         );
@@ -61,7 +61,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _SetOpacity(
             [In] ID2D1LinearGradientBrush* This,
-            [In, ComAliasName("FLOAT")] float opacity
+            [In, NativeTypeName("FLOAT")] float opacity
         );
 
         /// <summary>Sets the transform that applies to everything drawn by the brush.</summary>
@@ -69,12 +69,12 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _SetTransform(
             [In] ID2D1LinearGradientBrush* This,
-            [In, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform
+            [In, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("FLOAT")]
+        [return: NativeTypeName("FLOAT")]
         public /* static */ delegate float _GetOpacity(
             [In] ID2D1LinearGradientBrush* This
         );
@@ -83,7 +83,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _GetTransform(
             [In] ID2D1LinearGradientBrush* This,
-            [Out, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform
+            [Out, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform
         );
         #endregion
 
@@ -92,7 +92,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _SetStartPoint(
             [In] ID2D1LinearGradientBrush* This,
-            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F startPoint
+            [In, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F startPoint
         );
 
         /// <summary>Sets the end point of the gradient in local coordinate space. This is not
@@ -101,21 +101,21 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _SetEndPoint(
             [In] ID2D1LinearGradientBrush* This,
-            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F endPoint
+            [In, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F endPoint
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _GetStartPoint(
             [In] ID2D1LinearGradientBrush* This,
-            [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* pStartPoint
+            [Out, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F* pStartPoint
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _GetEndPoint(
             [In] ID2D1LinearGradientBrush* This,
-            [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* pEndPoint
+            [Out, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F* pEndPoint
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -127,9 +127,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -143,7 +143,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID2D1LinearGradientBrush* This = &this)
@@ -154,7 +154,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID2D1LinearGradientBrush* This = &this)
@@ -183,7 +183,7 @@ namespace TerraFX.Interop
 
         #region ID2D1Brush Methods
         public void SetOpacity(
-            [In, ComAliasName("FLOAT")] float opacity
+            [In, NativeTypeName("FLOAT")] float opacity
         )
         {
             fixed (ID2D1LinearGradientBrush* This = &this)
@@ -196,7 +196,7 @@ namespace TerraFX.Interop
         }
 
         public void SetTransform(
-            [In, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform
+            [In, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform
         )
         {
             fixed (ID2D1LinearGradientBrush* This = &this)
@@ -208,7 +208,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("FLOAT")]
+        [return: NativeTypeName("FLOAT")]
         public float GetOpacity()
         {
             fixed (ID2D1LinearGradientBrush* This = &this)
@@ -220,7 +220,7 @@ namespace TerraFX.Interop
         }
 
         public void GetTransform(
-            [Out, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform
+            [Out, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform
         )
         {
             fixed (ID2D1LinearGradientBrush* This = &this)
@@ -235,7 +235,7 @@ namespace TerraFX.Interop
 
         #region Methods
         public void SetStartPoint(
-            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F startPoint
+            [In, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F startPoint
         )
         {
             fixed (ID2D1LinearGradientBrush* This = &this)
@@ -248,7 +248,7 @@ namespace TerraFX.Interop
         }
 
         public void SetEndPoint(
-            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F endPoint
+            [In, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F endPoint
         )
         {
             fixed (ID2D1LinearGradientBrush* This = &this)
@@ -261,7 +261,7 @@ namespace TerraFX.Interop
         }
 
         public void GetStartPoint(
-            [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* pStartPoint
+            [Out, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F* pStartPoint
         )
         {
             fixed (ID2D1LinearGradientBrush* This = &this)
@@ -274,7 +274,7 @@ namespace TerraFX.Interop
         }
 
         public void GetEndPoint(
-            [Out, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F* pEndPoint
+            [Out, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F* pEndPoint
         )
         {
             fixed (ID2D1LinearGradientBrush* This = &this)

@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
@@ -23,10 +24,10 @@ namespace TerraFX.Interop
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateAndroidSurfaceKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateAndroidSurfaceKHR(
-            [In, ComAliasName("VkInstance")] IntPtr instance,
+            [In, NativeTypeName("VkInstance")] IntPtr instance,
             [In] VkAndroidSurfaceCreateInfoKHR* pCreateInfo,
             [In, Optional] VkAllocationCallbacks* pAllocator,
-            [Out, ComAliasName("VkSurfaceKHR")] IntPtr* pSurface
+            [Out, NativeTypeName("VkSurfaceKHR")] IntPtr* pSurface
         );
         #endregion
     }

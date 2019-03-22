@@ -3,7 +3,6 @@
 // Ported from um\dwrite_3.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -14,11 +13,11 @@ namespace TerraFX.Interop
     {
         #region Fields
         /// <summary>Starting offset of the fragment from the beginning of the file.</summary>
-        [ComAliasName("UINT64")]
+        [NativeTypeName("UINT64")]
         public ulong fileOffset;
 
         /// <summary>Size of the file fragment, in bytes.</summary>
-        [ComAliasName("UINT64")]
+        [NativeTypeName("UINT64")]
         public ulong fragmentSize;
         #endregion
     }

@@ -16,7 +16,7 @@ namespace TerraFX.Interop
         #region Fields
         #region struct
         [FieldOffset(0)]
-        [ComAliasName("VARTYPE")]
+        [NativeTypeName("VARTYPE")]
         public ushort vt;
 
         [FieldOffset(2)]
@@ -30,35 +30,35 @@ namespace TerraFX.Interop
 
         #region union
         [FieldOffset(8)]
-        [ComAliasName("CHAR")]
+        [NativeTypeName("CHAR")]
         public sbyte cVal;
 
         [FieldOffset(8)]
-        [ComAliasName("UCHAR")]
+        [NativeTypeName("UCHAR")]
         public byte bVal;
 
         [FieldOffset(8)]
-        [ComAliasName("SHORT")]
+        [NativeTypeName("SHORT")]
         public short iVal;
 
         [FieldOffset(8)]
-        [ComAliasName("USHORT")]
+        [NativeTypeName("USHORT")]
         public ushort uiVal;
 
         [FieldOffset(8)]
-        [ComAliasName("LONG")]
+        [NativeTypeName("LONG")]
         public int lVal;
 
         [FieldOffset(8)]
-        [ComAliasName("ULONG")]
+        [NativeTypeName("ULONG")]
         public uint ulVal;
 
         [FieldOffset(8)]
-        [ComAliasName("INT")]
+        [NativeTypeName("INT")]
         public int intVal;
 
         [FieldOffset(8)]
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint uintVal;
 
         [FieldOffset(8)]
@@ -68,40 +68,40 @@ namespace TerraFX.Interop
         public ULARGE_INTEGER uhVal;
 
         [FieldOffset(8)]
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float fltVal;
 
         [FieldOffset(8)]
-        [ComAliasName("DOUBLE")]
+        [NativeTypeName("DOUBLE")]
         public double dblVal;
 
         [FieldOffset(8)]
-        [ComAliasName("VARIANT_BOOL")]
+        [NativeTypeName("VARIANT_BOOL")]
         public short boolVal;
 
         [FieldOffset(8)]
-        [ComAliasName("SCODE")]
+        [NativeTypeName("SCODE")]
         public int scode;
 
         [FieldOffset(8)]
         public CY cyVal;
 
         [FieldOffset(8)]
-        [ComAliasName("DATE")]
+        [NativeTypeName("DATE")]
         public double date;
 
         [FieldOffset(8)]
         public FILETIME filetime;
 
         [FieldOffset(8)]
-        [ComAliasName("CLSID")]
+        [NativeTypeName("CLSID")]
         public Guid* puuid;
 
         [FieldOffset(8)]
         public CLIPDATA* pclipdata;
 
         [FieldOffset(8)]
-        [ComAliasName("BSTR")]
+        [NativeTypeName("BSTR")]
         public char* bstrVal;
 
         [FieldOffset(8)]
@@ -111,11 +111,11 @@ namespace TerraFX.Interop
         public BLOB blob;
 
         [FieldOffset(8)]
-        [ComAliasName("LPSTR")]
+        [NativeTypeName("LPSTR")]
         public sbyte* pszVal;
 
         [FieldOffset(8)]
-        [ComAliasName("LPWSTR")]
+        [NativeTypeName("LPWSTR")]
         public char* pwszVal;
 
         [FieldOffset(8)]
@@ -131,11 +131,11 @@ namespace TerraFX.Interop
         public IStorage* pStorage;
 
         [FieldOffset(8)]
-        [ComAliasName("LPVERSIONEDSTREAM")]
+        [NativeTypeName("LPVERSIONEDSTREAM")]
         public VERSIONEDSTREAM* pVersionedStream;
 
         [FieldOffset(8)]
-        [ComAliasName("LPSAFEARRAY")]
+        [NativeTypeName("LPSAFEARRAY")]
         public SAFEARRAY* parray;
 
         [FieldOffset(8)]
@@ -205,65 +205,65 @@ namespace TerraFX.Interop
         public CAPROPVARIANT capropvar;
 
         [FieldOffset(8)]
-        [ComAliasName("CHAR")]
+        [NativeTypeName("CHAR")]
         public sbyte* pcVal;
 
         [FieldOffset(8)]
-        [ComAliasName("UCHAR")]
+        [NativeTypeName("UCHAR")]
         public byte* pbVal;
 
         [FieldOffset(8)]
-        [ComAliasName("SHORT")]
+        [NativeTypeName("SHORT")]
         public short* piVal;
 
         [FieldOffset(8)]
-        [ComAliasName("USHORT")]
+        [NativeTypeName("USHORT")]
         public ushort* puiVal;
 
         [FieldOffset(8)]
-        [ComAliasName("LONG")]
+        [NativeTypeName("LONG")]
         public int* plVal;
 
         [FieldOffset(8)]
-        [ComAliasName("ULONG")]
+        [NativeTypeName("ULONG")]
         public uint* pulVal;
 
         [FieldOffset(8)]
-        [ComAliasName("INT")]
+        [NativeTypeName("INT")]
         public int* pintVal;
 
         [FieldOffset(8)]
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint* puintVal;
 
         [FieldOffset(8)]
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float* pfltVal;
 
         [FieldOffset(8)]
-        [ComAliasName("DOUBLE")]
+        [NativeTypeName("DOUBLE")]
         public double* pdblVal;
 
         [FieldOffset(8)]
-        [ComAliasName("VARIANT_BOOL")]
+        [NativeTypeName("VARIANT_BOOL")]
         public short* pboolVal;
 
         [FieldOffset(8)]
         public DECIMAL* pdecVal;
 
         [FieldOffset(8)]
-        [ComAliasName("SCODE")]
+        [NativeTypeName("SCODE")]
         public int* pscode;
 
         [FieldOffset(8)]
         public CY* pcyVal;
 
         [FieldOffset(8)]
-        [ComAliasName("DATE")]
+        [NativeTypeName("DATE")]
         public double* pdate;
 
         [FieldOffset(8)]
-        [ComAliasName("BSTR")]
+        [NativeTypeName("BSTR")]
         public char** pbstrVal;
 
         [FieldOffset(8)]
@@ -273,7 +273,7 @@ namespace TerraFX.Interop
         public IDispatch** ppdispVal;
 
         [FieldOffset(8)]
-        [ComAliasName("LPSAFEARRAY")]
+        [NativeTypeName("LPSAFEARRAY")]
         public SAFEARRAY** pparray;
 
         [FieldOffset(8)]

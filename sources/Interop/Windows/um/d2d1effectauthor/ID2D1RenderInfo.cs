@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID2D1RenderInfo* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID2D1RenderInfo* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID2D1RenderInfo* This
         );
@@ -49,17 +49,17 @@ namespace TerraFX.Interop
         /// <summary>Sets options for sampling the specified image input</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetInputDescription(
             [In] ID2D1RenderInfo* This,
-            [In, ComAliasName("UINT32")] uint inputIndex,
+            [In, NativeTypeName("UINT32")] uint inputIndex,
             [In] D2D1_INPUT_DESCRIPTION inputDescription
         );
 
         /// <summary>Controls the output precision and channel-depth for the associated transform.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetOutputBuffer(
             [In] ID2D1RenderInfo* This,
             [In] D2D1_BUFFER_PRECISION bufferPrecision,
@@ -71,7 +71,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _SetCached(
             [In] ID2D1RenderInfo* This,
-            [In, ComAliasName("BOOL")] int isCached
+            [In, NativeTypeName("BOOL")] int isCached
         );
 
         /// <summary>Provides a hint of the approximate shader instruction count per pixel.  If provided, it may improve performance when processing large images.  Instructions should be counted multiple times if occurring within loops.</summary>
@@ -79,14 +79,14 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _SetInstructionCountHint(
             [In] ID2D1RenderInfo* This,
-            [In, ComAliasName("UINT32")] uint instructionCount
+            [In, NativeTypeName("UINT32")] uint instructionCount
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -100,7 +100,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID2D1RenderInfo* This = &this)
@@ -111,7 +111,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID2D1RenderInfo* This = &this)
@@ -124,9 +124,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetInputDescription(
-            [In, ComAliasName("UINT32")] uint inputIndex,
+            [In, NativeTypeName("UINT32")] uint inputIndex,
             [In] D2D1_INPUT_DESCRIPTION inputDescription
         )
         {
@@ -140,7 +140,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetOutputBuffer(
             [In] D2D1_BUFFER_PRECISION bufferPrecision,
             [In] D2D1_CHANNEL_DEPTH channelDepth
@@ -157,7 +157,7 @@ namespace TerraFX.Interop
         }
 
         public void SetCached(
-            [In, ComAliasName("BOOL")] int isCached
+            [In, NativeTypeName("BOOL")] int isCached
         )
         {
             fixed (ID2D1RenderInfo* This = &this)
@@ -170,7 +170,7 @@ namespace TerraFX.Interop
         }
 
         public void SetInstructionCountHint(
-            [In, ComAliasName("UINT32")] uint instructionCount
+            [In, NativeTypeName("UINT32")] uint instructionCount
         )
         {
             fixed (ID2D1RenderInfo* This = &this)

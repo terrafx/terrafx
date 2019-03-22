@@ -3,7 +3,6 @@
 // Ported from um\minwinbase.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,13 +11,13 @@ namespace TerraFX.Interop
     public unsafe struct SECURITY_ATTRIBUTES
     {
         #region Fields
-        [ComAliasName("DWORD")]
+        [NativeTypeName("DWORD")]
         public uint nLength;
 
-        [ComAliasName("LPVOID")]
+        [NativeTypeName("LPVOID")]
         public void* lpSecurityDescriptor;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int bInheritHandle;
         #endregion
     }

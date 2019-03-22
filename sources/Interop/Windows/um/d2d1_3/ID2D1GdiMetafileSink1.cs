@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID2D1GdiMetafileSink1* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID2D1GdiMetafileSink1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID2D1GdiMetafileSink1* This
         );
@@ -49,12 +49,12 @@ namespace TerraFX.Interop
         /// <summary>Callback for examining a metafile record.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _ProcessRecord(
             [In] ID2D1GdiMetafileSink1* This,
-            [In, ComAliasName("DWORD")] uint recordType,
+            [In, NativeTypeName("DWORD")] uint recordType,
             [In, Optional] void* recordData,
-            [In, ComAliasName("DWORD")] uint recordDataSize
+            [In, NativeTypeName("DWORD")] uint recordDataSize
         );
         #endregion
 
@@ -62,20 +62,20 @@ namespace TerraFX.Interop
         /// <summary>Callback for examining a metafile record.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _ProcessRecord1(
             [In] ID2D1GdiMetafileSink1* This,
-            [In, ComAliasName("DWORD")] uint recordType,
+            [In, NativeTypeName("DWORD")] uint recordType,
             [In, Optional] void* recordData,
-            [In, ComAliasName("DWORD")] uint recordDataSize,
-            [In, ComAliasName("UINT32")] uint flags
+            [In, NativeTypeName("DWORD")] uint recordDataSize,
+            [In, NativeTypeName("UINT32")] uint flags
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -89,7 +89,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID2D1GdiMetafileSink1* This = &this)
@@ -100,7 +100,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID2D1GdiMetafileSink1* This = &this)
@@ -113,11 +113,11 @@ namespace TerraFX.Interop
         #endregion
 
         #region ID2D1GdiMetafileSink Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int ProcessRecord(
-            [In, ComAliasName("DWORD")] uint recordType,
+            [In, NativeTypeName("DWORD")] uint recordType,
             [In, Optional] void* recordData,
-            [In, ComAliasName("DWORD")] uint recordDataSize
+            [In, NativeTypeName("DWORD")] uint recordDataSize
         )
         {
             fixed (ID2D1GdiMetafileSink1* This = &this)
@@ -133,12 +133,12 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int ProcessRecord1(
-            [In, ComAliasName("DWORD")] uint recordType,
+            [In, NativeTypeName("DWORD")] uint recordType,
             [In, Optional] void* recordData,
-            [In, ComAliasName("DWORD")] uint recordDataSize,
-            [In, ComAliasName("UINT32")] uint flags
+            [In, NativeTypeName("DWORD")] uint recordDataSize,
+            [In, NativeTypeName("UINT32")] uint flags
         )
         {
             fixed (ID2D1GdiMetafileSink1* This = &this)

@@ -3,7 +3,6 @@
 // Ported from um\dwrite.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -18,7 +17,7 @@ namespace TerraFX.Interop
 
         #region Properties
         /// <summary>Justification class, whether to use spacing, kashidas, or another method. This exists for backwards compatibility with Uniscribe's SCRIPT_JUSTIFY enum.</summary>
-        [ComAliasName("UINT16:4")]
+        [NativeTypeName("UINT16:4")]
         public ushort justification
         {
             get
@@ -33,7 +32,7 @@ namespace TerraFX.Interop
         }
 
         /// <summary>Indicates glyph is the first of a cluster.</summary>
-        [ComAliasName("UINT16:1")]
+        [NativeTypeName("UINT16:1")]
         public ushort isClusterStart
         {
             get
@@ -48,7 +47,7 @@ namespace TerraFX.Interop
         }
 
         /// <summary>Glyph is a diacritic.</summary>
-        [ComAliasName("UINT16:1")]
+        [NativeTypeName("UINT16:1")]
         public ushort isDiacritic
         {
             get
@@ -63,7 +62,7 @@ namespace TerraFX.Interop
         }
 
         /// <summary>Glyph has no width, blank, ZWJ, ZWNJ etc.</summary>
-        [ComAliasName("UINT16:1")]
+        [NativeTypeName("UINT16:1")]
         public ushort isZeroWidthSpace
         {
             get
@@ -78,7 +77,7 @@ namespace TerraFX.Interop
         }
 
         /// <summary>Reserved for use by shaping engine.</summary>
-        [ComAliasName("UINT16:9")]
+        [NativeTypeName("UINT16:9")]
         public ushort reserved
         {
             get

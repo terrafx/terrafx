@@ -4,7 +4,6 @@
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
 using System;
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -17,10 +16,10 @@ namespace TerraFX.Interop
 
         public void* pNext;
 
-        [ComAliasName("VkAndroidSurfaceCreateFlagsKHR")]
+        [NativeTypeName("VkAndroidSurfaceCreateFlagsKHR")]
         public uint flags;
 
-        [ComAliasName("ANativeWindow")]
+        [NativeTypeName("ANativeWindow")]
         public IntPtr window;
         #endregion
     }

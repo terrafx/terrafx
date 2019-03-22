@@ -14,51 +14,51 @@ namespace TerraFX.Interop
     public unsafe struct TYPEATTR
     {
         #region Fields
-        [ComAliasName("GUID")]
+        [NativeTypeName("GUID")]
         public Guid guid;
 
-        [ComAliasName("LCID")]
+        [NativeTypeName("LCID")]
         public uint lcid;
 
-        [ComAliasName("DWORD")]
+        [NativeTypeName("DWORD")]
         public uint dwReserved;
 
-        [ComAliasName("MEMBERID")]
+        [NativeTypeName("MEMBERID")]
         public int memidConstructor;
 
-        [ComAliasName("MEMBERID")]
+        [NativeTypeName("MEMBERID")]
         public int memidDestructor;
 
-        [ComAliasName("LPOLESTR")]
+        [NativeTypeName("LPOLESTR")]
         public char* lpstrSchema;
 
-        [ComAliasName("ULONG")]
+        [NativeTypeName("ULONG")]
         public uint cbSizeInstance;
 
         public TYPEKIND typekind;
 
-        [ComAliasName("WORD")]
+        [NativeTypeName("WORD")]
         public ushort cFuncs;
 
-        [ComAliasName("WORD")]
+        [NativeTypeName("WORD")]
         public ushort cVars;
 
-        [ComAliasName("WORD")]
+        [NativeTypeName("WORD")]
         public ushort cImplTypes;
 
-        [ComAliasName("WORD")]
+        [NativeTypeName("WORD")]
         public ushort cbSizeVft;
 
-        [ComAliasName("WORD")]
+        [NativeTypeName("WORD")]
         public ushort cbAlignment;
 
-        [ComAliasName("WORD")]
+        [NativeTypeName("WORD")]
         public ushort wTypeFlags;
 
-        [ComAliasName("WORD")]
+        [NativeTypeName("WORD")]
         public ushort wMajorVerNum;
 
-        [ComAliasName("WORD")]
+        [NativeTypeName("WORD")]
         public ushort wMinorVerNum;
 
         public TYPEDESC tdescAlias;

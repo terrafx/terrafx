@@ -4,7 +4,6 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System;
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -17,21 +16,21 @@ namespace TerraFX.Interop
 
         public DXGI_SAMPLE_DESC SampleDesc;
 
-        [ComAliasName("DXGI_USAGE")]
+        [NativeTypeName("DXGI_USAGE")]
         public uint BufferUsage;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint BufferCount;
 
-        [ComAliasName("HWND")]
+        [NativeTypeName("HWND")]
         public IntPtr OutputWindow;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int Windowed;
 
         public DXGI_SWAP_EFFECT SwapEffect;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Flags;
         #endregion
     }

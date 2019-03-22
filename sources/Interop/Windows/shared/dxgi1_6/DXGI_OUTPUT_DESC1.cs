@@ -14,43 +14,43 @@ namespace TerraFX.Interop
     public unsafe struct DXGI_OUTPUT_DESC1
     {
         #region Fields
-        [ComAliasName("WCHAR[32]")]
+        [NativeTypeName("WCHAR[32]")]
         public fixed char DeviceName[32];
 
         public RECT DesktopCoordinates;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int AttachedToDesktop;
 
         public DXGI_MODE_ROTATION Rotation;
 
-        [ComAliasName("HMONITOR")]
+        [NativeTypeName("HMONITOR")]
         public IntPtr Monitor;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint BitsPerColor;
 
         public DXGI_COLOR_SPACE_TYPE ColorSpace;
 
-        [ComAliasName("FLOAT[2]")]
+        [NativeTypeName("FLOAT[2]")]
         public fixed float RedPrimary[2];
 
-        [ComAliasName("FLOAT[2]")]
+        [NativeTypeName("FLOAT[2]")]
         public fixed float GreenPrimary[2];
 
-        [ComAliasName("FLOAT[2]")]
+        [NativeTypeName("FLOAT[2]")]
         public fixed float BluePrimary[2];
 
-        [ComAliasName("FLOAT[2]")]
+        [NativeTypeName("FLOAT[2]")]
         public fixed float WhitePoint[2];
 
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float MinLuminance;
 
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float MaxLuminance;
 
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float MaxFullFrameLuminance;
         #endregion
     }

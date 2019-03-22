@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDXGISwapChain1* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDXGISwapChain1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDXGISwapChain1* This
         );
@@ -47,39 +47,39 @@ namespace TerraFX.Interop
         #region IDXGIObject Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetPrivateData(
             [In] IDXGISwapChain1* This,
-            [In, ComAliasName("REFGUID")] Guid* Name,
-            [In, ComAliasName("UINT")] uint DataSize,
+            [In, NativeTypeName("REFGUID")] Guid* Name,
+            [In, NativeTypeName("UINT")] uint DataSize,
             [In] void* pData
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetPrivateDataInterface(
             [In] IDXGISwapChain1* This,
-            [In, ComAliasName("REFGUID")] Guid* Name,
+            [In, NativeTypeName("REFGUID")] Guid* Name,
             [In] IUnknown* pUnknown = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetPrivateData(
             [In] IDXGISwapChain1* This,
-            [In, ComAliasName("REFGUID")] Guid* Name,
-            [In, Out, ComAliasName("UINT")] uint* pDataSize,
+            [In, NativeTypeName("REFGUID")] Guid* Name,
+            [In, Out, NativeTypeName("UINT")] uint* pDataSize,
             [Out] void* pData
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetParent(
             [In] IDXGISwapChain1* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppParent
         );
         #endregion
@@ -87,10 +87,10 @@ namespace TerraFX.Interop
         #region IDXGIDeviceSubObject Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetDevice(
             [In] IDXGISwapChain1* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppDevice
         );
         #endregion
@@ -98,44 +98,44 @@ namespace TerraFX.Interop
         #region IDXGISwapChain Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Present(
             [In] IDXGISwapChain1* This,
-            [In, ComAliasName("UINT")] uint SyncInterval,
-            [In, ComAliasName("UINT")] uint Flags
+            [In, NativeTypeName("UINT")] uint SyncInterval,
+            [In, NativeTypeName("UINT")] uint Flags
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetBuffer(
             [In] IDXGISwapChain1* This,
-            [In, ComAliasName("UINT")] uint Buffer,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("UINT")] uint Buffer,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [In, Out] void** ppSurface
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetFullscreenState(
             [In] IDXGISwapChain1* This,
-            [In, ComAliasName("BOOL")] int Fullscreen,
+            [In, NativeTypeName("BOOL")] int Fullscreen,
             [In] IDXGIOutput* pTarget = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetFullscreenState(
             [In] IDXGISwapChain1* This,
-            [Out, ComAliasName("BOOL")] int* pFullscreen = null,
+            [Out, NativeTypeName("BOOL")] int* pFullscreen = null,
             [Out] IDXGIOutput** ppTarget = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetDesc(
             [In] IDXGISwapChain1* This,
             [Out] DXGI_SWAP_CHAIN_DESC* pDesc
@@ -143,19 +143,19 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _ResizeBuffers(
             [In] IDXGISwapChain1* This,
-            [In, ComAliasName("UINT")] uint BufferCount,
-            [In, ComAliasName("UINT")] uint Width,
-            [In, ComAliasName("UINT")] uint Height,
+            [In, NativeTypeName("UINT")] uint BufferCount,
+            [In, NativeTypeName("UINT")] uint Width,
+            [In, NativeTypeName("UINT")] uint Height,
             [In] DXGI_FORMAT NewFormat,
-            [In, ComAliasName("UINT")] uint SwapChainFlags
+            [In, NativeTypeName("UINT")] uint SwapChainFlags
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _ResizeTarget(
             [In] IDXGISwapChain1* This,
             [In] DXGI_MODE_DESC* pNewTargetParameters
@@ -163,7 +163,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetContainingOutput(
             [In] IDXGISwapChain1* This,
             [Out] IDXGIOutput** ppOutput
@@ -171,7 +171,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetFrameStatistics(
             [In] IDXGISwapChain1* This,
             [Out] DXGI_FRAME_STATISTICS* pStats
@@ -179,17 +179,17 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetLastPresentCount(
             [In] IDXGISwapChain1* This,
-            [Out, ComAliasName("UINT")] uint* pLastPresentCount
+            [Out, NativeTypeName("UINT")] uint* pLastPresentCount
         );
         #endregion
 
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetDesc1(
             [In] IDXGISwapChain1* This,
             [Out] DXGI_SWAP_CHAIN_DESC1* pDesc
@@ -197,7 +197,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetFullscreenDesc(
             [In] IDXGISwapChain1* This,
             [Out] DXGI_SWAP_CHAIN_FULLSCREEN_DESC* pDesc
@@ -205,41 +205,41 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetHwnd(
             [In] IDXGISwapChain1* This,
-            [Out, ComAliasName("HWND")] IntPtr* pHwnd
+            [Out, NativeTypeName("HWND")] IntPtr* pHwnd
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetCoreWindow(
             [In] IDXGISwapChain1* This,
-            [In, ComAliasName("REFIID")] Guid* refiid,
+            [In, NativeTypeName("REFIID")] Guid* refiid,
             [Out] void** ppUnk
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Present1(
             [In] IDXGISwapChain1* This,
-            [In, ComAliasName("UINT")] uint SyncInterval,
-            [In, ComAliasName("UINT")] uint PresentFlags,
+            [In, NativeTypeName("UINT")] uint SyncInterval,
+            [In, NativeTypeName("UINT")] uint PresentFlags,
             [In] DXGI_PRESENT_PARAMETERS* pPresentParameters
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public /* static */ delegate int _IsTemporaryMonoSupported(
             [In] IDXGISwapChain1* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetRestrictToOutput(
             [In] IDXGISwapChain1* This,
             [Out] IDXGIOutput** ppRestrictToOutput
@@ -247,7 +247,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetBackgroundColor(
             [In] IDXGISwapChain1* This,
             [In] DXGI_RGBA* pColor
@@ -255,7 +255,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetBackgroundColor(
             [In] IDXGISwapChain1* This,
             [Out] DXGI_RGBA* pColor
@@ -263,7 +263,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetRotation(
             [In] IDXGISwapChain1* This,
             [In] DXGI_MODE_ROTATION Rotation
@@ -271,7 +271,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetRotation(
             [In] IDXGISwapChain1* This,
             [Out] DXGI_MODE_ROTATION* pRotation
@@ -279,9 +279,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -295,7 +295,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDXGISwapChain1* This = &this)
@@ -306,7 +306,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDXGISwapChain1* This = &this)
@@ -319,10 +319,10 @@ namespace TerraFX.Interop
         #endregion
 
         #region IDXGIObject Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetPrivateData(
-            [In, ComAliasName("REFGUID")] Guid* Name,
-            [In, ComAliasName("UINT")] uint DataSize,
+            [In, NativeTypeName("REFGUID")] Guid* Name,
+            [In, NativeTypeName("UINT")] uint DataSize,
             [In] void* pData
         )
         {
@@ -337,9 +337,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetPrivateDataInterface(
-            [In, ComAliasName("REFGUID")] Guid* Name,
+            [In, NativeTypeName("REFGUID")] Guid* Name,
             [In] IUnknown* pUnknown = null
         )
         {
@@ -353,10 +353,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetPrivateData(
-            [In, ComAliasName("REFGUID")] Guid* Name,
-            [In, Out, ComAliasName("UINT")] uint* pDataSize,
+            [In, NativeTypeName("REFGUID")] Guid* Name,
+            [In, Out, NativeTypeName("UINT")] uint* pDataSize,
             [Out] void* pData
         )
         {
@@ -371,9 +371,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetParent(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppParent
         )
         {
@@ -389,9 +389,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region IDXGIDeviceSubObject Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetDevice(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppDevice
         )
         {
@@ -407,10 +407,10 @@ namespace TerraFX.Interop
         #endregion
 
         #region IDXGISwapChain Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Present(
-            [In, ComAliasName("UINT")] uint SyncInterval,
-            [In, ComAliasName("UINT")] uint Flags
+            [In, NativeTypeName("UINT")] uint SyncInterval,
+            [In, NativeTypeName("UINT")] uint Flags
         )
         {
             fixed (IDXGISwapChain1* This = &this)
@@ -423,10 +423,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetBuffer(
-            [In, ComAliasName("UINT")] uint Buffer,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("UINT")] uint Buffer,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [In, Out] void** ppSurface
         )
         {
@@ -441,9 +441,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetFullscreenState(
-            [In, ComAliasName("BOOL")] int Fullscreen,
+            [In, NativeTypeName("BOOL")] int Fullscreen,
             [In] IDXGIOutput* pTarget = null
         )
         {
@@ -457,9 +457,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetFullscreenState(
-            [Out, ComAliasName("BOOL")] int* pFullscreen = null,
+            [Out, NativeTypeName("BOOL")] int* pFullscreen = null,
             [Out] IDXGIOutput** ppTarget = null
         )
         {
@@ -473,7 +473,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetDesc(
             [Out] DXGI_SWAP_CHAIN_DESC* pDesc
         )
@@ -487,13 +487,13 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int ResizeBuffers(
-            [In, ComAliasName("UINT")] uint BufferCount,
-            [In, ComAliasName("UINT")] uint Width,
-            [In, ComAliasName("UINT")] uint Height,
+            [In, NativeTypeName("UINT")] uint BufferCount,
+            [In, NativeTypeName("UINT")] uint Width,
+            [In, NativeTypeName("UINT")] uint Height,
             [In] DXGI_FORMAT NewFormat,
-            [In, ComAliasName("UINT")] uint SwapChainFlags
+            [In, NativeTypeName("UINT")] uint SwapChainFlags
         )
         {
             fixed (IDXGISwapChain1* This = &this)
@@ -509,7 +509,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int ResizeTarget(
             [In] DXGI_MODE_DESC* pNewTargetParameters
         )
@@ -523,7 +523,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetContainingOutput(
             [Out] IDXGIOutput** ppOutput
         )
@@ -537,7 +537,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetFrameStatistics(
             [Out] DXGI_FRAME_STATISTICS* pStats
         )
@@ -551,9 +551,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetLastPresentCount(
-            [Out, ComAliasName("UINT")] uint* pLastPresentCount
+            [Out, NativeTypeName("UINT")] uint* pLastPresentCount
         )
         {
             fixed (IDXGISwapChain1* This = &this)
@@ -567,7 +567,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetDesc1(
             [Out] DXGI_SWAP_CHAIN_DESC1* pDesc
         )
@@ -581,7 +581,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetFullscreenDesc(
             [Out] DXGI_SWAP_CHAIN_FULLSCREEN_DESC* pDesc
         )
@@ -595,9 +595,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetHwnd(
-            [Out, ComAliasName("HWND")] IntPtr* pHwnd
+            [Out, NativeTypeName("HWND")] IntPtr* pHwnd
         )
         {
             fixed (IDXGISwapChain1* This = &this)
@@ -609,9 +609,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetCoreWindow(
-            [In, ComAliasName("REFIID")] Guid* refiid,
+            [In, NativeTypeName("REFIID")] Guid* refiid,
             [Out] void** ppUnk
         )
         {
@@ -625,10 +625,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Present1(
-            [In, ComAliasName("UINT")] uint SyncInterval,
-            [In, ComAliasName("UINT")] uint PresentFlags,
+            [In, NativeTypeName("UINT")] uint SyncInterval,
+            [In, NativeTypeName("UINT")] uint PresentFlags,
             [In] DXGI_PRESENT_PARAMETERS* pPresentParameters
         )
         {
@@ -643,7 +643,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public int IsTemporaryMonoSupported()
         {
             fixed (IDXGISwapChain1* This = &this)
@@ -654,7 +654,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetRestrictToOutput(
             [Out] IDXGIOutput** ppRestrictToOutput
         )
@@ -668,7 +668,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetBackgroundColor(
             [In] DXGI_RGBA* pColor
         )
@@ -682,7 +682,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetBackgroundColor(
             [Out] DXGI_RGBA* pColor
         )
@@ -696,7 +696,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetRotation(
             [In] DXGI_MODE_ROTATION Rotation
         )
@@ -710,7 +710,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetRotation(
             [Out] DXGI_MODE_ROTATION* pRotation
         )

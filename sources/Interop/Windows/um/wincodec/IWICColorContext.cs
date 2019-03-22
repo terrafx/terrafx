@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IWICColorContext* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IWICColorContext* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IWICColorContext* This
         );
@@ -47,32 +47,32 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _InitializeFromFilename(
             [In] IWICColorContext* This,
-            [In, ComAliasName("LPCWSTR")] char* wzFilename
+            [In, NativeTypeName("LPCWSTR")] char* wzFilename
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _InitializeFromMemory(
             [In] IWICColorContext* This,
-            [In, ComAliasName("BYTE[]")] byte* pbBuffer,
-            [In, ComAliasName("UINT")] uint cbBufferSize
+            [In, NativeTypeName("BYTE[]")] byte* pbBuffer,
+            [In, NativeTypeName("UINT")] uint cbBufferSize
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _InitializeFromExifColorSpace(
             [In] IWICColorContext* This,
-            [In, ComAliasName("UINT")] uint value
+            [In, NativeTypeName("UINT")] uint value
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int __GetType(
             [In] IWICColorContext* This,
             [Out] WICColorContextType* pType
@@ -80,27 +80,27 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetProfileBytes(
             [In] IWICColorContext* This,
-            [In, ComAliasName("UINT")] uint cbBuffer,
-            [In, Out, Optional, ComAliasName("BYTE[]")] byte* pbBuffer,
-            [Out, ComAliasName("UINT")] uint* pcbActual
+            [In, NativeTypeName("UINT")] uint cbBuffer,
+            [In, Out, Optional, NativeTypeName("BYTE[]")] byte* pbBuffer,
+            [Out, NativeTypeName("UINT")] uint* pcbActual
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetExifColorSpace(
             [In] IWICColorContext* This,
-            [Out, ComAliasName("UINT")] uint* pValue
+            [Out, NativeTypeName("UINT")] uint* pValue
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -114,7 +114,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IWICColorContext* This = &this)
@@ -125,7 +125,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IWICColorContext* This = &this)
@@ -138,9 +138,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int InitializeFromFilename(
-            [In, ComAliasName("LPCWSTR")] char* wzFilename
+            [In, NativeTypeName("LPCWSTR")] char* wzFilename
         )
         {
             fixed (IWICColorContext* This = &this)
@@ -152,10 +152,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int InitializeFromMemory(
-            [In, ComAliasName("BYTE[]")] byte* pbBuffer,
-            [In, ComAliasName("UINT")] uint cbBufferSize
+            [In, NativeTypeName("BYTE[]")] byte* pbBuffer,
+            [In, NativeTypeName("UINT")] uint cbBufferSize
         )
         {
             fixed (IWICColorContext* This = &this)
@@ -168,9 +168,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int InitializeFromExifColorSpace(
-            [In, ComAliasName("UINT")] uint value
+            [In, NativeTypeName("UINT")] uint value
         )
         {
             fixed (IWICColorContext* This = &this)
@@ -182,7 +182,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int _GetType(
             [Out] WICColorContextType* pType
         )
@@ -196,11 +196,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetProfileBytes(
-            [In, ComAliasName("UINT")] uint cbBuffer,
-            [In, Out, Optional, ComAliasName("BYTE[]")] byte* pbBuffer,
-            [Out, ComAliasName("UINT")] uint* pcbActual
+            [In, NativeTypeName("UINT")] uint cbBuffer,
+            [In, Out, Optional, NativeTypeName("BYTE[]")] byte* pbBuffer,
+            [Out, NativeTypeName("UINT")] uint* pcbActual
         )
         {
             fixed (IWICColorContext* This = &this)
@@ -214,9 +214,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetExifColorSpace(
-            [Out, ComAliasName("UINT")] uint* pValue
+            [Out, NativeTypeName("UINT")] uint* pValue
         )
         {
             fixed (IWICColorContext* This = &this)

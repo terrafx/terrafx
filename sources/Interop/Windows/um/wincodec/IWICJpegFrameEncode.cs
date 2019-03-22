@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IWICJpegFrameEncode* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IWICJpegFrameEncode* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IWICJpegFrameEncode* This
         );
@@ -47,48 +47,48 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetAcHuffmanTable(
             [In] IWICJpegFrameEncode* This,
-            [In, ComAliasName("UINT")] uint scanIndex,
-            [In, ComAliasName("UINT")] uint tableIndex,
+            [In, NativeTypeName("UINT")] uint scanIndex,
+            [In, NativeTypeName("UINT")] uint tableIndex,
             [Out] DXGI_JPEG_AC_HUFFMAN_TABLE* pAcHuffmanTable
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetDcHuffmanTable(
             [In] IWICJpegFrameEncode* This,
-            [In, ComAliasName("UINT")] uint scanIndex,
-            [In, ComAliasName("UINT")] uint tableIndex,
+            [In, NativeTypeName("UINT")] uint scanIndex,
+            [In, NativeTypeName("UINT")] uint tableIndex,
             [Out] DXGI_JPEG_DC_HUFFMAN_TABLE* pDcHuffmanTable
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetQuantizationTable(
             [In] IWICJpegFrameEncode* This,
-            [In, ComAliasName("UINT")] uint scanIndex,
-            [In, ComAliasName("UINT")] uint tableIndex,
+            [In, NativeTypeName("UINT")] uint scanIndex,
+            [In, NativeTypeName("UINT")] uint tableIndex,
             [Out] DXGI_JPEG_QUANTIZATION_TABLE* pQuantizationTable
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _WriteScan(
             [In] IWICJpegFrameEncode* This,
-            [In, ComAliasName("UINT")] uint cbScanData,
-            [In, ComAliasName("BYTE[]")] byte* pbScanData
+            [In, NativeTypeName("UINT")] uint cbScanData,
+            [In, NativeTypeName("BYTE[]")] byte* pbScanData
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -102,7 +102,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IWICJpegFrameEncode* This = &this)
@@ -113,7 +113,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IWICJpegFrameEncode* This = &this)
@@ -126,10 +126,10 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetAcHuffmanTable(
-            [In, ComAliasName("UINT")] uint scanIndex,
-            [In, ComAliasName("UINT")] uint tableIndex,
+            [In, NativeTypeName("UINT")] uint scanIndex,
+            [In, NativeTypeName("UINT")] uint tableIndex,
             [Out] DXGI_JPEG_AC_HUFFMAN_TABLE* pAcHuffmanTable
         )
         {
@@ -144,10 +144,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetDcHuffmanTable(
-            [In, ComAliasName("UINT")] uint scanIndex,
-            [In, ComAliasName("UINT")] uint tableIndex,
+            [In, NativeTypeName("UINT")] uint scanIndex,
+            [In, NativeTypeName("UINT")] uint tableIndex,
             [Out] DXGI_JPEG_DC_HUFFMAN_TABLE* pDcHuffmanTable
         )
         {
@@ -162,10 +162,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetQuantizationTable(
-            [In, ComAliasName("UINT")] uint scanIndex,
-            [In, ComAliasName("UINT")] uint tableIndex,
+            [In, NativeTypeName("UINT")] uint scanIndex,
+            [In, NativeTypeName("UINT")] uint tableIndex,
             [Out] DXGI_JPEG_QUANTIZATION_TABLE* pQuantizationTable
         )
         {
@@ -180,10 +180,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int WriteScan(
-            [In, ComAliasName("UINT")] uint cbScanData,
-            [In, ComAliasName("BYTE[]")] byte* pbScanData
+            [In, NativeTypeName("UINT")] uint cbScanData,
+            [In, NativeTypeName("BYTE[]")] byte* pbScanData
         )
         {
             fixed (IWICJpegFrameEncode* This = &this)

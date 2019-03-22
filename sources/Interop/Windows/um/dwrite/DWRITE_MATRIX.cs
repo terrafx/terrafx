@@ -3,7 +3,6 @@
 // Ported from um\dwrite.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -14,27 +13,27 @@ namespace TerraFX.Interop
     {
         #region Fields
         /// <summary>Horizontal scaling / cosine of rotation</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float m11;
 
         /// <summary>Vertical shear / sine of rotation</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float m12;
 
         /// <summary>Horizontal shear / negative sine of rotation</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float m21;
 
         /// <summary>Vertical scaling / cosine of rotation</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float m22;
 
         /// <summary>Horizontal shift (always orthogonal regardless of rotation)</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float dx;
 
         /// <summary>Vertical shift (always orthogonal regardless of rotation)</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float dy;
         #endregion
     }

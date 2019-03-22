@@ -3,7 +3,6 @@
 // Ported from um\d2d1svg.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -14,7 +13,7 @@ namespace TerraFX.Interop
     {
         #region Fields
         /// <summary>Sets the 'defer' portion of the preserveAspectRatio settings. This field only has an effect on an 'image' element that references another SVG document. As this is not currently supported, the field has no impact on rendering.</summary>
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int defer;
 
         /// <summary>Sets the align portion of the preserveAspectRatio settings.</summary>

@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
@@ -23,20 +24,20 @@ namespace TerraFX.Interop
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateXcbSurfaceKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateXcbSurfaceKHR(
-            [In, ComAliasName("VkInstance")] IntPtr instance,
+            [In, NativeTypeName("VkInstance")] IntPtr instance,
             [In] VkXcbSurfaceCreateInfoKHR* pCreateInfo,
             [In, Optional] VkAllocationCallbacks* pAllocator,
-            [Out, ComAliasName("VkSurfaceKHR")] IntPtr* pSurface
+            [Out, NativeTypeName("VkSurfaceKHR")] IntPtr* pSurface
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkGetPhysicalDeviceXcbPresentationSupportKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("VkBool32")]
+        [return: NativeTypeName("VkBool32")]
         public static extern uint vkGetPhysicalDeviceXcbPresentationSupportKHR(
-            [In, ComAliasName("VkPhysicalDevice")] IntPtr physicalDevice,
+            [In, NativeTypeName("VkPhysicalDevice")] IntPtr physicalDevice,
             [In] uint queueFamilyIndex,
-            [In, ComAliasName("xcb_connection_t")] IntPtr connection,
-            [In, ComAliasName("xcb_visualid_t")] uint visual_id
+            [In, NativeTypeName("xcb_connection_t")] IntPtr connection,
+            [In, NativeTypeName("xcb_visualid_t")] uint visual_id
         );
         #endregion
     }

@@ -3,7 +3,6 @@
 // Ported from um\dwrite_2.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -16,7 +15,7 @@ namespace TerraFX.Interop
         public DWRITE_TEXT_METRICS BaseValue;
 
         /// <summary>The height of the formatted text taking into account the trailing whitespace at the end of each line, which will matter for vertical reading directions.</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float heightIncludingTrailingWhitespace;
         #endregion
     }

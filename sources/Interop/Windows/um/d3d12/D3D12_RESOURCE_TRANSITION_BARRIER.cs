@@ -3,7 +3,6 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -14,7 +13,7 @@ namespace TerraFX.Interop
         #region Fields
         public ID3D12Resource* pResource;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Subresource;
 
         public D3D12_RESOURCE_STATES StateBefore;

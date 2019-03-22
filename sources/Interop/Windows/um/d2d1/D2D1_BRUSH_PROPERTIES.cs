@@ -3,7 +3,6 @@
 // Ported from um\d2d1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -13,10 +12,10 @@ namespace TerraFX.Interop
     public struct D2D1_BRUSH_PROPERTIES
     {
         #region Fields
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float opacity;
 
-        [ComAliasName("D2D1_MATRIX_3X2_F")]
+        [NativeTypeName("D2D1_MATRIX_3X2_F")]
         public D2D_MATRIX_3X2_F transform;
         #endregion
     }

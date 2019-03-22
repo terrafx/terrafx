@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IWICImagingFactory* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IWICImagingFactory* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IWICImagingFactory* This
         );
@@ -47,70 +47,70 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateDecoderFromFilename(
             [In] IWICImagingFactory* This,
-            [In, ComAliasName("LPCWSTR")] char* wzFilename,
-            [In, Optional, ComAliasName("GUID")] Guid* pguidVendor,
-            [In, ComAliasName("DWORD")] uint dwDesiredAccess,
+            [In, NativeTypeName("LPCWSTR")] char* wzFilename,
+            [In, Optional, NativeTypeName("GUID")] Guid* pguidVendor,
+            [In, NativeTypeName("DWORD")] uint dwDesiredAccess,
             [In] WICDecodeOptions metadataOptions,
             [Out] IWICBitmapDecoder** ppIDecoder = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateDecoderFromStream(
             [In] IWICImagingFactory* This,
             [In, Optional] IStream* pIStream,
-            [In, Optional, ComAliasName("GUID")] Guid* pguidVendor,
+            [In, Optional, NativeTypeName("GUID")] Guid* pguidVendor,
             [In] WICDecodeOptions metadataOptions,
             [Out] IWICBitmapDecoder** ppIDecoder = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateDecoderFromFileHandle(
             [In] IWICImagingFactory* This,
-            [In, ComAliasName("ULONG_PTR")] nuint hFile,
-            [In, Optional, ComAliasName("GUID")] Guid* pguidVendor,
+            [In, NativeTypeName("ULONG_PTR")] nuint hFile,
+            [In, Optional, NativeTypeName("GUID")] Guid* pguidVendor,
             [In] WICDecodeOptions metadataOptions,
             [Out] IWICBitmapDecoder** ppIDecoder = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateComponentInfo(
             [In] IWICImagingFactory* This,
-            [In, ComAliasName("REFCLSID")] Guid* clsidComponent,
+            [In, NativeTypeName("REFCLSID")] Guid* clsidComponent,
             [Out] IWICComponentInfo** ppIInfo = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateDecoder(
             [In] IWICImagingFactory* This,
-            [In, ComAliasName("REFGUID")] Guid* guidContainerFormat,
-            [In, ComAliasName("GUID")] Guid* pguidVendor = null,
+            [In, NativeTypeName("REFGUID")] Guid* guidContainerFormat,
+            [In, NativeTypeName("GUID")] Guid* pguidVendor = null,
             [Out] IWICBitmapDecoder** ppIDecoder = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateEncoder(
             [In] IWICImagingFactory* This,
-            [In, ComAliasName("REFGUID")] Guid* guidContainerFormat,
-            [In, ComAliasName("GUID")] Guid* pguidVendor = null,
+            [In, NativeTypeName("REFGUID")] Guid* guidContainerFormat,
+            [In, NativeTypeName("GUID")] Guid* pguidVendor = null,
             [Out] IWICBitmapEncoder** ppIEncoder = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreatePalette(
             [In] IWICImagingFactory* This,
             [Out] IWICPalette** ppIPalette = null
@@ -118,7 +118,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateFormatConverter(
             [In] IWICImagingFactory* This,
             [Out] IWICFormatConverter** ppIFormatConverter = null
@@ -126,7 +126,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateBitmapScaler(
             [In] IWICImagingFactory* This,
             [Out] IWICBitmapScaler** ppIBitmapScaler = null
@@ -134,7 +134,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateBitmapClipper(
             [In] IWICImagingFactory* This,
             [Out] IWICBitmapClipper** ppIBitmapClipper = null
@@ -142,7 +142,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateBitmapFlipRotator(
             [In] IWICImagingFactory* This,
             [Out] IWICBitmapFlipRotator** ppIBitmapFlipRotator = null
@@ -150,7 +150,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateStream(
             [In] IWICImagingFactory* This,
             [Out] IWICStream** ppIWICStream = null
@@ -158,7 +158,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateColorContext(
             [In] IWICImagingFactory* This,
             [Out] IWICColorContext** ppIWICColorContext = null
@@ -166,7 +166,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateColorTransformer(
             [In] IWICImagingFactory* This,
             [Out] IWICColorTransform** ppIWICColorTransform = null
@@ -174,19 +174,19 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateBitmap(
             [In] IWICImagingFactory* This,
-            [In, ComAliasName("UINT")] uint uiWidth,
-            [In, ComAliasName("UINT")] uint uiHeight,
-            [In, ComAliasName("REFWICPixelFormatGUID")] Guid* pixelFormat,
+            [In, NativeTypeName("UINT")] uint uiWidth,
+            [In, NativeTypeName("UINT")] uint uiHeight,
+            [In, NativeTypeName("REFWICPixelFormatGUID")] Guid* pixelFormat,
             [In] WICBitmapCreateCacheOption option,
             [Out] IWICBitmap** ppIBitmap = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateBitmapFromSource(
             [In] IWICImagingFactory* This,
             [In, Optional] IWICBitmapSource* pIBitmapSource,
@@ -196,64 +196,64 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateBitmapFromSourceRect(
             [In] IWICImagingFactory* This,
             [In, Optional] IWICBitmapSource* pIBitmapSource,
-            [In, ComAliasName("UINT")] uint x,
-            [In, ComAliasName("UINT")] uint y,
-            [In, ComAliasName("UINT")] uint width,
-            [In, ComAliasName("UINT")] uint height,
+            [In, NativeTypeName("UINT")] uint x,
+            [In, NativeTypeName("UINT")] uint y,
+            [In, NativeTypeName("UINT")] uint width,
+            [In, NativeTypeName("UINT")] uint height,
             [Out] IWICBitmap** ppIBitmap = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateBitmapFromMemory(
             [In] IWICImagingFactory* This,
-            [In, ComAliasName("UINT")] uint uiWidth,
-            [In, ComAliasName("UINT")] uint uiHeight,
-            [In, ComAliasName("REFWICPixelFormatGUID")] Guid* pixelFormat,
-            [In, ComAliasName("UINT")] uint cbStride,
-            [In, ComAliasName("UINT")] uint cbBufferSize,
-            [In, ComAliasName("BYTE[]")] byte* pbBuffer,
+            [In, NativeTypeName("UINT")] uint uiWidth,
+            [In, NativeTypeName("UINT")] uint uiHeight,
+            [In, NativeTypeName("REFWICPixelFormatGUID")] Guid* pixelFormat,
+            [In, NativeTypeName("UINT")] uint cbStride,
+            [In, NativeTypeName("UINT")] uint cbBufferSize,
+            [In, NativeTypeName("BYTE[]")] byte* pbBuffer,
             [Out] IWICBitmap** ppIBitmap = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateBitmapFromHBITMAP(
             [In] IWICImagingFactory* This,
-            [In, ComAliasName("HBITMAP")] IntPtr hBitmap,
-            [In, Optional, ComAliasName("HPALETTE")] IntPtr hPalette,
+            [In, NativeTypeName("HBITMAP")] IntPtr hBitmap,
+            [In, Optional, NativeTypeName("HPALETTE")] IntPtr hPalette,
             [In] WICBitmapAlphaChannelOption options,
             [Out] IWICBitmap** ppIBitmap = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateBitmapFromHICON(
             [In] IWICImagingFactory* This,
-            [In, ComAliasName("HICON")] IntPtr hIcon,
+            [In, NativeTypeName("HICON")] IntPtr hIcon,
             [Out] IWICBitmap** ppIBitmap = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateComponentEnumerator(
             [In] IWICImagingFactory* This,
-            [In, ComAliasName("DWORD")] uint componentTypes,
-            [In, ComAliasName("DWORD")] uint options,
+            [In, NativeTypeName("DWORD")] uint componentTypes,
+            [In, NativeTypeName("DWORD")] uint options,
             [Out] IEnumUnknown** ppIEnumUnknown = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateFastMetadataEncoderFromDecoder(
             [In] IWICImagingFactory* This,
             [In] IWICBitmapDecoder* pIDecoder = null,
@@ -262,7 +262,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateFastMetadataEncoderFromFrameDecode(
             [In] IWICImagingFactory* This,
             [In] IWICBitmapFrameDecode* pIFrameDecoder = null,
@@ -271,29 +271,29 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateQueryWriter(
             [In] IWICImagingFactory* This,
-            [In, ComAliasName("REFGUID")] Guid* guidMetadataFormat,
-            [In, ComAliasName("GUID")] Guid* pguidVendor = null,
+            [In, NativeTypeName("REFGUID")] Guid* guidMetadataFormat,
+            [In, NativeTypeName("GUID")] Guid* pguidVendor = null,
             [Out] IWICMetadataQueryWriter** ppIQueryWriter = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateQueryWriterFromReader(
             [In] IWICImagingFactory* This,
             [In] IWICMetadataQueryReader* pIQueryReader = null,
-            [In, ComAliasName("GUID")] Guid* pguidVendor = null,
+            [In, NativeTypeName("GUID")] Guid* pguidVendor = null,
             [Out] IWICMetadataQueryWriter** ppIQueryWriter = null
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -307,7 +307,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IWICImagingFactory* This = &this)
@@ -318,7 +318,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IWICImagingFactory* This = &this)
@@ -331,11 +331,11 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateDecoderFromFilename(
-            [In, ComAliasName("LPCWSTR")] char* wzFilename,
-            [In, Optional, ComAliasName("GUID")] Guid* pguidVendor,
-            [In, ComAliasName("DWORD")] uint dwDesiredAccess,
+            [In, NativeTypeName("LPCWSTR")] char* wzFilename,
+            [In, Optional, NativeTypeName("GUID")] Guid* pguidVendor,
+            [In, NativeTypeName("DWORD")] uint dwDesiredAccess,
             [In] WICDecodeOptions metadataOptions,
             [Out] IWICBitmapDecoder** ppIDecoder = null
         )
@@ -353,10 +353,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateDecoderFromStream(
             [In, Optional] IStream* pIStream,
-            [In, Optional, ComAliasName("GUID")] Guid* pguidVendor,
+            [In, Optional, NativeTypeName("GUID")] Guid* pguidVendor,
             [In] WICDecodeOptions metadataOptions,
             [Out] IWICBitmapDecoder** ppIDecoder = null
         )
@@ -373,10 +373,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateDecoderFromFileHandle(
-            [In, ComAliasName("ULONG_PTR")] nuint hFile,
-            [In, Optional, ComAliasName("GUID")] Guid* pguidVendor,
+            [In, NativeTypeName("ULONG_PTR")] nuint hFile,
+            [In, Optional, NativeTypeName("GUID")] Guid* pguidVendor,
             [In] WICDecodeOptions metadataOptions,
             [Out] IWICBitmapDecoder** ppIDecoder = null
         )
@@ -393,9 +393,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateComponentInfo(
-            [In, ComAliasName("REFCLSID")] Guid* clsidComponent,
+            [In, NativeTypeName("REFCLSID")] Guid* clsidComponent,
             [Out] IWICComponentInfo** ppIInfo = null
         )
         {
@@ -409,10 +409,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateDecoder(
-            [In, ComAliasName("REFGUID")] Guid* guidContainerFormat,
-            [In, ComAliasName("GUID")] Guid* pguidVendor = null,
+            [In, NativeTypeName("REFGUID")] Guid* guidContainerFormat,
+            [In, NativeTypeName("GUID")] Guid* pguidVendor = null,
             [Out] IWICBitmapDecoder** ppIDecoder = null
         )
         {
@@ -427,10 +427,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateEncoder(
-            [In, ComAliasName("REFGUID")] Guid* guidContainerFormat,
-            [In, ComAliasName("GUID")] Guid* pguidVendor = null,
+            [In, NativeTypeName("REFGUID")] Guid* guidContainerFormat,
+            [In, NativeTypeName("GUID")] Guid* pguidVendor = null,
             [Out] IWICBitmapEncoder** ppIEncoder = null
         )
         {
@@ -445,7 +445,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreatePalette(
             [Out] IWICPalette** ppIPalette = null
         )
@@ -459,7 +459,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateFormatConverter(
             [Out] IWICFormatConverter** ppIFormatConverter = null
         )
@@ -473,7 +473,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateBitmapScaler(
             [Out] IWICBitmapScaler** ppIBitmapScaler = null
         )
@@ -487,7 +487,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateBitmapClipper(
             [Out] IWICBitmapClipper** ppIBitmapClipper = null
         )
@@ -501,7 +501,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateBitmapFlipRotator(
             [Out] IWICBitmapFlipRotator** ppIBitmapFlipRotator = null
         )
@@ -515,7 +515,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateStream(
             [Out] IWICStream** ppIWICStream = null
         )
@@ -529,7 +529,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateColorContext(
             [Out] IWICColorContext** ppIWICColorContext = null
         )
@@ -543,7 +543,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateColorTransformer(
             [Out] IWICColorTransform** ppIWICColorTransform = null
         )
@@ -557,11 +557,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateBitmap(
-            [In, ComAliasName("UINT")] uint uiWidth,
-            [In, ComAliasName("UINT")] uint uiHeight,
-            [In, ComAliasName("REFWICPixelFormatGUID")] Guid* pixelFormat,
+            [In, NativeTypeName("UINT")] uint uiWidth,
+            [In, NativeTypeName("UINT")] uint uiHeight,
+            [In, NativeTypeName("REFWICPixelFormatGUID")] Guid* pixelFormat,
             [In] WICBitmapCreateCacheOption option,
             [Out] IWICBitmap** ppIBitmap = null
         )
@@ -579,7 +579,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateBitmapFromSource(
             [In, Optional] IWICBitmapSource* pIBitmapSource,
             [In] WICBitmapCreateCacheOption option,
@@ -597,13 +597,13 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateBitmapFromSourceRect(
             [In, Optional] IWICBitmapSource* pIBitmapSource,
-            [In, ComAliasName("UINT")] uint x,
-            [In, ComAliasName("UINT")] uint y,
-            [In, ComAliasName("UINT")] uint width,
-            [In, ComAliasName("UINT")] uint height,
+            [In, NativeTypeName("UINT")] uint x,
+            [In, NativeTypeName("UINT")] uint y,
+            [In, NativeTypeName("UINT")] uint width,
+            [In, NativeTypeName("UINT")] uint height,
             [Out] IWICBitmap** ppIBitmap = null
         )
         {
@@ -621,14 +621,14 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateBitmapFromMemory(
-            [In, ComAliasName("UINT")] uint uiWidth,
-            [In, ComAliasName("UINT")] uint uiHeight,
-            [In, ComAliasName("REFWICPixelFormatGUID")] Guid* pixelFormat,
-            [In, ComAliasName("UINT")] uint cbStride,
-            [In, ComAliasName("UINT")] uint cbBufferSize,
-            [In, ComAliasName("BYTE[]")] byte* pbBuffer,
+            [In, NativeTypeName("UINT")] uint uiWidth,
+            [In, NativeTypeName("UINT")] uint uiHeight,
+            [In, NativeTypeName("REFWICPixelFormatGUID")] Guid* pixelFormat,
+            [In, NativeTypeName("UINT")] uint cbStride,
+            [In, NativeTypeName("UINT")] uint cbBufferSize,
+            [In, NativeTypeName("BYTE[]")] byte* pbBuffer,
             [Out] IWICBitmap** ppIBitmap = null
         )
         {
@@ -647,10 +647,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateBitmapFromHBITMAP(
-            [In, ComAliasName("HBITMAP")] IntPtr hBitmap,
-            [In, Optional, ComAliasName("HPALETTE")] IntPtr hPalette,
+            [In, NativeTypeName("HBITMAP")] IntPtr hBitmap,
+            [In, Optional, NativeTypeName("HPALETTE")] IntPtr hPalette,
             [In] WICBitmapAlphaChannelOption options,
             [Out] IWICBitmap** ppIBitmap = null
         )
@@ -667,9 +667,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateBitmapFromHICON(
-            [In, ComAliasName("HICON")] IntPtr hIcon,
+            [In, NativeTypeName("HICON")] IntPtr hIcon,
             [Out] IWICBitmap** ppIBitmap = null
         )
         {
@@ -683,10 +683,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateComponentEnumerator(
-            [In, ComAliasName("DWORD")] uint componentTypes,
-            [In, ComAliasName("DWORD")] uint options,
+            [In, NativeTypeName("DWORD")] uint componentTypes,
+            [In, NativeTypeName("DWORD")] uint options,
             [Out] IEnumUnknown** ppIEnumUnknown = null
         )
         {
@@ -701,7 +701,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateFastMetadataEncoderFromDecoder(
             [In] IWICBitmapDecoder* pIDecoder = null,
             [Out] IWICFastMetadataEncoder** ppIFastEncoder = null
@@ -717,7 +717,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateFastMetadataEncoderFromFrameDecode(
             [In] IWICBitmapFrameDecode* pIFrameDecoder = null,
             [Out] IWICFastMetadataEncoder** ppIFastEncoder = null
@@ -733,10 +733,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateQueryWriter(
-            [In, ComAliasName("REFGUID")] Guid* guidMetadataFormat,
-            [In, ComAliasName("GUID")] Guid* pguidVendor = null,
+            [In, NativeTypeName("REFGUID")] Guid* guidMetadataFormat,
+            [In, NativeTypeName("GUID")] Guid* pguidVendor = null,
             [Out] IWICMetadataQueryWriter** ppIQueryWriter = null
         )
         {
@@ -751,10 +751,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateQueryWriterFromReader(
             [In] IWICMetadataQueryReader* pIQueryReader = null,
-            [In, ComAliasName("GUID")] Guid* pguidVendor = null,
+            [In, NativeTypeName("GUID")] Guid* pguidVendor = null,
             [Out] IWICMetadataQueryWriter** ppIQueryWriter = null
         )
         {

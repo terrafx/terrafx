@@ -24,23 +24,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDWriteFontFallbackBuilder* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDWriteFontFallbackBuilder* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDWriteFontFallbackBuilder* This
         );
@@ -59,17 +59,17 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _AddMapping(
             [In] IDWriteFontFallbackBuilder* This,
-            [In, ComAliasName("DWRITE_UNICODE_RANGE[]")] DWRITE_UNICODE_RANGE* ranges,
-            [In, ComAliasName("UINT32")] uint rangesCount,
-            [In, ComAliasName("WCHAR[]")] char** targetFamilyNames,
-            [In, ComAliasName("UINT32")] uint targetFamilyNamesCount,
+            [In, NativeTypeName("DWRITE_UNICODE_RANGE[]")] DWRITE_UNICODE_RANGE* ranges,
+            [In, NativeTypeName("UINT32")] uint rangesCount,
+            [In, NativeTypeName("WCHAR[]")] char** targetFamilyNames,
+            [In, NativeTypeName("UINT32")] uint targetFamilyNamesCount,
             [In] IDWriteFontCollection* fontCollection = null,
-            [In, ComAliasName("WCHAR[]")] char* localeName = null,
-            [In, ComAliasName("WCHAR[]")] char* baseFamilyName = null,
-            [In, ComAliasName("FLOAT")] float scale = 1.0f
+            [In, NativeTypeName("WCHAR[]")] char* localeName = null,
+            [In, NativeTypeName("WCHAR[]")] char* baseFamilyName = null,
+            [In, NativeTypeName("FLOAT")] float scale = 1.0f
         );
 
         /// <summary>Appends all the mappings from an existing font fallback object.</summary>
@@ -77,7 +77,7 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _AddMappings(
             [In] IDWriteFontFallbackBuilder* This,
             [In] IDWriteFontFallback* fontFallback
@@ -88,7 +88,7 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateFontFallback(
             [In] IDWriteFontFallbackBuilder* This,
             [Out] IDWriteFontFallback** fontFallback
@@ -96,9 +96,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -112,7 +112,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDWriteFontFallbackBuilder* This = &this)
@@ -123,7 +123,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDWriteFontFallbackBuilder* This = &this)
@@ -136,16 +136,16 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int AddMapping(
-            [In, ComAliasName("DWRITE_UNICODE_RANGE[]")] DWRITE_UNICODE_RANGE* ranges,
-            [In, ComAliasName("UINT32")] uint rangesCount,
-            [In, ComAliasName("WCHAR[]")] char** targetFamilyNames,
-            [In, ComAliasName("UINT32")] uint targetFamilyNamesCount,
+            [In, NativeTypeName("DWRITE_UNICODE_RANGE[]")] DWRITE_UNICODE_RANGE* ranges,
+            [In, NativeTypeName("UINT32")] uint rangesCount,
+            [In, NativeTypeName("WCHAR[]")] char** targetFamilyNames,
+            [In, NativeTypeName("UINT32")] uint targetFamilyNamesCount,
             [In] IDWriteFontCollection* fontCollection = null,
-            [In, ComAliasName("WCHAR[]")] char* localeName = null,
-            [In, ComAliasName("WCHAR[]")] char* baseFamilyName = null,
-            [In, ComAliasName("FLOAT")] float scale = 1.0f
+            [In, NativeTypeName("WCHAR[]")] char* localeName = null,
+            [In, NativeTypeName("WCHAR[]")] char* baseFamilyName = null,
+            [In, NativeTypeName("FLOAT")] float scale = 1.0f
         )
         {
             fixed (IDWriteFontFallbackBuilder* This = &this)
@@ -164,7 +164,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int AddMappings(
             [In] IDWriteFontFallback* fontFallback
         )
@@ -178,7 +178,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateFontFallback(
             [Out] IDWriteFontFallback** fontFallback
         )

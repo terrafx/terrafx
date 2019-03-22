@@ -3,7 +3,6 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -18,10 +17,10 @@ namespace TerraFX.Interop
 
         public D3D12_MEMORY_POOL MemoryPoolPreference;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint CreationNodeMask;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint VisibleNodeMask;
         #endregion
     }

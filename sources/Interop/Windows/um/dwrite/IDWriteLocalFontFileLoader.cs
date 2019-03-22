@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDWriteLocalFontFileLoader* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDWriteLocalFontFileLoader* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDWriteLocalFontFileLoader* This
         );
@@ -53,11 +53,11 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateStreamFromKey(
             [In] IDWriteLocalFontFileLoader* This,
             [In] void* fontFileReferenceKey,
-            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [In, NativeTypeName("UINT32")] uint fontFileReferenceKeySize,
             [Out] IDWriteFontFileStream** fontFileStream
         );
         #endregion
@@ -70,12 +70,12 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetFilePathLengthFromKey(
             [In] IDWriteLocalFontFileLoader* This,
             [In] void* fontFileReferenceKey,
-            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
-            [Out, ComAliasName("UINT32")] uint* filePathLength
+            [In, NativeTypeName("UINT32")] uint fontFileReferenceKeySize,
+            [Out, NativeTypeName("UINT32")] uint* filePathLength
         );
 
         /// <summary>Obtains the absolute font file path from the font file reference key.</summary>
@@ -86,13 +86,13 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetFilePathFromKey(
             [In] IDWriteLocalFontFileLoader* This,
             [In] void* fontFileReferenceKey,
-            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
-            [Out, ComAliasName("WCHAR[]")] char* filePath,
-            [In, ComAliasName("UINT32")] uint filePathSize
+            [In, NativeTypeName("UINT32")] uint fontFileReferenceKeySize,
+            [Out, NativeTypeName("WCHAR[]")] char* filePath,
+            [In, NativeTypeName("UINT32")] uint filePathSize
         );
 
         /// <summary>Obtains the last write time of the file from the font file reference key.</summary>
@@ -102,19 +102,19 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetLastWriteTimeFromKey(
             [In] IDWriteLocalFontFileLoader* This,
             [In] void* fontFileReferenceKey,
-            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [In, NativeTypeName("UINT32")] uint fontFileReferenceKeySize,
             [Out] FILETIME* lastWriteTime
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -128,7 +128,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDWriteLocalFontFileLoader* This = &this)
@@ -139,7 +139,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDWriteLocalFontFileLoader* This = &this)
@@ -152,10 +152,10 @@ namespace TerraFX.Interop
         #endregion
 
         #region IDWriteFontFileLoader Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateStreamFromKey(
             [In] void* fontFileReferenceKey,
-            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [In, NativeTypeName("UINT32")] uint fontFileReferenceKeySize,
             [Out] IDWriteFontFileStream** fontFileStream
         )
         {
@@ -172,11 +172,11 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetFilePathLengthFromKey(
             [In] void* fontFileReferenceKey,
-            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
-            [Out, ComAliasName("UINT32")] uint* filePathLength
+            [In, NativeTypeName("UINT32")] uint fontFileReferenceKeySize,
+            [Out, NativeTypeName("UINT32")] uint* filePathLength
         )
         {
             fixed (IDWriteLocalFontFileLoader* This = &this)
@@ -190,12 +190,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetFilePathFromKey(
             [In] void* fontFileReferenceKey,
-            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
-            [Out, ComAliasName("WCHAR[]")] char* filePath,
-            [In, ComAliasName("UINT32")] uint filePathSize
+            [In, NativeTypeName("UINT32")] uint fontFileReferenceKeySize,
+            [Out, NativeTypeName("WCHAR[]")] char* filePath,
+            [In, NativeTypeName("UINT32")] uint filePathSize
         )
         {
             fixed (IDWriteLocalFontFileLoader* This = &this)
@@ -210,10 +210,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetLastWriteTimeFromKey(
             [In] void* fontFileReferenceKey,
-            [In, ComAliasName("UINT32")] uint fontFileReferenceKeySize,
+            [In, NativeTypeName("UINT32")] uint fontFileReferenceKeySize,
             [Out] FILETIME* lastWriteTime
         )
         {

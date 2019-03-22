@@ -3,7 +3,6 @@
 // Ported from shared\dxgitype.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
@@ -17,7 +16,7 @@ namespace TerraFX.Interop
 
         public DXGI_RGB Offset;
 
-        [ComAliasName("DXGI_RGB[1025]")]
+        [NativeTypeName("DXGI_RGB[1025]")]
         public _GammaCurve_e__FixedBuffer GammaCurve;
         #endregion
 

@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID2D1Transform* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID2D1Transform* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID2D1Transform* This
         );
@@ -49,7 +49,7 @@ namespace TerraFX.Interop
         /// <summary>Return the number of input this node has.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public /* static */ delegate uint _GetInputCount(
             [In] ID2D1Transform* This
         );
@@ -58,41 +58,41 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _MapOutputRectToInputRects(
             [In] ID2D1Transform* This,
-            [In, ComAliasName("D2D1_RECT_L")] RECT* outputRect,
-            [Out, ComAliasName("D2D1_RECT_L[]")] RECT* inputRects,
-            [In, ComAliasName("UINT32")] uint inputRectsCount
+            [In, NativeTypeName("D2D1_RECT_L")] RECT* outputRect,
+            [Out, NativeTypeName("D2D1_RECT_L[]")] RECT* inputRects,
+            [In, NativeTypeName("UINT32")] uint inputRectsCount
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _MapInputRectsToOutputRect(
             [In] ID2D1Transform* This,
-            [In, ComAliasName("D2D1_RECT_L[]")] RECT* inputRects,
-            [In, ComAliasName("D2D1_RECT_L[]")] RECT* inputOpaqueSubRects,
-            [In, ComAliasName("UINT32")] uint inputRectCount,
-            [Out, ComAliasName("D2D1_RECT_L")] RECT* outputRect,
-            [Out, ComAliasName("D2D1_RECT_L")] RECT* outputOpaqueSubRect
+            [In, NativeTypeName("D2D1_RECT_L[]")] RECT* inputRects,
+            [In, NativeTypeName("D2D1_RECT_L[]")] RECT* inputOpaqueSubRects,
+            [In, NativeTypeName("UINT32")] uint inputRectCount,
+            [Out, NativeTypeName("D2D1_RECT_L")] RECT* outputRect,
+            [Out, NativeTypeName("D2D1_RECT_L")] RECT* outputOpaqueSubRect
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _MapInvalidRect(
             [In] ID2D1Transform* This,
-            [In, ComAliasName("UINT32")] uint inputIndex,
-            [In, ComAliasName("D2D1_RECT_L")] RECT invalidInputRect,
-            [Out, ComAliasName("D2D1_RECT_L")] RECT* invalidOutputRect
+            [In, NativeTypeName("UINT32")] uint inputIndex,
+            [In, NativeTypeName("D2D1_RECT_L")] RECT invalidInputRect,
+            [Out, NativeTypeName("D2D1_RECT_L")] RECT* invalidOutputRect
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -106,7 +106,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID2D1Transform* This = &this)
@@ -117,7 +117,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID2D1Transform* This = &this)
@@ -130,7 +130,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region ID2D1TransformNode Methods
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public uint GetInputCount()
         {
             fixed (ID2D1Transform* This = &this)
@@ -143,11 +143,11 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int MapOutputRectToInputRects(
-            [In, ComAliasName("D2D1_RECT_L")] RECT* outputRect,
-            [Out, ComAliasName("D2D1_RECT_L[]")] RECT* inputRects,
-            [In, ComAliasName("UINT32")] uint inputRectsCount
+            [In, NativeTypeName("D2D1_RECT_L")] RECT* outputRect,
+            [Out, NativeTypeName("D2D1_RECT_L[]")] RECT* inputRects,
+            [In, NativeTypeName("UINT32")] uint inputRectsCount
         )
         {
             fixed (ID2D1Transform* This = &this)
@@ -161,13 +161,13 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int MapInputRectsToOutputRect(
-            [In, ComAliasName("D2D1_RECT_L[]")] RECT* inputRects,
-            [In, ComAliasName("D2D1_RECT_L[]")] RECT* inputOpaqueSubRects,
-            [In, ComAliasName("UINT32")] uint inputRectCount,
-            [Out, ComAliasName("D2D1_RECT_L")] RECT* outputRect,
-            [Out, ComAliasName("D2D1_RECT_L")] RECT* outputOpaqueSubRect
+            [In, NativeTypeName("D2D1_RECT_L[]")] RECT* inputRects,
+            [In, NativeTypeName("D2D1_RECT_L[]")] RECT* inputOpaqueSubRects,
+            [In, NativeTypeName("UINT32")] uint inputRectCount,
+            [Out, NativeTypeName("D2D1_RECT_L")] RECT* outputRect,
+            [Out, NativeTypeName("D2D1_RECT_L")] RECT* outputOpaqueSubRect
         )
         {
             fixed (ID2D1Transform* This = &this)
@@ -183,11 +183,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int MapInvalidRect(
-            [In, ComAliasName("UINT32")] uint inputIndex,
-            [In, ComAliasName("D2D1_RECT_L")] RECT invalidInputRect,
-            [Out, ComAliasName("D2D1_RECT_L")] RECT* invalidOutputRect
+            [In, NativeTypeName("UINT32")] uint inputIndex,
+            [In, NativeTypeName("D2D1_RECT_L")] RECT invalidInputRect,
+            [Out, NativeTypeName("D2D1_RECT_L")] RECT* invalidOutputRect
         )
         {
             fixed (ID2D1Transform* This = &this)

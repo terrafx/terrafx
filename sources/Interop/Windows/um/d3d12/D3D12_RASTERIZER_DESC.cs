@@ -3,7 +3,6 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -16,28 +15,28 @@ namespace TerraFX.Interop
 
         public D3D12_CULL_MODE CullMode;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int FrontCounterClockwise;
 
-        [ComAliasName("INT")]
+        [NativeTypeName("INT")]
         public int DepthBias;
 
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float DepthBiasClamp;
 
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float SlopeScaledDepthBias;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int DepthClipEnable;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int MultisampleEnable;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int AntialiasedLineEnable;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint ForcedSampleCount;
 
         public D3D12_CONSERVATIVE_RASTERIZATION_MODE ConservativeRaster;

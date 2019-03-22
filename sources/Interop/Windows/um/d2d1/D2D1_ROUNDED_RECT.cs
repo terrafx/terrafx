@@ -3,7 +3,6 @@
 // Ported from um\d2d1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -13,13 +12,13 @@ namespace TerraFX.Interop
     public struct D2D1_ROUNDED_RECT
     {
         #region Fields
-        [ComAliasName("D2D1_RECT_F")]
+        [NativeTypeName("D2D1_RECT_F")]
         public D2D_RECT_F rect;
 
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float radiusX;
 
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float radiusY;
         #endregion
     }

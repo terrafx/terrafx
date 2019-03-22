@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IWICBitmapSourceTransform* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IWICBitmapSourceTransform* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IWICBitmapSourceTransform* This
         );
@@ -47,50 +47,50 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CopyPixels(
             [In] IWICBitmapSourceTransform* This,
             [In, Optional] WICRect* prc,
-            [In, ComAliasName("UINT")] uint uiWidth,
-            [In, ComAliasName("UINT")] uint uiHeight,
-            [In, Optional, ComAliasName("WICPixelFormatGUID")] Guid* pguidDstFormat,
+            [In, NativeTypeName("UINT")] uint uiWidth,
+            [In, NativeTypeName("UINT")] uint uiHeight,
+            [In, Optional, NativeTypeName("WICPixelFormatGUID")] Guid* pguidDstFormat,
             [In] WICBitmapTransformOptions dstTransform,
-            [In, ComAliasName("UINT")] uint nStride,
-            [In, ComAliasName("UINT")] uint cbBufferSize,
-            [Out, ComAliasName("BYTE[]")] byte* pbBuffer
+            [In, NativeTypeName("UINT")] uint nStride,
+            [In, NativeTypeName("UINT")] uint cbBufferSize,
+            [Out, NativeTypeName("BYTE[]")] byte* pbBuffer
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetClosestSize(
             [In] IWICBitmapSourceTransform* This,
-            [In, Out, ComAliasName("UINT")] uint* puiWidth,
-            [In, Out, ComAliasName("UINT")] uint* puiHeight
+            [In, Out, NativeTypeName("UINT")] uint* puiWidth,
+            [In, Out, NativeTypeName("UINT")] uint* puiHeight
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetClosestPixelFormat(
             [In] IWICBitmapSourceTransform* This,
-            [In, Out, ComAliasName("WICPixelFormatGUID")] Guid* pguidDstFormat
+            [In, Out, NativeTypeName("WICPixelFormatGUID")] Guid* pguidDstFormat
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _DoesSupportTransform(
             [In] IWICBitmapSourceTransform* This,
             [In] WICBitmapTransformOptions dstTransform,
-            [Out, ComAliasName("BOOL")] int* pfIsSupported
+            [Out, NativeTypeName("BOOL")] int* pfIsSupported
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -104,7 +104,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IWICBitmapSourceTransform* This = &this)
@@ -115,7 +115,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IWICBitmapSourceTransform* This = &this)
@@ -128,16 +128,16 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CopyPixels(
             [In, Optional] WICRect* prc,
-            [In, ComAliasName("UINT")] uint uiWidth,
-            [In, ComAliasName("UINT")] uint uiHeight,
-            [In, Optional, ComAliasName("WICPixelFormatGUID")] Guid* pguidDstFormat,
+            [In, NativeTypeName("UINT")] uint uiWidth,
+            [In, NativeTypeName("UINT")] uint uiHeight,
+            [In, Optional, NativeTypeName("WICPixelFormatGUID")] Guid* pguidDstFormat,
             [In] WICBitmapTransformOptions dstTransform,
-            [In, ComAliasName("UINT")] uint nStride,
-            [In, ComAliasName("UINT")] uint cbBufferSize,
-            [Out, ComAliasName("BYTE[]")] byte* pbBuffer
+            [In, NativeTypeName("UINT")] uint nStride,
+            [In, NativeTypeName("UINT")] uint cbBufferSize,
+            [Out, NativeTypeName("BYTE[]")] byte* pbBuffer
         )
         {
             fixed (IWICBitmapSourceTransform* This = &this)
@@ -156,10 +156,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetClosestSize(
-            [In, Out, ComAliasName("UINT")] uint* puiWidth,
-            [In, Out, ComAliasName("UINT")] uint* puiHeight
+            [In, Out, NativeTypeName("UINT")] uint* puiWidth,
+            [In, Out, NativeTypeName("UINT")] uint* puiHeight
         )
         {
             fixed (IWICBitmapSourceTransform* This = &this)
@@ -172,9 +172,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetClosestPixelFormat(
-            [In, Out, ComAliasName("WICPixelFormatGUID")] Guid* pguidDstFormat
+            [In, Out, NativeTypeName("WICPixelFormatGUID")] Guid* pguidDstFormat
         )
         {
             fixed (IWICBitmapSourceTransform* This = &this)
@@ -186,10 +186,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int DoesSupportTransform(
             [In] WICBitmapTransformOptions dstTransform,
-            [Out, ComAliasName("BOOL")] int* pfIsSupported
+            [Out, NativeTypeName("BOOL")] int* pfIsSupported
         )
         {
             fixed (IWICBitmapSourceTransform* This = &this)

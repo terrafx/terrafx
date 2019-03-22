@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IWICPlanarBitmapSourceTransform* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IWICPlanarBitmapSourceTransform* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IWICPlanarBitmapSourceTransform* This
         );
@@ -47,38 +47,38 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _DoesSupportTransform(
             [In] IWICPlanarBitmapSourceTransform* This,
-            [In, Out, ComAliasName("UINT")] uint* puiWidth,
-            [In, Out, ComAliasName("UINT")] uint* puiHeight,
+            [In, Out, NativeTypeName("UINT")] uint* puiWidth,
+            [In, Out, NativeTypeName("UINT")] uint* puiHeight,
             [In] WICBitmapTransformOptions dstTransform,
             [In] WICPlanarOptions dstPlanarOptions,
-            [In, ComAliasName("WICPixelFormatGUID[]")] Guid* pguidDstFormats,
-            [Out, ComAliasName("WICBitmapPlaneDescription[]")] WICBitmapPlaneDescription* pPlaneDescriptions,
-            [In, ComAliasName("UINT")] uint cPlanes,
-            [Out, ComAliasName("BOOL")] int* pfIsSupported
+            [In, NativeTypeName("WICPixelFormatGUID[]")] Guid* pguidDstFormats,
+            [Out, NativeTypeName("WICBitmapPlaneDescription[]")] WICBitmapPlaneDescription* pPlaneDescriptions,
+            [In, NativeTypeName("UINT")] uint cPlanes,
+            [Out, NativeTypeName("BOOL")] int* pfIsSupported
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CopyPixels(
             [In] IWICPlanarBitmapSourceTransform* This,
             [In, Optional] WICRect* prcSource,
-            [In, ComAliasName("UINT")] uint uiWidth,
-            [In, ComAliasName("UINT")] uint uiHeight,
+            [In, NativeTypeName("UINT")] uint uiWidth,
+            [In, NativeTypeName("UINT")] uint uiHeight,
             [In] WICBitmapTransformOptions dstTransform,
             [In] WICPlanarOptions dstPlanarOptions,
-            [In, ComAliasName("WICBitmapPlane[]")] WICBitmapPlane* pDstPlanes,
-            [In, ComAliasName("UINT")] uint cPlanes
+            [In, NativeTypeName("WICBitmapPlane[]")] WICBitmapPlane* pDstPlanes,
+            [In, NativeTypeName("UINT")] uint cPlanes
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -92,7 +92,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IWICPlanarBitmapSourceTransform* This = &this)
@@ -103,7 +103,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IWICPlanarBitmapSourceTransform* This = &this)
@@ -116,16 +116,16 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int DoesSupportTransform(
-            [In, Out, ComAliasName("UINT")] uint* puiWidth,
-            [In, Out, ComAliasName("UINT")] uint* puiHeight,
+            [In, Out, NativeTypeName("UINT")] uint* puiWidth,
+            [In, Out, NativeTypeName("UINT")] uint* puiHeight,
             [In] WICBitmapTransformOptions dstTransform,
             [In] WICPlanarOptions dstPlanarOptions,
-            [In, ComAliasName("WICPixelFormatGUID[]")] Guid* pguidDstFormats,
-            [Out, ComAliasName("WICBitmapPlaneDescription[]")] WICBitmapPlaneDescription* pPlaneDescriptions,
-            [In, ComAliasName("UINT")] uint cPlanes,
-            [Out, ComAliasName("BOOL")] int* pfIsSupported
+            [In, NativeTypeName("WICPixelFormatGUID[]")] Guid* pguidDstFormats,
+            [Out, NativeTypeName("WICBitmapPlaneDescription[]")] WICBitmapPlaneDescription* pPlaneDescriptions,
+            [In, NativeTypeName("UINT")] uint cPlanes,
+            [Out, NativeTypeName("BOOL")] int* pfIsSupported
         )
         {
             fixed (IWICPlanarBitmapSourceTransform* This = &this)
@@ -144,15 +144,15 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CopyPixels(
             [In, Optional] WICRect* prcSource,
-            [In, ComAliasName("UINT")] uint uiWidth,
-            [In, ComAliasName("UINT")] uint uiHeight,
+            [In, NativeTypeName("UINT")] uint uiWidth,
+            [In, NativeTypeName("UINT")] uint uiHeight,
             [In] WICBitmapTransformOptions dstTransform,
             [In] WICPlanarOptions dstPlanarOptions,
-            [In, ComAliasName("WICBitmapPlane[]")] WICBitmapPlane* pDstPlanes,
-            [In, ComAliasName("UINT")] uint cPlanes
+            [In, NativeTypeName("WICBitmapPlane[]")] WICBitmapPlane* pDstPlanes,
+            [In, NativeTypeName("UINT")] uint cPlanes
         )
         {
             fixed (IWICPlanarBitmapSourceTransform* This = &this)

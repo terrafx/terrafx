@@ -3,7 +3,6 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -14,19 +13,19 @@ namespace TerraFX.Interop
         #region Fields
         public D3D12_RESOURCE_DIMENSION Dimension;
 
-        [ComAliasName("UINT64")]
+        [NativeTypeName("UINT64")]
         public ulong Alignment;
 
-        [ComAliasName("UINT64")]
+        [NativeTypeName("UINT64")]
         public ulong Width;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Height;
 
-        [ComAliasName("UINT16")]
+        [NativeTypeName("UINT16")]
         public ushort DepthOrArraySize;
 
-        [ComAliasName("UINT16")]
+        [NativeTypeName("UINT16")]
         public ushort MipLevels;
 
         public DXGI_FORMAT Format;

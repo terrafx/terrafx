@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDispatch* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDispatch* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDispatch* This
         );
@@ -47,54 +47,54 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetTypeInfoCount(
             [In] IDispatch* This,
-            [Out, ComAliasName("UINT")] uint* pctinfo
+            [Out, NativeTypeName("UINT")] uint* pctinfo
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetTypeInfo(
             [In] IDispatch* This,
-            [In, ComAliasName("UINT")] uint iTInfo,
-            [In, ComAliasName("LCID")] uint lcid,
+            [In, NativeTypeName("UINT")] uint iTInfo,
+            [In, NativeTypeName("LCID")] uint lcid,
             [Out] ITypeInfo** ppTInfo = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetIDsOfNames(
             [In] IDispatch* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
-            [In, ComAliasName("LPOLESTR[]")] char** rgszNames,
-            [In, ComAliasName("UINT")] uint cNames,
-            [In, ComAliasName("LCID")] uint lcid,
-            [Out, ComAliasName("DISPID[]")] int* rgDispId
+            [In, NativeTypeName("REFIID")] Guid* riid,
+            [In, NativeTypeName("LPOLESTR[]")] char** rgszNames,
+            [In, NativeTypeName("UINT")] uint cNames,
+            [In, NativeTypeName("LCID")] uint lcid,
+            [Out, NativeTypeName("DISPID[]")] int* rgDispId
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Invoke(
             [In] IDispatch* This,
-            [In, ComAliasName("DISPID")] int dispIdMember,
-            [In, ComAliasName("REFIID")] Guid* riid,
-            [In, ComAliasName("LCID")] uint lcid,
-            [In, ComAliasName("WORD")] ushort wFlags,
-            [In, ComAliasName("DISPPARAMS[]")] DISPPARAMS* pDispParams,
+            [In, NativeTypeName("DISPID")] int dispIdMember,
+            [In, NativeTypeName("REFIID")] Guid* riid,
+            [In, NativeTypeName("LCID")] uint lcid,
+            [In, NativeTypeName("WORD")] ushort wFlags,
+            [In, NativeTypeName("DISPPARAMS[]")] DISPPARAMS* pDispParams,
             [Out] VARIANT* pVarResult = null,
             [Out] EXCEPINFO* pExcepInfo = null,
-            [Out, ComAliasName("UINT")] uint* puArgErr = null
+            [Out, NativeTypeName("UINT")] uint* puArgErr = null
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -108,7 +108,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDispatch* This = &this)
@@ -119,7 +119,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDispatch* This = &this)
@@ -132,9 +132,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetTypeInfoCount(
-            [Out, ComAliasName("UINT")] uint* pctinfo
+            [Out, NativeTypeName("UINT")] uint* pctinfo
         )
         {
             fixed (IDispatch* This = &this)
@@ -146,10 +146,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetTypeInfo(
-            [In, ComAliasName("UINT")] uint iTInfo,
-            [In, ComAliasName("LCID")] uint lcid,
+            [In, NativeTypeName("UINT")] uint iTInfo,
+            [In, NativeTypeName("LCID")] uint lcid,
             [Out] ITypeInfo** ppTInfo = null
         )
         {
@@ -164,13 +164,13 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetIDsOfNames(
-            [In, ComAliasName("REFIID")] Guid* riid,
-            [In, ComAliasName("LPOLESTR[]")] char** rgszNames,
-            [In, ComAliasName("UINT")] uint cNames,
-            [In, ComAliasName("LCID")] uint lcid,
-            [Out, ComAliasName("DISPID[]")] int* rgDispId
+            [In, NativeTypeName("REFIID")] Guid* riid,
+            [In, NativeTypeName("LPOLESTR[]")] char** rgszNames,
+            [In, NativeTypeName("UINT")] uint cNames,
+            [In, NativeTypeName("LCID")] uint lcid,
+            [Out, NativeTypeName("DISPID[]")] int* rgDispId
         )
         {
             fixed (IDispatch* This = &this)
@@ -186,16 +186,16 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Invoke(
-            [In, ComAliasName("DISPID")] int dispIdMember,
-            [In, ComAliasName("REFIID")] Guid* riid,
-            [In, ComAliasName("LCID")] uint lcid,
-            [In, ComAliasName("WORD")] ushort wFlags,
-            [In, ComAliasName("DISPPARAMS[]")] DISPPARAMS* pDispParams,
+            [In, NativeTypeName("DISPID")] int dispIdMember,
+            [In, NativeTypeName("REFIID")] Guid* riid,
+            [In, NativeTypeName("LCID")] uint lcid,
+            [In, NativeTypeName("WORD")] ushort wFlags,
+            [In, NativeTypeName("DISPPARAMS[]")] DISPPARAMS* pDispParams,
             [Out] VARIANT* pVarResult = null,
             [Out] EXCEPINFO* pExcepInfo = null,
-            [Out, ComAliasName("UINT")] uint* puArgErr = null
+            [Out, NativeTypeName("UINT")] uint* puArgErr = null
         )
         {
             fixed (IDispatch* This = &this)

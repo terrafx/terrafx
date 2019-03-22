@@ -4,7 +4,6 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System;
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -13,7 +12,7 @@ namespace TerraFX.Interop
     public unsafe struct VERSIONEDSTREAM
     {
         #region Fields
-        [ComAliasName("GUID")]
+        [NativeTypeName("GUID")]
         public Guid guidVersion;
 
         public IStream* pStream;

@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Interop.Windows;
 
 namespace TerraFX.Interop
@@ -103,10 +104,10 @@ namespace TerraFX.Interop
         #region External Methods
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1CreateFactory", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public static extern int D2D1CreateFactory(
             [In] D2D1_FACTORY_TYPE factoryType,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [In, Optional] D2D1_FACTORY_OPTIONS* pFactoryOptions,
             [Out] void** ppIFactory
         );
@@ -114,32 +115,32 @@ namespace TerraFX.Interop
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1MakeRotateMatrix", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void D2D1MakeRotateMatrix(
-            [In, ComAliasName("FLOAT")] float angle,
-            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F center,
-            [Out, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* matrix
+            [In, NativeTypeName("FLOAT")] float angle,
+            [In, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F center,
+            [Out, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* matrix
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1MakeSkewMatrix", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void D2D1MakeSkewMatrix(
-            [In, ComAliasName("FLOAT")] float angleX,
-            [In, ComAliasName("FLOAT")] float angleY,
-            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F center,
-            [Out, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* matrix
+            [In, NativeTypeName("FLOAT")] float angleX,
+            [In, NativeTypeName("FLOAT")] float angleY,
+            [In, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F center,
+            [Out, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* matrix
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1IsMatrixInvertible", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public static extern int D2D1IsMatrixInvertible(
-            [In, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* matrix
+            [In, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* matrix
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1InvertMatrix", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public static extern int D2D1InvertMatrix(
-            [In, Out, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* matrix
+            [In, Out, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* matrix
         );
         #endregion
     }

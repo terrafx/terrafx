@@ -3,7 +3,6 @@
 // Ported from um\d2d1_1.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -17,11 +16,11 @@ namespace TerraFX.Interop
         public ID2D1Effect* effect;
 
         /// <summary>The index of the input connection into the specified effect.</summary>
-        [ComAliasName("UINT32")]
+        [NativeTypeName("UINT32")]
         public uint inputIndex;
 
         /// <summary>The rectangle which would be available on the specified input connection during render operations.</summary>
-        [ComAliasName("D2D_RECT_F")]
+        [NativeTypeName("D2D_RECT_F")]
         public D2D_RECT_F inputRectangle;
         #endregion
     }

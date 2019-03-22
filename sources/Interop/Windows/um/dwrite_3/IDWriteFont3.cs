@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDWriteFont3* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDWriteFont3* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDWriteFont3* This
         );
@@ -51,7 +51,7 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetFontFamily(
             [In] IDWriteFont3* This,
             [Out] IDWriteFontFamily** fontFamily
@@ -81,7 +81,7 @@ namespace TerraFX.Interop
         /// <summary>Returns TRUE if the font is a symbol font or FALSE if not.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public /* static */ delegate int _IsSymbolFont(
             [In] IDWriteFont3* This
         );
@@ -91,7 +91,7 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetFaceNames(
             [In] IDWriteFont3* This,
             [Out] IDWriteLocalizedStrings** names
@@ -104,12 +104,12 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code. If the font does not contain the specified string, the return value is S_OK but informationalStrings receives a NULL pointer and exists receives the value FALSE.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetInformationalStrings(
             [In] IDWriteFont3* This,
             [In] DWRITE_INFORMATIONAL_STRING_ID informationalStringID,
             [Out] IDWriteLocalizedStrings** informationalStrings,
-            [Out, ComAliasName("BOOL")] int* exists
+            [Out, NativeTypeName("BOOL")] int* exists
         );
 
         /// <summary>Gets a value that indicates what simulation are applied to the specified font.</summary>
@@ -134,11 +134,11 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _HasCharacter(
             [In] IDWriteFont3* This,
-            [In, ComAliasName("UINT32")] uint unicodeValue,
-            [Out, ComAliasName("BOOL")] int* exists
+            [In, NativeTypeName("UINT32")] uint unicodeValue,
+            [Out, NativeTypeName("BOOL")] int* exists
         );
 
         /// <summary>Creates a font face object for the font.</summary>
@@ -146,7 +146,7 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateFontFace(
             [In] IDWriteFont3* This,
             [Out] IDWriteFontFace** fontFace
@@ -181,18 +181,18 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetUnicodeRanges(
             [In] IDWriteFont3* This,
-            [In, ComAliasName("UINT32")] uint maxRangeCount,
-            [Out, Optional, ComAliasName("DWRITE_UNICODE_RANGE[]")] DWRITE_UNICODE_RANGE* unicodeRanges,
-            [Out, ComAliasName("UINT32")] uint* actualRangeCount
+            [In, NativeTypeName("UINT32")] uint maxRangeCount,
+            [Out, Optional, NativeTypeName("DWRITE_UNICODE_RANGE[]")] DWRITE_UNICODE_RANGE* unicodeRanges,
+            [Out, NativeTypeName("UINT32")] uint* actualRangeCount
         );
 
         /// <summary>Returns true if the font is monospaced, meaning its characters are the same fixed-pitch width (non-proportional).</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public /* static */ delegate int _IsMonospacedFont(
             [In] IDWriteFont3* This
         );
@@ -202,7 +202,7 @@ namespace TerraFX.Interop
         /// <summary>Returns TRUE if the font contains tables that can provide color information (including COLR, CPAL, SVG, CBDT, sbix  tables), or FALSE if not. Note that TRUE is returned even in the case when the font tables contain only grayscale images.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public /* static */ delegate int _IsColorFont(
             [In] IDWriteFont3* This
         );
@@ -214,7 +214,7 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code. The function returns DWRITE_E_REMOTEFONT if it could not construct a remote font.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateFontFace1(
             [In] IDWriteFont3* This,
             [Out] IDWriteFontFace3** fontFace
@@ -223,7 +223,7 @@ namespace TerraFX.Interop
         /// <summary>Compares two instances of a font references for equality.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public /* static */ delegate int __Equals(
             [In] IDWriteFont3* This,
             [In] IDWriteFont* font
@@ -234,7 +234,7 @@ namespace TerraFX.Interop
         /// <returns> Standard HRESULT error code.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetFontFaceReference(
             [In] IDWriteFont3* This,
             [Out] IDWriteFontFaceReference** fontFaceReference
@@ -245,10 +245,10 @@ namespace TerraFX.Interop
         /// <returns> Returns TRUE if the font has the specified character, FALSE if not.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public /* static */ delegate int _HasCharacter1(
             [In] IDWriteFont3* This,
-            [In, ComAliasName("UINT32")] uint unicodeValue
+            [In, NativeTypeName("UINT32")] uint unicodeValue
         );
 
         /// <summary>Gets the current locality of the font.</summary>
@@ -262,9 +262,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -278,7 +278,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDWriteFont3* This = &this)
@@ -289,7 +289,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDWriteFont3* This = &this)
@@ -302,7 +302,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region IDWriteFont Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetFontFamily(
             [Out] IDWriteFontFamily** fontFamily
         )
@@ -346,7 +346,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public int IsSymbolFont()
         {
             fixed (IDWriteFont3* This = &this)
@@ -357,7 +357,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetFaceNames(
             [Out] IDWriteLocalizedStrings** names
         )
@@ -371,11 +371,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetInformationalStrings(
             [In] DWRITE_INFORMATIONAL_STRING_ID informationalStringID,
             [Out] IDWriteLocalizedStrings** informationalStrings,
-            [Out, ComAliasName("BOOL")] int* exists
+            [Out, NativeTypeName("BOOL")] int* exists
         )
         {
             fixed (IDWriteFont3* This = &this)
@@ -412,10 +412,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int HasCharacter(
-            [In, ComAliasName("UINT32")] uint unicodeValue,
-            [Out, ComAliasName("BOOL")] int* exists
+            [In, NativeTypeName("UINT32")] uint unicodeValue,
+            [Out, NativeTypeName("BOOL")] int* exists
         )
         {
             fixed (IDWriteFont3* This = &this)
@@ -428,7 +428,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateFontFace(
             [Out] IDWriteFontFace** fontFace
         )
@@ -470,11 +470,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetUnicodeRanges(
-            [In, ComAliasName("UINT32")] uint maxRangeCount,
-            [Out, Optional, ComAliasName("DWRITE_UNICODE_RANGE[]")] DWRITE_UNICODE_RANGE* unicodeRanges,
-            [Out, ComAliasName("UINT32")] uint* actualRangeCount
+            [In, NativeTypeName("UINT32")] uint maxRangeCount,
+            [Out, Optional, NativeTypeName("DWRITE_UNICODE_RANGE[]")] DWRITE_UNICODE_RANGE* unicodeRanges,
+            [Out, NativeTypeName("UINT32")] uint* actualRangeCount
         )
         {
             fixed (IDWriteFont3* This = &this)
@@ -488,7 +488,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public int IsMonospacedFont()
         {
             fixed (IDWriteFont3* This = &this)
@@ -501,7 +501,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region IDWriteFont2 Methods
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public int IsColorFont()
         {
             fixed (IDWriteFont3* This = &this)
@@ -514,7 +514,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateFontFace1(
             [Out] IDWriteFontFace3** fontFace
         )
@@ -528,7 +528,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public int _Equals(
             [In] IDWriteFont* font
         )
@@ -542,7 +542,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetFontFaceReference(
             [Out] IDWriteFontFaceReference** fontFaceReference
         )
@@ -556,9 +556,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public int HasCharacter1(
-            [In, ComAliasName("UINT32")] uint unicodeValue
+            [In, NativeTypeName("UINT32")] uint unicodeValue
         )
         {
             fixed (IDWriteFont3* This = &this)

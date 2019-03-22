@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID2D1ImageBrush* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID2D1ImageBrush* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID2D1ImageBrush* This
         );
@@ -61,7 +61,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _SetOpacity(
             [In] ID2D1ImageBrush* This,
-            [In, ComAliasName("FLOAT")] float opacity
+            [In, NativeTypeName("FLOAT")] float opacity
         );
 
         /// <summary>Sets the transform that applies to everything drawn by the brush.</summary>
@@ -69,12 +69,12 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _SetTransform(
             [In] ID2D1ImageBrush* This,
-            [In, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform
+            [In, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("FLOAT")]
+        [return: NativeTypeName("FLOAT")]
         public /* static */ delegate float _GetOpacity(
             [In] ID2D1ImageBrush* This
         );
@@ -83,7 +83,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _GetTransform(
             [In] ID2D1ImageBrush* This,
-            [Out, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform
+            [Out, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform
         );
         #endregion
 
@@ -120,7 +120,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _SetSourceRectangle(
             [In] ID2D1ImageBrush* This,
-            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* sourceRectangle
+            [In, NativeTypeName("D2D1_RECT_F")] D2D_RECT_F* sourceRectangle
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -152,14 +152,14 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _GetSourceRectangle(
             [In] ID2D1ImageBrush* This,
-            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* sourceRectangle
+            [Out, NativeTypeName("D2D1_RECT_F")] D2D_RECT_F* sourceRectangle
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -173,7 +173,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID2D1ImageBrush* This = &this)
@@ -184,7 +184,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID2D1ImageBrush* This = &this)
@@ -213,7 +213,7 @@ namespace TerraFX.Interop
 
         #region ID2D1Brush Methods
         public void SetOpacity(
-            [In, ComAliasName("FLOAT")] float opacity
+            [In, NativeTypeName("FLOAT")] float opacity
         )
         {
             fixed (ID2D1ImageBrush* This = &this)
@@ -226,7 +226,7 @@ namespace TerraFX.Interop
         }
 
         public void SetTransform(
-            [In, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform
+            [In, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform
         )
         {
             fixed (ID2D1ImageBrush* This = &this)
@@ -238,7 +238,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("FLOAT")]
+        [return: NativeTypeName("FLOAT")]
         public float GetOpacity()
         {
             fixed (ID2D1ImageBrush* This = &this)
@@ -250,7 +250,7 @@ namespace TerraFX.Interop
         }
 
         public void GetTransform(
-            [Out, ComAliasName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform
+            [Out, NativeTypeName("D2D1_MATRIX_3X2_F")] D2D_MATRIX_3X2_F* transform
         )
         {
             fixed (ID2D1ImageBrush* This = &this)
@@ -317,7 +317,7 @@ namespace TerraFX.Interop
         }
 
         public void SetSourceRectangle(
-            [In, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* sourceRectangle
+            [In, NativeTypeName("D2D1_RECT_F")] D2D_RECT_F* sourceRectangle
         )
         {
             fixed (ID2D1ImageBrush* This = &this)
@@ -373,7 +373,7 @@ namespace TerraFX.Interop
         }
 
         public void GetSourceRectangle(
-            [Out, ComAliasName("D2D1_RECT_F")] D2D_RECT_F* sourceRectangle
+            [Out, NativeTypeName("D2D1_RECT_F")] D2D_RECT_F* sourceRectangle
         )
         {
             fixed (ID2D1ImageBrush* This = &this)

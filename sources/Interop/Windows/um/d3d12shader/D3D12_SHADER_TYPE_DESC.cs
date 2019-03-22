@@ -3,7 +3,6 @@
 // Ported from um\d3d12shader.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -16,22 +15,22 @@ namespace TerraFX.Interop
 
         public D3D_SHADER_VARIABLE_TYPE Type;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Rows;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Columns;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Elements;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Members;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Offset;
 
-        [ComAliasName("LPCSTR")]
+        [NativeTypeName("LPCSTR")]
         public sbyte* Name;
         #endregion
     }

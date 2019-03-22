@@ -3,7 +3,6 @@
 // Ported from um\dwrite_2.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -20,18 +19,18 @@ namespace TerraFX.Interop
         public DWRITE_GLYPH_RUN_DESCRIPTION* glyphRunDescription;
 
         /// <summary>Location at which to draw this glyph run.</summary>
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float baselineOriginX;
 
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float baselineOriginY;
 
         /// <summary>Color to use for this layer, if any. This is the same color that IDWriteFontFace2::GetPaletteEntries would return for the current palette index if the paletteIndex member is less than 0xFFFF. If the paletteIndex member is 0xFFFF then there is no associated palette entry, this member is set to { 0, 0, 0, 0 }, and the client should use the current foreground brush.</summary>
-        [ComAliasName("DWRITE_COLOR_F")]
+        [NativeTypeName("DWRITE_COLOR_F")]
         public DXGI_RGBA runColor;
 
         /// <summary>Zero-based index of this layer's color entry in the current color palette, or 0xFFFF if this layer is to be rendered using the current foreground brush.</summary>
-        [ComAliasName("UINT16")]
+        [NativeTypeName("UINT16")]
         public ushort paletteIndex;
         #endregion
     }

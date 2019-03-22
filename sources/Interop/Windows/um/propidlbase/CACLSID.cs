@@ -4,7 +4,6 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System;
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -13,10 +12,10 @@ namespace TerraFX.Interop
     public unsafe struct CACLSID
     {
         #region Fields
-        [ComAliasName("ULONG")]
+        [NativeTypeName("ULONG")]
         public uint cElems;
 
-        [ComAliasName("CLSID[]")]
+        [NativeTypeName("CLSID[]")]
         public Guid* pElems;
         #endregion
     }

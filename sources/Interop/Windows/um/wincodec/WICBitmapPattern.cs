@@ -3,7 +3,6 @@
 // Ported from um\wincodec.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -14,16 +13,16 @@ namespace TerraFX.Interop
         #region Fields
         public ULARGE_INTEGER Position;
 
-        [ComAliasName("ULONG")]
+        [NativeTypeName("ULONG")]
         public uint Length;
 
-        [ComAliasName("BYTE[]")]
+        [NativeTypeName("BYTE[]")]
         public byte* Pattern;
 
-        [ComAliasName("BYTE[]")]
+        [NativeTypeName("BYTE[]")]
         public byte* Mask;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int EndOfStream;
         #endregion
     }

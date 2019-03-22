@@ -3,7 +3,6 @@
 // Ported from shared\dxgi1_2.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop.Desktop
@@ -16,21 +15,21 @@ namespace TerraFX.Interop.Desktop
 
         public LARGE_INTEGER LastMouseUpdateTime;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint AccumulatedFrames;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int RectsCoalesced;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int ProtectedContentMaskedOut;
 
         public DXGI_OUTDUPL_POINTER_POSITION PointerPosition;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint TotalMetadataBufferSize;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint PointerShapeBufferSize;
         #endregion
     }

@@ -4,7 +4,6 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System;
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -13,13 +12,13 @@ namespace TerraFX.Interop
     public struct WICBitmapPlaneDescription
     {
         #region Fields
-        [ComAliasName("WICPixelFormatGUID")]
+        [NativeTypeName("WICPixelFormatGUID")]
         public Guid Format;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Width;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint Height;
         #endregion
     }

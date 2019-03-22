@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IWICDevelopRaw* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IWICDevelopRaw* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IWICDevelopRaw* This
         );
@@ -47,24 +47,24 @@ namespace TerraFX.Interop
         #region IWICBitmapSource Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetSize(
             [In] IWICDevelopRaw* This,
-            [Out, ComAliasName("UINT")] uint* puiWidth,
-            [Out, ComAliasName("UINT")] uint* puiHeight
+            [Out, NativeTypeName("UINT")] uint* puiWidth,
+            [Out, NativeTypeName("UINT")] uint* puiHeight
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetPixelFormat(
             [In] IWICDevelopRaw* This,
-            [Out, ComAliasName("WICPixelFormatGUID")] Guid* pPixelFormat
+            [Out, NativeTypeName("WICPixelFormatGUID")] Guid* pPixelFormat
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetResolution(
             [In] IWICDevelopRaw* This,
             [Out] double* pDpiX,
@@ -73,7 +73,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CopyPalette(
             [In] IWICDevelopRaw* This,
             [In] IWICPalette* pIPalette = null
@@ -81,20 +81,20 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CopyPixels(
             [In] IWICDevelopRaw* This,
             [In, Optional] WICRect* prc,
-            [In, ComAliasName("UINT")] uint cbStride,
-            [In, ComAliasName("UINT")] uint cbBufferSize,
-            [Out, ComAliasName("BYTE[]")] byte* pbBuffer
+            [In, NativeTypeName("UINT")] uint cbStride,
+            [In, NativeTypeName("UINT")] uint cbBufferSize,
+            [Out, NativeTypeName("BYTE[]")] byte* pbBuffer
         );
         #endregion
 
         #region IWICBitmapFrameDecode Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetMetadataQueryReader(
             [In] IWICDevelopRaw* This,
             [Out] IWICMetadataQueryReader** ppIMetadataQueryReader = null
@@ -102,17 +102,17 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetColorContexts(
             [In] IWICDevelopRaw* This,
-            [In, ComAliasName("UINT")] uint cCount,
-            [In, Out, Optional, ComAliasName("IWICColorContext*[]")] IWICColorContext** ppIColorContexts,
-            [Out, ComAliasName("UINT")] uint* pcActualCount
+            [In, NativeTypeName("UINT")] uint cCount,
+            [In, Out, Optional, NativeTypeName("IWICColorContext*[]")] IWICColorContext** ppIColorContexts,
+            [Out, NativeTypeName("UINT")] uint* pcActualCount
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetThumbnail(
             [In] IWICDevelopRaw* This,
             [Out] IWICBitmapSource** ppIThumbnail = null
@@ -122,7 +122,7 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryRawCapabilitiesInfo(
             [In] IWICDevelopRaw* This,
             [In, Out] WICRawCapabilitiesInfo* pInfo
@@ -130,7 +130,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _LoadParameterSet(
             [In] IWICDevelopRaw* This,
             [In] WICRawParameterSet ParameterSet
@@ -138,7 +138,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetCurrentParameterSet(
             [In] IWICDevelopRaw* This,
             [Out] IPropertyBag2** ppCurrentParameterSet = null
@@ -146,7 +146,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetExposureCompensation(
             [In] IWICDevelopRaw* This,
             [In] double ev
@@ -154,7 +154,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetExposureCompensation(
             [In] IWICDevelopRaw* This,
             [Out] double* pEV
@@ -162,27 +162,27 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetWhitePointRGB(
             [In] IWICDevelopRaw* This,
-            [In, ComAliasName("UINT")] uint Red,
-            [In, ComAliasName("UINT")] uint Green,
-            [In, ComAliasName("UINT")] uint Blue
+            [In, NativeTypeName("UINT")] uint Red,
+            [In, NativeTypeName("UINT")] uint Green,
+            [In, NativeTypeName("UINT")] uint Blue
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetWhitePointRGB(
             [In] IWICDevelopRaw* This,
-            [Out, ComAliasName("UINT")] uint* pRed,
-            [Out, ComAliasName("UINT")] uint* pGreen,
-            [Out, ComAliasName("UINT")] uint* pBlue
+            [Out, NativeTypeName("UINT")] uint* pRed,
+            [Out, NativeTypeName("UINT")] uint* pGreen,
+            [Out, NativeTypeName("UINT")] uint* pBlue
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetNamedWhitePoint(
             [In] IWICDevelopRaw* This,
             [In] WICNamedWhitePoint WhitePoint
@@ -190,7 +190,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetNamedWhitePoint(
             [In] IWICDevelopRaw* This,
             [Out] WICNamedWhitePoint* pWhitePoint
@@ -198,33 +198,33 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetWhitePointKelvin(
             [In] IWICDevelopRaw* This,
-            [In, ComAliasName("UINT")] uint WhitePointKelvin
+            [In, NativeTypeName("UINT")] uint WhitePointKelvin
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetWhitePointKelvin(
             [In] IWICDevelopRaw* This,
-            [Out, ComAliasName("UINT")] uint* pWhitePointKelvin
+            [Out, NativeTypeName("UINT")] uint* pWhitePointKelvin
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetKelvinRangeInfo(
             [In] IWICDevelopRaw* This,
-            [Out, ComAliasName("UINT")] uint* pMinKelvinTemp,
-            [Out, ComAliasName("UINT")] uint* pMaxKelvinTemp,
-            [Out, ComAliasName("UINT")] uint* pKelvinTempStepValue
+            [Out, NativeTypeName("UINT")] uint* pMinKelvinTemp,
+            [Out, NativeTypeName("UINT")] uint* pMaxKelvinTemp,
+            [Out, NativeTypeName("UINT")] uint* pKelvinTempStepValue
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetContrast(
             [In] IWICDevelopRaw* This,
             [In] double Contrast
@@ -232,7 +232,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetContrast(
             [In] IWICDevelopRaw* This,
             [Out] double* pContrast
@@ -240,7 +240,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetGamma(
             [In] IWICDevelopRaw* This,
             [In] double Gamma
@@ -248,7 +248,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetGamma(
             [In] IWICDevelopRaw* This,
             [Out] double* pGamma
@@ -256,7 +256,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetSharpness(
             [In] IWICDevelopRaw* This,
             [In] double Sharpness
@@ -264,7 +264,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetSharpness(
             [In] IWICDevelopRaw* This,
             [Out] double* pSharpness
@@ -272,7 +272,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetSaturation(
             [In] IWICDevelopRaw* This,
             [In] double Saturation
@@ -280,7 +280,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetSaturation(
             [In] IWICDevelopRaw* This,
             [Out] double* pSaturation
@@ -288,7 +288,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetTint(
             [In] IWICDevelopRaw* This,
             [In] double Tint
@@ -296,7 +296,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetTint(
             [In] IWICDevelopRaw* This,
             [Out] double* pTint
@@ -304,7 +304,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetNoiseReduction(
             [In] IWICDevelopRaw* This,
             [In] double NoiseReduction
@@ -312,7 +312,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetNoiseReduction(
             [In] IWICDevelopRaw* This,
             [Out] double* pNoiseReduction
@@ -320,7 +320,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetDestinationColorContext(
             [In] IWICDevelopRaw* This,
             [In] IWICColorContext* pColorContext = null
@@ -328,26 +328,26 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetToneCurve(
             [In] IWICDevelopRaw* This,
-            [In, ComAliasName("UINT")] uint cbToneCurveSize,
-            [In, ComAliasName("WICRawToneCurve[]")] WICRawToneCurve* pToneCurve
+            [In, NativeTypeName("UINT")] uint cbToneCurveSize,
+            [In, NativeTypeName("WICRawToneCurve[]")] WICRawToneCurve* pToneCurve
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetToneCurve(
             [In] IWICDevelopRaw* This,
-            [In, ComAliasName("UINT")] uint cbToneCurveBufferSize,
-            [Out, ComAliasName("WICRawToneCurve[]")] WICRawToneCurve* pToneCurve = null,
-            [In, Out, ComAliasName("UINT")] uint* pcbActualToneCurveBufferSize = null
+            [In, NativeTypeName("UINT")] uint cbToneCurveBufferSize,
+            [Out, NativeTypeName("WICRawToneCurve[]")] WICRawToneCurve* pToneCurve = null,
+            [In, Out, NativeTypeName("UINT")] uint* pcbActualToneCurveBufferSize = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetRotation(
             [In] IWICDevelopRaw* This,
             [In] double Rotation
@@ -355,7 +355,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetRotation(
             [In] IWICDevelopRaw* This,
             [Out] double* pRotation
@@ -363,7 +363,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetRenderMode(
             [In] IWICDevelopRaw* This,
             [In] WICRawRenderMode RenderMode
@@ -371,7 +371,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetRenderMode(
             [In] IWICDevelopRaw* This,
             [Out] WICRawRenderMode* pRenderMode
@@ -379,7 +379,7 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetNotificationCallback(
             [In] IWICDevelopRaw* This,
             [In] IWICDevelopRawNotificationCallback* pCallback = null
@@ -387,9 +387,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -403,7 +403,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IWICDevelopRaw* This = &this)
@@ -414,7 +414,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IWICDevelopRaw* This = &this)
@@ -427,10 +427,10 @@ namespace TerraFX.Interop
         #endregion
 
         #region IWICBitmapSource Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetSize(
-            [Out, ComAliasName("UINT")] uint* puiWidth,
-            [Out, ComAliasName("UINT")] uint* puiHeight
+            [Out, NativeTypeName("UINT")] uint* puiWidth,
+            [Out, NativeTypeName("UINT")] uint* puiHeight
         )
         {
             fixed (IWICDevelopRaw* This = &this)
@@ -443,9 +443,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetPixelFormat(
-            [Out, ComAliasName("WICPixelFormatGUID")] Guid* pPixelFormat
+            [Out, NativeTypeName("WICPixelFormatGUID")] Guid* pPixelFormat
         )
         {
             fixed (IWICDevelopRaw* This = &this)
@@ -457,7 +457,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetResolution(
             [Out] double* pDpiX,
             [Out] double* pDpiY
@@ -473,7 +473,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CopyPalette(
             [In] IWICPalette* pIPalette = null
         )
@@ -487,12 +487,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CopyPixels(
             [In, Optional] WICRect* prc,
-            [In, ComAliasName("UINT")] uint cbStride,
-            [In, ComAliasName("UINT")] uint cbBufferSize,
-            [Out, ComAliasName("BYTE[]")] byte* pbBuffer
+            [In, NativeTypeName("UINT")] uint cbStride,
+            [In, NativeTypeName("UINT")] uint cbBufferSize,
+            [Out, NativeTypeName("BYTE[]")] byte* pbBuffer
         )
         {
             fixed (IWICDevelopRaw* This = &this)
@@ -509,7 +509,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region IWICBitmapFrameDecode Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetMetadataQueryReader(
             [Out] IWICMetadataQueryReader** ppIMetadataQueryReader = null
         )
@@ -523,11 +523,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetColorContexts(
-            [In, ComAliasName("UINT")] uint cCount,
-            [In, Out, Optional, ComAliasName("IWICColorContext*[]")] IWICColorContext** ppIColorContexts,
-            [Out, ComAliasName("UINT")] uint* pcActualCount
+            [In, NativeTypeName("UINT")] uint cCount,
+            [In, Out, Optional, NativeTypeName("IWICColorContext*[]")] IWICColorContext** ppIColorContexts,
+            [Out, NativeTypeName("UINT")] uint* pcActualCount
         )
         {
             fixed (IWICDevelopRaw* This = &this)
@@ -541,7 +541,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetThumbnail(
             [Out] IWICBitmapSource** ppIThumbnail = null
         )
@@ -557,7 +557,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryRawCapabilitiesInfo(
             [In, Out] WICRawCapabilitiesInfo* pInfo
         )
@@ -571,7 +571,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int LoadParameterSet(
             [In] WICRawParameterSet ParameterSet
         )
@@ -585,7 +585,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetCurrentParameterSet(
             [Out] IPropertyBag2** ppCurrentParameterSet = null
         )
@@ -599,7 +599,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetExposureCompensation(
             [In] double ev
         )
@@ -613,7 +613,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetExposureCompensation(
             [Out] double* pEV
         )
@@ -627,11 +627,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetWhitePointRGB(
-            [In, ComAliasName("UINT")] uint Red,
-            [In, ComAliasName("UINT")] uint Green,
-            [In, ComAliasName("UINT")] uint Blue
+            [In, NativeTypeName("UINT")] uint Red,
+            [In, NativeTypeName("UINT")] uint Green,
+            [In, NativeTypeName("UINT")] uint Blue
         )
         {
             fixed (IWICDevelopRaw* This = &this)
@@ -645,11 +645,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetWhitePointRGB(
-            [Out, ComAliasName("UINT")] uint* pRed,
-            [Out, ComAliasName("UINT")] uint* pGreen,
-            [Out, ComAliasName("UINT")] uint* pBlue
+            [Out, NativeTypeName("UINT")] uint* pRed,
+            [Out, NativeTypeName("UINT")] uint* pGreen,
+            [Out, NativeTypeName("UINT")] uint* pBlue
         )
         {
             fixed (IWICDevelopRaw* This = &this)
@@ -663,7 +663,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetNamedWhitePoint(
             [In] WICNamedWhitePoint WhitePoint
         )
@@ -677,7 +677,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetNamedWhitePoint(
             [Out] WICNamedWhitePoint* pWhitePoint
         )
@@ -691,9 +691,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetWhitePointKelvin(
-            [In, ComAliasName("UINT")] uint WhitePointKelvin
+            [In, NativeTypeName("UINT")] uint WhitePointKelvin
         )
         {
             fixed (IWICDevelopRaw* This = &this)
@@ -705,9 +705,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetWhitePointKelvin(
-            [Out, ComAliasName("UINT")] uint* pWhitePointKelvin
+            [Out, NativeTypeName("UINT")] uint* pWhitePointKelvin
         )
         {
             fixed (IWICDevelopRaw* This = &this)
@@ -719,11 +719,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetKelvinRangeInfo(
-            [Out, ComAliasName("UINT")] uint* pMinKelvinTemp,
-            [Out, ComAliasName("UINT")] uint* pMaxKelvinTemp,
-            [Out, ComAliasName("UINT")] uint* pKelvinTempStepValue
+            [Out, NativeTypeName("UINT")] uint* pMinKelvinTemp,
+            [Out, NativeTypeName("UINT")] uint* pMaxKelvinTemp,
+            [Out, NativeTypeName("UINT")] uint* pKelvinTempStepValue
         )
         {
             fixed (IWICDevelopRaw* This = &this)
@@ -737,7 +737,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetContrast(
             [In] double Contrast
         )
@@ -751,7 +751,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetContrast(
             [Out] double* pContrast
         )
@@ -765,7 +765,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetGamma(
             [In] double Gamma
         )
@@ -779,7 +779,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetGamma(
             [Out] double* pGamma
         )
@@ -793,7 +793,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetSharpness(
             [In] double Sharpness
         )
@@ -807,7 +807,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetSharpness(
             [Out] double* pSharpness
         )
@@ -821,7 +821,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetSaturation(
             [In] double Saturation
         )
@@ -835,7 +835,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetSaturation(
             [Out] double* pSaturation
         )
@@ -849,7 +849,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetTint(
             [In] double Tint
         )
@@ -863,7 +863,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetTint(
             [Out] double* pTint
         )
@@ -877,7 +877,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetNoiseReduction(
             [In] double NoiseReduction
         )
@@ -891,7 +891,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetNoiseReduction(
             [Out] double* pNoiseReduction
         )
@@ -905,7 +905,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetDestinationColorContext(
             [In] IWICColorContext* pColorContext = null
         )
@@ -919,10 +919,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetToneCurve(
-            [In, ComAliasName("UINT")] uint cbToneCurveSize,
-            [In, ComAliasName("WICRawToneCurve[]")] WICRawToneCurve* pToneCurve
+            [In, NativeTypeName("UINT")] uint cbToneCurveSize,
+            [In, NativeTypeName("WICRawToneCurve[]")] WICRawToneCurve* pToneCurve
         )
         {
             fixed (IWICDevelopRaw* This = &this)
@@ -935,11 +935,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetToneCurve(
-            [In, ComAliasName("UINT")] uint cbToneCurveBufferSize,
-            [Out, ComAliasName("WICRawToneCurve[]")] WICRawToneCurve* pToneCurve = null,
-            [In, Out, ComAliasName("UINT")] uint* pcbActualToneCurveBufferSize = null
+            [In, NativeTypeName("UINT")] uint cbToneCurveBufferSize,
+            [Out, NativeTypeName("WICRawToneCurve[]")] WICRawToneCurve* pToneCurve = null,
+            [In, Out, NativeTypeName("UINT")] uint* pcbActualToneCurveBufferSize = null
         )
         {
             fixed (IWICDevelopRaw* This = &this)
@@ -953,7 +953,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetRotation(
             [In] double Rotation
         )
@@ -967,7 +967,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetRotation(
             [Out] double* pRotation
         )
@@ -981,7 +981,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetRenderMode(
             [In] WICRawRenderMode RenderMode
         )
@@ -995,7 +995,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetRenderMode(
             [Out] WICRawRenderMode* pRenderMode
         )
@@ -1009,7 +1009,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetNotificationCallback(
             [In] IWICDevelopRawNotificationCallback* pCallback = null
         )

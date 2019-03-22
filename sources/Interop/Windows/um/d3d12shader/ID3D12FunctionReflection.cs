@@ -22,7 +22,7 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetDesc(
             [In] ID3D12FunctionReflection* This,
             [Out] D3D12_FUNCTION_DESC* pDesc
@@ -32,22 +32,22 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate ID3D12ShaderReflectionConstantBuffer* _GetConstantBufferByIndex(
             [In] ID3D12FunctionReflection* This,
-            [In, ComAliasName("UINT")] uint BufferIndex
+            [In, NativeTypeName("UINT")] uint BufferIndex
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate ID3D12ShaderReflectionConstantBuffer* _GetConstantBufferByName(
             [In] ID3D12FunctionReflection* This,
-            [In, ComAliasName("LPCSTR")] sbyte* Name
+            [In, NativeTypeName("LPCSTR")] sbyte* Name
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetResourceBindingDesc(
             [In] ID3D12FunctionReflection* This,
-            [In, ComAliasName("UINT")] uint ResourceIndex,
+            [In, NativeTypeName("UINT")] uint ResourceIndex,
             [Out] D3D12_SHADER_INPUT_BIND_DESC* pDesc
         );
 
@@ -55,15 +55,15 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate ID3D12ShaderReflectionVariable* _GetVariableByName(
             [In] ID3D12FunctionReflection* This,
-            [In, ComAliasName("LPCSTR")] sbyte* Name
+            [In, NativeTypeName("LPCSTR")] sbyte* Name
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetResourceBindingDescByName(
             [In] ID3D12FunctionReflection* This,
-            [In, ComAliasName("LPCSTR")] sbyte* Name,
+            [In, NativeTypeName("LPCSTR")] sbyte* Name,
             [Out] D3D12_SHADER_INPUT_BIND_DESC* pDesc
         );
 
@@ -71,12 +71,12 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate ID3D12FunctionParameterReflection* _GetFunctionParameter(
             [In] ID3D12FunctionReflection* This,
-            [In, ComAliasName("INT")] int ParameterIndex
+            [In, NativeTypeName("INT")] int ParameterIndex
         );
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetDesc(
             [Out] D3D12_FUNCTION_DESC* pDesc
         )
@@ -91,7 +91,7 @@ namespace TerraFX.Interop
         }
 
         public ID3D12ShaderReflectionConstantBuffer* GetConstantBufferByIndex(
-            [In, ComAliasName("UINT")] uint BufferIndex
+            [In, NativeTypeName("UINT")] uint BufferIndex
         )
         {
             fixed (ID3D12FunctionReflection* This = &this)
@@ -104,7 +104,7 @@ namespace TerraFX.Interop
         }
 
         public ID3D12ShaderReflectionConstantBuffer* GetConstantBufferByName(
-            [In, ComAliasName("LPCSTR")] sbyte* Name
+            [In, NativeTypeName("LPCSTR")] sbyte* Name
         )
         {
             fixed (ID3D12FunctionReflection* This = &this)
@@ -116,9 +116,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetResourceBindingDesc(
-            [In, ComAliasName("UINT")] uint ResourceIndex,
+            [In, NativeTypeName("UINT")] uint ResourceIndex,
             [Out] D3D12_SHADER_INPUT_BIND_DESC* pDesc
         )
         {
@@ -133,7 +133,7 @@ namespace TerraFX.Interop
         }
 
         public ID3D12ShaderReflectionVariable* GetVariableByName(
-            [In, ComAliasName("LPCSTR")] sbyte* Name
+            [In, NativeTypeName("LPCSTR")] sbyte* Name
         )
         {
             fixed (ID3D12FunctionReflection* This = &this)
@@ -145,9 +145,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetResourceBindingDescByName(
-            [In, ComAliasName("LPCSTR")] sbyte* Name,
+            [In, NativeTypeName("LPCSTR")] sbyte* Name,
             [Out] D3D12_SHADER_INPUT_BIND_DESC* pDesc
         )
         {
@@ -162,7 +162,7 @@ namespace TerraFX.Interop
         }
 
         public ID3D12FunctionParameterReflection* GetFunctionParameter(
-            [In, ComAliasName("INT")] int ParameterIndex
+            [In, NativeTypeName("INT")] int ParameterIndex
         )
         {
             fixed (ID3D12FunctionReflection* This = &this)

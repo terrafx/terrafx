@@ -3,7 +3,6 @@
 // Ported from shared\dxgi1_2.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,10 +11,10 @@ namespace TerraFX.Interop
     public unsafe struct DXGI_PRESENT_PARAMETERS
     {
         #region Fields
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint DirtyRectsCount;
 
-        [ComAliasName("RECT[]")]
+        [NativeTypeName("RECT[]")]
         public RECT* pDirtyRects;
 
         public RECT* pScrollRect;

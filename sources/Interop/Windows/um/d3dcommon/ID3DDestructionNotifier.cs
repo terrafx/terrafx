@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID3DDestructionNotifier* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID3DDestructionNotifier* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID3DDestructionNotifier* This
         );
@@ -47,27 +47,27 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _RegisterDestructionCallback(
             [In] ID3DDestructionNotifier* This,
-            [In, ComAliasName("PFN_DESTRUCTION_CALLBACK")] IntPtr callbackFn,
+            [In, NativeTypeName("PFN_DESTRUCTION_CALLBACK")] IntPtr callbackFn,
             [In] void* pData,
-            [Out, ComAliasName("UINT")] uint* pCallbackID
+            [Out, NativeTypeName("UINT")] uint* pCallbackID
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _UnregisterDestructionCallback(
             [In] ID3DDestructionNotifier* This,
-            [In, ComAliasName("UINT")] uint callbackID
+            [In, NativeTypeName("UINT")] uint callbackID
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -81,7 +81,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID3DDestructionNotifier* This = &this)
@@ -92,7 +92,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID3DDestructionNotifier* This = &this)
@@ -105,11 +105,11 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int RegisterDestructionCallback(
-            [In, ComAliasName("PFN_DESTRUCTION_CALLBACK")] IntPtr callbackFn,
+            [In, NativeTypeName("PFN_DESTRUCTION_CALLBACK")] IntPtr callbackFn,
             [In] void* pData,
-            [Out, ComAliasName("UINT")] uint* pCallbackID
+            [Out, NativeTypeName("UINT")] uint* pCallbackID
         )
         {
             fixed (ID3DDestructionNotifier* This = &this)
@@ -123,9 +123,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int UnregisterDestructionCallback(
-            [In, ComAliasName("UINT")] uint callbackID
+            [In, NativeTypeName("UINT")] uint callbackID
         )
         {
             fixed (ID3DDestructionNotifier* This = &this)

@@ -3,7 +3,6 @@
 // Ported from um\wincodec.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
@@ -13,10 +12,10 @@ namespace TerraFX.Interop
     public struct WICRawToneCurve
     {
         #region Fields
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint cPoints;
 
-        [ComAliasName("WICRawToneCurvePoint[1]")]
+        [NativeTypeName("WICRawToneCurvePoint[1]")]
         public _aPoints_e__FixedBuffer aPoints;
         #endregion
 

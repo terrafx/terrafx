@@ -3,7 +3,6 @@
 // Ported from X11\xlib.h in the Xlib - C Language X Interface: X Version 11, Release 7.7
 // Original source is Copyright © The Open Group.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,12 +11,12 @@ namespace TerraFX.Interop
     public struct XSetWindowAttributes
     {
         #region Fields
-        [ComAliasName("Pixmap")]
+        [NativeTypeName("Pixmap")]
         public nuint background_pixmap;
 
         public nuint background_pixel;
 
-        [ComAliasName("Pixmap")]
+        [NativeTypeName("Pixmap")]
         public nuint border_pixmap;
 
         public nuint border_pixel;
@@ -32,20 +31,20 @@ namespace TerraFX.Interop
 
         public nuint backing_pixel;
 
-        [ComAliasName("Bool")]
+        [NativeTypeName("Bool")]
         public int save_under;
 
         public nint event_mask;
 
         public nint do_not_propagate_mask;
 
-        [ComAliasName("Bool")]
+        [NativeTypeName("Bool")]
         public int override_redirect;
 
-        [ComAliasName("Colormap")]
+        [NativeTypeName("Colormap")]
         public nuint colormap;
 
-        [ComAliasName("Cursor")]
+        [NativeTypeName("Cursor")]
         public nuint cursor;
         #endregion
     }

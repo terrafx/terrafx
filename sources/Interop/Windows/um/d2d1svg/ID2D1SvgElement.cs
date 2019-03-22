@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID2D1SvgElement* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID2D1SvgElement* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID2D1SvgElement* This
         );
@@ -67,17 +67,17 @@ namespace TerraFX.Interop
         /// <summary>Gets the tag name.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetTagName(
             [In] ID2D1SvgElement* This,
-            [Out, ComAliasName("PWSTR")] char* name,
-            [In, ComAliasName("UINT32")] uint nameCount
+            [Out, NativeTypeName("PWSTR")] char* name,
+            [In, NativeTypeName("UINT32")] uint nameCount
         );
 
         /// <summary>Gets the string length of the tag name. The returned string length does not include room for the null terminator.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public /* static */ delegate uint _GetTagNameLength(
             [In] ID2D1SvgElement* This
         );
@@ -85,7 +85,7 @@ namespace TerraFX.Interop
         /// <summary>Returns TRUE if this element represents text content, e.g. the content of a 'title' or 'desc' element. Text content does not have a tag name.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public /* static */ delegate int _IsTextContent(
             [In] ID2D1SvgElement* This
         );
@@ -101,7 +101,7 @@ namespace TerraFX.Interop
         /// <summary>Returns whether this element has children.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public /* static */ delegate int _HasChildren(
             [In] ID2D1SvgElement* This
         );
@@ -127,7 +127,7 @@ namespace TerraFX.Interop
         /// <param name="previousChild">The output previousChild element will be non-null if the referenceChild has a previous sibling. If the referenceChild is the first child, the output is null.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetPreviousChild(
             [In] ID2D1SvgElement* This,
             [In] ID2D1SvgElement* referenceChild,
@@ -139,7 +139,7 @@ namespace TerraFX.Interop
         /// <param name="nextChild">The output nextChild element will be non-null if the referenceChild has a next sibling. If the referenceChild is the last child, the output is null.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetNextChild(
             [In] ID2D1SvgElement* This,
             [In] ID2D1SvgElement* referenceChild,
@@ -151,7 +151,7 @@ namespace TerraFX.Interop
         /// <param name="referenceChild">The element that the child should be inserted before. If referenceChild is null, the newChild is placed as the last child. If referenceChild is non-null, it must be an immediate child of this element.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _InsertChildBefore(
             [In] ID2D1SvgElement* This,
             [In] ID2D1SvgElement* newChild,
@@ -162,7 +162,7 @@ namespace TerraFX.Interop
         /// <param name="newChild">The element to be appended.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _AppendChild(
             [In] ID2D1SvgElement* This,
             [In] ID2D1SvgElement* newChild
@@ -173,7 +173,7 @@ namespace TerraFX.Interop
         /// <param name="oldChild">The child element to be replaced. The oldChild element must be an immediate child of this element.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _ReplaceChild(
             [In] ID2D1SvgElement* This,
             [In] ID2D1SvgElement* newChild,
@@ -184,7 +184,7 @@ namespace TerraFX.Interop
         /// <param name="oldChild">The child element to be removed. The oldChild element must be an immediate child of this element.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _RemoveChild(
             [In] ID2D1SvgElement* This,
             [In] ID2D1SvgElement* oldChild
@@ -195,10 +195,10 @@ namespace TerraFX.Interop
         /// <param name="newChild">The new child element.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateChild(
             [In] ID2D1SvgElement* This,
-            [In, Optional, ComAliasName("PCWSTR")] char* tagName,
+            [In, Optional, NativeTypeName("PCWSTR")] char* tagName,
             [Out] ID2D1SvgElement** newChild
         );
 
@@ -207,17 +207,17 @@ namespace TerraFX.Interop
         /// <param name="inherited">Outputs whether the attribute is set to the 'inherit' value.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public /* static */ delegate int _IsAttributeSpecified(
             [In] ID2D1SvgElement* This,
-            [In, ComAliasName("PCWSTR")] char* name,
-            [Out, ComAliasName("BOOL")] int* inherited = null
+            [In, NativeTypeName("PCWSTR")] char* name,
+            [Out, NativeTypeName("BOOL")] int* inherited = null
         );
 
         /// <summary>Returns the number of specified attributes on this element. Attributes are only considered specified if they are explicitly set on the element or present within an inline style. Properties that receive their value through CSS inheritance are not considered specified. An attribute can become specified if it is set through a method call. It can become unspecified if it is removed via RemoveAttribute.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public /* static */ delegate uint _GetSpecifiedAttributeCount(
             [In] ID2D1SvgElement* This
         );
@@ -228,13 +228,13 @@ namespace TerraFX.Interop
         /// <param name="inherited">Outputs whether the attribute is set to the 'inherit' value.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetSpecifiedAttributeName(
             [In] ID2D1SvgElement* This,
-            [In, ComAliasName("UINT32")] uint index,
-            [Out, ComAliasName("PWSTR")] char* name,
-            [In, ComAliasName("UINT32")] uint nameCount,
-            [Out, ComAliasName("BOOL")] int* inherited = null
+            [In, NativeTypeName("UINT32")] uint index,
+            [Out, NativeTypeName("PWSTR")] char* name,
+            [In, NativeTypeName("UINT32")] uint nameCount,
+            [Out, NativeTypeName("BOOL")] int* inherited = null
         );
 
         /// <summary>Gets the string length of the name of the specified attribute at the given index. The output string length does not include room for the null terminator.</summary>
@@ -243,47 +243,47 @@ namespace TerraFX.Interop
         /// <param name="inherited">Outputs whether the attribute is set to the 'inherit' value.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetSpecifiedAttributeNameLength(
             [In] ID2D1SvgElement* This,
-            [In, ComAliasName("UINT32")] uint index,
-            [Out, ComAliasName("UINT32")] uint* nameLength,
-            [Out, ComAliasName("BOOL")] int* inherited = null
+            [In, NativeTypeName("UINT32")] uint index,
+            [Out, NativeTypeName("UINT32")] uint* nameLength,
+            [Out, NativeTypeName("BOOL")] int* inherited = null
         );
 
         /// <summary>Removes the attribute from this element. Also removes this attribute from within an inline style if present. Returns an error if the attribute name is not valid on this element.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _RemoveAttribute(
             [In] ID2D1SvgElement* This,
-            [In, ComAliasName("PCWSTR")] char* name
+            [In, NativeTypeName("PCWSTR")] char* name
         );
 
         /// <summary>Sets the value of a text content element.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetTextValue(
             [In] ID2D1SvgElement* This,
-            [In, ComAliasName("WCHAR[]")] char* name,
-            [In, ComAliasName("UINT32")] uint nameCount
+            [In, NativeTypeName("WCHAR[]")] char* name,
+            [In, NativeTypeName("UINT32")] uint nameCount
         );
 
         /// <summary>Gets the value of a text content element.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetTextValue(
             [In] ID2D1SvgElement* This,
-            [Out, ComAliasName("PWSTR")] char* name,
-            [In, ComAliasName("UINT32")] uint nameCount
+            [Out, NativeTypeName("PWSTR")] char* name,
+            [In, NativeTypeName("UINT32")] uint nameCount
         );
 
         /// <summary>Gets the length of the text content value. The returned string length does not include room for the null terminator.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public /* static */ delegate uint _GetTextValueLength(
             [In] ID2D1SvgElement* This
         );
@@ -291,68 +291,68 @@ namespace TerraFX.Interop
         /// <summary>Sets an attribute of this element using a string. Returns an error if the attribute name is not valid on this element. Returns an error if the attribute cannot be expressed as the specified type.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetAttributeValue(
             [In] ID2D1SvgElement* This,
-            [In, ComAliasName("PCWSTR")] char* name,
+            [In, NativeTypeName("PCWSTR")] char* name,
             [In] D2D1_SVG_ATTRIBUTE_STRING_TYPE type,
-            [In, ComAliasName("PCWSTR")] char* value
+            [In, NativeTypeName("PCWSTR")] char* value
         );
 
         /// <summary>Gets an attribute of this element as a string. Returns an error if the attribute is not specified. Returns an error if the attribute name is not valid on this element. Returns an error if the attribute cannot be expressed as the specified string type.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetAttributeValue(
             [In] ID2D1SvgElement* This,
-            [In, ComAliasName("PCWSTR")] char* name,
+            [In, NativeTypeName("PCWSTR")] char* name,
             [In] D2D1_SVG_ATTRIBUTE_STRING_TYPE type,
-            [Out, ComAliasName("PWSTR")] char* value,
-            [In, ComAliasName("UINT32")] uint valueCount
+            [Out, NativeTypeName("PWSTR")] char* value,
+            [In, NativeTypeName("UINT32")] uint valueCount
         );
 
         /// <summary>Gets the string length of an attribute of this element. The returned string length does not include room for the null terminator. Returns an error if the attribute is not specified. Returns an error if the attribute name is not valid on this element. Returns an error if the attribute cannot be expressed as the specified string type.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetAttributeValueLength(
             [In] ID2D1SvgElement* This,
-            [In, ComAliasName("PCWSTR")] char* name,
+            [In, NativeTypeName("PCWSTR")] char* name,
             [In] D2D1_SVG_ATTRIBUTE_STRING_TYPE type,
-            [Out, ComAliasName("UINT32")] uint* valueLength
+            [Out, NativeTypeName("UINT32")] uint* valueLength
         );
 
         /// <summary>Sets an attribute of this element using a POD type. Returns an error if the attribute name is not valid on this element. Returns an error if the attribute cannot be expressed as the specified type.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetAttributeValue1(
             [In] ID2D1SvgElement* This,
-            [In, ComAliasName("PCWSTR")] char* name,
+            [In, NativeTypeName("PCWSTR")] char* name,
             [In] D2D1_SVG_ATTRIBUTE_POD_TYPE type,
             [In] void* value,
-            [In, ComAliasName("UINT32")] uint valueSizeInBytes
+            [In, NativeTypeName("UINT32")] uint valueSizeInBytes
         );
 
         /// <summary>Gets an attribute of this element as a POD type. Returns an error if the attribute is not specified. Returns an error if the attribute name is not valid on this element. Returns an error if the attribute cannot be expressed as the specified POD type.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetAttributeValue1(
             [In] ID2D1SvgElement* This,
-            [In, ComAliasName("PCWSTR")] char* name,
+            [In, NativeTypeName("PCWSTR")] char* name,
             [In] D2D1_SVG_ATTRIBUTE_POD_TYPE type,
             [Out] void* value,
-            [In, ComAliasName("UINT32")] uint valueSizeInBytes
+            [In, NativeTypeName("UINT32")] uint valueSizeInBytes
         );
 
         /// <summary>Sets an attribute of this element using an interface. Returns an error if the attribute name is not valid on this element. Returns an error if the attribute cannot be expressed as the specified interface type. Returns an error if the attribute object is already set on an element. A given attribute object may only be set on one element in one attribute location at a time.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetAttributeValue2(
             [In] ID2D1SvgElement* This,
-            [In, ComAliasName("PCWSTR")] char* name,
+            [In, NativeTypeName("PCWSTR")] char* name,
             [In] ID2D1SvgAttribute* value
         );
 
@@ -360,19 +360,19 @@ namespace TerraFX.Interop
         /// <param name="riid">The interface ID of the attribute value.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetAttributeValue2(
             [In] ID2D1SvgElement* This,
-            [In, ComAliasName("PCWSTR")] char* name,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("PCWSTR")] char* name,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** value
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -386,7 +386,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID2D1SvgElement* This = &this)
@@ -397,7 +397,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID2D1SvgElement* This = &this)
@@ -438,10 +438,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetTagName(
-            [Out, ComAliasName("PWSTR")] char* name,
-            [In, ComAliasName("UINT32")] uint nameCount
+            [Out, NativeTypeName("PWSTR")] char* name,
+            [In, NativeTypeName("UINT32")] uint nameCount
         )
         {
             fixed (ID2D1SvgElement* This = &this)
@@ -454,7 +454,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public uint GetTagNameLength()
         {
             fixed (ID2D1SvgElement* This = &this)
@@ -465,7 +465,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public int IsTextContent()
         {
             fixed (ID2D1SvgElement* This = &this)
@@ -489,7 +489,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public int HasChildren()
         {
             fixed (ID2D1SvgElement* This = &this)
@@ -526,7 +526,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetPreviousChild(
             [In] ID2D1SvgElement* referenceChild,
             [Out] ID2D1SvgElement** previousChild
@@ -542,7 +542,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetNextChild(
             [In] ID2D1SvgElement* referenceChild,
             [Out] ID2D1SvgElement** nextChild
@@ -558,7 +558,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int InsertChildBefore(
             [In] ID2D1SvgElement* newChild,
             [In] ID2D1SvgElement* referenceChild = null
@@ -574,7 +574,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int AppendChild(
             [In] ID2D1SvgElement* newChild
         )
@@ -588,7 +588,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int ReplaceChild(
             [In] ID2D1SvgElement* newChild,
             [In] ID2D1SvgElement* oldChild
@@ -604,7 +604,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int RemoveChild(
             [In] ID2D1SvgElement* oldChild
         )
@@ -618,9 +618,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateChild(
-            [In, Optional, ComAliasName("PCWSTR")] char* tagName,
+            [In, Optional, NativeTypeName("PCWSTR")] char* tagName,
             [Out] ID2D1SvgElement** newChild
         )
         {
@@ -634,10 +634,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("BOOL")]
+        [return: NativeTypeName("BOOL")]
         public int IsAttributeSpecified(
-            [In, ComAliasName("PCWSTR")] char* name,
-            [Out, ComAliasName("BOOL")] int* inherited = null
+            [In, NativeTypeName("PCWSTR")] char* name,
+            [Out, NativeTypeName("BOOL")] int* inherited = null
         )
         {
             fixed (ID2D1SvgElement* This = &this)
@@ -650,7 +650,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public uint GetSpecifiedAttributeCount()
         {
             fixed (ID2D1SvgElement* This = &this)
@@ -661,12 +661,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetSpecifiedAttributeName(
-            [In, ComAliasName("UINT32")] uint index,
-            [Out, ComAliasName("PWSTR")] char* name,
-            [In, ComAliasName("UINT32")] uint nameCount,
-            [Out, ComAliasName("BOOL")] int* inherited = null
+            [In, NativeTypeName("UINT32")] uint index,
+            [Out, NativeTypeName("PWSTR")] char* name,
+            [In, NativeTypeName("UINT32")] uint nameCount,
+            [Out, NativeTypeName("BOOL")] int* inherited = null
         )
         {
             fixed (ID2D1SvgElement* This = &this)
@@ -681,11 +681,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetSpecifiedAttributeNameLength(
-            [In, ComAliasName("UINT32")] uint index,
-            [Out, ComAliasName("UINT32")] uint* nameLength,
-            [Out, ComAliasName("BOOL")] int* inherited = null
+            [In, NativeTypeName("UINT32")] uint index,
+            [Out, NativeTypeName("UINT32")] uint* nameLength,
+            [Out, NativeTypeName("BOOL")] int* inherited = null
         )
         {
             fixed (ID2D1SvgElement* This = &this)
@@ -699,9 +699,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int RemoveAttribute(
-            [In, ComAliasName("PCWSTR")] char* name
+            [In, NativeTypeName("PCWSTR")] char* name
         )
         {
             fixed (ID2D1SvgElement* This = &this)
@@ -713,10 +713,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetTextValue(
-            [In, ComAliasName("WCHAR[]")] char* name,
-            [In, ComAliasName("UINT32")] uint nameCount
+            [In, NativeTypeName("WCHAR[]")] char* name,
+            [In, NativeTypeName("UINT32")] uint nameCount
         )
         {
             fixed (ID2D1SvgElement* This = &this)
@@ -729,10 +729,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetTextValue(
-            [Out, ComAliasName("PWSTR")] char* name,
-            [In, ComAliasName("UINT32")] uint nameCount
+            [Out, NativeTypeName("PWSTR")] char* name,
+            [In, NativeTypeName("UINT32")] uint nameCount
         )
         {
             fixed (ID2D1SvgElement* This = &this)
@@ -745,7 +745,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public uint GetTextValueLength()
         {
             fixed (ID2D1SvgElement* This = &this)
@@ -756,11 +756,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetAttributeValue(
-            [In, ComAliasName("PCWSTR")] char* name,
+            [In, NativeTypeName("PCWSTR")] char* name,
             [In] D2D1_SVG_ATTRIBUTE_STRING_TYPE type,
-            [In, ComAliasName("PCWSTR")] char* value
+            [In, NativeTypeName("PCWSTR")] char* value
         )
         {
             fixed (ID2D1SvgElement* This = &this)
@@ -774,12 +774,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetAttributeValue(
-            [In, ComAliasName("PCWSTR")] char* name,
+            [In, NativeTypeName("PCWSTR")] char* name,
             [In] D2D1_SVG_ATTRIBUTE_STRING_TYPE type,
-            [Out, ComAliasName("PWSTR")] char* value,
-            [In, ComAliasName("UINT32")] uint valueCount
+            [Out, NativeTypeName("PWSTR")] char* value,
+            [In, NativeTypeName("UINT32")] uint valueCount
         )
         {
             fixed (ID2D1SvgElement* This = &this)
@@ -794,11 +794,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetAttributeValueLength(
-            [In, ComAliasName("PCWSTR")] char* name,
+            [In, NativeTypeName("PCWSTR")] char* name,
             [In] D2D1_SVG_ATTRIBUTE_STRING_TYPE type,
-            [Out, ComAliasName("UINT32")] uint* valueLength
+            [Out, NativeTypeName("UINT32")] uint* valueLength
         )
         {
             fixed (ID2D1SvgElement* This = &this)
@@ -812,12 +812,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetAttributeValue1(
-            [In, ComAliasName("PCWSTR")] char* name,
+            [In, NativeTypeName("PCWSTR")] char* name,
             [In] D2D1_SVG_ATTRIBUTE_POD_TYPE type,
             [In] void* value,
-            [In, ComAliasName("UINT32")] uint valueSizeInBytes
+            [In, NativeTypeName("UINT32")] uint valueSizeInBytes
         )
         {
             fixed (ID2D1SvgElement* This = &this)
@@ -832,12 +832,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetAttributeValue1(
-            [In, ComAliasName("PCWSTR")] char* name,
+            [In, NativeTypeName("PCWSTR")] char* name,
             [In] D2D1_SVG_ATTRIBUTE_POD_TYPE type,
             [Out] void* value,
-            [In, ComAliasName("UINT32")] uint valueSizeInBytes
+            [In, NativeTypeName("UINT32")] uint valueSizeInBytes
         )
         {
             fixed (ID2D1SvgElement* This = &this)
@@ -852,9 +852,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetAttributeValue2(
-            [In, ComAliasName("PCWSTR")] char* name,
+            [In, NativeTypeName("PCWSTR")] char* name,
             [In] ID2D1SvgAttribute* value
         )
         {
@@ -868,10 +868,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetAttributeValue2(
-            [In, ComAliasName("PCWSTR")] char* name,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("PCWSTR")] char* name,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** value
         )
         {

@@ -4,7 +4,6 @@
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
 using System;
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -17,13 +16,13 @@ namespace TerraFX.Interop
 
         public void* pNext;
 
-        [ComAliasName("VkWaylandSurfaceCreateFlagsKHR")]
+        [NativeTypeName("VkWaylandSurfaceCreateFlagsKHR")]
         public uint flags;
 
-        [ComAliasName("wl_display")]
+        [NativeTypeName("wl_display")]
         public IntPtr display;
 
-        [ComAliasName("wl_surface")]
+        [NativeTypeName("wl_surface")]
         public IntPtr surface;
         #endregion
     }

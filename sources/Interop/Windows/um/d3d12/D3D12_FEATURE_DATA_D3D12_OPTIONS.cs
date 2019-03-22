@@ -3,7 +3,6 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,10 +11,10 @@ namespace TerraFX.Interop
     public struct D3D12_FEATURE_DATA_D3D12_OPTIONS
     {
         #region Fields
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int DoublePrecisionFloatShaderOps;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int OutputMergerLogicOp;
 
         public D3D12_SHADER_MIN_PRECISION_SUPPORT MinPrecisionSupport;
@@ -24,29 +23,29 @@ namespace TerraFX.Interop
 
         public D3D12_RESOURCE_BINDING_TIER ResourceBindingTier;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int PSSpecifiedStencilRefSupported;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int TypedUAVLoadAdditionalFormats;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int ROVsSupported;
 
         public D3D12_CONSERVATIVE_RASTERIZATION_TIER ConservativeRasterizationTier;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint MaxGPUVirtualAddressBitsPerResource;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int StandardSwizzle64KBSupported;
 
         public D3D12_CROSS_NODE_SHARING_TIER CrossNodeSharingTier;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int CrossAdapterRowMajorTextureSupported;
 
-        [ComAliasName("BOOL")]
+        [NativeTypeName("BOOL")]
         public int VPAndRTArrayIndexFromAnyShaderFeedingRasterizerSupportedWithoutGSEmulation;
 
         public D3D12_RESOURCE_HEAP_TIER ResourceHeapTier;

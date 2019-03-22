@@ -3,7 +3,6 @@
 // Ported from um\wincodec.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -14,22 +13,22 @@ namespace TerraFX.Interop
         #region Fields
         public D2D1_PIXEL_FORMAT pixelFormat;
 
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float dpiX;
 
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float dpiY;
 
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float Top;
 
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float Left;
 
-        [ComAliasName("UINT32")]
+        [NativeTypeName("UINT32")]
         public uint PixelWidth;
 
-        [ComAliasName("UINT32")]
+        [NativeTypeName("UINT32")]
         public uint PixelHeight;
         #endregion
     }

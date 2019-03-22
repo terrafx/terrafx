@@ -16,56 +16,56 @@ namespace TerraFX.Interop
         #region Fields
         #region struct
         [FieldOffset(0)]
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float _11;
 
         [FieldOffset(4)]
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float _12;
 
         [FieldOffset(8)]
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float _13;
 
         [FieldOffset(12)]
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float _21;
 
         [FieldOffset(16)]
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float _22;
 
         [FieldOffset(20)]
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float _23;
 
         [FieldOffset(24)]
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float _31;
 
         [FieldOffset(28)]
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float _32;
 
         [FieldOffset(32)]
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float _33;
 
         [FieldOffset(36)]
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float _41;
 
         [FieldOffset(40)]
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float _42;
 
         [FieldOffset(44)]
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float _43;
         #endregion
 
         [FieldOffset(0)]
-        [ComAliasName("FLOAT[4][3]")]
+        [NativeTypeName("FLOAT[4][3]")]
         public fixed float m[4 * 3];
         #endregion
     }

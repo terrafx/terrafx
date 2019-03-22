@@ -4,7 +4,6 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System;
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -14,10 +13,10 @@ namespace TerraFX.Interop
     public unsafe struct D2D1_HWND_RENDER_TARGET_PROPERTIES
     {
         #region Fields
-        [ComAliasName("HWND")]
+        [NativeTypeName("HWND")]
         public IntPtr hwnd;
 
-        [ComAliasName("D2D1_SIZE_U")]
+        [NativeTypeName("D2D1_SIZE_U")]
         public D2D_SIZE_U pixelSize;
 
         public D2D1_PRESENT_OPTIONS presentOptions;

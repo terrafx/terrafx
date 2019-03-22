@@ -4,7 +4,6 @@
 // Original source is Copyright © The Open Group.
 
 using System;
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -17,28 +16,28 @@ namespace TerraFX.Interop
 
         public nuint serial;
 
-        [ComAliasName("Bool")]
+        [NativeTypeName("Bool")]
         public int send_event;
 
-        [ComAliasName("Display")]
+        [NativeTypeName("Display")]
         public IntPtr display;
 
-        [ComAliasName("Window")]
+        [NativeTypeName("Window")]
         public nuint owner;
 
-        [ComAliasName("Window")]
+        [NativeTypeName("Window")]
         public nuint requestor;
 
-        [ComAliasName("Atom")]
+        [NativeTypeName("Atom")]
         public nuint selection;
 
-        [ComAliasName("Atom")]
+        [NativeTypeName("Atom")]
         public nuint target;
 
-        [ComAliasName("Atom")]
+        [NativeTypeName("Atom")]
         public nuint property;
 
-        [ComAliasName("Time")]
+        [NativeTypeName("Time")]
         public nuint time;
         #endregion
     }

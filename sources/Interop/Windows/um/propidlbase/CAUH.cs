@@ -3,7 +3,6 @@
 // Ported from um\propidlbase.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,10 +11,10 @@ namespace TerraFX.Interop
     public unsafe struct CAUH
     {
         #region Fields
-        [ComAliasName("ULONG")]
+        [NativeTypeName("ULONG")]
         public uint cElems;
 
-        [ComAliasName("ULARGE_INTEGER[]")]
+        [NativeTypeName("ULARGE_INTEGER[]")]
         public ULARGE_INTEGER* pElems;
         #endregion
     }

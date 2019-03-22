@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID2D1SimplifiedGeometrySink* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID2D1SimplifiedGeometrySink* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID2D1SimplifiedGeometrySink* This
         );
@@ -64,7 +64,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _BeginFigure(
             [In] ID2D1SimplifiedGeometrySink* This,
-            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F startPoint,
+            [In, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F startPoint,
             [In] D2D1_FIGURE_BEGIN figureBegin
         );
 
@@ -72,16 +72,16 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _AddLines(
             [In] ID2D1SimplifiedGeometrySink* This,
-            [In, ComAliasName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
-            [In, ComAliasName("UINT32")] uint pointsCount
+            [In, NativeTypeName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
+            [In, NativeTypeName("UINT32")] uint pointsCount
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _AddBeziers(
             [In] ID2D1SimplifiedGeometrySink* This,
-            [In, ComAliasName("D2D1_BEZIER_SEGMENT[]")] D2D1_BEZIER_SEGMENT* beziers,
-            [In, ComAliasName("UINT32")] uint beziersCount
+            [In, NativeTypeName("D2D1_BEZIER_SEGMENT[]")] D2D1_BEZIER_SEGMENT* beziers,
+            [In, NativeTypeName("UINT32")] uint beziersCount
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -93,16 +93,16 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Close(
             [In] ID2D1SimplifiedGeometrySink* This
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -116,7 +116,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID2D1SimplifiedGeometrySink* This = &this)
@@ -127,7 +127,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID2D1SimplifiedGeometrySink* This = &this)
@@ -167,7 +167,7 @@ namespace TerraFX.Interop
         }
 
         public void BeginFigure(
-            [In, ComAliasName("D2D1_POINT_2F")] D2D_POINT_2F startPoint,
+            [In, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F startPoint,
             [In] D2D1_FIGURE_BEGIN figureBegin
         )
         {
@@ -182,8 +182,8 @@ namespace TerraFX.Interop
         }
 
         public void AddLines(
-            [In, ComAliasName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
-            [In, ComAliasName("UINT32")] uint pointsCount
+            [In, NativeTypeName("D2D1_POINT_2F[]")] D2D_POINT_2F* points,
+            [In, NativeTypeName("UINT32")] uint pointsCount
         )
         {
             fixed (ID2D1SimplifiedGeometrySink* This = &this)
@@ -197,8 +197,8 @@ namespace TerraFX.Interop
         }
 
         public void AddBeziers(
-            [In, ComAliasName("D2D1_BEZIER_SEGMENT[]")] D2D1_BEZIER_SEGMENT* beziers,
-            [In, ComAliasName("UINT32")] uint beziersCount
+            [In, NativeTypeName("D2D1_BEZIER_SEGMENT[]")] D2D1_BEZIER_SEGMENT* beziers,
+            [In, NativeTypeName("UINT32")] uint beziersCount
         )
         {
             fixed (ID2D1SimplifiedGeometrySink* This = &this)
@@ -224,7 +224,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Close()
         {
             fixed (ID2D1SimplifiedGeometrySink* This = &this)

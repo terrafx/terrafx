@@ -3,7 +3,6 @@
 // Ported from um\d2d1svg.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -13,16 +12,16 @@ namespace TerraFX.Interop
     public struct D2D1_SVG_VIEWBOX
     {
         #region Fields
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float x;
 
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float y;
 
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float width;
 
-        [ComAliasName("FLOAT")]
+        [NativeTypeName("FLOAT")]
         public float height;
         #endregion
     }

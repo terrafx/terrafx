@@ -22,23 +22,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID3D12Device* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID3D12Device* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID3D12Device* This
         );
@@ -47,126 +47,126 @@ namespace TerraFX.Interop
         #region ID3D12Object Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetPrivateData(
             [In] ID3D12Device* This,
-            [In, ComAliasName("REFGUID")] Guid* guid,
-            [In, Out, ComAliasName("UINT")] uint* pDataSize,
+            [In, NativeTypeName("REFGUID")] Guid* guid,
+            [In, Out, NativeTypeName("UINT")] uint* pDataSize,
             [Out] void* pData = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetPrivateData(
             [In] ID3D12Device* This,
-            [In, ComAliasName("REFGUID")] Guid* guid,
-            [In, ComAliasName("UINT")] uint DataSize,
+            [In, NativeTypeName("REFGUID")] Guid* guid,
+            [In, NativeTypeName("UINT")] uint DataSize,
             [In] void* pData = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetPrivateDataInterface(
             [In] ID3D12Device* This,
-            [In, ComAliasName("REFGUID")] Guid* guid,
+            [In, NativeTypeName("REFGUID")] Guid* guid,
             [In] IUnknown* pData = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetName(
             [In] ID3D12Device* This,
-            [In, ComAliasName("LPCWSTR")] char* Name
+            [In, NativeTypeName("LPCWSTR")] char* Name
         );
         #endregion
 
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT")]
+        [return: NativeTypeName("UINT")]
         public /* static */ delegate uint _GetNodeCount(
             [In] ID3D12Device* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateCommandQueue(
             [In] ID3D12Device* This,
             [In] D3D12_COMMAND_QUEUE_DESC* pDesc,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppCommandQueue
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateCommandAllocator(
             [In] ID3D12Device* This,
             [In] D3D12_COMMAND_LIST_TYPE Type,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppCommandAllocator
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateGraphicsPipelineState(
             [In] ID3D12Device* This,
             [In] D3D12_GRAPHICS_PIPELINE_STATE_DESC* pDesc,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppPipelineState
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateComputePipelineState(
             [In] ID3D12Device* This,
             [In] D3D12_COMPUTE_PIPELINE_STATE_DESC* pDesc,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppPipelineState
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateCommandList(
             [In] ID3D12Device* This,
-            [In, ComAliasName("UINT")] uint NodeMask,
+            [In, NativeTypeName("UINT")] uint NodeMask,
             [In] D3D12_COMMAND_LIST_TYPE Type,
             [In] ID3D12CommandAllocator* pCommandAllocator,
             [In, Optional] ID3D12PipelineState* pInitialState,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppCommandList
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CheckFeatureSupport(
             [In] ID3D12Device* This,
             [In] D3D12_FEATURE Feature,
             [In, Out] void* pFeatureSupportData,
-            [In, ComAliasName("UINT")] uint FeatureSupportDataSize
+            [In, NativeTypeName("UINT")] uint FeatureSupportDataSize
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateDescriptorHeap(
             [In] ID3D12Device* This,
             [In] D3D12_DESCRIPTOR_HEAP_DESC* pDescriptorHeapDesc,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvHeap
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT")]
+        [return: NativeTypeName("UINT")]
         public /* static */ delegate uint _GetDescriptorHandleIncrementSize(
             [In] ID3D12Device* This,
             [In] D3D12_DESCRIPTOR_HEAP_TYPE DescriptorHeapType
@@ -174,13 +174,13 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateRootSignature(
             [In] ID3D12Device* This,
-            [In, ComAliasName("UINT")] uint NodeMask,
+            [In, NativeTypeName("UINT")] uint NodeMask,
             [In] void* pBlobWithRootSignature,
-            [In, ComAliasName("SIZE_T")] nuint blobLengthInBytes,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("SIZE_T")] nuint blobLengthInBytes,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvRootSignature
         );
 
@@ -241,12 +241,12 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _CopyDescriptors(
             [In] ID3D12Device* This,
-            [In, ComAliasName("UINT")] uint NumDestDescriptorRanges,
-            [In, ComAliasName("D3D12_CPU_DESCRIPTOR_HANDLE[]")] D3D12_CPU_DESCRIPTOR_HANDLE* pDestDescriptorRangeStarts,
-            [In, Optional, ComAliasName("UINT[]")] uint* pDestDescriptorRangeSizes,
-            [In, ComAliasName("UINT")] uint NumSrcDescriptorRanges,
-            [In, ComAliasName("D3D12_CPU_DESCRIPTOR_HANDLE[]")] D3D12_CPU_DESCRIPTOR_HANDLE* pSrcDescriptorRangeStarts,
-            [In, Optional, ComAliasName("UINT[]")] uint* pSrcDescriptorRangeSizes,
+            [In, NativeTypeName("UINT")] uint NumDestDescriptorRanges,
+            [In, NativeTypeName("D3D12_CPU_DESCRIPTOR_HANDLE[]")] D3D12_CPU_DESCRIPTOR_HANDLE* pDestDescriptorRangeStarts,
+            [In, Optional, NativeTypeName("UINT[]")] uint* pDestDescriptorRangeSizes,
+            [In, NativeTypeName("UINT")] uint NumSrcDescriptorRanges,
+            [In, NativeTypeName("D3D12_CPU_DESCRIPTOR_HANDLE[]")] D3D12_CPU_DESCRIPTOR_HANDLE* pSrcDescriptorRangeStarts,
+            [In, Optional, NativeTypeName("UINT[]")] uint* pSrcDescriptorRangeSizes,
             [In] D3D12_DESCRIPTOR_HEAP_TYPE DescriptorHeapsType
         );
 
@@ -254,7 +254,7 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _CopyDescriptorsSimple(
             [In] ID3D12Device* This,
-            [In, ComAliasName("UINT")] uint NumDescriptors,
+            [In, NativeTypeName("UINT")] uint NumDescriptors,
             [In] D3D12_CPU_DESCRIPTOR_HANDLE DestDescriptorRangeStart,
             [In] D3D12_CPU_DESCRIPTOR_HANDLE SrcDescriptorRangeStart,
             [In] D3D12_DESCRIPTOR_HEAP_TYPE DescriptorHeapsType
@@ -264,8 +264,8 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _GetResourceAllocationInfo(
             [In] ID3D12Device* This,
-            [In, ComAliasName("UINT")] uint visibleMask,
-            [In, ComAliasName("UINT")] uint numResourceDescs,
+            [In, NativeTypeName("UINT")] uint visibleMask,
+            [In, NativeTypeName("UINT")] uint numResourceDescs,
             [In] D3D12_RESOURCE_DESC* pResourceDescs,
             [Out] D3D12_RESOURCE_ALLOCATION_INFO* pResourceAllocationInfo
         );
@@ -274,14 +274,14 @@ namespace TerraFX.Interop
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _GetCustomHeapProperties(
             [In] ID3D12Device* This,
-            [In, ComAliasName("UINT")] uint NodeMask,
+            [In, NativeTypeName("UINT")] uint NodeMask,
             [In] D3D12_HEAP_TYPE heapType,
             [Out] D3D12_HEAP_PROPERTIES* pCustomHeapProperties
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateCommittedResource(
             [In] ID3D12Device* This,
             [In] D3D12_HEAP_PROPERTIES* pHeapProperties,
@@ -289,110 +289,110 @@ namespace TerraFX.Interop
             [In] D3D12_RESOURCE_DESC* pDesc,
             [In] D3D12_RESOURCE_STATES InitialResourceState,
             [In, Optional] D3D12_CLEAR_VALUE* pOptimizedClearValue,
-            [In, ComAliasName("REFIID")] Guid* riidResource,
+            [In, NativeTypeName("REFIID")] Guid* riidResource,
             [Out] void** ppvResource = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateHeap(
             [In] ID3D12Device* This,
             [In] D3D12_HEAP_DESC* pDesc,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvHeap = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreatePlacedResource(
             [In] ID3D12Device* This,
             [In] ID3D12Heap* pHeap,
-            [In, ComAliasName("UINT64")] ulong HeapOffset,
+            [In, NativeTypeName("UINT64")] ulong HeapOffset,
             [In] D3D12_RESOURCE_DESC* pDesc,
             [In] D3D12_RESOURCE_STATES InitialState,
             [In, Optional] D3D12_CLEAR_VALUE* pOptimizedClearValue,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvResource = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateReservedResource(
             [In] ID3D12Device* This,
             [In] D3D12_RESOURCE_DESC* pDesc,
             [In] D3D12_RESOURCE_STATES InitialState,
             [In, Optional] D3D12_CLEAR_VALUE* pOptimizedClearValue,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvResource = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateSharedHandle(
             [In] ID3D12Device* This,
             [In] ID3D12DeviceChild* pObject,
             [In, Optional] SECURITY_ATTRIBUTES* pAttributes,
-            [In, ComAliasName("DWORD")] uint Access,
-            [In, Optional, ComAliasName("LPCWSTR")] char* Name,
-            [Out, ComAliasName("HANDLE")] IntPtr* pHandle
+            [In, NativeTypeName("DWORD")] uint Access,
+            [In, Optional, NativeTypeName("LPCWSTR")] char* Name,
+            [Out, NativeTypeName("HANDLE")] IntPtr* pHandle
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _OpenSharedHandle(
             [In] ID3D12Device* This,
-            [In, ComAliasName("HANDLE")] IntPtr NTHandle,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("HANDLE")] IntPtr NTHandle,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObj = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _OpenSharedHandleByName(
             [In] ID3D12Device* This,
-            [In, ComAliasName("LPCWSTR")] char* Name,
-            [In, ComAliasName("DWORD")] uint Access,
-            [Out, ComAliasName("HANDLE")] IntPtr* pNTHandle
+            [In, NativeTypeName("LPCWSTR")] char* Name,
+            [In, NativeTypeName("DWORD")] uint Access,
+            [Out, NativeTypeName("HANDLE")] IntPtr* pNTHandle
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _MakeResident(
             [In] ID3D12Device* This,
-            [In, ComAliasName("UINT")] uint NumObjects,
-            [In, ComAliasName("ID3D12Pageable*[]")] ID3D12Pageable** ppObjects
+            [In, NativeTypeName("UINT")] uint NumObjects,
+            [In, NativeTypeName("ID3D12Pageable*[]")] ID3D12Pageable** ppObjects
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Evict(
             [In] ID3D12Device* This,
-            [In, ComAliasName("UINT")] uint NumObjects,
-            [In, ComAliasName("ID3D12Pageable*[]")] ID3D12Pageable** ppObjects
+            [In, NativeTypeName("UINT")] uint NumObjects,
+            [In, NativeTypeName("ID3D12Pageable*[]")] ID3D12Pageable** ppObjects
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateFence(
             [In] ID3D12Device* This,
-            [In, ComAliasName("UINT64")] ulong InitialValue,
+            [In, NativeTypeName("UINT64")] ulong InitialValue,
             [In] D3D12_FENCE_FLAGS Flags,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppFence
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetDeviceRemovedReason(
             [In] ID3D12Device* This
 
@@ -403,41 +403,41 @@ namespace TerraFX.Interop
         public /* static */ delegate void _GetCopyableFootprints(
             [In] ID3D12Device* This,
             [In] D3D12_RESOURCE_DESC* pResourceDesc,
-            [In, ComAliasName("UINT")] uint FirstSubresource,
-            [In, ComAliasName("UINT")] uint NumSubresources,
-            [In, ComAliasName("UINT64")] ulong BaseOffset,
-            [Out, ComAliasName("D3D12_PLACED_SUBRESOURCE_FOOTPRINT[]")] D3D12_PLACED_SUBRESOURCE_FOOTPRINT* pLayouts = null,
-            [Out, ComAliasName("UINT[]")] uint* pNumRows = null,
-            [Out, ComAliasName("UINT64[]")] ulong* pRowSizeInBytes = null,
-            [Out, ComAliasName("UINT64")] ulong* pTotalBytes = null
+            [In, NativeTypeName("UINT")] uint FirstSubresource,
+            [In, NativeTypeName("UINT")] uint NumSubresources,
+            [In, NativeTypeName("UINT64")] ulong BaseOffset,
+            [Out, NativeTypeName("D3D12_PLACED_SUBRESOURCE_FOOTPRINT[]")] D3D12_PLACED_SUBRESOURCE_FOOTPRINT* pLayouts = null,
+            [Out, NativeTypeName("UINT[]")] uint* pNumRows = null,
+            [Out, NativeTypeName("UINT64[]")] ulong* pRowSizeInBytes = null,
+            [Out, NativeTypeName("UINT64")] ulong* pTotalBytes = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateQueryHeap(
             [In] ID3D12Device* This,
             [In] D3D12_QUERY_HEAP_DESC* pDesc,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvHeap = null
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetStablePowerState(
             [In] ID3D12Device* This,
-            [In, ComAliasName("BOOL")] int Enable
+            [In, NativeTypeName("BOOL")] int Enable
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateCommandSignature(
             [In] ID3D12Device* This,
             [In] D3D12_COMMAND_SIGNATURE_DESC* pDesc,
             [In, Optional] ID3D12RootSignature* pRootSignature,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvCommandSignature = null
         );
 
@@ -446,11 +446,11 @@ namespace TerraFX.Interop
         public /* static */ delegate void _GetResourceTiling(
             [In] ID3D12Device* This,
             [In] ID3D12Resource* pTiledResource,
-            [Out, Optional, ComAliasName("UINT")] uint* pNumTilesForEntireResource,
+            [Out, Optional, NativeTypeName("UINT")] uint* pNumTilesForEntireResource,
             [Out, Optional] D3D12_PACKED_MIP_INFO* pPackedMipDesc,
             [Out, Optional] D3D12_TILE_SHAPE* pStandardTileShapeForNonPackedMips,
-            [In, Out, Optional, ComAliasName("UINT")] uint* pNumSubresourceTilings,
-            [In, ComAliasName("UINT")] uint FirstSubresourceTilingToGet,
+            [In, Out, Optional, NativeTypeName("UINT")] uint* pNumSubresourceTilings,
+            [In, NativeTypeName("UINT")] uint FirstSubresourceTilingToGet,
             [Out] D3D12_SUBRESOURCE_TILING* pSubresourceTilingsForNonPackedMips
         );
 
@@ -463,9 +463,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -479,7 +479,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID3D12Device* This = &this)
@@ -490,7 +490,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID3D12Device* This = &this)
@@ -503,10 +503,10 @@ namespace TerraFX.Interop
         #endregion
 
         #region ID3D12Object Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetPrivateData(
-            [In, ComAliasName("REFGUID")] Guid* guid,
-            [In, Out, ComAliasName("UINT")] uint* pDataSize,
+            [In, NativeTypeName("REFGUID")] Guid* guid,
+            [In, Out, NativeTypeName("UINT")] uint* pDataSize,
             [Out] void* pData = null
         )
         {
@@ -521,10 +521,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetPrivateData(
-            [In, ComAliasName("REFGUID")] Guid* guid,
-            [In, ComAliasName("UINT")] uint DataSize,
+            [In, NativeTypeName("REFGUID")] Guid* guid,
+            [In, NativeTypeName("UINT")] uint DataSize,
             [In] void* pData = null
         )
         {
@@ -539,9 +539,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetPrivateDataInterface(
-            [In, ComAliasName("REFGUID")] Guid* guid,
+            [In, NativeTypeName("REFGUID")] Guid* guid,
             [In] IUnknown* pData = null
         )
         {
@@ -555,9 +555,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetName(
-            [In, ComAliasName("LPCWSTR")] char* Name
+            [In, NativeTypeName("LPCWSTR")] char* Name
         )
         {
             fixed (ID3D12Device* This = &this)
@@ -571,7 +571,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("UINT")]
+        [return: NativeTypeName("UINT")]
         public uint GetNodeCount()
         {
             fixed (ID3D12Device* This = &this)
@@ -582,10 +582,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateCommandQueue(
             [In] D3D12_COMMAND_QUEUE_DESC* pDesc,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppCommandQueue
         )
         {
@@ -600,10 +600,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateCommandAllocator(
             [In] D3D12_COMMAND_LIST_TYPE Type,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppCommandAllocator
         )
         {
@@ -618,10 +618,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateGraphicsPipelineState(
             [In] D3D12_GRAPHICS_PIPELINE_STATE_DESC* pDesc,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppPipelineState
         )
         {
@@ -636,10 +636,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateComputePipelineState(
             [In] D3D12_COMPUTE_PIPELINE_STATE_DESC* pDesc,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppPipelineState
         )
         {
@@ -654,13 +654,13 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateCommandList(
-            [In, ComAliasName("UINT")] uint NodeMask,
+            [In, NativeTypeName("UINT")] uint NodeMask,
             [In] D3D12_COMMAND_LIST_TYPE Type,
             [In] ID3D12CommandAllocator* pCommandAllocator,
             [In, Optional] ID3D12PipelineState* pInitialState,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppCommandList
         )
         {
@@ -678,11 +678,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CheckFeatureSupport(
             [In] D3D12_FEATURE Feature,
             [In, Out] void* pFeatureSupportData,
-            [In, ComAliasName("UINT")] uint FeatureSupportDataSize
+            [In, NativeTypeName("UINT")] uint FeatureSupportDataSize
         )
         {
             fixed (ID3D12Device* This = &this)
@@ -696,10 +696,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateDescriptorHeap(
             [In] D3D12_DESCRIPTOR_HEAP_DESC* pDescriptorHeapDesc,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvHeap
         )
         {
@@ -714,7 +714,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("UINT")]
+        [return: NativeTypeName("UINT")]
         public uint GetDescriptorHandleIncrementSize(
             [In] D3D12_DESCRIPTOR_HEAP_TYPE DescriptorHeapType
         )
@@ -728,12 +728,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateRootSignature(
-            [In, ComAliasName("UINT")] uint NodeMask,
+            [In, NativeTypeName("UINT")] uint NodeMask,
             [In] void* pBlobWithRootSignature,
-            [In, ComAliasName("SIZE_T")] nuint blobLengthInBytes,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("SIZE_T")] nuint blobLengthInBytes,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvRootSignature
         )
         {
@@ -851,12 +851,12 @@ namespace TerraFX.Interop
         }
 
         public void CopyDescriptors(
-            [In, ComAliasName("UINT")] uint NumDestDescriptorRanges,
-            [In, ComAliasName("D3D12_CPU_DESCRIPTOR_HANDLE[]")] D3D12_CPU_DESCRIPTOR_HANDLE* pDestDescriptorRangeStarts,
-            [In, Optional, ComAliasName("UINT[]")] uint* pDestDescriptorRangeSizes,
-            [In, ComAliasName("UINT")] uint NumSrcDescriptorRanges,
-            [In, ComAliasName("D3D12_CPU_DESCRIPTOR_HANDLE[]")] D3D12_CPU_DESCRIPTOR_HANDLE* pSrcDescriptorRangeStarts,
-            [In, Optional, ComAliasName("UINT[]")] uint* pSrcDescriptorRangeSizes,
+            [In, NativeTypeName("UINT")] uint NumDestDescriptorRanges,
+            [In, NativeTypeName("D3D12_CPU_DESCRIPTOR_HANDLE[]")] D3D12_CPU_DESCRIPTOR_HANDLE* pDestDescriptorRangeStarts,
+            [In, Optional, NativeTypeName("UINT[]")] uint* pDestDescriptorRangeSizes,
+            [In, NativeTypeName("UINT")] uint NumSrcDescriptorRanges,
+            [In, NativeTypeName("D3D12_CPU_DESCRIPTOR_HANDLE[]")] D3D12_CPU_DESCRIPTOR_HANDLE* pSrcDescriptorRangeStarts,
+            [In, Optional, NativeTypeName("UINT[]")] uint* pSrcDescriptorRangeSizes,
             [In] D3D12_DESCRIPTOR_HEAP_TYPE DescriptorHeapsType
         )
         {
@@ -876,7 +876,7 @@ namespace TerraFX.Interop
         }
 
         public void CopyDescriptorsSimple(
-            [In, ComAliasName("UINT")] uint NumDescriptors,
+            [In, NativeTypeName("UINT")] uint NumDescriptors,
             [In] D3D12_CPU_DESCRIPTOR_HANDLE DestDescriptorRangeStart,
             [In] D3D12_CPU_DESCRIPTOR_HANDLE SrcDescriptorRangeStart,
             [In] D3D12_DESCRIPTOR_HEAP_TYPE DescriptorHeapsType
@@ -895,8 +895,8 @@ namespace TerraFX.Interop
         }
 
         public void GetResourceAllocationInfo(
-            [In, ComAliasName("UINT")] uint visibleMask,
-            [In, ComAliasName("UINT")] uint numResourceDescs,
+            [In, NativeTypeName("UINT")] uint visibleMask,
+            [In, NativeTypeName("UINT")] uint numResourceDescs,
             [In] D3D12_RESOURCE_DESC* pResourceDescs,
             [Out] D3D12_RESOURCE_ALLOCATION_INFO* pResourceAllocationInfo
         )
@@ -914,7 +914,7 @@ namespace TerraFX.Interop
         }
 
         public void GetCustomHeapProperties(
-            [In, ComAliasName("UINT")] uint NodeMask,
+            [In, NativeTypeName("UINT")] uint NodeMask,
             [In] D3D12_HEAP_TYPE heapType,
             [Out] D3D12_HEAP_PROPERTIES* pCustomHeapProperties
         )
@@ -930,14 +930,14 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateCommittedResource(
             [In] D3D12_HEAP_PROPERTIES* pHeapProperties,
             [In] D3D12_HEAP_FLAGS HeapFlags,
             [In] D3D12_RESOURCE_DESC* pDesc,
             [In] D3D12_RESOURCE_STATES InitialResourceState,
             [In, Optional] D3D12_CLEAR_VALUE* pOptimizedClearValue,
-            [In, ComAliasName("REFIID")] Guid* riidResource,
+            [In, NativeTypeName("REFIID")] Guid* riidResource,
             [Out] void** ppvResource = null
         )
         {
@@ -956,10 +956,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateHeap(
             [In] D3D12_HEAP_DESC* pDesc,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvHeap = null
         )
         {
@@ -974,14 +974,14 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreatePlacedResource(
             [In] ID3D12Heap* pHeap,
-            [In, ComAliasName("UINT64")] ulong HeapOffset,
+            [In, NativeTypeName("UINT64")] ulong HeapOffset,
             [In] D3D12_RESOURCE_DESC* pDesc,
             [In] D3D12_RESOURCE_STATES InitialState,
             [In, Optional] D3D12_CLEAR_VALUE* pOptimizedClearValue,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvResource = null
         )
         {
@@ -1000,12 +1000,12 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateReservedResource(
             [In] D3D12_RESOURCE_DESC* pDesc,
             [In] D3D12_RESOURCE_STATES InitialState,
             [In, Optional] D3D12_CLEAR_VALUE* pOptimizedClearValue,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvResource = null
         )
         {
@@ -1022,13 +1022,13 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateSharedHandle(
             [In] ID3D12DeviceChild* pObject,
             [In, Optional] SECURITY_ATTRIBUTES* pAttributes,
-            [In, ComAliasName("DWORD")] uint Access,
-            [In, Optional, ComAliasName("LPCWSTR")] char* Name,
-            [Out, ComAliasName("HANDLE")] IntPtr* pHandle
+            [In, NativeTypeName("DWORD")] uint Access,
+            [In, Optional, NativeTypeName("LPCWSTR")] char* Name,
+            [Out, NativeTypeName("HANDLE")] IntPtr* pHandle
         )
         {
             fixed (ID3D12Device* This = &this)
@@ -1044,10 +1044,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int OpenSharedHandle(
-            [In, ComAliasName("HANDLE")] IntPtr NTHandle,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("HANDLE")] IntPtr NTHandle,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObj = null
         )
         {
@@ -1062,11 +1062,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int OpenSharedHandleByName(
-            [In, ComAliasName("LPCWSTR")] char* Name,
-            [In, ComAliasName("DWORD")] uint Access,
-            [Out, ComAliasName("HANDLE")] IntPtr* pNTHandle
+            [In, NativeTypeName("LPCWSTR")] char* Name,
+            [In, NativeTypeName("DWORD")] uint Access,
+            [Out, NativeTypeName("HANDLE")] IntPtr* pNTHandle
         )
         {
             fixed (ID3D12Device* This = &this)
@@ -1080,10 +1080,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int MakeResident(
-            [In, ComAliasName("UINT")] uint NumObjects,
-            [In, ComAliasName("ID3D12Pageable*[]")] ID3D12Pageable** ppObjects
+            [In, NativeTypeName("UINT")] uint NumObjects,
+            [In, NativeTypeName("ID3D12Pageable*[]")] ID3D12Pageable** ppObjects
         )
         {
             fixed (ID3D12Device* This = &this)
@@ -1096,10 +1096,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Evict(
-            [In, ComAliasName("UINT")] uint NumObjects,
-            [In, ComAliasName("ID3D12Pageable*[]")] ID3D12Pageable** ppObjects
+            [In, NativeTypeName("UINT")] uint NumObjects,
+            [In, NativeTypeName("ID3D12Pageable*[]")] ID3D12Pageable** ppObjects
         )
         {
             fixed (ID3D12Device* This = &this)
@@ -1112,11 +1112,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateFence(
-            [In, ComAliasName("UINT64")] ulong InitialValue,
+            [In, NativeTypeName("UINT64")] ulong InitialValue,
             [In] D3D12_FENCE_FLAGS Flags,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppFence
         )
         {
@@ -1132,7 +1132,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetDeviceRemovedReason()
         {
             fixed (ID3D12Device* This = &this)
@@ -1145,13 +1145,13 @@ namespace TerraFX.Interop
 
         public void GetCopyableFootprints(
             [In] D3D12_RESOURCE_DESC* pResourceDesc,
-            [In, ComAliasName("UINT")] uint FirstSubresource,
-            [In, ComAliasName("UINT")] uint NumSubresources,
-            [In, ComAliasName("UINT64")] ulong BaseOffset,
-            [Out, ComAliasName("D3D12_PLACED_SUBRESOURCE_FOOTPRINT[]")] D3D12_PLACED_SUBRESOURCE_FOOTPRINT* pLayouts = null,
-            [Out, ComAliasName("UINT[]")] uint* pNumRows = null,
-            [Out, ComAliasName("UINT64[]")] ulong* pRowSizeInBytes = null,
-            [Out, ComAliasName("UINT64")] ulong* pTotalBytes = null
+            [In, NativeTypeName("UINT")] uint FirstSubresource,
+            [In, NativeTypeName("UINT")] uint NumSubresources,
+            [In, NativeTypeName("UINT64")] ulong BaseOffset,
+            [Out, NativeTypeName("D3D12_PLACED_SUBRESOURCE_FOOTPRINT[]")] D3D12_PLACED_SUBRESOURCE_FOOTPRINT* pLayouts = null,
+            [Out, NativeTypeName("UINT[]")] uint* pNumRows = null,
+            [Out, NativeTypeName("UINT64[]")] ulong* pRowSizeInBytes = null,
+            [Out, NativeTypeName("UINT64")] ulong* pTotalBytes = null
         )
         {
             fixed (ID3D12Device* This = &this)
@@ -1170,10 +1170,10 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateQueryHeap(
             [In] D3D12_QUERY_HEAP_DESC* pDesc,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvHeap = null
         )
         {
@@ -1188,9 +1188,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetStablePowerState(
-            [In, ComAliasName("BOOL")] int Enable
+            [In, NativeTypeName("BOOL")] int Enable
         )
         {
             fixed (ID3D12Device* This = &this)
@@ -1202,11 +1202,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreateCommandSignature(
             [In] D3D12_COMMAND_SIGNATURE_DESC* pDesc,
             [In, Optional] ID3D12RootSignature* pRootSignature,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvCommandSignature = null
         )
         {
@@ -1224,11 +1224,11 @@ namespace TerraFX.Interop
 
         public void GetResourceTiling(
             [In] ID3D12Resource* pTiledResource,
-            [Out, Optional, ComAliasName("UINT")] uint* pNumTilesForEntireResource,
+            [Out, Optional, NativeTypeName("UINT")] uint* pNumTilesForEntireResource,
             [Out, Optional] D3D12_PACKED_MIP_INFO* pPackedMipDesc,
             [Out, Optional] D3D12_TILE_SHAPE* pStandardTileShapeForNonPackedMips,
-            [In, Out, Optional, ComAliasName("UINT")] uint* pNumSubresourceTilings,
-            [In, ComAliasName("UINT")] uint FirstSubresourceTilingToGet,
+            [In, Out, Optional, NativeTypeName("UINT")] uint* pNumSubresourceTilings,
+            [In, NativeTypeName("UINT")] uint FirstSubresourceTilingToGet,
             [Out] D3D12_SUBRESOURCE_TILING* pSubresourceTilingsForNonPackedMips
         )
         {

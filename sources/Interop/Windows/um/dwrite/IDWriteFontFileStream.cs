@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDWriteFontFileStream* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDWriteFontFileStream* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDWriteFontFileStream* This
         );
@@ -55,12 +55,12 @@ namespace TerraFX.Interop
         /// <remarks>IMPORTANT: ReadFileFragment() implementations must check whether the requested file fragment is within the file bounds. Otherwise, an error should be returned from ReadFileFragment.</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _ReadFileFragment(
             [In] IDWriteFontFileStream* This,
             [Out] void** fragmentStart,
-            [In, ComAliasName("UINT64")] ulong fileOffset,
-            [In, ComAliasName("UINT64")] ulong fragmentSize,
+            [In, NativeTypeName("UINT64")] ulong fileOffset,
+            [In, NativeTypeName("UINT64")] ulong fragmentSize,
             [Out] void** fragmentContext
         );
 
@@ -79,10 +79,10 @@ namespace TerraFX.Interop
         /// <remarks>Implementing GetFileSize() for asynchronously loaded font files may require downloading the complete file contents, therefore this method should only be used for operations that either require complete font file to be loaded (e.g., copying a font file) or need to make decisions based on the value of the file size (e.g., validation against a persisted file size).</remarks>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetFileSize(
             [In] IDWriteFontFileStream* This,
-            [Out, ComAliasName("UINT64")] ulong* fileSize
+            [Out, NativeTypeName("UINT64")] ulong* fileSize
         );
 
         /// <summary>Obtains the last modified time of the file. The last modified time is used by DirectWrite font selection algorithms to determine whether one font resource is more up to date than another one.</summary>
@@ -90,17 +90,17 @@ namespace TerraFX.Interop
         /// <returns>Standard HRESULT error code. For resources that don't have a concept of the last modified time, the implementation of GetLastWriteTime should return E_NOTIMPL.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetLastWriteTime(
             [In] IDWriteFontFileStream* This,
-            [Out, ComAliasName("UINT64")] ulong* lastWriteTime
+            [Out, NativeTypeName("UINT64")] ulong* lastWriteTime
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -114,7 +114,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDWriteFontFileStream* This = &this)
@@ -125,7 +125,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDWriteFontFileStream* This = &this)
@@ -138,11 +138,11 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int ReadFileFragment(
             [Out] void** fragmentStart,
-            [In, ComAliasName("UINT64")] ulong fileOffset,
-            [In, ComAliasName("UINT64")] ulong fragmentSize,
+            [In, NativeTypeName("UINT64")] ulong fileOffset,
+            [In, NativeTypeName("UINT64")] ulong fragmentSize,
             [Out] void** fragmentContext
         )
         {
@@ -171,9 +171,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetFileSize(
-            [Out, ComAliasName("UINT64")] ulong* fileSize
+            [Out, NativeTypeName("UINT64")] ulong* fileSize
         )
         {
             fixed (IDWriteFontFileStream* This = &this)
@@ -185,9 +185,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetLastWriteTime(
-            [Out, ComAliasName("UINT64")] ulong* lastWriteTime
+            [Out, NativeTypeName("UINT64")] ulong* lastWriteTime
         )
         {
             fixed (IDWriteFontFileStream* This = &this)

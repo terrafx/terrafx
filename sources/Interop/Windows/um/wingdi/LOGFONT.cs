@@ -13,46 +13,46 @@ namespace TerraFX.Interop
     public unsafe struct LOGFONT
     {
         #region Fields
-        [ComAliasName("LONG")]
+        [NativeTypeName("LONG")]
         public int lfHeight;
 
-        [ComAliasName("LONG")]
+        [NativeTypeName("LONG")]
         public int lfWidth;
 
-        [ComAliasName("LONG")]
+        [NativeTypeName("LONG")]
         public int lfEscapement;
 
-        [ComAliasName("LONG")]
+        [NativeTypeName("LONG")]
         public int lfOrientation;
 
-        [ComAliasName("LONG")]
+        [NativeTypeName("LONG")]
         public int lfWeight;
 
-        [ComAliasName("BYTE")]
+        [NativeTypeName("BYTE")]
         public byte lfItalic;
 
-        [ComAliasName("BYTE")]
+        [NativeTypeName("BYTE")]
         public byte lfUnderline;
 
-        [ComAliasName("BYTE")]
+        [NativeTypeName("BYTE")]
         public byte lfStrikeOut;
 
-        [ComAliasName("BYTE")]
+        [NativeTypeName("BYTE")]
         public byte lfCharSet;
 
-        [ComAliasName("BYTE")]
+        [NativeTypeName("BYTE")]
         public byte lfOutPrecision;
 
-        [ComAliasName("BYTE")]
+        [NativeTypeName("BYTE")]
         public byte lfClipPrecision;
 
-        [ComAliasName("BYTE")]
+        [NativeTypeName("BYTE")]
         public byte lfQuality;
 
-        [ComAliasName("BYTE")]
+        [NativeTypeName("BYTE")]
         public byte lfPitchAndFamily;
 
-        [ComAliasName("WCHAR[32]")]
+        [NativeTypeName("WCHAR[32]")]
         public fixed char lfFaceName[32];
         #endregion
     }

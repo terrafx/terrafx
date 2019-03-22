@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
@@ -58,7 +59,7 @@ namespace TerraFX.Interop
         #region External Methods
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1CreateDevice", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public static extern int D2D1CreateDevice(
             [In] IDXGIDevice* dxgiDevice,
             [In, Optional] D2D1_CREATION_PROPERTIES* creationProperties,
@@ -67,7 +68,7 @@ namespace TerraFX.Interop
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1CreateDeviceContext", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public static extern int D2D1CreateDeviceContext(
             [In] IDXGISurface* dxgiSurface,
             [In, Optional] D2D1_CREATION_PROPERTIES* creationProperties,
@@ -76,35 +77,35 @@ namespace TerraFX.Interop
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1ConvertColorSpace", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("D2D1_COLOR_F")]
+        [return: NativeTypeName("D2D1_COLOR_F")]
         public static extern DXGI_RGBA D2D1ConvertColorSpace(
             [In] D2D1_COLOR_SPACE sourceColorSpace,
             [In] D2D1_COLOR_SPACE destinationColorSpace,
-            [In, ComAliasName("D2D1_COLOR_F")] DXGI_RGBA* color
+            [In, NativeTypeName("D2D1_COLOR_F")] DXGI_RGBA* color
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1SinCos", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern void D2D1SinCos(
-          [In, ComAliasName("FLOAT")] float angle,
-          [Out, ComAliasName("FLOAT")] float* s,
-          [Out, ComAliasName("FLOAT")] float* c
+          [In, NativeTypeName("FLOAT")] float angle,
+          [Out, NativeTypeName("FLOAT")] float* s,
+          [Out, NativeTypeName("FLOAT")] float* c
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1Tan", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("FLOAT")]
+        [return: NativeTypeName("FLOAT")]
         public static extern float D2D1Tan(
-            [In, ComAliasName("FLOAT")] float angle
+            [In, NativeTypeName("FLOAT")] float angle
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1Vec3Length", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
-        [return: ComAliasName("FLOAT")]
+        [return: NativeTypeName("FLOAT")]
         public static extern float D2D1Vec3Length(
-          [In, ComAliasName("FLOAT")] float x,
-          [In, ComAliasName("FLOAT")] float y,
-          [In, ComAliasName("FLOAT")] float z
+          [In, NativeTypeName("FLOAT")] float x,
+          [In, NativeTypeName("FLOAT")] float y,
+          [In, NativeTypeName("FLOAT")] float z
         );
         #endregion
     }

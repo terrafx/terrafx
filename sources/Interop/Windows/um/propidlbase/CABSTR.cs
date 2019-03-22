@@ -13,10 +13,10 @@ namespace TerraFX.Interop
     public unsafe struct CABSTR
     {
         #region Fields
-        [ComAliasName("ULONG")]
+        [NativeTypeName("ULONG")]
         public uint cElems;
 
-        [ComAliasName("BSTR[]")]
+        [NativeTypeName("BSTR[]")]
         public char** pElems;
         #endregion
     }

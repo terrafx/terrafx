@@ -22,23 +22,23 @@ namespace TerraFX.Interop.Desktop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDXGISwapChainMedia* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDXGISwapChainMedia* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDXGISwapChainMedia* This
         );
@@ -47,7 +47,7 @@ namespace TerraFX.Interop.Desktop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetFrameStatisticsMedia(
             [In] IDXGISwapChainMedia* This,
             [Out] DXGI_FRAME_STATISTICS_MEDIA* pStats
@@ -55,27 +55,27 @@ namespace TerraFX.Interop.Desktop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetPresentDuration(
             [In] IDXGISwapChainMedia* This,
-            [In, ComAliasName("UINT")] uint Duration
+            [In, NativeTypeName("UINT")] uint Duration
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CheckPresentDurationSupport(
             [In] IDXGISwapChainMedia* This,
-            [In, ComAliasName("UINT")] uint DesiredPresentDuration,
-            [Out, ComAliasName("UINT")] uint* pClosestSmallerPresentDuration,
-            [Out, ComAliasName("UINT")] uint* pClosestLargerPresentDuration
+            [In, NativeTypeName("UINT")] uint DesiredPresentDuration,
+            [Out, NativeTypeName("UINT")] uint* pClosestSmallerPresentDuration,
+            [Out, NativeTypeName("UINT")] uint* pClosestLargerPresentDuration
         );
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -89,7 +89,7 @@ namespace TerraFX.Interop.Desktop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (IDXGISwapChainMedia* This = &this)
@@ -100,7 +100,7 @@ namespace TerraFX.Interop.Desktop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (IDXGISwapChainMedia* This = &this)
@@ -113,7 +113,7 @@ namespace TerraFX.Interop.Desktop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetFrameStatisticsMedia(
             [Out] DXGI_FRAME_STATISTICS_MEDIA* pStats
         )
@@ -127,9 +127,9 @@ namespace TerraFX.Interop.Desktop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int SetPresentDuration(
-            [In, ComAliasName("UINT")] uint Duration
+            [In, NativeTypeName("UINT")] uint Duration
         )
         {
             fixed (IDXGISwapChainMedia* This = &this)
@@ -141,11 +141,11 @@ namespace TerraFX.Interop.Desktop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CheckPresentDurationSupport(
-            [In, ComAliasName("UINT")] uint DesiredPresentDuration,
-            [Out, ComAliasName("UINT")] uint* pClosestSmallerPresentDuration,
-            [Out, ComAliasName("UINT")] uint* pClosestLargerPresentDuration
+            [In, NativeTypeName("UINT")] uint DesiredPresentDuration,
+            [Out, NativeTypeName("UINT")] uint* pClosestSmallerPresentDuration,
+            [Out, NativeTypeName("UINT")] uint* pClosestLargerPresentDuration
         )
         {
             fixed (IDXGISwapChainMedia* This = &this)

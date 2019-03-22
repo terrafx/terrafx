@@ -6,16 +6,17 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop.Desktop
 {
     [SuppressUnmanagedCodeSecurity]
     [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-    [return: ComAliasName("LRESULT")]
+    [return: NativeTypeName("LRESULT")]
     public /* static */ unsafe delegate nint WNDPROC(
-        [In, ComAliasName("HWND")] IntPtr hWnd,
-        [In, ComAliasName("UINT")] uint Msg,
-        [In, ComAliasName("WPARAM")] nuint wParam,
-        [In, ComAliasName("LPARAM")] nint lParam
+        [In, NativeTypeName("HWND")] IntPtr hWnd,
+        [In, NativeTypeName("UINT")] uint Msg,
+        [In, NativeTypeName("WPARAM")] nuint wParam,
+        [In, NativeTypeName("LPARAM")] nint lParam
     );
 }

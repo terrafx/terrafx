@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
@@ -23,11 +24,11 @@ namespace TerraFX.Interop
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateSharedSwapchainsKHR", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateSharedSwapchainsKHR(
-            [In, ComAliasName("VkDevice")] IntPtr device,
+            [In, NativeTypeName("VkDevice")] IntPtr device,
             [In] uint swapchainCount,
-            [In, ComAliasName("VkSwapchainCreateInfoKHR[]")] VkSwapchainCreateInfoKHR* pCreateInfos,
+            [In, NativeTypeName("VkSwapchainCreateInfoKHR[]")] VkSwapchainCreateInfoKHR* pCreateInfos,
             [In, Optional] VkAllocationCallbacks* pAllocator,
-            [Out, ComAliasName("VkSwapchainKHR[]")] IntPtr* pSwapchains
+            [Out, NativeTypeName("VkSwapchainKHR[]")] IntPtr* pSwapchains
         );
         #endregion
     }

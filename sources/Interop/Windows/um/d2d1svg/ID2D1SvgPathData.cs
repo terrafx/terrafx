@@ -23,23 +23,23 @@ namespace TerraFX.Interop
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID2D1SvgPathData* This,
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID2D1SvgPathData* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID2D1SvgPathData* This
         );
@@ -67,7 +67,7 @@ namespace TerraFX.Interop
         /// <summary>Creates a clone of this attribute value. On creation, the cloned attribute is not set on any element.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _Clone(
             [In] ID2D1SvgPathData* This,
             [Out] ID2D1SvgAttribute** attribute
@@ -79,10 +79,10 @@ namespace TerraFX.Interop
         /// <param name="dataCount">Specifies how much data to remove.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _RemoveSegmentDataAtEnd(
             [In] ID2D1SvgPathData* This,
-            [In, ComAliasName("UINT32")] uint dataCount
+            [In, NativeTypeName("UINT32")] uint dataCount
         );
 
         /// <summary>Updates the segment data array. Existing segment data not updated by this method are preserved. The array is resized larger if necessary to accomodate the new segment data.</summary>
@@ -91,12 +91,12 @@ namespace TerraFX.Interop
         /// <param name="startIndex">The index at which to begin updating segment data. Must be less than or equal to the size of the segment data array.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _UpdateSegmentData(
             [In] ID2D1SvgPathData* This,
-            [In, ComAliasName("FLOAT[]")] float* data,
-            [In, ComAliasName("UINT32")] uint dataCount,
-            [In, ComAliasName("UINT32")] uint startIndex = 0
+            [In, NativeTypeName("FLOAT[]")] float* data,
+            [In, NativeTypeName("UINT32")] uint dataCount,
+            [In, NativeTypeName("UINT32")] uint startIndex = 0
         );
 
         /// <summary>Gets data from the segment data array.</summary>
@@ -105,18 +105,18 @@ namespace TerraFX.Interop
         /// <param name="startIndex">The index of the first segment data to retrieve.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetSegmentData(
             [In] ID2D1SvgPathData* This,
-            [Out, ComAliasName("FLOAT[]")] float* data,
-            [In, ComAliasName("UINT32")] uint dataCount,
-            [In, ComAliasName("UINT32")] uint startIndex = 0
+            [Out, NativeTypeName("FLOAT[]")] float* data,
+            [In, NativeTypeName("UINT32")] uint dataCount,
+            [In, NativeTypeName("UINT32")] uint startIndex = 0
         );
 
         /// <summary>Gets the size of the segment data array.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public /* static */ delegate uint _GetSegmentDataCount(
             [In] ID2D1SvgPathData* This
         );
@@ -125,10 +125,10 @@ namespace TerraFX.Interop
         /// <param name="commandsCount">Specifies how many commands to remove.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _RemoveCommandsAtEnd(
             [In] ID2D1SvgPathData* This,
-            [In, ComAliasName("UINT32")] uint commandsCount
+            [In, NativeTypeName("UINT32")] uint commandsCount
         );
 
         /// <summary>Updates the commands array. Existing commands not updated by this method are preserved. The array is resized larger if necessary to accomodate the new commands.</summary>
@@ -137,12 +137,12 @@ namespace TerraFX.Interop
         /// <param name="startIndex">The index at which to begin updating commands. Must be less than or equal to the size of the commands array.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _UpdateCommands(
             [In] ID2D1SvgPathData* This,
-            [In, ComAliasName("D2D1_SVG_PATH_COMMAND")] D2D1_SVG_PATH_COMMAND* commands,
-            [In, ComAliasName("UINT32")] uint commandsCount,
-            [In, ComAliasName("UINT32")] uint startIndex = 0
+            [In, NativeTypeName("D2D1_SVG_PATH_COMMAND")] D2D1_SVG_PATH_COMMAND* commands,
+            [In, NativeTypeName("UINT32")] uint commandsCount,
+            [In, NativeTypeName("UINT32")] uint startIndex = 0
         );
 
         /// <summary>Gets commands from the commands array.</summary>
@@ -151,18 +151,18 @@ namespace TerraFX.Interop
         /// <param name="startIndex">The index of the first commands to retrieve.</param>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetCommands(
             [In] ID2D1SvgPathData* This,
-            [Out, ComAliasName("D2D1_SVG_PATH_COMMAND[]")] D2D1_SVG_PATH_COMMAND* commands,
-            [In, ComAliasName("UINT32")] uint commandsCount,
-            [In, ComAliasName("UINT32")] uint startIndex = 0
+            [Out, NativeTypeName("D2D1_SVG_PATH_COMMAND[]")] D2D1_SVG_PATH_COMMAND* commands,
+            [In, NativeTypeName("UINT32")] uint commandsCount,
+            [In, NativeTypeName("UINT32")] uint startIndex = 0
         );
 
         /// <summary>Gets the size of the commands array.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public /* static */ delegate uint _GetCommandsCount(
             [In] ID2D1SvgPathData* This
         );
@@ -170,7 +170,7 @@ namespace TerraFX.Interop
         /// <summary>Creates a path geometry object representing the path data.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreatePathGeometry(
             [In] ID2D1SvgPathData* This,
             [In] D2D1_FILL_MODE fillMode,
@@ -179,9 +179,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region IUnknown Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int QueryInterface(
-            [In, ComAliasName("REFIID")] Guid* riid,
+            [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         )
         {
@@ -195,7 +195,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
             fixed (ID2D1SvgPathData* This = &this)
@@ -206,7 +206,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("ULONG")]
+        [return: NativeTypeName("ULONG")]
         public uint Release()
         {
             fixed (ID2D1SvgPathData* This = &this)
@@ -247,7 +247,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int Clone(
             [Out] ID2D1SvgAttribute** attribute
         )
@@ -263,9 +263,9 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int RemoveSegmentDataAtEnd(
-            [In, ComAliasName("UINT32")] uint dataCount
+            [In, NativeTypeName("UINT32")] uint dataCount
         )
         {
             fixed (ID2D1SvgPathData* This = &this)
@@ -277,11 +277,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int UpdateSegmentData(
-            [In, ComAliasName("FLOAT[]")] float* data,
-            [In, ComAliasName("UINT32")] uint dataCount,
-            [In, ComAliasName("UINT32")] uint startIndex = 0
+            [In, NativeTypeName("FLOAT[]")] float* data,
+            [In, NativeTypeName("UINT32")] uint dataCount,
+            [In, NativeTypeName("UINT32")] uint startIndex = 0
         )
         {
             fixed (ID2D1SvgPathData* This = &this)
@@ -295,11 +295,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetSegmentData(
-            [Out, ComAliasName("FLOAT[]")] float* data,
-            [In, ComAliasName("UINT32")] uint dataCount,
-            [In, ComAliasName("UINT32")] uint startIndex = 0
+            [Out, NativeTypeName("FLOAT[]")] float* data,
+            [In, NativeTypeName("UINT32")] uint dataCount,
+            [In, NativeTypeName("UINT32")] uint startIndex = 0
         )
         {
             fixed (ID2D1SvgPathData* This = &this)
@@ -313,7 +313,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public uint GetSegmentDataCount()
         {
             fixed (ID2D1SvgPathData* This = &this)
@@ -324,9 +324,9 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int RemoveCommandsAtEnd(
-            [In, ComAliasName("UINT32")] uint commandsCount
+            [In, NativeTypeName("UINT32")] uint commandsCount
         )
         {
             fixed (ID2D1SvgPathData* This = &this)
@@ -338,11 +338,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int UpdateCommands(
-            [In, ComAliasName("D2D1_SVG_PATH_COMMAND")] D2D1_SVG_PATH_COMMAND* commands,
-            [In, ComAliasName("UINT32")] uint commandsCount,
-            [In, ComAliasName("UINT32")] uint startIndex = 0
+            [In, NativeTypeName("D2D1_SVG_PATH_COMMAND")] D2D1_SVG_PATH_COMMAND* commands,
+            [In, NativeTypeName("UINT32")] uint commandsCount,
+            [In, NativeTypeName("UINT32")] uint startIndex = 0
         )
         {
             fixed (ID2D1SvgPathData* This = &this)
@@ -356,11 +356,11 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int GetCommands(
-            [Out, ComAliasName("D2D1_SVG_PATH_COMMAND[]")] D2D1_SVG_PATH_COMMAND* commands,
-            [In, ComAliasName("UINT32")] uint commandsCount,
-            [In, ComAliasName("UINT32")] uint startIndex = 0
+            [Out, NativeTypeName("D2D1_SVG_PATH_COMMAND[]")] D2D1_SVG_PATH_COMMAND* commands,
+            [In, NativeTypeName("UINT32")] uint commandsCount,
+            [In, NativeTypeName("UINT32")] uint startIndex = 0
         )
         {
             fixed (ID2D1SvgPathData* This = &this)
@@ -374,7 +374,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("UINT32")]
+        [return: NativeTypeName("UINT32")]
         public uint GetCommandsCount()
         {
             fixed (ID2D1SvgPathData* This = &this)
@@ -385,7 +385,7 @@ namespace TerraFX.Interop
             }
         }
 
-        [return: ComAliasName("HRESULT")]
+        [return: NativeTypeName("HRESULT")]
         public int CreatePathGeometry(
             [In] D2D1_FILL_MODE fillMode,
             [Out] ID2D1PathGeometry1** pathGeometry

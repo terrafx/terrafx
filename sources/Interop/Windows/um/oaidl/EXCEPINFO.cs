@@ -14,31 +14,31 @@ namespace TerraFX.Interop
     public unsafe struct EXCEPINFO
     {
         #region Fields
-        [ComAliasName("WORD")]
+        [NativeTypeName("WORD")]
         public ushort wCode;
 
-        [ComAliasName("WORD")]
+        [NativeTypeName("WORD")]
         public ushort wReserved;
 
-        [ComAliasName("BSTR")]
+        [NativeTypeName("BSTR")]
         public char* bstrSource;
 
-        [ComAliasName("BSTR")]
+        [NativeTypeName("BSTR")]
         public char* bstrDescription;
 
-        [ComAliasName("BSTR")]
+        [NativeTypeName("BSTR")]
         public char* bstrHelpFile;
 
-        [ComAliasName("DWORD")]
+        [NativeTypeName("DWORD")]
         public uint dwHelpContext;
 
-        [ComAliasName("PVOID")]
+        [NativeTypeName("PVOID")]
         public void* pvReserved;
 
-        [ComAliasName("pfnDeferredFillIn")]
+        [NativeTypeName("pfnDeferredFillIn")]
         public IntPtr pfnDeferredFillIn;
 
-        [ComAliasName("SCODE")]
+        [NativeTypeName("SCODE")]
         public int scode;
         #endregion
     }

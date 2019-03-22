@@ -3,7 +3,6 @@
 // Ported from um\dwrite.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -14,11 +13,11 @@ namespace TerraFX.Interop
     {
         #region Fields
         /// <summary>The start text position of the range.</summary>
-        [ComAliasName("UINT32")]
+        [NativeTypeName("UINT32")]
         public uint startPosition;
 
         /// <summary>The number of text positions in the range.</summary>
-        [ComAliasName("UINT32")]
+        [NativeTypeName("UINT32")]
         public uint length;
         #endregion
     }

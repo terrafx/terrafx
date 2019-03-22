@@ -3,7 +3,6 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -28,7 +27,7 @@ namespace TerraFX.Interop
 
         public D3D12_BLEND_DESC BlendState;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint SampleMask;
 
         public D3D12_RASTERIZER_DESC RasterizerState;
@@ -41,17 +40,17 @@ namespace TerraFX.Interop
 
         public D3D12_PRIMITIVE_TOPOLOGY_TYPE PrimitiveTopologyType;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint NumRenderTargets;
 
-        [ComAliasName("DXGI_FORMAT[8]")]
+        [NativeTypeName("DXGI_FORMAT[8]")]
         public _RTVFormats_e__FixedBuffer RTVFormats;
 
         public DXGI_FORMAT DSVFormat;
 
         public DXGI_SAMPLE_DESC SampleDesc;
 
-        [ComAliasName("UINT")]
+        [NativeTypeName("UINT")]
         public uint NodeMask;
 
         public D3D12_CACHED_PIPELINE_STATE CachedPSO;
