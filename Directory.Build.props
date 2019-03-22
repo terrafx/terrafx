@@ -68,7 +68,7 @@
 
   <!-- Package versions for package references across all projects -->
   <PropertyGroup>
-    <MicrosoftNetCompilersPackageVersion>2.10.0</MicrosoftNetCompilersPackageVersion>
+    <MicrosoftNetCompilersPackageVersion>3.0.0-beta4-final</MicrosoftNetCompilersPackageVersion>
     <MicrosoftNetCoreCompilersPackageVersion>$(MicrosoftNetCompilersPackageVersion)</MicrosoftNetCoreCompilersPackageVersion>
     <MicrosoftNetTestSdkPackageVersion>15.9.0</MicrosoftNetTestSdkPackageVersion>
     <NUnitPackageVersion>3.11.0</NUnitPackageVersion>
