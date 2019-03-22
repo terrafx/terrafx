@@ -114,11 +114,11 @@ dotnet_naming_symbols.static_readonly_declarations.required_modifiers = static, 
 
 ###############################################################################
 # Set dotnet sort options to:
-#   separate import directives into groups, and
+#   do not separate import directives into groups, and
 #   sort system directives first
 ###############################################################################
 [*.cs]
-dotnet_separate_import_directive_groups = true
+dotnet_separate_import_directive_groups = false
 dotnet_sort_system_directives_first = true
 
 ###############################################################################
