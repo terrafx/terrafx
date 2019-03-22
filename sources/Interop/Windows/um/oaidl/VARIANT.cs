@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Unicode)]
-    public /* unmanaged */ unsafe struct VARIANT
+    [Unmanaged]
+    public unsafe struct VARIANT
     {
         #region Fields
         #region struct

@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>This defines a single element of the vertex layout.</summary>
-    public /* unmanaged */ unsafe struct D2D1_INPUT_ELEMENT_DESC
+    [Unmanaged]
+    public unsafe struct D2D1_INPUT_ELEMENT_DESC
     {
         #region Fields
         [ComAliasName("PCSTR")]

@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
@@ -13,7 +14,8 @@ namespace TerraFX.Interop
     /// <summary>The format of text used for text layout.</summary>
     /// <remarks> This object may not be thread-safe and it may carry the state of text format change.</remarks>
     [Guid("9C906818-31D7-4FD3-A151-7C5E225DB55A")]
-    public /* unmanaged */ unsafe struct IDWriteTextFormat
+    [Unmanaged]
+    public unsafe struct IDWriteTextFormat
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -662,7 +664,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

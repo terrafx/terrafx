@@ -4,10 +4,12 @@
 // Original source is Copyright © The Open Group.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct XWindowChanges
+    [Unmanaged]
+    public struct XWindowChanges
     {
         #region Fields
         public int x, y;

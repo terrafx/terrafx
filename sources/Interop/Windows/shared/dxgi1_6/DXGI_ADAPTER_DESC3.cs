@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    public /* unmanaged */ unsafe struct DXGI_ADAPTER_DESC3
+    [Unmanaged]
+    public unsafe struct DXGI_ADAPTER_DESC3
     {
         #region Fields
         [ComAliasName("WCHAR[128]")]

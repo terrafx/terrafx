@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct D3D12_FEATURE_DATA_GPU_VIRTUAL_ADDRESS_SUPPORT
+    [Unmanaged]
+    public struct D3D12_FEATURE_DATA_GPU_VIRTUAL_ADDRESS_SUPPORT
     {
         #region Fields
         [ComAliasName("UINT")]

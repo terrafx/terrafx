@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct D3D12_RT_FORMAT_ARRAY
+    [Unmanaged]
+    public struct D3D12_RT_FORMAT_ARRAY
     {
         #region Fields
         [ComAliasName("DXGI_FORMAT[8]")]
@@ -18,7 +20,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ unsafe struct _RTFormats_e__FixedBuffer
+        [Unmanaged]
+        public unsafe struct _RTFormats_e__FixedBuffer
         {
             #region Fields
             public DXGI_FORMAT e0;

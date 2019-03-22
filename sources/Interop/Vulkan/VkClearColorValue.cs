@@ -4,11 +4,13 @@
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit)]
-    public /* unmanaged */ unsafe struct VkClearColorValue
+    [Unmanaged]
+    public unsafe struct VkClearColorValue
     {
         #region Fields
         [FieldOffset(0)]

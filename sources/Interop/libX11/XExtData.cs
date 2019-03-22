@@ -5,10 +5,12 @@
 
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct XExtData
+    [Unmanaged]
+    public unsafe struct XExtData
     {
         #region Fields
         public int number;

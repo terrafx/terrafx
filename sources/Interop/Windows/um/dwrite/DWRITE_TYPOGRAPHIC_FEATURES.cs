@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Defines a set of typographic features to be applied during shaping. Notice the character range which this feature list spans is specified as a separate parameter to GetGlyphs.</summary>
-    public /* unmanaged */ unsafe struct DWRITE_TYPOGRAPHIC_FEATURES
+    [Unmanaged]
+    public unsafe struct DWRITE_TYPOGRAPHIC_FEATURES
     {
         #region Fields
         /// <summary>Array of font features.</summary>

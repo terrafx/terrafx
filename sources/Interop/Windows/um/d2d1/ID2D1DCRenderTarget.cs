@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Interop.D2D1_BITMAP_INTERPOLATION_MODE;
 using static TerraFX.Interop.D2D1_DRAW_TEXT_OPTIONS;
 using static TerraFX.Interop.DWRITE_MEASURING_MODE;
@@ -15,7 +16,8 @@ namespace TerraFX.Interop
 {
     /// <summary>Issues drawing commands to a GDI device context.</summary>
     [Guid("1C51BC64-DE61-46FD-9899-63A5D8F03950")]
-    public /* unmanaged */ unsafe struct ID2D1DCRenderTarget
+    [Unmanaged]
+    public unsafe struct ID2D1DCRenderTarget
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -1486,7 +1488,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

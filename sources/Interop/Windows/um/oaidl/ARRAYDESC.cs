@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct ARRAYDESC
+    [Unmanaged]
+    public struct ARRAYDESC
     {
         #region Fields
         public TYPEDESC tdescElem;
@@ -21,7 +23,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ unsafe struct _rgbounds_e__FixedBuffer
+        [Unmanaged]
+        public unsafe struct _rgbounds_e__FixedBuffer
         {
             #region Fields
             public SAFEARRAYBOUND e0;

@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Represents an SVG viewBox.</summary>
-    public /* unmanaged */ struct D2D1_SVG_VIEWBOX
+    [Unmanaged]
+    public struct D2D1_SVG_VIEWBOX
     {
         #region Fields
         [ComAliasName("FLOAT")]

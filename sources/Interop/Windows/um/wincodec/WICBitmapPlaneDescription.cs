@@ -5,10 +5,12 @@
 
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct WICBitmapPlaneDescription
+    [Unmanaged]
+    public struct WICBitmapPlaneDescription
     {
         #region Fields
         [ComAliasName("WICPixelFormatGUID")]

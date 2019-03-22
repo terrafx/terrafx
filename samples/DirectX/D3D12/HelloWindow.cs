@@ -5,6 +5,7 @@
 
 using System;
 using TerraFX.Interop;
+using TerraFX.Utilities;
 using static TerraFX.Interop.D3D_FEATURE_LEVEL;
 using static TerraFX.Interop.D3D12;
 using static TerraFX.Interop.D3D12_COMMAND_QUEUE_FLAGS;
@@ -441,7 +442,8 @@ namespace TerraFX.Samples.DirectX.D3D12
         #endregion
 
         #region Structs
-        private /* unmanaged */ unsafe struct _renderTargets_e__FixedBuffer
+        [Unmanaged]
+        private unsafe struct _renderTargets_e__FixedBuffer
         {
             #region Fields
 #pragma warning disable CS0649

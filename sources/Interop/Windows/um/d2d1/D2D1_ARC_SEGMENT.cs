@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Describes an arc that is defined as part of a path.</summary>
-    public /* unmanaged */ struct D2D1_ARC_SEGMENT
+    [Unmanaged]
+    public struct D2D1_ARC_SEGMENT
     {
         #region Fields
         [ComAliasName("D2D1_POINT_2F")]

@@ -4,10 +4,12 @@
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct VkSparseMemoryBind
+    [Unmanaged]
+    public struct VkSparseMemoryBind
     {
         #region Fields
         [ComAliasName("VkDeviceSize")]

@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>The DWRITE_MATRIX public structure specifies the graphics transform to be applied to rendered glyphs.</summary>
-    public /* unmanaged */ struct DWRITE_MATRIX
+    [Unmanaged]
+    public struct DWRITE_MATRIX
     {
         #region Fields
         /// <summary>Horizontal scaling / cosine of rotation</summary>

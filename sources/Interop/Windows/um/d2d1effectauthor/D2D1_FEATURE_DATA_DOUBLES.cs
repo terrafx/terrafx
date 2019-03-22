@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Indicates whether shader support for doubles is present on the underlying hardware.  This may be populated using CheckFeatureSupport.</summary>
-    public /* unmanaged */ struct D2D1_FEATURE_DATA_DOUBLES
+    [Unmanaged]
+    public struct D2D1_FEATURE_DATA_DOUBLES
     {
         #region Fields
         [ComAliasName("BOOL")]

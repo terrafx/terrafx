@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Represents a set of run-time bindable and discoverable properties that allow a data-driven application to modify the state of a Direct2D effect.</summary>
     [Guid("483473D7-CD46-4F9D-9D3A-3112AA80159D")]
-    public /* unmanaged */ unsafe struct ID2D1Properties
+    [Unmanaged]
+    public unsafe struct ID2D1Properties
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -380,7 +382,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

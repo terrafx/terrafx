@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>A base object which can be inserted into a transform graph.</summary>
     [Guid("B2EFE1E7-729F-4102-949F-505FA21BF666")]
-    public /* unmanaged */ unsafe struct ID2D1TransformNode
+    [Unmanaged]
+    public unsafe struct ID2D1TransformNode
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -107,7 +109,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

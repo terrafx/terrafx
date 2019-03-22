@@ -4,13 +4,15 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Typeface classification values, used for font selection and matching.</summary>
     /// <remarks> Note the family type (index 0) is the only stable entry in the 10-byte array, as all the following entries can change dynamically depending on context of the first field.</remarks>
     [StructLayout(LayoutKind.Explicit)]
-    public /* unmanaged */ unsafe struct DWRITE_PANOSE
+    [Unmanaged]
+    public unsafe struct DWRITE_PANOSE
     {
         #region Fields
         [FieldOffset(0)]
@@ -35,7 +37,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct _text_e__Struct
+        [Unmanaged]
+        public struct _text_e__Struct
         {
             #region Fields
             [ComAliasName("UINT8")]
@@ -70,7 +73,8 @@ namespace TerraFX.Interop
             #endregion
         };
 
-        public /* unmanaged */ struct _script_e__Struct
+        [Unmanaged]
+        public struct _script_e__Struct
         {
             #region Fields
             [ComAliasName("UINT8")]
@@ -105,7 +109,8 @@ namespace TerraFX.Interop
             #endregion
         }
 
-        public /* unmanaged */ struct _decorative_e__Struct
+        [Unmanaged]
+        public struct _decorative_e__Struct
         {
             #region Fields
             [ComAliasName("UINT8")]
@@ -140,7 +145,8 @@ namespace TerraFX.Interop
             #endregion
         }
 
-        public /* unmanaged */ struct _symbol_e__Struct
+        [Unmanaged]
+        public struct _symbol_e__Struct
         {
             #region Fields
             [ComAliasName("UINT8")]

@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Encapsulates a device- and transform-dependent representation of a filled or stroked geometry.</summary>
     [Guid("A16907D7-BC02-4801-99E8-8CF7F485F774")]
-    public /* unmanaged */ unsafe struct ID2D1GeometryRealization
+    [Unmanaged]
+    public unsafe struct ID2D1GeometryRealization
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -113,7 +115,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

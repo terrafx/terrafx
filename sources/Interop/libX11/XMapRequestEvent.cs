@@ -5,10 +5,12 @@
 
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct XMapRequestEvent
+    [Unmanaged]
+    public unsafe struct XMapRequestEvent
     {
         #region Fields
         public int type;

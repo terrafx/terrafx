@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Describes options transforms may select to use on their input textures.</summary>
-    public /* unmanaged */ struct D2D1_INPUT_DESCRIPTION
+    [Unmanaged]
+    public struct D2D1_INPUT_DESCRIPTION
     {
         #region Fields
         public D2D1_FILTER filter;

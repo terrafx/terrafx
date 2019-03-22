@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Interface describing an SVG 'stroke-dasharray' value.</summary>
     [Guid("F1C0CA52-92A3-4F00-B4CE-F35691EFD9D9")]
-    public /* unmanaged */ unsafe struct ID2D1SvgStrokeDashArray
+    [Unmanaged]
+    public unsafe struct ID2D1SvgStrokeDashArray
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -332,7 +334,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
@@ -13,7 +14,8 @@ namespace TerraFX.Interop
     /// <summary>Builder used to create a font fallback definition by appending a series of fallback mappings, followed by a creation call.</summary>
     /// <remarks> This object may not be thread-safe.</remarks>
     [Guid("FD882D06-8ABA-4FB8-B849-8BE8B73E14DE")]
-    public /* unmanaged */ unsafe struct IDWriteFontFallbackBuilder
+    [Unmanaged]
+    public unsafe struct IDWriteFontFallbackBuilder
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -192,7 +194,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

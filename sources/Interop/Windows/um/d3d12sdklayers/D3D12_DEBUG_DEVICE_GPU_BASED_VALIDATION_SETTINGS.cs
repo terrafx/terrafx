@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct D3D12_DEBUG_DEVICE_GPU_BASED_VALIDATION_SETTINGS
+    [Unmanaged]
+    public struct D3D12_DEBUG_DEVICE_GPU_BASED_VALIDATION_SETTINGS
     {
         #region Fields
         [ComAliasName("UINT")]

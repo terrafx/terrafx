@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct DXGI_JPEG_AC_HUFFMAN_TABLE
+    [Unmanaged]
+    public unsafe struct DXGI_JPEG_AC_HUFFMAN_TABLE
     {
         #region Fields
         [ComAliasName("BYTE[16]")]

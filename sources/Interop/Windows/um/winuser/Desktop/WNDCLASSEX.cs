@@ -5,11 +5,13 @@
 
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop.Desktop
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    public /* unmanaged */ unsafe struct WNDCLASSEX
+    [Unmanaged]
+    public unsafe struct WNDCLASSEX
     {
         #region Fields
         [ComAliasName("UINT")]

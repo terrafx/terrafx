@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct D3D12_SAMPLE_POSITION
+    [Unmanaged]
+    public struct D3D12_SAMPLE_POSITION
     {
         #region Fields
         [ComAliasName("INT8")]

@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Simple description of a color space.</summary>
-    public /* unmanaged */ struct D2D1_SIMPLE_COLOR_PROFILE
+    [Unmanaged]
+    public struct D2D1_SIMPLE_COLOR_PROFILE
     {
         #region Fields
         /// <summary>The XY coordinates of the red primary in CIEXYZ space.</summary>

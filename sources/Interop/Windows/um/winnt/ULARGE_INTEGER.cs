@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit)]
-    public /* unmanaged */ struct ULARGE_INTEGER
+    [Unmanaged]
+    public struct ULARGE_INTEGER
     {
         #region Fields
         #region struct
@@ -30,7 +32,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct _u__e__Struct
+        [Unmanaged]
+        public struct _u__e__Struct
         {
             #region Fields
             [ComAliasName("DWORD")]

@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>This identifies a certain input connection of a certain effect.</summary>
-    public /* unmanaged */ unsafe struct D2D1_EFFECT_INPUT_DESCRIPTION
+    [Unmanaged]
+    public unsafe struct D2D1_EFFECT_INPUT_DESCRIPTION
     {
         #region Fields
         /// <summary>The effect whose input connection is being specified.</summary>

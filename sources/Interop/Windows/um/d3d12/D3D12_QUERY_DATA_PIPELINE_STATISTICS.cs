@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct D3D12_QUERY_DATA_PIPELINE_STATISTICS
+    [Unmanaged]
+    public struct D3D12_QUERY_DATA_PIPELINE_STATISTICS
     {
         #region Fields
         [ComAliasName("UINT64")]

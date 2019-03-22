@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>This is used to define a resource texture when that resource texture is created.</summary>
-    public /* unmanaged */ unsafe struct D2D1_RESOURCE_TEXTURE_PROPERTIES
+    [Unmanaged]
+    public unsafe struct D2D1_RESOURCE_TEXTURE_PROPERTIES
     {
         #region Fields
         [ComAliasName("UINT32[]")]

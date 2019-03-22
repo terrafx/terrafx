@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct WICDdsFormatInfo
+    [Unmanaged]
+    public struct WICDdsFormatInfo
     {
         #region Fields
         public DXGI_FORMAT DxgiFormat;

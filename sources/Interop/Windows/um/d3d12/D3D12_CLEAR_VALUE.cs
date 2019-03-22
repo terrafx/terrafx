@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit)]
-    public /* unmanaged */ unsafe struct D3D12_CLEAR_VALUE
+    [Unmanaged]
+    public unsafe struct D3D12_CLEAR_VALUE
     {
         #region Fields
         [FieldOffset(0)]

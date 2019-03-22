@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct DXGI_MATRIX_3X2_F
+    [Unmanaged]
+    public struct DXGI_MATRIX_3X2_F
     {
         #region Fields
         [ComAliasName("FLOAT")]

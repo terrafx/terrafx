@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct D3D12_STATIC_SAMPLER_DESC
+    [Unmanaged]
+    public struct D3D12_STATIC_SAMPLER_DESC
     {
         #region Fields
         public D3D12_FILTER Filter;

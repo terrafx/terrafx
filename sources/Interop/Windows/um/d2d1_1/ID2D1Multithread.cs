@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>A locking mechanism from a Direct2D factory that Direct2D uses to control exclusive resource access in an app that is uses multiple threads.</summary>
     [Guid("31E6E7BC-E0FF-4D46-8C64-A0A8C41C15D3")]
-    public /* unmanaged */ unsafe struct ID2D1Multithread
+    [Unmanaged]
+    public unsafe struct ID2D1Multithread
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -141,7 +143,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

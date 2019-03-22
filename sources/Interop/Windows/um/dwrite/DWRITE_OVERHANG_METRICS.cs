@@ -4,12 +4,14 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>The DWRITE_OVERHANG_METRICS public structure holds how much any visible pixels (in DIPs) overshoot each side of the layout or inline objects.</summary>
     /// <remarks>Positive overhangs indicate that the visible area extends outside the layout box or inline object, while negative values mean there is whitespace inside. The returned values are unaffected by rendering transforms or pixel snapping. Additionally, they may not exactly match final target's pixel bounds after applying grid fitting and hinting.</remarks>
-    public /* unmanaged */ struct DWRITE_OVERHANG_METRICS
+    [Unmanaged]
+    public struct DWRITE_OVERHANG_METRICS
     {
         #region Fields
         /// <summary>The distance from the left-most visible DIP to its left alignment edge.</summary>

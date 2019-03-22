@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Properties of a transformed image source.</summary>
-    public /* unmanaged */ struct D2D1_TRANSFORMED_IMAGE_SOURCE_PROPERTIES
+    [Unmanaged]
+    public struct D2D1_TRANSFORMED_IMAGE_SOURCE_PROPERTIES
     {
         #region Fields
         /// <summary>The orientation at which the image source is drawn.</summary>

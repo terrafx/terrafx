@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Contains the position and color of a gradient stop.</summary>
-    public /* unmanaged */ struct D2D1_GRADIENT_STOP
+    [Unmanaged]
+    public struct D2D1_GRADIENT_STOP
     {
         #region Fields
         [ComAliasName("FLOAT")]

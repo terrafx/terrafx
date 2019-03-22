@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop.Desktop
 {
-    public /* unmanaged */ struct DXGI_OUTDUPL_POINTER_SHAPE_INFO
+    [Unmanaged]
+    public struct DXGI_OUTDUPL_POINTER_SHAPE_INFO
     {
         #region Fields
         [ComAliasName("UINT")]

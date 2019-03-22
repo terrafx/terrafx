@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Describes a triangle.</summary>
-    public /* unmanaged */ struct D2D1_TRIANGLE
+    [Unmanaged]
+    public struct D2D1_TRIANGLE
     {
         #region Fields
         [ComAliasName("D2D1_POINT_2F")]

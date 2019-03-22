@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>The device defines a resource domain whose objects and device contexts can be used together.</summary>
     [Guid("47DD575D-AC05-4CDD-8049-9B02CD16F44C")]
-    public /* unmanaged */ unsafe struct ID2D1Device
+    [Unmanaged]
+    public unsafe struct ID2D1Device
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -232,7 +234,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

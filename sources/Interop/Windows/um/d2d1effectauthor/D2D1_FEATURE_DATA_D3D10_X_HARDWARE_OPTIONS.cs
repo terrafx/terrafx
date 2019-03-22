@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Indicates support for features which are optional on D3D10 feature levels.  This may be populated using CheckFeatureSupport.</summary>
-    public /* unmanaged */ struct D2D1_FEATURE_DATA_D3D10_X_HARDWARE_OPTIONS
+    [Unmanaged]
+    public struct D2D1_FEATURE_DATA_D3D10_X_HARDWARE_OPTIONS
     {
         #region Fields
         [ComAliasName("BOOL")]

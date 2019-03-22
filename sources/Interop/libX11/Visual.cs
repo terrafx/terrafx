@@ -4,10 +4,12 @@
 // Original source is Copyright © The Open Group.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct Visual
+    [Unmanaged]
+    public unsafe struct Visual
     {
         #region Fields
         public XExtData* ext_data;

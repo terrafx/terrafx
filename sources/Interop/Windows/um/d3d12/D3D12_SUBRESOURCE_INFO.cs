@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct D3D12_SUBRESOURCE_INFO
+    [Unmanaged]
+    public struct D3D12_SUBRESOURCE_INFO
     {
         #region Fields
         [ComAliasName("UINT64")]

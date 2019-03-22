@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct DXGI_INFO_QUEUE_FILTER_DESC
+    [Unmanaged]
+    public unsafe struct DXGI_INFO_QUEUE_FILTER_DESC
     {
         #region Fields
         [ComAliasName("UINT")]

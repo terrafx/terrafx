@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Represents a producer of pixels that can fill an arbitrary 2D plane.</summary>
     [Guid("65019F75-8DA2-497C-B32C-DFA34E48EDE6")]
-    public /* unmanaged */ unsafe struct ID2D1Image
+    [Unmanaged]
+    public unsafe struct ID2D1Image
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -113,7 +115,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

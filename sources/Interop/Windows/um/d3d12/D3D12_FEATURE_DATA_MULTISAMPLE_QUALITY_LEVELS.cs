@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS
+    [Unmanaged]
+    public struct D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS
     {
         #region Fields
         public DXGI_FORMAT Format;

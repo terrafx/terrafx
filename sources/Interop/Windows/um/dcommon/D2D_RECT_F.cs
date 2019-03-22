@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Represents a rectangle defined by the coordinates of the upper-left corner (left, top) and the coordinates of the lower-right corner (right, bottom).</summary>
-    public /* unmanaged */ struct D2D_RECT_F
+    [Unmanaged]
+    public struct D2D_RECT_F
     {
         #region Fields
         [ComAliasName("FLOAT")]

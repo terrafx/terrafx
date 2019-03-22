@@ -6,11 +6,13 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct ID3DInclude
+    [Unmanaged]
+    public unsafe struct ID3DInclude
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -77,7 +79,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region Fields
             public IntPtr Open;

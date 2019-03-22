@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>This object supplies the values for context-fill, context-stroke, and context-value that are used when rendering SVG glyphs.</summary>
     [Guid("AF671749-D241-4DB8-8E41-DCC2E5C1A438")]
-    public /* unmanaged */ unsafe struct ID2D1SvgGlyphStyle
+    [Unmanaged]
+    public unsafe struct ID2D1SvgGlyphStyle
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -249,7 +251,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

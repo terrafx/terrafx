@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Describes the pixel format and dpi of a bitmap.</summary>
-    public /* unmanaged */ struct D2D1_BITMAP_PROPERTIES
+    [Unmanaged]
+    public struct D2D1_BITMAP_PROPERTIES
     {
         #region Fields
         public D2D1_PIXEL_FORMAT pixelFormat;

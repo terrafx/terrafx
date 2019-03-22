@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit)]
-    public /* unmanaged */ struct D3D12_INDIRECT_ARGUMENT_DESC
+    [Unmanaged]
+    public struct D3D12_INDIRECT_ARGUMENT_DESC
     {
         #region Fields
         [FieldOffset(0)]
@@ -33,14 +35,16 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct _VertexBuffer_e__Struct
+        [Unmanaged]
+        public struct _VertexBuffer_e__Struct
         {
             #region Fields
             public uint Slot;
             #endregion
         }
 
-        public /* unmanaged */ struct _Constant_e__Struct
+        [Unmanaged]
+        public struct _Constant_e__Struct
         {
             #region Fields
             public uint RootParameterIndex;
@@ -49,21 +53,24 @@ namespace TerraFX.Interop
             #endregion
         }
 
-        public /* unmanaged */ struct _ConstantBufferView_e__Struct
+        [Unmanaged]
+        public struct _ConstantBufferView_e__Struct
         {
             #region Fields
             public uint RootParameterIndex;
             #endregion
         }
 
-        public /* unmanaged */ struct _ShaderResourceView_e__Struct
+        [Unmanaged]
+        public struct _ShaderResourceView_e__Struct
         {
             #region Fields
             public uint RootParameterIndex;
             #endregion
         }
 
-        public /* unmanaged */ struct _UnorderedAccessView_e__Struct
+        [Unmanaged]
+        public struct _UnorderedAccessView_e__Struct
         {
             #region Fields
             public uint RootParameterIndex;

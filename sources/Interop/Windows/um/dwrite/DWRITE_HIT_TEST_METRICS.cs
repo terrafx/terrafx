@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Geometry enclosing of text positions.</summary>
-    public /* unmanaged */ struct DWRITE_HIT_TEST_METRICS
+    [Unmanaged]
+    public struct DWRITE_HIT_TEST_METRICS
     {
         #region Fields
         /// <summary>First text position within the geometry.</summary>

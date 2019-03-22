@@ -5,10 +5,12 @@
 
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct XCreateWindowEvent
+    [Unmanaged]
+    public unsafe struct XCreateWindowEvent
     {
         #region Fields
         public int type;

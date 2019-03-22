@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct DXGI_GAMMA_CONTROL
+    [Unmanaged]
+    public struct DXGI_GAMMA_CONTROL
     {
         #region Fields
         public DXGI_RGB Scale;
@@ -20,7 +22,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ unsafe struct _GammaCurve_e__FixedBuffer
+        [Unmanaged]
+        public unsafe struct _GammaCurve_e__FixedBuffer
         {
             #region Fields
             public DXGI_RGB e0;

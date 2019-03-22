@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>The DWRITE_GLYPH_RUN public structure contains the information needed by renderers to draw glyph runs. All coordinates are in device independent pixels (DIPs).</summary>
-    public /* unmanaged */ unsafe struct DWRITE_GLYPH_RUN
+    [Unmanaged]
+    public unsafe struct DWRITE_GLYPH_RUN
     {
         #region Fields
         /// <summary>The physical font face to draw with.</summary>

@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Metrics for caret placement in a font.</summary>
-    public /* unmanaged */ struct DWRITE_CARET_METRICS
+    [Unmanaged]
+    public struct DWRITE_CARET_METRICS
     {
         #region Fields
         /// <summary>Vertical rise of the caret. Rise / Run yields the caret angle. Rise = 1 for perfectly upright fonts (non-italic).</summary>

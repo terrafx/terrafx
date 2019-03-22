@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Shaping output properties per input character.</summary>
-    public /* unmanaged */ struct DWRITE_SHAPING_TEXT_PROPERTIES
+    [Unmanaged]
+    public struct DWRITE_SHAPING_TEXT_PROPERTIES
     {
         #region Fields
         private ushort _bitField;

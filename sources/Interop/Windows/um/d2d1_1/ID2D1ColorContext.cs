@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Represents a color context that can be used with an ID2D1Bitmap1 object.</summary>
     [Guid("1C4820BB-5771-4518-A581-2FE4DD0EC657")]
-    public /* unmanaged */ unsafe struct ID2D1ColorContext
+    [Unmanaged]
+    public unsafe struct ID2D1ColorContext
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -175,7 +177,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

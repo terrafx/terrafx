@@ -3,9 +3,12 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using TerraFX.Utilities;
+
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct D3D12_RESOURCE_ALIASING_BARRIER
+    [Unmanaged]
+    public unsafe struct D3D12_RESOURCE_ALIASING_BARRIER
     {
         #region Fields
         public ID3D12Resource* pResourceBefore;

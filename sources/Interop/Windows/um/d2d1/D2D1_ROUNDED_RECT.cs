@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Contains the dimensions and corner radii of a rounded rectangle.</summary>
-    public /* unmanaged */ struct D2D1_ROUNDED_RECT
+    [Unmanaged]
+    public struct D2D1_ROUNDED_RECT
     {
         #region Fields
         [ComAliasName("D2D1_RECT_F")]

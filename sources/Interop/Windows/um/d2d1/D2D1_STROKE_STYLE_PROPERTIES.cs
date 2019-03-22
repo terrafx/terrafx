@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Properties, aside from the width, that allow geometric penning to be specified.</summary>
-    public /* unmanaged */ struct D2D1_STROKE_STYLE_PROPERTIES
+    [Unmanaged]
+    public struct D2D1_STROKE_STYLE_PROPERTIES
     {
         #region Fields
         public D2D1_CAP_STYLE startCap;

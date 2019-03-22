@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct D3D12_MEMCPY_DEST
+    [Unmanaged]
+    public unsafe struct D3D12_MEMCPY_DEST
     {
         #region Fields
         public void* pData;

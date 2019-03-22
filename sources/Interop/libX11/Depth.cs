@@ -4,10 +4,12 @@
 // Original source is Copyright © The Open Group.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct Depth
+    [Unmanaged]
+    public unsafe struct Depth
     {
         #region Fields
         public int depth;

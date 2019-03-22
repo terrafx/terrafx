@@ -5,10 +5,12 @@
 
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct XClientMessageEvent
+    [Unmanaged]
+    public unsafe struct XClientMessageEvent
     {
         #region Fields
         public int type;
@@ -34,7 +36,8 @@ namespace TerraFX.Interop
 
         #region Structs
         [StructLayout(LayoutKind.Explicit)]
-        public /* unmanaged */ struct _data_e__Union
+        [Unmanaged]
+        public struct _data_e__Union
         {
             #region Fields
             [FieldOffset(0)]
@@ -48,7 +51,8 @@ namespace TerraFX.Interop
             #endregion
 
             #region Structs
-            public /* unmanaged */ struct _l_e__FixedBuffer
+            [Unmanaged]
+            public struct _l_e__FixedBuffer
             {
                 #region Fields
                 public nint e0;

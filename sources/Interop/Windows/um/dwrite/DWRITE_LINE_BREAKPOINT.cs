@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Line breakpoint characteristics of a character.</summary>
-    public /* unmanaged */ struct DWRITE_LINE_BREAKPOINT
+    [Unmanaged]
+    public struct DWRITE_LINE_BREAKPOINT
     {
         #region Fields
         private byte _bitField;

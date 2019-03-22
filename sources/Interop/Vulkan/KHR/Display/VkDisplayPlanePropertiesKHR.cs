@@ -5,10 +5,12 @@
 
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct VkDisplayPlanePropertiesKHR
+    [Unmanaged]
+    public struct VkDisplayPlanePropertiesKHR
     {
         #region Fields
         [ComAliasName("VkDisplayKHR")]

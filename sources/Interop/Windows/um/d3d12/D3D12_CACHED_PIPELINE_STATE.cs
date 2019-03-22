@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct D3D12_CACHED_PIPELINE_STATE
+    [Unmanaged]
+    public unsafe struct D3D12_CACHED_PIPELINE_STATE
     {
         #region Fields
         public void* pCachedBlob;

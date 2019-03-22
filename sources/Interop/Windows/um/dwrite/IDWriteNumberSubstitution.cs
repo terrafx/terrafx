@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Holds the appropriate digits and numeric punctuation for a given locale.</summary>
     [Guid("14885CC9-BAB0-4F90-B6ED-5C366A2CD03D")]
-    public /* unmanaged */ unsafe struct IDWriteNumberSubstitution
+    [Unmanaged]
+    public unsafe struct IDWriteNumberSubstitution
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -88,7 +90,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

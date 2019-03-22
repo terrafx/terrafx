@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct D3D12_FEATURE_DATA_COMMAND_QUEUE_PRIORITY
+    [Unmanaged]
+    public struct D3D12_FEATURE_DATA_COMMAND_QUEUE_PRIORITY
     {
         #region Fields
         public D3D12_COMMAND_LIST_TYPE CommandListType;

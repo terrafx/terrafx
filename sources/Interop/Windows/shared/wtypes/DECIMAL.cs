@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit)]
-    public /* unmanaged */ struct DECIMAL
+    [Unmanaged]
+    public struct DECIMAL
     {
         #region Fields
         [FieldOffset(0)]

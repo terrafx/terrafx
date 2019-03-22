@@ -5,10 +5,12 @@
 
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct VERSIONEDSTREAM
+    [Unmanaged]
+    public unsafe struct VERSIONEDSTREAM
     {
         #region Fields
         [ComAliasName("GUID")]

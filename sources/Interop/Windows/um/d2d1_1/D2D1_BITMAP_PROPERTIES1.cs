@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Extended bitmap properties.</summary>
-    public /* unmanaged */ unsafe struct D2D1_BITMAP_PROPERTIES1
+    [Unmanaged]
+    public unsafe struct D2D1_BITMAP_PROPERTIES1
     {
         #region Fields
         public D2D1_PIXEL_FORMAT pixelFormat;

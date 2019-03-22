@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct DXGI_QUERY_VIDEO_MEMORY_INFO
+    [Unmanaged]
+    public struct DXGI_QUERY_VIDEO_MEMORY_INFO
     {
         #region Fields
         [ComAliasName("UINT64")]

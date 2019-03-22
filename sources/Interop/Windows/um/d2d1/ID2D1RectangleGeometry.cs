@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Describes a two-dimensional rectangle.</summary>
     [Guid("2CD906A2-12E2-11DC-9FED-001143A055F9")]
-    public /* unmanaged */ unsafe struct ID2D1RectangleGeometry
+    [Unmanaged]
+    public unsafe struct ID2D1RectangleGeometry
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -553,7 +555,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

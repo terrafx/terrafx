@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Utilities.InteropUtilities;
 
@@ -13,7 +14,8 @@ namespace TerraFX.Interop
 {
     /// <summary>The effect interface. Properties control how the effect is rendered. The effect is Drawn with the DrawImage call.</summary>
     [Guid("28211A43-7D89-476F-8181-2D6159B220AD")]
-    public /* unmanaged */ unsafe struct ID2D1Effect
+    [Unmanaged]
+    public unsafe struct ID2D1Effect
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -499,7 +501,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

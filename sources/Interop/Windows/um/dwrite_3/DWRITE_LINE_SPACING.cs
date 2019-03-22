@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>The DWRITE_LINE_SPACING public structure specifies the parameters used to specify how to manage space between lines.</summary>
-    public /* unmanaged */ struct DWRITE_LINE_SPACING
+    [Unmanaged]
+    public struct DWRITE_LINE_SPACING
     {
         #region Fields
         /// <summary>Method used to determine line spacing.</summary>

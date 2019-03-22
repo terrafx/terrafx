@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct D3D12_COMPUTE_PIPELINE_STATE_DESC
+    [Unmanaged]
+    public unsafe struct D3D12_COMPUTE_PIPELINE_STATE_DESC
     {
         #region Fields
         public ID3D12RootSignature* pRootSignature;

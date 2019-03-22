@@ -5,10 +5,12 @@
 
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct VkAllocationCallbacks
+    [Unmanaged]
+    public unsafe struct VkAllocationCallbacks
     {
         #region Fields
         public void* pUserData;

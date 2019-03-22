@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct D3D12_INPUT_LAYOUT_DESC
+    [Unmanaged]
+    public unsafe struct D3D12_INPUT_LAYOUT_DESC
     {
         #region Fields
         [ComAliasName("D3D12_INPUT_ELEMENT_DESC[]")]

@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct WICRawToneCurve
+    [Unmanaged]
+    public struct WICRawToneCurve
     {
         #region Fields
         [ComAliasName("UINT")]
@@ -19,7 +21,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ unsafe struct _aPoints_e__FixedBuffer
+        [Unmanaged]
+        public unsafe struct _aPoints_e__FixedBuffer
         {
             #region Fields
             public WICRawToneCurvePoint e0;

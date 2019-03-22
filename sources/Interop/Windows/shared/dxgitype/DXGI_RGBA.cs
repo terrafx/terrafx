@@ -3,9 +3,12 @@
 // Ported from shared\dxgitype.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using TerraFX.Utilities;
+
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct DXGI_RGBA
+    [Unmanaged]
+    public struct DXGI_RGBA
     {
         #region Fields
         public float r;

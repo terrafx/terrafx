@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Represents an collection of gradient stops that can then be the source resource for either a linear or radial gradient brush.</summary>
     [Guid("2CD906A7-12E2-11DC-9FED-001143A055F9")]
-    public /* unmanaged */ unsafe struct ID2D1GradientStopCollection
+    [Unmanaged]
+    public unsafe struct ID2D1GradientStopCollection
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -190,7 +192,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

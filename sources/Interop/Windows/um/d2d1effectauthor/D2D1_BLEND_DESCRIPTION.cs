@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Blend description which configures a blend transform object.</summary>
-    public /* unmanaged */ unsafe struct D2D1_BLEND_DESCRIPTION
+    [Unmanaged]
+    public unsafe struct D2D1_BLEND_DESCRIPTION
     {
         #region Fields
         public D2D1_BLEND sourceBlend;

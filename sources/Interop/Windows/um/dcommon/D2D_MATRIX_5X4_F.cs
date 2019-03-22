@@ -4,12 +4,14 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Represents a 5-by-4 matrix.</summary>
     [StructLayout(LayoutKind.Explicit)]
-    public /* unmanaged */ unsafe struct D2D_MATRIX_5X4_F
+    [Unmanaged]
+    public unsafe struct D2D_MATRIX_5X4_F
     {
         #region Fields
         #region struct

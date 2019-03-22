@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>This defines the range of vertices from a vertex buffer to draw.</summary>
-    public /* unmanaged */ struct D2D1_VERTEX_RANGE
+    [Unmanaged]
+    public struct D2D1_VERTEX_RANGE
     {
         #region Fields
         [ComAliasName("UINT32")]

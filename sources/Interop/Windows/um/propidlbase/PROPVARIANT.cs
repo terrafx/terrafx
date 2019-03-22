@@ -5,11 +5,13 @@
 
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Unicode)]
-    public /* unmanaged */ unsafe struct PROPVARIANT
+    [Unmanaged]
+    public unsafe struct PROPVARIANT
     {
         #region Fields
         #region struct

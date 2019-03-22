@@ -4,11 +4,13 @@
 // Original source is Copyright © The Open Group.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit)]
-    public /* unmanaged */ struct XEvent
+    [Unmanaged]
+    public struct XEvent
     {
         #region Fields
         [FieldOffset(0)]
@@ -118,7 +120,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ unsafe struct _pad_e__FixedBuffer
+        [Unmanaged]
+        public unsafe struct _pad_e__FixedBuffer
         {
             #region Fields
             public nint e0;

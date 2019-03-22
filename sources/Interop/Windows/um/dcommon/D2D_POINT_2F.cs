@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Represents an x-coordinate and y-coordinate pair in two-dimensional space.</summary>
-    public /* unmanaged */ struct D2D_POINT_2F
+    [Unmanaged]
+    public struct D2D_POINT_2F
     {
         #region Fields
         [ComAliasName("FLOAT")]

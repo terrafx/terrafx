@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>This describes the drawing state.</summary>
-    public /* unmanaged */ struct D2D1_DRAWING_STATE_DESCRIPTION1
+    [Unmanaged]
+    public struct D2D1_DRAWING_STATE_DESCRIPTION1
     {
         #region Fields
         public D2D1_ANTIALIAS_MODE antialiasMode;

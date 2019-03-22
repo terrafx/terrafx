@@ -4,9 +4,11 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct DXGI_MAPPED_RECT
+    [Unmanaged]
+    public unsafe struct DXGI_MAPPED_RECT
     {
         #region Fields
         [ComAliasName("INT")]

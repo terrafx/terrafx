@@ -5,10 +5,12 @@
 
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct DXGI_INFO_QUEUE_MESSAGE
+    [Unmanaged]
+    public unsafe struct DXGI_INFO_QUEUE_MESSAGE
     {
         #region Fields
         [ComAliasName("DXGI_DEBUG_ID")]

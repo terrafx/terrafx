@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Describes the opacity and transformation of a brush.</summary>
-    public /* unmanaged */ struct D2D1_BRUSH_PROPERTIES
+    [Unmanaged]
+    public struct D2D1_BRUSH_PROPERTIES
     {
         #region Fields
         [ComAliasName("FLOAT")]

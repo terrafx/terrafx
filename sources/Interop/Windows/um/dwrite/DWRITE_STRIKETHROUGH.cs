@@ -4,12 +4,14 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>The DWRITE_STRIKETHROUGH public structure contains information about the size and placement of strikethroughs. All coordinates are in device independent pixels (DIPs).</summary>
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    public /* unmanaged */ unsafe struct DWRITE_STRIKETHROUGH
+    [Unmanaged]
+    public unsafe struct DWRITE_STRIKETHROUGH
     {
         #region Fields
         /// <summary>Width of the strikethrough, measured parallel to the baseline.</summary>

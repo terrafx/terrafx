@@ -5,12 +5,14 @@
 
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Defines a property binding to a function. The name must match the property defined in the registration schema.</summary>
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    public /* unmanaged */ unsafe struct D2D1_PROPERTY_BINDING
+    [Unmanaged]
+    public unsafe struct D2D1_PROPERTY_BINDING
     {
         #region Fields
         /// <summary>The name of the property.</summary>

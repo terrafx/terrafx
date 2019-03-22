@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit)]
-    public /* unmanaged */ struct D3D12_UNORDERED_ACCESS_VIEW_DESC
+    [Unmanaged]
+    public struct D3D12_UNORDERED_ACCESS_VIEW_DESC
     {
         #region Fields
         [FieldOffset(0)]

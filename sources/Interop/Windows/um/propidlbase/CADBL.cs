@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct CADBL
+    [Unmanaged]
+    public unsafe struct CADBL
     {
         #region Fields
         [ComAliasName("ULONG")]

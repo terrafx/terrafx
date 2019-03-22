@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct D3D12_BLEND_DESC
+    [Unmanaged]
+    public struct D3D12_BLEND_DESC
     {
         #region Fields
         [ComAliasName("BOOL")]
@@ -22,7 +24,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ unsafe struct _RenderTarget_e__FixedBuffer
+        [Unmanaged]
+        public unsafe struct _RenderTarget_e__FixedBuffer
         {
             #region Fields
             public D3D12_RENDER_TARGET_BLEND_DESC e0;

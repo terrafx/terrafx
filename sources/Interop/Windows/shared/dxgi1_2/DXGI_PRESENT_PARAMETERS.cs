@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct DXGI_PRESENT_PARAMETERS
+    [Unmanaged]
+    public unsafe struct DXGI_PRESENT_PARAMETERS
     {
         #region Fields
         [ComAliasName("UINT")]

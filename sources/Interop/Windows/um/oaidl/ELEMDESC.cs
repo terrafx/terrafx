@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct ELEMDESC
+    [Unmanaged]
+    public struct ELEMDESC
     {
         #region Fields
         public TYPEDESC tdesc;
@@ -17,7 +19,8 @@ namespace TerraFX.Interop
 
         #region Structs
         [StructLayout(LayoutKind.Explicit)]
-        public /* unmanaged */ struct _u_e__Union
+        [Unmanaged]
+        public struct _u_e__Union
         {
             #region Fields
             [FieldOffset(0)]

@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct D3D12_TEXTURE_COPY_LOCATION
+    [Unmanaged]
+    public unsafe struct D3D12_TEXTURE_COPY_LOCATION
     {
         #region Fields
         public ID3D12Resource* pResource;
@@ -19,7 +21,8 @@ namespace TerraFX.Interop
 
         #region Structs
         [StructLayout(LayoutKind.Explicit)]
-        public /* unmanaged */ struct _Anonymous_e__Union
+        [Unmanaged]
+        public struct _Anonymous_e__Union
         {
             #region Fields
             [FieldOffset(0)]

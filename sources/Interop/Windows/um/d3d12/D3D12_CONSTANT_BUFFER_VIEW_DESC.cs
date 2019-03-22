@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct D3D12_CONSTANT_BUFFER_VIEW_DESC
+    [Unmanaged]
+    public struct D3D12_CONSTANT_BUFFER_VIEW_DESC
     {
         #region Fields
         [ComAliasName("D3D12_GPU_VIRTUAL_ADDRESS")]

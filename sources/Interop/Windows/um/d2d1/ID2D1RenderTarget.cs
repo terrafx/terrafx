@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Interop.D2D1_BITMAP_INTERPOLATION_MODE;
 using static TerraFX.Interop.D2D1_DRAW_TEXT_OPTIONS;
 using static TerraFX.Interop.DWRITE_MEASURING_MODE;
@@ -15,7 +16,8 @@ namespace TerraFX.Interop
 {
     /// <summary>Represents an object that can receive drawing commands. Interfaces that inherit from ID2D1RenderTarget render the drawing commands they receive in different ways.</summary>
     [Guid("2CD90694-12E2-11DC-9FED-001143A055F9")]
-    public /* unmanaged */ unsafe struct ID2D1RenderTarget
+    [Unmanaged]
+    public unsafe struct ID2D1RenderTarget
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -1457,7 +1459,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

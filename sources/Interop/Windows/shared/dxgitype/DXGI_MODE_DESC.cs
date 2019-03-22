@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct DXGI_MODE_DESC
+    [Unmanaged]
+    public struct DXGI_MODE_DESC
     {
         #region Fields
         [ComAliasName("UINT")]

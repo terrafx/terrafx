@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct D3D12_MESSAGE
+    [Unmanaged]
+    public unsafe struct D3D12_MESSAGE
     {
         #region Fields
         public D3D12_MESSAGE_CATEGORY Category;

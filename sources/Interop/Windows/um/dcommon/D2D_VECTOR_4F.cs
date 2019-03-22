@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>A vector of 4 float values (x, y, z, w).</summary>
-    public /* unmanaged */ struct D2D_VECTOR_4F
+    [Unmanaged]
+    public struct D2D_VECTOR_4F
     {
         #region Fields
         [ComAliasName("FLOAT")]

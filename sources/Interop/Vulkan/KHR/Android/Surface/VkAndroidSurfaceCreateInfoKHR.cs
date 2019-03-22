@@ -5,10 +5,12 @@
 
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct VkAndroidSurfaceCreateInfoKHR
+    [Unmanaged]
+    public unsafe struct VkAndroidSurfaceCreateInfoKHR
     {
         #region Fields
         public VkStructureType sType;

@@ -2,13 +2,15 @@
 
 using System;
 using TerraFX;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 #pragma warning disable IDE1006
 
 /// <summary>Defines a native-sized signed integer.</summary>
-public readonly /* unmanaged */ unsafe struct nint : IComparable, IComparable<nint>, IEquatable<nint>, IFormattable
+[Unmanaged]
+public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<nint>, IFormattable
 {
     #region Fields
     /// <summary>The value for the instance.</summary>

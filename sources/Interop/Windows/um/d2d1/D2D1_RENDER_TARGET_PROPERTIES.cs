@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Contains rendering options (hardware or software), pixel format, DPI information, remoting options, and Direct3D support requirements for a render target.</summary>
-    public /* unmanaged */ struct D2D1_RENDER_TARGET_PROPERTIES
+    [Unmanaged]
+    public struct D2D1_RENDER_TARGET_PROPERTIES
     {
         #region Fields
         public D2D1_RENDER_TARGET_TYPE type;

@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    public /* unmanaged */ unsafe struct LOGFONT
+    [Unmanaged]
+    public unsafe struct LOGFONT
     {
         #region Fields
         [ComAliasName("LONG")]

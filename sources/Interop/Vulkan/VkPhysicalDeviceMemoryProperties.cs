@@ -3,11 +3,13 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
+using TerraFX.Utilities;
 using static System.Runtime.CompilerServices.Unsafe;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct VkPhysicalDeviceMemoryProperties
+    [Unmanaged]
+    public struct VkPhysicalDeviceMemoryProperties
     {
         #region Fields
         public uint memoryTypeCount;
@@ -20,7 +22,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ unsafe struct _memoryTypes_e__FixedBuffer
+        [Unmanaged]
+        public unsafe struct _memoryTypes_e__FixedBuffer
         {
             #region Fields
             public VkMemoryType e0;
@@ -102,7 +105,8 @@ namespace TerraFX.Interop
             #endregion
         }
 
-        public /* unmanaged */ unsafe struct _memoryHeaps_e__FixedBuffer
+        [Unmanaged]
+        public unsafe struct _memoryHeaps_e__FixedBuffer
         {
             #region Fields
             public VkMemoryHeap e0;

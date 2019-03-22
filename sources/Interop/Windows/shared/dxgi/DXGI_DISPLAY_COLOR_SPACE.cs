@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct DXGI_DISPLAY_COLOR_SPACE
+    [Unmanaged]
+    public unsafe struct DXGI_DISPLAY_COLOR_SPACE
     {
         #region Fields
         [ComAliasName("FLOAT[8][2]")]

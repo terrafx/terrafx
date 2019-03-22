@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using TerraFX.Interop.Desktop;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     [Guid("80A07424-AB52-42EB-833C-0C42FD282D98")]
-    public /* unmanaged */ unsafe struct IDXGIOutput5
+    [Unmanaged]
+    public unsafe struct IDXGIOutput5
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -707,7 +709,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

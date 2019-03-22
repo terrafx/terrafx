@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Base interface for built-in transforms on which precision and caching may be controlled.</summary>
     [Guid("1A799D8A-69F7-4E4C-9FED-437CCC6684CC")]
-    public /* unmanaged */ unsafe struct ID2D1ConcreteTransform
+    [Unmanaged]
+    public unsafe struct ID2D1ConcreteTransform
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -158,7 +160,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

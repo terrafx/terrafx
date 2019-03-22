@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Interop.D2D1_PIXEL_OPTIONS;
 using static TerraFX.Utilities.InteropUtilities;
 
@@ -13,7 +14,8 @@ namespace TerraFX.Interop
 {
     /// <summary>A transform uses this interface to specify how to render a particular pass using pixel and vertex shaders.</summary>
     [Guid("693CE632-7F2F-45DE-93FE-18D88B37AA21")]
-    public /* unmanaged */ unsafe struct ID2D1DrawInfo
+    [Unmanaged]
+    public unsafe struct ID2D1DrawInfo
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -326,7 +328,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

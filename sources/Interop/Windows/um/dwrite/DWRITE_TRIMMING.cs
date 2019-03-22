@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>The DWRITE_TRIMMING public structure specifies the trimming option for text overflowing the layout box.</summary>
-    public /* unmanaged */ struct DWRITE_TRIMMING
+    [Unmanaged]
+    public struct DWRITE_TRIMMING
     {
         #region Fields
         /// <summary>Text granularity of which trimming applies.</summary>

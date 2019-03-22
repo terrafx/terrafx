@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Application-defined callback interface that receives notifications from the font download queue (IDWriteFontDownloadQueue interface). Callbacks will occur on the downloading thread, and objects must be prepared to handle calls on their methods from other threads at any time.</summary>
     [Guid("B06FE5B9-43EC-4393-881B-DBE4DC72FDA7")]
-    public /* unmanaged */ unsafe struct IDWriteFontDownloadListener
+    [Unmanaged]
+    public unsafe struct IDWriteFontDownloadListener
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -118,7 +120,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

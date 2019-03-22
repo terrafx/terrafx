@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    /// <summary>The DWRITE_GLYPH_METRICS public /* unmanaged */ structure specifies the metrics of an individual glyph. The units depend on how the metrics are obtained.</summary>
-    public /* unmanaged */ struct DWRITE_GLYPH_METRICS
+    /// <summary>The DWRITE_GLYPH_METRICS structure specifies the metrics of an individual glyph. The units depend on how the metrics are obtained.</summary>
+    [Unmanaged]
+    public struct DWRITE_GLYPH_METRICS
     {
         #region Fields
         /// <summary>Specifies the X offset from the glyph origin to the left edge of the black box. The glyph origin is the current horizontal writing position. A negative value means the black box extends to the left of the origin (often true for lowercase italic 'f').</summary>

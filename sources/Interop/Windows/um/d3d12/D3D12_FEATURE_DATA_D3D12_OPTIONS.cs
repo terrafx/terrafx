@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct D3D12_FEATURE_DATA_D3D12_OPTIONS
+    [Unmanaged]
+    public struct D3D12_FEATURE_DATA_D3D12_OPTIONS
     {
         #region Fields
         [ComAliasName("BOOL")]

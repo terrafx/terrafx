@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>The IDWriteAsyncResult interface represents the result of an asynchronous operation. A client can use the interface to wait for the operation to complete and to get the result.</summary>
     [Guid("CE25F8FD-863B-4D13-9651-C1F88DC73FE2")]
-    public /* unmanaged */ unsafe struct IDWriteAsyncResult
+    [Unmanaged]
+    public unsafe struct IDWriteAsyncResult
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -126,7 +128,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

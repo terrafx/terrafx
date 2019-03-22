@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>A container for 3D lookup table data that can be passed to the LookupTable3D effect.</summary>
     [Guid("53DD9855-A3B0-4D5B-82E1-26E25C5E5797")]
-    public /* unmanaged */ unsafe struct ID2D1LookupTable3D
+    [Unmanaged]
+    public unsafe struct ID2D1LookupTable3D
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -113,7 +115,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

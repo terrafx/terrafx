@@ -3,11 +3,13 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
+using TerraFX.Utilities;
 using static System.Runtime.CompilerServices.Unsafe;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct VkImageBlit
+    [Unmanaged]
+    public struct VkImageBlit
     {
         #region Fields
         public VkImageSubresourceLayers srcSubresource;
@@ -20,7 +22,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ unsafe struct _srcOffsets_e__FixedBuffer
+        [Unmanaged]
+        public unsafe struct _srcOffsets_e__FixedBuffer
         {
             #region Fields
             public VkOffset3D e0;
@@ -42,7 +45,8 @@ namespace TerraFX.Interop
             #endregion
         }
 
-        public /* unmanaged */ unsafe struct _dstOffsets_e__FixedBuffer
+        [Unmanaged]
+        public unsafe struct _dstOffsets_e__FixedBuffer
         {
             #region Fields
             public VkOffset3D e0;

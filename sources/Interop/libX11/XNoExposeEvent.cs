@@ -5,10 +5,12 @@
 
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct XNoExposeEvent
+    [Unmanaged]
+    public unsafe struct XNoExposeEvent
     {
         #region Fields
         public int type;

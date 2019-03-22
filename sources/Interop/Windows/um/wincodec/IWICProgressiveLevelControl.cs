@@ -6,12 +6,14 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     [Guid("DAAC296F-7AA5-4DBF-8D15-225C5976F891")]
-    public /* unmanaged */ unsafe struct IWICProgressiveLevelControl
+    [Unmanaged]
+    public unsafe struct IWICProgressiveLevelControl
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -153,7 +155,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

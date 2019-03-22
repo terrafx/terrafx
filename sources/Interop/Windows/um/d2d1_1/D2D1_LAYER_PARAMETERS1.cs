@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>All parameters related to pushing a layer.</summary>
-    public /* unmanaged */ unsafe struct D2D1_LAYER_PARAMETERS1
+    [Unmanaged]
+    public unsafe struct D2D1_LAYER_PARAMETERS1
     {
         #region Fields
         [ComAliasName("D2D1_RECT_F")]

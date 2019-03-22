@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Creation properties for an image brush.</summary>
-    public /* unmanaged */ struct D2D1_IMAGE_BRUSH_PROPERTIES
+    [Unmanaged]
+    public struct D2D1_IMAGE_BRUSH_PROPERTIES
     {
         #region Fields
         [ComAliasName("D2D1_RECT_F")]

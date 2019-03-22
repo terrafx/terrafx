@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Extends a stroke style to allow nominal width strokes.</summary>
     [Guid("10A72A66-E91C-43F4-993F-DDF4B82B0B4A")]
-    public /* unmanaged */ unsafe struct ID2D1StrokeStyle1
+    [Unmanaged]
+    public unsafe struct ID2D1StrokeStyle1
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -291,7 +293,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

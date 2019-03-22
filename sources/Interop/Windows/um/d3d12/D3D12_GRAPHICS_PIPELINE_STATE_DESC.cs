@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct D3D12_GRAPHICS_PIPELINE_STATE_DESC
+    [Unmanaged]
+    public unsafe struct D3D12_GRAPHICS_PIPELINE_STATE_DESC
     {
         #region Fields
         public ID3D12RootSignature* pRootSignature;
@@ -58,7 +60,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct _RTVFormats_e__FixedBuffer
+        [Unmanaged]
+        public struct _RTVFormats_e__FixedBuffer
         {
             #region Fields
             public DXGI_FORMAT e0;

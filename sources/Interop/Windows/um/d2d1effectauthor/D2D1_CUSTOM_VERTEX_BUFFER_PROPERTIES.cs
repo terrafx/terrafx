@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>This defines the input layout of vertices and the vertex shader which processes them.</summary>
-    public /* unmanaged */ unsafe struct D2D1_CUSTOM_VERTEX_BUFFER_PROPERTIES
+    [Unmanaged]
+    public unsafe struct D2D1_CUSTOM_VERTEX_BUFFER_PROPERTIES
     {
         #region Fields
         [ComAliasName("BYTE[]")]

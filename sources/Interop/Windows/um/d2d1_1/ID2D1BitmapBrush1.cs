@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>A bitmap brush allows a bitmap to be used to fill a geometry.  Interpolation mode is specified with D2D1_INTERPOLATION_MODE</summary>
     [Guid("41343A53-E41A-49A2-91CD-21793BBB62E5")]
-    public /* unmanaged */ unsafe struct ID2D1BitmapBrush1
+    [Unmanaged]
+    public unsafe struct ID2D1BitmapBrush1
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -390,7 +392,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

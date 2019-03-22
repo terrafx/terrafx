@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Association of text and its writing system script as well as some display attributes.</summary>
-    public /* unmanaged */ struct DWRITE_SCRIPT_ANALYSIS
+    [Unmanaged]
+    public struct DWRITE_SCRIPT_ANALYSIS
     {
         #region Fields
         /// <summary>Zero-based index representation of writing system script.</summary>

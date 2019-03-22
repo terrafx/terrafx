@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct D3D12_STREAM_OUTPUT_BUFFER_VIEW
+    [Unmanaged]
+    public struct D3D12_STREAM_OUTPUT_BUFFER_VIEW
     {
         #region Fields
         [ComAliasName("D3D12_GPU_VIRTUAL_ADDRESS")]

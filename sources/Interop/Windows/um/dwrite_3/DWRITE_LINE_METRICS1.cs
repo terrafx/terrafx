@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Information about a formatted line of text.</summary>
-    public /* unmanaged */ struct DWRITE_LINE_METRICS1
+    [Unmanaged]
+    public struct DWRITE_LINE_METRICS1
     {
         #region Fields
         public DWRITE_LINE_METRICS BaseValue;

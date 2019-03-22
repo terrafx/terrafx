@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Properties describing the geometric measurement of an application-defined inline object.</summary>
-    public /* unmanaged */ struct DWRITE_INLINE_OBJECT_METRICS
+    [Unmanaged]
+    public struct DWRITE_INLINE_OBJECT_METRICS
     {
         #region Fields
         /// <summary>Width of the inline object.</summary>

@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>The DWRITE_CLUSTER_METRICS public structure contains information about a glyph cluster.</summary>
-    public /* unmanaged */ struct DWRITE_CLUSTER_METRICS
+    [Unmanaged]
+    public struct DWRITE_CLUSTER_METRICS
     {
         #region Fields
         /// <summary>The total advance width of all glyphs in the cluster.</summary>

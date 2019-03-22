@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Root bitmap resource, linearly scaled on a draw call.</summary>
     [Guid("A2296057-EA42-4099-983B-539FB6505426")]
-    public /* unmanaged */ unsafe struct ID2D1Bitmap
+    [Unmanaged]
+    public unsafe struct ID2D1Bitmap
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -284,7 +286,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

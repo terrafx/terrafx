@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>The text renderer interface represents a set of application-defined callbacks that perform rendering of text, inline objects, and decorations such as underlines.</summary>
     [Guid("D3E0E934-22A0-427E-AAE4-7D9574B59DB1")]
-    public /* unmanaged */ unsafe struct IDWriteTextRenderer1
+    [Unmanaged]
+    public unsafe struct IDWriteTextRenderer1
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -174,7 +176,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Delegates
-        /// <summary>IDWriteTextLayout::Draw calls this function to inpublic /* unmanaged */ struct the client to render a run of glyphs.</summary>
+        /// <summary>IDWriteTextLayout::Draw calls this function to instruct the client to render a run of glyphs.</summary>
         /// <param name="clientDrawingContext">The context passed to IDWriteTextLayout::Draw.</param>
         /// <param name="baselineOriginX">X-coordinate of the baseline.</param>
         /// <param name="baselineOriginY">Y-coordinate of the baseline.</param>
@@ -200,7 +202,7 @@ namespace TerraFX.Interop
             [In] IUnknown* clientDrawingEffect = null
         );
 
-        /// <summary>IDWriteTextLayout::Draw calls this function to inpublic /* unmanaged */ struct the client to draw an underline.</summary>
+        /// <summary>IDWriteTextLayout::Draw calls this function to instruct the client to draw an underline.</summary>
         /// <param name="clientDrawingContext">The context passed to IDWriteTextLayout::Draw.</param>
         /// <param name="baselineOriginX">X-coordinate of the baseline.</param>
         /// <param name="baselineOriginY">Y-coordinate of the baseline.</param>
@@ -223,7 +225,7 @@ namespace TerraFX.Interop
             [In] IUnknown* clientDrawingEffect = null
         );
 
-        /// <summary>IDWriteTextLayout::Draw calls this function to inpublic /* unmanaged */ struct the client to draw a strikethrough.</summary>
+        /// <summary>IDWriteTextLayout::Draw calls this function to instruct the client to draw a strikethrough.</summary>
         /// <param name="clientDrawingContext">The context passed to IDWriteTextLayout::Draw.</param>
         /// <param name="baselineOriginX">X-coordinate of the baseline.</param>
         /// <param name="baselineOriginY">Y-coordinate of the baseline.</param>
@@ -567,7 +569,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

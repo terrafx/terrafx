@@ -5,10 +5,12 @@
 
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct Screen
+    [Unmanaged]
+    public unsafe struct Screen
     {
         #region Fields
         public XExtData* ext_data;

@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Contains the center point, x-radius, and y-radius of an ellipse.</summary>
-    public /* unmanaged */ struct D2D1_ELLIPSE
+    [Unmanaged]
+    public struct D2D1_ELLIPSE
     {
         #region Fields
         [ComAliasName("D2D1_POINT_2F")]

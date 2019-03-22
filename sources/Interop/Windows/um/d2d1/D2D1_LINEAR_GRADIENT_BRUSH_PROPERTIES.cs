@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Contains the starting point and endpoint of the gradient axis for an ID2D1LinearGradientBrush.</summary>
-    public /* unmanaged */ struct D2D1_LINEAR_GRADIENT_BRUSH_PROPERTIES
+    [Unmanaged]
+    public struct D2D1_LINEAR_GRADIENT_BRUSH_PROPERTIES
     {
         #region Fields
         [ComAliasName("D2D1_POINT_2F")]

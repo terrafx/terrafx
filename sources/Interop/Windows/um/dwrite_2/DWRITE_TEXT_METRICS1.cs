@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Overall metrics associated with text after layout. All coordinates are in device independent pixels (DIPs).</summary>
-    public /* unmanaged */ struct DWRITE_TEXT_METRICS1
+    [Unmanaged]
+    public struct DWRITE_TEXT_METRICS1
     {
         #region Fields
         public DWRITE_TEXT_METRICS BaseValue;

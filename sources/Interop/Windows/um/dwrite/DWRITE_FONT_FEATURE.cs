@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>The DWRITE_FONT_FEATURE public structure specifies properties used to identify and execute typographic feature in the font.</summary>
-    public /* unmanaged */ struct DWRITE_FONT_FEATURE
+    [Unmanaged]
+    public struct DWRITE_FONT_FEATURE
     {
         #region Fields
         /// <summary>The feature OpenType name identifier.</summary>

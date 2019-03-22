@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct D3D12_SHADER_BYTECODE
+    [Unmanaged]
+    public unsafe struct D3D12_SHADER_BYTECODE
     {
         #region Fields
         public void* pShaderBytecode;

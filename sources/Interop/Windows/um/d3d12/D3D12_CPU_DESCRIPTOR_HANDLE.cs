@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct D3D12_CPU_DESCRIPTOR_HANDLE
+    [Unmanaged]
+    public struct D3D12_CPU_DESCRIPTOR_HANDLE
     {
         #region Fields
         [ComAliasName("SIZE_T")]

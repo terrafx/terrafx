@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>A font fallback definition used for mapping characters to fonts capable of supporting them.</summary>
     [Guid("EFA008F9-F7A1-48BF-B05C-F224713CC0FF")]
-    public /* unmanaged */ unsafe struct IDWriteFontFallback
+    [Unmanaged]
+    public unsafe struct IDWriteFontFallback
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -152,7 +154,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

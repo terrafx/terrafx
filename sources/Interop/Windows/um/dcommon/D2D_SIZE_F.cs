@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Stores an ordered pair of floats, typically the width and height of a rectangle.</summary>
-    public /* unmanaged */ struct D2D_SIZE_F
+    [Unmanaged]
+    public struct D2D_SIZE_F
     {
         #region Fields
         [ComAliasName("FLOAT")]

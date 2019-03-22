@@ -5,10 +5,12 @@
 
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct MSG
+    [Unmanaged]
+    public unsafe struct MSG
     {
         #region Fields
         [ComAliasName("HWND")]

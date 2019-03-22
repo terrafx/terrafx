@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Allows the drawing state to be atomically created. This also specifies the drawing state that is saved into an IDrawingStateBlock object.</summary>
-    public /* unmanaged */ struct D2D1_DRAWING_STATE_DESCRIPTION
+    [Unmanaged]
+    public struct D2D1_DRAWING_STATE_DESCRIPTION
     {
         #region Fields
         public D2D1_ANTIALIAS_MODE antialiasMode;

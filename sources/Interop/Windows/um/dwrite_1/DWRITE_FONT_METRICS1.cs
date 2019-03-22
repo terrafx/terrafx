@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct DWRITE_FONT_METRICS1
+    [Unmanaged]
+    public struct DWRITE_FONT_METRICS1
     {
         #region Fields
         public DWRITE_FONT_METRICS BaseValue;

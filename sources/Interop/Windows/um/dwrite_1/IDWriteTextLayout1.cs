@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
@@ -13,7 +14,8 @@ namespace TerraFX.Interop
     /// <summary>The IDWriteTextLayout1 interface represents a block of text after it has been fully analyzed and formatted.
     /// All coordinates are in device independent pixels (DIPs).</summary>
     [Guid("9064D822-80A7-465C-A986-DF65F78B8FEB")]
-    public /* unmanaged */ unsafe struct IDWriteTextLayout1
+    [Unmanaged]
+    public unsafe struct IDWriteTextLayout1
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -2033,7 +2035,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

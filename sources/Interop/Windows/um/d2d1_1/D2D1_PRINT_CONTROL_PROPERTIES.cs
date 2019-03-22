@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>The creation properties for a ID2D1PrintControl object.</summary>
-    public /* unmanaged */ struct D2D1_PRINT_CONTROL_PROPERTIES
+    [Unmanaged]
+    public struct D2D1_PRINT_CONTROL_PROPERTIES
     {
         #region Fields
         public D2D1_PRINT_FONT_SUBSET_MODE fontSubset;

@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct WICImageParameters
+    [Unmanaged]
+    public struct WICImageParameters
     {
         #region Fields
         public D2D1_PIXEL_FORMAT pixelFormat;

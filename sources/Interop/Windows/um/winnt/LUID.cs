@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct LUID
+    [Unmanaged]
+    public struct LUID
     {
         #region Fields
         [ComAliasName("DWORD")]

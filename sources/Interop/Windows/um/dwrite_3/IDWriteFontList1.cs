@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>The IDWriteFontList interface represents a list of fonts.</summary>
     [Guid("DA20D8EF-812A-4C43-9802-62EC4ABD7ADE")]
-    public /* unmanaged */ unsafe struct IDWriteFontList1
+    [Unmanaged]
+    public unsafe struct IDWriteFontList1
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -92,7 +94,7 @@ namespace TerraFX.Interop
         /// <summary>Gets a font given its zero-based index.</summary>
         /// <param name="listIndex">Zero-based index of the font in the font list.</param>
         /// <param name="font">Receives a pointer to the newly created font object.</param>
-        /// <returns> Standard HRESULT error code. The function returns DWRITE_E_REMOTEFONT if it could not conpublic /* unmanaged */ struct a remote font.</returns>
+        /// <returns> Standard HRESULT error code. The function returns DWRITE_E_REMOTEFONT if it could not construct a remote font.</returns>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
@@ -247,7 +249,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

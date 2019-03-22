@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Describes a cubic bezier in a path.</summary>
-    public /* unmanaged */ struct D2D1_BEZIER_SEGMENT
+    [Unmanaged]
+    public struct D2D1_BEZIER_SEGMENT
     {
         #region Fields
         [ComAliasName("D2D1_POINT_2F")]

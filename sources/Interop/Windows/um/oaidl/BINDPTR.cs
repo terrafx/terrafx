@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit)]
-    public /* unmanaged */ unsafe struct BINDPTR
+    [Unmanaged]
+    public unsafe struct BINDPTR
     {
         #region Fields
         [FieldOffset(0)]

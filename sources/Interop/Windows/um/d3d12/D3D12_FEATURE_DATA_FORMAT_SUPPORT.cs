@@ -3,9 +3,12 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using TerraFX.Utilities;
+
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct D3D12_FEATURE_DATA_FORMAT_SUPPORT
+    [Unmanaged]
+    public struct D3D12_FEATURE_DATA_FORMAT_SUPPORT
     {
         #region Fields
         public DXGI_FORMAT Format;

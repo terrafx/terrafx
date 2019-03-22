@@ -5,11 +5,13 @@
 
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Contains the HWND, pixel size, and presentation options for an ID2D1HwndRenderTarget.</summary>
-    public /* unmanaged */ unsafe struct D2D1_HWND_RENDER_TARGET_PROPERTIES
+    [Unmanaged]
+    public unsafe struct D2D1_HWND_RENDER_TARGET_PROPERTIES
     {
         #region Fields
         [ComAliasName("HWND")]

@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Defines the general pen tip shape and the transform used in an ID2D1InkStyle object.</summary>
-    public /* unmanaged */ struct D2D1_INK_STYLE_PROPERTIES
+    [Unmanaged]
+    public struct D2D1_INK_STYLE_PROPERTIES
     {
         #region Fields
         /// <summary>The general shape of the nib used to draw a given ink object.</summary>

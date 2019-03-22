@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>DWRITE_FILE_FRAGMENT represents a range of bytes in a font file.</summary>
-    public /* unmanaged */ struct DWRITE_FILE_FRAGMENT
+    [Unmanaged]
+    public struct DWRITE_FILE_FRAGMENT
     {
         #region Fields
         /// <summary>Starting offset of the fragment from the beginning of the file.</summary>

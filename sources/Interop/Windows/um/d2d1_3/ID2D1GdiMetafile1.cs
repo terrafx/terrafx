@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Interface encapsulating a GDI/GDI+ metafile.</summary>
     [Guid("2E69F9E8-DD3F-4BF9-95BA-C04F49D788DF")]
-    public /* unmanaged */ unsafe struct ID2D1GdiMetafile1
+    [Unmanaged]
+    public unsafe struct ID2D1GdiMetafile1
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -212,7 +214,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

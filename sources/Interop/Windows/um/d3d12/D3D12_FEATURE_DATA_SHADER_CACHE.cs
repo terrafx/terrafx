@@ -3,9 +3,12 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using TerraFX.Utilities;
+
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct D3D12_FEATURE_DATA_SHADER_CACHE
+    [Unmanaged]
+    public struct D3D12_FEATURE_DATA_SHADER_CACHE
     {
         #region Fields
         public D3D12_SHADER_CACHE_SUPPORT_FLAGS SupportFlags;

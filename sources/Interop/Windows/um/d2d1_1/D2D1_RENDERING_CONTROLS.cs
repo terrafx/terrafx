@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>This controls advanced settings of the Direct2D imaging pipeline.</summary>
-    public /* unmanaged */ struct D2D1_RENDERING_CONTROLS
+    [Unmanaged]
+    public struct D2D1_RENDERING_CONTROLS
     {
         #region Fields
         /// <summary>The default buffer precision, used if the precision isn't otherwise specified.</summary>

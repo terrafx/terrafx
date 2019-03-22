@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>The interface implemented by a transform author to indicate that it should receive an analysis result callback.</summary>
     [Guid("0359DC30-95E6-4568-9055-27720D130E93")]
-    public /* unmanaged */ unsafe struct ID2D1AnalysisTransform
+    [Unmanaged]
+    public unsafe struct ID2D1AnalysisTransform
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -113,7 +115,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

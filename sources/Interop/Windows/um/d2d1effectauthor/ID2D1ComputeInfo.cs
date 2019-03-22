@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>A transform uses this interface to specify how to render a particular pass using compute shader.</summary>
     [Guid("5598B14B-9FD7-48B7-9BDB-8F0964EB38BC")]
-    public /* unmanaged */ unsafe struct ID2D1ComputeInfo
+    [Unmanaged]
+    public unsafe struct ID2D1ComputeInfo
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -261,7 +263,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

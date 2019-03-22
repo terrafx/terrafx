@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>The internal context handed to effect authors to create transforms from effects and any other operation tied to context which is not useful to the application facing API.</summary>
     [Guid("84AB595A-FC81-4546-BACD-E8EF4D8ABE7A")]
-    public /* unmanaged */ unsafe struct ID2D1EffectContext1
+    [Unmanaged]
+    public unsafe struct ID2D1EffectContext1
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -696,7 +698,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

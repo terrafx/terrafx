@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct DXGI_SWAP_CHAIN_FULLSCREEN_DESC
+    [Unmanaged]
+    public struct DXGI_SWAP_CHAIN_FULLSCREEN_DESC
     {
         #region Fields
         public DXGI_RATIONAL RefreshRate;

@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>An effect uses this interface to alter the image rectangle of its input.</summary>
     [Guid("90F732E2-5092-4606-A819-8651970BACCD")]
-    public /* unmanaged */ unsafe struct ID2D1BoundsAdjustmentTransform
+    [Unmanaged]
+    public unsafe struct ID2D1BoundsAdjustmentTransform
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -151,7 +153,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

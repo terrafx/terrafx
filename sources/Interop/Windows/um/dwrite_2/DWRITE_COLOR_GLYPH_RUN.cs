@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Represents a color glyph run. The IDWriteFactory2::TranslateColorGlyphRun method returns an ordered collection of color glyph runs, which can be layered on top of each other to produce a color representation of the given base glyph run.</summary>
-    public /* unmanaged */ unsafe struct DWRITE_COLOR_GLYPH_RUN
+    [Unmanaged]
+    public unsafe struct DWRITE_COLOR_GLYPH_RUN
     {
         #region Fields
         /// <summary>Glyph run to render.</summary>

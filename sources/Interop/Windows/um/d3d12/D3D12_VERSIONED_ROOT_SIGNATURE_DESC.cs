@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit)]
-    public /* unmanaged */ struct D3D12_VERSIONED_ROOT_SIGNATURE_DESC
+    [Unmanaged]
+    public struct D3D12_VERSIONED_ROOT_SIGNATURE_DESC
     {
         #region Fields
         [FieldOffset(0)]

@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
@@ -13,7 +14,8 @@ namespace TerraFX.Interop
     /// <summary>IDWriteRemoteFontFileStream represents a font file stream parts of which may be non-local. Non-local data must be downloaded before it can be accessed using ReadFragment. The interface exposes methods to download font data and query the locality of font data.</summary>
     /// <remarks> For more information, see the description of IDWriteRemoteFontFileLoader.</remarks>
     [Guid("4DB3757A-2C72-4ED9-B2B6-1ABABE1AFF9C")]
-    public /* unmanaged */ unsafe struct IDWriteRemoteFontFileStream
+    [Unmanaged]
+    public unsafe struct IDWriteRemoteFontFileStream
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -320,7 +322,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

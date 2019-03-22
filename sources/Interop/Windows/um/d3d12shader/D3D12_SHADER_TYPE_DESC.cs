@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct D3D12_SHADER_TYPE_DESC
+    [Unmanaged]
+    public unsafe struct D3D12_SHADER_TYPE_DESC
     {
         #region Fields
         public D3D_SHADER_VARIABLE_CLASS Class;

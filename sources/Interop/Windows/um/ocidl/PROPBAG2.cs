@@ -5,11 +5,13 @@
 
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    public /* unmanaged */ unsafe struct PROPBAG2
+    [Unmanaged]
+    public unsafe struct PROPBAG2
     {
         #region Fields
         [ComAliasName("DWORD")]

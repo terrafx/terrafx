@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>This defines how geometries should be drawn and widened.</summary>
-    public /* unmanaged */ struct D2D1_STROKE_STYLE_PROPERTIES1
+    [Unmanaged]
+    public struct D2D1_STROKE_STYLE_PROPERTIES1
     {
         #region Fields
         public D2D1_CAP_STYLE startCap;

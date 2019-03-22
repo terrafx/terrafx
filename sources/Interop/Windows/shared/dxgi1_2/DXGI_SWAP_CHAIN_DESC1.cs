@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct DXGI_SWAP_CHAIN_DESC1
+    [Unmanaged]
+    public struct DXGI_SWAP_CHAIN_DESC1
     {
         #region Fields
         [ComAliasName("UINT")]

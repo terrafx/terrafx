@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Data for a single glyph from GetGlyphImageData.</summary>
-    public /* unmanaged */ unsafe struct DWRITE_GLYPH_IMAGE_DATA
+    [Unmanaged]
+    public unsafe struct DWRITE_GLYPH_IMAGE_DATA
     {
         #region Fields
         /// <summary>Pointer to the glyph data, be it SVG, PNG, JPEG, TIFF.</summary>

@@ -5,10 +5,12 @@
 
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ unsafe struct DXGI_SWAP_CHAIN_DESC
+    [Unmanaged]
+    public unsafe struct DXGI_SWAP_CHAIN_DESC
     {
         #region Fields
         public DXGI_MODE_DESC BufferDesc;

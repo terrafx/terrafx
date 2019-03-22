@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Font typography setting.</summary>
     [Guid("55F1112B-1DC2-4B3C-9541-F46894ED85B6")]
-    public /* unmanaged */ unsafe struct IDWriteTypography
+    [Unmanaged]
+    public unsafe struct IDWriteTypography
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -161,7 +163,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

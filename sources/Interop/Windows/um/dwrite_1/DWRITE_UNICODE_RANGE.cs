@@ -4,11 +4,13 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Range of Unicode codepoints.</summary>
-    public /* unmanaged */ struct DWRITE_UNICODE_RANGE
+    [Unmanaged]
+    public struct DWRITE_UNICODE_RANGE
     {
         #region Fields
         /// <summary>The first codepoint in the Unicode range.</summary>

@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>The IDWritePixelSnapping interface defines the pixel snapping properties of a text renderer.</summary>
     [Guid("EAF3A2DA-ECF4-4D24-B644-B34F6842024B")]
-    public /* unmanaged */ unsafe struct IDWritePixelSnapping
+    [Unmanaged]
+    public unsafe struct IDWritePixelSnapping
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -175,7 +177,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

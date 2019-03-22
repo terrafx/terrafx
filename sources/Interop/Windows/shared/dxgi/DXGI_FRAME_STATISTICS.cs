@@ -4,10 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    public /* unmanaged */ struct DXGI_FRAME_STATISTICS
+    [Unmanaged]
+    public struct DXGI_FRAME_STATISTICS
     {
         #region Fields
         [ComAliasName("UINT")]

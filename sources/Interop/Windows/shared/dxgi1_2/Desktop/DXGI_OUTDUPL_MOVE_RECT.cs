@@ -3,9 +3,12 @@
 // Ported from shared\dxgi1_2.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using TerraFX.Utilities;
+
 namespace TerraFX.Interop.Desktop
 {
-    public /* unmanaged */ struct DXGI_OUTDUPL_MOVE_RECT
+    [Unmanaged]
+    public struct DXGI_OUTDUPL_MOVE_RECT
     {
         #region Fields
         public POINT SourcePoint;

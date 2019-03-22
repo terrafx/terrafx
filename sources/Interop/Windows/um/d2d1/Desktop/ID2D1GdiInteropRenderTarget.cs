@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop.Desktop
 {
     /// <summary>Provides access to an device context that can accept GDI drawing commands.</summary>
     [Guid("E0DB51C3-6F77-4BAE-B3D5-E47509B35838")]
-    public /* unmanaged */ unsafe struct ID2D1GdiInteropRenderTarget
+    [Unmanaged]
+    public unsafe struct ID2D1GdiInteropRenderTarget
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -135,7 +137,8 @@ namespace TerraFX.Interop.Desktop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;

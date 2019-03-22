@@ -1,13 +1,15 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX
 {
     /// <summary>Defines a timestamp.</summary>
-    public readonly /* unmanaged */ struct Timestamp : IComparable, IComparable<Timestamp>, IEquatable<Timestamp>, IFormattable
+    [Unmanaged]
+    public readonly struct Timestamp : IComparable, IComparable<Timestamp>, IEquatable<Timestamp>, IFormattable
     {
         #region Constants
         /// <summary>The number of ticks that occur per day.</summary>

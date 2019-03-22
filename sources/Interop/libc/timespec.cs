@@ -4,11 +4,13 @@
 // Original source is Copyright © The IEEE and The Open Group.
 
 using System.Runtime.InteropServices;
+using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>A time specification.</summary>
-    public /* unmanaged */ struct timespec
+    [Unmanaged]
+    public struct timespec
     {
         #region Fields
         /// <summary>Seconds.</summary>

@@ -6,13 +6,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
     /// <summary>Represents a single continuous stroke of variable-width ink, as defined by a series of Bezier segments and widths.</summary>
     [Guid("B499923B-7029-478F-A8B3-432C7C5F5312")]
-    public /* unmanaged */ unsafe struct ID2D1Ink
+    [Unmanaged]
+    public unsafe struct ID2D1Ink
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -365,7 +367,8 @@ namespace TerraFX.Interop
         #endregion
 
         #region Structs
-        public /* unmanaged */ struct Vtbl
+        [Unmanaged]
+        public struct Vtbl
         {
             #region IUnknown Fields
             public IntPtr QueryInterface;
