@@ -72,7 +72,7 @@
     <MicrosoftNetCoreCompilersPackageVersion>$(MicrosoftNetCompilersPackageVersion)</MicrosoftNetCoreCompilersPackageVersion>
     <MicrosoftNetTestSdkPackageVersion>16.0.1</MicrosoftNetTestSdkPackageVersion>
     <NUnitPackageVersion>3.11.0</NUnitPackageVersion>
-    <NUnit3TestAdapterPackageVersion>3.12.0</NUnit3TestAdapterPackageVersion>
+    <NUnit3TestAdapterPackageVersion>3.13.0</NUnit3TestAdapterPackageVersion>
     <SystemCompositionPackageVersion>1.2.0</SystemCompositionPackageVersion>
     <SystemRuntimeCompilerServicesUnsafePackageVersion>4.5.2</SystemRuntimeCompilerServicesUnsafePackageVersion>
   </PropertyGroup>
