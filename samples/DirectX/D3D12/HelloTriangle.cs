@@ -11,13 +11,12 @@ using TerraFX.Utilities;
 using static TerraFX.Interop.D3D_FEATURE_LEVEL;
 using static TerraFX.Interop.D3D_PRIMITIVE_TOPOLOGY;
 using static TerraFX.Interop.D3D_ROOT_SIGNATURE_VERSION;
-using static TerraFX.Interop.D3DCompiler;
 using static TerraFX.Interop.D3D12;
 using static TerraFX.Interop.D3D12_BLEND;
 using static TerraFX.Interop.D3D12_BLEND_OP;
 using static TerraFX.Interop.D3D12_COLOR_WRITE_ENABLE;
-using static TerraFX.Interop.D3D12_COMMAND_QUEUE_FLAGS;
 using static TerraFX.Interop.D3D12_COMMAND_LIST_TYPE;
+using static TerraFX.Interop.D3D12_COMMAND_QUEUE_FLAGS;
 using static TerraFX.Interop.D3D12_CONSERVATIVE_RASTERIZATION_MODE;
 using static TerraFX.Interop.D3D12_CPU_PAGE_PROPERTY;
 using static TerraFX.Interop.D3D12_CULL_MODE;
@@ -38,6 +37,7 @@ using static TerraFX.Interop.D3D12_RESOURCE_FLAGS;
 using static TerraFX.Interop.D3D12_RESOURCE_STATES;
 using static TerraFX.Interop.D3D12_ROOT_SIGNATURE_FLAGS;
 using static TerraFX.Interop.D3D12_TEXTURE_LAYOUT;
+using static TerraFX.Interop.D3DCompiler;
 using static TerraFX.Interop.DXGI;
 using static TerraFX.Interop.DXGI_FORMAT;
 using static TerraFX.Interop.DXGI_SWAP_EFFECT;
@@ -479,9 +479,9 @@ namespace TerraFX.Samples.DirectX.D3D12
 
                     var vertexBufferSize = SizeOf<Vertex>() * 3;
 
-                    // Note: using upload heaps to transfer static data like vert buffers is not 
-                    // recommended. Every time the GPU needs it, the upload heap will be marshalled 
-                    // over. Please read up on Default Heap usage. An upload heap is used here for 
+                    // Note: using upload heaps to transfer static data like vert buffers is not
+                    // recommended. Every time the GPU needs it, the upload heap will be marshalled
+                    // over. Please read up on Default Heap usage. An upload heap is used here for
                     // code simplicity and because there are very few verts to actually transfer.
                     fixed (ID3D12Resource** vertexBuffer = &_vertexBuffer)
                     {
@@ -553,8 +553,8 @@ namespace TerraFX.Samples.DirectX.D3D12
                         ThrowExternalExceptionForLastHRESULT(nameof(CreateEvent));
                     }
 
-                    // Wait for the command list to execute; we are reusing the same command 
-                    // list in our main loop but for now, we just want to wait for setup to 
+                    // Wait for the command list to execute; we are reusing the same command
+                    // list in our main loop but for now, we just want to wait for setup to
                     // complete before continuing.
                     WaitForPreviousFrame();
                 }
@@ -585,13 +585,13 @@ namespace TerraFX.Samples.DirectX.D3D12
 
         private void PopulateCommandList()
         {
-            // Command list allocators can only be reset when the associated 
-            // command lists have finished execution on the GPU; apps should use 
+            // Command list allocators can only be reset when the associated
+            // command lists have finished execution on the GPU; apps should use
             // fences to determine GPU execution progress.
             ThrowIfFailed(nameof(ID3D12CommandAllocator.Reset), _commandAllocator->Reset());
 
-            // However, when ExecuteCommandList() is called on a particular command 
-            // list, that command list can then be reset at any time and must be before 
+            // However, when ExecuteCommandList() is called on a particular command
+            // list, that command list can then be reset at any time and must be before
             // re-recording.
             ThrowIfFailed(nameof(ID3D12GraphicsCommandList.Reset), _commandList->Reset(_commandAllocator, _pipelineState));
 

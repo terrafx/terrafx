@@ -800,4 +800,3 @@ namespace TerraFX.Interop
         #endregion
     }
 }
-

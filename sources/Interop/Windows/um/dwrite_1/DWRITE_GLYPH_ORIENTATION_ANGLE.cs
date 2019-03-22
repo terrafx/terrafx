@@ -11,14 +11,11 @@ namespace TerraFX.Interop
         /// <summary>Glyph orientation is upright.</summary>
         DWRITE_GLYPH_ORIENTATION_ANGLE_0_DEGREES,
 
-
         /// <summary>Glyph orientation is rotated 90 clockwise.</summary>
         DWRITE_GLYPH_ORIENTATION_ANGLE_90_DEGREES,
 
-
         /// <summary>Glyph orientation is upside-down.</summary>
         DWRITE_GLYPH_ORIENTATION_ANGLE_180_DEGREES,
-
 
         /// <summary>Glyph orientation is rotated 270 clockwise.</summary>
         DWRITE_GLYPH_ORIENTATION_ANGLE_270_DEGREES

@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 using TerraFX.Interop;
 using TerraFX.Interop.Desktop;
 using TerraFX.Utilities;
+using static TerraFX.Interop.Desktop.User32;
 using static TerraFX.Interop.User32;
 using static TerraFX.Interop.Windows;
-using static TerraFX.Interop.Desktop.User32;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Samples.DirectX.D3D12
@@ -82,7 +82,9 @@ namespace TerraFX.Samples.DirectX.D3D12
             ShowWindow(_hwnd, nCmdShow);
 
             // Main sample loop.
-            MSG msg; do
+            MSG msg;
+
+            do
             {
                 // Process any messages in the queue.
                 if (PeekMessage(out msg, IntPtr.Zero, 0, 0, PM_REMOVE) != 0)

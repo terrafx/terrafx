@@ -65,6 +65,6 @@ namespace TerraFX.Interop
         /// <summary>Indicates that the ascent, descent, and lineGap are based on newer 'typographic' values in the font, rather than legacy values.</summary>
         [ComAliasName("BOOL")]
         public int hasTypographicMetrics;
-    #endregion
+        #endregion
     }
 }

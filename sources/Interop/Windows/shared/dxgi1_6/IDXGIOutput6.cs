@@ -6,8 +6,8 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
-using TerraFX.Utilities;
 using TerraFX.Interop.Desktop;
+using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
@@ -839,4 +839,3 @@ namespace TerraFX.Interop
         #endregion
     }
 }
-

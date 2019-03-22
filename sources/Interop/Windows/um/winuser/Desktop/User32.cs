@@ -22,7 +22,7 @@ namespace TerraFX.Interop.Desktop
             [In, ComAliasName("DWORD")] uint dwStyle,
             [In, ComAliasName("BOOL")] int bMenu
         );
-        
+
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CloseWindow", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("BOOL")]

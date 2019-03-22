@@ -3,8 +3,8 @@
 using System;
 using System.Globalization;
 using System.Text;
-using static TerraFX.Utilities.InteropUtilities;
 using static TerraFX.Utilities.HashUtilities;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Numerics
 {

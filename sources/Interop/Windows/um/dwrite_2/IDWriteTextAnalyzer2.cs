@@ -1199,4 +1199,3 @@ namespace TerraFX.Interop
         #endregion
     }
 }
-

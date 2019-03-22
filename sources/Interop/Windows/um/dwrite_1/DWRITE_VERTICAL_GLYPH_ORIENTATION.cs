@@ -11,7 +11,6 @@ namespace TerraFX.Interop
         /// <summary>In vertical layout, naturally horizontal scripts (Latin, Thai, Arabic, Devanagari) rotate 90 degrees clockwise, while ideographic scripts (Chinese, Japanese, Korean) remain upright, 0 degrees.</summary>
         DWRITE_VERTICAL_GLYPH_ORIENTATION_DEFAULT,
 
-
         /// <summary>Ideographic scripts and scripts that permit stacking (Latin, Hebrew) are stacked in vertical reading layout. Connected scripts (Arabic, Syriac, 'Phags-pa, Ogham), which would otherwise look broken if glyphs were kept at 0 degrees, remain connected and rotate.</summary>
         DWRITE_VERTICAL_GLYPH_ORIENTATION_STACKED
     }

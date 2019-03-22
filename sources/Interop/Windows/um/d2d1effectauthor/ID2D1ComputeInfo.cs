@@ -90,7 +90,7 @@ namespace TerraFX.Interop
         [return: ComAliasName("HRESULT")]
         public /* static */ delegate int _SetComputeShaderConstantBuffer(
             [In] ID2D1ComputeInfo* This,
-            [In, ComAliasName("BYTE[]")] byte *buffer,
+            [In, ComAliasName("BYTE[]")] byte* buffer,
             [In, ComAliasName("UINT32")] uint bufferCount
         );
 
@@ -217,7 +217,7 @@ namespace TerraFX.Interop
         #region Methods
         [return: ComAliasName("HRESULT")]
         public int SetComputeShaderConstantBuffer(
-            [In, ComAliasName("BYTE[]")] byte *buffer,
+            [In, ComAliasName("BYTE[]")] byte* buffer,
             [In, ComAliasName("UINT32")] uint bufferCount
         )
         {
@@ -295,4 +295,3 @@ namespace TerraFX.Interop
         #endregion
     }
 }
-

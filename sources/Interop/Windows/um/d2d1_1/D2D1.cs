@@ -91,7 +91,6 @@ namespace TerraFX.Interop
           [Out, ComAliasName("FLOAT")] float* c
         );
 
-
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D2D1Tan", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: ComAliasName("FLOAT")]

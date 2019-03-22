@@ -50,7 +50,8 @@ namespace TerraFX.Provider.libX11.UI
         {
             var display = _dispatchManager.Display;
 
-            var name = stackalloc ulong[6]; {
+            var name = stackalloc ulong[6];
+            {
                 name[0] = 0x2E58466172726554;   // TerraFX.
                 name[1] = 0x72656469766F7250;   // Provider
                 name[2] = 0x2E31315862696C2E;   // .libX11.

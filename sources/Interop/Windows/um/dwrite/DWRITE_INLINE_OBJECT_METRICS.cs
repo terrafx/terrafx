@@ -27,7 +27,7 @@ namespace TerraFX.Interop
 
         /// <summary>Flag indicating whether the object is to be placed upright or alongside the text baseline for vertical text.</summary>
         [ComAliasName("BOOL")]
-        public int  supportsSideways;
+        public int supportsSideways;
         #endregion
     }
 }

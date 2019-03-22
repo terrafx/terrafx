@@ -8,8 +8,8 @@ using TerraFX.Interop;
 using TerraFX.Utilities;
 using static TerraFX.Interop.D3D_FEATURE_LEVEL;
 using static TerraFX.Interop.D3D12;
-using static TerraFX.Interop.D3D12_COMMAND_QUEUE_FLAGS;
 using static TerraFX.Interop.D3D12_COMMAND_LIST_TYPE;
+using static TerraFX.Interop.D3D12_COMMAND_QUEUE_FLAGS;
 using static TerraFX.Interop.D3D12_DESCRIPTOR_HEAP_FLAGS;
 using static TerraFX.Interop.D3D12_DESCRIPTOR_HEAP_TYPE;
 using static TerraFX.Interop.D3D12_FENCE_FLAGS;
@@ -291,13 +291,13 @@ namespace TerraFX.Samples.DirectX.D3D12
 
         private void PopulateCommandList()
         {
-            // Command list allocators can only be reset when the associated 
-            // command lists have finished execution on the GPU; apps should use 
+            // Command list allocators can only be reset when the associated
+            // command lists have finished execution on the GPU; apps should use
             // fences to determine GPU execution progress.
             ThrowIfFailed(nameof(ID3D12CommandAllocator.Reset), _commandAllocator->Reset());
 
-            // However, when ExecuteCommandList() is called on a particular command 
-            // list, that command list can then be reset at any time and must be before 
+            // However, when ExecuteCommandList() is called on a particular command
+            // list, that command list can then be reset at any time and must be before
             // re-recording.
             ThrowIfFailed(nameof(ID3D12GraphicsCommandList.Reset), _commandList->Reset(_commandAllocator, _pipelineState));
 

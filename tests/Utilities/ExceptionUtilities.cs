@@ -109,7 +109,7 @@ namespace TerraFX.Utilities.UnitTests
             [Values("", "object")] string objectName
         )
         {
-            
+
             Assert.That(ExceptionUtilities.NewObjectDisposedException(objectName),
                 Is.InstanceOf<ObjectDisposedException>()
                   .With.Property("ObjectName").EqualTo(objectName)

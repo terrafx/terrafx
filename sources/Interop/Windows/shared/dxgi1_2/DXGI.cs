@@ -12,13 +12,11 @@ namespace TerraFX.Interop
         #region DXGI_ENUM_MODES_* Constants
         public const uint DXGI_ENUM_MODES_STEREO = 4;
 
-
         public const uint DXGI_ENUM_MODES_DISABLED_STEREO = 8;
         #endregion
 
         #region DXGI_SHARED_RESOURCE_* Constants
         public const int DXGI_SHARED_RESOURCE_READ = unchecked((int)(0x80000000));
-
 
         public const int DXGI_SHARED_RESOURCE_WRITE = 1;
         #endregion

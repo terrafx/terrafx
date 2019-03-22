@@ -180,4 +180,3 @@ namespace TerraFX.Interop.Desktop
         #endregion
     }
 }
-

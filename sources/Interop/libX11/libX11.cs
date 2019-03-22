@@ -444,19 +444,19 @@ namespace TerraFX.Interop
         #endregion
 
         #region ConfigureWindow Constants
-        public const int CWX = (1<<0);
+        public const int CWX = (1 << 0);
 
-        public const int CWY = (1<<1);
+        public const int CWY = (1 << 1);
 
-        public const int CWWidth = (1<<2);
+        public const int CWWidth = (1 << 2);
 
-        public const int CWHeight = (1<<3);
+        public const int CWHeight = (1 << 3);
 
-        public const int CWBorderWidth = (1<<4);
+        public const int CWBorderWidth = (1 << 4);
 
-        public const int CWSibling = (1<<5);
+        public const int CWSibling = (1 << 5);
 
-        public const int CWStackMode = (1<<6);
+        public const int CWStackMode = (1 << 6);
         #endregion
 
         #region Bit Gravity Constants

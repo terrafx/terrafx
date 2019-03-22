@@ -15,7 +15,6 @@ namespace TerraFX.Interop
     [Unmanaged]
     public unsafe struct IWICMetadataWriterInfo
     {
-
         #region Fields
         public readonly Vtbl* lpVtbl;
         #endregion
@@ -577,4 +576,3 @@ namespace TerraFX.Interop
         #endregion
     }
 }
-

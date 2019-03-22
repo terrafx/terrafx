@@ -65,7 +65,6 @@ namespace TerraFX.Interop
             [In] void* pData = null
         );
 
-
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: ComAliasName("HRESULT")]
@@ -327,4 +326,3 @@ namespace TerraFX.Interop
         #endregion
     }
 }
-

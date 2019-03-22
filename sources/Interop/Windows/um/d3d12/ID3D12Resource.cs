@@ -7,7 +7,6 @@ using System;
 using System.Runtime.InteropServices;
 using System.Security;
 using TerraFX.Utilities;
-using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
@@ -65,7 +64,6 @@ namespace TerraFX.Interop
             [In, ComAliasName("UINT")] uint DataSize,
             [In] void* pData = null
         );
-
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -453,4 +451,3 @@ namespace TerraFX.Interop
         #endregion
     }
 }
-
