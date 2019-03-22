@@ -15,4 +15,8 @@
     <DefineConstants>$(DefineConstants);$(OS)</DefineConstants>
   </PropertyGroup>
 
+  <!-- Import the Microsoft.Net.Compilers.Toolset props -->
+  <Import Project="$(PkgMicrosoft_Net_Compilers)/build/Microsoft.Net.Compilers.props" Condition="'$(MSBuildRuntimeType)' != 'Core'" />
+  <Import Project="$(PkgMicrosoft_NETCore_Compilers)/build/Microsoft.NETCore.Compilers.props" Condition="'$(MSBuildRuntimeType)' == 'Core'" />
+
 </Project>

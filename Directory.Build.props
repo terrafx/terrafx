@@ -79,8 +79,8 @@
 
   <!-- Package references which are consumed by all projects -->
   <ItemGroup>
-    <PackageReference Include="Microsoft.Net.Compilers" Version="$(MicrosoftNetCompilersPackageVersion)" Condition="'$(MSBuildRuntimeType)' != 'Core'" />
-    <PackageReference Include="Microsoft.NETCore.Compilers" Version="$(MicrosoftNetCoreCompilersPackageVersion)" Condition="'$(MSBuildRuntimeType)' == 'Core'" />
+    <PackageReference Include="Microsoft.Net.Compilers" Version="$(MicrosoftNetCompilersPackageVersion)" ExcludeAssets="Build" GeneratePathProperty="true" IsImplicitlyDefined="true" />
+    <PackageReference Include="Microsoft.NETCore.Compilers" Version="$(MicrosoftNetCoreCompilersPackageVersion)" ExcludeAssets="Build" GeneratePathProperty="true" IsImplicitlyDefined="true" />
   </ItemGroup>
 
 </Project>
