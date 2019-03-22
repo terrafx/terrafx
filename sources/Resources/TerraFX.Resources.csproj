@@ -7,8 +7,4 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Update="Resources.cs" DependentUpon="Resources.resx" />
-  </ItemGroup>
-
 </Project>
