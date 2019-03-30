@@ -103,6 +103,17 @@ try {
   $LogDir = Join-Path -Path $ArtifactsDir -ChildPath "log"
   Create-Directory -Path $LogDir
 
+  if ($ci) {
+    $DotNetInstallScript = Join-Path -Path $ArtifactsDir -ChildPath "dotnet-install.ps1"
+    Invoke-WebRequest -Uri "https://dot.net/v1/dotnet-install.ps1" -OutFile $DotNetInstallScript -UseBasicParsing
+
+    $DotNetInstallDirectory = Join-Path -Path $ArtifactsDir -ChildPath "dotnet"
+    Create-Directory -Path $DotNetInstallDirectory
+
+    & $DotNetInstallScript -Channel master -Version latest -InstallDir $DotNetInstallDirectory
+    $env:PATH="$DotNetInstallDirectory;$env:PATH"
+  }
+
   if ($restore) {
     Restore
   }

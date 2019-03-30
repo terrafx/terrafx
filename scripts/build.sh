@@ -183,6 +183,17 @@ CreateDirectory "$ArtifactsDir"
 LogDir="$ArtifactsDir/log"
 CreateDirectory "$LogDir"
 
+if $ci; then
+  DotNetInstallScript="$ArtifactsDir/dotnet-install.ps1"
+  wget -O "$DotNetInstallScript" "https://dot.net/v1/dotnet-install.sh"
+
+  DotNetInstallDirectory="$ArtifactsDir/dotnet"
+  CreateDirectory "$DotNetInstallDirectory"
+
+  . "$DotNetInstallScript" --channel master --version latest --install-dir "$DotNetInstallDirectory"
+  PATH="$DotNetInstallDirectory:$PATH:"
+fi
+
 if $restore; then
   Restore
 
