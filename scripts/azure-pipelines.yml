@@ -5,7 +5,7 @@ pr:
 - master
 
 jobs:
-- job: Windows Debug
+- job: windows_debug
   pool:
     name: Hosted
     demands: Cmd
@@ -16,7 +16,7 @@ jobs:
       filename: scripts/cibuild.cmd
       arguments: '-configuration Debug'
 
-- job: Windows Release
+- job: windows_release
   pool:
     name: Hosted
     demands: Cmd
@@ -27,7 +27,7 @@ jobs:
       filename: scripts/cibuild.cmd
       arguments: '-configuration Release'
 
-- job: Ubuntu 16.04 Debug
+- job: ubuntu_1604_debug
   pool:
     name: Hosted Ubuntu 1604
   steps:
@@ -37,7 +37,7 @@ jobs:
       filename: scripts/cibuild.sh
       arguments: '--configuration Debug'
 
-- job: Ubuntu 16.04 Release
+- job: ubuntu_1604_release
   pool:
     name: Hosted Ubuntu 1604
   steps:
