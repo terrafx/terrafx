@@ -1,0 +1,48 @@
+trigger:
+- master
+
+pr:
+- master
+
+jobs:
+- job: Windows Debug
+  pool:
+    name: Hosted
+    demands: Cmd
+  steps:
+  - task: BatchScript@1
+    displayName: 'Run scripts/cibuild.cmd'
+    inputs:
+      filename: scripts/cibuild.cmd
+      arguments: '-configuration Debug'
+
+- job: Windows Release
+  pool:
+    name: Hosted
+    demands: Cmd
+  steps:
+  - task: BatchScript@1
+    displayName: 'Run scripts/cibuild.cmd'
+    inputs:
+      filename: scripts/cibuild.cmd
+      arguments: '-configuration Release'
+
+- job: Ubuntu 16.04 Debug
+  pool:
+    name: Hosted Ubuntu 1604
+  steps:
+  - task:Bash@3
+    displayName: 'Run scripts/cibuild.sh'
+    inputs:
+      filename: scripts/cibuild.sh
+      arguments: '--configuration Debug'
+
+- job: Ubuntu 16.04 Release
+  pool:
+    name: Hosted Ubuntu 1604
+  steps:
+  - task: Bash@3
+    displayName: 'Run scripts/cibuild.sh'
+    inputs:
+      filename: scripts/cibuild.sh
+      arguments: '--configuration Release'
