@@ -43,7 +43,7 @@ public abstract class AudioEncoder : IDisposable
     // Encodes raw PCM of system endianness into a format specified by subclassers
     // Bit depth is decided by subclasser too, e.g. FloatOpusEncoder, ShortOpusEncoder
 
-    public AudioEncoder(AudioEncoderOptions options) { throw null; }
+    public AudioEncoder(AudioEncoderOptions options, PipeOptions pipeOptions = null) { throw null; }
 
     // Expose both ends of the pipe so consumers can easily hook them into other APIs
     // e.g. providing encoded Opus frames to a network stream
@@ -78,7 +78,7 @@ public abstract class AudioDecoder : IDisposable
     // Decodes audio into PCM samples of system endianness, input format specified subclassers
     // Bit depth is decided by subclasser too, e.g. FloatOpusDecoder, ShortOpusDecoder
 
-    public AudioDecoder(AudioDecoderOptions options) { throw null; }
+    public AudioDecoder(AudioDecoderOptions options, PipeOptions pipeOptions = null) { throw null; }
 
     // Below is mirrored from AudioEncoder, for the same reasons
     public PipeReader Reader => throw null;
@@ -101,68 +101,61 @@ public abstract class AudioDecoderOptions
 }
 
 
-public class AudioTranscoder
+public abstract class AudioProvider : IDisposable
 {
-    // Transcodes from one format to another, by decoding it into PCM and re-encoding it
+    // Provides PCM audio samples of system endianness to a sound backend, so that they can be
+    // heard by users
 
-    public AudioTranscoder(AudioDecoder decoder, AudioEncoder encoder) { throw null; }
+    public AudioProvider(AudioProviderOptions options, PipeOptions pipeOptions = null) { throw null; }
 
-    // No reader/writer exposed as they are exposed by the encoder and decoder
-    // but it could be a possibility?
-
-    public Task RunAsync() { throw null; }
-}
-
-
-public sealed class AudioResampler
-{
-    // Resamples PCM samples from one sample rate to another
-
-    public AudioResampler(AudioResamplerOptions options) { throw null; }
-
-    public PipeReader Reader => throw null;
+    // Since this is write-only, we only need the writer
     public PipeWriter Writer => throw null;
 
     public Task RunAsync() { throw null; }
+
+    protected void Dispose(bool disposing) { throw null; }
+    void IDisposable.Dispose() { Dispose(true); }
 }
 
-public sealed class AudioResamplerOptions
+public abstract class AudioProviderOptions
 {
-    // How to interpolate between samples if necessary
-    public InterpolationAlgorithm Interpolation { get; set; }
+    // Sample rate of input PCM
+    public int SampleRate { get; set; }
 
-    // Sample rate of input and output PCM respectively.
-    public int InputSampleRate { get; set; }
-    public int OutputSampleRate { get; set; }
-}
+    // Bit depth of input PCM
+    public int BitDepth { get; set; }
 
-public enum InterpolationAlgorithm
-{
-    // Specifies how to interpolate between samples in the resampler
-
-    None, // Do not interpolate. Samples may be duplicated or dropped entirely.
-
-    Linear,
-    Cubic,
-    Gaussian,
-    Sinc
+    // Number of channels in input PCM
+    public int Channels { get; set; }
 }
 ```
 
 # Further Considerations #
 
-- Is implementing multiple forms of interpolation as an enum smart? It might be
-  easier and faster to implement them in multiple types.
-  - Multiple types might hurt discoverability. What's the difference between
-    `BlepSynthesisAudioResampler` and `BlamSynthesisAudioResampler`? (using
-    terms from the Foobar2000 foo_dsp_multiresampler component)
-- Is mixing important enough to implement?
-  - Clipping is a hard problem to solve, and has multiple solutions:
-    - We could allow samples to lie outside the valid range of samples
-      - This would require working in a more expensive format, e.g. float
-      - It would also require a further final volume control at the end
-    - We could drop input volume automatically
-      - Multiple algorithms exist to do this, with varying results
-    - We could just naively clip the samples
-      - Audio will sound awful at louder volumes, so it would be on the
-        consumer to ensure inputs do not clip
+- Is an enum better for `AudioProviderOptions#SampleRate`? I'm not sure whether
+  APIs provided by Windows/SDL/OpenAL/etc. allow arbitrary sample rates.
+  - On one hand, using an enum would make it easier for the user to decide
+    and choose a valid option
+  - On the other, it may limit our options in the future
+- How do we handle cases where obtained audio devices do not match requested
+  devices?
+  - If byte order does not match, would it be expensive to perform byte
+    swapping?
+    - Might be a possible optimisation point using vectorized operations, if
+      necessary.
+  - If sample rate does not match requested, do we:
+    - Resample internally?
+    - Throw?
+    - Ignore?
+  - Do we provide a static function to request an audio device? This would
+    likely only be present on implementations
+    - `TryGetAudioDevice`? Returning as an out-variable seems odd though...
+- How do we handle buffer under/overruns?
+  - Underruns can be filled with silence samples, most likely
+  - Overruns should be impossible due to Pipelines?
+- How do we provide audio samples to devices?
+  - SDL has `SDL_QueueAudio` for pushing data into their internal buffer, as
+    well as `SDL_AudioCallback` for pull/request-based data using our own
+    buffer.
+- Is channel remapping necessary, or do we just assume channels are already in
+  the correct order?
