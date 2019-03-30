@@ -70,7 +70,7 @@
   <PropertyGroup>
     <MicrosoftNetCompilersPackageVersion>3.0.0-beta4-final</MicrosoftNetCompilersPackageVersion>
     <MicrosoftNetCoreCompilersPackageVersion>$(MicrosoftNetCompilersPackageVersion)</MicrosoftNetCoreCompilersPackageVersion>
-    <MicrosoftNetTestSdkPackageVersion>16.0.1</MicrosoftNetTestSdkPackageVersion>
+    <MicrosoftNetTestSdkPackageVersion>16.0.0</MicrosoftNetTestSdkPackageVersion>
     <NUnitPackageVersion>3.11.0</NUnitPackageVersion>
     <NUnit3TestAdapterPackageVersion>3.13.0</NUnit3TestAdapterPackageVersion>
     <SystemCompositionPackageVersion>1.3.0-preview3.19128.7</SystemCompositionPackageVersion>
