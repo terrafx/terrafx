@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27110.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28721.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".root", ".root", "{2F337CB6-0B9E-4765-A277-487E429DE9F1}"
 	ProjectSection(SolutionItems) = preProject
@@ -191,6 +191,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{48E1
 		scripts\build.sh = scripts\build.sh
 		scripts\cibuild.cmd = scripts\cibuild.cmd
 		scripts\cibuild.sh = scripts\cibuild.sh
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "design", "design", "{33AB5B62-51A9-4248-9672-E1699FBEBD9B}"
+	ProjectSection(SolutionItems) = preProject
+		Overview.md = Overview.md
 	EndProjectSection
 EndProject
 Global
@@ -389,6 +394,7 @@ Global
 		{F81C3272-3809-46F3-8954-8E5B5F603699} = {D7FDC089-3AB5-4A13-8495-60CA01CBA609}
 		{07436576-8F5B-4B59-9EE9-B47ED375FF4D} = {EFB05081-EC44-49D3-B6D1-52AE42085B5B}
 		{1E2FD09A-6C12-439A-A6E0-E4F0FE24AE42} = {07436576-8F5B-4B59-9EE9-B47ED375FF4D}
+		{33AB5B62-51A9-4248-9672-E1699FBEBD9B} = {8793898A-6542-4606-AA82-AB14151D2D20}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2FE36DF8-2D9C-4F20-8787-45DC74B57461}
