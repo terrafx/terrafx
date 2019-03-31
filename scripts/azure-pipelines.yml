@@ -34,7 +34,8 @@ jobs:
   - task: Bash@3
     displayName: 'Run scripts/cibuild.sh'
     inputs:
-      filename: scripts/cibuild.sh
+      targetType: filePath
+      filePath: ./scripts/cibuild.sh
       arguments: '--configuration Debug'
 
 - job: ubuntu_1604_release
@@ -44,5 +45,6 @@ jobs:
   - task: Bash@3
     displayName: 'Run scripts/cibuild.sh'
     inputs:
-      filename: scripts/cibuild.sh
+      targetType: filePath
+      filePath: ./scripts/cibuild.sh
       arguments: '--configuration Release'
