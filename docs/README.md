@@ -2,6 +2,12 @@
 
 A framework for developing multimedia-based applications.
 
+| Job | Debug Status | Release Status |
+| --- | ------------ | -------------- |
+| Windows | [![Build Status](https://dev.azure.com/tagoo/terrafx/_apis/build/status/terrafx.terrafx?branchName=master&jobName=windows_debug)](https://dev.azure.com/tagoo/terrafx/_build/latest?definitionId=2&branchName=master) | [![Build Status](https://dev.azure.com/tagoo/terrafx/_apis/build/status/terrafx.terrafx?branchName=master&jobName=windows_release)](https://dev.azure.com/tagoo/terrafx/_build/latest?definitionId=2&branchName=master) |
+| Ubuntu 16.04 | [![Build Status](https://dev.azure.com/tagoo/terrafx/_apis/build/status/terrafx.terrafx?branchName=master&jobName=ubuntu_1604_debug)](https://dev.azure.com/tagoo/terrafx/_build/latest?definitionId=2&branchName=master) | [![Build Status](https://dev.azure.com/tagoo/terrafx/_apis/build/status/terrafx.terrafx?branchName=master&jobName=ubuntu_1604_release)](https://dev.azure.com/tagoo/terrafx/_build/latest?definitionId=2&branchName=master) |
+
+
 [![Gitter](https://badges.gitter.im/terrafx/terrafx.svg)](https://gitter.im/terrafx/terrafx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 ## Table of Contents
