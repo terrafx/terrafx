@@ -104,6 +104,8 @@ try {
   Create-Directory -Path $LogDir
 
   if ($ci) {
+    $DOTNET_SKIP_FIRST_TIME_EXPERIENCE = 1
+
     $DotNetInstallScript = Join-Path -Path $ArtifactsDir -ChildPath "dotnet-install.ps1"
     Invoke-WebRequest -Uri "https://dot.net/v1/dotnet-install.ps1" -OutFile $DotNetInstallScript -UseBasicParsing
 

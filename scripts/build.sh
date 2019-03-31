@@ -184,6 +184,8 @@ LogDir="$ArtifactsDir/log"
 CreateDirectory "$LogDir"
 
 if $ci; then
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
+
   DotNetInstallScript="$ArtifactsDir/dotnet-install.ps1"
   wget -O "$DotNetInstallScript" "https://dot.net/v1/dotnet-install.sh"
 
