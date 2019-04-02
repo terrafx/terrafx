@@ -90,10 +90,10 @@ namespace TerraFX.Provider.libX11.UI
                 long_length: IntPtr.Size >> 2,
                 delete: False,
                 req_type: 32,
-                actual_type_return: out var actualType,
-                actual_format_return: out var actualFormat,
-                nitems_return: out var nitems,
-                bytes_after_return: out var bytesAfter,
+                actual_type_return: out _,
+                actual_format_return: out _,
+                nitems_return: out _,
+                bytes_after_return: out _,
                 prop_return: out var prop
             );
 
