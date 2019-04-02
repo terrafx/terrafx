@@ -25,7 +25,7 @@ namespace TerraFX.Samples
 
             if ((args.Length == 0) || args.Any((arg) => Matches(arg, "?", "h", "help")))
             {
-                PrintHelp(args);
+                PrintHelp();
             }
             else
             {
@@ -39,7 +39,7 @@ namespace TerraFX.Samples
                                           || (((arg.Length - 1) == keyword.Length) && ((arg[0] == '-') || (arg[0] == '/')) && (string.Compare(arg, 1, keyword, 0, keyword.Length, StringComparison.OrdinalIgnoreCase) == 0)));
         }
 
-        private static void PrintHelp(string[] args)
+        private static void PrintHelp()
         {
             Console.WriteLine("General Options");
             Console.WriteLine("    ALL:     Indicates that all samples should be run.");
@@ -86,7 +86,7 @@ namespace TerraFX.Samples
 
             if (ranAnySamples == false)
             {
-                PrintHelp(args);
+                PrintHelp();
             }
         }
 
