@@ -169,22 +169,20 @@ namespace TerraFX.Numerics
         {
             var separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
 
-            var stringBuilder = new StringBuilder(9 + (separator.Length * 3));
-            {
-                stringBuilder.Append('<');
-                stringBuilder.Append(X.ToString(format, formatProvider));
-                stringBuilder.Append(separator);
-                stringBuilder.Append(' ');
-                stringBuilder.Append(Y.ToString(format, formatProvider));
-                stringBuilder.Append(separator);
-                stringBuilder.Append(' ');
-                stringBuilder.Append(Z.ToString(format, formatProvider));
-                stringBuilder.Append(separator);
-                stringBuilder.Append(' ');
-                stringBuilder.Append(W.ToString(format, formatProvider));
-                stringBuilder.Append('>');
-            }
-            return stringBuilder.ToString();
+            return new StringBuilder(9 + (separator.Length * 3))
+                .Append('<')
+                .Append(X.ToString(format, formatProvider))
+                .Append(separator)
+                .Append(' ')
+                .Append(Y.ToString(format, formatProvider))
+                .Append(separator)
+                .Append(' ')
+                .Append(Z.ToString(format, formatProvider))
+                .Append(separator)
+                .Append(' ')
+                .Append(W.ToString(format, formatProvider))
+                .Append('>')
+                .ToString();
         }
         #endregion
 

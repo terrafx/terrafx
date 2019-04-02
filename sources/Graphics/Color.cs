@@ -127,19 +127,17 @@ namespace TerraFX.Graphics
         {
             var separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
 
-            var stringBuilder = new StringBuilder(7 + (separator.Length * 2));
-            {
-                stringBuilder.Append('<');
-                stringBuilder.Append(Red.ToString(format, formatProvider));
-                stringBuilder.Append(separator);
-                stringBuilder.Append(' ');
-                stringBuilder.Append(Green.ToString(format, formatProvider));
-                stringBuilder.Append(separator);
-                stringBuilder.Append(' ');
-                stringBuilder.Append(Blue.ToString(format, formatProvider));
-                stringBuilder.Append('>');
-            }
-            return stringBuilder.ToString();
+            return new StringBuilder(7 + (separator.Length * 2))
+                .Append('<')
+                .Append(Red.ToString(format, formatProvider))
+                .Append(separator)
+                .Append(' ')
+                .Append(Green.ToString(format, formatProvider))
+                .Append(separator)
+                .Append(' ')
+                .Append(Blue.ToString(format, formatProvider))
+                .Append('>')
+                .ToString();
         }
         #endregion
 

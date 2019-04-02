@@ -106,16 +106,14 @@ namespace TerraFX.Numerics
         {
             var separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
 
-            var stringBuilder = new StringBuilder(5 + separator.Length);
-            {
-                stringBuilder.Append('<');
-                stringBuilder.Append(Center.ToString(format, formatProvider));
-                stringBuilder.Append(separator);
-                stringBuilder.Append(' ');
-                stringBuilder.Append(Size.ToString(format, formatProvider));
-                stringBuilder.Append('>');
-            }
-            return stringBuilder.ToString();
+            return new StringBuilder(5 + separator.Length)
+                .Append('<')
+                .Append(Center.ToString(format, formatProvider))
+                .Append(separator)
+                .Append(' ')
+                .Append(Size.ToString(format, formatProvider))
+                .Append('>')
+                .ToString();
         }
         #endregion
 

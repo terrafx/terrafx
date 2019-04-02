@@ -149,22 +149,20 @@ namespace TerraFX.Graphics
         {
             var separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
 
-            var stringBuilder = new StringBuilder(9 + (separator.Length * 3));
-            {
-                stringBuilder.Append('<');
-                stringBuilder.Append(Red.ToString(format, formatProvider));
-                stringBuilder.Append(separator);
-                stringBuilder.Append(' ');
-                stringBuilder.Append(Green.ToString(format, formatProvider));
-                stringBuilder.Append(separator);
-                stringBuilder.Append(' ');
-                stringBuilder.Append(Blue.ToString(format, formatProvider));
-                stringBuilder.Append(separator);
-                stringBuilder.Append(' ');
-                stringBuilder.Append(Alpha.ToString(format, formatProvider));
-                stringBuilder.Append('>');
-            }
-            return stringBuilder.ToString();
+            return new StringBuilder(9 + (separator.Length * 3))
+                .Append('<')
+                .Append(Red.ToString(format, formatProvider))
+                .Append(separator)
+                .Append(' ')
+                .Append(Green.ToString(format, formatProvider))
+                .Append(separator)
+                .Append(' ')
+                .Append(Blue.ToString(format, formatProvider))
+                .Append(separator)
+                .Append(' ')
+                .Append(Alpha.ToString(format, formatProvider))
+                .Append('>')
+                .ToString();
         }
         #endregion
 
