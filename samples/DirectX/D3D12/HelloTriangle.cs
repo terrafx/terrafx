@@ -61,7 +61,7 @@ namespace TerraFX.Samples.DirectX.D3D12
         private RECT _scissorRect;
         private IDXGISwapChain3* _swapChain;
         private ID3D12Device* _device;
-        private _renderTargets_e__FixedBuffer _renderTargets;
+        private RenderTargets_e__FixedBuffer _renderTargets;
         private ID3D12CommandAllocator* _commandAllocator;
         private ID3D12CommandQueue* _commandQueue;
         private ID3D12RootSignature* _rootSignature;
@@ -464,16 +464,16 @@ namespace TerraFX.Samples.DirectX.D3D12
                     var triangleVertices = stackalloc Vertex[3];
                     {
                         triangleVertices[0] = new Vertex {
-                            position = new Vector3(0.0f, 0.25f * _aspectRatio, 0.0f),
-                            color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f)
+                            Position = new Vector3(0.0f, 0.25f * _aspectRatio, 0.0f),
+                            Color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f)
                         };
                         triangleVertices[1] = new Vertex {
-                            position = new Vector3(0.25f, -0.25f * _aspectRatio, 0.0f),
-                            color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f)
+                            Position = new Vector3(0.25f, -0.25f * _aspectRatio, 0.0f),
+                            Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f)
                         };
                         triangleVertices[2] = new Vertex {
-                            position = new Vector3(-0.25f, -0.25f * _aspectRatio, 0.0f),
-                            color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f)
+                            Position = new Vector3(-0.25f, -0.25f * _aspectRatio, 0.0f),
+                            Color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f)
                         };
                     }
 
@@ -775,13 +775,13 @@ namespace TerraFX.Samples.DirectX.D3D12
 
         #region Structs
         [Unmanaged]
-        private unsafe struct _renderTargets_e__FixedBuffer
+        private unsafe struct RenderTargets_e__FixedBuffer
         {
             #region Fields
 #pragma warning disable CS0649
-            public ID3D12Resource* e0;
+            public ID3D12Resource* E0;
 
-            public ID3D12Resource* e1;
+            public ID3D12Resource* E1;
 #pragma warning restore CS0649
             #endregion
 
@@ -790,7 +790,7 @@ namespace TerraFX.Samples.DirectX.D3D12
             {
                 get
                 {
-                    fixed (ID3D12Resource** e = &e0)
+                    fixed (ID3D12Resource** e = &E0)
                     {
                         return e[index];
                     }
@@ -798,7 +798,7 @@ namespace TerraFX.Samples.DirectX.D3D12
 
                 set
                 {
-                    fixed (ID3D12Resource** e = &e0)
+                    fixed (ID3D12Resource** e = &E0)
                     {
                         e[index] = value;
                     }
@@ -811,9 +811,9 @@ namespace TerraFX.Samples.DirectX.D3D12
         private struct Vertex
         {
             #region Fields
-            public Vector3 position;
+            public Vector3 Position;
 
-            public Vector4 color;
+            public Vector4 Color;
             #endregion
         }
         #endregion

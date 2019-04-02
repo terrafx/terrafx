@@ -36,7 +36,7 @@ namespace TerraFX.Samples.DirectX.D3D12
         // Pipeline objects
         private IDXGISwapChain3* _swapChain;
         private ID3D12Device* _device;
-        private _renderTargets_e__FixedBuffer _renderTargets;
+        private RenderTargets_e__FixedBuffer _renderTargets;
         private ID3D12CommandAllocator* _commandAllocator;
         private ID3D12CommandQueue* _commandQueue;
         private ID3D12DescriptorHeap* _rtvHeap;
@@ -443,7 +443,7 @@ namespace TerraFX.Samples.DirectX.D3D12
 
         #region Structs
         [Unmanaged]
-        private unsafe struct _renderTargets_e__FixedBuffer
+        private unsafe struct RenderTargets_e__FixedBuffer
         {
             #region Fields
 #pragma warning disable CS0649
