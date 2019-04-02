@@ -29,7 +29,7 @@ namespace TerraFX.Samples.DirectX.D3D12
         protected bool _useWarpDevice;
 
         // Root assets path
-        private string _assetsPath;
+        private readonly string _assetsPath;
 
         // Window title
         private string _title;

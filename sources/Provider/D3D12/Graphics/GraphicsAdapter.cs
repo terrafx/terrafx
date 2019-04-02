@@ -24,13 +24,13 @@ namespace TerraFX.Provider.D3D12.Graphics
         private readonly IDXGIAdapter1* _adapter;
 
         /// <summary>The name of the device.</summary>
-        private string _deviceName;
+        private readonly string _deviceName;
 
         /// <summary>The PCI ID of the vendor.</summary>
-        private uint _vendorId;
+        private readonly uint _vendorId;
 
         /// <summary>The PCI ID of the device.</summary>
-        private uint _deviceId;
+        private readonly uint _deviceId;
 
         /// <summary>The <see cref="State" /> of the instance.</summary>
         private State _state;

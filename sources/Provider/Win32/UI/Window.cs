@@ -42,10 +42,10 @@ namespace TerraFX.Provider.Win32.UI
         private Rectangle _bounds;
 
         /// <summary>The <see cref="FlowDirection" /> for the instance.</summary>
-        private FlowDirection _flowDirection;
+        private readonly FlowDirection _flowDirection;
 
         /// <summary>The <see cref="ReadingDirection" /> for the instance.</summary>
-        private ReadingDirection _readingDirection;
+        private readonly ReadingDirection _readingDirection;
 
         /// <summary>The <see cref="WindowState" /> for the instance.</summary>
         private WindowState _windowState;

@@ -8,7 +8,7 @@ namespace TerraFX.Utilities
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.ReturnValue, AllowMultiple = false, Inherited = true)]
     public sealed class NativeTypeNameAttribute : Attribute
     {
-        private string _name;
+        private readonly string _name;
 
         /// <summary>Initializes a new instance of the <see cref="NativeTypeNameAttribute" /> class.</summary>
         /// <param name="name">The name of the type that was used in the native signature.</param>

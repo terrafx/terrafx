@@ -28,7 +28,7 @@ namespace TerraFX.Provider.libX11.UI
         private readonly PropertySet _properties;
 
         /// <summary>The title for the instance.</summary>
-        private string _title;
+        private readonly string _title;
 
         /// <summary>The <see cref="WindowManager" /> for the instance.</summary>
         private readonly WindowManager _windowManager;
@@ -40,10 +40,10 @@ namespace TerraFX.Provider.libX11.UI
         private Rectangle _restoredBounds;
 
         /// <summary>The <see cref="FlowDirection" /> for the instance.</summary>
-        private FlowDirection _flowDirection;
+        private readonly FlowDirection _flowDirection;
 
         /// <summary>The <see cref="ReadingDirection" /> for the instance.</summary>
-        private ReadingDirection _readingDirection;
+        private readonly ReadingDirection _readingDirection;
 
         /// <summary>The <see cref="WindowState" /> for the instance.</summary>
         private WindowState _windowState;

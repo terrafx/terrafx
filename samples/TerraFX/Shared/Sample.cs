@@ -15,8 +15,8 @@ namespace TerraFX.Samples
         #endregion
 
         #region Fields
-        private string _name;
-        private Assembly[] _compositionAssemblies;
+        private readonly string _name;
+        private readonly Assembly[] _compositionAssemblies;
         #endregion
 
         #region Constructors
