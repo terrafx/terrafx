@@ -18,9 +18,9 @@ namespace TerraFX.Samples.DirectX.D3D12
     public static unsafe class Win32Application
     {
         #region Static Fields
-        private static readonly NativeDelegate<WNDPROC> _wndProc = new NativeDelegate<WNDPROC>(WindowProc);
+        private static readonly NativeDelegate<WNDPROC> s_wndProc = new NativeDelegate<WNDPROC>(WindowProc);
 
-        private static IntPtr _hwnd;
+        private static IntPtr s_hwnd;
         #endregion
 
         #region Static Properties
@@ -28,7 +28,7 @@ namespace TerraFX.Samples.DirectX.D3D12
         {
             get
             {
-                return _hwnd;
+                return s_hwnd;
             }
         }
         #endregion
@@ -46,7 +46,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                 var windowClass = new WNDCLASSEX {
                     cbSize = SizeOf<WNDCLASSEX>(),
                     style = CS_HREDRAW | CS_VREDRAW,
-                    lpfnWndProc = _wndProc,
+                    lpfnWndProc = s_wndProc,
                     hInstance = hInstance,
                     hCursor = LoadCursor(IntPtr.Zero, (char*)(IDC_ARROW)),
                     lpszClassName = lpszClassName
@@ -60,7 +60,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                 AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
 
                 // Create the window and store a handle to it.
-                _hwnd = CreateWindowEx(
+                s_hwnd = CreateWindowEx(
                     0,
                     windowClass.lpszClassName,
                     lpWindowName,
@@ -79,7 +79,7 @@ namespace TerraFX.Samples.DirectX.D3D12
             // Initialize the sample. OnInit is defined in each child-implementation of DXSample.
             pSample.OnInit();
 
-            ShowWindow(_hwnd, nCmdShow);
+            ShowWindow(s_hwnd, nCmdShow);
 
             // Main sample loop.
             MSG msg;

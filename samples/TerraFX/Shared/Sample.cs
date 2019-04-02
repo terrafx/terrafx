@@ -10,8 +10,8 @@ namespace TerraFX.Samples
     public abstract class Sample : IDisposable
     {
         #region Default Providers
-        private static readonly Assembly Win32Provider = Assembly.LoadFrom("TerraFX.Provider.Win32.dll");
-        private static readonly Assembly libX11Provider = Assembly.LoadFrom("TerraFX.Provider.libX11.dll");
+        private static readonly Assembly s_win32Provider = Assembly.LoadFrom("TerraFX.Provider.Win32.dll");
+        private static readonly Assembly s_libX11Provider = Assembly.LoadFrom("TerraFX.Provider.libX11.dll");
         #endregion
 
         #region Fields
@@ -27,11 +27,11 @@ namespace TerraFX.Samples
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                _compositionAssemblies[0] = Win32Provider;
+                _compositionAssemblies[0] = s_win32Provider;
             }
             else
             {
-                _compositionAssemblies[0] = libX11Provider;
+                _compositionAssemblies[0] = s_libX11Provider;
             }
 
             Array.Copy(compositionAssemblies, 0, _compositionAssemblies, 1, compositionAssemblies.Length);
