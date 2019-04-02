@@ -42,7 +42,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
             VkPhysicalDeviceProperties properties;
             vkGetPhysicalDeviceProperties(physicalDevice, &properties);
 
-            _deviceName = Marshal.PtrToStringAnsi((IntPtr)(properties.deviceName));
+            _deviceName = Marshal.PtrToStringAnsi((IntPtr)properties.deviceName);
             _vendorId = properties.vendorID;
             _deviceId = properties.deviceID;
         }

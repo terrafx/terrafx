@@ -91,7 +91,7 @@ namespace TerraFX.Provider.D3D12.Graphics
             IntPtr factory;
 
             var iid = IID_IDXGIFactory3;
-            ThrowExternalExceptionIfFailed(nameof(CreateDXGIFactory2), CreateDXGIFactory2(CreateFactoryFlags, &iid, (void**)(&factory)));
+            ThrowExternalExceptionIfFailed(nameof(CreateDXGIFactory2), CreateDXGIFactory2(CreateFactoryFlags, &iid, (void**)&factory));
 
             return factory;
         }
@@ -118,7 +118,7 @@ namespace TerraFX.Provider.D3D12.Graphics
         {
             if (_factory.IsValueCreated)
             {
-                var factory = (IDXGIFactory3*)(_factory.Value);
+                var factory = (IDXGIFactory3*)_factory.Value;
                 factory->Release();
             }
         }
@@ -144,8 +144,8 @@ namespace TerraFX.Provider.D3D12.Graphics
         /// <exception cref="ExternalException">The call to <see cref="IDXGIAdapter1.GetDesc1(DXGI_ADAPTER_DESC1*)" /> failed.</exception>
         private ImmutableArray<GraphicsAdapter> GetGraphicsAdapters()
         {
-            var factory = (IDXGIFactory3*)(_factory.Value);
-            var adapter = (IDXGIAdapter1*)(null);
+            var factory = (IDXGIFactory3*)_factory.Value;
+            var adapter = (IDXGIAdapter1*)null;
 
             var graphicsAdapters = ImmutableArray.CreateBuilder<GraphicsAdapter>();
 

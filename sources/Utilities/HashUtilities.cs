@@ -47,7 +47,7 @@ namespace TerraFX.Utilities
 
             unchecked
             {
-                combinedHashCode *= (-862048943);
+                combinedHashCode *= -862048943;
                 combinedHashCode = RotateLeft(combinedHashCode, 15);
 
                 combinedHashCode *= 461845907;
@@ -76,7 +76,7 @@ namespace TerraFX.Utilities
             {
                 ThrowArgumentOutOfRangeException(nameof(offset), offset);
             }
-            else if ((count < 0) || ((uint)(offset + count) > (uint)(values.Length)))
+            else if ((count < 0) || ((uint)(offset + count) > (uint)values.Length))
             {
                 ThrowArgumentOutOfRangeException(nameof(count), count);
             }
@@ -86,8 +86,8 @@ namespace TerraFX.Utilities
 
             if (count != 0)
             {
-                var blockCount = (count / sizeof(int));
-                var remainingByteCount = (count % sizeof(int));
+                var blockCount = count / sizeof(int);
+                var remainingByteCount = count % sizeof(int);
 
                 fixed (byte* pValues = &values[0])
                 {
@@ -101,20 +101,20 @@ namespace TerraFX.Utilities
                 }
 
                 var partialValue = 0;
-                var index = (offset + (blockCount * sizeof(int)));
+                var index = offset + (blockCount * sizeof(int));
 
                 switch (remainingByteCount)
                 {
                     case 3:
                     {
-                        partialValue ^= (values[index + 2] << 16);
+                        partialValue ^= values[index + 2] << 16;
                         goto case 2;
                     }
 
                     case 2:
                     {
 
-                        partialValue ^= (values[index + 1] << 8);
+                        partialValue ^= values[index + 1] << 8;
                         goto case 1;
                     }
 
@@ -127,7 +127,7 @@ namespace TerraFX.Utilities
 
                     default:
                     {
-                        Assert((remainingByteCount == 0), Resources.ArgumentExceptionForInvalidTypeMessage, nameof(remainingByteCount), remainingByteCount);
+                        Assert(remainingByteCount == 0, Resources.ArgumentExceptionForInvalidTypeMessage, nameof(remainingByteCount), remainingByteCount);
                         break;
                     }
                 }
@@ -156,7 +156,7 @@ namespace TerraFX.Utilities
             {
                 ThrowArgumentOutOfRangeException(nameof(offset), offset);
             }
-            else if ((count < 0) || ((uint)(offset + count) > (uint)(values.Length)))
+            else if ((count < 0) || ((uint)(offset + count) > (uint)values.Length))
             {
                 ThrowArgumentOutOfRangeException(nameof(count), count);
             }
@@ -170,7 +170,7 @@ namespace TerraFX.Utilities
                 combinedHashCode = CombineValue(value, combinedHashCode);
             }
 
-            return FinalizeValue(combinedHashCode, (count * sizeof(int)));
+            return FinalizeValue(combinedHashCode, count * sizeof(int));
         }
 
         /// <summary>Finalizes a value to produce a hashcode.</summary>
@@ -185,12 +185,12 @@ namespace TerraFX.Utilities
             unchecked
             {
                 finalizedHashCode ^= bytesCombined;
-                finalizedHashCode ^= (int)((uint)(finalizedHashCode) >> 16);
-                finalizedHashCode *= (-2048144789);
+                finalizedHashCode ^= (int)((uint)finalizedHashCode >> 16);
+                finalizedHashCode *= -2048144789;
 
-                finalizedHashCode ^= (int)((uint)(finalizedHashCode) >> 13);
-                finalizedHashCode *= (-1028477387);
-                finalizedHashCode ^= (int)((uint)(finalizedHashCode) >> 16);
+                finalizedHashCode ^= (int)((uint)finalizedHashCode >> 13);
+                finalizedHashCode *= -1028477387;
+                finalizedHashCode ^= (int)((uint)finalizedHashCode >> 16);
             }
 
             return finalizedHashCode;
@@ -203,7 +203,7 @@ namespace TerraFX.Utilities
         [Pure]
         public static int FinalizeValue(int combinedValue, uint bytesCombined)
         {
-            return FinalizeValue(combinedValue, unchecked((int)(bytesCombined)));
+            return FinalizeValue(combinedValue, unchecked((int)bytesCombined));
         }
         #endregion
     }

@@ -93,7 +93,7 @@ namespace TerraFX.Numerics
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
         public bool Equals(BoundingBox other)
         {
-            return (this == other);
+            return this == other;
         }
         #endregion
 
@@ -136,7 +136,7 @@ namespace TerraFX.Numerics
                 combinedValue = CombineValue(Center.GetHashCode(), combinedValue);
                 combinedValue = CombineValue(Size.GetHashCode(), combinedValue);
             }
-            return FinalizeValue(combinedValue, (SizeOf<Vector3>() * 3));
+            return FinalizeValue(combinedValue, SizeOf<Vector3>() * 3);
         }
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>

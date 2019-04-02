@@ -15,8 +15,8 @@ namespace TerraFX.Utilities
         [Pure]
         public static int RotateLeft(int value, byte bits)
         {
-            var result = RotateLeft(unchecked((uint)(value)), bits);
-            return unchecked((int)(result));
+            var result = RotateLeft(unchecked((uint)value), bits);
+            return unchecked((int)result);
         }
 
         /// <summary>Rotates an <see cref="long" /> value left the specified number of bits.</summary>
@@ -26,8 +26,8 @@ namespace TerraFX.Utilities
         [Pure]
         public static long RotateLeft(long value, byte bits)
         {
-            var result = RotateLeft(unchecked((ulong)(value)), bits);
-            return unchecked((long)(result));
+            var result = RotateLeft(unchecked((ulong)value), bits);
+            return unchecked((long)result);
         }
 
         /// <summary>Rotates an <see cref="uint" /> value left the specified number of bits.</summary>
@@ -57,8 +57,8 @@ namespace TerraFX.Utilities
         [Pure]
         public static int RotateRight(int value, byte bits)
         {
-            var result = RotateRight(unchecked((uint)(value)), bits);
-            return unchecked((int)(result));
+            var result = RotateRight(unchecked((uint)value), bits);
+            return unchecked((int)result);
         }
 
         /// <summary>Rotates an <see cref="long" /> value right the specified number of bits.</summary>
@@ -68,8 +68,8 @@ namespace TerraFX.Utilities
         [Pure]
         public static long RotateRight(long value, byte bits)
         {
-            var result = RotateRight(unchecked((ulong)(value)), bits);
-            return unchecked((long)(result));
+            var result = RotateRight(unchecked((ulong)value), bits);
+            return unchecked((long)result);
         }
 
         /// <summary>Rotates an <see cref="uint" /> value right the specified number of bits.</summary>

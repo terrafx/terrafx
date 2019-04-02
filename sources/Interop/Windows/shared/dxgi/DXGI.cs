@@ -81,11 +81,11 @@ namespace TerraFX.Interop
         #endregion
 
         #region DXGI_MWA_* Constants
-        public const uint DXGI_MWA_NO_WINDOW_CHANGES = (1 << 0);
+        public const uint DXGI_MWA_NO_WINDOW_CHANGES = 1 << 0;
 
-        public const uint DXGI_MWA_NO_ALT_ENTER = (1 << 1);
+        public const uint DXGI_MWA_NO_ALT_ENTER = 1 << 1;
 
-        public const uint DXGI_MWA_NO_PRINT_SCREEN = (1 << 2);
+        public const uint DXGI_MWA_NO_PRINT_SCREEN = 1 << 2;
 
         public const uint DXGI_MWA_VALID = 0x7;
         #endregion

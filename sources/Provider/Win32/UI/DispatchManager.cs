@@ -51,7 +51,7 @@ namespace TerraFX.Provider.Win32.UI
             }
 
             const double ticksPerSecond = Timestamp.TicksPerSecond;
-            return (ticksPerSecond / frequency.QuadPart);
+            return ticksPerSecond / frequency.QuadPart;
         }
         #endregion
 

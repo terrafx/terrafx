@@ -112,7 +112,7 @@ namespace TerraFX.Provider.libX11.UI
         {
             get
             {
-                return _state.IsNotDisposedOrDisposing ? (IntPtr)(_handle.Value) : IntPtr.Zero;
+                return _state.IsNotDisposedOrDisposing ? (IntPtr)_handle.Value : IntPtr.Zero;
             }
         }
 
@@ -215,14 +215,14 @@ namespace TerraFX.Provider.libX11.UI
             var window = XCreateWindow(
                 display,
                 parent: rootWindow,
-                x: float.IsNaN(Bounds.X) ? (int)(screenWidth * 0.75f) : (int)(Bounds.X),
-                y: float.IsNaN(Bounds.Y) ? (int)(screenHeight * 0.75f) : (int)(Bounds.Y),
-                width: float.IsNaN(Bounds.Width) ? (uint)(screenWidth * 0.125f) : (uint)(Bounds.Width),
-                height: float.IsNaN(Bounds.Height) ? (uint)(screenHeight * 0.125f) : (uint)(Bounds.Height),
+                x: float.IsNaN(Bounds.X) ? (int)(screenWidth * 0.75f) : (int)Bounds.X,
+                y: float.IsNaN(Bounds.Y) ? (int)(screenHeight * 0.75f) : (int)Bounds.Y,
+                width: float.IsNaN(Bounds.Width) ? (uint)(screenWidth * 0.125f) : (uint)Bounds.Width,
+                height: float.IsNaN(Bounds.Height) ? (uint)(screenHeight * 0.125f) : (uint)Bounds.Height,
                 border_width: 0,
                 depth: CopyFromParent,
                 @class: InputOutput,
-                visual: (Visual*)(CopyFromParent),
+                visual: (Visual*)CopyFromParent,
                 valuemask: 0,
                 attributes: null
             );
@@ -235,7 +235,7 @@ namespace TerraFX.Provider.libX11.UI
             XSelectInput(
                 display,
                 window,
-                event_mask: (VisibilityChangeMask | StructureNotifyMask)
+                event_mask: VisibilityChangeMask | StructureNotifyMask
             );
 
             return window;
@@ -271,7 +271,7 @@ namespace TerraFX.Provider.libX11.UI
         /// <param name="xcirculate">The <c>XCirculate</c> event.</param>
         private void HandleXCirculate(in XCirculateEvent xcirculate)
         {
-            _isActive = (xcirculate.place == PlaceOnTop);
+            _isActive = xcirculate.place == PlaceOnTop;
         }
 
         /// <summary>Handles the <c>XConfigure</c> event.</summary>
@@ -285,7 +285,7 @@ namespace TerraFX.Provider.libX11.UI
         /// <param name="xvisibility">The <c>XVisibility</c> event.</param>
         private void HandleXVisibility(in XVisibilityEvent xvisibility)
         {
-            _isVisible = (xvisibility.state != VisibilityFullyObscured);
+            _isVisible = xvisibility.state != VisibilityFullyObscured;
         }
 
         /// <summary>Processes a window event sent to the instance.</summary>
@@ -387,7 +387,7 @@ namespace TerraFX.Provider.libX11.UI
                 var screenWidth = XWidthOfScreen(windowAttributes.screen);
                 var screenHeight = XHeightOfScreen(windowAttributes.screen);
 
-                XMoveResizeWindow(display, _handle.Value, 0, 0, (uint)(screenWidth), (uint)(screenHeight));
+                XMoveResizeWindow(display, _handle.Value, 0, 0, (uint)screenWidth, (uint)screenHeight);
                 _windowState = WindowState.Maximized;
             }
         }
@@ -421,7 +421,7 @@ namespace TerraFX.Provider.libX11.UI
                 if (_windowState == WindowState.Maximized)
                 {
                     var display = _windowManager.DispatchManager.Display;
-                    XMoveResizeWindow(display, _handle.Value, (int)(_restoredBounds.X), (int)(_restoredBounds.Y), (uint)(_restoredBounds.Width), (uint)(_restoredBounds.Height));
+                    XMoveResizeWindow(display, _handle.Value, (int)_restoredBounds.X, (int)_restoredBounds.Y, (uint)_restoredBounds.Width, (uint)_restoredBounds.Height);
                 }
 
                 Show();

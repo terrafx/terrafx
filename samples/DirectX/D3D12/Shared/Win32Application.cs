@@ -48,14 +48,14 @@ namespace TerraFX.Samples.DirectX.D3D12
                     style = CS_HREDRAW | CS_VREDRAW,
                     lpfnWndProc = s_wndProc,
                     hInstance = hInstance,
-                    hCursor = LoadCursor(IntPtr.Zero, (char*)(IDC_ARROW)),
+                    hCursor = LoadCursor(IntPtr.Zero, (char*)IDC_ARROW),
                     lpszClassName = lpszClassName
                 };
                 RegisterClassEx(in windowClass);
 
                 var windowRect = new RECT {
-                    right = unchecked((int)(pSample.Width)),
-                    bottom = unchecked((int)(pSample.Height))
+                    right = unchecked((int)pSample.Width),
+                    bottom = unchecked((int)pSample.Height)
                 };
                 AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
 
@@ -72,7 +72,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                     IntPtr.Zero,                            // We have no parent window.
                     IntPtr.Zero,                            // We aren't using menus.
                     hInstance,
-                    ((IntPtr)(GCHandle.Alloc(pSample))).ToPointer()
+                    ((IntPtr)GCHandle.Alloc(pSample)).ToPointer()
                 );
             }
 
@@ -98,34 +98,34 @@ namespace TerraFX.Samples.DirectX.D3D12
             pSample.OnDestroy();
 
             // Return this part of the WM_QUIT message to Windows.
-            return (int)(msg.wParam);
+            return (int)msg.wParam;
         }
 
         // Main message handler for the sample
         private static nint WindowProc(IntPtr hWnd, uint message, nuint wParam, nint lParam)
         {
             var handle = GetWindowLongPtr(hWnd, GWLP_USERDATA);
-            var pSample = (handle != 0) ? (DXSample)(GCHandle.FromIntPtr(handle).Target) : null;
+            var pSample = (handle != 0) ? (DXSample)GCHandle.FromIntPtr(handle).Target : null;
 
             switch (message)
             {
                 case WM_CREATE:
                 {
                     // Save the DXSample* passed in to CreateWindow.
-                    var pCreateStruct = (CREATESTRUCT*)(lParam);
-                    SetWindowLongPtr(hWnd, GWLP_USERDATA, (nint)(pCreateStruct->lpCreateParams));
+                    var pCreateStruct = (CREATESTRUCT*)lParam;
+                    SetWindowLongPtr(hWnd, GWLP_USERDATA, (nint)pCreateStruct->lpCreateParams);
                 }
                 return 0;
 
                 case WM_KEYDOWN:
                 {
-                    pSample?.OnKeyDown((byte)(wParam));
+                    pSample?.OnKeyDown((byte)wParam);
                     return 0;
                 }
 
                 case WM_KEYUP:
                 {
-                    pSample?.OnKeyUp((byte)(wParam));
+                    pSample?.OnKeyUp((byte)wParam);
                     return 0;
                 }
 

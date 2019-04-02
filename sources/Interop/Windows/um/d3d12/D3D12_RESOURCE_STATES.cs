@@ -40,7 +40,7 @@ namespace TerraFX.Interop
 
         D3D12_RESOURCE_STATE_RESOLVE_SOURCE = 0x2000,
 
-        D3D12_RESOURCE_STATE_GENERIC_READ = (((((0x1 | 0x2) | 0x40) | 0x80) | 0x200) | 0x800),
+        D3D12_RESOURCE_STATE_GENERIC_READ = 0x1 | 0x2 | 0x40 | 0x80 | 0x200 | 0x800,
 
         D3D12_RESOURCE_STATE_PRESENT = 0,
 

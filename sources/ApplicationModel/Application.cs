@@ -55,7 +55,7 @@ namespace TerraFX.ApplicationModel
         {
             get
             {
-                return (_state == Running);
+                return _state == Running;
             }
         }
 

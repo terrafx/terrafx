@@ -16,7 +16,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region DXGI_SHARED_RESOURCE_* Constants
-        public const int DXGI_SHARED_RESOURCE_READ = unchecked((int)(0x80000000));
+        public const int DXGI_SHARED_RESOURCE_READ = unchecked((int)0x80000000);
 
         public const int DXGI_SHARED_RESOURCE_WRITE = 1;
         #endregion

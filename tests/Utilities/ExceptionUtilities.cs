@@ -54,7 +54,7 @@ namespace TerraFX.Utilities.UnitTests
         [Test]
         public static void NewExternalExceptionStringInt32Test(
             [Values(null, "", "methodName")] string methodName,
-            [Values(0, 1, unchecked((int)(0x80000000)))] int errorCode
+            [Values(0, 1, unchecked((int)0x80000000))] int errorCode
         )
         {
             Assert.That(ExceptionUtilities.NewExternalException(methodName, errorCode),
@@ -159,7 +159,7 @@ namespace TerraFX.Utilities.UnitTests
         [Test]
         public static void ThrowExternalExceptionStringInt32Test(
             [Values(null, "", "methodName")] string methodName,
-            [Values(0, 1, unchecked((int)(0x80000000)))] int errorCode
+            [Values(0, 1, unchecked((int)0x80000000))] int errorCode
         )
         {
             Assert.That(() => ExceptionUtilities.ThrowExternalException(methodName, errorCode),

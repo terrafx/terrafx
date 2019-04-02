@@ -80,7 +80,7 @@ namespace TerraFX.Provider.Win32.UI
         {
             get
             {
-                return _state.IsNotDisposedOrDisposing ? _classAtom.Value : (ushort)(0);
+                return _state.IsNotDisposedOrDisposing ? _classAtom.Value : (ushort)0;
             }
         }
 
@@ -110,7 +110,7 @@ namespace TerraFX.Provider.Win32.UI
         {
             get
             {
-                return _state.IsNotDisposedOrDisposing ? (IEnumerable<IWindow>)(_windows) : Array.Empty<IWindow>();
+                return _state.IsNotDisposedOrDisposing ? (IEnumerable<IWindow>)_windows : Array.Empty<IWindow>();
             }
         }
         #endregion
@@ -133,7 +133,7 @@ namespace TerraFX.Provider.Win32.UI
                 // of the fields in Window are lazy.
 
                 ref var pCreateStruct = ref AsRef<CREATESTRUCT>(lParam);
-                userData = (nint)(pCreateStruct.lpCreateParams);
+                userData = (nint)pCreateStruct.lpCreateParams;
                 SetWindowLongPtr(hWnd, GWLP_USERDATA, userData);
             }
             else
@@ -147,7 +147,7 @@ namespace TerraFX.Provider.Win32.UI
             // without passing in a GCHandle as the lParam to CreateWindowEx. We will just fail
             // by allowing the runtime to throw an exception in that scenario.
 
-            var windowManager = (WindowManager)(GCHandle.FromIntPtr(userData).Target);
+            var windowManager = (WindowManager)GCHandle.FromIntPtr(userData).Target;
 
             if (windowManager._windows.TryGetValue(hWnd, out var window))
             {
@@ -222,7 +222,7 @@ namespace TerraFX.Provider.Win32.UI
                 {
                     var wndClassEx = new WNDCLASSEX {
                         cbSize = SizeOf<WNDCLASSEX>(),
-                        style = (CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS),
+                        style = CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS,
                         lpfnWndProc = ForwardWndProc,
                         /* cbClsExtra = 0, */
                         /* cbWndExtra = 0, */
@@ -272,7 +272,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (_classAtom.IsValueCreated)
             {
-                var result = UnregisterClass((char*)(_classAtom.Value), EntryPointModule);
+                var result = UnregisterClass((char*)_classAtom.Value, EntryPointModule);
 
                 if (result == FALSE)
                 {

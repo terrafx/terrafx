@@ -95,8 +95,8 @@ namespace TerraFX.Utilities.UnitTests
 
             for (var index = 0; index < 256; index++)
             {
-                key[index] = (byte)(index);
-                hashes[index] = HashUtilities.ComputeHashCode(key, 0, index, (256 - index));
+                key[index] = (byte)index;
+                hashes[index] = HashUtilities.ComputeHashCode(key, 0, index, 256 - index);
             }
 
             Assert.That(HashUtilities.ComputeHashCode(hashes, 0, hashes.Length, 0),

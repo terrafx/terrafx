@@ -98,7 +98,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
             if (result != VK_SUCCESS)
             {
-                ThrowExternalException(nameof(vkCreateInstance), (int)(result));
+                ThrowExternalException(nameof(vkCreateInstance), (int)result);
             }
 
             return instance;
@@ -143,18 +143,18 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
             if (result != VK_SUCCESS)
             {
-                ThrowExternalException(nameof(vkEnumeratePhysicalDevices), (int)(result));
+                ThrowExternalException(nameof(vkEnumeratePhysicalDevices), (int)result);
             }
 
-            var physicalDevices = stackalloc IntPtr[unchecked((int)(physicalDeviceCount))];
+            var physicalDevices = stackalloc IntPtr[unchecked((int)physicalDeviceCount)];
             result = vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, physicalDevices);
 
             if (result != VK_SUCCESS)
             {
-                ThrowExternalException(nameof(vkEnumeratePhysicalDevices), (int)(result));
+                ThrowExternalException(nameof(vkEnumeratePhysicalDevices), (int)result);
             }
 
-            var adapters = ImmutableArray.CreateBuilder<GraphicsAdapter>(unchecked((int)(physicalDeviceCount)));
+            var adapters = ImmutableArray.CreateBuilder<GraphicsAdapter>(unchecked((int)physicalDeviceCount));
 
             for (var index = 0u; index < physicalDeviceCount; index++)
             {

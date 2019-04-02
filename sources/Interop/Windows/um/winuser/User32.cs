@@ -659,9 +659,9 @@ namespace TerraFX.Interop
 
         public const uint WS_TILEDWINDOW = WS_OVERLAPPEDWINDOW;
 
-        public const uint WS_OVERLAPPEDWINDOW = (WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX);
+        public const uint WS_OVERLAPPEDWINDOW = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
 
-        public const uint WS_POPUPWINDOW = (WS_POPUP | WS_BORDER | WS_SYSMENU);
+        public const uint WS_POPUPWINDOW = WS_POPUP | WS_BORDER | WS_SYSMENU;
 
         public const uint WS_CHILDWINDOW = WS_CHILD;
         #endregion
@@ -705,9 +705,9 @@ namespace TerraFX.Interop
 
         public const uint WS_EX_APPWINDOW = 0x00040000;
 
-        public const uint WS_EX_OVERLAPPEDWINDOW = (WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE);
+        public const uint WS_EX_OVERLAPPEDWINDOW = WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE;
 
-        public const uint WS_EX_PALETTEWINDOW = (WS_EX_WINDOWEDGE | WS_EX_TOOLWINDOW | WS_EX_TOPMOST);
+        public const uint WS_EX_PALETTEWINDOW = WS_EX_WINDOWEDGE | WS_EX_TOOLWINDOW | WS_EX_TOPMOST;
 
         public const uint WS_EX_LAYERED = 0x00080000;
 
@@ -757,17 +757,17 @@ namespace TerraFX.Interop
 
         public const int PM_NOYIELD = 0x0002;
 
-        public const int PM_QS_INPUT = (QS_INPUT << 16);
+        public const int PM_QS_INPUT = QS_INPUT << 16;
 
-        public const int PM_QS_POSTMESSAGE = ((QS_POSTMESSAGE | QS_HOTKEY | QS_TIMER) << 16);
+        public const int PM_QS_POSTMESSAGE = (QS_POSTMESSAGE | QS_HOTKEY | QS_TIMER) << 16;
 
-        public const int PM_QS_PAINT = (QS_PAINT << 16);
+        public const int PM_QS_PAINT = QS_PAINT << 16;
 
-        public const int PM_QS_SENDMESSAGE = (QS_SENDMESSAGE << 16);
+        public const int PM_QS_SENDMESSAGE = QS_SENDMESSAGE << 16;
         #endregion
 
         #region CW_* Constants
-        public const int CW_USEDEFAULT = unchecked((int)(0x80000000));
+        public const int CW_USEDEFAULT = unchecked((int)0x80000000);
         #endregion
 
         #region HWND_* Constants
@@ -799,13 +799,13 @@ namespace TerraFX.Interop
 
         public const int QS_POINTER = 0x1000;
 
-        public const int QS_MOUSE = (QS_MOUSEMOVE | QS_MOUSEBUTTON);
+        public const int QS_MOUSE = QS_MOUSEMOVE | QS_MOUSEBUTTON;
 
-        public const int QS_INPUT = (QS_MOUSE | QS_KEY | QS_RAWINPUT | QS_TOUCH | QS_POINTER);
+        public const int QS_INPUT = QS_MOUSE | QS_KEY | QS_RAWINPUT | QS_TOUCH | QS_POINTER;
 
-        public const int QS_ALLEVENTS = (QS_INPUT | QS_POSTMESSAGE | QS_TIMER | QS_PAINT | QS_HOTKEY);
+        public const int QS_ALLEVENTS = QS_INPUT | QS_POSTMESSAGE | QS_TIMER | QS_PAINT | QS_HOTKEY;
 
-        public const int QS_ALLINPUT = (QS_INPUT | QS_POSTMESSAGE | QS_TIMER | QS_PAINT | QS_HOTKEY | QS_SENDMESSAGE);
+        public const int QS_ALLINPUT = QS_INPUT | QS_POSTMESSAGE | QS_TIMER | QS_PAINT | QS_HOTKEY | QS_SENDMESSAGE;
         #endregion
 
         #region COLOR_* Constants

@@ -62,7 +62,7 @@ namespace TerraFX.Provider.libX11.UI
 
             return XInternAtom(
                 display,
-                (sbyte*)(name),
+                (sbyte*)name,
                 only_if_exists: False
             );
         }
@@ -89,7 +89,7 @@ namespace TerraFX.Provider.libX11.UI
         {
             get
             {
-                return (IntPtr)(_windowManagerProperty.Value);
+                return (IntPtr)_windowManagerProperty.Value;
             }
         }
 

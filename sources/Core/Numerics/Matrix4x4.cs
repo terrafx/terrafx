@@ -142,7 +142,7 @@ namespace TerraFX.Numerics
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
         public bool Equals(Matrix4x4 other)
         {
-            return (this == other);
+            return this == other;
         }
         #endregion
 
@@ -193,7 +193,7 @@ namespace TerraFX.Numerics
                 combinedValue = CombineValue(Z.GetHashCode(), combinedValue);
                 combinedValue = CombineValue(W.GetHashCode(), combinedValue);
             }
-            return FinalizeValue(combinedValue, (SizeOf<Vector4>() * 4));
+            return FinalizeValue(combinedValue, SizeOf<Vector4>() * 4);
         }
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>

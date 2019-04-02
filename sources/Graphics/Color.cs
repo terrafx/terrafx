@@ -114,7 +114,7 @@ namespace TerraFX.Graphics
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
         public bool Equals(Color other)
         {
-            return (this == other);
+            return this == other;
         }
         #endregion
 
@@ -161,7 +161,7 @@ namespace TerraFX.Graphics
                 combinedValue = CombineValue(Green.GetHashCode(), combinedValue);
                 combinedValue = CombineValue(Blue.GetHashCode(), combinedValue);
             }
-            return FinalizeValue(combinedValue, (sizeof(float) * 3));
+            return FinalizeValue(combinedValue, sizeof(float) * 3);
         }
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>

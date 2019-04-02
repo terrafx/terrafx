@@ -176,7 +176,7 @@ namespace TerraFX.Graphics.Geometry2D
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
         public bool Equals(Rectangle other)
         {
-            return (this == other);
+            return this == other;
         }
         #endregion
 
@@ -227,7 +227,7 @@ namespace TerraFX.Graphics.Geometry2D
                 combinedValue = CombineValue(Width.GetHashCode(), combinedValue);
                 combinedValue = CombineValue(Height.GetHashCode(), combinedValue);
             }
-            return FinalizeValue(combinedValue, (sizeof(float) * 4));
+            return FinalizeValue(combinedValue, sizeof(float) * 4);
         }
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
