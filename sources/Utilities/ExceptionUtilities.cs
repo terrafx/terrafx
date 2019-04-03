@@ -10,97 +10,14 @@ namespace TerraFX.Utilities
     public static class ExceptionUtilities
     {
         #region Static Methods
-        /// <summary>Creates a new instance of the <see cref="ArgumentException" /> class.</summary>
-        /// <param name="paramName">The name of the parameter that caused the exception.</param>
-        /// <param name="paramType">The type of the parameter that caused the exception.</param>
-        /// <returns>A new instance of the <see cref="ArgumentException" /> class.</returns>
-        public static ArgumentException NewArgumentExceptionForInvalidType(string paramName, Type paramType)
-        {
-            var message = string.Format(Resources.ArgumentExceptionForInvalidTypeMessage, paramName, paramType);
-            return new ArgumentException(message, paramName);
-        }
-
-        /// <summary>Creates a new instance of the <see cref="ArgumentNullException" /> class.</summary>
-        /// <param name="paramName">The name of the parameter that caused the exception.</param>
-        /// <returns>A new instance of the <see cref="ArgumentNullException" /> class.</returns>
-        public static ArgumentNullException NewArgumentNullException(string paramName)
-        {
-            var message = string.Format(Resources.ArgumentNullExceptionMessage, paramName);
-            return new ArgumentNullException(paramName, message);
-        }
-
-        /// <summary>Creates a new instance of the <see cref="ArgumentOutOfRangeException" /> class.</summary>
-        /// <param name="paramName">The name of the parameter that caused the exception.</param>
-        /// <param name="value">The value of the parameter that caused the exception.</param>
-        /// <returns>A new instance of the <see cref="ArgumentOutOfRangeException" /> class.</returns>
-        public static ArgumentOutOfRangeException NewArgumentOutOfRangeException(string paramName, object value)
-        {
-            var message = string.Format(Resources.ArgumentOutOfRangeExceptionMessage, paramName, value);
-            return new ArgumentOutOfRangeException(paramName, value, message);
-        }
-
-        /// <summary>Creates a new instance of the <see cref="ExternalException" /> class.</summary>
-        /// <param name="methodName">The name of the method that caused the exception.</param>
-        /// <param name="errorCode">The error code that caused the exception.</param>
-        /// <returns>A new instance of the <see cref="ExternalException" /> class.</returns>
-        public static ExternalException NewExternalException(string methodName, int errorCode)
-        {
-            var message = string.Format(Resources.ExternalExceptionMessage, methodName, errorCode);
-            return new ExternalException(message, errorCode);
-        }
-
-        /// <summary>Creates a new instance of the <see cref="ExternalException" /> class.</summary>
-        /// <param name="methodName">The name of the method that caused the exception.</param>
-        /// <returns>A new instance of the <see cref="ExternalException" /> class.</returns>
-        public static ExternalException NewExternalExceptionForLastError(string methodName)
-        {
-            var errorCode = Marshal.GetLastWin32Error();
-            return NewExternalException(methodName, errorCode);
-        }
-
-        /// <summary>Creates a new instance of the <see cref="ExternalException" /> class.</summary>
-        /// <param name="methodName">The name of the method that caused the exception.</param>
-        /// <returns>A new instance of the <see cref="ExternalException" /> class.</returns>
-        public static ExternalException NewExternalExceptionForLastHRESULT(string methodName)
-        {
-            var hresult = Marshal.GetHRForLastWin32Error();
-            return NewExternalException(methodName, hresult);
-        }
-
-        /// <summary>Creates a new instance of the <see cref="InvalidOperationException" /> class.</summary>
-        /// <param name="paramName">The name of the parameter that caused the exception.</param>
-        /// <param name="value">The value of the parameter that caused the exception.</param>
-        /// <returns>A new instance of the <see cref="InvalidOperationException" /> class.</returns>
-        public static InvalidOperationException NewInvalidOperationException(string paramName, object value)
-        {
-            var message = string.Format(Resources.InvalidOperationExceptionMessage, paramName, value);
-            return new InvalidOperationException(message);
-        }
-
-        /// <summary>Creates a new instance of the <see cref="NotSupportedException" /> class.</summary>
-        /// <param name="message">A string that describes the error.</param>
-        /// <returns>A new instance of the <see cref="ObjectDisposedException" /> class.</returns>
-        public static NotSupportedException NewNotSupportedException(string message)
-        {
-            return new NotSupportedException(message);
-        }
-
-        /// <summary>Creates a new instance of the <see cref="ObjectDisposedException" /> class.</summary>
-        /// <param name="objectName">The name of the object that caused the exception.</param>
-        /// <returns>A new instance of the <see cref="ObjectDisposedException" /> class.</returns>
-        public static ObjectDisposedException NewObjectDisposedException(string objectName)
-        {
-            var message = string.Format(Resources.ObjectDisposedExceptionMessage, objectName);
-            return new ObjectDisposedException(objectName, message);
-        }
-
         /// <summary>Throws an instance of the <see cref="ArgumentException" /> class.</summary>
         /// <param name="paramName">The name of the parameter that caused the exception.</param>
         /// <param name="paramType">The type of the parameter that caused the exception.</param>
         /// <exception cref="ArgumentException"><paramref name="paramName" /> is an instance of <paramref name="paramType" />.</exception>
         public static void ThrowArgumentExceptionForInvalidType(string paramName, Type paramType)
         {
-            throw NewArgumentExceptionForInvalidType(paramName, paramType);
+            var message = string.Format(Resources.ArgumentExceptionForInvalidTypeMessage, paramName, paramType);
+            throw new ArgumentException(message, paramName);
         }
 
         /// <summary>Throws an instance of the <see cref="ArgumentNullException" /> class.</summary>
@@ -108,7 +25,8 @@ namespace TerraFX.Utilities
         /// <exception cref="ArgumentNullException"><paramref name="paramName" /> is <c>null</c>.</exception>
         public static void ThrowArgumentNullException(string paramName)
         {
-            throw NewArgumentNullException(paramName);
+            var message = string.Format(Resources.ArgumentNullExceptionMessage, paramName);
+            throw new ArgumentNullException(paramName, message);
         }
 
         /// <summary>Throws an instance of the <see cref="ArgumentOutOfRangeException" /> class.</summary>
@@ -117,7 +35,8 @@ namespace TerraFX.Utilities
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="paramName" /> has a value of <paramref name="value" />.</exception>
         public static void ThrowArgumentOutOfRangeException(string paramName, object value)
         {
-            throw NewArgumentOutOfRangeException(paramName, value);
+            var message = string.Format(Resources.ArgumentOutOfRangeExceptionMessage, paramName, value);
+            throw new ArgumentOutOfRangeException(paramName, value, message);
         }
 
         /// <summary>Throws an instance of the <see cref="ExternalException" /> class.</summary>
@@ -126,7 +45,8 @@ namespace TerraFX.Utilities
         /// <exception cref="ExternalException"><paramref name="methodName" /> failed with an exit code of <paramref name="errorCode" />.</exception>
         public static void ThrowExternalException(string methodName, int errorCode)
         {
-            throw NewExternalException(methodName, errorCode);
+            var message = string.Format(Resources.ExternalExceptionMessage, methodName, errorCode);
+            throw new ExternalException(message, errorCode);
         }
 
         /// <summary>Throws an instance of the <see cref="ExternalException" /> class.</summary>
@@ -134,7 +54,9 @@ namespace TerraFX.Utilities
         /// <exception cref="ExternalException"><paramref name="methodName" /> failed with an exit code of <see cref="Marshal.GetLastWin32Error()" />.</exception>
         public static void ThrowExternalExceptionForLastError(string methodName)
         {
-            throw NewExternalExceptionForLastError(methodName);
+            var errorCode = Marshal.GetLastWin32Error();
+            var message = string.Format(Resources.ExternalExceptionMessage, methodName, errorCode);
+            throw new ExternalException(message, errorCode);
         }
 
         /// <summary>Throws an instance of the <see cref="ExternalException" /> class.</summary>
@@ -142,7 +64,9 @@ namespace TerraFX.Utilities
         /// <exception cref="ExternalException"><paramref name="methodName" /> failed with an exit code of <see cref="Marshal.GetHRForLastWin32Error()" />.</exception>
         public static void ThrowExternalExceptionForLastHRESULT(string methodName)
         {
-            throw NewExternalExceptionForLastHRESULT(methodName);
+            var hresult = Marshal.GetHRForLastWin32Error();
+            var message = string.Format(Resources.ExternalExceptionMessage, methodName, hresult);
+            throw new ExternalException(message, hresult);
         }
 
         /// <summary>Throws a <see cref="ArgumentNullException" /> if <paramref name="value" /> is <c>null</c>.</summary>
@@ -178,7 +102,8 @@ namespace TerraFX.Utilities
         /// <exception cref="InvalidOperationException"><paramref name="paramName" /> has a value of <paramref name="value" />.</exception>
         public static void ThrowInvalidOperationException(string paramName, object value)
         {
-            throw NewInvalidOperationException(paramName, value);
+            var message = string.Format(Resources.InvalidOperationExceptionMessage, paramName, value);
+            throw new InvalidOperationException(message);
         }
 
         /// <summary>Throws an instance of the <see cref="NotSupportedException" /> class.</summary>
@@ -186,7 +111,7 @@ namespace TerraFX.Utilities
         public static void ThrowNotSupportedExceptionForReadOnlyCollection()
         {
             var message = Resources.NotSupportedExceptionForReadOnlyCollectionMessage;
-            throw NewNotSupportedException(message);
+            throw new NotSupportedException(message);
         }
 
         /// <summary>Throws an instance of the <see cref="ObjectDisposedException" /> class.</summary>
@@ -194,7 +119,8 @@ namespace TerraFX.Utilities
         /// <exception cref="ObjectDisposedException"><paramref name="objectName" /> is disposed.</exception>
         public static void ThrowObjectDisposedException(string objectName)
         {
-            throw NewObjectDisposedException(objectName);
+            var message = string.Format(Resources.ObjectDisposedExceptionMessage, objectName);
+            throw new ObjectDisposedException(objectName, message);
         }
         #endregion
     }

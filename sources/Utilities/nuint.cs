@@ -575,7 +575,8 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
         }
         else
         {
-            throw NewArgumentExceptionForInvalidType(nameof(obj), obj.GetType());
+            ThrowArgumentExceptionForInvalidType(nameof(obj), obj.GetType());
+            return 0;
         }
     }
     #endregion

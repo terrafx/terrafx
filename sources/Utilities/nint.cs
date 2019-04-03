@@ -592,7 +592,8 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
         }
         else
         {
-            throw NewArgumentExceptionForInvalidType(nameof(obj), obj.GetType());
+            ThrowArgumentExceptionForInvalidType(nameof(obj), obj.GetType());
+            return 0;
         }
     }
     #endregion
