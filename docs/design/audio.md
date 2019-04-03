@@ -40,8 +40,9 @@ audio later on.
 ```cs
 public abstract class AudioEncoder : IDisposable
 {
-    // Encodes raw PCM of system endianness into a format specified by subclassers
-    // Bit depth is decided by subclasser too, e.g. FloatOpusEncoder, ShortOpusEncoder
+    // Encodes raw audio into a format specified by subclassers.
+    // Endianness and bit depth are specified by subclassers, eg. FloatOpusEncoder, ShortOpusEncoder
+    // System endianness is the preferred format, however.
 
     public AudioEncoder(AudioEncoderOptions options, PipeOptions pipeOptions = null) { throw null; }
 
@@ -75,8 +76,9 @@ public abstract class AudioEncoderOptions
 
 public abstract class AudioDecoder : IDisposable
 {
-    // Decodes audio into PCM samples of system endianness, input format specified subclassers
-    // Bit depth is decided by subclasser too, e.g. FloatOpusDecoder, ShortOpusDecoder
+    // Decodes audio into another format, specified by subclassers
+    // Endianness and bit depth is decided by subclasser too, e.g. FloatOpusDecoder, ShortOpusDecoder
+    // System endianness is preferred, however.
 
     public AudioDecoder(AudioDecoderOptions options, PipeOptions pipeOptions = null) { throw null; }
 
@@ -101,55 +103,72 @@ public abstract class AudioDecoderOptions
 }
 
 
-public abstract class AudioProvider : IDisposable
+public interface IAudioProvider
 {
-    // Provides PCM audio samples of system endianness to a sound backend, so that they can be
-    // heard by users
+    // Provides sound devices to code, so that they can be requested and used to
+    // play sound. Implementors are likely to name based on subsystem, e.g. XAudio2AudioProvider, OpenALAudioProvider
 
-    public AudioProvider(AudioProviderOptions options, PipeOptions pipeOptions = null) { throw null; }
+    // Requests an audio device supporting the given options. If none could be
+    // found, returns null.
+    IAudioDevice RequestAudioDevice(IAudioDeviceOptions options = null);
 
-    // Since this is write-only, we only need the writer
-    public PipeWriter Writer => throw null;
-
-    public Task RunAsync() { throw null; }
-
-    protected void Dispose(bool disposing) { throw null; }
-    void IDisposable.Dispose() { Dispose(true); }
+    // Returns an enumerable which can be used to enumerate available audio
+    // devices. Does not initialize them.
+    IEnumerable<IAudioDeviceOptions> EnumerateAudioDevices();
 }
 
-public abstract class AudioProviderOptions
+
+public interface IAudioDevice : IDisposable
 {
-    // Sample rate of input PCM
+    // Provides audio data to a sound device, so that they can be heard by
+    // users. Endianness and data format are specified by implementors.
+
+    // Since this is write-only, we only need the writer
+    public PipeWriter Writer;
+
+    public Task RunAsync();
+}
+
+public interface IAudioDeviceOptions
+{
+    // Represents a set of options supported by a given audio device.
+    // Implementors can add more options, and they are likely to encode format
+    // information in the name, eg. OpusAudioDeviceOptions, MpegAudioDeviceOptions
+
+    // Sample rate of input data
     public int SampleRate { get; set; }
 
-    // Bit depth of input PCM
+    // Bit depth of input data
     public int BitDepth { get; set; }
 
-    // Number of channels in input PCM
+    // Number of channels in input data
     public int Channels { get; set; }
+
+    // Endianness of input data: true if big endian
+    public bool BigEndian { get; set; }
+}
+
+
+public static sealed class WellKnownSampleRates
+{
+    // A list of of well known sampling rates, in samples per second.
+
+    public const int CdAudio = 44100;
+
+    public const int DvdAudio = 48000;
 }
 ```
 
 # Further Considerations #
 
-- Is an enum better for `AudioProviderOptions#SampleRate`? I'm not sure whether
-  APIs provided by Windows/SDL/OpenAL/etc. allow arbitrary sample rates.
-  - On one hand, using an enum would make it easier for the user to decide
-    and choose a valid option
-  - On the other, it may limit our options in the future
-- How do we handle cases where obtained audio devices do not match requested
-  devices?
-  - If byte order does not match, would it be expensive to perform byte
-    swapping?
-    - Might be a possible optimisation point using vectorized operations, if
-      necessary.
-  - If sample rate does not match requested, do we:
-    - Resample internally?
-    - Throw?
-    - Ignore?
-  - Do we provide a static function to request an audio device? This would
-    likely only be present on implementations
-    - `TryGetAudioDevice`? Returning as an out-variable seems odd though...
+- How do we name well-known sampling rates?
+  - `CdAudio` and `DvdAudio` are based on well-known sample rates for CDs and
+    DVDs, but how do we handle cases, e.g. 192kHz?
+- How do we handle cases where an audio provider does not match a requested
+  device?
+  - If byte order does not match, byte swapping can likely be performed
+    transparently using vectorised operations
+  - If sample rate does not match requested, do we resample internally?
 - How do we handle buffer under/overruns?
   - Underruns can be filled with silence samples, most likely
   - Overruns should be impossible due to Pipelines?
@@ -157,5 +176,9 @@ public abstract class AudioProviderOptions
   - SDL has `SDL_QueueAudio` for pushing data into their internal buffer, as
     well as `SDL_AudioCallback` for pull/request-based data using our own
     buffer.
+  - XAudio2 also appears to have something to this effect
 - Is channel remapping necessary, or do we just assume channels are already in
   the correct order?
+- Do we make `IAudioDeviceOptions` have read-only properties, or introduce what
+  would effectively be an identical interface/struct for requests and available
+  devices?
