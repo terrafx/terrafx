@@ -1,6 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -94,6 +95,14 @@ namespace TerraFX.Utilities
             {
                 ThrowInvalidOperationException(nameof(Thread.CurrentThread), currentThread);
             }
+        }
+
+        /// <summary>Throws an instance of the <see cref="IOException" /> class.</summary>
+        /// <exception cref="IOException">An I/O error occurred.</exception>
+        public static void ThrowIOException()
+        {
+            var message = Resources.IOExceptionMessage;
+            throw new IOException(message);
         }
 
         /// <summary>Throws an instance of the <see cref="InvalidOperationException" /> class.</summary>

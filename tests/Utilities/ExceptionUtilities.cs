@@ -1,6 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
 
@@ -100,6 +101,15 @@ namespace TerraFX.Utilities.UnitTests
         {
             Assert.That(() => ExceptionUtilities.ThrowInvalidOperationException(paramName, value),
                 Throws.InstanceOf<InvalidOperationException>()
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIOException()" /> static method.</summary>
+        [Test]
+        public static void ThrowIOExceptionStringTest()
+        {
+            Assert.That(() => ExceptionUtilities.ThrowIOException(),
+                Throws.InstanceOf<IOException>()
             );
         }
 

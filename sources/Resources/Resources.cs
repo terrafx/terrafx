@@ -77,6 +77,15 @@ namespace TerraFX
             }
         }
 
+        /// <summary>Gets a localized <see cref="string" /> similar to <c>An I/O error occurred</c>.</summary>
+        public static string IOExceptionMessage
+        {
+            get
+            {
+                return ResourceManager.GetString(nameof(IOExceptionMessage), Culture);
+            }
+        }
+
         /// <summary>Gets a localized <see cref="string" /> similar to <c>The collection is read-only</c>.</summary>
         public static string NotSupportedExceptionForReadOnlyCollectionMessage
         {

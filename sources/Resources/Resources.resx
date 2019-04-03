@@ -132,6 +132,9 @@
   <data name="InvalidOperationExceptionMessage" xml:space="preserve">
     <value>{0} has a value of {1}</value>
   </data>
+  <data name="IOExceptionMessage" xml:space="preserve">
+    <value>An I/O error occurred</value>
+  </data>
   <data name="NotSupportedExceptionForReadOnlyCollectionMessage" xml:space="preserve">
     <value>The collection is read-only</value>
   </data>

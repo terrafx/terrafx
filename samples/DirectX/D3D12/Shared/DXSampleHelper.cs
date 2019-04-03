@@ -38,7 +38,7 @@ namespace TerraFX.Samples.DirectX.D3D12
 
                 if (endOfFile > int.MaxValue)
                 {
-                    throw new IOException();
+                    ThrowIOException();
                 }
 
                 var size = (int)endOfFile;
