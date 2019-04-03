@@ -59,7 +59,8 @@ namespace TerraFX.Provider.libX11.UI
         {
             get
             {
-                return _state.IsNotDisposedOrDisposing ? _dispatchManager.Value : null;
+                _state.ThrowIfDisposedOrDisposing();
+                return _dispatchManager.Value;
             }
         }
         #endregion

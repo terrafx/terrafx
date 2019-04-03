@@ -68,7 +68,7 @@ namespace TerraFX.Utilities
         /// <param name="paramName">The name of the parameter being checked.</param>
         /// <exception cref="ArgumentNullException"><paramref name="value" /> is <c>null</c>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowIfNull<T>(T value, string paramName)
+        public static void ThrowIfNull<T>([EnsuresNotNull] T? value, string paramName)
             where T : class
         {
             if (value is null)

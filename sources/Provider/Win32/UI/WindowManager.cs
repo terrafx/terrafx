@@ -89,7 +89,8 @@ namespace TerraFX.Provider.Win32.UI
         {
             get
             {
-                return _state.IsNotDisposedOrDisposing ? _dispatchManager.Value : null;
+                _state.ThrowIfDisposedOrDisposing();
+                return _dispatchManager.Value;
             }
         }
 
