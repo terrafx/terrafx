@@ -39,11 +39,7 @@ namespace TerraFX.Collections
         /// <exception cref="ArgumentNullException"><paramref name="items" /> is <c>null</c>.</exception>
         public PropertySet(IEnumerable<KeyValuePair<string, object>> items)
         {
-            if (items is null)
-            {
-                ThrowArgumentNullException(nameof(items));
-            }
-
+            ThrowIfNull(items, nameof(items));
             _items = new Dictionary<string, object>(items);
         }
 
@@ -52,11 +48,7 @@ namespace TerraFX.Collections
         /// <exception cref="ArgumentNullException"><paramref name="items" /> is <c>null</c>.</exception>
         public PropertySet(IDictionary<string, object> items)
         {
-            if (items is null)
-            {
-                ThrowArgumentNullException(nameof(items));
-            }
-
+            ThrowIfNull(items, nameof(items));
             _items = new Dictionary<string, object>(items);
         }
         #endregion

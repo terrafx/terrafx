@@ -27,10 +27,7 @@ namespace TerraFX.Utilities
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> targets more than one method.</exception>
         public NativeDelegate(TDelegate value)
         {
-            if (value is null)
-            {
-                ThrowArgumentNullException(nameof(value));
-            }
+            ThrowIfNull(value, nameof(value));
 
             if (value.Target != null)
             {

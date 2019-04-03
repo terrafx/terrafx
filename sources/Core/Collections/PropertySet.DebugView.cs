@@ -22,11 +22,7 @@ namespace TerraFX.Collections
             /// <exception cref="ArgumentNullException"><paramref name="propertySet" /> is <c>null</c>.</exception>
             public DebugView(IPropertySet propertySet)
             {
-                if (propertySet is null)
-                {
-                    ThrowArgumentNullException(nameof(propertySet));
-                }
-
+                ThrowIfNull(propertySet, nameof(propertySet));
                 _propertySet = propertySet;
             }
             #endregion

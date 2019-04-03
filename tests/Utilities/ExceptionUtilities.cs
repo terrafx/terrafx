@@ -25,18 +25,6 @@ namespace TerraFX.Utilities.UnitTests
             );
         }
 
-        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowArgumentNullException(string)" /> static method.</summary>
-        [Test]
-        public static void ThrowArgumentNullExceptionStringTest(
-            [Values(null, "", "param")] string paramName
-        )
-        {
-            Assert.That(() => ExceptionUtilities.ThrowArgumentNullException(paramName),
-                Throws.InstanceOf<ArgumentNullException>()
-                      .With.Property("ParamName").EqualTo(paramName)
-            );
-        }
-
         /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowArgumentOutOfRangeException(string, object)" /> static method.</summary>
         [Test]
         public static void ThrowArgumentOutOfRangeExceptionStringObjectTest(
@@ -89,6 +77,18 @@ namespace TerraFX.Utilities.UnitTests
             Assert.That(() => ExceptionUtilities.ThrowExternalExceptionForLastHRESULT(methodName),
                 Throws.InstanceOf<ExternalException>()
                       .With.Property("ErrorCode").EqualTo(hresult)
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNull{T}(T, string)" /> static method.</summary>
+        [Test]
+        public static void ThrowIfNullObjectStringTest(
+            [Values(null, "", "param")] string paramName
+        )
+        {
+            Assert.That(() => ExceptionUtilities.ThrowIfNull<object>(null, paramName),
+                Throws.InstanceOf<ArgumentNullException>()
+                      .With.Property("ParamName").EqualTo(paramName)
             );
         }
 

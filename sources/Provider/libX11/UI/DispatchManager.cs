@@ -162,11 +162,7 @@ namespace TerraFX.Provider.libX11.UI
         /// <exception cref="ArgumentOutOfRangeException">A <see cref="IDispatcher" /> instance for <paramref name="thread" /> could not be found.</exception>
         public IDispatcher GetDispatcher(Thread thread)
         {
-            if (thread is null)
-            {
-                ThrowArgumentNullException(nameof(thread));
-            }
-
+            ThrowIfNull(thread, nameof(thread));
             return _dispatchers.GetOrAdd(thread, (parentThread) => new Dispatcher(this, parentThread));
         }
 
@@ -177,11 +173,7 @@ namespace TerraFX.Provider.libX11.UI
         /// <exception cref="ArgumentNullException"><paramref name="thread" /> is <c>null</c>.</exception>
         public bool TryGetDispatcher(Thread thread, out IDispatcher dispatcher)
         {
-            if (thread is null)
-            {
-                ThrowArgumentNullException(nameof(thread));
-            }
-
+            ThrowIfNull(thread, nameof(thread));
             return _dispatchers.TryGetValue(thread, out dispatcher);
         }
         #endregion

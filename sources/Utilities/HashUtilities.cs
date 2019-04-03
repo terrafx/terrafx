@@ -68,11 +68,9 @@ namespace TerraFX.Utilities
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="count" /> is either negative or would extend beyond the bounds of <paramref name="values" /> when starting from <paramref name="offset" />.</exception>
         public static int ComputeHashCode(byte[] values, int offset, int count, int seed)
         {
-            if (values is null)
-            {
-                ThrowArgumentNullException(nameof(values));
-            }
-            else if ((offset < 0) || (offset > values.Length))
+            ThrowIfNull(values, nameof(values));
+
+            if ((offset < 0) || (offset > values.Length))
             {
                 ThrowArgumentOutOfRangeException(nameof(offset), offset);
             }
@@ -148,11 +146,9 @@ namespace TerraFX.Utilities
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="count" /> is either negative or would extend beyond the bounds of <paramref name="values" /> when starting from <paramref name="offset" />.</exception>
         public static int ComputeHashCode(int[] values, int offset, int count, int seed)
         {
-            if (values is null)
-            {
-                ThrowArgumentNullException(nameof(values));
-            }
-            else if ((offset < 0) || (offset > values.Length))
+            ThrowIfNull(values, nameof(values));
+
+            if ((offset < 0) || (offset > values.Length))
             {
                 ThrowArgumentOutOfRangeException(nameof(offset), offset);
             }

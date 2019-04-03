@@ -34,7 +34,7 @@ namespace TerraFX.ApplicationModel
         /// <exception cref="ArgumentNullException"><paramref name="compositionAssemblies" /> is <c>null</c>.</exception>
         public Application(params Assembly[] compositionAssemblies)
         {
-            ThrowIfNull(nameof(compositionAssemblies), compositionAssemblies);
+            ThrowIfNull(compositionAssemblies, nameof(compositionAssemblies));
 
             _compositionAssemblies = compositionAssemblies;
             _parentThread = Thread.CurrentThread;

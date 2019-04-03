@@ -2,6 +2,7 @@
 
 using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -19,15 +20,6 @@ namespace TerraFX.Utilities
         {
             var message = string.Format(Resources.ArgumentExceptionForInvalidTypeMessage, paramName, paramType);
             throw new ArgumentException(message, paramName);
-        }
-
-        /// <summary>Throws an instance of the <see cref="ArgumentNullException" /> class.</summary>
-        /// <param name="paramName">The name of the parameter that caused the exception.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="paramName" /> is <c>null</c>.</exception>
-        public static void ThrowArgumentNullException(string paramName)
-        {
-            var message = string.Format(Resources.ArgumentNullExceptionMessage, paramName);
-            throw new ArgumentNullException(paramName, message);
         }
 
         /// <summary>Throws an instance of the <see cref="ArgumentOutOfRangeException" /> class.</summary>
@@ -72,10 +64,11 @@ namespace TerraFX.Utilities
 
         /// <summary>Throws a <see cref="ArgumentNullException" /> if <paramref name="value" /> is <c>null</c>.</summary>
         /// <typeparam name="T">The type of <paramref name="value" />.</typeparam>
-        /// <param name="paramName">The name of the parameter being checked.</param>
         /// <param name="value">The value to be checked for <c>null</c>.</param>
+        /// <param name="paramName">The name of the parameter being checked.</param>
         /// <exception cref="ArgumentNullException"><paramref name="value" /> is <c>null</c>.</exception>
-        public static void ThrowIfNull<T>(string paramName, T value)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowIfNull<T>(T value, string paramName)
             where T : class
         {
             if (value is null)
@@ -130,6 +123,13 @@ namespace TerraFX.Utilities
         {
             var message = string.Format(Resources.ObjectDisposedExceptionMessage, objectName);
             throw new ObjectDisposedException(objectName, message);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void ThrowArgumentNullException(string paramName)
+        {
+            var message = string.Format(Resources.ArgumentNullExceptionMessage, paramName);
+            throw new ArgumentNullException(paramName, message);
         }
         #endregion
     }
