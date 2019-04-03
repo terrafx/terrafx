@@ -70,7 +70,7 @@ namespace TerraFX.Provider.libX11.UI
         {
             get
             {
-                return _state.IsNotDisposedOrDisposing ? (IEnumerable<IWindow>)(_windows) : Array.Empty<IWindow>();
+                return _state.IsNotDisposedOrDisposing ? (IEnumerable<IWindow>)_windows : Array.Empty<IWindow>();
             }
         }
         #endregion
@@ -87,13 +87,13 @@ namespace TerraFX.Provider.libX11.UI
                 xevent.xany.window,
                 windowManagerProperty,
                 long_offset: 0,
-                long_length: (IntPtr.Size >> 2),
+                long_length: IntPtr.Size >> 2,
                 delete: False,
                 req_type: 32,
-                actual_type_return: out var actualType,
-                actual_format_return: out var actualFormat,
-                nitems_return: out var nitems,
-                bytes_after_return: out var bytesAfter,
+                actual_type_return: out _,
+                actual_format_return: out _,
+                nitems_return: out _,
+                bytes_after_return: out _,
                 prop_return: out var prop
             );
 
@@ -102,9 +102,9 @@ namespace TerraFX.Provider.libX11.UI
                 ThrowExternalException(nameof(XGetWindowProperty), result);
             }
 
-            var windowManager = (WindowManager)(GCHandle.FromIntPtr((IntPtr)(prop)).Target);
+            var windowManager = (WindowManager)GCHandle.FromIntPtr((IntPtr)prop).Target;
 
-            if (windowManager._windows.TryGetValue((IntPtr)(xevent.xany.window), out var window))
+            if (windowManager._windows.TryGetValue((IntPtr)xevent.xany.window, out var window))
             {
                 window.ProcessWindowEvent(in xevent);
             }

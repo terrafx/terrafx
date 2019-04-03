@@ -22,7 +22,7 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     /// <param name="value">The <see cref="int" /> used to initialize the instance.</param>
     public nint(int value)
     {
-        _value = (void*)(value);
+        _value = (void*)value;
     }
 
     /// <summary>Initializes a new instance of the <see cref="nint" /> struct.</summary>
@@ -30,14 +30,14 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     public nint(long value)
     {
         AssertIntPtrSizeIsSameAsInt64();
-        _value = (void*)(value);
+        _value = (void*)value;
     }
 
     /// <summary>Initializes a new instance of the <see cref="nint" /> struct.</summary>
     /// <param name="value">The <see cref="IntPtr" /> used to initialize the instance.</param>
     public nint(IntPtr value)
     {
-        _value = (void*)(value);
+        _value = (void*)value;
     }
 
     /// <summary>Initializes a new instance of the <see cref="nint" /> struct.</summary>
@@ -56,13 +56,13 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     {
         if (IntPtr.Size == sizeof(int))
         {
-            return -((int)(value._value));
+            return -(int)value._value;
         }
         else
         {
             AssertIntPtrSizeIsSameAsInt64();
-            var result = -((long)(value._value));
-            return (nint)(result);
+            var result = -(long)value._value;
+            return (nint)result;
         }
     }
 
@@ -73,13 +73,13 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     {
         if (IntPtr.Size == sizeof(int))
         {
-            return ~((int)(value._value));
+            return ~(int)value._value;
         }
         else
         {
             AssertIntPtrSizeIsSameAsInt64();
-            var result = ~((long)(value._value));
-            return (nint)(result);
+            var result = ~(long)value._value;
+            return (nint)result;
         }
     }
 
@@ -90,13 +90,13 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     {
         if (IntPtr.Size == sizeof(int))
         {
-            return ((int)(value._value)) + 1;
+            return ((int)value._value) + 1;
         }
         else
         {
             AssertIntPtrSizeIsSameAsInt64();
-            var result = ((long)(value._value)) + 1;
-            return (nint)(result);
+            var result = ((long)value._value) + 1;
+            return (nint)result;
         }
     }
 
@@ -107,13 +107,13 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     {
         if (IntPtr.Size == sizeof(int))
         {
-            return ((int)(value._value)) - 1;
+            return ((int)value._value) - 1;
         }
         else
         {
             AssertIntPtrSizeIsSameAsInt64();
-            var result = ((long)(value._value)) - 1;
-            return (nint)(result);
+            var result = ((long)value._value) - 1;
+            return (nint)result;
         }
     }
     #endregion
@@ -127,13 +127,13 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     {
         if (IntPtr.Size == sizeof(int))
         {
-            return ((int)(left._value)) + ((int)(right._value));
+            return ((int)left._value) + ((int)right._value);
         }
         else
         {
             AssertIntPtrSizeIsSameAsInt64();
-            var result = ((long)(left._value)) + ((long)(right._value));
-            return (nint)(result);
+            var result = ((long)left._value) + ((long)right._value);
+            return (nint)result;
         }
     }
 
@@ -145,13 +145,13 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     {
         if (IntPtr.Size == sizeof(int))
         {
-            return ((int)(left._value)) - ((int)(right._value));
+            return ((int)left._value) - ((int)right._value);
         }
         else
         {
             AssertIntPtrSizeIsSameAsInt64();
-            var result = ((long)(left._value)) - ((long)(right._value));
-            return (nint)(result);
+            var result = ((long)left._value) - ((long)right._value);
+            return (nint)result;
         }
     }
 
@@ -163,13 +163,13 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     {
         if (IntPtr.Size == sizeof(int))
         {
-            return ((int)(left._value)) * ((int)(right._value));
+            return ((int)left._value) * ((int)right._value);
         }
         else
         {
             AssertIntPtrSizeIsSameAsInt64();
-            var result = ((long)(left._value)) * ((long)(right._value));
-            return (nint)(result);
+            var result = ((long)left._value) * ((long)right._value);
+            return (nint)result;
         }
     }
 
@@ -181,13 +181,13 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     {
         if (IntPtr.Size == sizeof(int))
         {
-            return ((int)(left._value)) / ((int)(right._value));
+            return ((int)left._value) / ((int)right._value);
         }
         else
         {
             AssertIntPtrSizeIsSameAsInt64();
-            var result = ((long)(left._value)) / ((long)(right._value));
-            return (nint)(result);
+            var result = ((long)left._value) / ((long)right._value);
+            return (nint)result;
         }
     }
 
@@ -199,13 +199,13 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     {
         if (IntPtr.Size == sizeof(int))
         {
-            return ((int)(left._value)) % ((int)(right._value));
+            return ((int)left._value) % ((int)right._value);
         }
         else
         {
             AssertIntPtrSizeIsSameAsInt64();
-            var result = ((long)(left._value)) % ((long)(right._value));
-            return (nint)(result);
+            var result = ((long)left._value) % ((long)right._value);
+            return (nint)result;
         }
     }
 
@@ -217,13 +217,13 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     {
         if (IntPtr.Size == sizeof(int))
         {
-            return ((int)(left._value)) & ((int)(right._value));
+            return ((int)left._value) & ((int)right._value);
         }
         else
         {
             AssertIntPtrSizeIsSameAsInt64();
-            var result = ((long)(left._value)) & ((long)(right._value));
-            return (nint)(result);
+            var result = ((long)left._value) & ((long)right._value);
+            return (nint)result;
         }
     }
 
@@ -235,13 +235,13 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     {
         if (IntPtr.Size == sizeof(int))
         {
-            return ((int)(left._value)) | ((int)(right._value));
+            return ((int)left._value) | ((int)right._value);
         }
         else
         {
             AssertIntPtrSizeIsSameAsInt64();
-            var result = ((long)(left._value)) | ((long)(right._value));
-            return (nint)(result);
+            var result = ((long)left._value) | ((long)right._value);
+            return (nint)result;
         }
     }
 
@@ -253,13 +253,13 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     {
         if (IntPtr.Size == sizeof(int))
         {
-            return ((int)(left._value)) ^ ((int)(right._value));
+            return ((int)left._value) ^ ((int)right._value);
         }
         else
         {
             AssertIntPtrSizeIsSameAsInt64();
-            var result = ((long)(left._value)) ^ ((long)(right._value));
-            return (nint)(result);
+            var result = ((long)left._value) ^ ((long)right._value);
+            return (nint)result;
         }
     }
 
@@ -271,13 +271,13 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     {
         if (IntPtr.Size == sizeof(int))
         {
-            return ((int)(value._value)) << bits;
+            return ((int)value._value) << bits;
         }
         else
         {
             AssertIntPtrSizeIsSameAsInt64();
-            var result = ((long)(value._value)) << bits;
-            return (nint)(result);
+            var result = ((long)value._value) << bits;
+            return (nint)result;
         }
     }
 
@@ -289,13 +289,13 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     {
         if (IntPtr.Size == sizeof(int))
         {
-            return ((int)(value._value)) >> bits;
+            return ((int)value._value) >> bits;
         }
         else
         {
             AssertIntPtrSizeIsSameAsInt64();
-            var result = ((long)(value._value)) >> bits;
-            return (nint)(result);
+            var result = ((long)value._value) >> bits;
+            return (nint)result;
         }
     }
     #endregion
@@ -309,12 +309,12 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     {
         if (IntPtr.Size == sizeof(int))
         {
-            return ((int)(left._value)) == ((int)(right._value));
+            return ((int)left._value) == ((int)right._value);
         }
         else
         {
             AssertIntPtrSizeIsSameAsInt64();
-            return ((long)(left._value)) == ((long)(right._value));
+            return ((long)left._value) == ((long)right._value);
         }
     }
 
@@ -326,12 +326,12 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     {
         if (IntPtr.Size == sizeof(int))
         {
-            return ((int)(left._value)) != ((int)(right._value));
+            return ((int)left._value) != ((int)right._value);
         }
         else
         {
             AssertIntPtrSizeIsSameAsInt64();
-            return ((long)(left._value)) != ((long)(right._value));
+            return ((long)left._value) != ((long)right._value);
         }
     }
 
@@ -343,12 +343,12 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     {
         if (IntPtr.Size == sizeof(int))
         {
-            return ((int)(left._value)) < ((int)(right._value));
+            return ((int)left._value) < ((int)right._value);
         }
         else
         {
             AssertIntPtrSizeIsSameAsInt64();
-            return ((long)(left._value)) < ((long)(right._value));
+            return ((long)left._value) < ((long)right._value);
         }
     }
 
@@ -360,12 +360,12 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     {
         if (IntPtr.Size == sizeof(int))
         {
-            return ((int)(left._value)) > ((int)(right._value));
+            return ((int)left._value) > ((int)right._value);
         }
         else
         {
             AssertIntPtrSizeIsSameAsInt64();
-            return ((long)(left._value)) > ((long)(right._value));
+            return ((long)left._value) > ((long)right._value);
         }
     }
 
@@ -377,12 +377,12 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     {
         if (IntPtr.Size == sizeof(int))
         {
-            return ((int)(left._value)) <= ((int)(right._value));
+            return ((int)left._value) <= ((int)right._value);
         }
         else
         {
             AssertIntPtrSizeIsSameAsInt64();
-            return ((long)(left._value)) <= ((long)(right._value));
+            return ((long)left._value) <= ((long)right._value);
         }
     }
 
@@ -394,12 +394,12 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     {
         if (IntPtr.Size == sizeof(int))
         {
-            return ((int)(left._value)) >= ((int)(right._value));
+            return ((int)left._value) >= ((int)right._value);
         }
         else
         {
             AssertIntPtrSizeIsSameAsInt64();
-            return ((long)(left._value)) >= ((long)(right._value));
+            return ((long)left._value) >= ((long)right._value);
         }
     }
     #endregion
@@ -409,77 +409,77 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     /// <param name="value">The <see cref="nint" /> value to convert.</param>
     public static explicit operator byte(nint value)
     {
-        return (byte)(value._value);
+        return (byte)value._value;
     }
 
     /// <summary>Explicitly converts a <see cref="nint" /> value to a <see cref="short" /> value.</summary>
     /// <param name="value">The <see cref="nint" /> value to convert.</param>
     public static explicit operator short(nint value)
     {
-        return (short)(value._value);
+        return (short)value._value;
     }
 
     /// <summary>Explicitly converts a <see cref="nint" /> value to a <see cref="int" /> value.</summary>
     /// <param name="value">The <see cref="nint" /> value to convert.</param>
     public static explicit operator int(nint value)
     {
-        return (int)(value._value);
+        return (int)value._value;
     }
 
     /// <summary>Implicitly converts a <see cref="nint" /> value to a <see cref="long" /> value.</summary>
     /// <param name="value">The <see cref="nint" /> value to convert.</param>
     public static implicit operator long(nint value)
     {
-        return (long)(value._value);
+        return (long)value._value;
     }
 
     /// <summary>Implicitly converts a <see cref="nint" /> value to a <see cref="IntPtr" /> value.</summary>
     /// <param name="value">The <see cref="nint" /> value to convert.</param>
     public static implicit operator IntPtr(nint value)
     {
-        return (IntPtr)(value._value);
+        return (IntPtr)value._value;
     }
 
     /// <summary>Explicitly converts a <see cref="nint" /> value to a <see cref="sbyte" /> value.</summary>
     /// <param name="value">The <see cref="nint" /> value to convert.</param>
     public static explicit operator sbyte(nint value)
     {
-        return (sbyte)(value._value);
+        return (sbyte)value._value;
     }
 
     /// <summary>Explicitly converts a <see cref="nint" /> value to a <see cref="ushort" /> value.</summary>
     /// <param name="value">The <see cref="nint" /> value to convert.</param>
     public static explicit operator ushort(nint value)
     {
-        return (ushort)(value._value);
+        return (ushort)value._value;
     }
 
     /// <summary>Explicitly converts a <see cref="nint" /> value to a <see cref="uint" /> value.</summary>
     /// <param name="value">The <see cref="nint" /> value to convert.</param>
     public static explicit operator uint(nint value)
     {
-        return (uint)(value._value);
+        return (uint)value._value;
     }
 
     /// <summary>Explicitly converts a <see cref="nint" /> value to a <see cref="ulong" /> value.</summary>
     /// <param name="value">The <see cref="nint" /> value to convert.</param>
     public static explicit operator ulong(nint value)
     {
-        return (ulong)(value._value);
+        return (ulong)value._value;
     }
 
     /// <summary>Explicitly converts a <see cref="nint" /> value to a <see cref="UIntPtr" /> value.</summary>
     /// <param name="value">The <see cref="nint" /> value to convert.</param>
     public static explicit operator UIntPtr(nint value)
     {
-        return (UIntPtr)(value._value);
+        return (UIntPtr)value._value;
     }
 
     /// <summary>Explicitly converts a <see cref="nint" /> value to a <see cref="nuint" /> value.</summary>
     /// <param name="value">The <see cref="nuint" /> value to convert.</param>
     public static explicit operator nuint(nint value)
     {
-        return (nuint)(value._value);
+        return (nuint)value._value;
     }
 
     /// <summary>Explicitly converts a <see cref="nint" /> value to a <see cref="void" />* value.</summary>
@@ -493,14 +493,14 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     /// <param name="value">The <see cref="byte" /> value to convert.</param>
     public static implicit operator nint(byte value)
     {
-        return new nint((void*)(value));
+        return new nint((void*)value);
     }
 
     /// <summary>Implicitly converts a <see cref="short" /> value to a <see cref="nint" /> value.</summary>
     /// <param name="value">The <see cref="short" /> value to convert.</param>
     public static implicit operator nint(short value)
     {
-        return new nint((void*)(value));
+        return new nint((void*)value);
     }
 
     /// <summary>Implicitly converts a <see cref="int" /> value to a <see cref="nint" /> value.</summary>
@@ -528,35 +528,35 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     /// <param name="value">The <see cref="sbyte" /> value to convert.</param>
     public static implicit operator nint(sbyte value)
     {
-        return new nint((void*)(value));
+        return new nint((void*)value);
     }
 
     /// <summary>Implicitly converts a <see cref="ushort" /> value to a <see cref="nint" /> value.</summary>
     /// <param name="value">The <see cref="ushort" /> value to convert.</param>
     public static implicit operator nint(ushort value)
     {
-        return new nint((void*)(value));
+        return new nint((void*)value);
     }
 
     /// <summary>Explicitly converts a <see cref="uint" /> value to a <see cref="nint" /> value.</summary>
     /// <param name="value">The <see cref="uint" /> value to convert.</param>
     public static explicit operator nint(uint value)
     {
-        return new nint((void*)(value));
+        return new nint((void*)value);
     }
 
     /// <summary>Explicitly converts a <see cref="ulong" /> value to a <see cref="nint" /> value.</summary>
     /// <param name="value">The <see cref="ulong" /> value to convert.</param>
     public static explicit operator nint(ulong value)
     {
-        return new nint((void*)(value));
+        return new nint((void*)value);
     }
 
     /// <summary>Explicitly converts a <see cref="UIntPtr" /> value to a <see cref="nint" /> value.</summary>
     /// <param name="value">The <see cref="UIntPtr" /> value to convert.</param>
     public static explicit operator nint(UIntPtr value)
     {
-        return new nint((void*)(value));
+        return new nint((void*)value);
     }
 
     /// <summary>Explicitly converts a <see cref="void" />* value to a <see cref="nint" /> value.</summary>
@@ -627,7 +627,7 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
     public bool Equals(nint other)
     {
-        return (this == other);
+        return this == other;
     }
     #endregion
 
@@ -640,12 +640,12 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     {
         if (IntPtr.Size == sizeof(int))
         {
-            return ((int)(_value)).ToString(format, formatProvider);
+            return ((int)_value).ToString(format, formatProvider);
         }
         else
         {
             AssertIntPtrSizeIsSameAsInt64();
-            return ((long)(_value)).ToString(format, formatProvider);
+            return ((long)_value).ToString(format, formatProvider);
         }
     }
     #endregion
@@ -666,12 +666,12 @@ public readonly unsafe struct nint : IComparable, IComparable<nint>, IEquatable<
     {
         if (IntPtr.Size == sizeof(int))
         {
-            return ((int)(_value)).GetHashCode();
+            return ((int)_value).GetHashCode();
         }
         else
         {
             AssertIntPtrSizeIsSameAsInt64();
-            return ((long)(_value)).GetHashCode();
+            return ((long)_value).GetHashCode();
         }
     }
 

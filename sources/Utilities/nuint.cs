@@ -22,7 +22,7 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     /// <param name="value">The <see cref="uint" /> used to initialize the instance.</param>
     public nuint(uint value)
     {
-        _value = (void*)(value);
+        _value = (void*)value;
     }
 
     /// <summary>Initializes a new instance of the <see cref="nuint" /> struct.</summary>
@@ -30,14 +30,14 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     public nuint(ulong value)
     {
         AssertUIntPtrSizeIsSameAsUInt64();
-        _value = (void*)(value);
+        _value = (void*)value;
     }
 
     /// <summary>Initializes a new instance of the <see cref="nuint" /> struct.</summary>
     /// <param name="value">The <see cref="UIntPtr" /> used to initialize the instance.</param>
     public nuint(UIntPtr value)
     {
-        _value = (void*)(value);
+        _value = (void*)value;
     }
 
     /// <summary>Initializes a new instance of the <see cref="nuint" /> struct.</summary>
@@ -56,13 +56,13 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     {
         if (IntPtr.Size == sizeof(uint))
         {
-            return ~((uint)(value._value));
+            return ~(uint)value._value;
         }
         else
         {
             AssertUIntPtrSizeIsSameAsUInt64();
-            var result = ~((ulong)(value._value));
-            return (nuint)(result);
+            var result = ~(ulong)value._value;
+            return (nuint)result;
         }
     }
 
@@ -73,13 +73,13 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     {
         if (IntPtr.Size == sizeof(uint))
         {
-            return ((uint)(value._value)) + 1;
+            return ((uint)value._value) + 1;
         }
         else
         {
             AssertUIntPtrSizeIsSameAsUInt64();
-            var result = ((ulong)(value._value)) + 1;
-            return (nuint)(result);
+            var result = ((ulong)value._value) + 1;
+            return (nuint)result;
         }
     }
 
@@ -90,13 +90,13 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     {
         if (IntPtr.Size == sizeof(uint))
         {
-            return ((uint)(value._value)) - 1;
+            return ((uint)value._value) - 1;
         }
         else
         {
             AssertUIntPtrSizeIsSameAsUInt64();
-            var result = ((ulong)(value._value)) - 1;
-            return (nuint)(result);
+            var result = ((ulong)value._value) - 1;
+            return (nuint)result;
         }
     }
     #endregion
@@ -110,13 +110,13 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     {
         if (IntPtr.Size == sizeof(uint))
         {
-            return ((uint)(left._value)) + ((uint)(right._value));
+            return ((uint)left._value) + ((uint)right._value);
         }
         else
         {
             AssertUIntPtrSizeIsSameAsUInt64();
-            var result = ((ulong)(left._value)) + ((ulong)(right._value));
-            return (nuint)(result);
+            var result = ((ulong)left._value) + ((ulong)right._value);
+            return (nuint)result;
         }
     }
 
@@ -128,13 +128,13 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     {
         if (IntPtr.Size == sizeof(uint))
         {
-            return ((uint)(left._value)) - ((uint)(right._value));
+            return ((uint)left._value) - ((uint)right._value);
         }
         else
         {
             AssertUIntPtrSizeIsSameAsUInt64();
-            var result = ((ulong)(left._value)) - ((ulong)(right._value));
-            return (nuint)(result);
+            var result = ((ulong)left._value) - ((ulong)right._value);
+            return (nuint)result;
         }
     }
 
@@ -146,13 +146,13 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     {
         if (IntPtr.Size == sizeof(uint))
         {
-            return ((uint)(left._value)) * ((uint)(right._value));
+            return ((uint)left._value) * ((uint)right._value);
         }
         else
         {
             AssertUIntPtrSizeIsSameAsUInt64();
-            var result = ((ulong)(left._value)) * ((ulong)(right._value));
-            return (nuint)(result);
+            var result = ((ulong)left._value) * ((ulong)right._value);
+            return (nuint)result;
         }
     }
 
@@ -164,13 +164,13 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     {
         if (IntPtr.Size == sizeof(uint))
         {
-            return ((uint)(left._value)) / ((uint)(right._value));
+            return ((uint)left._value) / ((uint)right._value);
         }
         else
         {
             AssertUIntPtrSizeIsSameAsUInt64();
-            var result = ((ulong)(left._value)) / ((ulong)(right._value));
-            return (nuint)(result);
+            var result = ((ulong)left._value) / ((ulong)right._value);
+            return (nuint)result;
         }
     }
 
@@ -182,13 +182,13 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     {
         if (IntPtr.Size == sizeof(uint))
         {
-            return ((uint)(left._value)) % ((uint)(right._value));
+            return ((uint)left._value) % ((uint)right._value);
         }
         else
         {
             AssertUIntPtrSizeIsSameAsUInt64();
-            var result = ((ulong)(left._value)) % ((ulong)(right._value));
-            return (nuint)(result);
+            var result = ((ulong)left._value) % ((ulong)right._value);
+            return (nuint)result;
         }
     }
 
@@ -200,13 +200,13 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     {
         if (IntPtr.Size == sizeof(uint))
         {
-            return ((uint)(left._value)) & ((uint)(right._value));
+            return ((uint)left._value) & ((uint)right._value);
         }
         else
         {
             AssertUIntPtrSizeIsSameAsUInt64();
-            var result = ((ulong)(left._value)) & ((ulong)(right._value));
-            return (nuint)(result);
+            var result = ((ulong)left._value) & ((ulong)right._value);
+            return (nuint)result;
         }
     }
 
@@ -218,13 +218,13 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     {
         if (IntPtr.Size == sizeof(uint))
         {
-            return ((uint)(left._value)) | ((uint)(right._value));
+            return ((uint)left._value) | ((uint)right._value);
         }
         else
         {
             AssertUIntPtrSizeIsSameAsUInt64();
-            var result = ((ulong)(left._value)) | ((ulong)(right._value));
-            return (nuint)(result);
+            var result = ((ulong)left._value) | ((ulong)right._value);
+            return (nuint)result;
         }
     }
 
@@ -236,13 +236,13 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     {
         if (IntPtr.Size == sizeof(uint))
         {
-            return ((uint)(left._value)) ^ ((uint)(right._value));
+            return ((uint)left._value) ^ ((uint)right._value);
         }
         else
         {
             AssertUIntPtrSizeIsSameAsUInt64();
-            var result = ((ulong)(left._value)) ^ ((ulong)(right._value));
-            return (nuint)(result);
+            var result = ((ulong)left._value) ^ ((ulong)right._value);
+            return (nuint)result;
         }
     }
 
@@ -254,13 +254,13 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     {
         if (IntPtr.Size == sizeof(uint))
         {
-            return ((uint)(value._value)) << bits;
+            return ((uint)value._value) << bits;
         }
         else
         {
             AssertUIntPtrSizeIsSameAsUInt64();
-            var result = ((ulong)(value._value)) << bits;
-            return (nuint)(result);
+            var result = ((ulong)value._value) << bits;
+            return (nuint)result;
         }
     }
 
@@ -272,13 +272,13 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     {
         if (IntPtr.Size == sizeof(uint))
         {
-            return ((uint)(value._value)) >> bits;
+            return ((uint)value._value) >> bits;
         }
         else
         {
             AssertUIntPtrSizeIsSameAsUInt64();
-            var result = ((ulong)(value._value)) >> bits;
-            return (nuint)(result);
+            var result = ((ulong)value._value) >> bits;
+            return (nuint)result;
         }
     }
     #endregion
@@ -292,12 +292,12 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     {
         if (IntPtr.Size == sizeof(uint))
         {
-            return ((uint)(left._value)) == ((uint)(right._value));
+            return ((uint)left._value) == ((uint)right._value);
         }
         else
         {
             AssertUIntPtrSizeIsSameAsUInt64();
-            return ((ulong)(left._value)) == ((ulong)(right._value));
+            return ((ulong)left._value) == ((ulong)right._value);
         }
     }
 
@@ -309,12 +309,12 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     {
         if (IntPtr.Size == sizeof(uint))
         {
-            return ((uint)(left._value)) != ((uint)(right._value));
+            return ((uint)left._value) != ((uint)right._value);
         }
         else
         {
             AssertUIntPtrSizeIsSameAsUInt64();
-            return ((ulong)(left._value)) != ((ulong)(right._value));
+            return ((ulong)left._value) != ((ulong)right._value);
         }
     }
 
@@ -326,12 +326,12 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     {
         if (IntPtr.Size == sizeof(uint))
         {
-            return ((uint)(left._value)) < ((uint)(right._value));
+            return ((uint)left._value) < ((uint)right._value);
         }
         else
         {
             AssertUIntPtrSizeIsSameAsUInt64();
-            return ((ulong)(left._value)) < ((ulong)(right._value));
+            return ((ulong)left._value) < ((ulong)right._value);
         }
     }
 
@@ -343,12 +343,12 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     {
         if (IntPtr.Size == sizeof(uint))
         {
-            return ((uint)(left._value)) > ((uint)(right._value));
+            return ((uint)left._value) > ((uint)right._value);
         }
         else
         {
             AssertUIntPtrSizeIsSameAsUInt64();
-            return ((ulong)(left._value)) > ((ulong)(right._value));
+            return ((ulong)left._value) > ((ulong)right._value);
         }
     }
 
@@ -360,12 +360,12 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     {
         if (IntPtr.Size == sizeof(uint))
         {
-            return ((uint)(left._value)) <= ((uint)(right._value));
+            return ((uint)left._value) <= ((uint)right._value);
         }
         else
         {
             AssertUIntPtrSizeIsSameAsUInt64();
-            return ((ulong)(left._value)) <= ((ulong)(right._value));
+            return ((ulong)left._value) <= ((ulong)right._value);
         }
     }
 
@@ -377,12 +377,12 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     {
         if (IntPtr.Size == sizeof(uint))
         {
-            return ((uint)(left._value)) >= ((uint)(right._value));
+            return ((uint)left._value) >= ((uint)right._value);
         }
         else
         {
             AssertUIntPtrSizeIsSameAsUInt64();
-            return ((ulong)(left._value)) >= ((ulong)(right._value));
+            return ((ulong)left._value) >= ((ulong)right._value);
         }
     }
     #endregion
@@ -392,77 +392,77 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     /// <param name="value">The <see cref="nuint" /> value to convert.</param>
     public static explicit operator byte(nuint value)
     {
-        return (byte)(value._value);
+        return (byte)value._value;
     }
 
     /// <summary>Explicitly converts a <see cref="nuint" /> value to a <see cref="short" /> value.</summary>
     /// <param name="value">The <see cref="nuint" /> value to convert.</param>
     public static explicit operator short(nuint value)
     {
-        return (short)(value._value);
+        return (short)value._value;
     }
 
     /// <summary>Explicitly converts a <see cref="nuint" /> value to a <see cref="int" /> value.</summary>
     /// <param name="value">The <see cref="nuint" /> value to convert.</param>
     public static explicit operator int(nuint value)
     {
-        return (int)(value._value);
+        return (int)value._value;
     }
 
     /// <summary>Explicitly converts a <see cref="nuint" /> value to a <see cref="long" /> value.</summary>
     /// <param name="value">The <see cref="nuint" /> value to convert.</param>
     public static explicit operator long(nuint value)
     {
-        return (long)(value._value);
+        return (long)value._value;
     }
 
     /// <summary>Explicitly converts a <see cref="nuint" /> value to a <see cref="IntPtr" /> value.</summary>
     /// <param name="value">The <see cref="nuint" /> value to convert.</param>
     public static explicit operator IntPtr(nuint value)
     {
-        return (IntPtr)(value._value);
+        return (IntPtr)value._value;
     }
 
     /// <summary>Explicitly converts a <see cref="nuint" /> value to a <see cref="nint" /> value.</summary>
     /// <param name="value">The <see cref="nuint" /> value to convert.</param>
     public static explicit operator nint(nuint value)
     {
-        return (nint)(value._value);
+        return (nint)value._value;
     }
 
     /// <summary>Explicitly converts a <see cref="nuint" /> value to a <see cref="sbyte" /> value.</summary>
     /// <param name="value">The <see cref="nuint" /> value to convert.</param>
     public static explicit operator sbyte(nuint value)
     {
-        return (sbyte)(value._value);
+        return (sbyte)value._value;
     }
 
     /// <summary>Explicitly converts a <see cref="nuint" /> value to a <see cref="ushort" /> value.</summary>
     /// <param name="value">The <see cref="nuint" /> value to convert.</param>
     public static explicit operator ushort(nuint value)
     {
-        return (ushort)(value._value);
+        return (ushort)value._value;
     }
 
     /// <summary>Explicitly converts a <see cref="nuint" /> value to a <see cref="uint" /> value.</summary>
     /// <param name="value">The <see cref="nuint" /> value to convert.</param>
     public static explicit operator uint(nuint value)
     {
-        return (uint)(value._value);
+        return (uint)value._value;
     }
 
     /// <summary>Implicitly converts a <see cref="nuint" /> value to a <see cref="ulong" /> value.</summary>
     /// <param name="value">The <see cref="nuint" /> value to convert.</param>
     public static implicit operator ulong(nuint value)
     {
-        return (ulong)(value._value);
+        return (ulong)value._value;
     }
 
     /// <summary>Implicitly converts a <see cref="nuint" /> value to a <see cref="UIntPtr" /> value.</summary>
     /// <param name="value">The <see cref="nuint" /> value to convert.</param>
     public static implicit operator UIntPtr(nuint value)
     {
-        return (UIntPtr)(value._value);
+        return (UIntPtr)value._value;
     }
 
     /// <summary>Explicitly converts a <see cref="nuint" /> value to a <see cref="void" />* value.</summary>
@@ -476,49 +476,49 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     /// <param name="value">The <see cref="byte" /> value to convert.</param>
     public static implicit operator nuint(byte value)
     {
-        return new nuint((void*)(value));
+        return new nuint((void*)value);
     }
 
     /// <summary>Explicitly converts a <see cref="short" /> value to a <see cref="nuint" /> value.</summary>
     /// <param name="value">The <see cref="short" /> value to convert.</param>
     public static explicit operator nuint(short value)
     {
-        return new nuint((void*)(value));
+        return new nuint((void*)value);
     }
 
     /// <summary>Explicitly converts a <see cref="int" /> value to a <see cref="nuint" /> value.</summary>
     /// <param name="value">The <see cref="int" /> value to convert.</param>
     public static explicit operator nuint(int value)
     {
-        return new nuint((void*)(value));
+        return new nuint((void*)value);
     }
 
     /// <summary>Explicitly converts a <see cref="long" /> value to a <see cref="nuint" /> value.</summary>
     /// <param name="value">The <see cref="long" /> value to convert.</param>
     public static explicit operator nuint(long value)
     {
-        return new nuint((void*)(value));
+        return new nuint((void*)value);
     }
 
     /// <summary>Explicitly converts a <see cref="IntPtr" /> value to a <see cref="nuint" /> value.</summary>
     /// <param name="value">The <see cref="IntPtr" /> value to convert.</param>
     public static explicit operator nuint(IntPtr value)
     {
-        return new nuint((void*)(value));
+        return new nuint((void*)value);
     }
 
     /// <summary>Explicitly converts a <see cref="sbyte" /> value to a <see cref="nuint" /> value.</summary>
     /// <param name="value">The <see cref="sbyte" /> value to convert.</param>
     public static explicit operator nuint(sbyte value)
     {
-        return new nuint((void*)(value));
+        return new nuint((void*)value);
     }
 
     /// <summary>Implicitly converts a <see cref="ushort" /> value to a <see cref="nuint" /> value.</summary>
     /// <param name="value">The <see cref="ushort" /> value to convert.</param>
     public static implicit operator nuint(ushort value)
     {
-        return new nuint((void*)(value));
+        return new nuint((void*)value);
     }
 
     /// <summary>Implicitly converts a <see cref="uint" /> value to a <see cref="nuint" /> value.</summary>
@@ -610,7 +610,7 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
     public bool Equals(nuint other)
     {
-        return (this == other);
+        return this == other;
     }
     #endregion
 
@@ -623,12 +623,12 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     {
         if (IntPtr.Size == sizeof(uint))
         {
-            return ((uint)(_value)).ToString(format, formatProvider);
+            return ((uint)_value).ToString(format, formatProvider);
         }
         else
         {
             AssertUIntPtrSizeIsSameAsUInt64();
-            return ((ulong)(_value)).ToString(format, formatProvider);
+            return ((ulong)_value).ToString(format, formatProvider);
         }
     }
     #endregion
@@ -649,12 +649,12 @@ public readonly unsafe struct nuint : IComparable, IComparable<nuint>, IEquatabl
     {
         if (IntPtr.Size == sizeof(uint))
         {
-            return ((uint)(_value)).GetHashCode();
+            return ((uint)_value).GetHashCode();
         }
         else
         {
             AssertUIntPtrSizeIsSameAsUInt64();
-            return ((ulong)(_value)).GetHashCode();
+            return ((ulong)_value).GetHashCode();
         }
     }
 

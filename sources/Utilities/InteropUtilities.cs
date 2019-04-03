@@ -23,7 +23,7 @@ namespace TerraFX.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref T AsRef<T>(int source)
         {
-            return ref Unsafe.AsRef<T>((void*)(source));
+            return ref Unsafe.AsRef<T>((void*)source);
         }
 
         /// <summary>Gets a reference of <typeparamref name="T" /> from a given <see cref="nint" />.</summary>
@@ -33,7 +33,7 @@ namespace TerraFX.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref T AsRef<T>(nint source)
         {
-            return ref Unsafe.AsRef<T>((void*)(source));
+            return ref Unsafe.AsRef<T>((void*)source);
         }
 
         /// <summary>Gets a reference of <typeparamref name="T" /> from a given <see cref="nuint" />.</summary>
@@ -43,7 +43,7 @@ namespace TerraFX.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref T AsRef<T>(nuint source)
         {
-            return ref Unsafe.AsRef<T>((void*)(source));
+            return ref Unsafe.AsRef<T>((void*)source);
         }
 
         /// <summary>Gets a reference of <typeparamref name="T" /> from a given pointer.</summary>
@@ -72,7 +72,7 @@ namespace TerraFX.Utilities
                 _marshalledFunctions[function] = value;
             }
 
-            return (TDelegate)((object)(value));
+            return (TDelegate)(object)value;
         }
 
         /// <summary>Gets a null reference of <typeparamref name="T"/>.</summary>
@@ -90,7 +90,7 @@ namespace TerraFX.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint SizeOf<T>()
         {
-            return unchecked((uint)(Marshal.SizeOf<T>()));
+            return unchecked((uint)Marshal.SizeOf<T>());
         }
         #endregion
     }

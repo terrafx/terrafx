@@ -76,13 +76,13 @@ namespace TerraFX.Provider.libX11.UI
                     ThrowExternalExceptionForLastError(nameof(clock_gettime));
                 }
 
-                const long NanosecondsPerSecond = (TimeSpan.TicksPerSecond * 100);
+                const long NanosecondsPerSecond = TimeSpan.TicksPerSecond * 100;
                 Assert(NanosecondsPerSecond == 1000000000, Resources.ArgumentOutOfRangeExceptionMessage, nameof(NanosecondsPerSecond), NanosecondsPerSecond);
 
-                var ticks = (long)(timespec.tv_sec);
+                var ticks = (long)timespec.tv_sec;
                 {
                     ticks *= NanosecondsPerSecond;
-                    ticks += (long)(timespec.tv_nsec);
+                    ticks += (long)timespec.tv_nsec;
                     ticks /= 100;
                 }
                 return new Timestamp(ticks);

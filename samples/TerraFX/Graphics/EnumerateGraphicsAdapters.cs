@@ -19,7 +19,7 @@ namespace TerraFX.Samples.Graphics
         #region Methods
         public override void OnIdle(object sender, ApplicationIdleEventArgs eventArgs)
         {
-            var application = (Application)(sender);
+            var application = (Application)sender;
             {
                 var graphicsManager = application.GetService<IGraphicsManager>();
 

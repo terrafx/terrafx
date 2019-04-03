@@ -63,55 +63,55 @@ namespace TerraFX.Interop
         #region Event Mask Constants
         public const int NoEventMask = 0;
 
-        public const int KeyPressMask = (1 << 0);
+        public const int KeyPressMask = 1 << 0;
 
-        public const int KeyReleaseMask = (1 << 1);
+        public const int KeyReleaseMask = 1 << 1;
 
-        public const int ButtonPressMask = (1 << 2);
+        public const int ButtonPressMask = 1 << 2;
 
-        public const int ButtonReleaseMask = (1 << 3);
+        public const int ButtonReleaseMask = 1 << 3;
 
-        public const int EnterWindowMask = (1 << 4);
+        public const int EnterWindowMask = 1 << 4;
 
-        public const int LeaveWindowMask = (1 << 5);
+        public const int LeaveWindowMask = 1 << 5;
 
-        public const int PointerMotionMask = (1 << 6);
+        public const int PointerMotionMask = 1 << 6;
 
-        public const int PointerMotionHintMask = (1 << 7);
+        public const int PointerMotionHintMask = 1 << 7;
 
-        public const int Button1MotionMask = (1 << 8);
+        public const int Button1MotionMask = 1 << 8;
 
-        public const int Button2MotionMask = (1 << 9);
+        public const int Button2MotionMask = 1 << 9;
 
-        public const int Button3MotionMask = (1 << 10);
+        public const int Button3MotionMask = 1 << 10;
 
-        public const int Button4MotionMask = (1 << 11);
+        public const int Button4MotionMask = 1 << 11;
 
-        public const int Button5MotionMask = (1 << 12);
+        public const int Button5MotionMask = 1 << 12;
 
-        public const int ButtonMotionMask = (1 << 13);
+        public const int ButtonMotionMask = 1 << 13;
 
-        public const int KeymapStateMask = (1 << 14);
+        public const int KeymapStateMask = 1 << 14;
 
-        public const int ExposureMask = (1 << 15);
+        public const int ExposureMask = 1 << 15;
 
-        public const int VisibilityChangeMask = (1 << 16);
+        public const int VisibilityChangeMask = 1 << 16;
 
-        public const int StructureNotifyMask = (1 << 17);
+        public const int StructureNotifyMask = 1 << 17;
 
-        public const int ResizeRedirectMask = (1 << 18);
+        public const int ResizeRedirectMask = 1 << 18;
 
-        public const int SubstructureNotifyMask = (1 << 19);
+        public const int SubstructureNotifyMask = 1 << 19;
 
-        public const int SubstructureRedirectMask = (1 << 20);
+        public const int SubstructureRedirectMask = 1 << 20;
 
-        public const int FocusChangeMask = (1 << 21);
+        public const int FocusChangeMask = 1 << 21;
 
-        public const int PropertyChangeMask = (1 << 22);
+        public const int PropertyChangeMask = 1 << 22;
 
-        public const int ColormapChangeMask = (1 << 23);
+        public const int ColormapChangeMask = 1 << 23;
 
-        public const int OwnerGrabButtonMask = (1 << 24);
+        public const int OwnerGrabButtonMask = 1 << 24;
         #endregion
 
         #region Event Name Constants
@@ -187,21 +187,21 @@ namespace TerraFX.Interop
         #endregion
 
         #region Key Mask Constants
-        public const int ShiftMask = (1 << 0);
+        public const int ShiftMask = 1 << 0;
 
-        public const int LockMask = (1 << 1);
+        public const int LockMask = 1 << 1;
 
-        public const int ControlMask = (1 << 2);
+        public const int ControlMask = 1 << 2;
 
-        public const int Mod1Mask = (1 << 3);
+        public const int Mod1Mask = 1 << 3;
 
-        public const int Mod2Mask = (1 << 4);
+        public const int Mod2Mask = 1 << 4;
 
-        public const int Mod3Mask = (1 << 5);
+        public const int Mod3Mask = 1 << 5;
 
-        public const int Mod4Mask = (1 << 6);
+        public const int Mod4Mask = 1 << 6;
 
-        public const int Mod5Mask = (1 << 7);
+        public const int Mod5Mask = 1 << 7;
         #endregion
 
         #region Modifier Name Constants
@@ -223,17 +223,17 @@ namespace TerraFX.Interop
         #endregion
 
         #region Button Mask Constants
-        public const int Button1Mask = (1 << 8);
+        public const int Button1Mask = 1 << 8;
 
-        public const int Button2Mask = (1 << 9);
+        public const int Button2Mask = 1 << 9;
 
-        public const int Button3Mask = (1 << 10);
+        public const int Button3Mask = 1 << 10;
 
-        public const int Button4Mask = (1 << 11);
+        public const int Button4Mask = 1 << 11;
 
-        public const int Button5Mask = (1 << 12);
+        public const int Button5Mask = 1 << 12;
 
-        public const int AnyModifier = (1 << 15);
+        public const int AnyModifier = 1 << 15;
         #endregion
 
         #region Button Name Constants
@@ -413,51 +413,51 @@ namespace TerraFX.Interop
         #endregion
 
         #region CreateWindow and ChangeWindowAttributes Constants
-        public const int CWBackPixmap = (1 << 0);
+        public const int CWBackPixmap = 1 << 0;
 
-        public const int CWBackPixel = (1 << 1);
+        public const int CWBackPixel = 1 << 1;
 
-        public const int CWBorderPixmap = (1 << 2);
+        public const int CWBorderPixmap = 1 << 2;
 
-        public const int CWBorderPixel = (1 << 3);
+        public const int CWBorderPixel = 1 << 3;
 
-        public const int CWBitGravity = (1 << 4);
+        public const int CWBitGravity = 1 << 4;
 
-        public const int CWWinGravity = (1 << 5);
+        public const int CWWinGravity = 1 << 5;
 
-        public const int CWBackingStore = (1 << 6);
+        public const int CWBackingStore = 1 << 6;
 
-        public const int CWBackingPlanes = (1 << 7);
+        public const int CWBackingPlanes = 1 << 7;
 
-        public const int CWBackingPixel = (1 << 8);
+        public const int CWBackingPixel = 1 << 8;
 
-        public const int CWOverrideRedirect = (1 << 9);
+        public const int CWOverrideRedirect = 1 << 9;
 
-        public const int CWSaveUnder = (1 << 10);
+        public const int CWSaveUnder = 1 << 10;
 
-        public const int CWEventMask = (1 << 11);
+        public const int CWEventMask = 1 << 11;
 
-        public const int CWDontPropagate = (1 << 12);
+        public const int CWDontPropagate = 1 << 12;
 
-        public const int CWColormap = (1 << 13);
+        public const int CWColormap = 1 << 13;
 
-        public const int CWCursor = (1 << 14);
+        public const int CWCursor = 1 << 14;
         #endregion
 
         #region ConfigureWindow Constants
-        public const int CWX = (1 << 0);
+        public const int CWX = 1 << 0;
 
-        public const int CWY = (1 << 1);
+        public const int CWY = 1 << 1;
 
-        public const int CWWidth = (1 << 2);
+        public const int CWWidth = 1 << 2;
 
-        public const int CWHeight = (1 << 3);
+        public const int CWHeight = 1 << 3;
 
-        public const int CWBorderWidth = (1 << 4);
+        public const int CWBorderWidth = 1 << 4;
 
-        public const int CWSibling = (1 << 5);
+        public const int CWSibling = 1 << 5;
 
-        public const int CWStackMode = (1 << 6);
+        public const int CWStackMode = 1 << 6;
         #endregion
 
         #region Bit Gravity Constants

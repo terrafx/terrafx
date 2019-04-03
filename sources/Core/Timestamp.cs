@@ -60,7 +60,7 @@ namespace TerraFX
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
         public static bool operator ==(Timestamp left, Timestamp right)
         {
-            return (left._ticks == right._ticks);
+            return left._ticks == right._ticks;
         }
 
         /// <summary>Compares two <see cref="Timestamp" /> values to determine inequality.</summary>
@@ -69,7 +69,7 @@ namespace TerraFX
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
         public static bool operator !=(Timestamp left, Timestamp right)
         {
-            return (left._ticks == right._ticks);
+            return left._ticks == right._ticks;
         }
 
         /// <summary>Compares two <see cref="Timestamp" /> values to determine relative sort-order.</summary>
@@ -78,7 +78,7 @@ namespace TerraFX
         /// <returns><c>true</c> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise, <c>false</c>.</returns>
         public static bool operator >(Timestamp left, Timestamp right)
         {
-            return (left._ticks > right._ticks);
+            return left._ticks > right._ticks;
         }
 
         /// <summary>Compares two <see cref="Timestamp" /> values to determine relative sort-order.</summary>
@@ -87,7 +87,7 @@ namespace TerraFX
         /// <returns><c>true</c> if <paramref name="left" /> is greater than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
         public static bool operator >=(Timestamp left, Timestamp right)
         {
-            return (left._ticks >= right._ticks);
+            return left._ticks >= right._ticks;
         }
 
         /// <summary>Compares two <see cref="Timestamp" /> values to determine relative sort-order.</summary>
@@ -96,7 +96,7 @@ namespace TerraFX
         /// <returns><c>true</c> if <paramref name="left" /> is less than <paramref name="right" />; otherwise, <c>false</c>.</returns>
         public static bool operator <(Timestamp left, Timestamp right)
         {
-            return (left._ticks < right._ticks);
+            return left._ticks < right._ticks;
         }
 
         /// <summary>Compares two <see cref="Timestamp" /> values to determine relative sort-order.</summary>
@@ -105,7 +105,7 @@ namespace TerraFX
         /// <returns><c>true</c> if <paramref name="left" /> is less than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
         public static bool operator <=(Timestamp left, Timestamp right)
         {
-            return (left._ticks <= right._ticks);
+            return left._ticks <= right._ticks;
         }
         #endregion
 

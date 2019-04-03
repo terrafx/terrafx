@@ -39,7 +39,7 @@ namespace TerraFX.Interop
         {
             get
             {
-                return (_bitField & 0b0000_0000_0000_0000_0000_0000_0000_0001);
+                return _bitField & 0b0000_0000_0000_0000_0000_0000_0000_0001;
             }
 
             set

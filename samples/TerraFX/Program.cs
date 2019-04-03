@@ -11,12 +11,12 @@ namespace TerraFX.Samples
 {
     public static unsafe class Program
     {
-        private static readonly Assembly D3D12Provider = Assembly.LoadFrom("TerraFX.Provider.D3D12.dll");
-        private static readonly Assembly VulkanProvider = Assembly.LoadFrom("TerraFX.Provider.Vulkan.dll");
+        private static readonly Assembly s_d3d12Provider = Assembly.LoadFrom("TerraFX.Provider.D3D12.dll");
+        private static readonly Assembly s_vulkanProvider = Assembly.LoadFrom("TerraFX.Provider.Vulkan.dll");
 
-        private static readonly Sample[] Samples = {
-            new EnumerateGraphicsAdapters("D3D12.EnumerateGraphicsAdapter", D3D12Provider),
-            new EnumerateGraphicsAdapters("Vulkan.EnumerateGraphicsAdapter", VulkanProvider),
+        private static readonly Sample[] s_samples = {
+            new EnumerateGraphicsAdapters("D3D12.EnumerateGraphicsAdapter", s_d3d12Provider),
+            new EnumerateGraphicsAdapters("Vulkan.EnumerateGraphicsAdapter", s_vulkanProvider),
         };
 
         public static void Main(string[] args)
@@ -25,7 +25,7 @@ namespace TerraFX.Samples
 
             if ((args.Length == 0) || args.Any((arg) => Matches(arg, "?", "h", "help")))
             {
-                PrintHelp(args);
+                PrintHelp();
             }
             else
             {
@@ -39,7 +39,7 @@ namespace TerraFX.Samples
                                           || (((arg.Length - 1) == keyword.Length) && ((arg[0] == '-') || (arg[0] == '/')) && (string.Compare(arg, 1, keyword, 0, keyword.Length, StringComparison.OrdinalIgnoreCase) == 0)));
         }
 
-        private static void PrintHelp(string[] args)
+        private static void PrintHelp()
         {
             Console.WriteLine("General Options");
             Console.WriteLine("    ALL:     Indicates that all samples should be run.");
@@ -47,7 +47,7 @@ namespace TerraFX.Samples
 
             Console.WriteLine("Available Samples - Can specify multiple");
 
-            foreach (var sample in Samples)
+            foreach (var sample in s_samples)
             {
                 Console.WriteLine($"    {sample.Name}");
             }
@@ -68,7 +68,7 @@ namespace TerraFX.Samples
 
             if (args.Any((arg) => Matches(arg, "all")))
             {
-                foreach (var sample in Samples)
+                foreach (var sample in s_samples)
                 {
                     RunSample(sample);
                     ranAnySamples = true;
@@ -77,7 +77,7 @@ namespace TerraFX.Samples
 
             foreach (var arg in args)
             {
-                foreach (var sample in Samples.Where((sample) => arg.Equals(sample.Name, StringComparison.OrdinalIgnoreCase)))
+                foreach (var sample in s_samples.Where((sample) => arg.Equals(sample.Name, StringComparison.OrdinalIgnoreCase)))
                 {
                     RunSample(sample);
                     ranAnySamples = true;
@@ -86,7 +86,7 @@ namespace TerraFX.Samples
 
             if (ranAnySamples == false)
             {
-                PrintHelp(args);
+                PrintHelp();
             }
         }
 

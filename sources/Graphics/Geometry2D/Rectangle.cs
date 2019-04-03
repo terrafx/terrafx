@@ -176,7 +176,7 @@ namespace TerraFX.Graphics.Geometry2D
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
         public bool Equals(Rectangle other)
         {
-            return (this == other);
+            return this == other;
         }
         #endregion
 
@@ -189,22 +189,20 @@ namespace TerraFX.Graphics.Geometry2D
         {
             var separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
 
-            var stringBuilder = new StringBuilder(5 + separator.Length);
-            {
-                stringBuilder.Append('<');
-                stringBuilder.Append(X.ToString(format, formatProvider));
-                stringBuilder.Append(separator);
-                stringBuilder.Append(' ');
-                stringBuilder.Append(Y.ToString(format, formatProvider));
-                stringBuilder.Append(separator);
-                stringBuilder.Append(' ');
-                stringBuilder.Append(Width.ToString(format, formatProvider));
-                stringBuilder.Append(separator);
-                stringBuilder.Append(' ');
-                stringBuilder.Append(Height.ToString(format, formatProvider));
-                stringBuilder.Append('>');
-            }
-            return stringBuilder.ToString();
+            return new StringBuilder(5 + separator.Length)
+                .Append('<')
+                .Append(X.ToString(format, formatProvider))
+                .Append(separator)
+                .Append(' ')
+                .Append(Y.ToString(format, formatProvider))
+                .Append(separator)
+                .Append(' ')
+                .Append(Width.ToString(format, formatProvider))
+                .Append(separator)
+                .Append(' ')
+                .Append(Height.ToString(format, formatProvider))
+                .Append('>')
+                .ToString();
         }
         #endregion
 
@@ -229,7 +227,7 @@ namespace TerraFX.Graphics.Geometry2D
                 combinedValue = CombineValue(Width.GetHashCode(), combinedValue);
                 combinedValue = CombineValue(Height.GetHashCode(), combinedValue);
             }
-            return FinalizeValue(combinedValue, (sizeof(float) * 4));
+            return FinalizeValue(combinedValue, sizeof(float) * 4);
         }
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>

@@ -42,10 +42,10 @@ namespace TerraFX.Provider.Win32.UI
         private Rectangle _bounds;
 
         /// <summary>The <see cref="FlowDirection" /> for the instance.</summary>
-        private FlowDirection _flowDirection;
+        private readonly FlowDirection _flowDirection;
 
         /// <summary>The <see cref="ReadingDirection" /> for the instance.</summary>
-        private ReadingDirection _readingDirection;
+        private readonly ReadingDirection _readingDirection;
 
         /// <summary>The <see cref="WindowState" /> for the instance.</summary>
         private WindowState _windowState;
@@ -214,7 +214,7 @@ namespace TerraFX.Provider.Win32.UI
                 ThrowExternalExceptionForLastError(nameof(GetWindowRect));
             }
 
-            return new Rectangle(rect.left, rect.top, (rect.right - rect.left), (rect.bottom - rect.top));
+            return new Rectangle(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
         }
 
         /// <summary>Geta a value that indicates whether a native window is active.</summary>
@@ -223,7 +223,7 @@ namespace TerraFX.Provider.Win32.UI
         private static bool IsWindowActive(IntPtr handle)
         {
             var activeWindow = GetActiveWindow();
-            return (activeWindow == handle);
+            return activeWindow == handle;
         }
         #endregion
 
@@ -271,20 +271,20 @@ namespace TerraFX.Provider.Win32.UI
 
             if (_readingDirection == ReadingDirection.RightToLeft)
             {
-                windowStyleEx |= (WS_EX_RIGHT | WS_EX_RTLREADING | WS_EX_LEFTSCROLLBAR);
+                windowStyleEx |= WS_EX_RIGHT | WS_EX_RTLREADING | WS_EX_LEFTSCROLLBAR;
             }
 
             fixed (char* lpWindowName = _title)
             {
                 hWnd = CreateWindowEx(
                     windowStyleEx,
-                    (char*)(_windowManager.ClassAtom),
+                    (char*)_windowManager.ClassAtom,
                     lpWindowName,
                     windowStyle,
-                    X: float.IsNaN(Bounds.X) ? CW_USEDEFAULT : (int)(Bounds.X),
-                    Y: float.IsNaN(Bounds.Y) ? CW_USEDEFAULT : (int)(Bounds.Y),
-                    nWidth: float.IsNaN(Bounds.Width) ? CW_USEDEFAULT : (int)(Bounds.Width),
-                    nHeight: float.IsNaN(Bounds.Height) ? CW_USEDEFAULT : (int)(Bounds.Height),
+                    X: float.IsNaN(Bounds.X) ? CW_USEDEFAULT : (int)Bounds.X,
+                    Y: float.IsNaN(Bounds.Y) ? CW_USEDEFAULT : (int)Bounds.Y,
+                    nWidth: float.IsNaN(Bounds.Width) ? CW_USEDEFAULT : (int)Bounds.Width,
+                    nHeight: float.IsNaN(Bounds.Height) ? CW_USEDEFAULT : (int)Bounds.Height,
                     hWndParent: default,
                     hMenu: default,
                     hInstance: EntryPointModule,
@@ -349,7 +349,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <returns>0</returns>
         private nint HandleWmActivate(nuint wParam)
         {
-            _isActive = (LOWORD(wParam) != WA_INACTIVE);
+            _isActive = LOWORD(wParam) != WA_INACTIVE;
             return 0;
         }
 
@@ -395,7 +395,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <returns>0</returns>
         private nint HandleWmEnable(nuint wParam)
         {
-            _isEnabled = (wParam != FALSE);
+            _isEnabled = wParam != FALSE;
             return 0;
         }
 
@@ -431,7 +431,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <returns>0</returns>
         private nint HandleWmShowWindow(nuint wParam)
         {
-            _isVisible = (LOWORD(wParam) != FALSE);
+            _isVisible = LOWORD(wParam) != FALSE;
             return 0;
         }
 
@@ -441,7 +441,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <returns>0</returns>
         private nint HandleWmSize(nuint wParam, nint lParam)
         {
-            _windowState = (WindowState)((uint)(wParam));
+            _windowState = (WindowState)(uint)wParam;
             Assert(Enum.IsDefined(typeof(WindowState), _windowState), Resources.ArgumentOutOfRangeExceptionMessage, nameof(wParam), wParam);
 
             var size = new Vector2(x: LOWORD(lParam), y: HIWORD(lParam));

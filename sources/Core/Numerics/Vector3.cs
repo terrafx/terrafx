@@ -131,7 +131,7 @@ namespace TerraFX.Numerics
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
         public bool Equals(Vector3 other)
         {
-            return (this == other);
+            return this == other;
         }
         #endregion
 
@@ -144,19 +144,17 @@ namespace TerraFX.Numerics
         {
             var separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
 
-            var stringBuilder = new StringBuilder(7 + (separator.Length * 2));
-            {
-                stringBuilder.Append('<');
-                stringBuilder.Append(X.ToString(format, formatProvider));
-                stringBuilder.Append(separator);
-                stringBuilder.Append(' ');
-                stringBuilder.Append(Y.ToString(format, formatProvider));
-                stringBuilder.Append(separator);
-                stringBuilder.Append(' ');
-                stringBuilder.Append(Z.ToString(format, formatProvider));
-                stringBuilder.Append('>');
-            }
-            return stringBuilder.ToString();
+            return new StringBuilder(7 + (separator.Length * 2))
+                .Append('<')
+                .Append(X.ToString(format, formatProvider))
+                .Append(separator)
+                .Append(' ')
+                .Append(Y.ToString(format, formatProvider))
+                .Append(separator)
+                .Append(' ')
+                .Append(Z.ToString(format, formatProvider))
+                .Append('>')
+                .ToString();
         }
         #endregion
 
@@ -180,7 +178,7 @@ namespace TerraFX.Numerics
                 combinedValue = CombineValue(Y.GetHashCode(), combinedValue);
                 combinedValue = CombineValue(Z.GetHashCode(), combinedValue);
             }
-            return FinalizeValue(combinedValue, (sizeof(float) * 3));
+            return FinalizeValue(combinedValue, sizeof(float) * 3);
         }
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>

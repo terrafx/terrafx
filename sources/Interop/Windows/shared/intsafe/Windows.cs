@@ -12,7 +12,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region INTSAFE_E_* Constants
-        public const int INTSAFE_E_ARITHMETIC_OVERFLOW = unchecked((int)(0x80070216));
+        public const int INTSAFE_E_ARITHMETIC_OVERFLOW = unchecked((int)0x80070216);
         #endregion
     }
 }

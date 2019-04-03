@@ -26,13 +26,13 @@ namespace TerraFX.Interop.Desktop
         [NativeTypeName("HWND")]
         public IntPtr hwndParent;
 
-        int cy;
+        public int cy;
 
-        int cx;
+        public int cx;
 
-        int y;
+        public int y;
 
-        int x;
+        public int x;
 
         [NativeTypeName("LONG")]
         public int style;

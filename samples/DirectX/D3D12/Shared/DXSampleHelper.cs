@@ -41,7 +41,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                     throw new IOException();
                 }
 
-                var size = (int)(endOfFile);
+                var size = (int)endOfFile;
                 data = new byte[size];
 
                 fileReader.Read(data, 0, size);

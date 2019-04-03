@@ -29,7 +29,7 @@ namespace TerraFX.Samples.DirectX.D3D12
         protected bool _useWarpDevice;
 
         // Root assets path
-        private string _assetsPath;
+        private readonly string _assetsPath;
 
         // Window title
         private string _title;
@@ -42,7 +42,7 @@ namespace TerraFX.Samples.DirectX.D3D12
             _height = height;
             _title = name;
             _assetsPath = GetAssetsPath();
-            _aspectRatio = width / ((float)(height));
+            _aspectRatio = width / ((float)height);
         }
         #endregion
 
@@ -131,7 +131,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                 DXGI_ADAPTER_DESC1 desc;
                 adapter->GetDesc1(&desc);
 
-                if ((desc.Flags & (uint)(DXGI_ADAPTER_FLAG_SOFTWARE)) != 0)
+                if ((desc.Flags & (uint)DXGI_ADAPTER_FLAG_SOFTWARE) != 0)
                 {
                     // Don't select the Basic Render Driver adapter.
                     // If you want a software adapter, pass in "/warp" on the command line.
@@ -141,13 +141,13 @@ namespace TerraFX.Samples.DirectX.D3D12
                 // Check to see if the adapter supports Direct3D 12, but don't create the
                 // actual device yet.
                 var iid = IID_ID3D12Device;
-                if (SUCCEEDED(D3D12CreateDevice((IUnknown*)(adapter), D3D_FEATURE_LEVEL_11_0, &iid, null)))
+                if (SUCCEEDED(D3D12CreateDevice((IUnknown*)adapter, D3D_FEATURE_LEVEL_11_0, &iid, null)))
                 {
                     break;
                 }
             }
 
-            return (IDXGIAdapter*)(adapter);
+            return (IDXGIAdapter*)adapter;
         }
 
         // Helper function for setting the window's title text.

@@ -61,7 +61,7 @@ namespace TerraFX.Samples.DirectX.D3D12
         private RECT _scissorRect;
         private IDXGISwapChain3* _swapChain;
         private ID3D12Device* _device;
-        private _renderTargets_e__FixedBuffer _renderTargets;
+        private RenderTargets_e__FixedBuffer _renderTargets;
         private ID3D12CommandAllocator* _commandAllocator;
         private ID3D12CommandQueue* _commandQueue;
         private ID3D12RootSignature* _rootSignature;
@@ -97,8 +97,8 @@ namespace TerraFX.Samples.DirectX.D3D12
             _scissorRect = new RECT {
                 left = 0,
                 top = 0,
-                right = unchecked((int)(width)),
-                bottom = unchecked((int)(height))
+                right = unchecked((int)width),
+                bottom = unchecked((int)height)
             };
         }
         #endregion
@@ -124,7 +124,7 @@ namespace TerraFX.Samples.DirectX.D3D12
             // Execute the command list.
             var ppCommandLists = stackalloc ID3D12CommandList*[1];
             {
-                ppCommandLists[0] = (ID3D12CommandList*)(_commandList);
+                ppCommandLists[0] = (ID3D12CommandList*)_commandList;
             }
             _commandQueue->ExecuteCommandLists(1, ppCommandLists);
 
@@ -161,7 +161,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                 // NOTE: Enabling the debug layer after device creation will invalidate the active device.
                 {
                     iid = IID_ID3D12Debug;
-                    if (SUCCEEDED(D3D12GetDebugInterface(&iid, (void**)(&debugController))))
+                    if (SUCCEEDED(D3D12GetDebugInterface(&iid, (void**)&debugController)))
                     {
                         debugController->EnableDebugLayer();
 
@@ -172,12 +172,12 @@ namespace TerraFX.Samples.DirectX.D3D12
 #endif
 
                 iid = IID_IDXGIFactory4;
-                ThrowIfFailed(nameof(CreateDXGIFactory2), CreateDXGIFactory2(dxgiFactoryFlags, &iid, (void**)(&factory)));
+                ThrowIfFailed(nameof(CreateDXGIFactory2), CreateDXGIFactory2(dxgiFactoryFlags, &iid, (void**)&factory));
 
                 if (_useWarpDevice)
                 {
                     iid = IID_IDXGIAdapter;
-                    ThrowIfFailed(nameof(IDXGIFactory4.EnumWarpAdapter), factory->EnumWarpAdapter(&iid, (void**)(&adapter)));
+                    ThrowIfFailed(nameof(IDXGIFactory4.EnumWarpAdapter), factory->EnumWarpAdapter(&iid, (void**)&adapter));
                 }
                 else
                 {
@@ -187,7 +187,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                 fixed (ID3D12Device** device = &_device)
                 {
                     iid = IID_ID3D12Device;
-                    ThrowIfFailed(nameof(D3D12CreateDevice), D3D12CreateDevice((IUnknown*)(adapter), D3D_FEATURE_LEVEL_11_0, &iid, (void**)(device)));
+                    ThrowIfFailed(nameof(D3D12CreateDevice), D3D12CreateDevice((IUnknown*)adapter, D3D_FEATURE_LEVEL_11_0, &iid, (void**)device));
                 }
 
                 // Describe and create the command queue.
@@ -199,7 +199,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                 fixed (ID3D12CommandQueue** commandQueue = &_commandQueue)
                 {
                     iid = IID_ID3D12CommandQueue;
-                    ThrowIfFailed(nameof(ID3D12Device.CreateCommandQueue), _device->CreateCommandQueue(&queueDesc, &iid, (void**)(commandQueue)));
+                    ThrowIfFailed(nameof(ID3D12Device.CreateCommandQueue), _device->CreateCommandQueue(&queueDesc, &iid, (void**)commandQueue));
                 }
 
                 // Describe and create the swap chain.
@@ -216,7 +216,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                 };
 
                 ThrowIfFailed(nameof(IDXGIFactory4.CreateSwapChainForHwnd), factory->CreateSwapChainForHwnd(
-                    (IUnknown*)(_commandQueue),         // Swap chain needs the queue so that it can force a flush on it.
+                    (IUnknown*)_commandQueue,         // Swap chain needs the queue so that it can force a flush on it.
                     Win32Application.Hwnd,
                     &swapChainDesc,
                     null,
@@ -230,7 +230,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                 fixed (IDXGISwapChain3** swapChain3 = &_swapChain)
                 {
                     iid = IID_IDXGISwapChain3;
-                    ThrowIfFailed(nameof(IDXGISwapChain1.QueryInterface), swapChain->QueryInterface(&iid, (void**)(swapChain3)));
+                    ThrowIfFailed(nameof(IDXGISwapChain1.QueryInterface), swapChain->QueryInterface(&iid, (void**)swapChain3));
                     _frameIndex = _swapChain->GetCurrentBackBufferIndex();
                 }
 
@@ -246,7 +246,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                     fixed (ID3D12DescriptorHeap** rtvHeap = &_rtvHeap)
                     {
                         iid = IID_ID3D12DescriptorHeap;
-                        ThrowIfFailed(nameof(ID3D12Device.CreateDescriptorHeap), _device->CreateDescriptorHeap(&rtvHeapDesc, &iid, (void**)(rtvHeap)));
+                        ThrowIfFailed(nameof(ID3D12Device.CreateDescriptorHeap), _device->CreateDescriptorHeap(&rtvHeapDesc, &iid, (void**)rtvHeap));
                     }
 
                     _rtvDescriptorSize = _device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
@@ -264,18 +264,18 @@ namespace TerraFX.Samples.DirectX.D3D12
                     {
                         ID3D12Resource* renderTarget;
                         {
-                            ThrowIfFailed(nameof(IDXGISwapChain3.GetBuffer), _swapChain->GetBuffer(n, &iid, (void**)(&renderTarget)));
+                            ThrowIfFailed(nameof(IDXGISwapChain3.GetBuffer), _swapChain->GetBuffer(n, &iid, (void**)&renderTarget));
                             _device->CreateRenderTargetView(renderTarget, null, rtvHandle);
                             rtvHandle.ptr += _rtvDescriptorSize;
                         }
-                        _renderTargets[unchecked((int)(n))] = renderTarget;
+                        _renderTargets[unchecked((int)n)] = renderTarget;
                     }
                 }
 
                 fixed (ID3D12CommandAllocator** commandAllocator = &_commandAllocator)
                 {
                     iid = IID_ID3D12CommandAllocator;
-                    ThrowIfFailed(nameof(ID3D12Device.CreateRenderTargetView), _device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, &iid, (void**)(commandAllocator)));
+                    ThrowIfFailed(nameof(ID3D12Device.CreateRenderTargetView), _device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, &iid, (void**)commandAllocator));
                 }
             }
             finally
@@ -324,7 +324,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                     fixed (ID3D12RootSignature** rootSignature = &_rootSignature)
                     {
                         iid = IID_ID3D12RootSignature;
-                        ThrowIfFailed(nameof(ID3D12Device._CreateRootSignature), _device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), &iid, (void**)(rootSignature)));
+                        ThrowIfFailed(nameof(ID3D12Device._CreateRootSignature), _device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), &iid, (void**)rootSignature));
                     }
                 }
 
@@ -340,11 +340,11 @@ namespace TerraFX.Samples.DirectX.D3D12
                     {
                         var entryPoint = 0x00006E69614D5356;    // VSMain
                         var target = 0x0000305F355F7376;        // vs_5_0
-                        ThrowIfFailed(nameof(D3DCompileFromFile), D3DCompileFromFile(fileName, null, null, (sbyte*)(&entryPoint), (sbyte*)(&target), compileFlags, 0, &vertexShader, null));
+                        ThrowIfFailed(nameof(D3DCompileFromFile), D3DCompileFromFile(fileName, null, null, (sbyte*)&entryPoint, (sbyte*)&target, compileFlags, 0, &vertexShader, null));
 
                         entryPoint = 0x00006E69614D5350;        // PSMain
                         target = 0x0000305F355F7370;            // ps_5_0
-                        ThrowIfFailed(nameof(D3DCompileFromFile), D3DCompileFromFile(fileName, null, null, (sbyte*)(&entryPoint), (sbyte*)(&target), compileFlags, 0, &pixelShader, null));
+                        ThrowIfFailed(nameof(D3DCompileFromFile), D3DCompileFromFile(fileName, null, null, (sbyte*)&entryPoint, (sbyte*)&target, compileFlags, 0, &pixelShader, null));
                     }
 
                     // Define the vertex input layout.
@@ -352,7 +352,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                     {
                         var semanticName0 = stackalloc sbyte[9];
                         {
-                            ((ulong*)(semanticName0))[0] = 0x4E4F495449534F50;      // POSITION
+                            ((ulong*)semanticName0)[0] = 0x4E4F495449534F50;      // POSITION
                         }
                         inputElementDescs[0] = new D3D12_INPUT_ELEMENT_DESC {
                             SemanticName = semanticName0,
@@ -366,7 +366,7 @@ namespace TerraFX.Samples.DirectX.D3D12
 
                         var semanticName1 = 0x000000524F4C4F43;                     // COLOR
                         inputElementDescs[1] = new D3D12_INPUT_ELEMENT_DESC {
-                            SemanticName = (sbyte*)(&semanticName1),
+                            SemanticName = (sbyte*)&semanticName1,
                             SemanticIndex = 0,
                             Format = DXGI_FORMAT_R32G32B32A32_FLOAT,
                             InputSlot = 0,
@@ -430,7 +430,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                             DestBlendAlpha = D3D12_BLEND_ZERO,
                             BlendOpAlpha = D3D12_BLEND_OP_ADD,
                             LogicOp = D3D12_LOGIC_OP_NOOP,
-                            RenderTargetWriteMask = (byte)(D3D12_COLOR_WRITE_ENABLE_ALL)
+                            RenderTargetWriteMask = (byte)D3D12_COLOR_WRITE_ENABLE_ALL
                         };
 
                         for (var i = 0; i < D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i)
@@ -443,7 +443,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                     fixed (ID3D12PipelineState** pipelineState = &_pipelineState)
                     {
                         iid = IID_ID3D12PipelineState;
-                        ThrowIfFailed(nameof(ID3D12Device._CreateGraphicsPipelineState), _device->CreateGraphicsPipelineState(&psoDesc, &iid, (void**)(pipelineState)));
+                        ThrowIfFailed(nameof(ID3D12Device._CreateGraphicsPipelineState), _device->CreateGraphicsPipelineState(&psoDesc, &iid, (void**)pipelineState));
                     }
                 }
 
@@ -451,7 +451,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                 fixed (ID3D12GraphicsCommandList** commandList = &_commandList)
                 {
                     iid = IID_ID3D12GraphicsCommandList;
-                    ThrowIfFailed(nameof(ID3D12Device.CreateCommandList), _device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, _commandAllocator, _pipelineState, &iid, (void**)(commandList)));
+                    ThrowIfFailed(nameof(ID3D12Device.CreateCommandList), _device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, _commandAllocator, _pipelineState, &iid, (void**)commandList));
                 }
 
                 // Command lists are created in the recording state, but there is nothing
@@ -464,16 +464,16 @@ namespace TerraFX.Samples.DirectX.D3D12
                     var triangleVertices = stackalloc Vertex[3];
                     {
                         triangleVertices[0] = new Vertex {
-                            position = new Vector3(0.0f, (0.25f * _aspectRatio), 0.0f),
-                            color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f)
+                            Position = new Vector3(0.0f, 0.25f * _aspectRatio, 0.0f),
+                            Color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f)
                         };
                         triangleVertices[1] = new Vertex {
-                            position = new Vector3(0.25f, (-0.25f * _aspectRatio), 0.0f),
-                            color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f)
+                            Position = new Vector3(0.25f, -0.25f * _aspectRatio, 0.0f),
+                            Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f)
                         };
                         triangleVertices[2] = new Vertex {
-                            position = new Vector3(-0.25f, (-0.25f * _aspectRatio), 0.0f),
-                            color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f)
+                            Position = new Vector3(-0.25f, -0.25f * _aspectRatio, 0.0f),
+                            Color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f)
                         };
                     }
 
@@ -517,7 +517,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                             D3D12_RESOURCE_STATE_GENERIC_READ,
                             null,
                             &iid,
-                            (void**)(vertexBuffer)
+                            (void**)vertexBuffer
                         ));
                     }
 
@@ -527,7 +527,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                         Begin = 0,
                         End = 0
                     };
-                    ThrowIfFailed(nameof(ID3D12Resource._Map), _vertexBuffer->Map(0, &readRange, (void**)(&pVertexDataBegin)));
+                    ThrowIfFailed(nameof(ID3D12Resource._Map), _vertexBuffer->Map(0, &readRange, (void**)&pVertexDataBegin));
                     Unsafe.CopyBlock(pVertexDataBegin, triangleVertices, vertexBufferSize);
                     _vertexBuffer->Unmap(0, null);
 
@@ -542,7 +542,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                     fixed (ID3D12Fence** fence = &_fence)
                     {
                         iid = IID_ID3D12Fence;
-                        ThrowIfFailed(nameof(ID3D12Device.CreateFence), _device->CreateFence(0, D3D12_FENCE_FLAG_NONE, &iid, (void**)(fence)));
+                        ThrowIfFailed(nameof(ID3D12Device.CreateFence), _device->CreateFence(0, D3D12_FENCE_FLAG_NONE, &iid, (void**)fence));
                         _fenceValue = 1;
                     }
 
@@ -613,7 +613,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                 Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION,
                 Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE,
                 Transition = new D3D12_RESOURCE_TRANSITION_BARRIER {
-                    pResource = _renderTargets[unchecked((int)(_frameIndex))],
+                    pResource = _renderTargets[unchecked((int)_frameIndex)],
                     StateBefore = D3D12_RESOURCE_STATE_PRESENT,
                     StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET,
                     Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES
@@ -623,7 +623,7 @@ namespace TerraFX.Samples.DirectX.D3D12
 
             D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
             _rtvHeap->GetCPUDescriptorHandleForHeapStart(&rtvHandle);
-            rtvHandle.ptr += (_frameIndex * _rtvDescriptorSize);
+            rtvHandle.ptr += _frameIndex * _rtvDescriptorSize;
             _commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, null);
 
             // Record commands.
@@ -775,13 +775,13 @@ namespace TerraFX.Samples.DirectX.D3D12
 
         #region Structs
         [Unmanaged]
-        private unsafe struct _renderTargets_e__FixedBuffer
+        private unsafe struct RenderTargets_e__FixedBuffer
         {
             #region Fields
 #pragma warning disable CS0649
-            public ID3D12Resource* e0;
+            public ID3D12Resource* E0;
 
-            public ID3D12Resource* e1;
+            public ID3D12Resource* E1;
 #pragma warning restore CS0649
             #endregion
 
@@ -790,7 +790,7 @@ namespace TerraFX.Samples.DirectX.D3D12
             {
                 get
                 {
-                    fixed (ID3D12Resource** e = &e0)
+                    fixed (ID3D12Resource** e = &E0)
                     {
                         return e[index];
                     }
@@ -798,7 +798,7 @@ namespace TerraFX.Samples.DirectX.D3D12
 
                 set
                 {
-                    fixed (ID3D12Resource** e = &e0)
+                    fixed (ID3D12Resource** e = &E0)
                     {
                         e[index] = value;
                     }
@@ -811,9 +811,9 @@ namespace TerraFX.Samples.DirectX.D3D12
         private struct Vertex
         {
             #region Fields
-            public Vector3 position;
+            public Vector3 Position;
 
-            public Vector4 color;
+            public Vector4 Color;
             #endregion
         }
         #endregion

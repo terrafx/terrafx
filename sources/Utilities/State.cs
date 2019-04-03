@@ -19,7 +19,7 @@ namespace TerraFX.Utilities
         public const int Initialized = 1;
 
         /// <summary>The object is being disposed.</summary>
-        public const int Disposing = (Disposed - 1);
+        public const int Disposing = Disposed - 1;
 
         /// <summary>The object is disposed.</summary>
         public const int Disposed = int.MaxValue;
@@ -36,7 +36,7 @@ namespace TerraFX.Utilities
         {
             get
             {
-                return (_value >= Disposing);
+                return _value >= Disposing;
             }
         }
 
@@ -45,7 +45,7 @@ namespace TerraFX.Utilities
         {
             get
             {
-                return (_value < Disposing);
+                return _value < Disposing;
             }
         }
         #endregion

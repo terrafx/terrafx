@@ -19,7 +19,7 @@ namespace TerraFX.Interop
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort MAKEWORD(nint a, nint b)
         {
-            return MAKEWORD((nuint)(a), (nuint)(b));
+            return MAKEWORD((nuint)a, (nuint)b);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -31,19 +31,19 @@ namespace TerraFX.Interop
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int MAKELONG(nint a, nint b)
         {
-            return MAKELONG((nuint)(a), (nuint)(b));
+            return MAKELONG((nuint)a, (nuint)b);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int MAKELONG(nuint a, nuint b)
         {
-            return (int)((uint)((a & 0xFFFF) | ((b & 0xFFFF) << 16)));
+            return (int)(uint)((a & 0xFFFF) | ((b & 0xFFFF) << 16));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort LOWORD(nint l)
         {
-            return LOWORD((nuint)(l));
+            return LOWORD((nuint)l);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -55,19 +55,19 @@ namespace TerraFX.Interop
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort HIWORD(nint l)
         {
-            return HIWORD((nuint)(l));
+            return HIWORD((nuint)l);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort HIWORD(nuint l)
         {
-            return (ushort)((l >> 16) >> 0xFFFF);
+            return (ushort)(l >> 16 >> 0xFFFF);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte LOBYTE(nint w)
         {
-            return LOBYTE((nuint)(w));
+            return LOBYTE((nuint)w);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -79,7 +79,7 @@ namespace TerraFX.Interop
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte HIBYTE(nint w)
         {
-            return HIBYTE((nuint)(w));
+            return HIBYTE((nuint)w);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

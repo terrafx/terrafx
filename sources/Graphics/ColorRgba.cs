@@ -136,7 +136,7 @@ namespace TerraFX.Graphics
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
         public bool Equals(ColorRgba other)
         {
-            return (this == other);
+            return this == other;
         }
         #endregion
 
@@ -149,22 +149,20 @@ namespace TerraFX.Graphics
         {
             var separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
 
-            var stringBuilder = new StringBuilder(9 + (separator.Length * 3));
-            {
-                stringBuilder.Append('<');
-                stringBuilder.Append(Red.ToString(format, formatProvider));
-                stringBuilder.Append(separator);
-                stringBuilder.Append(' ');
-                stringBuilder.Append(Green.ToString(format, formatProvider));
-                stringBuilder.Append(separator);
-                stringBuilder.Append(' ');
-                stringBuilder.Append(Blue.ToString(format, formatProvider));
-                stringBuilder.Append(separator);
-                stringBuilder.Append(' ');
-                stringBuilder.Append(Alpha.ToString(format, formatProvider));
-                stringBuilder.Append('>');
-            }
-            return stringBuilder.ToString();
+            return new StringBuilder(9 + (separator.Length * 3))
+                .Append('<')
+                .Append(Red.ToString(format, formatProvider))
+                .Append(separator)
+                .Append(' ')
+                .Append(Green.ToString(format, formatProvider))
+                .Append(separator)
+                .Append(' ')
+                .Append(Blue.ToString(format, formatProvider))
+                .Append(separator)
+                .Append(' ')
+                .Append(Alpha.ToString(format, formatProvider))
+                .Append('>')
+                .ToString();
         }
         #endregion
 
@@ -189,7 +187,7 @@ namespace TerraFX.Graphics
                 combinedValue = CombineValue(Blue.GetHashCode(), combinedValue);
                 combinedValue = CombineValue(Alpha.GetHashCode(), combinedValue);
             }
-            return FinalizeValue(combinedValue, (sizeof(float) * 4));
+            return FinalizeValue(combinedValue, sizeof(float) * 4);
         }
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>

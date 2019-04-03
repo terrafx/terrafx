@@ -142,7 +142,7 @@ namespace TerraFX.Numerics
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
         public bool Equals(Matrix4x4 other)
         {
-            return (this == other);
+            return this == other;
         }
         #endregion
 
@@ -155,22 +155,20 @@ namespace TerraFX.Numerics
         {
             var separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
 
-            var stringBuilder = new StringBuilder(9 + (separator.Length * 3));
-            {
-                stringBuilder.Append('<');
-                stringBuilder.Append(X.ToString(format, formatProvider));
-                stringBuilder.Append(separator);
-                stringBuilder.Append(' ');
-                stringBuilder.Append(Y.ToString(format, formatProvider));
-                stringBuilder.Append(separator);
-                stringBuilder.Append(' ');
-                stringBuilder.Append(Z.ToString(format, formatProvider));
-                stringBuilder.Append(separator);
-                stringBuilder.Append(' ');
-                stringBuilder.Append(W.ToString(format, formatProvider));
-                stringBuilder.Append('>');
-            }
-            return stringBuilder.ToString();
+            return new StringBuilder(9 + (separator.Length * 3))
+                .Append('<')
+                .Append(X.ToString(format, formatProvider))
+                .Append(separator)
+                .Append(' ')
+                .Append(Y.ToString(format, formatProvider))
+                .Append(separator)
+                .Append(' ')
+                .Append(Z.ToString(format, formatProvider))
+                .Append(separator)
+                .Append(' ')
+                .Append(W.ToString(format, formatProvider))
+                .Append('>')
+                .ToString();
         }
         #endregion
 
@@ -195,7 +193,7 @@ namespace TerraFX.Numerics
                 combinedValue = CombineValue(Z.GetHashCode(), combinedValue);
                 combinedValue = CombineValue(W.GetHashCode(), combinedValue);
             }
-            return FinalizeValue(combinedValue, (SizeOf<Vector4>() * 4));
+            return FinalizeValue(combinedValue, SizeOf<Vector4>() * 4);
         }
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
