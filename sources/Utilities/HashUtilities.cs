@@ -2,6 +2,8 @@
 
 using System;
 using System.Diagnostics.Contracts;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.IntegerUtilities;
@@ -58,48 +60,27 @@ namespace TerraFX.Utilities
         }
 
         /// <summary>Computes the hashcode for a <see cref="byte" /> array.</summary>
-        /// <param name="values">The <see cref="byte" /> array to be hashed.</param>
-        /// <param name="offset">The offset into <paramref name="values" /> at which hashing should begin.</param>
-        /// <param name="count">The number of elements in <paramref name="values" /> which should be hashed.</param>
+        /// <param name="values">The <see cref="byte" />s to be hashed.</param>
         /// <param name="seed">The seed used as the basis for the computed hashcode.</param>
         /// <returns>The hashcode of all elements in <paramref name="values" />, starting with the initial <paramref name="seed" />.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="values" /> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="offset" /> is either negative or greater than the length of <paramref name="values" />.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="count" /> is either negative or would extend beyond the bounds of <paramref name="values" /> when starting from <paramref name="offset" />.</exception>
-        public static int ComputeHashCode(byte[] values, int offset, int count, int seed)
+        public static int ComputeHashCode(ReadOnlySpan<byte> values, int seed)
         {
-            ThrowIfNull(values, nameof(values));
-
-            if ((offset < 0) || (offset > values.Length))
-            {
-                ThrowArgumentOutOfRangeException(nameof(offset), offset);
-            }
-            else if ((count < 0) || ((uint)(offset + count) > (uint)values.Length))
-            {
-                ThrowArgumentOutOfRangeException(nameof(count), count);
-            }
-            Contract.EndContractBlock();
-
             var combinedHashCode = seed;
+            var count = values.Length;
 
             if (count != 0)
             {
-                var blockCount = count / sizeof(int);
-                var remainingByteCount = count % sizeof(int);
+                var blocks = MemoryMarshal.Cast<byte, int>(values);
 
-                fixed (byte* pValues = &values[0])
+                for (var blockIndex = 0; blockIndex < blocks.Length; blockIndex++)
                 {
-                    var pBlocks = (int*)(pValues + offset);
-
-                    for (var blockIndex = 0; blockIndex < blockCount; blockIndex++)
-                    {
-                        var value = pBlocks[blockIndex];
-                        combinedHashCode = CombineValue(value, combinedHashCode);
-                    }
+                    var value = blocks[blockIndex];
+                    combinedHashCode = CombineValue(value, combinedHashCode);
                 }
 
                 var partialValue = 0;
-                var index = offset + (blockCount * sizeof(int));
+                var index = blocks.Length * sizeof(int);
+                var remainingByteCount = count - index;
 
                 switch (remainingByteCount)
                 {
@@ -135,32 +116,16 @@ namespace TerraFX.Utilities
         }
 
         /// <summary>Computes the hashcode for a <see cref="int" /> array.</summary>
-        /// <param name="values">The <see cref="int" /> array to be hashed.</param>
-        /// <param name="offset">The offset into <paramref name="values" /> at which hashing should begin.</param>
-        /// <param name="count">The number of elements in <paramref name="values" /> which should be hashed.</param>
+        /// <param name="values">The <see cref="int" />s to be hashed.</param>
         /// <param name="seed">The seed used as the basis for the computed hashcode.</param>
         /// <returns>The hashcode of all elements in <paramref name="values" />, starting with the initial <paramref name="seed" />.</returns>
         /// <returns>The hashcode of all bytes in <paramref name="values" />, seeded with the initial value in <paramref name="seed" />.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="values" /> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="offset" /> is either negative or greater than the length of <paramref name="values" />.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="count" /> is either negative or would extend beyond the bounds of <paramref name="values" /> when starting from <paramref name="offset" />.</exception>
-        public static int ComputeHashCode(int[] values, int offset, int count, int seed)
+        public static int ComputeHashCode(ReadOnlySpan<int> values, int seed)
         {
-            ThrowIfNull(values, nameof(values));
-
-            if ((offset < 0) || (offset > values.Length))
-            {
-                ThrowArgumentOutOfRangeException(nameof(offset), offset);
-            }
-            else if ((count < 0) || ((uint)(offset + count) > (uint)values.Length))
-            {
-                ThrowArgumentOutOfRangeException(nameof(count), count);
-            }
-            Contract.EndContractBlock();
-
             var combinedHashCode = seed;
+            var count = values.Length;
 
-            for (var index = offset; index < count; index++)
+            for (var index = 0; index < count; index++)
             {
                 var value = values[index];
                 combinedHashCode = CombineValue(value, combinedHashCode);
