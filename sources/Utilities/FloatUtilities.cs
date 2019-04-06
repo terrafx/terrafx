@@ -1,6 +1,5 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using System.Diagnostics.Contracts;
 
 namespace TerraFX.Utilities
 {
@@ -13,7 +12,6 @@ namespace TerraFX.Utilities
         /// <param name="min">The minimum value (inclusive).</param>
         /// <param name="max">The maximum value (inclusive).</param>
         /// <returns><paramref name="value" /> clamped to be between <paramref name="min" /> and <paramref name="max" />.</returns>
-        [Pure]
         public static float Clamp(float value, float min, float max)
         {
             // The compare order here is important.

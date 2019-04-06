@@ -1,7 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using static System.Runtime.InteropServices.Marshal;
 using static TerraFX.Utilities.ExceptionUtilities;
 
@@ -38,7 +37,6 @@ namespace TerraFX.Utilities
             {
                 ThrowArgumentOutOfRangeException(nameof(value), value);
             }
-            Contract.EndContractBlock();
 
             _value = value;
             _handle = GetFunctionPointerForDelegate(value);

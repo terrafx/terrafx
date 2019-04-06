@@ -1,7 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using static TerraFX.Utilities.AssertionUtilities;
@@ -19,7 +18,6 @@ namespace TerraFX.Utilities
         /// <param name="seed">The seed that will be combined with <paramref name="value" />.</param>
         /// <returns>An unfinalized hashcode resulting from the combination of <paramref name="value" /> and <paramref name="seed" />.</returns>
         /// <remarks>The output returned by this method is meant to be used as the <c>seed</c> in subsequent calls to <see cref="CombineValue(int, int)" /> or as the <c>value</c> in a call to <see cref="FinalizeValue(int, int)" />.</remarks>
-        [Pure]
         public static int CombineValue(int value, int seed)
         {
             var combinedHashCode = CombinePartialValue(value, seed);
@@ -42,7 +40,6 @@ namespace TerraFX.Utilities
         ///   <para>The output returned by this method is meant to be used as a value in the call to <see cref="FinalizeValue(int, int)" />.</para>
         ///   <para>This method is only meant to be used when there are less than four-bytes remaining in the value to be combined; otherwise, a call to <see cref="CombineValue(int, int)" /> should be made instead.</para>
         /// </remarks>
-        [Pure]
         public static int CombinePartialValue(int partialValue, int seed)
         {
             var combinedHashCode = partialValue;
@@ -138,7 +135,6 @@ namespace TerraFX.Utilities
         /// <param name="combinedValue">The combined value that will be finalized.</param>
         /// <param name="bytesCombined">The total number of bytes that were combined to produce <paramref name="combinedValue" />.</param>
         /// <returns>The finalized hashcode for <paramref name="combinedValue" /> and <paramref name="bytesCombined" />.</returns>
-        [Pure]
         public static int FinalizeValue(int combinedValue, int bytesCombined)
         {
             var finalizedHashCode = combinedValue;
@@ -161,7 +157,6 @@ namespace TerraFX.Utilities
         /// <param name="combinedValue">The combined value that will be finalized.</param>
         /// <param name="bytesCombined">The total number of bytes that were combined to produce <paramref name="combinedValue" />.</param>
         /// <returns>The finalized hashcode for <paramref name="combinedValue" /> and <paramref name="bytesCombined" />.</returns>
-        [Pure]
         public static int FinalizeValue(int combinedValue, uint bytesCombined)
         {
             return FinalizeValue(combinedValue, unchecked((int)bytesCombined));
