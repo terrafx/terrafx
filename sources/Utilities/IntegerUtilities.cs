@@ -1,5 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+using System.Numerics;
+
 namespace TerraFX.Utilities
 {
     /// <summary>Provides a set of methods for manipulating integers.</summary>
@@ -32,7 +34,7 @@ namespace TerraFX.Utilities
         /// <returns>The result of rotating <paramref name="value" /> left <paramref name="bits" /> times.</returns>
         public static uint RotateLeft(uint value, byte bits)
         {
-            return unchecked((value << bits) | (value >> (32 - bits)));
+            return BitOperations.RotateLeft(value, bits);
         }
 
         /// <summary>Rotates an <see cref="ulong" /> value left the specified number of bits.</summary>
@@ -41,7 +43,7 @@ namespace TerraFX.Utilities
         /// <returns>The result of rotating <paramref name="value" /> left <paramref name="bits" /> times.</returns>
         public static ulong RotateLeft(ulong value, byte bits)
         {
-            return unchecked((value << bits) | (value >> (64 - bits)));
+            return BitOperations.RotateLeft(value, bits);
         }
 
         /// <summary>Rotates an <see cref="int" /> value right the specified number of bits.</summary>
@@ -70,7 +72,7 @@ namespace TerraFX.Utilities
         /// <returns>The result of rotating <paramref name="value" /> right <paramref name="bits" /> times.</returns>
         public static uint RotateRight(uint value, byte bits)
         {
-            return unchecked((value >> bits) | (value << (32 - bits)));
+            return BitOperations.RotateRight(value, bits);
         }
 
         /// <summary>Rotates an <see cref="ulong" /> value right the specified number of bits.</summary>
@@ -79,7 +81,7 @@ namespace TerraFX.Utilities
         /// <returns>The result of rotating <paramref name="value" /> right <paramref name="bits" /> times.</returns>
         public static ulong RotateRight(ulong value, byte bits)
         {
-            return unchecked((value >> bits) | (value << (64 - bits)));
+            return BitOperations.RotateRight(value, bits);
         }
         #endregion
     }
