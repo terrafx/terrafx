@@ -4,8 +4,8 @@ using System;
 
 namespace TerraFX.Utilities
 {
-    /// <summary>Provides a set of methods for disposing objects.</summary>
-    public static class DisposeUtilities
+    /// <summary>Provides a set of extension methods for <see cref="Lazy{T}" />.</summary>
+    public static class LazyExtensions
     {
         #region Static Methods
         /// <summary>Disposes of a <see cref="Lazy{T}" /> instance if <see cref="Lazy{T}.IsValueCreated" /> is <c>true</c>.</summary>

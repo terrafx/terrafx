@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Threading;
 using TerraFX.UI;
 using TerraFX.Utilities;
-using static TerraFX.Utilities.DisposeUtilities;
+using static TerraFX.Utilities.LazyExtensions;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
