@@ -196,7 +196,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{48E1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "design", "design", "{33AB5B62-51A9-4248-9672-E1699FBEBD9B}"
 	ProjectSection(SolutionItems) = preProject
-		Overview.md = Overview.md
+		docs\design\Audio.md = docs\design\Audio.md
+		docs\design\Overview.md = docs\design\Overview.md
 	EndProjectSection
 EndProject
 Global
