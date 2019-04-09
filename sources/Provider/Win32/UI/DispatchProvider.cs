@@ -55,7 +55,7 @@ namespace TerraFX.Provider.Win32.UI
         }
         #endregion
 
-        #region TerraFX.UI.IDispatchManager Properties
+        #region TerraFX.UI.IDispatchProvider Properties
         /// <summary>Gets the current <see cref="Timestamp" /> for the instance.</summary>
         /// <exception cref="ExternalException">The call to <see cref="QueryPerformanceCounter(out LARGE_INTEGER)" /> failed.</exception>
         public Timestamp CurrentTimestamp
@@ -86,7 +86,7 @@ namespace TerraFX.Provider.Win32.UI
         }
         #endregion
 
-        #region TerraFX.UI.IDispatchManager Methods
+        #region TerraFX.UI.IDispatchProvider Methods
         /// <summary>Gets the <see cref="IDispatcher" /> instance associated with a <see cref="Thread" />, creating one if it does not exist.</summary>
         /// <param name="thread">The <see cref="Thread" /> for which the <see cref="IDispatcher" /> instance should be retrieved.</param>
         /// <returns>The <see cref="IDispatcher" /> instance associated with <paramref name="thread" />.</returns>
