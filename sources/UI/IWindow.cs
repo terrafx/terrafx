@@ -41,8 +41,8 @@ namespace TerraFX.UI
         /// <summary>Gets the title for the instance.</summary>
         string Title { get; }
 
-        /// <summary>Gets the <see cref="IWindowManager" /> for the instance.</summary>
-        IWindowManager WindowManager { get; }
+        /// <summary>Gets the <see cref="IWindowProvider" /> for the instance.</summary>
+        IWindowProvider WindowProvider { get; }
 
         /// <summary>Gets the <see cref="WindowState" /> for the instance.</summary>
         WindowState WindowState { get; }

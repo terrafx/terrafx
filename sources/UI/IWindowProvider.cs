@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 namespace TerraFX.UI
 {
-    /// <summary>Provides a means of managing the windows created for an application.</summary>
-    public interface IWindowManager
+    /// <summary>Provides access to a window subsystem.</summary>
+    public interface IWindowProvider
     {
         #region Properties
         /// <summary>Gets the <see cref="IWindow" /> objects created by the instance.</summary>

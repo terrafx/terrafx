@@ -5,8 +5,8 @@ using System.Collections.Generic;
 
 namespace TerraFX.Graphics
 {
-    /// <summary>Provides a means of managing the graphics subsystem.</summary>
-    public interface IGraphicsManager
+    /// <summary>Provides access to a graphics subsystem.</summary>
+    public interface IGraphicsProvider
     {
         #region Properties
         /// <summary>Gets the <see cref="IGraphicsAdapter" /> instances currently available.</summary>

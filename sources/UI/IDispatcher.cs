@@ -14,8 +14,8 @@ namespace TerraFX.UI
         #endregion
 
         #region Properties
-        /// <summary>Gets the <see cref="IDispatchManager" /> for the instance.</summary>
-        IDispatchManager DispatchManager { get; }
+        /// <summary>Gets the <see cref="IDispatchProvider" /> for the instance.</summary>
+        IDispatchProvider DispatchProvider { get; }
 
         /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
         Thread ParentThread { get; }

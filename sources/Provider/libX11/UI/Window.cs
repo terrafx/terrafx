@@ -30,8 +30,8 @@ namespace TerraFX.Provider.libX11.UI
         /// <summary>The title for the instance.</summary>
         private readonly string _title;
 
-        /// <summary>The <see cref="WindowManager" /> for the instance.</summary>
-        private readonly WindowManager _windowManager;
+        /// <summary>The <see cref="WindowProvider" /> for the instance.</summary>
+        private readonly WindowProvider _windowProvider;
 
         /// <summary>A <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
         private Rectangle _bounds;
@@ -63,8 +63,8 @@ namespace TerraFX.Provider.libX11.UI
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Window" /> class.</summary>
-        /// <param name="windowManager">The <see cref="WindowManager" /> for the instance.</param>
-        internal Window(WindowManager windowManager)
+        /// <param name="windowProvider">The <see cref="WindowProvider" /> for the instance.</param>
+        internal Window(WindowProvider windowProvider)
         {
             _handle = new Lazy<nuint>(CreateWindowHandle, isThreadSafe: true);
 
@@ -75,7 +75,7 @@ namespace TerraFX.Provider.libX11.UI
             _flowDirection = FlowDirection.TopToBottom;
             _readingDirection = ReadingDirection.LeftToRight;
 
-            _windowManager = windowManager;
+            _windowProvider = windowProvider;
             _state.Transition(to: Initialized);
         }
         #endregion
@@ -179,12 +179,12 @@ namespace TerraFX.Provider.libX11.UI
             }
         }
 
-        /// <summary>Gets the <see cref="IWindowManager" /> for the instance.</summary>
-        public IWindowManager WindowManager
+        /// <summary>Gets the <see cref="IWindowProvider" /> for the instance.</summary>
+        public IWindowProvider WindowProvider
         {
             get
             {
-                return _windowManager;
+                return _windowProvider;
             }
         }
 
@@ -204,7 +204,7 @@ namespace TerraFX.Provider.libX11.UI
         /// <exception cref="ExternalException">The call to <see cref="XCreateWindow(IntPtr, nuint, int, int, uint, uint, uint, int, uint, Visual*, nuint, XSetWindowAttributes*)" /> failed.</exception>
         private nuint CreateWindowHandle()
         {
-            var display = _windowManager.DispatchManager.Display;
+            var display = _windowProvider.DispatchProvider.Display;
 
             var defaultScreen = XDefaultScreenOfDisplay(display);
             var rootWindow = XRootWindowOfScreen(defaultScreen);
@@ -262,7 +262,7 @@ namespace TerraFX.Provider.libX11.UI
 
             if (_handle.IsValueCreated)
             {
-                var display = _windowManager.DispatchManager.Display;
+                var display = _windowProvider.DispatchProvider.Display;
                 XDestroyWindow(display, _handle.Value);
             }
         }
@@ -367,7 +367,7 @@ namespace TerraFX.Provider.libX11.UI
 
             if (_isVisible)
             {
-                var display = _windowManager.DispatchManager.Display;
+                var display = _windowProvider.DispatchProvider.Display;
                 XUnmapWindow(display, _handle.Value);
             }
         }
@@ -380,7 +380,7 @@ namespace TerraFX.Provider.libX11.UI
 
             if (_windowState != WindowState.Maximized)
             {
-                var display = _windowManager.DispatchManager.Display;
+                var display = _windowProvider.DispatchProvider.Display;
                 XGetWindowAttributes(display, _handle.Value, out var windowAttributes);
                 _restoredBounds = new Rectangle(windowAttributes.x, windowAttributes.y, windowAttributes.width, windowAttributes.height);
 
@@ -400,7 +400,7 @@ namespace TerraFX.Provider.libX11.UI
 
             if (_windowState != WindowState.Minimized)
             {
-                var display = _windowManager.DispatchManager.Display;
+                var display = _windowProvider.DispatchProvider.Display;
                 XGetWindowAttributes(display, _handle.Value, out var windowAttributes);
 
                 var screenNumber = XScreenNumberOfScreen(windowAttributes.screen);
@@ -420,7 +420,7 @@ namespace TerraFX.Provider.libX11.UI
             {
                 if (_windowState == WindowState.Maximized)
                 {
-                    var display = _windowManager.DispatchManager.Display;
+                    var display = _windowProvider.DispatchProvider.Display;
                     XMoveResizeWindow(display, _handle.Value, (int)_restoredBounds.X, (int)_restoredBounds.Y, (uint)_restoredBounds.Width, (uint)_restoredBounds.Height);
                 }
 
@@ -437,7 +437,7 @@ namespace TerraFX.Provider.libX11.UI
 
             if (_isVisible == false)
             {
-                var display = _windowManager.DispatchManager.Display;
+                var display = _windowProvider.DispatchProvider.Display;
                 XMapWindow(display, _handle.Value);
             }
 
@@ -452,7 +452,7 @@ namespace TerraFX.Provider.libX11.UI
 
             if (_isActive == false)
             {
-                var display = _windowManager.DispatchManager.Display;
+                var display = _windowProvider.DispatchProvider.Display;
                 XRaiseWindow(display, _handle.Value);
             }
 

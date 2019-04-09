@@ -17,8 +17,8 @@ namespace TerraFX.Provider.D3D12.Graphics
     public sealed unsafe class GraphicsAdapter : IDisposable, IGraphicsAdapter
     {
         #region Fields
-        /// <summary>The <see cref="GraphicsManager" /> for the instance.</summary>
-        private readonly GraphicsManager _graphicsManager;
+        /// <summary>The <see cref="GraphicsProvider" /> for the instance.</summary>
+        private readonly GraphicsProvider _graphicsProvider;
 
         /// <summary>The <see cref="IDXGIAdapter1" /> for the instance.</summary>
         private readonly IDXGIAdapter1* _adapter;
@@ -38,12 +38,12 @@ namespace TerraFX.Provider.D3D12.Graphics
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="GraphicsAdapter" /> class.</summary>
-        /// <param name="graphicsManager">The <see cref="GraphicsManager" /> for the instance.</param>
+        /// <param name="graphicsProvider">The <see cref="GraphicsProvider" /> for the instance.</param>
         /// <param name="adapter">The <see cref="IDXGIAdapter1" /> for the instance.</param>
         /// <exception cref="ExternalException">The call to <see cref="IDXGIAdapter1.GetDesc1(DXGI_ADAPTER_DESC1*)" /> failed.</exception>
-        internal GraphicsAdapter(GraphicsManager graphicsManager, IDXGIAdapter1* adapter)
+        internal GraphicsAdapter(GraphicsProvider graphicsProvider, IDXGIAdapter1* adapter)
         {
-            _graphicsManager = graphicsManager;
+            _graphicsProvider = graphicsProvider;
             _adapter = adapter;
 
             DXGI_ADAPTER_DESC1 desc;
@@ -76,12 +76,12 @@ namespace TerraFX.Provider.D3D12.Graphics
             }
         }
 
-        /// <summary>Gets the <see cref="IGraphicsManager" /> for the instance.</summary>
-        public IGraphicsManager GraphicsManager
+        /// <summary>Gets the <see cref="IGraphicsProvider" /> for the instance.</summary>
+        public IGraphicsProvider GraphicsProvider
         {
             get
             {
-                return _graphicsManager;
+                return _graphicsProvider;
             }
         }
 
@@ -111,7 +111,7 @@ namespace TerraFX.Provider.D3D12.Graphics
         {
             if (state >= Disposing) // (_state == Disposing) || (_state == Disposed)
             {
-                ThrowObjectDisposedException(nameof(GraphicsManager));
+                ThrowObjectDisposedException(nameof(GraphicsProvider));
             }
         }
         #endregion

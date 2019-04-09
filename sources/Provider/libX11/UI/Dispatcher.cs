@@ -13,28 +13,28 @@ namespace TerraFX.Provider.libX11.UI
     public sealed unsafe class Dispatcher : IDispatcher
     {
         #region Fields
-        /// <summary>The <see cref="DispatchManager" /> for the instance.</summary>
-        private readonly DispatchManager _dispatchManager;
+        /// <summary>The <see cref="UI.DispatchProvider" /> for the instance.</summary>
+        private readonly DispatchProvider _dispatchProvider;
 
         /// <summary>The <see cref="Thread" /> that was used to create the instance.</summary>
         private readonly Thread _parentThread;
 
-        /// <summary>The <c>Atom</c> used to access the <c>Window</c> property containing the associated <see cref="WindowManager" />.</summary>
-        private readonly Lazy<nuint> _windowManagerProperty;
+        /// <summary>The <c>Atom</c> used to access the <c>Window</c> property containing the associated <see cref="WindowProvider" />.</summary>
+        private readonly Lazy<nuint> _windowProviderProperty;
         #endregion
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Dispatcher" /> class.</summary>
-        /// <param name="dispatchManager">The <see cref="DispatchManager" /> the instance is associated with.</param>
+        /// <param name="dispatchProvider">The <see cref="DispatchProvider" /> the instance is associated with.</param>
         /// <param name="parentThread">The <see cref="Thread" /> that was used to create the instance.</param>
-        internal Dispatcher(DispatchManager dispatchManager, Thread parentThread)
+        internal Dispatcher(DispatchProvider dispatchProvider, Thread parentThread)
         {
-            Assert(dispatchManager != null, Resources.ArgumentNullExceptionMessage, nameof(dispatchManager));
+            Assert(dispatchProvider != null, Resources.ArgumentNullExceptionMessage, nameof(dispatchProvider));
             Assert(parentThread != null, Resources.ArgumentNullExceptionMessage, nameof(parentThread));
 
-            _dispatchManager = dispatchManager;
+            _dispatchProvider = dispatchProvider;
             _parentThread = parentThread;
-            _windowManagerProperty = new Lazy<nuint>(CreateWindowManagerProperty, isThreadSafe: true);
+            _windowProviderProperty = new Lazy<nuint>(CreateWindowProviderProperty, isThreadSafe: true);
         }
         #endregion
 
@@ -44,11 +44,11 @@ namespace TerraFX.Provider.libX11.UI
         #endregion
 
         #region Methods
-        /// <summary>Creates an <c>Atom</c> for the window manager property.</summary>
-        /// <returns>An <c>Atom</c> for the window manager property.</returns>
-        private nuint CreateWindowManagerProperty()
+        /// <summary>Creates an <c>Atom</c> for the window provider property.</summary>
+        /// <returns>An <c>Atom</c> for the window provider property.</returns>
+        private nuint CreateWindowProviderProperty()
         {
-            var display = _dispatchManager.Display;
+            var display = _dispatchProvider.Display;
 
             var name = stackalloc ulong[6];
             {
@@ -75,12 +75,12 @@ namespace TerraFX.Provider.libX11.UI
         #endregion
 
         #region TerraFX.UI.IDispatcher Properties
-        /// <summary>Gets the <see cref="IDispatchManager" /> associated with the instance.</summary>
-        public IDispatchManager DispatchManager
+        /// <summary>Gets the <see cref="IDispatchProvider" /> associated with the instance.</summary>
+        public IDispatchProvider DispatchProvider
         {
             get
             {
-                return _dispatchManager;
+                return _dispatchProvider;
             }
         }
 
@@ -89,7 +89,7 @@ namespace TerraFX.Provider.libX11.UI
         {
             get
             {
-                return (IntPtr)_windowManagerProperty.Value;
+                return (IntPtr)_windowProviderProperty.Value;
             }
         }
 
@@ -115,7 +115,7 @@ namespace TerraFX.Provider.libX11.UI
         {
             ThrowIfNotThread(_parentThread);
 
-            var display = _dispatchManager.Display;
+            var display = _dispatchProvider.Display;
 
             while (XPending(display) != 0)
             {
@@ -123,7 +123,7 @@ namespace TerraFX.Provider.libX11.UI
 
                 if (xevent.type != NoExpose)
                 {
-                    WindowManager.ForwardWindowEvent(_windowManagerProperty.Value, in xevent);
+                    WindowProvider.ForwardWindowEvent(_windowProviderProperty.Value, in xevent);
                 }
             }
         }

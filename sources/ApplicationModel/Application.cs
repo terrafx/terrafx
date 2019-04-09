@@ -124,9 +124,9 @@ namespace TerraFX.ApplicationModel
 
             _state.Transition(from: Stopped, to: Running);
             {
-                var dispatchManager = _compositionHost.Value.GetExport<IDispatchManager>();
-                var dispatcher = dispatchManager.DispatcherForCurrentThread;
-                var previousTimestamp = dispatchManager.CurrentTimestamp;
+                var dispatchProvider = _compositionHost.Value.GetExport<IDispatchProvider>();
+                var dispatcher = dispatchProvider.DispatcherForCurrentThread;
+                var previousTimestamp = dispatchProvider.CurrentTimestamp;
 
                 // We need to do an initial dispatch to cover the case where a quit
                 // message was posted before the message pump was started, otherwise
@@ -137,7 +137,7 @@ namespace TerraFX.ApplicationModel
 
                 while (_state == Running)
                 {
-                    var currentTimestamp = dispatchManager.CurrentTimestamp;
+                    var currentTimestamp = dispatchProvider.CurrentTimestamp;
                     {
                         var delta = currentTimestamp - previousTimestamp;
                         OnIdle(delta);

@@ -15,15 +15,15 @@ using static TerraFX.Utilities.State;
 
 namespace TerraFX.Provider.libX11.UI
 {
-    /// <summary>Provides a means of managing the windows created for an application.</summary>
-    [Export(typeof(IWindowManager))]
-    [Export(typeof(WindowManager))]
+    /// <summary>Provides access to an X11 based window subsystem.</summary>
+    [Export(typeof(IWindowProvider))]
+    [Export(typeof(WindowProvider))]
     [Shared]
-    public sealed unsafe class WindowManager : IDisposable, IWindowManager
+    public sealed unsafe class WindowProvider : IDisposable, IWindowProvider
     {
         #region Fields
-        /// <summary>The <see cref="DispatchManager" /> for the instance.</summary>
-        private readonly Lazy<DispatchManager> _dispatchManager;
+        /// <summary>The <see cref="DispatchProvider" /> for the instance.</summary>
+        private readonly Lazy<DispatchProvider> _dispatchProvider;
 
         /// <summary>A map of <c>Window</c> to <see cref="Window" /> objects created for the instance.</summary>
         private readonly ConcurrentDictionary<IntPtr, Window> _windows;
@@ -33,39 +33,39 @@ namespace TerraFX.Provider.libX11.UI
         #endregion
 
         #region Constructors
-        /// <summary>Initializes a new instance of the <see cref="WindowManager" /> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="WindowProvider" /> class.</summary>
         [ImportingConstructor]
-        public WindowManager(
-            [Import] Lazy<DispatchManager> dispatchManager
+        public WindowProvider(
+            [Import] Lazy<DispatchProvider> dispatchProvider
         )
         {
-            _dispatchManager = dispatchManager;
+            _dispatchProvider = dispatchProvider;
             _windows = new ConcurrentDictionary<IntPtr, Window>();
             _state.Transition(to: Initialized);
         }
         #endregion
 
         #region Destructors
-        /// <summary>Finalizes an instance of the <see cref="WindowManager" /> class.</summary>
-        ~WindowManager()
+        /// <summary>Finalizes an instance of the <see cref="WindowProvider" /> class.</summary>
+        ~WindowProvider()
         {
             Dispose(isDisposing: false);
         }
         #endregion
 
         #region Properties
-        /// <summary>Gets the <see cref="DispatchManager" /> for the instance.</summary>
-        public DispatchManager DispatchManager
+        /// <summary>Gets the <see cref="DispatchProvider" /> for the instance.</summary>
+        public DispatchProvider DispatchProvider
         {
             get
             {
                 _state.ThrowIfDisposedOrDisposing();
-                return _dispatchManager.Value;
+                return _dispatchProvider.Value;
             }
         }
         #endregion
 
-        #region TerraFX.UI.IWindowManager Properties
+        #region TerraFX.UI.IWindowProvider Properties
         /// <summary>Gets the <see cref="IWindow" /> objects created by the instance.</summary>
         public IEnumerable<IWindow> Windows
         {
@@ -78,15 +78,15 @@ namespace TerraFX.Provider.libX11.UI
 
         #region Static Methods
         /// <summary>Forwards native window messages to the appropriate <see cref="Window" /> instance for processing.</summary>
-        /// <param name="windowManagerProperty">The property used to get the <see cref="WindowManager" /> associated with the event.</param>
+        /// <param name="windowProviderProperty">The property used to get the <see cref="WindowProvider" /> associated with the event.</param>
         /// <param name="xevent">The event to be processed.</param>
         /// <exception cref="ExternalException">The call to <see cref="XGetWindowProperty(IntPtr, nuint, nuint, nint, nint, int, nuint, out nuint, out int, out nuint, out nuint, out byte*)" /> failed.</exception>
-        internal static void ForwardWindowEvent(nuint windowManagerProperty, in XEvent xevent)
+        internal static void ForwardWindowEvent(nuint windowProviderProperty, in XEvent xevent)
         {
             var result = XGetWindowProperty(
                 xevent.xany.display,
                 xevent.xany.window,
-                windowManagerProperty,
+                windowProviderProperty,
                 long_offset: 0,
                 long_length: IntPtr.Size >> 2,
                 delete: False,
@@ -103,9 +103,9 @@ namespace TerraFX.Provider.libX11.UI
                 ThrowExternalException(nameof(XGetWindowProperty), result);
             }
 
-            var windowManager = (WindowManager)GCHandle.FromIntPtr((IntPtr)prop).Target;
+            var windowProvider = (WindowProvider)GCHandle.FromIntPtr((IntPtr)prop).Target;
 
-            if (windowManager._windows.TryGetValue((IntPtr)xevent.xany.window, out var window))
+            if (windowProvider._windows.TryGetValue((IntPtr)xevent.xany.window, out var window))
             {
                 window.ProcessWindowEvent(in xevent);
             }
@@ -161,7 +161,7 @@ namespace TerraFX.Provider.libX11.UI
         }
         #endregion
 
-        #region TerraFX.UI.IWindowManager Methods
+        #region TerraFX.UI.IWindowProvider Methods
         /// <summary>Create a new <see cref="IWindow"/> instance.</summary>
         /// <returns>A new <see cref="IWindow" /> instance</returns>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>

@@ -13,11 +13,11 @@ using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Provider.Win32.UI
 {
-    /// <summary>Provides a means of managing the message dispatch objects for an application.</summary>
-    [Export(typeof(IDispatchManager))]
-    [Export(typeof(DispatchManager))]
+    /// <summary>Provides access to a Win32 based dispatch subsystem.</summary>
+    [Export(typeof(IDispatchProvider))]
+    [Export(typeof(DispatchProvider))]
     [Shared]
-    public sealed unsafe class DispatchManager : IDispatchManager
+    public sealed unsafe class DispatchProvider : IDispatchProvider
     {
         #region Fields
         /// <summary>The tick frequency for the system's monotonic timer.</summary>
@@ -28,9 +28,9 @@ namespace TerraFX.Provider.Win32.UI
         #endregion
 
         #region Constructors
-        /// <summary>Initializes a new instance of the <see cref="DispatchManager" /> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="DispatchProvider" /> class.</summary>
         /// <exception cref="ExternalException">The call to <see cref="QueryPerformanceFrequency(out LARGE_INTEGER)" /> failed.</exception>
-        public DispatchManager()
+        public DispatchProvider()
         {
             _tickFrequency = GetTickFrequency();
             _dispatchers = new ConcurrentDictionary<Thread, IDispatcher>();

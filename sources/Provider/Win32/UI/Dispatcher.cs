@@ -15,8 +15,8 @@ namespace TerraFX.Provider.Win32.UI
     public sealed unsafe class Dispatcher : IDispatcher
     {
         #region Fields
-        /// <summary>The <see cref="DispatchManager" /> for the instance.</summary>
-        private readonly DispatchManager _dispatchManager;
+        /// <summary>The <see cref="DispatchProvider" /> for the instance.</summary>
+        private readonly DispatchProvider _dispatchProvider;
 
         /// <summary>The <see cref="Thread" /> that was used to create the instance.</summary>
         private readonly Thread _parentThread;
@@ -24,14 +24,14 @@ namespace TerraFX.Provider.Win32.UI
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Dispatcher" /> class.</summary>
-        /// <param name="dispatchManager">The <see cref="DispatchManager" /> for the instance.</param>
+        /// <param name="dispatchProvider">The <see cref="DispatchProvider" /> for the instance.</param>
         /// <param name="parentThread">The <see cref="Thread" /> that was used to create the instance.</param>
-        internal Dispatcher(DispatchManager dispatchManager, Thread parentThread)
+        internal Dispatcher(DispatchProvider dispatchProvider, Thread parentThread)
         {
-            Assert(dispatchManager != null, Resources.ArgumentNullExceptionMessage, nameof(dispatchManager));
+            Assert(dispatchProvider != null, Resources.ArgumentNullExceptionMessage, nameof(dispatchProvider));
             Assert(parentThread != null, Resources.ArgumentNullExceptionMessage, nameof(parentThread));
 
-            _dispatchManager = dispatchManager;
+            _dispatchProvider = dispatchProvider;
             _parentThread = parentThread;
         }
         #endregion
@@ -50,12 +50,12 @@ namespace TerraFX.Provider.Win32.UI
         #endregion
 
         #region TerraFX.UI.IDispatcher Properties
-        /// <summary>Gets the <see cref="IDispatchManager" /> for the instance.</summary>
-        public IDispatchManager DispatchManager
+        /// <summary>Gets the <see cref="IDispatchProvider" /> for the instance.</summary>
+        public IDispatchProvider DispatchProvider
         {
             get
             {
-                return _dispatchManager;
+                return _dispatchProvider;
             }
         }
 

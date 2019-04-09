@@ -19,11 +19,11 @@ using static TerraFX.Utilities.State;
 
 namespace TerraFX.Provider.Win32.UI
 {
-    /// <summary>Provides a means of managing the windows created for an application.</summary>
-    [Export(typeof(IWindowManager))]
-    [Export(typeof(WindowManager))]
+    /// <summary>Provides access to a Win32 based window subsystem.</summary>
+    [Export(typeof(IWindowProvider))]
+    [Export(typeof(WindowProvider))]
     [Shared]
-    public sealed unsafe class WindowManager : IDisposable, IWindowManager
+    public sealed unsafe class WindowProvider : IDisposable, IWindowProvider
     {
         #region Static Fields
         /// <summary>A <c>HMODULE</c> to the entry point module.</summary>
@@ -37,8 +37,8 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>The <c>ATOM</c> of the <see cref="WNDCLASSEX" /> registered for the instance.</summary>
         private readonly Lazy<ushort> _classAtom;
 
-        /// <summary>The <see cref="DispatchManager" /> for the instance.</summary>
-        private readonly Lazy<DispatchManager> _dispatchManager;
+        /// <summary>The <see cref="DispatchProvider" /> for the instance.</summary>
+        private readonly Lazy<DispatchProvider> _dispatchProvider;
 
         /// <summary>The <see cref="GCHandle" /> containing the native handle for the instance.</summary>
         private readonly Lazy<GCHandle> _nativeHandle;
@@ -51,14 +51,14 @@ namespace TerraFX.Provider.Win32.UI
         #endregion
 
         #region Constructors
-        /// <summary>Initializes a new instance of the <see cref="WindowManager" /> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="WindowProvider" /> class.</summary>
         [ImportingConstructor]
-        public WindowManager(
-            [Import] Lazy<DispatchManager> dispatchManager
+        public WindowProvider(
+            [Import] Lazy<DispatchProvider> dispatchProvider
         )
         {
             _classAtom = new Lazy<ushort>(CreateClassAtom, isThreadSafe: true);
-            _dispatchManager = dispatchManager;
+            _dispatchProvider = dispatchProvider;
             _nativeHandle = new Lazy<GCHandle>(() => GCHandle.Alloc(this, GCHandleType.Normal), isThreadSafe: true);
 
             _windows = new ConcurrentDictionary<IntPtr, Window>();
@@ -67,8 +67,8 @@ namespace TerraFX.Provider.Win32.UI
         #endregion
 
         #region Destructors
-        /// <summary>Finalizes an instance of the <see cref="WindowManager" /> class.</summary>
-        ~WindowManager()
+        /// <summary>Finalizes an instance of the <see cref="WindowProvider" /> class.</summary>
+        ~WindowProvider()
         {
             Dispose(isDisposing: false);
         }
@@ -84,13 +84,13 @@ namespace TerraFX.Provider.Win32.UI
             }
         }
 
-        /// <summary>Gets the <see cref="DispatchManager" /> for the instance.</summary>
-        public DispatchManager DispatchManager
+        /// <summary>Gets the <see cref="DispatchProvider" /> for the instance.</summary>
+        public DispatchProvider DispatchProvider
         {
             get
             {
                 _state.ThrowIfDisposedOrDisposing();
-                return _dispatchManager.Value;
+                return _dispatchProvider.Value;
             }
         }
 
@@ -105,7 +105,7 @@ namespace TerraFX.Provider.Win32.UI
         }
         #endregion
 
-        #region TerraFX.UI.IWindowManager Properties
+        #region TerraFX.UI.IWindowProvider Properties
         /// <summary>Gets the <see cref="IWindow" /> objects created by the instance.</summary>
         public IEnumerable<IWindow> Windows
         {
@@ -143,14 +143,14 @@ namespace TerraFX.Provider.Win32.UI
             }
 
             // We are assuming that userData will definitely be set here and that it will be set
-            // to a GCHandle for a WindowManager instance. It is certainly possible, although unsupported,
+            // to a GCHandle for a WindowProvider instance. It is certainly possible, although unsupported,
             // for a user to get our registered class information and to create a new window from that
             // without passing in a GCHandle as the lParam to CreateWindowEx. We will just fail
             // by allowing the runtime to throw an exception in that scenario.
 
-            var windowManager = (WindowManager)GCHandle.FromIntPtr(userData).Target;
+            var windowProvider = (WindowProvider)GCHandle.FromIntPtr(userData).Target;
 
-            if (windowManager._windows.TryGetValue(hWnd, out var window))
+            if (windowProvider._windows.TryGetValue(hWnd, out var window))
             {
                 if (Msg == WM_DESTROY)
                 {
@@ -158,7 +158,7 @@ namespace TerraFX.Provider.Win32.UI
                     // so that it can still be properly disposed of in the scenario that the
                     // hWnd was destroyed externally.
 
-                    windowManager._windows.TryRemove(hWnd, out window);
+                    windowProvider._windows.TryRemove(hWnd, out window);
                 }
 
                 result = window.ProcessWindowMessage(Msg, wParam, lParam);
@@ -328,7 +328,7 @@ namespace TerraFX.Provider.Win32.UI
         }
         #endregion
 
-        #region TerraFX.UI.IWindowManager Methods
+        #region TerraFX.UI.IWindowProvider Methods
         /// <summary>Create a new <see cref="IWindow"/> instance.</summary>
         /// <returns>A new <see cref="IWindow" /> instance</returns>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>

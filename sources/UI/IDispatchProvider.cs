@@ -5,8 +5,8 @@ using System.Threading;
 
 namespace TerraFX.UI
 {
-    /// <summary>Provides a means of managing the message dispatch objects for an application.</summary>
-    public interface IDispatchManager
+    /// <summary>Provides access to a dispatch subsystem.</summary>
+    public interface IDispatchProvider
     {
         #region Properties
         /// <summary>Gets the current <see cref="Timestamp" /> for the instance.</summary>

@@ -18,11 +18,11 @@ using static TerraFX.Utilities.State;
 
 namespace TerraFX.Provider.Vulkan.Graphics
 {
-    /// <summary>Provides a means of managing the graphics subsystem.</summary>
-    [Export(typeof(IGraphicsManager))]
-    [Export(typeof(GraphicsManager))]
+    /// <summary>Provides access to a Vulkan based graphics subsystem.</summary>
+    [Export(typeof(IGraphicsProvider))]
+    [Export(typeof(GraphicsProvider))]
     [Shared]
-    public sealed unsafe class GraphicsManager : IDisposable, IGraphicsManager
+    public sealed unsafe class GraphicsProvider : IDisposable, IGraphicsProvider
     {
         #region Fields
         /// <summary>The Vulkan instance.</summary>
@@ -36,11 +36,11 @@ namespace TerraFX.Provider.Vulkan.Graphics
         #endregion
 
         #region Constructors
-        /// <summary>Initializes a new instance of the <see cref="GraphicsManager" /> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="GraphicsProvider" /> class.</summary>
         /// <exception cref="ExternalException">The call to <see cref="vkCreateInstance(in VkInstanceCreateInfo, VkAllocationCallbacks*, out IntPtr)" /> failed.</exception>
         /// <exception cref="ExternalException">The call to <see cref="vkEnumeratePhysicalDevices(IntPtr, uint*, IntPtr*)" /> failed.</exception>
         [ImportingConstructor]
-        public GraphicsManager()
+        public GraphicsProvider()
         {
             _instance = new Lazy<IntPtr>(CreateInstance, isThreadSafe: true);
             _adapters = new Lazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters, isThreadSafe: true);
@@ -49,14 +49,14 @@ namespace TerraFX.Provider.Vulkan.Graphics
         #endregion
 
         #region Destructors
-        /// <summary>Finalizes an instance of the <see cref="GraphicsManager" /> class.</summary>
-        ~GraphicsManager()
+        /// <summary>Finalizes an instance of the <see cref="GraphicsProvider" /> class.</summary>
+        ~GraphicsProvider()
         {
             Dispose(isDisposing: false);
         }
         #endregion
 
-        #region TerraFX.Graphics.IGraphicsManager Properties
+        #region TerraFX.Graphics.IGraphicsProvider Properties
         /// <summary>Gets the <see cref="IGraphicsAdapter" /> instances currently available.</summary>
         public IEnumerable<IGraphicsAdapter> GraphicsAdapters
         {

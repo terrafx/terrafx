@@ -12,7 +12,7 @@ using TerraFX.Utilities;
 using static TerraFX.Interop.User32;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Interop.Desktop.User32;
-using static TerraFX.Provider.Win32.UI.WindowManager;
+using static TerraFX.Provider.Win32.UI.WindowProvider;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
@@ -35,8 +35,8 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>The title for the instance.</summary>
         private string _title;
 
-        /// <summary>The <see cref="WindowManager" /> for the instance.</summary>
-        private readonly WindowManager _windowManager;
+        /// <summary>The <see cref="WindowProvider" /> for the instance.</summary>
+        private readonly WindowProvider _windowProvider;
 
         /// <summary>A <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
         private Rectangle _bounds;
@@ -65,8 +65,8 @@ namespace TerraFX.Provider.Win32.UI
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Window" /> class.</summary>
-        /// <param name="windowManager">The <see cref="WindowManager" /> for the instance.</param>
-        internal Window(WindowManager windowManager)
+        /// <param name="windowProvider">The <see cref="WindowProvider" /> for the instance.</param>
+        internal Window(WindowProvider windowProvider)
         {
             _handle = new Lazy<IntPtr>(CreateWindowHandle, isThreadSafe: true);
 
@@ -77,7 +77,7 @@ namespace TerraFX.Provider.Win32.UI
             _flowDirection = FlowDirection.TopToBottom;
             _readingDirection = ReadingDirection.LeftToRight;
 
-            _windowManager = windowManager;
+            _windowProvider = windowProvider;
             _state.Transition(to: Initialized);
         }
         #endregion
@@ -181,12 +181,12 @@ namespace TerraFX.Provider.Win32.UI
             }
         }
 
-        /// <summary>Gets the <see cref="IWindowManager" /> for the instance.</summary>
-        public IWindowManager WindowManager
+        /// <summary>Gets the <see cref="IWindowProvider" /> for the instance.</summary>
+        public IWindowProvider WindowProvider
         {
             get
             {
-                return _windowManager;
+                return _windowProvider;
             }
         }
 
@@ -278,7 +278,7 @@ namespace TerraFX.Provider.Win32.UI
             {
                 hWnd = CreateWindowEx(
                     windowStyleEx,
-                    (char*)_windowManager.ClassAtom,
+                    (char*)_windowProvider.ClassAtom,
                     lpWindowName,
                     windowStyle,
                     X: float.IsNaN(Bounds.X) ? CW_USEDEFAULT : (int)Bounds.X,
@@ -288,7 +288,7 @@ namespace TerraFX.Provider.Win32.UI
                     hWndParent: default,
                     hMenu: default,
                     hInstance: EntryPointModule,
-                    lpParam: GCHandle.ToIntPtr(_windowManager.NativeHandle).ToPointer()
+                    lpParam: GCHandle.ToIntPtr(_windowProvider.NativeHandle).ToPointer()
                 );
             }
 

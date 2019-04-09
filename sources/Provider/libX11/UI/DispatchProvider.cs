@@ -16,11 +16,11 @@ using static TerraFX.Utilities.State;
 
 namespace TerraFX.Provider.libX11.UI
 {
-    /// <summary>Provides a means of managing the message dispatch objects for an application.</summary>
-    [Export(typeof(IDispatchManager))]
-    [Export(typeof(DispatchManager))]
+    /// <summary>Provides access to an X11 based dispatch subsystem.</summary>
+    [Export(typeof(IDispatchProvider))]
+    [Export(typeof(DispatchProvider))]
     [Shared]
-    public sealed unsafe class DispatchManager : IDisposable, IDispatchManager
+    public sealed unsafe class DispatchProvider : IDisposable, IDispatchProvider
     {
         #region Fields
         /// <summary>The <c>Display</c> that was created for the instance.</summary>
@@ -34,9 +34,9 @@ namespace TerraFX.Provider.libX11.UI
         #endregion
 
         #region Constructors
-        /// <summary>Initializes a new instance of the <see cref="DispatchManager" /> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="DispatchProvider" /> class.</summary>
         [ImportingConstructor]
-        public DispatchManager()
+        public DispatchProvider()
         {
             _display = new Lazy<IntPtr>(CreateDisplay, isThreadSafe: true);
             _dispatchers = new ConcurrentDictionary<Thread, IDispatcher>();
@@ -45,8 +45,8 @@ namespace TerraFX.Provider.libX11.UI
         #endregion
 
         #region Destructors
-        /// <summary>Finalizes an instance of the <see cref="DispatchManager" /> class.</summary>
-        ~DispatchManager()
+        /// <summary>Finalizes an instance of the <see cref="DispatchProvider" /> class.</summary>
+        ~DispatchProvider()
         {
             Dispose(isDisposing: false);
         }
@@ -63,7 +63,7 @@ namespace TerraFX.Provider.libX11.UI
         }
         #endregion
 
-        #region TerraFX.UI.IDispatchManager Properties
+        #region TerraFX.UI.IDispatchProvider Properties
         /// <summary>Gets the current <see cref="Timestamp" /> for the instance.</summary>
         public Timestamp CurrentTimestamp
         {
@@ -154,7 +154,7 @@ namespace TerraFX.Provider.libX11.UI
         }
         #endregion
 
-        #region TerraFX.UI.IDispatchManager Methods
+        #region TerraFX.UI.IDispatchProvider Methods
         /// <summary>Gets the <see cref="IDispatcher" /> instance associated with a <see cref="Thread" />, creating one if it does not exist.</summary>
         /// <param name="thread">The <see cref="Thread" /> for which the <see cref="IDispatcher" /> instance should be retrieved.</param>
         /// <returns>The <see cref="IDispatcher" /> instance associated with <paramref name="thread" />.</returns>

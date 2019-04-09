@@ -21,9 +21,9 @@ namespace TerraFX.Samples.Graphics
         {
             var application = (Application)sender;
             {
-                var graphicsManager = application.GetService<IGraphicsManager>();
+                var graphicsProvider = application.GetService<IGraphicsProvider>();
 
-                foreach (var graphicsAdapter in graphicsManager.GraphicsAdapters)
+                foreach (var graphicsAdapter in graphicsProvider.GraphicsAdapters)
                 {
                     Console.WriteLine($"    Name: {graphicsAdapter.DeviceName}");
                     Console.WriteLine($"        Device ID: {graphicsAdapter.DeviceId}");

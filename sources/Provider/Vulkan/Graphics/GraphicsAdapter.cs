@@ -14,8 +14,8 @@ namespace TerraFX.Provider.Vulkan.Graphics
     public sealed unsafe class GraphicsAdapter : IGraphicsAdapter
     {
         #region Fields
-        /// <summary>The <see cref="GraphicsManager" /> for the instance.</summary>
-        private readonly GraphicsManager _graphicsManager;
+        /// <summary>The <see cref="GraphicsProvider" /> for the instance.</summary>
+        private readonly GraphicsProvider _graphicsProvider;
 
         /// <summary>The Vulkan device for the instance.</summary>
         private readonly IntPtr _physicalDevice;
@@ -32,11 +32,11 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="GraphicsAdapter" /> class.</summary>
-        /// <param name="graphicsManager">The <see cref="GraphicsManager" /> for the instance.</param>
+        /// <param name="graphicsProvider">The <see cref="GraphicsProvider" /> for the instance.</param>
         /// <param name="physicalDevice">The Vulkan device for the instance.</param>
-        internal GraphicsAdapter(GraphicsManager graphicsManager, IntPtr physicalDevice)
+        internal GraphicsAdapter(GraphicsProvider graphicsProvider, IntPtr physicalDevice)
         {
-            _graphicsManager = graphicsManager;
+            _graphicsProvider = graphicsProvider;
             _physicalDevice = physicalDevice;
 
             VkPhysicalDeviceProperties properties;
@@ -67,12 +67,12 @@ namespace TerraFX.Provider.Vulkan.Graphics
             }
         }
 
-        /// <summary>Gets the <see cref="IGraphicsManager" /> for the instance.</summary>
-        public IGraphicsManager GraphicsManager
+        /// <summary>Gets the <see cref="IGraphicsProvider" /> for the instance.</summary>
+        public IGraphicsProvider GraphicsProvider
         {
             get
             {
-                return _graphicsManager;
+                return _graphicsProvider;
             }
         }
 

@@ -14,8 +14,8 @@ namespace TerraFX.Graphics
         /// <summary>Gets the name of the device.</summary>
         string DeviceName { get; }
 
-        /// <summary>Gets the <see cref="IGraphicsManager" /> for the instance.</summary>
-        IGraphicsManager GraphicsManager { get; }
+        /// <summary>Gets the <see cref="IGraphicsProvider" /> for the instance.</summary>
+        IGraphicsProvider GraphicsProvider { get; }
 
         /// <summary>Gets the underlying handle for the instance.</summary>
         IntPtr Handle { get; }
