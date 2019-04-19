@@ -1,4 +1,4 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28721.148
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -200,6 +200,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "design", "design", "{33AB5B
 		docs\design\Overview.md = docs\design\Overview.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerraFX.Audio", "sources\Audio\TerraFX.Audio.csproj", "{C3BA7677-7F56-446B-971F-36F3EAEC434E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -326,6 +328,10 @@ Global
 		{1E2FD09A-6C12-439A-A6E0-E4F0FE24AE42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E2FD09A-6C12-439A-A6E0-E4F0FE24AE42}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E2FD09A-6C12-439A-A6E0-E4F0FE24AE42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3BA7677-7F56-446B-971F-36F3EAEC434E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3BA7677-7F56-446B-971F-36F3EAEC434E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3BA7677-7F56-446B-971F-36F3EAEC434E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3BA7677-7F56-446B-971F-36F3EAEC434E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -397,6 +403,7 @@ Global
 		{07436576-8F5B-4B59-9EE9-B47ED375FF4D} = {EFB05081-EC44-49D3-B6D1-52AE42085B5B}
 		{1E2FD09A-6C12-439A-A6E0-E4F0FE24AE42} = {07436576-8F5B-4B59-9EE9-B47ED375FF4D}
 		{33AB5B62-51A9-4248-9672-E1699FBEBD9B} = {8793898A-6542-4606-AA82-AB14151D2D20}
+		{C3BA7677-7F56-446B-971F-36F3EAEC434E} = {0B821858-8E47-4485-AC06-D2E971A53EB2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2FE36DF8-2D9C-4F20-8787-45DC74B57461}
