@@ -266,7 +266,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                         {
                             ThrowIfFailed(nameof(IDXGISwapChain3.GetBuffer), _swapChain->GetBuffer(n, &iid, (void**)&renderTarget));
                             _device->CreateRenderTargetView(renderTarget, null, rtvHandle);
-                            rtvHandle.ptr += _rtvDescriptorSize;
+                            rtvHandle.ptr = (UIntPtr)((byte*)rtvHandle.ptr + _rtvDescriptorSize);
                         }
                         _renderTargets[unchecked((int)n)] = renderTarget;
                     }
@@ -524,8 +524,8 @@ namespace TerraFX.Samples.DirectX.D3D12
                     // Copy the triangle data to the vertex buffer.
                     byte* pVertexDataBegin;
                     var readRange = new D3D12_RANGE {       // We do not intend to read from this resource on the CPU.
-                        Begin = 0,
-                        End = 0
+                        Begin = UIntPtr.Zero,
+                        End = UIntPtr.Zero
                     };
                     ThrowIfFailed(nameof(ID3D12Resource._Map), _vertexBuffer->Map(0, &readRange, (void**)&pVertexDataBegin));
                     Unsafe.CopyBlock(pVertexDataBegin, triangleVertices, vertexBufferSize);
@@ -623,7 +623,7 @@ namespace TerraFX.Samples.DirectX.D3D12
 
             D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
             _rtvHeap->GetCPUDescriptorHandleForHeapStart(&rtvHandle);
-            rtvHandle.ptr += _frameIndex * _rtvDescriptorSize;
+            rtvHandle.ptr = (UIntPtr)((byte*)rtvHandle.ptr + _frameIndex * _rtvDescriptorSize);
             _commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, null);
 
             // Record commands.

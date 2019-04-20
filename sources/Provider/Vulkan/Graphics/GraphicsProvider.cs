@@ -1,6 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
@@ -42,7 +43,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
         [ImportingConstructor]
         public GraphicsProvider()
         {
-            _instance = new Lazy<IntPtr>(CreateInstance, isThreadSafe: true);
+            _instance = new Lazy<IntPtr>((Func<IntPtr>)CreateInstance, isThreadSafe: true);
             _adapters = new Lazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters, isThreadSafe: true);
             _state.Transition(to: Initialized);
         }

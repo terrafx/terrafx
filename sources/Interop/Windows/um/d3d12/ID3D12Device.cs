@@ -179,7 +179,7 @@ namespace TerraFX.Interop
             [In] ID3D12Device* This,
             [In, NativeTypeName("UINT")] uint NodeMask,
             [In] void* pBlobWithRootSignature,
-            [In, NativeTypeName("SIZE_T")] nuint blobLengthInBytes,
+            [In, NativeTypeName("SIZE_T")] UIntPtr blobLengthInBytes,
             [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvRootSignature
         );
@@ -732,7 +732,7 @@ namespace TerraFX.Interop
         public int CreateRootSignature(
             [In, NativeTypeName("UINT")] uint NodeMask,
             [In] void* pBlobWithRootSignature,
-            [In, NativeTypeName("SIZE_T")] nuint blobLengthInBytes,
+            [In, NativeTypeName("SIZE_T")] UIntPtr blobLengthInBytes,
             [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvRootSignature
         )

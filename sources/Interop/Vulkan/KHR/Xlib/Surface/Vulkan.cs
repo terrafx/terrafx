@@ -37,7 +37,7 @@ namespace TerraFX.Interop
             [In, NativeTypeName("VkPhysicalDevice")] IntPtr physicalDevice,
             [In] uint queueFamilyIndex,
             [In, NativeTypeName("Display")] IntPtr dpy,
-            [In, NativeTypeName("VisualID")] nuint visualID
+            [In, NativeTypeName("VisualID")] UIntPtr visualID
         );
         #endregion
     }

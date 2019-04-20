@@ -102,10 +102,10 @@ namespace TerraFX.Samples.DirectX.D3D12
         }
 
         // Main message handler for the sample
-        private static nint WindowProc(IntPtr hWnd, uint message, nuint wParam, nint lParam)
+        private static IntPtr WindowProc(IntPtr hWnd, uint message, UIntPtr wParam, IntPtr lParam)
         {
             var handle = GetWindowLongPtr(hWnd, GWLP_USERDATA);
-            var pSample = (handle != 0) ? (DXSample)GCHandle.FromIntPtr(handle).Target : null;
+            var pSample = (handle != IntPtr.Zero) ? (DXSample)GCHandle.FromIntPtr(handle).Target : null;
 
             switch (message)
             {
@@ -113,20 +113,20 @@ namespace TerraFX.Samples.DirectX.D3D12
                 {
                     // Save the DXSample* passed in to CreateWindow.
                     var pCreateStruct = (CREATESTRUCT*)lParam;
-                    SetWindowLongPtr(hWnd, GWLP_USERDATA, (nint)pCreateStruct->lpCreateParams);
+                    SetWindowLongPtr(hWnd, GWLP_USERDATA, (IntPtr)pCreateStruct->lpCreateParams);
                 }
-                return 0;
+                return IntPtr.Zero;
 
                 case WM_KEYDOWN:
                 {
                     pSample?.OnKeyDown((byte)wParam);
-                    return 0;
+                    return IntPtr.Zero;
                 }
 
                 case WM_KEYUP:
                 {
                     pSample?.OnKeyUp((byte)wParam);
-                    return 0;
+                    return IntPtr.Zero;
                 }
 
                 case WM_PAINT:
@@ -136,13 +136,13 @@ namespace TerraFX.Samples.DirectX.D3D12
                         pSample.OnUpdate();
                         pSample.OnRender();
                     }
-                    return 0;
+                    return IntPtr.Zero;
                 }
 
                 case WM_DESTROY:
                 {
                     PostQuitMessage(0);
-                    return 0;
+                    return IntPtr.Zero;
                 }
             }
 

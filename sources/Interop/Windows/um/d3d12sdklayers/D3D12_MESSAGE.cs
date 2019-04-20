@@ -3,6 +3,7 @@
 // Ported from um\d3d12sdklayers.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -21,7 +22,7 @@ namespace TerraFX.Interop
         public sbyte* pDescription;
 
         [NativeTypeName("SIZE_T")]
-        public nuint DescriptionByteLength;
+        public UIntPtr DescriptionByteLength;
         #endregion
     }
 }

@@ -38,7 +38,7 @@ namespace TerraFX.Provider.libX11.UI
         [ImportingConstructor]
         public DispatchProvider()
         {
-            _display = new Lazy<IntPtr>(CreateDisplay, isThreadSafe: true);
+            _display = new Lazy<IntPtr>((Func<IntPtr>)CreateDisplay, isThreadSafe: true);
             _dispatchers = new ConcurrentDictionary<Thread, IDispatcher>();
             _state.Transition(to: Initialized);
         }

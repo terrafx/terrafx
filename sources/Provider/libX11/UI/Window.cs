@@ -19,7 +19,7 @@ namespace TerraFX.Provider.libX11.UI
     {
         #region Fields
         /// <summary>The native window handle for the instance.</summary>
-        private readonly Lazy<nuint> _handle;
+        private readonly Lazy<UIntPtr> _handle;
 
         /// <summary>The <see cref="Thread" /> that was used to create the instance.</summary>
         private readonly Thread _parentThread;
@@ -66,7 +66,7 @@ namespace TerraFX.Provider.libX11.UI
         /// <param name="windowProvider">The <see cref="WindowProvider" /> for the instance.</param>
         internal Window(WindowProvider windowProvider)
         {
-            _handle = new Lazy<nuint>(CreateWindowHandle, isThreadSafe: true);
+            _handle = new Lazy<UIntPtr>(CreateWindowHandle, isThreadSafe: true);
 
             _parentThread = Thread.CurrentThread;
             _properties = new PropertySet();
@@ -112,7 +112,7 @@ namespace TerraFX.Provider.libX11.UI
         {
             get
             {
-                return _state.IsNotDisposedOrDisposing ? (IntPtr)_handle.Value : IntPtr.Zero;
+                return _state.IsNotDisposedOrDisposing ? (IntPtr)(void*)_handle.Value : IntPtr.Zero;
             }
         }
 
@@ -201,8 +201,8 @@ namespace TerraFX.Provider.libX11.UI
         #region Methods
         /// <summary>Creates a <c>Window</c> for the instance.</summary>
         /// <returns>A <c>Window</c> for the created native window.</returns>
-        /// <exception cref="ExternalException">The call to <see cref="XCreateWindow(IntPtr, nuint, int, int, uint, uint, uint, int, uint, Visual*, nuint, XSetWindowAttributes*)" /> failed.</exception>
-        private nuint CreateWindowHandle()
+        /// <exception cref="ExternalException">The call to <see cref="XCreateWindow(IntPtr, UIntPtr, int, int, uint, uint, uint, int, uint, Visual*, UIntPtr, XSetWindowAttributes*)" /> failed.</exception>
+        private UIntPtr CreateWindowHandle()
         {
             var display = _windowProvider.DispatchProvider.Display;
 
@@ -223,11 +223,11 @@ namespace TerraFX.Provider.libX11.UI
                 depth: CopyFromParent,
                 @class: InputOutput,
                 visual: (Visual*)CopyFromParent,
-                valuemask: 0,
+                valuemask: UIntPtr.Zero,
                 attributes: null
             );
 
-            if (window == None)
+            if (window == (UIntPtr)None)
             {
                 ThrowExternalExceptionForLastError(nameof(XCreateSimpleWindow));
             }
@@ -235,7 +235,7 @@ namespace TerraFX.Provider.libX11.UI
             XSelectInput(
                 display,
                 window,
-                event_mask: VisibilityChangeMask | StructureNotifyMask
+                event_mask: (IntPtr)(VisibilityChangeMask | StructureNotifyMask)
             );
 
             return window;

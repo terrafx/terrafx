@@ -80,17 +80,17 @@ namespace TerraFX.Provider.libX11.UI
         /// <summary>Forwards native window messages to the appropriate <see cref="Window" /> instance for processing.</summary>
         /// <param name="windowProviderProperty">The property used to get the <see cref="WindowProvider" /> associated with the event.</param>
         /// <param name="xevent">The event to be processed.</param>
-        /// <exception cref="ExternalException">The call to <see cref="XGetWindowProperty(IntPtr, nuint, nuint, nint, nint, int, nuint, out nuint, out int, out nuint, out nuint, out byte*)" /> failed.</exception>
-        internal static void ForwardWindowEvent(nuint windowProviderProperty, in XEvent xevent)
+        /// <exception cref="ExternalException">The call to <see cref="XGetWindowProperty(IntPtr, UIntPtr, UIntPtr, IntPtr, IntPtr, int, UIntPtr, out UIntPtr, out int, out UIntPtr, out UIntPtr, out byte*)" /> failed.</exception>
+        internal static void ForwardWindowEvent(UIntPtr windowProviderProperty, in XEvent xevent)
         {
             var result = XGetWindowProperty(
                 xevent.xany.display,
                 xevent.xany.window,
                 windowProviderProperty,
-                long_offset: 0,
-                long_length: IntPtr.Size >> 2,
+                long_offset: IntPtr.Zero,
+                long_length: (IntPtr)(IntPtr.Size >> 2),
                 delete: False,
-                req_type: 32,
+                req_type: (UIntPtr)32,
                 actual_type_return: out _,
                 actual_format_return: out _,
                 nitems_return: out _,
@@ -105,7 +105,7 @@ namespace TerraFX.Provider.libX11.UI
 
             var windowProvider = (WindowProvider)GCHandle.FromIntPtr((IntPtr)prop).Target;
 
-            if (windowProvider._windows.TryGetValue((IntPtr)xevent.xany.window, out var window))
+            if (windowProvider._windows.TryGetValue((IntPtr)(void*)xevent.xany.window, out var window))
             {
                 window.ProcessWindowEvent(in xevent);
             }

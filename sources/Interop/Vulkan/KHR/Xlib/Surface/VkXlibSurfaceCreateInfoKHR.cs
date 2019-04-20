@@ -23,7 +23,7 @@ namespace TerraFX.Interop
         public IntPtr dpy;
 
         [NativeTypeName("Window")]
-        public nuint window;
+        public UIntPtr window;
         #endregion
     }
 }

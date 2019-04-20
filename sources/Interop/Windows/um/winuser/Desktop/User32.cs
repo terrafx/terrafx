@@ -52,11 +52,11 @@ namespace TerraFX.Interop.Desktop
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "DefWindowProcW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: NativeTypeName("LRESULT")]
-        public static extern nint DefWindowProc(
+        public static extern IntPtr DefWindowProc(
             [In, NativeTypeName("HWND")] IntPtr hWnd,
             [In, NativeTypeName("UINT")] uint Msg,
-            [In, NativeTypeName("WPARAM")] nuint wParam,
-            [In, NativeTypeName("LPARAM")] nint lParam
+            [In, NativeTypeName("WPARAM")] UIntPtr wParam,
+            [In, NativeTypeName("LPARAM")] IntPtr lParam
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "DestroyWindow", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
@@ -69,7 +69,7 @@ namespace TerraFX.Interop.Desktop
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "DispatchMessageW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: NativeTypeName("LRESULT")]
-        public static extern nint DispatchMessage(
+        public static extern IntPtr DispatchMessage(
             [In] in MSG lpMsg
         );
 
@@ -105,7 +105,7 @@ namespace TerraFX.Interop.Desktop
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "GetWindowLongPtrW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: NativeTypeName("LONG_PTR")]
-        public static extern nint GetWindowLongPtr(
+        public static extern IntPtr GetWindowLongPtr(
             [In, NativeTypeName("HWND")] IntPtr hWnd,
             [In] int nIndex
         );
@@ -160,11 +160,11 @@ namespace TerraFX.Interop.Desktop
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "SendMessageW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: NativeTypeName("LRESULT")]
-        public static extern nint SendMessage(
+        public static extern IntPtr SendMessage(
             [In, NativeTypeName("HWND")] IntPtr hWnd,
             [In, NativeTypeName("UINT")] uint Msg,
-            [In, NativeTypeName("WPARAM")] nuint wParam,
-            [In, NativeTypeName("LPARAM")] nint lParam
+            [In, NativeTypeName("WPARAM")] UIntPtr wParam,
+            [In, NativeTypeName("LPARAM")] IntPtr lParam
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "SetActiveWindow", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
@@ -184,10 +184,10 @@ namespace TerraFX.Interop.Desktop
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "SetWindowLongPtrW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: NativeTypeName("LONG_PTR")]
-        public static extern nint SetWindowLongPtr(
+        public static extern IntPtr SetWindowLongPtr(
             [In, NativeTypeName("HWND")] IntPtr hWnd,
             [In] int nIndex,
-            [In, NativeTypeName("LONG_PTR")] nint dwNewLong
+            [In, NativeTypeName("LONG_PTR")] IntPtr dwNewLong
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "ShowWindow", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]

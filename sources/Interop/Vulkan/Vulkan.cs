@@ -494,7 +494,7 @@ namespace TerraFX.Interop
             [In, NativeTypeName("VkQueryPool")] ulong queryPool,
             [In] uint firstQuery,
             [In] uint queryCount,
-            [In] nuint dataSize,
+            [In] UIntPtr dataSize,
             [In] void* pData,
             [In, NativeTypeName("VkDeviceSize")] ulong stride,
             [In, NativeTypeName("VkQueryResultFlags")] uint flags
@@ -616,7 +616,7 @@ namespace TerraFX.Interop
         public static extern VkResult vkGetPipelineCacheData(
             [In, NativeTypeName("VkDevice")] IntPtr device,
             [In, NativeTypeName("VkPipelineCache")] ulong pipelineCache,
-            [In, Out] nuint* pDataSize,
+            [In, Out] UIntPtr* pDataSize,
             [Out] void* pData = null
         );
 

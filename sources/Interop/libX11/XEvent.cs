@@ -3,6 +3,7 @@
 // Ported from X11\xlib.h in the Xlib - C Language X Interface: X Version 11, Release 7.7
 // Original source is Copyright © The Open Group.
 
+using System;
 using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
@@ -124,61 +125,61 @@ namespace TerraFX.Interop
         public unsafe struct _pad_e__FixedBuffer
         {
             #region Fields
-            public nint e0;
+            public IntPtr e0;
 
-            public nint e1;
+            public IntPtr e1;
 
-            public nint e2;
+            public IntPtr e2;
 
-            public nint e3;
+            public IntPtr e3;
 
-            public nint e4;
+            public IntPtr e4;
 
-            public nint e5;
+            public IntPtr e5;
 
-            public nint e6;
+            public IntPtr e6;
 
-            public nint e7;
+            public IntPtr e7;
 
-            public nint e8;
+            public IntPtr e8;
 
-            public nint e9;
+            public IntPtr e9;
 
-            public nint e10;
+            public IntPtr e10;
 
-            public nint e11;
+            public IntPtr e11;
 
-            public nint e12;
+            public IntPtr e12;
 
-            public nint e13;
+            public IntPtr e13;
 
-            public nint e14;
+            public IntPtr e14;
 
-            public nint e15;
+            public IntPtr e15;
 
-            public nint e16;
+            public IntPtr e16;
 
-            public nint e17;
+            public IntPtr e17;
 
-            public nint e18;
+            public IntPtr e18;
 
-            public nint e19;
+            public IntPtr e19;
 
-            public nint e20;
+            public IntPtr e20;
 
-            public nint e21;
+            public IntPtr e21;
 
-            public nint e22;
+            public IntPtr e22;
 
-            public nint e23;
+            public IntPtr e23;
             #endregion
 
             #region Properties
-            public nint this[int index]
+            public IntPtr this[int index]
             {
                 get
                 {
-                    fixed (nint* e = &e0)
+                    fixed (IntPtr* e = &e0)
                     {
                         return e[index];
                     }
@@ -186,7 +187,7 @@ namespace TerraFX.Interop
 
                 set
                 {
-                    fixed (nint* e = &e0)
+                    fixed (IntPtr* e = &e0)
                     {
                         e[index] = value;
                     }

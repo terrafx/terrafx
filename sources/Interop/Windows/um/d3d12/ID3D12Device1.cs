@@ -179,7 +179,7 @@ namespace TerraFX.Interop
             [In] ID3D12Device1* This,
             [In, NativeTypeName("UINT")] uint NodeMask,
             [In] void* pBlobWithRootSignature,
-            [In, NativeTypeName("SIZE_T")] nuint blobLengthInBytes,
+            [In, NativeTypeName("SIZE_T")] UIntPtr blobLengthInBytes,
             [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvRootSignature
         );
@@ -469,7 +469,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int _CreatePipelineLibrary(
             [In] ID3D12Device1* This,
             [In] void* pLibraryBlob,
-            [In, NativeTypeName("SIZE_T")] nuint BlobLength,
+            [In, NativeTypeName("SIZE_T")] UIntPtr BlobLength,
             [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppPipelineLibrary
         );
@@ -767,7 +767,7 @@ namespace TerraFX.Interop
         public int CreateRootSignature(
             [In, NativeTypeName("UINT")] uint NodeMask,
             [In] void* pBlobWithRootSignature,
-            [In, NativeTypeName("SIZE_T")] nuint blobLengthInBytes,
+            [In, NativeTypeName("SIZE_T")] UIntPtr blobLengthInBytes,
             [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvRootSignature
         )
@@ -1300,7 +1300,7 @@ namespace TerraFX.Interop
         [return: NativeTypeName("HRESULT")]
         public int CreatePipelineLibrary(
             [In] void* pLibraryBlob,
-            [In, NativeTypeName("SIZE_T")] nuint BlobLength,
+            [In, NativeTypeName("SIZE_T")] UIntPtr BlobLength,
             [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppPipelineLibrary
         )

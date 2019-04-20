@@ -18,7 +18,7 @@ namespace TerraFX.Interop
         public IntPtr display;
 
         [NativeTypeName("Window")]
-        public nuint root;
+        public UIntPtr root;
 
         public int width, height;
 
@@ -37,11 +37,11 @@ namespace TerraFX.Interop
         public IntPtr default_gc;
 
         [NativeTypeName("Colormap")]
-        public nuint cmap;
+        public UIntPtr cmap;
 
-        public nuint white_pixel;
+        public UIntPtr white_pixel;
 
-        public nuint black_pixel;
+        public UIntPtr black_pixel;
 
         public int max_maps, min_maps;
 
@@ -50,7 +50,7 @@ namespace TerraFX.Interop
         [NativeTypeName("Bool")]
         public int save_unders;
 
-        public nint root_input_mask;
+        public IntPtr root_input_mask;
         #endregion
     }
 }

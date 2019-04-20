@@ -3,6 +3,7 @@
 // Ported from X11\xlib.h in the Xlib - C Language X Interface: X Version 11, Release 7.7
 // Original source is Copyright © The Open Group.
 
+using System;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -14,11 +15,11 @@ namespace TerraFX.Interop
         public XExtData* ext_data;
 
         [NativeTypeName("VisualID")]
-        public nuint visualid;
+        public UIntPtr visualid;
 
         public int @class;
 
-        public nuint red_mask, green_mask, blue_mask;
+        public UIntPtr red_mask, green_mask, blue_mask;
 
         public int bits_per_rgb;
 

@@ -73,7 +73,7 @@ namespace TerraFX.Interop
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateDecoderFromFileHandle(
             [In] IWICComponentFactory* This,
-            [In, NativeTypeName("ULONG_PTR")] nuint hFile,
+            [In, NativeTypeName("ULONG_PTR")] UIntPtr hFile,
             [In, Optional, NativeTypeName("GUID")] Guid* pguidVendor,
             [In] WICDecodeOptions metadataOptions,
             [Out] IWICBitmapDecoder** ppIDecoder = null
@@ -450,7 +450,7 @@ namespace TerraFX.Interop
 
         [return: NativeTypeName("HRESULT")]
         public int CreateDecoderFromFileHandle(
-            [In, NativeTypeName("ULONG_PTR")] nuint hFile,
+            [In, NativeTypeName("ULONG_PTR")] UIntPtr hFile,
             [In, Optional, NativeTypeName("GUID")] Guid* pguidVendor,
             [In] WICDecodeOptions metadataOptions,
             [Out] IWICBitmapDecoder** ppIDecoder = null

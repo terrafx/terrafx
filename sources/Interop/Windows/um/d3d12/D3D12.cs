@@ -902,7 +902,7 @@ namespace TerraFX.Interop
         [return: NativeTypeName("HRESULT")]
         public static extern int D3D12CreateRootSignatureDeserializer(
             [In, NativeTypeName("LPCVOID")] void* pSrcData,
-            [In, NativeTypeName("SIZE_T")] nuint SrcDataSizeInBytes,
+            [In, NativeTypeName("SIZE_T")] UIntPtr SrcDataSizeInBytes,
             [In, NativeTypeName("REFIID")] Guid* pRootSignatureDeserializerInterface,
             [Out] void** ppRootSignatureDeserializer
         );
@@ -921,7 +921,7 @@ namespace TerraFX.Interop
         [return: NativeTypeName("HRESULT")]
         public static extern int D3D12CreateVersionedRootSignatureDeserializer(
             [In, NativeTypeName("LPCVOID")] void* pSrcData,
-            [In, NativeTypeName("SIZE_T")] nuint SrcDataSizeInBytes,
+            [In, NativeTypeName("SIZE_T")] UIntPtr SrcDataSizeInBytes,
             [In, NativeTypeName("REFIID")] Guid* pRootSignatureDeserializerInterface,
             [Out] void** ppRootSignatureDeserializer
         );

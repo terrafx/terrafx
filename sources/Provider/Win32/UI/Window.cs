@@ -68,7 +68,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <param name="windowProvider">The <see cref="WindowProvider" /> for the instance.</param>
         internal Window(WindowProvider windowProvider)
         {
-            _handle = new Lazy<IntPtr>(CreateWindowHandle, isThreadSafe: true);
+            _handle = new Lazy<IntPtr>((Func<IntPtr>)this.CreateWindowHandle, isThreadSafe: true);
 
             _parentThread = Thread.CurrentThread;
             _properties = new PropertySet();
@@ -347,15 +347,15 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Handles the <see cref="WM_ACTIVATE" /> message.</summary>
         /// <param name="wParam">A value that indicates whether the instance is being activated or deactivated and the minimized state of the instance.</param>
         /// <returns>0</returns>
-        private nint HandleWmActivate(nuint wParam)
+        private IntPtr HandleWmActivate(UIntPtr wParam)
         {
             _isActive = LOWORD(wParam) != WA_INACTIVE;
-            return 0;
+            return IntPtr.Zero;
         }
 
         /// <summary>Handles the <see cref="WM_CLOSE" /> message.</summary>
         /// <returns>0</returns>
-        private nint HandleWmClose()
+        private IntPtr HandleWmClose()
         {
             // If we are already disposing, then Dispose is happening on some other thread
             // and Close was called in order for us to continue disposal on the parent thread.
@@ -370,12 +370,12 @@ namespace TerraFX.Provider.Win32.UI
             {
                 Dispose();
             }
-            return 0;
+            return IntPtr.Zero;
         }
 
         /// <summary>Handles the <see cref="WM_DESTROY" /> message.</summary>
         /// <returns>0</returns>
-        private nint HandleWmDestroy()
+        private IntPtr HandleWmDestroy()
         {
             // We handle this here to ensure we transition to the appropriate state in the case
             // an end-user called DestroyWindow themselves. The assumption here is that this was
@@ -387,37 +387,37 @@ namespace TerraFX.Provider.Win32.UI
             {
                 _state.Transition(to: Disposed);
             }
-            return 0;
+            return IntPtr.Zero;
         }
 
         /// <summary>Handles the <see cref="WM_ENABLE" /> message.</summary>
         /// <param name="wParam">A value that indicates whether the instance is being enabled or disabled.</param>
         /// <returns>0</returns>
-        private nint HandleWmEnable(nuint wParam)
+        private IntPtr HandleWmEnable(UIntPtr wParam)
         {
-            _isEnabled = wParam != FALSE;
-            return 0;
+            _isEnabled = wParam != (UIntPtr)FALSE;
+            return IntPtr.Zero;
         }
 
         /// <summary>Handles the <see cref="WM_MOVE" /> message.</summary>
         /// <param name="lParam">A value that represents the x and y coordinates of the upper-left corner of the client area of the window.</param>
         /// <returns>0</returns>
-        private nint HandleWmMove(nint lParam)
+        private IntPtr HandleWmMove(IntPtr lParam)
         {
             var location = new Vector2(x: LOWORD(lParam), y: HIWORD(lParam));
             _bounds = _bounds.WithLocation(location);
-            return 0;
+            return IntPtr.Zero;
         }
 
         /// <summary>Handles the <see cref="WM_SETTEXT" /> message.</summary>
         /// <param name="wParam">This parameter is not used.</param>
         /// <param name="lParam">A value that represents a pointer to the new window text.</param>
         /// <returns>A value dependent on the default processing for <see cref="WM_SETTEXT" />.</returns>
-        private nint HandleWmSetText(nuint wParam, nint lParam)
+        private IntPtr HandleWmSetText(UIntPtr wParam, IntPtr lParam)
         {
             var result = DefWindowProc(_handle.Value, WM_SETTEXT, wParam, lParam);
 
-            if (result == TRUE)
+            if (result == (IntPtr)TRUE)
             {
                 // We only need to update the title if the text was set
                 _title = Marshal.PtrToStringUni(lParam);
@@ -429,24 +429,24 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Handles the <see cref="WM_SHOWWINDOW" /> message.</summary>
         /// <param name="wParam">A value that indicates whether the window is being shown or hidden.</param>
         /// <returns>0</returns>
-        private nint HandleWmShowWindow(nuint wParam)
+        private IntPtr HandleWmShowWindow(UIntPtr wParam)
         {
             _isVisible = LOWORD(wParam) != FALSE;
-            return 0;
+            return IntPtr.Zero;
         }
 
         /// <summary>Handles the <see cref="WM_SIZE" /> message.</summary>
         /// <param name="wParam">A value that represents the state of the window.</param>
         /// <param name="lParam">A value that represents the width and height of the client area of the window.</param>
         /// <returns>0</returns>
-        private nint HandleWmSize(nuint wParam, nint lParam)
+        private IntPtr HandleWmSize(UIntPtr wParam, IntPtr lParam)
         {
             _windowState = (WindowState)(uint)wParam;
             Assert(Enum.IsDefined(typeof(WindowState), _windowState), Resources.ArgumentOutOfRangeExceptionMessage, nameof(wParam), wParam);
 
             var size = new Vector2(x: LOWORD(lParam), y: HIWORD(lParam));
             _bounds = _bounds.WithSize(size);
-            return 0;
+            return IntPtr.Zero;
         }
 
         /// <summary>Processes a window message sent to the instance.</summary>
@@ -454,7 +454,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <param name="wParam">The first parameter of the message.</param>
         /// <param name="lParam">The second parameter of the message.</param>
         /// <returns>A value that varies based on the exact message that was processed.</returns>
-        internal nint ProcessWindowMessage(uint Msg, nuint wParam, nint lParam)
+        internal IntPtr ProcessWindowMessage(uint Msg, UIntPtr wParam, IntPtr lParam)
         {
             ThrowIfNotThread(_parentThread);
 
@@ -543,7 +543,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (_handle.IsValueCreated)
             {
-                SendMessage(_handle.Value, WM_CLOSE, wParam: 0, lParam: 0);
+                SendMessage(_handle.Value, WM_CLOSE, wParam: UIntPtr.Zero, lParam: IntPtr.Zero);
             }
         }
 

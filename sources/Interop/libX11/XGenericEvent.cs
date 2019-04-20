@@ -14,7 +14,7 @@ namespace TerraFX.Interop
         #region Fields
         public int type;
 
-        public nuint serial;
+        public UIntPtr serial;
 
         [NativeTypeName("Bool")]
         public int send_event;

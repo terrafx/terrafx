@@ -20,7 +20,7 @@ namespace TerraFX.Provider.libX11.UI
         private readonly Thread _parentThread;
 
         /// <summary>The <c>Atom</c> used to access the <c>Window</c> property containing the associated <see cref="WindowProvider" />.</summary>
-        private readonly Lazy<nuint> _windowProviderProperty;
+        private readonly Lazy<UIntPtr> _windowProviderProperty;
         #endregion
 
         #region Constructors
@@ -34,7 +34,7 @@ namespace TerraFX.Provider.libX11.UI
 
             _dispatchProvider = dispatchProvider;
             _parentThread = parentThread;
-            _windowProviderProperty = new Lazy<nuint>(CreateWindowProviderProperty, isThreadSafe: true);
+            _windowProviderProperty = new Lazy<UIntPtr>(CreateWindowProviderProperty, isThreadSafe: true);
         }
         #endregion
 
@@ -46,7 +46,7 @@ namespace TerraFX.Provider.libX11.UI
         #region Methods
         /// <summary>Creates an <c>Atom</c> for the window provider property.</summary>
         /// <returns>An <c>Atom</c> for the window provider property.</returns>
-        private nuint CreateWindowProviderProperty()
+        private UIntPtr CreateWindowProviderProperty()
         {
             var display = _dispatchProvider.Display;
 
@@ -89,7 +89,7 @@ namespace TerraFX.Provider.libX11.UI
         {
             get
             {
-                return (IntPtr)_windowProviderProperty.Value;
+                return (IntPtr)(void*)_windowProviderProperty.Value;
             }
         }
 

@@ -14,7 +14,7 @@ namespace TerraFX.Interop
         #region Fields
         public int type;
 
-        public nuint serial;
+        public UIntPtr serial;
 
         [NativeTypeName("Bool")]
         public int send_event;
@@ -23,7 +23,7 @@ namespace TerraFX.Interop
         public IntPtr display;
 
         [NativeTypeName("Drawable")]
-        public nuint drawable;
+        public UIntPtr drawable;
 
         public int major_code;
 

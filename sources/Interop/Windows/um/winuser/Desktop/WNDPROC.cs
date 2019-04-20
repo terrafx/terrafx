@@ -13,10 +13,10 @@ namespace TerraFX.Interop.Desktop
     [SuppressUnmanagedCodeSecurity]
     [UnmanagedFunctionPointer(CallingConvention.Winapi, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
     [return: NativeTypeName("LRESULT")]
-    public /* static */ unsafe delegate nint WNDPROC(
+    public /* static */ unsafe delegate IntPtr WNDPROC(
         [In, NativeTypeName("HWND")] IntPtr hWnd,
         [In, NativeTypeName("UINT")] uint Msg,
-        [In, NativeTypeName("WPARAM")] nuint wParam,
-        [In, NativeTypeName("LPARAM")] nint lParam
+        [In, NativeTypeName("WPARAM")] UIntPtr wParam,
+        [In, NativeTypeName("LPARAM")] IntPtr lParam
     );
 }

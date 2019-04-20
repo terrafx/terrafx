@@ -116,7 +116,7 @@ namespace TerraFX.Interop
         #endregion
 
         #region Static Methods
-        public static int D3D12ReflectLibrary(void* pSrcData, nuint SrcDataSize, ID3D12LibraryReflection** ppReflector)
+        public static int D3D12ReflectLibrary(void* pSrcData, UIntPtr SrcDataSize, ID3D12LibraryReflection** ppReflector)
         {
             var iid = IID_ID3D12LibraryReflection;
             return D3DReflectLibrary(pSrcData, SrcDataSize, &iid, (void**)ppReflector);
@@ -146,7 +146,7 @@ namespace TerraFX.Interop
         [return: NativeTypeName("HRESULT")]
         public static extern int D3DCompile(
             [In, NativeTypeName("LPCVOID")] void* pSrcData,
-            [In, NativeTypeName("SIZE_T")] nuint SrcDataSize,
+            [In, NativeTypeName("SIZE_T")] UIntPtr SrcDataSize,
             [In, Optional, NativeTypeName("LPCSTR")] sbyte* pSourceName,
             [In, Optional] D3D_SHADER_MACRO* pDefines,
             [In, Optional] ID3DInclude* pInclude,
@@ -163,7 +163,7 @@ namespace TerraFX.Interop
         [return: NativeTypeName("HRESULT")]
         public static extern int D3DCompile2(
             [In, NativeTypeName("LPCVOID")] void* pSrcData,
-            [In, NativeTypeName("SIZE_T")] nuint SrcDataSize,
+            [In, NativeTypeName("SIZE_T")] UIntPtr SrcDataSize,
             [In, Optional, NativeTypeName("LPCSTR")] sbyte* pSourceName,
             [In, Optional] D3D_SHADER_MACRO* pDefines,
             [In, Optional] ID3DInclude* pInclude,
@@ -173,7 +173,7 @@ namespace TerraFX.Interop
             [In, NativeTypeName("UINT")] uint Flags2,
             [In, NativeTypeName("UINT")] uint SecondaryDataFlags,
             [In, Optional, NativeTypeName("LPCVOID")] void* pSecondaryData,
-            [In, NativeTypeName("SIZE_T")] nuint SecondaryDataSize,
+            [In, NativeTypeName("SIZE_T")] UIntPtr SecondaryDataSize,
             [Out] ID3DBlob** ppCode,
             [Out, Optional] ID3DBlob** ppErrorMsgs
         );
@@ -198,7 +198,7 @@ namespace TerraFX.Interop
         [return: NativeTypeName("HRESULT")]
         public static extern int D3DPreprocess(
             [In, NativeTypeName("LPCVOID")] void* pSrcData,
-            [In, NativeTypeName("SIZE_T")] nuint SrcDataSize,
+            [In, NativeTypeName("SIZE_T")] UIntPtr SrcDataSize,
             [In, Optional, NativeTypeName("LPCSTR")] sbyte* pSourceName,
             [In, Optional] D3D_SHADER_MACRO* pDefines,
             [In, Optional] ID3DInclude* pInclude,
@@ -211,7 +211,7 @@ namespace TerraFX.Interop
         [return: NativeTypeName("HRESULT")]
         public static extern int D3DGetDebugInfo(
             [In, NativeTypeName("LPCVOID")] void* pSrcData,
-            [In, NativeTypeName("SIZE_T")] nuint SrcDataSize,
+            [In, NativeTypeName("SIZE_T")] UIntPtr SrcDataSize,
             [Out] ID3DBlob** ppDebugInfo
         );
 
@@ -220,7 +220,7 @@ namespace TerraFX.Interop
         [return: NativeTypeName("HRESULT")]
         public static extern int D3DReflect(
             [In, NativeTypeName("LPCVOID")] void* pSrcData,
-            [In, NativeTypeName("SIZE_T")] nuint SrcDataSize,
+            [In, NativeTypeName("SIZE_T")] UIntPtr SrcDataSize,
             [In, NativeTypeName("REFIID")] Guid* pInterface,
             [Out] void** ppReflector
         );
@@ -230,7 +230,7 @@ namespace TerraFX.Interop
         [return: NativeTypeName("HRESULT")]
         public static extern int D3DReflectLibrary(
             [In, NativeTypeName("LPCVOID")] void* pSrcData,
-            [In, NativeTypeName("SIZE_T")] nuint SrcDataSize,
+            [In, NativeTypeName("SIZE_T")] UIntPtr SrcDataSize,
             [In, NativeTypeName("REFIID")] Guid* riid,
             [Out, NativeTypeName("LPVOID")] void** ppReflector
         );
@@ -240,7 +240,7 @@ namespace TerraFX.Interop
         [return: NativeTypeName("HRESULT")]
         public static extern int D3DDisassemble(
             [In, NativeTypeName("LPCVOID")] void* pSrcData,
-            [In, NativeTypeName("SIZE_T")] nuint SrcDataSize,
+            [In, NativeTypeName("SIZE_T")] UIntPtr SrcDataSize,
             [In, NativeTypeName("UINT")] uint Flags,
             [In, Optional, NativeTypeName("LPCSTR")] sbyte* szComments,
             [Out] ID3DBlob** ppDisassembly
@@ -251,12 +251,12 @@ namespace TerraFX.Interop
         [return: NativeTypeName("HRESULT")]
         public static extern int D3DDisassembleRegion(
             [In, NativeTypeName("LPCVOID")] void* pSrcData,
-            [In, NativeTypeName("SIZE_T")] nuint SrcDataSize,
+            [In, NativeTypeName("SIZE_T")] UIntPtr SrcDataSize,
             [In, NativeTypeName("UINT")] uint Flags,
             [In, Optional, NativeTypeName("LPCSTR")] sbyte* szComments,
-            [In, NativeTypeName("SIZE_T")] nuint StartByteOffset,
-            [In, NativeTypeName("SIZE_T")] nuint NumInsts,
-            [Out, Optional, NativeTypeName("SIZE_T")] nuint* pFinishByteOffset,
+            [In, NativeTypeName("SIZE_T")] UIntPtr StartByteOffset,
+            [In, NativeTypeName("SIZE_T")] UIntPtr NumInsts,
+            [Out, Optional, NativeTypeName("SIZE_T")] UIntPtr* pFinishByteOffset,
             [Out] ID3DBlob** ppDisassembly
         );
 
@@ -265,12 +265,12 @@ namespace TerraFX.Interop
         [return: NativeTypeName("HRESULT")]
         public static extern int D3DGetTraceInstructionOffsets(
             [In, NativeTypeName("LPCVOID")] void* pSrcData,
-            [In, NativeTypeName("SIZE_T")] nuint SrcDataSize,
+            [In, NativeTypeName("SIZE_T")] UIntPtr SrcDataSize,
             [In, NativeTypeName("UINT")] uint Flags,
-            [In, NativeTypeName("SIZE_T")] nuint StartInstIndex,
-            [In, NativeTypeName("SIZE_T")] nuint NumInsts,
-            [Out, Optional, NativeTypeName("SIZE_T")] nuint* pOffsets,
-            [Out, Optional, NativeTypeName("SIZE_T")] nuint* pTotalInsts
+            [In, NativeTypeName("SIZE_T")] UIntPtr StartInstIndex,
+            [In, NativeTypeName("SIZE_T")] UIntPtr NumInsts,
+            [Out, Optional, NativeTypeName("SIZE_T")] UIntPtr* pOffsets,
+            [Out, Optional, NativeTypeName("SIZE_T")] UIntPtr* pTotalInsts
         );
 
         [DllImport(D3DCOMPILER_DLL, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "D3DGetInputSignatureBlob", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -278,7 +278,7 @@ namespace TerraFX.Interop
         [return: NativeTypeName("HRESULT")]
         public static extern int D3DGetInputSignatureBlob(
             [In, NativeTypeName("LPCVOID")] void* pSrcData,
-            [In, NativeTypeName("SIZE_T")] nuint SrcDataSize,
+            [In, NativeTypeName("SIZE_T")] UIntPtr SrcDataSize,
             [Out] ID3DBlob** ppSignatureBlob
         );
 
@@ -287,7 +287,7 @@ namespace TerraFX.Interop
         [return: NativeTypeName("HRESULT")]
         public static extern int D3DGetOutputSignatureBlob(
             [In, NativeTypeName("LPCVOID")] void* pSrcData,
-            [In, NativeTypeName("SIZE_T")] nuint SrcDataSize,
+            [In, NativeTypeName("SIZE_T")] UIntPtr SrcDataSize,
             [Out] ID3DBlob** ppSignatureBlob
         );
 
@@ -296,7 +296,7 @@ namespace TerraFX.Interop
         [return: NativeTypeName("HRESULT")]
         public static extern int D3DGetInputAndOutputSignatureBlob(
             [In, NativeTypeName("LPCVOID")] void* pSrcData,
-            [In, NativeTypeName("SIZE_T")] nuint SrcDataSize,
+            [In, NativeTypeName("SIZE_T")] UIntPtr SrcDataSize,
             [Out] ID3DBlob** ppSignatureBlob
         );
 
@@ -305,7 +305,7 @@ namespace TerraFX.Interop
         [return: NativeTypeName("HRESULT")]
         public static extern int D3DStripShader(
             [In, NativeTypeName("LPCVOID")] void* pShaderBytecode,
-            [In, NativeTypeName("SIZE_T")] nuint BytecodeLength,
+            [In, NativeTypeName("SIZE_T")] UIntPtr BytecodeLength,
             [In, NativeTypeName("UINT")] uint uStripFlags,
             [Out] ID3DBlob** ppStrippedBlob
         );
@@ -315,7 +315,7 @@ namespace TerraFX.Interop
         [return: NativeTypeName("HRESULT")]
         public static extern int D3DGetBlobPart(
             [In, NativeTypeName("LPCVOID")] void* pSrcData,
-            [In, NativeTypeName("SIZE_T")] nuint SrcDataSize,
+            [In, NativeTypeName("SIZE_T")] UIntPtr SrcDataSize,
             [In] D3D_BLOB_PART Part,
             [In, NativeTypeName("UINT")] uint Flags,
             [Out] ID3DBlob** ppPart
@@ -326,11 +326,11 @@ namespace TerraFX.Interop
         [return: NativeTypeName("HRESULT")]
         public static extern int D3DSetBlobPart(
             [In, NativeTypeName("LPCVOID")] void* pSrcData,
-            [In, NativeTypeName("SIZE_T")] nuint SrcDataSize,
+            [In, NativeTypeName("SIZE_T")] UIntPtr SrcDataSize,
             [In] D3D_BLOB_PART Part,
             [In, NativeTypeName("UINT")] uint Flags,
             [In, NativeTypeName("LPCVOID")] void* pPart,
-            [In, NativeTypeName("SIZE_T")] nuint PartSize,
+            [In, NativeTypeName("SIZE_T")] UIntPtr PartSize,
             [Out] ID3DBlob** ppNewShader
         );
 
@@ -338,7 +338,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [return: NativeTypeName("HRESULT")]
         public static extern int D3DCreateBlob(
-            [In, NativeTypeName("SIZE_T")] nuint Size,
+            [In, NativeTypeName("SIZE_T")] UIntPtr Size,
             [Out] ID3DBlob** ppBlob
         );
 
@@ -357,7 +357,7 @@ namespace TerraFX.Interop
         [return: NativeTypeName("HRESULT")]
         public static extern int D3DDecompressShaders(
             [In, NativeTypeName("LPCVOID")] void* pSrcData,
-            [In, NativeTypeName("SIZE_T")] nuint SrcDataSize,
+            [In, NativeTypeName("SIZE_T")] UIntPtr SrcDataSize,
             [In, NativeTypeName("UINT")] uint uNumShaders,
             [In, NativeTypeName("UINT")] uint uStartIndex,
             [In, Optional, NativeTypeName("UINT[]")] uint* pIndices,

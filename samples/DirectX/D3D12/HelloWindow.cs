@@ -221,7 +221,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                         {
                             ThrowIfFailed(nameof(IDXGISwapChain3.GetBuffer), _swapChain->GetBuffer(n, &iid, (void**)&renderTarget));
                             _device->CreateRenderTargetView(renderTarget, null, rtvHandle);
-                            rtvHandle.ptr += _rtvDescriptorSize;
+                            rtvHandle.ptr = (UIntPtr)((byte*)rtvHandle.ptr + _rtvDescriptorSize);
                         }
                         _renderTargets[unchecked((int)n)] = renderTarget;
                     }
@@ -316,7 +316,7 @@ namespace TerraFX.Samples.DirectX.D3D12
 
             D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
             _rtvHeap->GetCPUDescriptorHandleForHeapStart(&rtvHandle);
-            rtvHandle.ptr += _frameIndex * _rtvDescriptorSize;
+            rtvHandle.ptr = (UIntPtr)((byte*)rtvHandle.ptr + _frameIndex * _rtvDescriptorSize);
 
             // Record commands.
             var clearColor = stackalloc float[4];

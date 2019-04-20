@@ -13,7 +13,7 @@ namespace TerraFX.Interop
     [SuppressUnmanagedCodeSecurity]
     [UnmanagedFunctionPointer(CallingConvention.Cdecl, BestFitMapping = false, CharSet = CharSet.Ansi, SetLastError = false, ThrowOnUnmappableChar = false)]
     [return: NativeTypeName("XID")]
-    public /* static */ unsafe delegate nuint resource_alloc(
+    public /* static */ unsafe delegate UIntPtr resource_alloc(
         [In, NativeTypeName("Display")] IntPtr display
     );
 }

@@ -3,6 +3,7 @@
 // Ported from src\spec\vk.xml in the Vulkan-Docs repository for tag v1.0.51-core
 // Original source is Copyright © 2015-2017 The Khronos Group Inc.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
@@ -13,8 +14,8 @@ namespace TerraFX.Interop
     public /* static */ unsafe delegate void* PFN_vkReallocationFunction(
         [In] void* pUserData,
         [In, Optional] void* pOriginal,
-        [In] nuint size,
-        [In] nuint alignment,
+        [In] UIntPtr size,
+        [In] UIntPtr alignment,
         [In] VkSystemAllocationScope allocationScope
     );
 }

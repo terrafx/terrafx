@@ -3,6 +3,7 @@
 // Ported from X11\xlib.h in the Xlib - C Language X Interface: X Version 11, Release 7.7
 // Original source is Copyright © The Open Group.
 
+using System;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -12,14 +13,14 @@ namespace TerraFX.Interop
     {
         #region Fields
         [NativeTypeName("Pixmap")]
-        public nuint background_pixmap;
+        public UIntPtr background_pixmap;
 
-        public nuint background_pixel;
+        public UIntPtr background_pixel;
 
         [NativeTypeName("Pixmap")]
-        public nuint border_pixmap;
+        public UIntPtr border_pixmap;
 
-        public nuint border_pixel;
+        public UIntPtr border_pixel;
 
         public int bit_gravity;
 
@@ -27,25 +28,25 @@ namespace TerraFX.Interop
 
         public int backing_store;
 
-        public nuint backing_planes;
+        public UIntPtr backing_planes;
 
-        public nuint backing_pixel;
+        public UIntPtr backing_pixel;
 
         [NativeTypeName("Bool")]
         public int save_under;
 
-        public nint event_mask;
+        public IntPtr event_mask;
 
-        public nint do_not_propagate_mask;
+        public IntPtr do_not_propagate_mask;
 
         [NativeTypeName("Bool")]
         public int override_redirect;
 
         [NativeTypeName("Colormap")]
-        public nuint colormap;
+        public UIntPtr colormap;
 
         [NativeTypeName("Cursor")]
-        public nuint cursor;
+        public UIntPtr cursor;
         #endregion
     }
 }

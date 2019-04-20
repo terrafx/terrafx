@@ -47,7 +47,7 @@ namespace TerraFX.Provider.D3D12.Graphics
         [ImportingConstructor]
         public GraphicsProvider()
         {
-            _factory = new Lazy<IntPtr>(CreateFactory, isThreadSafe: true);
+            _factory = new Lazy<IntPtr>((Func<IntPtr>)CreateFactory, isThreadSafe: true);
             _adapters = new Lazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters, isThreadSafe: true);
             _state.Transition(to: Initialized);
         }

@@ -123,9 +123,9 @@ namespace TerraFX.Provider.Win32.UI
         /// <param name="wParam">The first parameter of the message to be processed.</param>
         /// <param name="lParam">The second parameter of the message to be processed.</param>
         /// <returns>A value that varies based on the exact message that was processed.</returns>
-        private static nint ForwardWindowMessage(IntPtr hWnd, uint Msg, nuint wParam, nint lParam)
+        private static IntPtr ForwardWindowMessage(IntPtr hWnd, uint Msg, UIntPtr wParam, IntPtr lParam)
         {
-            nint result, userData;
+            IntPtr result, userData;
 
             if (Msg == WM_CREATE)
             {
@@ -134,7 +134,7 @@ namespace TerraFX.Provider.Win32.UI
                 // of the fields in Window are lazy.
 
                 ref var pCreateStruct = ref AsRef<CREATESTRUCT>(lParam);
-                userData = (nint)pCreateStruct.lpCreateParams;
+                userData = (IntPtr)pCreateStruct.lpCreateParams;
                 SetWindowLongPtr(hWnd, GWLP_USERDATA, userData);
             }
             else

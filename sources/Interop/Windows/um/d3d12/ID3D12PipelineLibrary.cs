@@ -129,7 +129,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("SIZE_T")]
-        public /* static */ delegate nuint _GetSerializedSize(
+        public /* static */ delegate UIntPtr _GetSerializedSize(
             [In] ID3D12PipelineLibrary* This
         );
 
@@ -139,7 +139,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int _Serialize(
             [In] ID3D12PipelineLibrary* This,
             [Out] void* pData,
-            [In, NativeTypeName("SIZE_T")] nuint DataSizeInBytes
+            [In, NativeTypeName("SIZE_T")] UIntPtr DataSizeInBytes
         );
         #endregion
 
@@ -327,7 +327,7 @@ namespace TerraFX.Interop
         }
 
         [return: NativeTypeName("SIZE_T")]
-        public nuint GetSerializedSize()
+        public UIntPtr GetSerializedSize()
         {
             fixed (ID3D12PipelineLibrary* This = &this)
             {
@@ -340,7 +340,7 @@ namespace TerraFX.Interop
         [return: NativeTypeName("HRESULT")]
         public int Serialize(
             [Out] void* pData,
-            [In, NativeTypeName("SIZE_T")] nuint DataSizeInBytes
+            [In, NativeTypeName("SIZE_T")] UIntPtr DataSizeInBytes
         )
         {
             fixed (ID3D12PipelineLibrary* This = &this)

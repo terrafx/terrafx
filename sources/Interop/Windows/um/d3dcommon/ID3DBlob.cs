@@ -55,7 +55,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("SIZE_T")]
-        public /* static */ delegate nuint _GetBufferSize(
+        public /* static */ delegate UIntPtr _GetBufferSize(
             [In] ID3DBlob* This
         );
         #endregion
@@ -113,7 +113,7 @@ namespace TerraFX.Interop
         }
 
         [return: NativeTypeName("SIZE_T")]
-        public nuint GetBufferSize()
+        public UIntPtr GetBufferSize()
         {
             fixed (ID3DBlob* This = &this)
             {

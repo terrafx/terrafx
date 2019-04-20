@@ -3,6 +3,7 @@
 // Ported from shared\dxgi.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
@@ -29,13 +30,13 @@ namespace TerraFX.Interop
         public uint Revision;
 
         [NativeTypeName("SIZE_T")]
-        public nuint DedicatedVideoMemory;
+        public UIntPtr DedicatedVideoMemory;
 
         [NativeTypeName("SIZE_T")]
-        public nuint DedicatedSystemMemory;
+        public UIntPtr DedicatedSystemMemory;
 
         [NativeTypeName("SIZE_T")]
-        public nuint SharedSystemMemory;
+        public UIntPtr SharedSystemMemory;
 
         public LUID AdapterLuid;
         #endregion

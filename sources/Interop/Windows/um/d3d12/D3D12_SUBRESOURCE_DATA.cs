@@ -3,6 +3,7 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using TerraFX.Utilities;
 
 namespace TerraFX.Interop
@@ -14,10 +15,10 @@ namespace TerraFX.Interop
         public void* pData;
 
         [NativeTypeName("LONG_PTR")]
-        public nint RowPitch;
+        public IntPtr RowPitch;
 
         [NativeTypeName("LONG_PTR")]
-        public nint SlicePitch;
+        public IntPtr SlicePitch;
         #endregion
     }
 }

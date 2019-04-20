@@ -19,10 +19,10 @@ namespace TerraFX.Interop
         public uint message;
 
         [NativeTypeName("WPARAM")]
-        public nuint wParam;
+        public UIntPtr wParam;
 
         [NativeTypeName("LPARAM")]
-        public nint lParam;
+        public IntPtr lParam;
 
         [NativeTypeName("DWORD")]
         public uint time;

@@ -66,7 +66,7 @@ namespace TerraFX.Interop
             [In] ID3D12InfoQueue* This,
             [In, NativeTypeName("UINT64")] ulong MessageIndex,
             [Out, Optional] D3D12_MESSAGE* pMessage,
-            [In, Out, NativeTypeName("SIZE_T")] nuint* pMessageByteLength
+            [In, Out, NativeTypeName("SIZE_T")] UIntPtr* pMessageByteLength
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -125,7 +125,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int _GetStorageFilter(
             [In] ID3D12InfoQueue* This,
             [Out, Optional] D3D12_INFO_QUEUE_FILTER* pFilter,
-            [In, Out, NativeTypeName("SIZE_T")] nuint* pFilterByteLength
+            [In, Out, NativeTypeName("SIZE_T")] UIntPtr* pFilterByteLength
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -183,7 +183,7 @@ namespace TerraFX.Interop
         public /* static */ delegate int _GetRetrievalFilter(
             [In] ID3D12InfoQueue* This,
             [Out, Optional] D3D12_INFO_QUEUE_FILTER* pFilter,
-            [In, Out, NativeTypeName("SIZE_T")] nuint* pFilterByteLength
+            [In, Out, NativeTypeName("SIZE_T")] UIntPtr* pFilterByteLength
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -382,7 +382,7 @@ namespace TerraFX.Interop
         public int GetMessage(
             [In, NativeTypeName("UINT64")] ulong MessageIndex,
             [Out, Optional] D3D12_MESSAGE* pMessage,
-            [In, Out, NativeTypeName("SIZE_T")] nuint* pMessageByteLength
+            [In, Out, NativeTypeName("SIZE_T")] UIntPtr* pMessageByteLength
         )
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -479,7 +479,7 @@ namespace TerraFX.Interop
         [return: NativeTypeName("HRESULT")]
         public int GetStorageFilter(
             [Out, Optional] D3D12_INFO_QUEUE_FILTER* pFilter,
-            [In, Out, NativeTypeName("SIZE_T")] nuint* pFilterByteLength
+            [In, Out, NativeTypeName("SIZE_T")] UIntPtr* pFilterByteLength
         )
         {
             fixed (ID3D12InfoQueue* This = &this)
@@ -576,7 +576,7 @@ namespace TerraFX.Interop
         [return: NativeTypeName("HRESULT")]
         public int GetRetrievalFilter(
             [Out, Optional] D3D12_INFO_QUEUE_FILTER* pFilter,
-            [In, Out, NativeTypeName("SIZE_T")] nuint* pFilterByteLength
+            [In, Out, NativeTypeName("SIZE_T")] UIntPtr* pFilterByteLength
         )
         {
             fixed (ID3D12InfoQueue* This = &this)

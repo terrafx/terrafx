@@ -69,7 +69,7 @@ namespace TerraFX.Interop
             [In, NativeTypeName("DXGI_DEBUG_ID")] Guid Producer,
             [In, NativeTypeName("UINT64")] ulong MessageIndex,
             [Out, Optional] DXGI_INFO_QUEUE_MESSAGE* pMessage,
-            [In, Out, NativeTypeName("SIZE_T")] nuint* pMessageByteLength
+            [In, Out, NativeTypeName("SIZE_T")] UIntPtr* pMessageByteLength
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -136,7 +136,7 @@ namespace TerraFX.Interop
             [In] IDXGIInfoQueue* This,
             [In, NativeTypeName("DXGI_DEBUG_ID")] Guid Producer,
             [Out, Optional] DXGI_INFO_QUEUE_FILTER* pFilter,
-            [In, Out, NativeTypeName("SIZE_T")] nuint* pFilterByteLength
+            [In, Out, NativeTypeName("SIZE_T")] UIntPtr* pFilterByteLength
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -211,7 +211,7 @@ namespace TerraFX.Interop
             [In] IDXGIInfoQueue* This,
             [In, NativeTypeName("DXGI_DEBUG_ID")] Guid Producer,
             [Out, Optional] DXGI_INFO_QUEUE_FILTER* pFilter,
-            [In, Out, NativeTypeName("SIZE_T")] nuint* pFilterByteLength
+            [In, Out, NativeTypeName("SIZE_T")] UIntPtr* pFilterByteLength
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -439,7 +439,7 @@ namespace TerraFX.Interop
             [In, NativeTypeName("DXGI_DEBUG_ID")] Guid Producer,
             [In, NativeTypeName("UINT64")] ulong MessageIndex,
             [Out, Optional] DXGI_INFO_QUEUE_MESSAGE* pMessage,
-            [In, Out, NativeTypeName("SIZE_T")] nuint* pMessageByteLength
+            [In, Out, NativeTypeName("SIZE_T")] UIntPtr* pMessageByteLength
         )
         {
             fixed (IDXGIInfoQueue* This = &this)
@@ -558,7 +558,7 @@ namespace TerraFX.Interop
         public int GetStorageFilter(
             [In, NativeTypeName("DXGI_DEBUG_ID")] Guid Producer,
             [Out, Optional] DXGI_INFO_QUEUE_FILTER* pFilter,
-            [In, Out, NativeTypeName("SIZE_T")] nuint* pFilterByteLength
+            [In, Out, NativeTypeName("SIZE_T")] UIntPtr* pFilterByteLength
         )
         {
             fixed (IDXGIInfoQueue* This = &this)
@@ -691,7 +691,7 @@ namespace TerraFX.Interop
         public int GetRetrievalFilter(
             [In, NativeTypeName("DXGI_DEBUG_ID")] Guid Producer,
             [Out, Optional] DXGI_INFO_QUEUE_FILTER* pFilter,
-            [In, Out, NativeTypeName("SIZE_T")] nuint* pFilterByteLength
+            [In, Out, NativeTypeName("SIZE_T")] UIntPtr* pFilterByteLength
         )
         {
             fixed (IDXGIInfoQueue* This = &this)

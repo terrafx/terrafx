@@ -15,7 +15,7 @@ namespace TerraFX.Interop
         #region Fields
         public int type;
 
-        public nuint serial;
+        public UIntPtr serial;
 
         [NativeTypeName("Bool")]
         public int send_event;
@@ -24,10 +24,10 @@ namespace TerraFX.Interop
         public IntPtr display;
 
         [NativeTypeName("Window")]
-        public nuint window;
+        public UIntPtr window;
 
         [NativeTypeName("Atom")]
-        public nuint message_type;
+        public UIntPtr message_type;
 
         public int format;
 
@@ -55,23 +55,23 @@ namespace TerraFX.Interop
             public struct _l_e__FixedBuffer
             {
                 #region Fields
-                public nint e0;
+                public IntPtr e0;
 
-                public nint e1;
+                public IntPtr e1;
 
-                public nint e2;
+                public IntPtr e2;
 
-                public nint e3;
+                public IntPtr e3;
 
-                public nint e4;
+                public IntPtr e4;
                 #endregion
 
                 #region Properties
-                public nint this[int index]
+                public IntPtr this[int index]
                 {
                     get
                     {
-                        fixed (nint* e = &e0)
+                        fixed (IntPtr* e = &e0)
                         {
                             return e[index];
                         }
@@ -79,7 +79,7 @@ namespace TerraFX.Interop
 
                     set
                     {
-                        fixed (nint* e = &e0)
+                        fixed (IntPtr* e = &e0)
                         {
                             e[index] = value;
                         }

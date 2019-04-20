@@ -18,9 +18,9 @@ namespace TerraFX.Interop
         public IntPtr display;
 
         [NativeTypeName("XID")]
-        public nuint resourceid;
+        public UIntPtr resourceid;
 
-        public nuint serial;
+        public UIntPtr serial;
 
         public byte error_code;
 

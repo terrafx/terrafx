@@ -14,7 +14,7 @@ namespace TerraFX.Interop
         #region Fields
         public int type;
 
-        public nuint serial;
+        public UIntPtr serial;
 
         [NativeTypeName("Bool")]
         public int send_event;
@@ -23,19 +23,19 @@ namespace TerraFX.Interop
         public IntPtr display;
 
         [NativeTypeName("Window")]
-        public nuint requestor;
+        public UIntPtr requestor;
 
         [NativeTypeName("Atom")]
-        public nuint selection;
+        public UIntPtr selection;
 
         [NativeTypeName("Atom")]
-        public nuint target;
+        public UIntPtr target;
 
         [NativeTypeName("Atom")]
-        public nuint property;
+        public UIntPtr property;
 
         [NativeTypeName("Time")]
-        public nuint time;
+        public UIntPtr time;
         #endregion
     }
 }

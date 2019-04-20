@@ -14,7 +14,7 @@ namespace TerraFX.Interop
         #region Fields
         public int type;
 
-        public nuint serial;
+        public UIntPtr serial;
 
         [NativeTypeName("Bool")]
         public int send_event;
@@ -23,10 +23,10 @@ namespace TerraFX.Interop
         public IntPtr display;
 
         [NativeTypeName("Window")]
-        public nuint parent;
+        public UIntPtr parent;
 
         [NativeTypeName("Window")]
-        public nuint window;
+        public UIntPtr window;
 
         public int x, y;
 
@@ -35,11 +35,11 @@ namespace TerraFX.Interop
         public int border_width;
 
         [NativeTypeName("Window")]
-        public nuint above;
+        public UIntPtr above;
 
         public int detail;
 
-        public nuint value_mask;
+        public UIntPtr value_mask;
         #endregion
     }
 }
