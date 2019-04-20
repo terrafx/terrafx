@@ -11,7 +11,7 @@ using TerraFX.Utilities;
 namespace TerraFX.Interop.Desktop
 {
     [SuppressUnmanagedCodeSecurity]
-    [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+    [UnmanagedFunctionPointer(CallingConvention.Winapi, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
     [return: NativeTypeName("LRESULT")]
     public /* static */ unsafe delegate nint WNDPROC(
         [In, NativeTypeName("HWND")] IntPtr hWnd,
