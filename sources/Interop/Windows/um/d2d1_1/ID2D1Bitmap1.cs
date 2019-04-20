@@ -59,25 +59,24 @@ namespace TerraFX.Interop
         /// <summary>Returns the size of the bitmap in resolution independent units.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void _GetSize(
-            [In] ID2D1Bitmap1* This,
-            [Out, NativeTypeName("D2D1_SIZE_F")] D2D_SIZE_F* pSize
+        [return: NativeTypeName("D2D1_SIZE_F")]
+        public /* static */ delegate D2D_SIZE_F _GetSize(
+            [In] ID2D1Bitmap1* This
         );
 
         /// <summary>Returns the size of the bitmap in resolution dependent units, (pixels).</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void _GetPixelSize(
-            [In] ID2D1Bitmap1* This,
-            [Out, NativeTypeName("D2D1_SIZE_U")] D2D_SIZE_U pSize
+        [return: NativeTypeName("D2D1_SIZE_U")]
+        public /* static */ delegate D2D_SIZE_U _GetPixelSize(
+            [In] ID2D1Bitmap1* This
         );
 
         /// <summary>Retrieve the format of the bitmap.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void _GetPixelFormat(
-            [In] ID2D1Bitmap1* This,
-            [Out] D2D1_PIXEL_FORMAT* pPixelFormat
+        public /* static */ delegate D2D1_PIXEL_FORMAT _GetPixelFormat(
+            [In] ID2D1Bitmap1* This
         );
 
         /// <summary>Return the DPI of the bitmap.</summary>
@@ -220,41 +219,34 @@ namespace TerraFX.Interop
         #endregion
 
         #region ID2D1Bitmap Methods
-        public void GetSize(
-            [Out, NativeTypeName("D2D1_SIZE_F")] D2D_SIZE_F* pSize
-        )
+        [return: NativeTypeName("D2D1_SIZE_F")]
+        public D2D_SIZE_F GetSize()
         {
             fixed (ID2D1Bitmap1* This = &this)
             {
-                MarshalFunction<_GetSize>(lpVtbl->GetSize)(
-                    This,
-                    pSize
+                return MarshalFunction<_GetSize>(lpVtbl->GetSize)(
+                    This
                 );
             }
         }
 
-        public void GetPixelSize(
-            [Out, NativeTypeName("D2D1_SIZE_U")] D2D_SIZE_U pSize
-        )
+        [return: NativeTypeName("D2D1_SIZE_U")]
+        public D2D_SIZE_U GetPixelSize()
         {
             fixed (ID2D1Bitmap1* This = &this)
             {
-                MarshalFunction<_GetPixelSize>(lpVtbl->GetPixelSize)(
-                    This,
-                    pSize
+                return MarshalFunction<_GetPixelSize>(lpVtbl->GetPixelSize)(
+                    This
                 );
             }
         }
 
-        public void GetPixelFormat(
-            [Out] D2D1_PIXEL_FORMAT* pPixelFormat
-        )
+        public D2D1_PIXEL_FORMAT GetPixelFormat()
         {
             fixed (ID2D1Bitmap1* This = &this)
             {
-                MarshalFunction<_GetPixelFormat>(lpVtbl->GetPixelFormat)(
-                    This,
-                    pPixelFormat
+                return MarshalFunction<_GetPixelFormat>(lpVtbl->GetPixelFormat)(
+                    This
                 );
             }
         }

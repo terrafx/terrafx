@@ -58,9 +58,9 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void _GetSize(
-            [In] ID2D1Layer* This,
-            [Out, NativeTypeName("D2D1_SIZE_F")] D2D_SIZE_F* pSize
+        [return: NativeTypeName("D2D1_SIZE_F")]
+        public /* static */ delegate D2D_SIZE_F _GetSize(
+            [In] ID2D1Layer* This
         );
         #endregion
 
@@ -120,15 +120,13 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        public void GetSize(
-            [Out, NativeTypeName("D2D1_SIZE_F")] D2D_SIZE_F* pSize
-        )
+        [return: NativeTypeName("D2D1_SIZE_F")]
+        public D2D_SIZE_F GetSize()
         {
             fixed (ID2D1Layer* This = &this)
             {
-                MarshalFunction<_GetSize>(lpVtbl->GetSize)(
-                    This,
-                    pSize
+                return MarshalFunction<_GetSize>(lpVtbl->GetSize)(
+                    This
                 );
             }
         }

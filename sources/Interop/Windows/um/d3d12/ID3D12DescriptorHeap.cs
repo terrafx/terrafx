@@ -97,23 +97,20 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void _GetDesc(
-            [In] ID3D12DescriptorHeap* This,
-            [Out] D3D12_DESCRIPTOR_HEAP_DESC* pDesc
+        public /* static */ delegate D3D12_DESCRIPTOR_HEAP_DESC _GetDesc(
+            [In] ID3D12DescriptorHeap* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void _GetCPUDescriptorHandleForHeapStart(
-            [In] ID3D12DescriptorHeap* This,
-            [Out] D3D12_CPU_DESCRIPTOR_HANDLE* pCPUDescriptorHandleForHeapStart
+        public /* static */ delegate D3D12_CPU_DESCRIPTOR_HANDLE _GetCPUDescriptorHandleForHeapStart(
+            [In] ID3D12DescriptorHeap* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void _GetGPUDescriptorHandleForHeapStart(
-            [In] ID3D12DescriptorHeap* This,
-            [Out] D3D12_GPU_DESCRIPTOR_HANDLE* pGPUDescriptorHandleForHeapStart
+        public /* static */ delegate D3D12_GPU_DESCRIPTOR_HANDLE _GetGPUDescriptorHandleForHeapStart(
+            [In] ID3D12DescriptorHeap* This
         );
         #endregion
 
@@ -244,41 +241,32 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
-        public void GetDesc(
-            [Out] D3D12_DESCRIPTOR_HEAP_DESC* pDesc
-        )
+        public D3D12_DESCRIPTOR_HEAP_DESC GetDesc()
         {
             fixed (ID3D12DescriptorHeap* This = &this)
             {
-                MarshalFunction<_GetDesc>(lpVtbl->GetDesc)(
-                    This,
-                    pDesc
+                return MarshalFunction<_GetDesc>(lpVtbl->GetDesc)(
+                    This
                 );
             }
         }
 
-        public void GetCPUDescriptorHandleForHeapStart(
-            [Out] D3D12_CPU_DESCRIPTOR_HANDLE* pCPUDescriptorHandleForHeapStart
-        )
+        public D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandleForHeapStart()
         {
             fixed (ID3D12DescriptorHeap* This = &this)
             {
-                MarshalFunction<_GetCPUDescriptorHandleForHeapStart>(lpVtbl->GetCPUDescriptorHandleForHeapStart)(
-                    This,
-                    pCPUDescriptorHandleForHeapStart
+                return MarshalFunction<_GetCPUDescriptorHandleForHeapStart>(lpVtbl->GetCPUDescriptorHandleForHeapStart)(
+                    This
                 );
             }
         }
 
-        public void GetGPUDescriptorHandleForHeapStart(
-            [Out] D3D12_GPU_DESCRIPTOR_HANDLE* pGPUDescriptorHandleForHeapStart
-        )
+        public D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandleForHeapStart()
         {
             fixed (ID3D12DescriptorHeap* This = &this)
             {
-                MarshalFunction<_GetGPUDescriptorHandleForHeapStart>(lpVtbl->GetGPUDescriptorHandleForHeapStart)(
-                    This,
-                    pGPUDescriptorHandleForHeapStart
+                return MarshalFunction<_GetGPUDescriptorHandleForHeapStart>(lpVtbl->GetGPUDescriptorHandleForHeapStart)(
+                    This
                 );
             }
         }

@@ -67,9 +67,8 @@ namespace TerraFX.Interop
         /// <summary>Retrieve the start point with which the ink was initialized.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void _GetStartPoint(
-            [In] ID2D1Ink* This,
-            [Out] D2D1_INK_POINT* pStartPoint
+        public /* static */ delegate D2D1_INK_POINT _GetStartPoint(
+            [In] ID2D1Ink* This
         );
 
         /// <summary>Add one or more segments to the end of the ink.</summary>
@@ -223,15 +222,12 @@ namespace TerraFX.Interop
             }
         }
 
-        public void GetStartPoint(
-            [Out] D2D1_INK_POINT* pStartPoint
-        )
+        public D2D1_INK_POINT GetStartPoint()
         {
             fixed (ID2D1Ink* This = &this)
             {
-                MarshalFunction<_GetStartPoint>(lpVtbl->GetStartPoint)(
-                    This,
-                    pStartPoint
+                return MarshalFunction<_GetStartPoint>(lpVtbl->GetStartPoint)(
+                    This
                 );
             }
         }

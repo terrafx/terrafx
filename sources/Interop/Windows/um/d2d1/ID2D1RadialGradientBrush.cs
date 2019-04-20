@@ -120,16 +120,16 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void _GetCenter(
-            [In] ID2D1RadialGradientBrush* This,
-            [Out, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F* pCenter
+        [return: NativeTypeName("D2D1_POINT_2F")]
+        public /* static */ delegate D2D_POINT_2F _GetCenter(
+            [In] ID2D1RadialGradientBrush* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void _GetGradientOriginOffset(
-            [In] ID2D1RadialGradientBrush* This,
-            [Out, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F* pGradientOriginOffset
+        [return: NativeTypeName("D2D1_POINT_2F")]
+        public /* static */ delegate D2D_POINT_2F _GetGradientOriginOffset(
+            [In] ID2D1RadialGradientBrush* This
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -314,28 +314,24 @@ namespace TerraFX.Interop
             }
         }
 
-        public void GetCenter(
-            [Out, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F* pCenter
-        )
+        [return: NativeTypeName("D2D1_POINT_2F")]
+        public D2D_POINT_2F GetCenter()
         {
             fixed (ID2D1RadialGradientBrush* This = &this)
             {
-                MarshalFunction<_GetCenter>(lpVtbl->GetCenter)(
-                    This,
-                    pCenter
+                return MarshalFunction<_GetCenter>(lpVtbl->GetCenter)(
+                    This
                 );
             }
         }
 
-        public void GetGradientOriginOffset(
-            [Out, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F* pGradientOriginOffset
-        )
+        [return: NativeTypeName("D2D1_POINT_2F")]
+        public D2D_POINT_2F GetGradientOriginOffset()
         {
             fixed (ID2D1RadialGradientBrush* This = &this)
             {
-                MarshalFunction<_GetGradientOriginOffset>(lpVtbl->GetGradientOriginOffset)(
-                    This,
-                    pGradientOriginOffset
+                return MarshalFunction<_GetGradientOriginOffset>(lpVtbl->GetGradientOriginOffset)(
+                    This
                 );
             }
         }

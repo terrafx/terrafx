@@ -502,9 +502,8 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void _GetPixelFormat(
-            [In] ID2D1DeviceContext2* This,
-            [Out] D2D1_PIXEL_FORMAT* pPixelFormat
+        public /* static */ delegate D2D1_PIXEL_FORMAT _GetPixelFormat(
+            [In] ID2D1DeviceContext2* This
         );
 
         /// <summary>Sets the DPI on the render target. This results in the render target being interpreted to a different scale. Neither DPI can be negative. If zero is specified for both, the system DPI is chosen. If one is zero and the other unspecified, the DPI is not changed.</summary>
@@ -528,17 +527,17 @@ namespace TerraFX.Interop
         /// <summary>Returns the size of the render target in DIPs.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void _GetSize(
-            [In] ID2D1DeviceContext2* This,
-            [Out, NativeTypeName("D2D1_SIZE_F")] D2D_SIZE_F* pSize
+        [return: NativeTypeName("D2D1_SIZE_F")]
+        public /* static */ delegate D2D_SIZE_F _GetSize(
+            [In] ID2D1DeviceContext2* This
         );
 
         /// <summary>Returns the size of the render target in pixels.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void _GetPixelSize(
-            [In] ID2D1DeviceContext2* This,
-            [Out, NativeTypeName("D2D1_SIZE_U")] D2D_SIZE_U* pPixelSize
+        [return: NativeTypeName("D2D1_SIZE_U")]
+        public /* static */ delegate D2D_SIZE_U _GetPixelSize(
+            [In] ID2D1DeviceContext2* This
         );
 
         /// <summary>Returns the maximum bitmap and render target size that is guaranteed to be supported by the render target.</summary>
@@ -1872,15 +1871,12 @@ namespace TerraFX.Interop
             }
         }
 
-        public void GetPixelFormat(
-            [Out] D2D1_PIXEL_FORMAT* pPixelFormat
-        )
+        public D2D1_PIXEL_FORMAT GetPixelFormat()
         {
             fixed (ID2D1DeviceContext2* This = &this)
             {
-                MarshalFunction<_GetPixelFormat>(lpVtbl->GetPixelFormat)(
-                    This,
-                    pPixelFormat
+                return MarshalFunction<_GetPixelFormat>(lpVtbl->GetPixelFormat)(
+                    This
                 );
             }
         }
@@ -1915,28 +1911,24 @@ namespace TerraFX.Interop
             }
         }
 
-        public void GetSize(
-            [Out, NativeTypeName("D2D1_SIZE_F")] D2D_SIZE_F* pSize
-        )
+        [return: NativeTypeName("D2D1_SIZE_F")]
+        public D2D_SIZE_F GetSize()
         {
             fixed (ID2D1DeviceContext2* This = &this)
             {
-                MarshalFunction<_GetSize>(lpVtbl->GetSize)(
-                    This,
-                    pSize
+                return MarshalFunction<_GetSize>(lpVtbl->GetSize)(
+                    This
                 );
             }
         }
 
-        public void GetPixelSize(
-            [Out, NativeTypeName("D2D1_SIZE_U")] D2D_SIZE_U* pPixelSize
-        )
+        [return: NativeTypeName("D2D1_SIZE_U")]
+        public D2D_SIZE_U GetPixelSize()
         {
             fixed (ID2D1DeviceContext2* This = &this)
             {
-                MarshalFunction<_GetPixelSize>(lpVtbl->GetPixelSize)(
-                    This,
-                    pPixelSize
+                return MarshalFunction<_GetPixelSize>(lpVtbl->GetPixelSize)(
+                    This
                 );
             }
         }

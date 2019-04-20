@@ -67,9 +67,9 @@ namespace TerraFX.Interop
         /// <summary>Returns the size of the initial viewport.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void _GetViewportSize(
-            [In] ID2D1SvgDocument* This,
-            [Out, NativeTypeName("D2D1_SIZE_F")] D2D_SIZE_F* pViewportSize
+        [return: NativeTypeName("D2D1_SIZE_F")]
+        public /* static */ delegate D2D_SIZE_F _GetViewportSize(
+            [In] ID2D1SvgDocument* This
         );
 
         /// <summary>Sets the root element of the document. The root element must be an 'svg' element. If the element already exists within an svg tree, it is first removed.</summary>
@@ -243,15 +243,13 @@ namespace TerraFX.Interop
             }
         }
 
-        public void GetViewportSize(
-            [Out, NativeTypeName("D2D1_SIZE_F")] D2D_SIZE_F* pViewportSize
-        )
+        [return: NativeTypeName("D2D1_SIZE_F")]
+        public D2D_SIZE_F GetViewportSize()
         {
             fixed (ID2D1SvgDocument* This = &this)
             {
-                MarshalFunction<_GetViewportSize>(lpVtbl->GetViewportSize)(
-                    This,
-                    pViewportSize
+                return MarshalFunction<_GetViewportSize>(lpVtbl->GetViewportSize)(
+                    This
                 );
             }
         }

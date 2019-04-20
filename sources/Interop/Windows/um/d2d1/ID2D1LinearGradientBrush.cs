@@ -106,16 +106,16 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void _GetStartPoint(
-            [In] ID2D1LinearGradientBrush* This,
-            [Out, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F* pStartPoint
+        [return: NativeTypeName("D2D1_POINT_2F")]
+        public /* static */ delegate D2D_POINT_2F _GetStartPoint(
+            [In] ID2D1LinearGradientBrush* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void _GetEndPoint(
-            [In] ID2D1LinearGradientBrush* This,
-            [Out, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F* pEndPoint
+        [return: NativeTypeName("D2D1_POINT_2F")]
+        public /* static */ delegate D2D_POINT_2F _GetEndPoint(
+            [In] ID2D1LinearGradientBrush* This
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -260,28 +260,24 @@ namespace TerraFX.Interop
             }
         }
 
-        public void GetStartPoint(
-            [Out, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F* pStartPoint
-        )
+        [return: NativeTypeName("D2D1_POINT_2F")]
+        public D2D_POINT_2F GetStartPoint()
         {
             fixed (ID2D1LinearGradientBrush* This = &this)
             {
-                MarshalFunction<_GetStartPoint>(lpVtbl->GetStartPoint)(
-                    This,
-                    pStartPoint
+                return MarshalFunction<_GetStartPoint>(lpVtbl->GetStartPoint)(
+                    This
                 );
             }
         }
 
-        public void GetEndPoint(
-            [Out, NativeTypeName("D2D1_POINT_2F")] D2D_POINT_2F* pEndPoint
-        )
+        [return: NativeTypeName("D2D1_POINT_2F")]
+        public D2D_POINT_2F GetEndPoint()
         {
             fixed (ID2D1LinearGradientBrush* This = &this)
             {
-                MarshalFunction<_GetEndPoint>(lpVtbl->GetEndPoint)(
-                    This,
-                    pEndPoint
+                return MarshalFunction<_GetEndPoint>(lpVtbl->GetEndPoint)(
+                    This
                 );
             }
         }

@@ -209,8 +209,7 @@ namespace TerraFX.Samples.DirectX.D3D12
 
                 // Create frame resources.
                 {
-                    D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
-                    _rtvHeap->GetCPUDescriptorHandleForHeapStart(&rtvHandle);
+                    var rtvHandle = _rtvHeap->GetCPUDescriptorHandleForHeapStart();
 
                     // Create a RTV for each frame.
                     iid = IID_ID3D12Resource;
@@ -314,8 +313,7 @@ namespace TerraFX.Samples.DirectX.D3D12
             };
             _commandList->ResourceBarrier(1, &barrier);
 
-            D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
-            _rtvHeap->GetCPUDescriptorHandleForHeapStart(&rtvHandle);
+            var rtvHandle = _rtvHeap->GetCPUDescriptorHandleForHeapStart();
             rtvHandle.ptr = (UIntPtr)((byte*)rtvHandle.ptr + _frameIndex * _rtvDescriptorSize);
 
             // Record commands.

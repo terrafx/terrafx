@@ -65,9 +65,9 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void _GetOffset(
-            [In] ID2D1OffsetTransform* This,
-            [Out, NativeTypeName("D2D1_POINT_2L")] POINT* pOffset
+        [return: NativeTypeName("D2D1_POINT_2L")]
+        public /* static */ delegate POINT _GetOffset(
+            [In] ID2D1OffsetTransform* This
         );
         #endregion
 
@@ -138,15 +138,13 @@ namespace TerraFX.Interop
             }
         }
 
-        public void GetOffset(
-            [Out, NativeTypeName("D2D1_POINT_2L")] POINT* pOffset
-        )
+        [return: NativeTypeName("D2D1_POINT_2L")]
+        public POINT GetOffset()
         {
             fixed (ID2D1OffsetTransform* This = &this)
             {
-                MarshalFunction<_GetOffset>(lpVtbl->GetOffset)(
-                    This,
-                    pOffset
+                return MarshalFunction<_GetOffset>(lpVtbl->GetOffset)(
+                    This
                 );
             }
         }

@@ -262,21 +262,19 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void _GetResourceAllocationInfo(
+        public /* static */ delegate D3D12_RESOURCE_ALLOCATION_INFO _GetResourceAllocationInfo(
             [In] ID3D12Device* This,
             [In, NativeTypeName("UINT")] uint visibleMask,
             [In, NativeTypeName("UINT")] uint numResourceDescs,
-            [In] D3D12_RESOURCE_DESC* pResourceDescs,
-            [Out] D3D12_RESOURCE_ALLOCATION_INFO* pResourceAllocationInfo
+            [In] D3D12_RESOURCE_DESC* pResourceDescs
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void _GetCustomHeapProperties(
+        public /* static */ delegate D3D12_HEAP_PROPERTIES _GetCustomHeapProperties(
             [In] ID3D12Device* This,
             [In, NativeTypeName("UINT")] uint NodeMask,
-            [In] D3D12_HEAP_TYPE heapType,
-            [Out] D3D12_HEAP_PROPERTIES* pCustomHeapProperties
+            [In] D3D12_HEAP_TYPE heapType
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -456,9 +454,8 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void _GetAdapterLuid(
-            [In] ID3D12Device* This,
-            [Out] LUID* pAdapterLuid
+        public /* static */ delegate LUID _GetAdapterLuid(
+            [In] ID3D12Device* This
         );
         #endregion
 
@@ -894,38 +891,34 @@ namespace TerraFX.Interop
             }
         }
 
-        public void GetResourceAllocationInfo(
+        public D3D12_RESOURCE_ALLOCATION_INFO GetResourceAllocationInfo(
             [In, NativeTypeName("UINT")] uint visibleMask,
             [In, NativeTypeName("UINT")] uint numResourceDescs,
-            [In] D3D12_RESOURCE_DESC* pResourceDescs,
-            [Out] D3D12_RESOURCE_ALLOCATION_INFO* pResourceAllocationInfo
+            [In] D3D12_RESOURCE_DESC* pResourceDescs
         )
         {
             fixed (ID3D12Device* This = &this)
             {
-                MarshalFunction<_GetResourceAllocationInfo>(lpVtbl->GetResourceAllocationInfo)(
+                return MarshalFunction<_GetResourceAllocationInfo>(lpVtbl->GetResourceAllocationInfo)(
                     This,
                     visibleMask,
                     numResourceDescs,
-                    pResourceDescs,
-                    pResourceAllocationInfo
+                    pResourceDescs
                 );
             }
         }
 
-        public void GetCustomHeapProperties(
+        public D3D12_HEAP_PROPERTIES GetCustomHeapProperties(
             [In, NativeTypeName("UINT")] uint NodeMask,
-            [In] D3D12_HEAP_TYPE heapType,
-            [Out] D3D12_HEAP_PROPERTIES* pCustomHeapProperties
+            [In] D3D12_HEAP_TYPE heapType
         )
         {
             fixed (ID3D12Device* This = &this)
             {
-                MarshalFunction<_GetCustomHeapProperties>(lpVtbl->GetCustomHeapProperties)(
+                return MarshalFunction<_GetCustomHeapProperties>(lpVtbl->GetCustomHeapProperties)(
                     This,
                     NodeMask,
-                    heapType,
-                    pCustomHeapProperties
+                    heapType
                 );
             }
         }
@@ -1247,15 +1240,12 @@ namespace TerraFX.Interop
             }
         }
 
-        public void GetAdapterLuid(
-            [Out] LUID* pAdapterLuid
-        )
+        public LUID GetAdapterLuid()
         {
             fixed (ID3D12Device* This = &this)
             {
-                MarshalFunction<_GetAdapterLuid>(lpVtbl->GetAdapterLuid)(
-                    This,
-                    pAdapterLuid
+                return MarshalFunction<_GetAdapterLuid>(lpVtbl->GetAdapterLuid)(
+                    This
                 );
             }
         }

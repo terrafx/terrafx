@@ -115,9 +115,8 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void _GetDesc(
-            [In] ID3D12Resource* This,
-            [Out] D3D12_RESOURCE_DESC* pDesc
+        public /* static */ delegate D3D12_RESOURCE_DESC _GetDesc(
+            [In] ID3D12Resource* This
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -321,15 +320,12 @@ namespace TerraFX.Interop
             }
         }
 
-        public void GetDesc(
-            [Out] D3D12_RESOURCE_DESC* pDesc
-        )
+        public D3D12_RESOURCE_DESC GetDesc()
         {
             fixed (ID3D12Resource* This = &this)
             {
-                MarshalFunction<_GetDesc>(lpVtbl->GetDesc)(
-                    This,
-                    pDesc
+                return MarshalFunction<_GetDesc>(lpVtbl->GetDesc)(
+                    This
                 );
             }
         }
