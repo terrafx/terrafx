@@ -98,8 +98,9 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("D2D1_COLOR_F")]
-        public /* static */ delegate DXGI_RGBA _GetColor(
-            [In] ID2D1SolidColorBrush* This
+        public /* static */ delegate DXGI_RGBA* _GetColor(
+            [In] ID2D1SolidColorBrush* This,
+            [Out] DXGI_RGBA* _result
         );
         #endregion
 
@@ -229,8 +230,10 @@ namespace TerraFX.Interop
         {
             fixed (ID2D1SolidColorBrush* This = &this)
             {
-                return MarshalFunction<_GetColor>(lpVtbl->GetColor)(
-                    This
+                DXGI_RGBA result;
+                return *MarshalFunction<_GetColor>(lpVtbl->GetColor)(
+                    This,
+                    &result
                 );
             }
         }

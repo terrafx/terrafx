@@ -192,8 +192,9 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D3D12_COMMAND_QUEUE_DESC _GetDesc(
-            [In] ID3D12CommandQueue* This
+        public /* static */ delegate D3D12_COMMAND_QUEUE_DESC* _GetDesc(
+            [In] ID3D12CommandQueue* This,
+            [Out] D3D12_COMMAND_QUEUE_DESC* _result
         );
         #endregion
 
@@ -503,8 +504,10 @@ namespace TerraFX.Interop
         {
             fixed (ID3D12CommandQueue* This = &this)
             {
-                return MarshalFunction<_GetDesc>(lpVtbl->GetDesc)(
-                    This
+                D3D12_COMMAND_QUEUE_DESC result;
+                return *MarshalFunction<_GetDesc>(lpVtbl->GetDesc)(
+                    This,
+                    &result
                 );
             }
         }

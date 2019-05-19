@@ -115,8 +115,9 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D3D12_RESOURCE_DESC _GetDesc(
-            [In] ID3D12Resource* This
+        public /* static */ delegate D3D12_RESOURCE_DESC* _GetDesc(
+            [In] ID3D12Resource* This,
+            [Out] D3D12_RESOURCE_DESC* _result
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -322,12 +323,17 @@ namespace TerraFX.Interop
 
         public D3D12_RESOURCE_DESC GetDesc()
         {
+            D3D12_RESOURCE_DESC result;
+
             fixed (ID3D12Resource* This = &this)
             {
-                return MarshalFunction<_GetDesc>(lpVtbl->GetDesc)(
-                    This
+                MarshalFunction<_GetDesc>(lpVtbl->GetDesc)(
+                    This,
+                    &result
                 );
             }
+
+            return result;
         }
 
         [return: NativeTypeName("D3D12_GPU_VIRTUAL_ADDRESS")]

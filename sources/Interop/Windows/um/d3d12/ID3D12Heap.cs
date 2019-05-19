@@ -97,8 +97,9 @@ namespace TerraFX.Interop
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D3D12_HEAP_DESC _GetDesc(
-            [In] ID3D12Heap* This
+        public /* static */ delegate D3D12_HEAP_DESC* _GetDesc(
+            [In] ID3D12Heap* This,
+            [Out] D3D12_HEAP_DESC* _result
         );
         #endregion
 
@@ -233,8 +234,10 @@ namespace TerraFX.Interop
         {
             fixed (ID3D12Heap* This = &this)
             {
-                return MarshalFunction<_GetDesc>(lpVtbl->GetDesc)(
-                    This
+                D3D12_HEAP_DESC result;
+                return *MarshalFunction<_GetDesc>(lpVtbl->GetDesc)(
+                    This,
+                    &result
                 );
             }
         }

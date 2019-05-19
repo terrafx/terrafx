@@ -121,15 +121,17 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("D2D1_POINT_2F")]
-        public /* static */ delegate D2D_POINT_2F _GetCenter(
-            [In] ID2D1RadialGradientBrush* This
+        public /* static */ delegate D2D_POINT_2F* _GetCenter(
+            [In] ID2D1RadialGradientBrush* This,
+            [Out] D2D_POINT_2F* _result
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("D2D1_POINT_2F")]
-        public /* static */ delegate D2D_POINT_2F _GetGradientOriginOffset(
-            [In] ID2D1RadialGradientBrush* This
+        public /* static */ delegate D2D_POINT_2F* _GetGradientOriginOffset(
+            [In] ID2D1RadialGradientBrush* This,
+            [Out] D2D_POINT_2F* _result
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -319,8 +321,10 @@ namespace TerraFX.Interop
         {
             fixed (ID2D1RadialGradientBrush* This = &this)
             {
-                return MarshalFunction<_GetCenter>(lpVtbl->GetCenter)(
-                    This
+                D2D_POINT_2F result;
+                return *MarshalFunction<_GetCenter>(lpVtbl->GetCenter)(
+                    This,
+                    &result
                 );
             }
         }
@@ -330,8 +334,10 @@ namespace TerraFX.Interop
         {
             fixed (ID2D1RadialGradientBrush* This = &this)
             {
-                return MarshalFunction<_GetGradientOriginOffset>(lpVtbl->GetGradientOriginOffset)(
-                    This
+                D2D_POINT_2F result;
+                return *MarshalFunction<_GetGradientOriginOffset>(lpVtbl->GetGradientOriginOffset)(
+                    This,
+                    &result
                 );
             }
         }

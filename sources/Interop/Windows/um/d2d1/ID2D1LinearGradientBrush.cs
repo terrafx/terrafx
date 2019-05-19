@@ -107,15 +107,17 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("D2D1_POINT_2F")]
-        public /* static */ delegate D2D_POINT_2F _GetStartPoint(
-            [In] ID2D1LinearGradientBrush* This
+        public /* static */ delegate D2D_POINT_2F* _GetStartPoint(
+            [In] ID2D1LinearGradientBrush* This,
+            [Out] D2D_POINT_2F* _result
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("D2D1_POINT_2F")]
-        public /* static */ delegate D2D_POINT_2F _GetEndPoint(
-            [In] ID2D1LinearGradientBrush* This
+        public /* static */ delegate D2D_POINT_2F* _GetEndPoint(
+            [In] ID2D1LinearGradientBrush* This,
+            [Out] D2D_POINT_2F* _result
         );
 
         [SuppressUnmanagedCodeSecurity]
@@ -265,8 +267,10 @@ namespace TerraFX.Interop
         {
             fixed (ID2D1LinearGradientBrush* This = &this)
             {
-                return MarshalFunction<_GetStartPoint>(lpVtbl->GetStartPoint)(
-                    This
+                D2D_POINT_2F result;
+                return *MarshalFunction<_GetStartPoint>(lpVtbl->GetStartPoint)(
+                    This,
+                    &result
                 );
             }
         }
@@ -276,8 +280,10 @@ namespace TerraFX.Interop
         {
             fixed (ID2D1LinearGradientBrush* This = &this)
             {
-                return MarshalFunction<_GetEndPoint>(lpVtbl->GetEndPoint)(
-                    This
+                D2D_POINT_2F result;
+                return *MarshalFunction<_GetEndPoint>(lpVtbl->GetEndPoint)(
+                    This,
+                    &result
                 );
             }
         }

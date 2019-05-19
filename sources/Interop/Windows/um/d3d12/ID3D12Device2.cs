@@ -262,8 +262,9 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D3D12_RESOURCE_ALLOCATION_INFO _GetResourceAllocationInfo(
+        public /* static */ delegate D3D12_RESOURCE_ALLOCATION_INFO* _GetResourceAllocationInfo(
             [In] ID3D12Device2* This,
+            [Out] D3D12_RESOURCE_ALLOCATION_INFO* _result,
             [In, NativeTypeName("UINT")] uint visibleMask,
             [In, NativeTypeName("UINT")] uint numResourceDescs,
             [In] D3D12_RESOURCE_DESC* pResourceDescs
@@ -271,8 +272,9 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D3D12_HEAP_PROPERTIES _GetCustomHeapProperties(
+        public /* static */ delegate D3D12_HEAP_PROPERTIES* _GetCustomHeapProperties(
             [In] ID3D12Device2* This,
+            [Out] D3D12_HEAP_PROPERTIES* _result,
             [In, NativeTypeName("UINT")] uint NodeMask,
             [In] D3D12_HEAP_TYPE heapType
         );
@@ -454,8 +456,9 @@ namespace TerraFX.Interop
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate LUID _GetAdapterLuid(
-            [In] ID3D12Device2* This
+        public /* static */ delegate LUID* _GetAdapterLuid(
+            [In] ID3D12Device2* This,
+            [Out] LUID* _result
         );
         #endregion
 
@@ -946,8 +949,10 @@ namespace TerraFX.Interop
         {
             fixed (ID3D12Device2* This = &this)
             {
-                return MarshalFunction<_GetResourceAllocationInfo>(lpVtbl->GetResourceAllocationInfo)(
+                D3D12_RESOURCE_ALLOCATION_INFO result;
+                return *MarshalFunction<_GetResourceAllocationInfo>(lpVtbl->GetResourceAllocationInfo)(
                     This,
+                    &result,
                     visibleMask,
                     numResourceDescs,
                     pResourceDescs
@@ -962,8 +967,10 @@ namespace TerraFX.Interop
         {
             fixed (ID3D12Device2* This = &this)
             {
-                return MarshalFunction<_GetCustomHeapProperties>(lpVtbl->GetCustomHeapProperties)(
+                D3D12_HEAP_PROPERTIES result;
+                return *MarshalFunction<_GetCustomHeapProperties>(lpVtbl->GetCustomHeapProperties)(
                     This,
+                    &result,
                     NodeMask,
                     heapType
                 );
@@ -1291,8 +1298,10 @@ namespace TerraFX.Interop
         {
             fixed (ID3D12Device2* This = &this)
             {
-                return MarshalFunction<_GetAdapterLuid>(lpVtbl->GetAdapterLuid)(
-                    This
+                LUID result;
+                return *MarshalFunction<_GetAdapterLuid>(lpVtbl->GetAdapterLuid)(
+                    This,
+                    &result
                 );
             }
         }

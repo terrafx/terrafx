@@ -60,23 +60,26 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("D2D1_SIZE_F")]
-        public /* static */ delegate D2D_SIZE_F _GetSize(
-            [In] ID2D1Bitmap1* This
+        public /* static */ delegate D2D_SIZE_F* _GetSize(
+            [In] ID2D1Bitmap1* This,
+            [Out] D2D_SIZE_F* _result
         );
 
         /// <summary>Returns the size of the bitmap in resolution dependent units, (pixels).</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("D2D1_SIZE_U")]
-        public /* static */ delegate D2D_SIZE_U _GetPixelSize(
-            [In] ID2D1Bitmap1* This
+        public /* static */ delegate D2D_SIZE_U* _GetPixelSize(
+            [In] ID2D1Bitmap1* This,
+            [Out] D2D_SIZE_U* _result
         );
 
         /// <summary>Retrieve the format of the bitmap.</summary>
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_PIXEL_FORMAT _GetPixelFormat(
-            [In] ID2D1Bitmap1* This
+        public /* static */ delegate D2D1_PIXEL_FORMAT* _GetPixelFormat(
+            [In] ID2D1Bitmap1* This,
+            [Out] D2D1_PIXEL_FORMAT* _result
         );
 
         /// <summary>Return the DPI of the bitmap.</summary>
@@ -224,8 +227,10 @@ namespace TerraFX.Interop
         {
             fixed (ID2D1Bitmap1* This = &this)
             {
-                return MarshalFunction<_GetSize>(lpVtbl->GetSize)(
-                    This
+                D2D_SIZE_F result;
+                return *MarshalFunction<_GetSize>(lpVtbl->GetSize)(
+                    This,
+                    &result
                 );
             }
         }
@@ -235,8 +240,10 @@ namespace TerraFX.Interop
         {
             fixed (ID2D1Bitmap1* This = &this)
             {
-                return MarshalFunction<_GetPixelSize>(lpVtbl->GetPixelSize)(
-                    This
+                D2D_SIZE_U result;
+                return *MarshalFunction<_GetPixelSize>(lpVtbl->GetPixelSize)(
+                    This,
+                    &result
                 );
             }
         }
@@ -245,8 +252,10 @@ namespace TerraFX.Interop
         {
             fixed (ID2D1Bitmap1* This = &this)
             {
-                return MarshalFunction<_GetPixelFormat>(lpVtbl->GetPixelFormat)(
-                    This
+                D2D1_PIXEL_FORMAT result;
+                return *MarshalFunction<_GetPixelFormat>(lpVtbl->GetPixelFormat)(
+                    This,
+                    &result
                 );
             }
         }

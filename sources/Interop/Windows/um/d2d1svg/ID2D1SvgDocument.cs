@@ -68,8 +68,9 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("D2D1_SIZE_F")]
-        public /* static */ delegate D2D_SIZE_F _GetViewportSize(
-            [In] ID2D1SvgDocument* This
+        public /* static */ delegate D2D_SIZE_F* _GetViewportSize(
+            [In] ID2D1SvgDocument* This,
+            [Out] D2D_SIZE_F* _result
         );
 
         /// <summary>Sets the root element of the document. The root element must be an 'svg' element. If the element already exists within an svg tree, it is first removed.</summary>
@@ -248,8 +249,10 @@ namespace TerraFX.Interop
         {
             fixed (ID2D1SvgDocument* This = &this)
             {
-                return MarshalFunction<_GetViewportSize>(lpVtbl->GetViewportSize)(
-                    This
+                D2D_SIZE_F result;
+                return *MarshalFunction<_GetViewportSize>(lpVtbl->GetViewportSize)(
+                    This,
+                    &result
                 );
             }
         }
