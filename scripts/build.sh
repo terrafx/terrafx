@@ -8,6 +8,7 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 ScriptRoot="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
+architecture=''
 build=false
 ci=false
 configuration='Debug'
@@ -22,6 +23,10 @@ properties=''
 while [[ $# -gt 0 ]]; do
   lower="$(echo "$1" | awk '{print tolower($0)}')"
   case $lower in
+    --architecture)
+      architecture=$2
+      shift 2
+      ;;
     --build)
       build=true
       shift 1
@@ -91,7 +96,7 @@ function CreateDirectory {
 
 function Help {
   echo "Common settings:"
-  echo "  --configuration <value>   Build configuration Debug, Release"
+  echo "  --configuration <value>   Build configuration (Debug, Release)"
   echo "  --verbosity <value>       Msbuild verbosity (q[uiet], m[inimal], n[ormal], d[etailed], and diag[nostic])"
   echo "  --help                    Print help and exit"
   echo ""
@@ -104,6 +109,7 @@ function Help {
   echo "Advanced settings:"
   echo "  --solution <value>        Path to solution to build"
   echo "  --ci                      Set when running on CI server"
+  echo "  --architecture <value>    Test Architecture (<auto>, amd64, x64, x86, arm64, arm)"
   echo ""
   echo "Command line arguments not listed above are passed through to MSBuild."
 }
@@ -159,16 +165,20 @@ function Test {
   fi
 }
 
+if $help; then
+  Help
+  exit 0
+fi
+
 if $ci; then
   build=true
   pack=true
   restore=true
   test=true
-fi
 
-if $help; then
-  Help
-  exit 0
+  if [[ -z "$architecture" ]]; then
+    architecture="<auto>"
+  fi
 fi
 
 RepoRoot="$ScriptRoot/.."
@@ -183,7 +193,7 @@ CreateDirectory "$ArtifactsDir"
 LogDir="$ArtifactsDir/log"
 CreateDirectory "$LogDir"
 
-if $ci; then
+if [[ ! -z "$architecture" ]]; then
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
 
   DotNetInstallScript="$ArtifactsDir/dotnet-install.ps1"
@@ -192,8 +202,8 @@ if $ci; then
   DotNetInstallDirectory="$ArtifactsDir/dotnet"
   CreateDirectory "$DotNetInstallDirectory"
 
-  . "$DotNetInstallScript" --channel release/3.0.1xx --version latest --install-dir "$DotNetInstallDirectory"
-  . "$DotNetInstallScript" --channel 2.1 --version latest --install-dir "$DotNetInstallDirectory" --runtime dotnet
+  . "$DotNetInstallScript" --channel release/3.0.1xx --version latest --install-dir "$DotNetInstallDirectory" --architecture "$architecture"
+  . "$DotNetInstallScript" --channel 2.1 --version latest --install-dir "$DotNetInstallDirectory" --architecture "$architecture" --runtime dotnet
 
   PATH="$DotNetInstallDirectory:$PATH:"
 fi

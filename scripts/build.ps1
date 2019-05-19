@@ -1,14 +1,15 @@
 [CmdletBinding(PositionalBinding=$false)]
 Param(
+  [ValidateSet("<auto>", "amd64", "x64", "x86", "arm64", "arm")][string] $architecture = "",
   [switch] $build,
   [switch] $ci,
-  [string] $configuration = "Debug",
+  [ValidateSet("Debug", "Release")][string] $configuration = "Debug",
   [switch] $help,
   [switch] $pack,
   [switch] $restore,
   [string] $solution = "",
   [switch] $test,
-  [string] $verbosity = "minimal",
+  [ValidateSet("quiet", "minimal", "normal", "detailed", "diagnostic")][string] $verbosity = "minimal",
   [Parameter(ValueFromRemainingArguments=$true)][String[]]$properties
 )
 
@@ -33,7 +34,7 @@ function Create-Directory([string[]] $Path) {
 
 function Help() {
     Write-Host -Object "Common settings:"
-    Write-Host -Object "  -configuration <value>  Build configuration Debug, Release"
+    Write-Host -Object "  -configuration <value>  Build configuration (Debug, Release)"
     Write-Host -Object "  -verbosity <value>      Msbuild verbosity (q[uiet], m[inimal], n[ormal], d[etailed], and diag[nostic])"
     Write-Host -Object "  -help                   Print help and exit"
     Write-Host -Object ""
@@ -46,6 +47,7 @@ function Help() {
     Write-Host -Object "Advanced settings:"
     Write-Host -Object "  -solution <value>       Path to solution to build"
     Write-Host -Object "  -ci                     Set when running on CI server"
+    Write-Host -Object "  -architecture <value>   Test Architecture (<auto>, amd64, x64, x86, arm64, arm)"
     Write-Host -Object ""
     Write-Host -Object "Command line arguments not listed above are passed through to MSBuild."
     Write-Host -Object "The above arguments can be shortened as much as to be unambiguous (e.g. -co for configuration, -t for test, etc.)."
@@ -79,16 +81,20 @@ function Test() {
 }
 
 try {
+  if ($help) {
+    Help
+    exit 0
+  }
+
   if ($ci) {
     $build = $true
     $pack = $true
     $restore = $true
     $test = $true
-  }
 
-  if ($help) {
-    Help
-    exit 0
+    if ($architecture -eq "") {
+      $architecture = "<auto>"
+    }
   }
 
   $RepoRoot = Join-Path -Path $PSScriptRoot -ChildPath ".."
@@ -103,7 +109,7 @@ try {
   $LogDir = Join-Path -Path $ArtifactsDir -ChildPath "log"
   Create-Directory -Path $LogDir
 
-  if ($ci) {
+  if ($architecture -ne "") {
     $DOTNET_SKIP_FIRST_TIME_EXPERIENCE = 1
 
     $DotNetInstallScript = Join-Path -Path $ArtifactsDir -ChildPath "dotnet-install.ps1"
@@ -112,8 +118,8 @@ try {
     $DotNetInstallDirectory = Join-Path -Path $ArtifactsDir -ChildPath "dotnet"
     Create-Directory -Path $DotNetInstallDirectory
 
-    & $DotNetInstallScript -Channel release/3.0.1xx -Version latest -InstallDir $DotNetInstallDirectory
-    & $DotNetInstallScript -Channel 2.1 -Version latest -InstallDir $DotNetInstallDirectory -Runtime dotnet
+    & $DotNetInstallScript -Channel release/3.0.1xx -Version latest -InstallDir $DotNetInstallDirectory -Architecture $architecture
+    & $DotNetInstallScript -Channel 2.1 -Version latest -InstallDir $DotNetInstallDirectory  -Architecture $architecture -Runtime dotnet
 
     $env:PATH="$DotNetInstallDirectory;$env:PATH"
   }
