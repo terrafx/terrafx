@@ -192,7 +192,7 @@ if $ci; then
   DotNetInstallDirectory="$ArtifactsDir/dotnet"
   CreateDirectory "$DotNetInstallDirectory"
 
-  . "$DotNetInstallScript" --channel master --version latest --install-dir "$DotNetInstallDirectory"
+  . "$DotNetInstallScript" --channel release/3.0.1xx --version latest --install-dir "$DotNetInstallDirectory"
   . "$DotNetInstallScript" --channel 2.1 --version latest --install-dir "$DotNetInstallDirectory" --runtime dotnet
 
   PATH="$DotNetInstallDirectory:$PATH:"
