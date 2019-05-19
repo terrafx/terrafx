@@ -10,7 +10,7 @@ using TerraFX.Utilities;
 namespace TerraFX.Interop
 {
     [SuppressUnmanagedCodeSecurity]
-    [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+    [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
     [return: NativeTypeName("HRESULT")]
     public /* static */ unsafe delegate int PFNProgressNotification(
         [In, NativeTypeName("LPVOID")] void* pvData,
