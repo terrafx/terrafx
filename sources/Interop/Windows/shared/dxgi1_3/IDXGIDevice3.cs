@@ -21,7 +21,7 @@ namespace TerraFX.Interop
 
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] IDXGIDevice3* This,
@@ -30,14 +30,14 @@ namespace TerraFX.Interop
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] IDXGIDevice3* This
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] IDXGIDevice3* This
@@ -46,7 +46,7 @@ namespace TerraFX.Interop
 
         #region IDXGIObject Delegates
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetPrivateData(
             [In] IDXGIDevice3* This,
@@ -56,7 +56,7 @@ namespace TerraFX.Interop
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetPrivateDataInterface(
             [In] IDXGIDevice3* This,
@@ -65,7 +65,7 @@ namespace TerraFX.Interop
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetPrivateData(
             [In] IDXGIDevice3* This,
@@ -75,7 +75,7 @@ namespace TerraFX.Interop
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetParent(
             [In] IDXGIDevice3* This,
@@ -86,7 +86,7 @@ namespace TerraFX.Interop
 
         #region IDXGIDevice Delegates
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetAdapter(
             [In] IDXGIDevice3* This,
@@ -94,7 +94,7 @@ namespace TerraFX.Interop
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CreateSurface(
             [In] IDXGIDevice3* This,
@@ -106,7 +106,7 @@ namespace TerraFX.Interop
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryResourceResidency(
             [In] IDXGIDevice3* This,
@@ -116,7 +116,7 @@ namespace TerraFX.Interop
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetGPUThreadPriority(
             [In] IDXGIDevice3* This,
@@ -124,7 +124,7 @@ namespace TerraFX.Interop
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetGPUThreadPriority(
             [In] IDXGIDevice3* This,
@@ -134,7 +134,7 @@ namespace TerraFX.Interop
 
         #region IDXGIDevice1 Delegates
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetMaximumFrameLatency(
             [In] IDXGIDevice3* This,
@@ -142,7 +142,7 @@ namespace TerraFX.Interop
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetMaximumFrameLatency(
             [In] IDXGIDevice3* This,
@@ -152,7 +152,7 @@ namespace TerraFX.Interop
 
         #region IDXGIDevice2 Delegates
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _OfferResources(
             [In] IDXGIDevice3* This,
@@ -162,7 +162,7 @@ namespace TerraFX.Interop
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _ReclaimResources(
             [In] IDXGIDevice3* This,
@@ -172,7 +172,7 @@ namespace TerraFX.Interop
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _EnqueueSetEvent(
             [In] IDXGIDevice3* This,
@@ -182,7 +182,7 @@ namespace TerraFX.Interop
 
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _Trim(
             [In] IDXGIDevice3* This
         );

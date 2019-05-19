@@ -22,7 +22,7 @@ namespace TerraFX.Interop
 
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID2D1Ink* This,
@@ -31,14 +31,14 @@ namespace TerraFX.Interop
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID2D1Ink* This
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID2D1Ink* This
@@ -48,7 +48,7 @@ namespace TerraFX.Interop
         #region ID2D1Resource Delegates
         /// <summary>Retrieve the factory associated with this resource.</summary>
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _GetFactory(
             [In] ID2D1Ink* This,
             [Out] ID2D1Factory** factory
@@ -58,7 +58,7 @@ namespace TerraFX.Interop
         #region Delegates
         /// <summary>Resets the ink start point.</summary>
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _SetStartPoint(
             [In] ID2D1Ink* This,
             [In] D2D1_INK_POINT* startPoint
@@ -66,14 +66,15 @@ namespace TerraFX.Interop
 
         /// <summary>Retrieve the start point with which the ink was initialized.</summary>
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_INK_POINT _GetStartPoint(
-            [In] ID2D1Ink* This
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate D2D1_INK_POINT* _GetStartPoint(
+            [In] ID2D1Ink* This,
+            [Out] D2D1_INK_POINT* _result
         );
 
         /// <summary>Add one or more segments to the end of the ink.</summary>
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _AddSegments(
             [In] ID2D1Ink* This,
@@ -83,7 +84,7 @@ namespace TerraFX.Interop
 
         /// <summary>Remove one or more segments from the end of the ink.</summary>
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _RemoveSegmentsAtEnd(
             [In] ID2D1Ink* This,
@@ -92,7 +93,7 @@ namespace TerraFX.Interop
 
         /// <summary>Updates the specified segments with new control points.</summary>
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetSegments(
             [In] ID2D1Ink* This,
@@ -103,7 +104,7 @@ namespace TerraFX.Interop
 
         /// <summary>Update the last segment with new control points.</summary>
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetSegmentAtEnd(
             [In] ID2D1Ink* This,
@@ -112,7 +113,7 @@ namespace TerraFX.Interop
 
         /// <summary>Returns the number of segments the ink is composed of.</summary>
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("UINT32")]
         public /* static */ delegate uint _GetSegmentCount(
             [In] ID2D1Ink* This
@@ -120,7 +121,7 @@ namespace TerraFX.Interop
 
         /// <summary>Retrieve the segments stored in the ink.</summary>
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetSegments(
             [In] ID2D1Ink* This,
@@ -131,7 +132,7 @@ namespace TerraFX.Interop
 
         /// <summary>Construct a geometric representation of the ink.</summary>
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _StreamAsGeometry(
             [In] ID2D1Ink* This,
@@ -143,7 +144,7 @@ namespace TerraFX.Interop
 
         /// <summary>Retrieve the bounds of the ink, with an optional applied transform.</summary>
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetBounds(
             [In] ID2D1Ink* This,
@@ -226,8 +227,10 @@ namespace TerraFX.Interop
         {
             fixed (ID2D1Ink* This = &this)
             {
-                return MarshalFunction<_GetStartPoint>(lpVtbl->GetStartPoint)(
-                    This
+                D2D1_INK_POINT result;
+                return *MarshalFunction<_GetStartPoint>(lpVtbl->GetStartPoint)(
+                    This,
+                    &result
                 );
             }
         }

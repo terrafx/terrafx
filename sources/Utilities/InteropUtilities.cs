@@ -10,11 +10,6 @@ namespace TerraFX.Utilities
     /// <summary>Provides a set of methods for simplifying interop code.</summary>
     public static unsafe class InteropUtilities
     {
-        #region Static Fields
-        /// <summary>Holds a mapping of all of the managed delegates created for the various function pointers.</summary>
-        private static readonly Dictionary<IntPtr, Delegate> _marshalledFunctions = new Dictionary<IntPtr, Delegate>();
-        #endregion
-
         #region Static Methods
         /// <summary>Gets a reference of <typeparamref name="T" /> from a given <see cref="int" />.</summary>
         /// <typeparam name="T">The type of the reference to retrieve.</typeparam>
@@ -62,17 +57,7 @@ namespace TerraFX.Utilities
         /// <returns>A managed delegate that invokes <paramref name="function" />.</returns>
         public static TDelegate MarshalFunction<TDelegate>(IntPtr function)
         {
-            if (_marshalledFunctions.TryGetValue(function, out var value) == false)
-            {
-                // In the case where two threads marshal the same function simultaneously,
-                // we will end up with an existing entry. We will just overwrite since both
-                // the delegates will do the same thing. The GC will just end up having some
-                // extra work.
-                value = Marshal.GetDelegateForFunctionPointer(function, typeof(TDelegate));
-                _marshalledFunctions[function] = value;
-            }
-
-            return (TDelegate)(object)value;
+            return Marshal.GetDelegateForFunctionPointer<TDelegate>(function);
         }
 
         /// <summary>Gets a null reference of <typeparamref name="T"/>.</summary>

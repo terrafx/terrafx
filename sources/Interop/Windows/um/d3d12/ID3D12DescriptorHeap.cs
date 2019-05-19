@@ -21,7 +21,7 @@ namespace TerraFX.Interop
 
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID3D12DescriptorHeap* This,
@@ -30,14 +30,14 @@ namespace TerraFX.Interop
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID3D12DescriptorHeap* This
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID3D12DescriptorHeap* This
@@ -46,7 +46,7 @@ namespace TerraFX.Interop
 
         #region ID3D12Object Delegates
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetPrivateData(
             [In] ID3D12DescriptorHeap* This,
@@ -56,7 +56,7 @@ namespace TerraFX.Interop
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetPrivateData(
             [In] ID3D12DescriptorHeap* This,
@@ -66,7 +66,7 @@ namespace TerraFX.Interop
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetPrivateDataInterface(
             [In] ID3D12DescriptorHeap* This,
@@ -75,7 +75,7 @@ namespace TerraFX.Interop
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _SetName(
             [In] ID3D12DescriptorHeap* This,
@@ -85,7 +85,7 @@ namespace TerraFX.Interop
 
         #region ID3D12DeviceChild Delegates
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _GetDevice(
             [In] ID3D12DescriptorHeap* This,
@@ -96,21 +96,24 @@ namespace TerraFX.Interop
 
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D3D12_DESCRIPTOR_HEAP_DESC _GetDesc(
-            [In] ID3D12DescriptorHeap* This
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate D3D12_DESCRIPTOR_HEAP_DESC* _GetDesc(
+            [In] ID3D12DescriptorHeap* This,
+            [Out] D3D12_DESCRIPTOR_HEAP_DESC* _result
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D3D12_CPU_DESCRIPTOR_HANDLE _GetCPUDescriptorHandleForHeapStart(
-            [In] ID3D12DescriptorHeap* This
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate D3D12_CPU_DESCRIPTOR_HANDLE* _GetCPUDescriptorHandleForHeapStart(
+            [In] ID3D12DescriptorHeap* This,
+            [Out] D3D12_CPU_DESCRIPTOR_HANDLE* _result
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D3D12_GPU_DESCRIPTOR_HANDLE _GetGPUDescriptorHandleForHeapStart(
-            [In] ID3D12DescriptorHeap* This
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate D3D12_GPU_DESCRIPTOR_HANDLE* _GetGPUDescriptorHandleForHeapStart(
+            [In] ID3D12DescriptorHeap* This,
+            [Out] D3D12_GPU_DESCRIPTOR_HANDLE* _result
         );
         #endregion
 
@@ -245,30 +248,42 @@ namespace TerraFX.Interop
         {
             fixed (ID3D12DescriptorHeap* This = &this)
             {
-                return MarshalFunction<_GetDesc>(lpVtbl->GetDesc)(
-                    This
+                D3D12_DESCRIPTOR_HEAP_DESC result;
+                return *MarshalFunction<_GetDesc>(lpVtbl->GetDesc)(
+                    This,
+                    &result
                 );
             }
         }
 
         public D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandleForHeapStart()
         {
+            D3D12_CPU_DESCRIPTOR_HANDLE result;
+
             fixed (ID3D12DescriptorHeap* This = &this)
             {
-                return MarshalFunction<_GetCPUDescriptorHandleForHeapStart>(lpVtbl->GetCPUDescriptorHandleForHeapStart)(
-                    This
+                MarshalFunction<_GetCPUDescriptorHandleForHeapStart>(lpVtbl->GetCPUDescriptorHandleForHeapStart)(
+                    This,
+                    &result
                 );
             }
+
+            return result;
         }
 
         public D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandleForHeapStart()
         {
+            D3D12_GPU_DESCRIPTOR_HANDLE result;
+
             fixed (ID3D12DescriptorHeap* This = &this)
             {
-                return MarshalFunction<_GetGPUDescriptorHandleForHeapStart>(lpVtbl->GetGPUDescriptorHandleForHeapStart)(
-                    This
+                MarshalFunction<_GetGPUDescriptorHandleForHeapStart>(lpVtbl->GetGPUDescriptorHandleForHeapStart)(
+                    This,
+                    &result
                 );
             }
+
+            return result;
         }
         #endregion
 

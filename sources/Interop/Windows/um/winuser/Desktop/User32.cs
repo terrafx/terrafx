@@ -4,6 +4,7 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
 using TerraFX.Utilities;
@@ -102,10 +103,18 @@ namespace TerraFX.Interop.Desktop
         public static extern IntPtr GetDesktopWindow(
         );
 
+        [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "GetWindowLongW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        [SuppressUnmanagedCodeSecurity]
+        [return: NativeTypeName("LONG")]
+        public static extern int GetWindowLong(
+            [In, NativeTypeName("HWND")] IntPtr hWnd,
+            [In] int nIndex
+        );
+
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "GetWindowLongPtrW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: NativeTypeName("LONG_PTR")]
-        public static extern IntPtr GetWindowLongPtr(
+        public static extern IntPtr _GetWindowLongPtr(
             [In, NativeTypeName("HWND")] IntPtr hWnd,
             [In] int nIndex
         );
@@ -181,10 +190,19 @@ namespace TerraFX.Interop.Desktop
             [In, NativeTypeName("HWND")] IntPtr hWnd
         );
 
+        [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "SetWindowLongW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
+        [SuppressUnmanagedCodeSecurity]
+        [return: NativeTypeName("LONG")]
+        public static extern int SetWindowLong(
+            [In, NativeTypeName("HWND")] IntPtr hWnd,
+            [In] int nIndex,
+            [In, NativeTypeName("LONG")] int dwNewLong
+        );
+
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "SetWindowLongPtrW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: NativeTypeName("LONG_PTR")]
-        public static extern IntPtr SetWindowLongPtr(
+        public static extern IntPtr _SetWindowLongPtr(
             [In, NativeTypeName("HWND")] IntPtr hWnd,
             [In] int nIndex,
             [In, NativeTypeName("LONG_PTR")] IntPtr dwNewLong
@@ -212,6 +230,34 @@ namespace TerraFX.Interop.Desktop
             [In, NativeTypeName("LPCWSTR")] char* lpClassName,
             [In, NativeTypeName("HINSTANCE")] IntPtr hInstance = default
         );
+        #endregion
+
+        #region Methods
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex)
+        {
+            if (IntPtr.Size == 4)
+            {
+                return (IntPtr)GetWindowLong(hWnd, nIndex);
+            }
+            else
+            {
+                return _GetWindowLongPtr(hWnd, nIndex);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
+        {
+            if (IntPtr.Size == 4)
+            {
+                return (IntPtr)SetWindowLong(hWnd, nIndex, (int)dwNewLong);
+            }
+            else
+            {
+                return _SetWindowLongPtr(hWnd, nIndex, dwNewLong);
+            }
+        }
         #endregion
     }
 }

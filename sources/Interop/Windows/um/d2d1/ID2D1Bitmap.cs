@@ -22,7 +22,7 @@ namespace TerraFX.Interop
 
         #region IUnknown Delegates
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
             [In] ID2D1Bitmap* This,
@@ -31,14 +31,14 @@ namespace TerraFX.Interop
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
             [In] ID2D1Bitmap* This
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
             [In] ID2D1Bitmap* This
@@ -48,7 +48,7 @@ namespace TerraFX.Interop
         #region ID2D1Resource Delegates
         /// <summary>Retrieve the factory associated with this resource.</summary>
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _GetFactory(
             [In] ID2D1Bitmap* This,
             [Out] ID2D1Factory** factory
@@ -58,30 +58,33 @@ namespace TerraFX.Interop
         #region Delegates
         /// <summary>Returns the size of the bitmap in resolution independent units.</summary>
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("D2D1_SIZE_F")]
-        public /* static */ delegate D2D_SIZE_F _GetSize(
-            [In] ID2D1Bitmap* This
+        public /* static */ delegate D2D_SIZE_F* _GetSize(
+            [In] ID2D1Bitmap* This,
+            [Out, NativeTypeName("D2D1_SIZE_F")] D2D_SIZE_F* _result
         );
 
         /// <summary>Returns the size of the bitmap in resolution dependent units, (pixels).</summary>
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("D2D1_SIZE_U")]
-        public /* static */ delegate D2D_SIZE_U _GetPixelSize(
-            [In] ID2D1Bitmap* This
+        public /* static */ delegate D2D_SIZE_U* _GetPixelSize(
+            [In] ID2D1Bitmap* This,
+            [Out, NativeTypeName("D2D1_SIZE_U")] D2D_SIZE_U* _result
         );
 
         /// <summary>Retrieve the format of the bitmap.</summary>
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate D2D1_PIXEL_FORMAT _GetPixelFormat(
-            [In] ID2D1Bitmap* This
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        public /* static */ delegate D2D1_PIXEL_FORMAT* _GetPixelFormat(
+            [In] ID2D1Bitmap* This,
+            [Out] D2D1_PIXEL_FORMAT* _result
         );
 
         /// <summary>Return the DPI of the bitmap.</summary>
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         public /* static */ delegate void _GetDpi(
             [In] ID2D1Bitmap* This,
             [Out, NativeTypeName("FLOAT")] float* dpiX,
@@ -89,7 +92,7 @@ namespace TerraFX.Interop
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CopyFromBitmap(
             [In] ID2D1Bitmap* This,
@@ -99,7 +102,7 @@ namespace TerraFX.Interop
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CopyFromRenderTarget(
             [In] ID2D1Bitmap* This,
@@ -109,7 +112,7 @@ namespace TerraFX.Interop
         );
 
         [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _CopyFromMemory(
             [In] ID2D1Bitmap* This,
@@ -180,8 +183,10 @@ namespace TerraFX.Interop
         {
             fixed (ID2D1Bitmap* This = &this)
             {
-                return MarshalFunction<_GetSize>(lpVtbl->GetSize)(
-                    This
+                D2D_SIZE_F result;
+                return *MarshalFunction<_GetSize>(lpVtbl->GetSize)(
+                    This,
+                    &result
                 );
             }
         }
@@ -191,8 +196,10 @@ namespace TerraFX.Interop
         {
             fixed (ID2D1Bitmap* This = &this)
             {
-                return MarshalFunction<_GetPixelSize>(lpVtbl->GetPixelSize)(
-                    This
+                D2D_SIZE_U result;
+                return *MarshalFunction<_GetPixelSize>(lpVtbl->GetPixelSize)(
+                    This,
+                    &result
                 );
             }
         }
@@ -201,8 +208,10 @@ namespace TerraFX.Interop
         {
             fixed (ID2D1Bitmap* This = &this)
             {
-                return MarshalFunction<_GetPixelFormat>(lpVtbl->GetPixelFormat)(
-                    This
+                D2D1_PIXEL_FORMAT result;
+                return *MarshalFunction<_GetPixelFormat>(lpVtbl->GetPixelFormat)(
+                    This,
+                    &result
                 );
             }
         }
