@@ -8,51 +8,56 @@ using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    [StructLayout(LayoutKind.Explicit)]
     [Unmanaged]
     public struct D3D12_SHADER_RESOURCE_VIEW_DESC
     {
         #region Fields
-        [FieldOffset(0)]
         public DXGI_FORMAT Format;
 
-        [FieldOffset(4)]
         public D3D12_SRV_DIMENSION ViewDimension;
 
-        [FieldOffset(8)]
         public uint Shader4ComponentMapping;
 
-        #region union
-        [FieldOffset(16)]
-        public D3D12_BUFFER_SRV Buffer;
-
-        [FieldOffset(16)]
-        public D3D12_TEX1D_SRV Texture1D;
-
-        [FieldOffset(16)]
-        public D3D12_TEX1D_ARRAY_SRV Texture1DArray;
-
-        [FieldOffset(16)]
-        public D3D12_TEX2D_SRV Texture2D;
-
-        [FieldOffset(16)]
-        public D3D12_TEX2D_ARRAY_SRV Texture2DArray;
-
-        [FieldOffset(16)]
-        public D3D12_TEX2DMS_SRV Texture2DMS;
-
-        [FieldOffset(16)]
-        public D3D12_TEX2DMS_ARRAY_SRV Texture2DMSArray;
-
-        [FieldOffset(16)]
-        public D3D12_TEX3D_SRV Texture3D;
-
-        [FieldOffset(16)]
-        public D3D12_TEXCUBE_SRV TextureCube;
-
-        [FieldOffset(16)]
-        public D3D12_TEXCUBE_ARRAY_SRV TextureCubeArray;
+        public _Anonymous_e__Union Anonymous;
         #endregion
+
+        #region Structs
+        [StructLayout(LayoutKind.Explicit)]
+        [Unmanaged]
+        public struct _Anonymous_e__Union
+        {
+            #region Fields
+            [FieldOffset(0)]
+            public D3D12_BUFFER_SRV Buffer;
+
+            [FieldOffset(0)]
+            public D3D12_TEX1D_SRV Texture1D;
+
+            [FieldOffset(0)]
+            public D3D12_TEX1D_ARRAY_SRV Texture1DArray;
+
+            [FieldOffset(0)]
+            public D3D12_TEX2D_SRV Texture2D;
+
+            [FieldOffset(0)]
+            public D3D12_TEX2D_ARRAY_SRV Texture2DArray;
+
+            [FieldOffset(0)]
+            public D3D12_TEX2DMS_SRV Texture2DMS;
+
+            [FieldOffset(0)]
+            public D3D12_TEX2DMS_ARRAY_SRV Texture2DMSArray;
+
+            [FieldOffset(0)]
+            public D3D12_TEX3D_SRV Texture3D;
+
+            [FieldOffset(0)]
+            public D3D12_TEXCUBE_SRV TextureCube;
+
+            [FieldOffset(0)]
+            public D3D12_TEXCUBE_ARRAY_SRV TextureCubeArray;
+            #endregion
+        }
         #endregion
     }
 }

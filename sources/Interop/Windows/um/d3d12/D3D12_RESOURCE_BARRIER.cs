@@ -11,27 +11,15 @@ using static TerraFX.Interop.D3D12_RESOURCE_BARRIER_TYPE;
 
 namespace TerraFX.Interop
 {
-    [StructLayout(LayoutKind.Explicit)]
     [Unmanaged]
     public unsafe struct D3D12_RESOURCE_BARRIER
     {
         #region Fields
-        [FieldOffset(0)]
         public D3D12_RESOURCE_BARRIER_TYPE Type;
 
-        [FieldOffset(4)]
         public D3D12_RESOURCE_BARRIER_FLAGS Flags;
 
-        #region union
-        [FieldOffset(8)]
-        public D3D12_RESOURCE_TRANSITION_BARRIER Transition;
-
-        [FieldOffset(8)]
-        public D3D12_RESOURCE_ALIASING_BARRIER Aliasing;
-
-        [FieldOffset(8)]
-        public D3D12_RESOURCE_UAV_BARRIER UAV;
-        #endregion
+        public _Anonymous_e__Union Anonymous;
         #endregion
 
         #region Methods
@@ -40,26 +28,44 @@ namespace TerraFX.Interop
             D3D12_RESOURCE_BARRIER result = default;
             result.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
             result.Flags = flags;
-            result.Transition.pResource = pResource;
-            result.Transition.StateBefore = stateBefore;
-            result.Transition.StateAfter = stateAfter;
-            result.Transition.Subresource = subresource;
+            result.Anonymous.Transition.pResource = pResource;
+            result.Anonymous.Transition.StateBefore = stateBefore;
+            result.Anonymous.Transition.StateAfter = stateAfter;
+            result.Anonymous.Transition.Subresource = subresource;
             return result;
         }
         public static D3D12_RESOURCE_BARRIER InitAliasing(ID3D12Resource* pResourceBefore, ID3D12Resource* pResourceAfter)
         {
             D3D12_RESOURCE_BARRIER result = default;
             result.Type = D3D12_RESOURCE_BARRIER_TYPE_ALIASING;
-            result.Aliasing.pResourceBefore = pResourceBefore;
-            result.Aliasing.pResourceAfter = pResourceAfter;
+            result.Anonymous.Aliasing.pResourceBefore = pResourceBefore;
+            result.Anonymous.Aliasing.pResourceAfter = pResourceAfter;
             return result;
         }
         public static D3D12_RESOURCE_BARRIER InitUAV(ID3D12Resource* pResource)
         {
             D3D12_RESOURCE_BARRIER result = default;
             result.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
-            result.UAV.pResource = pResource;
+            result.Anonymous.UAV.pResource = pResource;
             return result;
+        }
+        #endregion
+
+        #region Structs
+        [StructLayout(LayoutKind.Explicit)]
+        [Unmanaged]
+        public struct _Anonymous_e__Union
+        {
+            #region Fields
+            [FieldOffset(0)]
+            public D3D12_RESOURCE_TRANSITION_BARRIER Transition;
+
+            [FieldOffset(0)]
+            public D3D12_RESOURCE_ALIASING_BARRIER Aliasing;
+
+            [FieldOffset(0)]
+            public D3D12_RESOURCE_UAV_BARRIER UAV;
+            #endregion
         }
         #endregion
     }

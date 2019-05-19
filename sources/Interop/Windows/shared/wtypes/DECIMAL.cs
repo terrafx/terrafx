@@ -8,49 +8,76 @@ using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    [StructLayout(LayoutKind.Explicit)]
     [Unmanaged]
     public struct DECIMAL
     {
         #region Fields
-        [FieldOffset(0)]
         public ushort wReserved;
 
-        #region union
-        #region struct
-        [FieldOffset(2)]
-        [NativeTypeName("BYTE")]
-        public byte scale;
+        public _Anonymous1_e__Union Anonymous1;
 
-        [FieldOffset(3)]
-        [NativeTypeName("BYTE")]
-        public byte sign;
-        #endregion
-
-        [FieldOffset(2)]
-        [NativeTypeName("USHORT")]
-        public ushort signscale;
-        #endregion
-
-        [FieldOffset(4)]
         [NativeTypeName("ULONG")]
         public uint Hi32;
 
-        #region union
-        #region struct
-        [FieldOffset(8)]
-        [NativeTypeName("ULONG")]
-        public uint Lo32;
-
-        [FieldOffset(12)]
-        [NativeTypeName("ULONG")]
-        public uint Mid32;
+        public _Anonymous2_e__Union Anonymous2;
         #endregion
 
-        [FieldOffset(8)]
-        [NativeTypeName("ULONGLONG")]
-        public ulong Lo64;
-        #endregion
+        #region Structs
+        [StructLayout(LayoutKind.Explicit)]
+        [Unmanaged]
+        public struct _Anonymous1_e__Union
+        {
+            #region Fields
+            [FieldOffset(0)]
+            _Anonymous_e__Struct Anonymous;
+
+            [FieldOffset(0)]
+            [NativeTypeName("USHORT")]
+            public ushort signscale;
+            #endregion
+
+            #region Structs
+            [Unmanaged]
+            public struct _Anonymous_e__Struct
+            {
+                #region Fields
+                [NativeTypeName("BYTE")]
+                public byte scale;
+
+                [NativeTypeName("BYTE")]
+                public byte sign;
+                #endregion
+            }
+            #endregion
+        }
+
+        [StructLayout(LayoutKind.Explicit)]
+        [Unmanaged]
+        public struct _Anonymous2_e__Union
+        {
+            #region Fields
+            [FieldOffset(0)]
+            public _Anonymous_e__Struct Anonymous;
+
+            [FieldOffset(0)]
+            [NativeTypeName("ULONGLONG")]
+            public ulong Lo64;
+            #endregion
+
+            #region Structs
+            [Unmanaged]
+            public struct _Anonymous_e__Struct
+            {
+                #region Fields
+                [NativeTypeName("ULONG")]
+                public uint Lo32;
+
+                [NativeTypeName("ULONG")]
+                public uint Mid32;
+                #endregion
+            }
+            #endregion
+        }
         #endregion
     }
 }

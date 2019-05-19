@@ -9,22 +9,13 @@ using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    [StructLayout(LayoutKind.Explicit)]
     [Unmanaged]
     public unsafe struct D3D12_CLEAR_VALUE
     {
         #region Fields
-        [FieldOffset(0)]
         public DXGI_FORMAT Format;
 
-        #region union
-        [FieldOffset(4)]
-        [NativeTypeName("FLOAT[4]")]
-        public fixed float Color[4];
-
-        [FieldOffset(4)]
-        public D3D12_DEPTH_STENCIL_VALUE DepthStencil;
-        #endregion
+        public _Anonymous_e__Union Anonymous;
         #endregion
 
         #region Constructors
@@ -33,7 +24,7 @@ namespace TerraFX.Interop
             fixed (D3D12_CLEAR_VALUE* pThis = &this)
             {
                 Format = format;
-                Buffer.MemoryCopy(color, pThis->Color, sizeof(float) * 4, sizeof(float) * 4);
+                Buffer.MemoryCopy(color, pThis->Anonymous.Color, sizeof(float) * 4, sizeof(float) * 4);
             }
         }
 
@@ -43,9 +34,23 @@ namespace TerraFX.Interop
             {
                 Format = format;
                 /* Use memcpy to preserve NAN values */
-                Buffer.MemoryCopy(&depth, &pThis->DepthStencil.Depth, sizeof(float), sizeof(float));
-                DepthStencil.Stencil = stencil;
+                Buffer.MemoryCopy(&depth, &pThis->Anonymous.DepthStencil.Depth, sizeof(float), sizeof(float));
+                Anonymous.DepthStencil.Stencil = stencil;
             }
+        }
+        #endregion
+
+        #region Structs
+        [StructLayout(LayoutKind.Explicit)]
+        [Unmanaged]
+        public struct _Anonymous_e__Union
+        {
+            [FieldOffset(0)]
+            [NativeTypeName("FLOAT[4]")]
+            public fixed float Color[4];
+
+            [FieldOffset(0)]
+            public D3D12_DEPTH_STENCIL_VALUE DepthStencil;
         }
         #endregion
     }

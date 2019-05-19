@@ -14,13 +14,13 @@ namespace TerraFX.Interop
         #region Fields
         public TYPEDESC tdesc;
 
-        public _u_e__Union u;
+        public _Anonymous_e__Union Anonymous;
         #endregion
 
         #region Structs
         [StructLayout(LayoutKind.Explicit)]
         [Unmanaged]
-        public struct _u_e__Union
+        public struct _Anonymous_e__Union
         {
             #region Fields
             [FieldOffset(0)]

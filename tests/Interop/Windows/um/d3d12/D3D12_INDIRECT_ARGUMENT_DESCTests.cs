@@ -8,11 +8,11 @@ namespace TerraFX.Interop.UnitTests
     /// <summary>Provides validation of the <see cref="D3D12_INDIRECT_ARGUMENT_DESC" /> struct.</summary>
     public static class D3D12_INDIRECT_ARGUMENT_DESCTests
     {
-        /// <summary>Validates that the layout of the <see cref="D3D12_INDIRECT_ARGUMENT_DESC" /> struct is <see cref="LayoutKind.Explicit" />.</summary>
+        /// <summary>Validates that the layout of the <see cref="D3D12_INDIRECT_ARGUMENT_DESC" /> struct is <see cref="LayoutKind.Sequential" />.</summary>
         [Test]
-        public static void IsLayoutExplicitTest()
+        public static void IsLayoutSequentialTest()
         {
-            Assert.That(typeof(D3D12_INDIRECT_ARGUMENT_DESC).IsExplicitLayout, Is.True);
+            Assert.That(typeof(D3D12_INDIRECT_ARGUMENT_DESC).IsLayoutSequential, Is.True);
         }
 
         /// <summary>Validates that the size of the <see cref="D3D12_INDIRECT_ARGUMENT_DESC" /> struct is correct.</summary>

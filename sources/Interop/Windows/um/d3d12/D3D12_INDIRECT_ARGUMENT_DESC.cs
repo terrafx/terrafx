@@ -8,72 +8,79 @@ using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    [StructLayout(LayoutKind.Explicit)]
     [Unmanaged]
     public struct D3D12_INDIRECT_ARGUMENT_DESC
     {
         #region Fields
-        [FieldOffset(0)]
         public D3D12_INDIRECT_ARGUMENT_TYPE Type;
 
-        #region union
-        [FieldOffset(4)]
-        public _VertexBuffer_e__Struct VertexBuffer;
-
-        [FieldOffset(4)]
-        public _Constant_e__Struct Constant;
-
-        [FieldOffset(4)]
-        public _ConstantBufferView_e__Struct ConstantBufferView;
-
-        [FieldOffset(4)]
-        public _ShaderResourceView_e__Struct ShaderResourceView;
-
-        [FieldOffset(4)]
-        public _UnorderedAccessView_e__Struct UnorderedAccessView;
-        #endregion
+        public _Anonymous_e__Union Anonymous;
         #endregion
 
         #region Structs
+        [StructLayout(LayoutKind.Explicit)]
         [Unmanaged]
-        public struct _VertexBuffer_e__Struct
+        public struct _Anonymous_e__Union
         {
             #region Fields
-            public uint Slot;
-            #endregion
-        }
+            [FieldOffset(0)]
+            public _VertexBuffer_e__Struct VertexBuffer;
 
-        [Unmanaged]
-        public struct _Constant_e__Struct
-        {
-            #region Fields
-            public uint RootParameterIndex;
-            public uint DestOffsetIn32BitValues;
-            public uint Num32BitValuesToSet;
-            #endregion
-        }
+            [FieldOffset(0)]
+            public _Constant_e__Struct Constant;
 
-        [Unmanaged]
-        public struct _ConstantBufferView_e__Struct
-        {
-            #region Fields
-            public uint RootParameterIndex;
-            #endregion
-        }
+            [FieldOffset(0)]
+            public _ConstantBufferView_e__Struct ConstantBufferView;
 
-        [Unmanaged]
-        public struct _ShaderResourceView_e__Struct
-        {
-            #region Fields
-            public uint RootParameterIndex;
-            #endregion
-        }
+            [FieldOffset(0)]
+            public _ShaderResourceView_e__Struct ShaderResourceView;
 
-        [Unmanaged]
-        public struct _UnorderedAccessView_e__Struct
-        {
-            #region Fields
-            public uint RootParameterIndex;
+            [FieldOffset(0)]
+            public _UnorderedAccessView_e__Struct UnorderedAccessView;
+            #endregion
+
+            #region Structs
+            [Unmanaged]
+            public struct _VertexBuffer_e__Struct
+            {
+                #region Fields
+                public uint Slot;
+                #endregion
+            }
+
+            [Unmanaged]
+            public struct _Constant_e__Struct
+            {
+                #region Fields
+                public uint RootParameterIndex;
+                public uint DestOffsetIn32BitValues;
+                public uint Num32BitValuesToSet;
+                #endregion
+            }
+
+            [Unmanaged]
+            public struct _ConstantBufferView_e__Struct
+            {
+                #region Fields
+                public uint RootParameterIndex;
+                #endregion
+            }
+
+            [Unmanaged]
+            public struct _ShaderResourceView_e__Struct
+            {
+                #region Fields
+                public uint RootParameterIndex;
+                #endregion
+            }
+
+            [Unmanaged]
+            public struct _UnorderedAccessView_e__Struct
+            {
+                #region Fields
+                public uint RootParameterIndex;
+                #endregion
+            }
             #endregion
         }
         #endregion

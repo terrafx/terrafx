@@ -12,7 +12,7 @@ namespace TerraFX.Interop
     public unsafe struct TYPEDESC
     {
         #region Fields
-        private _u_e__Union u;
+        private _Anonymous_e__Union Anonymous;
 
         [NativeTypeName("VARTYPE")]
         public ushort vt;
@@ -23,12 +23,12 @@ namespace TerraFX.Interop
         {
             get
             {
-                return u.lptdesc;
+                return Anonymous.lptdesc;
             }
 
             set
             {
-                u.lptdesc = value;
+                Anonymous.lptdesc = value;
             }
         }
 
@@ -36,12 +36,12 @@ namespace TerraFX.Interop
         {
             get
             {
-                return u.lpadesc;
+                return Anonymous.lpadesc;
             }
 
             set
             {
-                u.lpadesc = value;
+                Anonymous.lpadesc = value;
             }
         }
 
@@ -49,12 +49,12 @@ namespace TerraFX.Interop
         {
             get
             {
-                return u.hreftype;
+                return Anonymous.hreftype;
             }
 
             set
             {
-                u.hreftype = value;
+                Anonymous.hreftype = value;
             }
         }
         #endregion
@@ -62,7 +62,7 @@ namespace TerraFX.Interop
         #region Structs
         [StructLayout(LayoutKind.Explicit)]
         [Unmanaged]
-        public struct _u_e__Union
+        public struct _Anonymous_e__Union
         {
             #region Fields
             [FieldOffset(0)]

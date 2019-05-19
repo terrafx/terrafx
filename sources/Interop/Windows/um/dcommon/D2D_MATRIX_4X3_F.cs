@@ -9,64 +9,69 @@ using TerraFX.Utilities;
 namespace TerraFX.Interop
 {
     /// <summary>Represents a 4-by-3 matrix.</summary>
-    [StructLayout(LayoutKind.Explicit)]
     [Unmanaged]
     public unsafe struct D2D_MATRIX_4X3_F
     {
         #region Fields
-        #region struct
-        [FieldOffset(0)]
-        [NativeTypeName("FLOAT")]
-        public float _11;
-
-        [FieldOffset(4)]
-        [NativeTypeName("FLOAT")]
-        public float _12;
-
-        [FieldOffset(8)]
-        [NativeTypeName("FLOAT")]
-        public float _13;
-
-        [FieldOffset(12)]
-        [NativeTypeName("FLOAT")]
-        public float _21;
-
-        [FieldOffset(16)]
-        [NativeTypeName("FLOAT")]
-        public float _22;
-
-        [FieldOffset(20)]
-        [NativeTypeName("FLOAT")]
-        public float _23;
-
-        [FieldOffset(24)]
-        [NativeTypeName("FLOAT")]
-        public float _31;
-
-        [FieldOffset(28)]
-        [NativeTypeName("FLOAT")]
-        public float _32;
-
-        [FieldOffset(32)]
-        [NativeTypeName("FLOAT")]
-        public float _33;
-
-        [FieldOffset(36)]
-        [NativeTypeName("FLOAT")]
-        public float _41;
-
-        [FieldOffset(40)]
-        [NativeTypeName("FLOAT")]
-        public float _42;
-
-        [FieldOffset(44)]
-        [NativeTypeName("FLOAT")]
-        public float _43;
+        public _Anonymous_e__Union Anonymous;
         #endregion
 
-        [FieldOffset(0)]
-        [NativeTypeName("FLOAT[4][3]")]
-        public fixed float m[4 * 3];
+        #region Structs
+        [StructLayout(LayoutKind.Explicit)]
+        public struct _Anonymous_e__Union
+        {
+            #region Fields
+            [FieldOffset(0)]
+            public _Anonymous_e__Struct Anonymous;
+
+            [FieldOffset(0)]
+            [NativeTypeName("FLOAT[4][3]")]
+            public fixed float m[4 * 3];
+            #endregion
+
+            #region Structs
+            public struct _Anonymous_e__Struct
+            {
+                #region Fields
+                [NativeTypeName("FLOAT")]
+                public float _11;
+
+                [NativeTypeName("FLOAT")]
+                public float _12;
+
+                [NativeTypeName("FLOAT")]
+                public float _13;
+
+                [NativeTypeName("FLOAT")]
+                public float _21;
+
+                [NativeTypeName("FLOAT")]
+                public float _22;
+
+                [NativeTypeName("FLOAT")]
+                public float _23;
+
+                [NativeTypeName("FLOAT")]
+                public float _31;
+
+                [NativeTypeName("FLOAT")]
+                public float _32;
+
+                [NativeTypeName("FLOAT")]
+                public float _33;
+
+                [NativeTypeName("FLOAT")]
+                public float _41;
+
+                [NativeTypeName("FLOAT")]
+                public float _42;
+
+                [NativeTypeName("FLOAT")]
+                public float _43;
+                #endregion
+            }
+            #endregion
+        }
         #endregion
     }
 }

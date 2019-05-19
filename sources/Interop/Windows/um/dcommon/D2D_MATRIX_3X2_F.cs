@@ -9,66 +9,78 @@ using TerraFX.Utilities;
 namespace TerraFX.Interop
 {
     /// <summary>Represents a 3-by-2 matrix.</summary>
-    [StructLayout(LayoutKind.Explicit)]
     [Unmanaged]
     public unsafe struct D2D_MATRIX_3X2_F
     {
         #region Fields
-        #region struct
-        /// <summary>Horizontal scaling / cosine of rotation</summary>
-        [FieldOffset(0)]
-        public float m11;
-
-        /// <summary>Vertical shear / sine of rotation</summary>
-        [FieldOffset(4)]
-        public float m12;
-
-        /// <summary>Horizontal shear / negative sine of rotation</summary>
-        [FieldOffset(8)]
-        public float m21;
-
-        /// <summary>Vertical scaling / cosine of rotation</summary>
-        [FieldOffset(12)]
-        public float m22;
-
-        /// <summary>Horizontal shift (always orthogonal regardless of rotation)</summary>
-        [FieldOffset(16)]
-        public float dx;
-
-        /// <summary>Vertical shift (always orthogonal regardless of rotation)</summary>
-        [FieldOffset(20)]
-        public float dy;
+        public _Anonymous_e__Union Anonymous;
         #endregion
 
-        #region struct
-        [FieldOffset(0)]
-        [NativeTypeName("FLOAT")]
-        public float _11;
+        #region Structs
+        [StructLayout(LayoutKind.Explicit)]
+        [Unmanaged]
+        public struct _Anonymous_e__Union
+        {
+            #region Fields
+            [FieldOffset(0)]
+            public _Anonymous1_e__Struct Anonymous1;
 
-        [FieldOffset(4)]
-        [NativeTypeName("FLOAT")]
-        public float _12;
+            [FieldOffset(0)]
+            public _Anonymous2_e__Struct Anonymous2;
 
-        [FieldOffset(8)]
-        [NativeTypeName("FLOAT")]
-        public float _21;
+            [FieldOffset(0)]
+            [NativeTypeName("FLOAT[3][2]")]
+            public fixed float m[3 * 2];
+            #endregion
 
-        [FieldOffset(12)]
-        [NativeTypeName("FLOAT")]
-        public float _22;
+            #region Structs
+            public struct _Anonymous1_e__Struct
+            {
+                #region Fields
+                /// <summary>Horizontal scaling / cosine of rotation</summary>
+                public float m11;
 
-        [FieldOffset(16)]
-        [NativeTypeName("FLOAT")]
-        public float _31;
+                /// <summary>Vertical shear / sine of rotation</summary>
+                public float m12;
 
-        [FieldOffset(20)]
-        [NativeTypeName("FLOAT")]
-        public float _32;
-        #endregion
+                /// <summary>Horizontal shear / negative sine of rotation</summary>
+                public float m21;
 
-        [FieldOffset(0)]
-        [NativeTypeName("FLOAT[3][2]")]
-        public fixed float m[3 * 2];
+                /// <summary>Vertical scaling / cosine of rotation</summary>
+                public float m22;
+
+                /// <summary>Horizontal shift (always orthogonal regardless of rotation)</summary>
+                public float dx;
+
+                /// <summary>Vertical shift (always orthogonal regardless of rotation)</summary>
+                public float dy;
+                #endregion
+            }
+
+            public struct _Anonymous2_e__Struct
+            {
+                #region Fields
+                [NativeTypeName("FLOAT")]
+                public float _11;
+
+                [NativeTypeName("FLOAT")]
+                public float _12;
+
+                [NativeTypeName("FLOAT")]
+                public float _21;
+
+                [NativeTypeName("FLOAT")]
+                public float _22;
+
+                [NativeTypeName("FLOAT")]
+                public float _31;
+
+                [NativeTypeName("FLOAT")]
+                public float _32;
+                #endregion
+            }
+            #endregion
+        }
         #endregion
     }
 }

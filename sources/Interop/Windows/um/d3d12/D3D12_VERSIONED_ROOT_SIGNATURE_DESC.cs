@@ -8,21 +8,28 @@ using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    [StructLayout(LayoutKind.Explicit)]
     [Unmanaged]
     public struct D3D12_VERSIONED_ROOT_SIGNATURE_DESC
     {
         #region Fields
-        [FieldOffset(0)]
         public D3D_ROOT_SIGNATURE_VERSION Version;
 
-        #region union
-        [FieldOffset(8)]
-        public D3D12_ROOT_SIGNATURE_DESC Desc_1_0;
-
-        [FieldOffset(8)]
-        public D3D12_ROOT_SIGNATURE_DESC1 Desc_1_1;
+        public _Anonymous_e__Union Anonymous;
         #endregion
+
+        #region Structs
+        [StructLayout(LayoutKind.Explicit)]
+        [Unmanaged]
+        public struct _Anonymous_e__Union
+        {
+            #region Fields
+            [FieldOffset(0)]
+            public D3D12_ROOT_SIGNATURE_DESC Desc_1_0;
+
+            [FieldOffset(0)]
+            public D3D12_ROOT_SIGNATURE_DESC1 Desc_1_1;
+            #endregion
+        }
         #endregion
     }
 }

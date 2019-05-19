@@ -8,11 +8,11 @@ namespace TerraFX.Interop.UnitTests
     /// <summary>Provides validation of the <see cref="D2D_MATRIX_4X4_F" /> struct.</summary>
     public static class D2D_MATRIX_4X4_FTests
     {
-        /// <summary>Validates that the layout of the <see cref="D2D_MATRIX_4X4_F" /> struct is <see cref="LayoutKind.Explicit" />.</summary>
+        /// <summary>Validates that the layout of the <see cref="D2D_MATRIX_4X4_F" /> struct is <see cref="LayoutKind.Sequential" />.</summary>
         [Test]
-        public static void IsLayoutExplicitTest()
+        public static void IsLayoutSequentialTest()
         {
-            Assert.That(typeof(D2D_MATRIX_4X4_F).IsExplicitLayout, Is.True);
+            Assert.That(typeof(D2D_MATRIX_4X4_F).IsLayoutSequential, Is.True);
         }
 
         /// <summary>Validates that the size of the <see cref="D2D_MATRIX_4X4_F" /> struct is correct.</summary>
