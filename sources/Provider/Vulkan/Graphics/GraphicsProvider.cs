@@ -37,7 +37,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
         #region Constructors
         /// <summary>Initializes a new instance of the <see cref="GraphicsProvider" /> class.</summary>
-        /// <exception cref="ExternalException">The call to <see cref="vkCreateInstance(in VkInstanceCreateInfo, VkAllocationCallbacks*, out IntPtr)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkCreateInstance(VkInstanceCreateInfo*, VkAllocationCallbacks*, IntPtr*)" /> failed.</exception>
         /// <exception cref="ExternalException">The call to <see cref="vkEnumeratePhysicalDevices(IntPtr, uint*, IntPtr*)" /> failed.</exception>
         [ImportingConstructor]
         public GraphicsProvider()
@@ -80,7 +80,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
         #region Static Methods
         /// <summary>Creates a Vulkan instance.</summary>
         /// <returns>A Vulkan instance.</returns>
-        /// <exception cref="ExternalException">The call to <see cref="vkCreateInstance(in VkInstanceCreateInfo, VkAllocationCallbacks*, out IntPtr)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkCreateInstance(VkInstanceCreateInfo*, VkAllocationCallbacks*, IntPtr*)" /> failed.</exception>
         private static IntPtr CreateInstance()
         {
             var createInfo = new VkInstanceCreateInfo() {
@@ -94,7 +94,8 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 ppEnabledExtensionNames = null
             };
 
-            var result = vkCreateInstance(in createInfo, null, out var instance);
+            IntPtr instance;
+            var result = vkCreateInstance(&createInfo, null, &instance);
 
             if (result != VK_SUCCESS)
             {

@@ -51,7 +51,7 @@ namespace TerraFX.Samples.DirectX.D3D12
                     hCursor = LoadCursor(IntPtr.Zero, (char*)IDC_ARROW),
                     lpszClassName = lpszClassName
                 };
-                RegisterClassEx(in windowClass);
+                RegisterClassEx(&windowClass);
 
                 var windowRect = new RECT {
                     right = unchecked((int)pSample.Width),
@@ -87,10 +87,10 @@ namespace TerraFX.Samples.DirectX.D3D12
             do
             {
                 // Process any messages in the queue.
-                if (PeekMessage(out msg, IntPtr.Zero, 0, 0, PM_REMOVE) != 0)
+                if (PeekMessage(&msg, IntPtr.Zero, 0, 0, PM_REMOVE) != 0)
                 {
-                    TranslateMessage(in msg);
-                    DispatchMessage(in msg);
+                    TranslateMessage(&msg);
+                    DispatchMessage(&msg);
                 }
             }
             while (msg.message != WM_QUIT);

@@ -86,9 +86,9 @@ namespace TerraFX.Interop
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkCreateInstance", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         public static extern VkResult vkCreateInstance(
-            [In] in VkInstanceCreateInfo pCreateInfo,
+            [In] VkInstanceCreateInfo* pCreateInfo,
             [In, Optional] VkAllocationCallbacks* pAllocator,
-            [Out, NativeTypeName("VkInstance")] out IntPtr pInstance
+            [Out, NativeTypeName("VkInstance")] IntPtr* pInstance
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi, EntryPoint = "vkDestroyInstance", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]

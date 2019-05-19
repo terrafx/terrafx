@@ -80,9 +80,11 @@ namespace TerraFX.Provider.libX11.UI
         /// <summary>Forwards native window messages to the appropriate <see cref="Window" /> instance for processing.</summary>
         /// <param name="windowProviderProperty">The property used to get the <see cref="WindowProvider" /> associated with the event.</param>
         /// <param name="xevent">The event to be processed.</param>
-        /// <exception cref="ExternalException">The call to <see cref="XGetWindowProperty(IntPtr, UIntPtr, UIntPtr, IntPtr, IntPtr, int, UIntPtr, out UIntPtr, out int, out UIntPtr, out UIntPtr, out byte*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="XGetWindowProperty(IntPtr, UIntPtr, UIntPtr, IntPtr, IntPtr, int, UIntPtr, UIntPtr*, int*, UIntPtr*, UIntPtr*, byte**)" /> failed.</exception>
         internal static void ForwardWindowEvent(UIntPtr windowProviderProperty, in XEvent xevent)
         {
+            byte* prop;
+
             var result = XGetWindowProperty(
                 xevent.xany.display,
                 xevent.xany.window,
@@ -91,11 +93,11 @@ namespace TerraFX.Provider.libX11.UI
                 long_length: (IntPtr)(IntPtr.Size >> 2),
                 delete: False,
                 req_type: (UIntPtr)32,
-                actual_type_return: out _,
-                actual_format_return: out _,
-                nitems_return: out _,
-                bytes_after_return: out _,
-                prop_return: out var prop
+                actual_type_return: null,
+                actual_format_return: null,
+                nitems_return: null,
+                bytes_after_return: null,
+                prop_return: &prop
             );
 
             if (result != Success)

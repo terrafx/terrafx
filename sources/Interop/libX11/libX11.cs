@@ -973,7 +973,7 @@ namespace TerraFX.Interop
         public static extern int XGetWindowAttributes(
             [In, NativeTypeName("Display")] IntPtr display,
             [In, NativeTypeName("Window")] UIntPtr w,
-            [Out] out XWindowAttributes window_attributes_return
+            [Out] XWindowAttributes* window_attributes_return
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XGetWindowProperty", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -986,11 +986,11 @@ namespace TerraFX.Interop
             [In] IntPtr long_length,
             [In, NativeTypeName("Bool")] int delete,
             [In, NativeTypeName("Atom")] UIntPtr req_type,
-            [Out, NativeTypeName("Atom")] out UIntPtr actual_type_return,
-            [Out] out int actual_format_return,
-            [Out] out UIntPtr nitems_return,
-            [Out] out UIntPtr bytes_after_return,
-            [Out] out byte* prop_return
+            [Out, NativeTypeName("Atom")] UIntPtr* actual_type_return,
+            [Out] int* actual_format_return,
+            [Out] UIntPtr* nitems_return,
+            [Out] UIntPtr* bytes_after_return,
+            [Out] byte** prop_return
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XHeightOfScreen", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
@@ -1170,7 +1170,7 @@ namespace TerraFX.Interop
         [SuppressUnmanagedCodeSecurity]
         public static extern int XNextEvent(
             [In, NativeTypeName("Display")] IntPtr display,
-            [Out] out XEvent event_return
+            [Out] XEvent* event_return
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, EntryPoint = "XNextRequest", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]

@@ -381,7 +381,8 @@ namespace TerraFX.Provider.libX11.UI
             if (_windowState != WindowState.Maximized)
             {
                 var display = _windowProvider.DispatchProvider.Display;
-                XGetWindowAttributes(display, _handle.Value, out var windowAttributes);
+                XWindowAttributes windowAttributes;
+                XGetWindowAttributes(display, _handle.Value, &windowAttributes);
                 _restoredBounds = new Rectangle(windowAttributes.x, windowAttributes.y, windowAttributes.width, windowAttributes.height);
 
                 var screenWidth = XWidthOfScreen(windowAttributes.screen);
@@ -401,7 +402,8 @@ namespace TerraFX.Provider.libX11.UI
             if (_windowState != WindowState.Minimized)
             {
                 var display = _windowProvider.DispatchProvider.Display;
-                XGetWindowAttributes(display, _handle.Value, out var windowAttributes);
+                XWindowAttributes windowAttributes;
+                XGetWindowAttributes(display, _handle.Value, &windowAttributes);
 
                 var screenNumber = XScreenNumberOfScreen(windowAttributes.screen);
 

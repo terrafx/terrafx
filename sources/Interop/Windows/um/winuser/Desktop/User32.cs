@@ -70,7 +70,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [return: NativeTypeName("LRESULT")]
         public static extern IntPtr DispatchMessage(
-            [In] in MSG lpMsg
+            [In] MSG* lpMsg
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "GetActiveWindow", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
@@ -85,7 +85,7 @@ namespace TerraFX.Interop.Desktop
         public static extern int GetClassInfoEx(
             [In, Optional, NativeTypeName("HINSTANCE")] IntPtr hInstance,
             [In, NativeTypeName("LPCWSTR")] char* lpszClass,
-            [Out, NativeTypeName("LPWNDCLASSEX")] out WNDCLASSEX lpwcx
+            [Out, NativeTypeName("LPWNDCLASSEX")] WNDCLASSEX* lpwcx
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "GetClassNameW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
@@ -115,7 +115,7 @@ namespace TerraFX.Interop.Desktop
         [return: NativeTypeName("BOOL")]
         public static extern int GetWindowRect(
             [In, NativeTypeName("HWND")] IntPtr hWnd,
-            [Out, NativeTypeName("LPRECT")] out RECT lpRect
+            [Out, NativeTypeName("LPRECT")] RECT* lpRect
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "IsWindowVisible", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
@@ -137,7 +137,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [return: NativeTypeName("BOOL")]
         public static extern int PeekMessage(
-            [Out, NativeTypeName("LPMSG")] out MSG lpMsg,
+            [Out, NativeTypeName("LPMSG")] MSG* lpMsg,
             [In, Optional, NativeTypeName("HWND")] IntPtr hWnd,
             [In, NativeTypeName("UINT")] uint wMsgFilterMin,
             [In, NativeTypeName("UINT")] uint wMsgFilterMax,
@@ -154,7 +154,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [return: NativeTypeName("ATOM")]
         public static extern ushort RegisterClassEx(
-            [In] in WNDCLASSEX lpWndClassEx
+            [In] WNDCLASSEX* lpWndClassEx
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "SendMessageW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]
@@ -202,7 +202,7 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [return: NativeTypeName("BOOL")]
         public static extern int TranslateMessage(
-            [In] in MSG lpMsg
+            [In] MSG* lpMsg
         );
 
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "UnregisterClassW", ExactSpelling = true, PreserveSig = true, SetLastError = true, ThrowOnUnmappableChar = false)]

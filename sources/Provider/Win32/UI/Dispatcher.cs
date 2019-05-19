@@ -2,6 +2,7 @@
 
 using System;
 using System.Threading;
+using TerraFX.Interop;
 using TerraFX.UI;
 using static TerraFX.Interop.User32;
 using static TerraFX.Interop.Windows;
@@ -81,11 +82,12 @@ namespace TerraFX.Provider.Win32.UI
         {
             ThrowIfNotThread(_parentThread);
 
-            while (PeekMessage(out var msg, wMsgFilterMin: WM_NULL, wMsgFilterMax: WM_NULL, wRemoveMsg: PM_REMOVE) != FALSE)
+            MSG msg;
+            while (PeekMessage(&msg, wMsgFilterMin: WM_NULL, wMsgFilterMax: WM_NULL, wRemoveMsg: PM_REMOVE) != FALSE)
             {
                 if (msg.message != WM_QUIT)
                 {
-                    DispatchMessage(in msg);
+                    DispatchMessage(&msg);
                 }
                 else
                 {

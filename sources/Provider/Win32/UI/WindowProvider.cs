@@ -174,7 +174,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Gets the <c>HCURSOR</c> for the desktop window.</summary>
         /// <returns>The <c>HCURSOR</c> for the desktop window.</returns>
         /// <exception cref="ExternalException">The call to <see cref="GetClassName(IntPtr, char*, int)" /> failed.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="GetClassInfoEx(IntPtr, char*, out WNDCLASSEX)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="GetClassInfoEx(IntPtr, char*, WNDCLASSEX*)" /> failed.</exception>
         private static IntPtr GetDesktopCursor()
         {
             var desktopWindowHandle = GetDesktopWindow();
@@ -187,9 +187,10 @@ namespace TerraFX.Provider.Win32.UI
                 ThrowExternalExceptionForLastError(nameof(GetClassName));
             }
 
+            WNDCLASSEX desktopWindowClass;
             var succeeded = GetClassInfoEx(
                 lpszClass: desktopClassName,
-                lpwcx: out var desktopWindowClass
+                lpwcx: &desktopWindowClass
             );
 
             if (succeeded == FALSE)
@@ -204,8 +205,8 @@ namespace TerraFX.Provider.Win32.UI
         #region Methods
         /// <summary>Creates an <c>ATOM</c> by registering a <see cref="WNDCLASSEX" /> for the entry point module.</summary>
         /// <exception cref="ExternalException">The call to <see cref="GetClassName(IntPtr, char*, int)" /> failed.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="GetClassInfoEx(IntPtr, char*, out WNDCLASSEX)" /> failed.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="RegisterClassEx(in WNDCLASSEX)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="GetClassInfoEx(IntPtr, char*, WNDCLASSEX*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="RegisterClassEx(WNDCLASSEX*)" /> failed.</exception>
         /// <returns>The <c>ATOM</c> created by registering a <see cref="WNDCLASSEX" /> for the entry point module.</returns>
         private ushort CreateClassAtom()
         {
@@ -236,7 +237,7 @@ namespace TerraFX.Provider.Win32.UI
                         /* hIconSm = IntPtr.Zero */
                     };
 
-                    classAtom = RegisterClassEx(in wndClassEx);
+                    classAtom = RegisterClassEx(&wndClassEx);
                 }
 
                 if (classAtom == 0)

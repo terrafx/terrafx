@@ -2,6 +2,7 @@
 
 using System;
 using System.Threading;
+using TerraFX.Interop;
 using TerraFX.UI;
 using static TerraFX.Interop.libX11;
 using static TerraFX.Utilities.AssertionUtilities;
@@ -119,7 +120,8 @@ namespace TerraFX.Provider.libX11.UI
 
             while (XPending(display) != 0)
             {
-                XNextEvent(display, out var xevent);
+                XEvent xevent;
+                XNextEvent(display, &xevent);
 
                 if (xevent.type != NoExpose)
                 {

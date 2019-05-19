@@ -204,10 +204,11 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of a native window.</summary>
         /// <param name="handle">A handle to the native window to get the bounds for.</param>
         /// <returns>A <see cref="Rectangle" /> that represents the bounds of <paramref name="handle" />.</returns>
-        /// <exception cref="ExternalException">The call to <see cref="GetWindowRect(IntPtr, out RECT)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="GetWindowRect(IntPtr, RECT*)" /> failed.</exception>
         private static Rectangle GetWindowBounds(IntPtr handle)
         {
-            var succeeded = GetWindowRect(handle, out var rect);
+            RECT rect;
+            var succeeded = GetWindowRect(handle, &rect);
 
             if (succeeded == FALSE)
             {

@@ -69,7 +69,8 @@ namespace TerraFX.Provider.libX11.UI
         {
             get
             {
-                var result = clock_gettime(CLOCK_MONOTONIC, out var timespec);
+                timespec timespec;
+                var result = clock_gettime(CLOCK_MONOTONIC, &timespec);
 
                 if (result != 0)
                 {
