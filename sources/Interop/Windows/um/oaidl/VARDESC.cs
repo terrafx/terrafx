@@ -19,7 +19,7 @@ namespace TerraFX.Interop
         [NativeTypeName("LPOLESTR")]
         public char* lpstrSchema;
 
-        private _u_e__Union u;
+        private _Anonymous_e__Union Anonymous;
 
         public ELEMDESC elemdescVar;
 
@@ -34,12 +34,12 @@ namespace TerraFX.Interop
         {
             get
             {
-                return u.oInst;
+                return Anonymous.oInst;
             }
 
             set
             {
-                u.oInst = value;
+                Anonymous.oInst = value;
             }
         }
 
@@ -47,12 +47,12 @@ namespace TerraFX.Interop
         {
             get
             {
-                return u.lpvarValue;
+                return Anonymous.lpvarValue;
             }
 
             set
             {
-                u.lpvarValue = value;
+                Anonymous.lpvarValue = value;
             }
         }
         #endregion
@@ -60,7 +60,7 @@ namespace TerraFX.Interop
         #region Structs
         [StructLayout(LayoutKind.Explicit)]
         [Unmanaged]
-        public struct _u_e__Union
+        public struct _Anonymous_e__Union
         {
             #region Fields
             [FieldOffset(0)]

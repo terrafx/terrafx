@@ -8,39 +8,44 @@ using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    [StructLayout(LayoutKind.Explicit)]
     [Unmanaged]
     public struct D3D12_DEPTH_STENCIL_VIEW_DESC
     {
         #region Fields
-        [FieldOffset(0)]
         public DXGI_FORMAT Format;
 
-        [FieldOffset(4)]
         public D3D12_DSV_DIMENSION ViewDimension;
 
-        [FieldOffset(8)]
         public D3D12_DSV_FLAGS Flags;
 
-        #region union
-        [FieldOffset(12)]
-        public D3D12_TEX1D_DSV Texture1D;
-
-        [FieldOffset(12)]
-        public D3D12_TEX1D_ARRAY_DSV Texture1DArray;
-
-        [FieldOffset(12)]
-        public D3D12_TEX2D_DSV Texture2D;
-
-        [FieldOffset(12)]
-        public D3D12_TEX2D_ARRAY_DSV Texture2DArray;
-
-        [FieldOffset(12)]
-        public D3D12_TEX2DMS_DSV Texture2DMS;
-
-        [FieldOffset(12)]
-        public D3D12_TEX2DMS_ARRAY_DSV Texture2DMSArray;
+        public _Anonymous_e__Union Anonymous;
         #endregion
+
+        #region Structs
+        [StructLayout(LayoutKind.Explicit)]
+        [Unmanaged]
+        public struct _Anonymous_e__Union
+        {
+            #region Fields
+            [FieldOffset(0)]
+            public D3D12_TEX1D_DSV Texture1D;
+
+            [FieldOffset(0)]
+            public D3D12_TEX1D_ARRAY_DSV Texture1DArray;
+
+            [FieldOffset(0)]
+            public D3D12_TEX2D_DSV Texture2D;
+
+            [FieldOffset(0)]
+            public D3D12_TEX2D_ARRAY_DSV Texture2DArray;
+
+            [FieldOffset(0)]
+            public D3D12_TEX2DMS_DSV Texture2DMS;
+
+            [FieldOffset(0)]
+            public D3D12_TEX2DMS_ARRAY_DSV Texture2DMSArray;
+            #endregion
+        }
         #endregion
     }
 }

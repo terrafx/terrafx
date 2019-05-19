@@ -13,18 +13,11 @@ namespace TerraFX.Interop
     public struct LARGE_INTEGER
     {
         #region Fields
-        #region struct
         [FieldOffset(0)]
-        [NativeTypeName("DWORD")]
-        public uint LowPart;
-
-        [FieldOffset(4)]
-        [NativeTypeName("LONG")]
-        public int HighPart;
-        #endregion
+        public _Anonymous_e__Struct Anonymous;
 
         [FieldOffset(0)]
-        public _u__e__Struct u;
+        public _u_e__Struct u;
 
         [FieldOffset(0)]
         [NativeTypeName("LONGLONG")]
@@ -33,7 +26,19 @@ namespace TerraFX.Interop
 
         #region Structs
         [Unmanaged]
-        public struct _u__e__Struct
+        public struct _Anonymous_e__Struct
+        {
+            #region Fields
+            [NativeTypeName("DWORD")]
+            public uint LowPart;
+
+            [NativeTypeName("LONG")]
+            public int HighPart;
+            #endregion
+        }
+
+        [Unmanaged]
+        public struct _u_e__Struct
         {
             #region Fields
             [NativeTypeName("DWORD")]

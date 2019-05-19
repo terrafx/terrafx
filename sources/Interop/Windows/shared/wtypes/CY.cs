@@ -13,19 +13,24 @@ namespace TerraFX.Interop
     public struct CY
     {
         #region Fields
-        #region struct
         [FieldOffset(0)]
-        [NativeTypeName("ULONG")]
-        public uint Lo;
-
-        [FieldOffset(4)]
-        [NativeTypeName("LONG")]
-        public int Hi;
-        #endregion
+        public _Anonymous_e__Struct Anonymous;
 
         [FieldOffset(0)]
         [NativeTypeName("LONGLONG")]
         public long int64;
+        #endregion
+
+        #region Structs
+        [Unmanaged]
+        public struct _Anonymous_e__Struct
+        {
+            [NativeTypeName("ULONG")]
+            public uint Lo;
+
+            [NativeTypeName("LONG")]
+            public int Hi;
+        }
         #endregion
     }
 }

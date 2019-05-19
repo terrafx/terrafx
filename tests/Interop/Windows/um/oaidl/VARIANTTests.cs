@@ -9,11 +9,11 @@ namespace TerraFX.Interop.UnitTests
     /// <summary>Provides validation of the <see cref="VARIANT" /> struct.</summary>
     public static class VARIANTTests
     {
-        /// <summary>Validates that the layout of the <see cref="VARIANT" /> struct is <see cref="LayoutKind.Explicit" />.</summary>
+        /// <summary>Validates that the layout of the <see cref="VARIANT" /> struct is <see cref="LayoutKind.Sequential" />.</summary>
         [Test]
-        public static void IsLayoutExplicitTest()
+        public static void IsLayoutSequentialTest()
         {
-            Assert.That(typeof(VARIANT).IsExplicitLayout, Is.True);
+            Assert.That(typeof(VARIANT).IsLayoutSequential, Is.True);
         }
 
         /// <summary>Validates that the size of the <see cref="VARIANT" /> struct is correct.</summary>

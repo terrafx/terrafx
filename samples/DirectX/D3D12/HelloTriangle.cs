@@ -611,11 +611,13 @@ namespace TerraFX.Samples.DirectX.D3D12
             var barrier = new D3D12_RESOURCE_BARRIER {
                 Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION,
                 Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE,
-                Transition = new D3D12_RESOURCE_TRANSITION_BARRIER {
-                    pResource = _renderTargets[unchecked((int)_frameIndex)],
-                    StateBefore = D3D12_RESOURCE_STATE_PRESENT,
-                    StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET,
-                    Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES
+                Anonymous = new D3D12_RESOURCE_BARRIER._Anonymous_e__Union {
+                    Transition = new D3D12_RESOURCE_TRANSITION_BARRIER {
+                        pResource = _renderTargets[unchecked((int)_frameIndex)],
+                        StateBefore = D3D12_RESOURCE_STATE_PRESENT,
+                        StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET,
+                        Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES
+                    }
                 }
             };
             _commandList->ResourceBarrier(1, &barrier);
@@ -644,8 +646,8 @@ namespace TerraFX.Samples.DirectX.D3D12
 
             // Indicate that the back buffer will now be used to present.
             {
-                barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-                barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+                barrier.Anonymous.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+                barrier.Anonymous.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
             }
             _commandList->ResourceBarrier(1, &barrier);
 

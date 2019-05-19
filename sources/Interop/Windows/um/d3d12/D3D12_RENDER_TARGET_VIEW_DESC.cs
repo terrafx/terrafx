@@ -8,42 +8,48 @@ using TerraFX.Utilities;
 
 namespace TerraFX.Interop
 {
-    [StructLayout(LayoutKind.Explicit)]
     [Unmanaged]
     public struct D3D12_RENDER_TARGET_VIEW_DESC
     {
         #region Fields
-        [FieldOffset(0)]
         public DXGI_FORMAT Format;
 
-        [FieldOffset(4)]
         public D3D12_RTV_DIMENSION ViewDimension;
 
-        #region union
-        [FieldOffset(8)]
-        public D3D12_BUFFER_RTV Buffer;
-
-        [FieldOffset(8)]
-        public D3D12_TEX1D_RTV Texture1D;
-
-        [FieldOffset(8)]
-        public D3D12_TEX1D_ARRAY_RTV Texture1DArray;
-
-        [FieldOffset(8)]
-        public D3D12_TEX2D_RTV Texture2D;
-
-        [FieldOffset(8)]
-        public D3D12_TEX2D_ARRAY_RTV Texture2DArray;
-
-        [FieldOffset(8)]
-        public D3D12_TEX2DMS_RTV Texture2DMS;
-
-        [FieldOffset(8)]
-        public D3D12_TEX2DMS_ARRAY_RTV Texture2DMSArray;
-
-        [FieldOffset(8)]
-        public D3D12_TEX3D_RTV Texture3D;
+        public _Anonymous_e__Union Anonymous;
         #endregion
+
+        #region Structs
+        [StructLayout(LayoutKind.Explicit)]
+        [Unmanaged]
+        public struct _Anonymous_e__Union
+        {
+            #region Fields
+            [FieldOffset(0)]
+            public D3D12_BUFFER_RTV Buffer;
+
+            [FieldOffset(0)]
+            public D3D12_TEX1D_RTV Texture1D;
+
+            [FieldOffset(0)]
+            public D3D12_TEX1D_ARRAY_RTV Texture1DArray;
+
+            [FieldOffset(0)]
+            public D3D12_TEX2D_RTV Texture2D;
+
+            [FieldOffset(0)]
+            public D3D12_TEX2D_ARRAY_RTV Texture2DArray;
+
+            [FieldOffset(0)]
+            public D3D12_TEX2DMS_RTV Texture2DMS;
+
+            [FieldOffset(0)]
+            public D3D12_TEX2DMS_ARRAY_RTV Texture2DMSArray;
+
+            [FieldOffset(0)]
+            public D3D12_TEX3D_RTV Texture3D;
+            #endregion
+        }
         #endregion
     }
 }

@@ -9,11 +9,11 @@ namespace TerraFX.Interop.UnitTests
     /// <summary>Provides validation of the <see cref="D3D12_RESOURCE_BARRIER" /> struct.</summary>
     public static class D3D12_RESOURCE_BARRIERTests
     {
-        /// <summary>Validates that the layout of the <see cref="D3D12_RESOURCE_BARRIER" /> struct is <see cref="LayoutKind.Explicit" />.</summary>
+        /// <summary>Validates that the layout of the <see cref="D3D12_RESOURCE_BARRIER" /> struct is <see cref="LayoutKind.Sequential" />.</summary>
         [Test]
-        public static void IsLayoutExplicitTest()
+        public static void IsLayoutSequentialTest()
         {
-            Assert.That(typeof(D3D12_RESOURCE_BARRIER).IsExplicitLayout, Is.True);
+            Assert.That(typeof(D3D12_RESOURCE_BARRIER).IsLayoutSequential, Is.True);
         }
 
         /// <summary>Validates that the size of the <see cref="D3D12_RESOURCE_BARRIER" /> struct is correct.</summary>
