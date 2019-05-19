@@ -20,5 +20,14 @@ namespace TerraFX.Interop
         [NativeTypeName("UINT")]
         public uint DepthInTexels;
         #endregion
+
+        #region Constructors
+        public D3D12_TILE_SHAPE(uint widthInTexels, uint heightInTexels, uint depthInTexels)
+        {
+            WidthInTexels = widthInTexels;
+            HeightInTexels = heightInTexels;
+            DepthInTexels = depthInTexels;
+        }
+        #endregion
     }
 }

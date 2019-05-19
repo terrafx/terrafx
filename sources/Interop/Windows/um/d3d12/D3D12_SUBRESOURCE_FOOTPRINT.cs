@@ -4,11 +4,12 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using TerraFX.Utilities;
+using static TerraFX.Interop.D3D12_RESOURCE_DIMENSION;
 
 namespace TerraFX.Interop
 {
     [Unmanaged]
-    public struct D3D12_SUBRESOURCE_FOOTPRINT
+    public unsafe struct D3D12_SUBRESOURCE_FOOTPRINT
     {
         #region Fields
         public DXGI_FORMAT Format;
@@ -24,6 +25,26 @@ namespace TerraFX.Interop
 
         [NativeTypeName("UINT")]
         public uint RowPitch;
+        #endregion
+
+        #region Constructors
+        public D3D12_SUBRESOURCE_FOOTPRINT(DXGI_FORMAT format, uint width, uint height, uint depth, uint rowPitch)
+        {
+            Format = format;
+            Width = width;
+            Height = height;
+            Depth = depth;
+            RowPitch = rowPitch;
+        }
+
+        public D3D12_SUBRESOURCE_FOOTPRINT(D3D12_RESOURCE_DESC* resDesc, uint rowPitch)
+        {
+            Format = resDesc->Format;
+            Width = (uint)resDesc->Width;
+            Height = resDesc->Height;
+            Depth = resDesc->Dimension == D3D12_RESOURCE_DIMENSION_TEXTURE3D ? resDesc->DepthOrArraySize : (uint)1;
+            RowPitch = rowPitch;
+        }
         #endregion
     }
 }

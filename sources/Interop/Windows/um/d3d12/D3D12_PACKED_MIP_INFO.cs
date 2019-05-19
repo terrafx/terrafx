@@ -23,5 +23,15 @@ namespace TerraFX.Interop
         [NativeTypeName("UINT")]
         public uint StartTileIndexInOverallResource;
         #endregion
+
+        #region Constructors
+        public D3D12_PACKED_MIP_INFO(byte numStandardMips, byte numPackedMips, uint numTilesForPackedMips, uint startTileIndexInOverallResource)
+        {
+            NumStandardMips = numStandardMips;
+            NumPackedMips = numPackedMips;
+            NumTilesForPackedMips = numTilesForPackedMips;
+            StartTileIndexInOverallResource = startTileIndexInOverallResource;
+        }
+        #endregion
     }
 }

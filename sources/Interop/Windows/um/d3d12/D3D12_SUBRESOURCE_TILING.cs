@@ -23,5 +23,15 @@ namespace TerraFX.Interop
         [NativeTypeName("UINT")]
         public uint StartTileIndexInOverallResource;
         #endregion
+
+        #region Constructors
+        public D3D12_SUBRESOURCE_TILING(uint widthInTiles, ushort heightInTiles, ushort depthInTiles, uint startTileIndexInOverallResource)
+        {
+            WidthInTiles = widthInTiles;
+            HeightInTiles = heightInTiles;
+            DepthInTiles = depthInTiles;
+            StartTileIndexInOverallResource = startTileIndexInOverallResource;
+        }
+        #endregion
     }
 }

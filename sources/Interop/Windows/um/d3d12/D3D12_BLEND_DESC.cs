@@ -4,6 +4,7 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using TerraFX.Utilities;
+using static TerraFX.Interop.Windows;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
@@ -11,6 +12,23 @@ namespace TerraFX.Interop
     [Unmanaged]
     public struct D3D12_BLEND_DESC
     {
+        #region Default Instances
+        public static readonly D3D12_BLEND_DESC DEFAULT = new D3D12_BLEND_DESC() {
+            AlphaToCoverageEnable = FALSE,
+            IndependentBlendEnable = FALSE,
+            RenderTarget = new _RenderTarget_e__FixedBuffer() {
+                e0 = D3D12_RENDER_TARGET_BLEND_DESC.DEFAULT,
+                e1 = D3D12_RENDER_TARGET_BLEND_DESC.DEFAULT,
+                e2 = D3D12_RENDER_TARGET_BLEND_DESC.DEFAULT,
+                e3 = D3D12_RENDER_TARGET_BLEND_DESC.DEFAULT,
+                e4 = D3D12_RENDER_TARGET_BLEND_DESC.DEFAULT,
+                e5 = D3D12_RENDER_TARGET_BLEND_DESC.DEFAULT,
+                e6 = D3D12_RENDER_TARGET_BLEND_DESC.DEFAULT,
+                e7 = D3D12_RENDER_TARGET_BLEND_DESC.DEFAULT
+            }
+        };
+        #endregion
+
         #region Fields
         [NativeTypeName("BOOL")]
         public int AlphaToCoverageEnable;

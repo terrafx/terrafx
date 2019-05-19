@@ -18,5 +18,13 @@ namespace TerraFX.Interop
         [NativeTypeName("SIZE_T")]
         public UIntPtr End;
         #endregion
+
+        #region Constructors
+        public D3D12_RANGE(UIntPtr begin, UIntPtr end)
+        {
+            Begin = begin;
+            End = end;
+        }
+        #endregion
     }
 }

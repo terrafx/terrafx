@@ -26,5 +26,16 @@ namespace TerraFX.Interop
         [NativeTypeName("UINT16")]
         public ushort Depth;
         #endregion
+
+        #region Constructors
+        public D3D12_TILE_REGION_SIZE(uint numTiles, int useBox, uint width, ushort height, ushort depth)
+        {
+            NumTiles = numTiles;
+            UseBox = useBox;
+            Width = width;
+            Height = height;
+            Depth = depth;
+        }
+        #endregion
     }
 }

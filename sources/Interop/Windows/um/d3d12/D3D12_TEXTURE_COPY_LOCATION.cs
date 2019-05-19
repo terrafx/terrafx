@@ -5,6 +5,7 @@
 
 using System.Runtime.InteropServices;
 using TerraFX.Utilities;
+using static TerraFX.Interop.D3D12_TEXTURE_COPY_TYPE;
 
 namespace TerraFX.Interop
 {
@@ -17,6 +18,29 @@ namespace TerraFX.Interop
         public D3D12_TEXTURE_COPY_TYPE Type;
 
         public _Anonymous_e__Union Anonymous;
+        #endregion
+
+        #region Constructors
+        public D3D12_TEXTURE_COPY_LOCATION(ID3D12Resource* pRes)
+        {
+            this = default;
+            pResource = pRes;
+        }
+
+        public D3D12_TEXTURE_COPY_LOCATION(ID3D12Resource* pRes, D3D12_PLACED_SUBRESOURCE_FOOTPRINT* Footprint)
+        {
+            this = default;
+            pResource = pRes;
+            Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
+            Anonymous.PlacedFootprint = *Footprint;
+        }
+        public D3D12_TEXTURE_COPY_LOCATION(ID3D12Resource* pRes, uint Sub)
+        {
+            this = default;
+            pResource = pRes;
+            Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+            Anonymous.SubresourceIndex = Sub;
+        }
         #endregion
 
         #region Structs

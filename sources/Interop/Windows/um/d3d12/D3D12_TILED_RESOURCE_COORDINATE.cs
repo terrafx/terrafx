@@ -23,5 +23,15 @@ namespace TerraFX.Interop
         [NativeTypeName("UINT")]
         public uint Subresource;
         #endregion
+
+        #region Constructors
+        public D3D12_TILED_RESOURCE_COORDINATE(uint x, uint y, uint z, uint subresource)
+        {
+            X = x;
+            Y = y;
+            Z = z;
+            Subresource = subresource;
+        }
+        #endregion
     }
 }

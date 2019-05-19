@@ -3,6 +3,7 @@
 // Ported from um\d3d12.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
+using System;
 using System.Runtime.InteropServices;
 using TerraFX.Utilities;
 
@@ -24,6 +25,28 @@ namespace TerraFX.Interop
         [FieldOffset(4)]
         public D3D12_DEPTH_STENCIL_VALUE DepthStencil;
         #endregion
+        #endregion
+
+        #region Constructors
+        public D3D12_CLEAR_VALUE(DXGI_FORMAT format, float* color)
+        {
+            fixed (D3D12_CLEAR_VALUE* pThis = &this)
+            {
+                Format = format;
+                Buffer.MemoryCopy(color, pThis->Color, sizeof(float) * 4, sizeof(float) * 4);
+            }
+        }
+
+        public D3D12_CLEAR_VALUE(DXGI_FORMAT format, float depth, byte stencil)
+        {
+            fixed (D3D12_CLEAR_VALUE* pThis = &this)
+            {
+                Format = format;
+                /* Use memcpy to preserve NAN values */
+                Buffer.MemoryCopy(&depth, &pThis->DepthStencil.Depth, sizeof(float), sizeof(float));
+                DepthStencil.Stencil = stencil;
+            }
+        }
         #endregion
     }
 }

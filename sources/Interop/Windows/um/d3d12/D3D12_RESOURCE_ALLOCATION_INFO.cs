@@ -17,5 +17,13 @@ namespace TerraFX.Interop
         [NativeTypeName("UINT64")]
         public ulong Alignment;
         #endregion
+
+        #region Constructors
+        public D3D12_RESOURCE_ALLOCATION_INFO(ulong size, ulong alignment)
+        {
+            SizeInBytes = size;
+            Alignment = alignment;
+        }
+        #endregion
     }
 }

@@ -4,6 +4,8 @@
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using TerraFX.Utilities;
+using static TerraFX.Utilities.HashUtilities;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -28,6 +30,44 @@ namespace TerraFX.Interop
 
         [NativeTypeName("FLOAT")]
         public float MaxDepth;
+        #endregion
+
+        #region Operators
+        public static bool operator ==(D3D12_VIEWPORT l, D3D12_VIEWPORT r)
+        {
+            return (l.TopLeftX == r.TopLeftX)
+                && (l.TopLeftY == r.TopLeftY)
+                && (l.Width == r.Width)
+                && (l.Height == r.Height)
+                && (l.MinDepth == r.MinDepth)
+                && (l.MaxDepth == r.MaxDepth);
+        }
+
+        public static bool operator !=(D3D12_VIEWPORT l, D3D12_VIEWPORT r)
+        {
+            return !(l == r);
+        }
+        #endregion
+
+        #region System.Object
+        public override bool Equals(object obj)
+        {
+            return (obj is D3D12_VIEWPORT other) && (this == other);
+        }
+
+        public override int GetHashCode()
+        {
+            var combinedValue = 0;
+            {
+                combinedValue = CombineValue(TopLeftX.GetHashCode(), combinedValue);
+                combinedValue = CombineValue(TopLeftY.GetHashCode(), combinedValue);
+                combinedValue = CombineValue(Width.GetHashCode(), combinedValue);
+                combinedValue = CombineValue(Height.GetHashCode(), combinedValue);
+                combinedValue = CombineValue(MinDepth.GetHashCode(), combinedValue);
+                combinedValue = CombineValue(MaxDepth.GetHashCode(), combinedValue);
+            }
+            return FinalizeValue(combinedValue, SizeOf<D3D12_VIEWPORT>());
+        }
         #endregion
     }
 }

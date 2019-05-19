@@ -8,7 +8,7 @@ using TerraFX.Utilities;
 namespace TerraFX.Interop
 {
     [Unmanaged]
-    public struct D3D12_ROOT_DESCRIPTOR
+    public unsafe struct D3D12_ROOT_DESCRIPTOR
     {
         #region Fields
         [NativeTypeName("UINT")]
@@ -16,6 +16,32 @@ namespace TerraFX.Interop
 
         [NativeTypeName("UINT")]
         public uint RegisterSpace;
+        #endregion
+
+        #region Constructors
+        public D3D12_ROOT_DESCRIPTOR(uint shaderRegister, uint registerSpace = 0)
+        {
+            fixed (D3D12_ROOT_DESCRIPTOR* pThis = &this)
+            {
+                Init(pThis, shaderRegister, registerSpace);
+            }
+        }
+        #endregion
+
+        #region Methods
+        public static void Init(D3D12_ROOT_DESCRIPTOR* table, uint shaderRegister, uint registerSpace = 0)
+        {
+            table->ShaderRegister = shaderRegister;
+            table->RegisterSpace = registerSpace;
+        }
+
+        public void Init(uint shaderRegister, uint registerSpace = 0)
+        {
+            fixed (D3D12_ROOT_DESCRIPTOR* pThis = &this)
+            {
+                Init(pThis, shaderRegister, registerSpace);
+            }
+        }
         #endregion
     }
 }

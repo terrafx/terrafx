@@ -5,12 +5,15 @@
 
 using System.Runtime.InteropServices;
 using TerraFX.Utilities;
+using static TerraFX.Interop.D3D12;
+using static TerraFX.Interop.D3D12_RESOURCE_BARRIER_FLAGS;
+using static TerraFX.Interop.D3D12_RESOURCE_BARRIER_TYPE;
 
 namespace TerraFX.Interop
 {
     [StructLayout(LayoutKind.Explicit)]
     [Unmanaged]
-    public struct D3D12_RESOURCE_BARRIER
+    public unsafe struct D3D12_RESOURCE_BARRIER
     {
         #region Fields
         [FieldOffset(0)]
@@ -29,6 +32,35 @@ namespace TerraFX.Interop
         [FieldOffset(8)]
         public D3D12_RESOURCE_UAV_BARRIER UAV;
         #endregion
+        #endregion
+
+        #region Methods
+        public static D3D12_RESOURCE_BARRIER InitTransition(ID3D12Resource* pResource, D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter, uint subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES, D3D12_RESOURCE_BARRIER_FLAGS flags = D3D12_RESOURCE_BARRIER_FLAG_NONE)
+        {
+            D3D12_RESOURCE_BARRIER result = default;
+            result.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+            result.Flags = flags;
+            result.Transition.pResource = pResource;
+            result.Transition.StateBefore = stateBefore;
+            result.Transition.StateAfter = stateAfter;
+            result.Transition.Subresource = subresource;
+            return result;
+        }
+        public static D3D12_RESOURCE_BARRIER InitAliasing(ID3D12Resource* pResourceBefore, ID3D12Resource* pResourceAfter)
+        {
+            D3D12_RESOURCE_BARRIER result = default;
+            result.Type = D3D12_RESOURCE_BARRIER_TYPE_ALIASING;
+            result.Aliasing.pResourceBefore = pResourceBefore;
+            result.Aliasing.pResourceAfter = pResourceAfter;
+            return result;
+        }
+        public static D3D12_RESOURCE_BARRIER InitUAV(ID3D12Resource* pResource)
+        {
+            D3D12_RESOURCE_BARRIER result = default;
+            result.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
+            result.UAV.pResource = pResource;
+            return result;
+        }
         #endregion
     }
 }

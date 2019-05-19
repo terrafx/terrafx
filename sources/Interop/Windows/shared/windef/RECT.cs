@@ -23,5 +23,15 @@ namespace TerraFX.Interop
         [NativeTypeName("LONG")]
         public int bottom;
         #endregion
+
+        #region Constructors
+        public RECT(int Left, int Top, int Right, int Bottom)
+        {
+            left = Left;
+            top = Top;
+            right = Right;
+            bottom = Bottom;
+        }
+        #endregion
     }
 }

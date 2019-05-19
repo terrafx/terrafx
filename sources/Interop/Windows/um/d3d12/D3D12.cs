@@ -7,6 +7,11 @@ using System;
 using System.Runtime.InteropServices;
 using System.Security;
 using TerraFX.Utilities;
+using static TerraFX.Interop.D3D12_FEATURE;
+using static TerraFX.Interop.D3D12_RESOURCE_DIMENSION;
+using static TerraFX.Interop.D3D12_TEXTURE_LAYOUT;
+using static TerraFX.Interop.Windows;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Interop
 {
@@ -953,6 +958,203 @@ namespace TerraFX.Interop
             [In] void* pConfigurationStructs = null,
             [In, NativeTypeName("UINT[]")] uint* pConfigurationStructSizes = null
         );
+        #endregion
+
+        #region Methods
+        public static uint D3D12CalcSubresource(uint MipSlice, uint ArraySlice, uint PlaneSlice, uint MipLevels, uint ArraySize)
+        {
+            return MipSlice + (ArraySlice * MipLevels) + (PlaneSlice * MipLevels * ArraySize);
+        }
+
+        public static void D3D12DecomposeSubresource(uint Subresource, uint MipLevels, uint ArraySize, uint* MipSlice, uint* ArraySlice, uint* PlaneSlice)
+        {
+            *MipSlice = Subresource % MipLevels;
+            *ArraySlice = Subresource / MipLevels % ArraySize;
+            *PlaneSlice = Subresource / (MipLevels * ArraySize);
+        }
+
+        public static byte D3D12GetFormatPlaneCount(ID3D12Device* pDevice, DXGI_FORMAT Format)
+        {
+            var formatInfo = new D3D12_FEATURE_DATA_FORMAT_INFO() { Format = Format };
+            if (FAILED(pDevice->CheckFeatureSupport(D3D12_FEATURE_FORMAT_INFO, &formatInfo, SizeOf<D3D12_FEATURE_DATA_FORMAT_INFO>())))
+            {
+                return 0;
+            }
+            return formatInfo.PlaneCount;
+        }
+
+        //------------------------------------------------------------------------------------------------
+        // Row-by-row memcpy
+        public static void MemcpySubresource(D3D12_MEMCPY_DEST* pDest, D3D12_SUBRESOURCE_DATA* pSrc, UIntPtr RowSizeInBytes, uint NumRows, uint NumSlices)
+        {
+            for (var z = 0u; z < NumSlices; ++z)
+            {
+                byte* pDestSlice = (byte*)pDest->pData;
+                byte* pSrcSlice = (byte*)pSrc->pData;
+                if (IntPtr.Size == 4)
+                {
+                    pDestSlice += (uint)pDest->SlicePitch * z;
+                    pSrcSlice += (uint)pSrc->SlicePitch * z;
+                }
+                else
+                {
+                    pDestSlice += (ulong)pDest->SlicePitch * z;
+                    pSrcSlice += (ulong)pSrc->SlicePitch * z;
+                }
+                for (var y = 0u; y < NumRows; ++y)
+                {
+                    byte* pTempDest = pDestSlice;
+                    byte* pTempSrc = pSrcSlice;
+
+                    if (IntPtr.Size == 4)
+                    {
+                        pDestSlice += (uint)pDest->RowPitch * y;
+                        pSrcSlice += (uint)pDest->RowPitch * y;
+                    }
+                    else
+                    {
+                        pDestSlice += (ulong)pDest->RowPitch * y;
+                        pSrcSlice += (ulong)pDest->RowPitch * y;
+                    }
+
+                    Buffer.MemoryCopy(pTempSrc, pTempDest, (long)RowSizeInBytes, (long)RowSizeInBytes);
+                }
+            }
+        }
+
+        //------------------------------------------------------------------------------------------------
+        // Returns required size of a buffer to be used for data upload
+        public static ulong GetRequiredIntermediateSize(ID3D12Resource* pDestinationResource, uint FirstSubresource, uint NumSubresources)
+        {
+            D3D12_RESOURCE_DESC Desc = pDestinationResource->GetDesc();
+            ulong RequiredSize = 0;
+    
+            ID3D12Device* pDevice;
+            Guid iid = IID_ID3D12Device;
+            pDestinationResource->GetDevice(&iid, (void**)&pDevice);
+            pDevice->GetCopyableFootprints(&Desc, FirstSubresource, NumSubresources, 0, null, null, null, &RequiredSize);
+            pDevice->Release();
+    
+            return RequiredSize;
+        }
+
+        //------------------------------------------------------------------------------------------------
+        // All arrays must be populated (e.g. by calling GetCopyableFootprints)
+        public static ulong UpdateSubresources(ID3D12GraphicsCommandList* pCmdList, ID3D12Resource* pDestinationResource, ID3D12Resource* pIntermediate, uint FirstSubresource, uint NumSubresources, ulong RequiredSize, D3D12_PLACED_SUBRESOURCE_FOOTPRINT* pLayouts, uint* pNumRows, ulong* pRowSizesInBytes, D3D12_SUBRESOURCE_DATA* pSrcData)
+        {
+            // Minor validation
+            D3D12_RESOURCE_DESC IntermediateDesc = pIntermediate->GetDesc();
+            D3D12_RESOURCE_DESC DestinationDesc = pDestinationResource->GetDesc();
+            if (IntermediateDesc.Dimension != D3D12_RESOURCE_DIMENSION_BUFFER ||
+                IntermediateDesc.Width < RequiredSize + pLayouts[0].Offset ||
+                RequiredSize > ((IntPtr.Size == 4) ? uint.MaxValue : ulong.MaxValue) ||
+                (DestinationDesc.Dimension == D3D12_RESOURCE_DIMENSION_BUFFER &&
+                    (FirstSubresource != 0 || NumSubresources != 1)))
+            {
+                return 0;
+            }
+
+            byte* pData;
+            int hr = pIntermediate->Map(0, null, (void**)&pData);
+            if (FAILED(hr))
+            {
+                return 0;
+            }
+
+            for (var i = 0u; i < NumSubresources; ++i)
+            {
+                if (pRowSizesInBytes[i] > ((IntPtr.Size == 4) ? uint.MaxValue : ulong.MaxValue))
+                    return 0;
+                var DestData = new D3D12_MEMCPY_DEST {
+                    pData = pData + pLayouts[i].Offset,
+                    RowPitch = (UIntPtr)pLayouts[i].Footprint.RowPitch,
+                    SlicePitch = (UIntPtr)(pLayouts[i].Footprint.RowPitch * pNumRows[i])
+                };
+                MemcpySubresource(&DestData, &pSrcData[i], (UIntPtr)pRowSizesInBytes[i], pNumRows[i], pLayouts[i].Footprint.Depth);
+            }
+            pIntermediate->Unmap(0, null);
+
+            if (DestinationDesc.Dimension == D3D12_RESOURCE_DIMENSION_BUFFER)
+            {
+                var SrcBox = new D3D12_BOX((int)pLayouts[0].Offset, (int)(pLayouts[0].Offset + pLayouts[0].Footprint.Width));
+                pCmdList->CopyBufferRegion(
+                    pDestinationResource, 0, pIntermediate, pLayouts[0].Offset, pLayouts[0].Footprint.Width);
+            }
+            else
+            {
+                for (var i = 0u; i < NumSubresources; ++i)
+                {
+                    var Dst = new D3D12_TEXTURE_COPY_LOCATION(pDestinationResource, i + FirstSubresource);
+                    var Src = new D3D12_TEXTURE_COPY_LOCATION(pIntermediate, pLayouts + i);
+                    pCmdList->CopyTextureRegion(&Dst, 0, 0, 0, &Src, null);
+                }
+            }
+            return RequiredSize;
+        }
+
+        //------------------------------------------------------------------------------------------------
+        // Heap-allocating UpdateSubresources implementation
+        public static ulong UpdateSubresources(ID3D12GraphicsCommandList* pCmdList, ID3D12Resource* pDestinationResource, ID3D12Resource* pIntermediate, ulong IntermediateOffset, uint FirstSubresource, uint NumSubresources, D3D12_SUBRESOURCE_DATA* pSrcData)
+        {
+            ulong RequiredSize = 0;
+            ulong MemToAlloc = (ulong)(sizeof(D3D12_PLACED_SUBRESOURCE_FOOTPRINT) + sizeof(uint) + sizeof(ulong)) * NumSubresources;
+            if (MemToAlloc > ((IntPtr.Size == 4) ? uint.MaxValue : ulong.MaxValue))
+            {
+                return 0;
+            }
+            void* pMem = Marshal.AllocHGlobal((IntPtr)MemToAlloc).ToPointer();
+            if (pMem == null)
+            {
+                return 0;
+            }
+            D3D12_PLACED_SUBRESOURCE_FOOTPRINT* pLayouts = (D3D12_PLACED_SUBRESOURCE_FOOTPRINT*)pMem;
+            ulong* pRowSizesInBytes = (ulong*)(pLayouts + NumSubresources);
+            uint* pNumRows = (uint*)(pRowSizesInBytes + NumSubresources);
+
+            D3D12_RESOURCE_DESC Desc = pDestinationResource->GetDesc();
+            ID3D12Device* pDevice;
+            var iid = IID_ID3D12Device;
+            pDestinationResource->GetDevice(&iid, (void**)&pDevice);
+            pDevice->GetCopyableFootprints(&Desc, FirstSubresource, NumSubresources, IntermediateOffset, pLayouts, pNumRows, pRowSizesInBytes, &RequiredSize);
+            pDevice->Release();
+
+            ulong Result = UpdateSubresources(pCmdList, pDestinationResource, pIntermediate, FirstSubresource, NumSubresources, RequiredSize, pLayouts, pNumRows, pRowSizesInBytes, pSrcData);
+            Marshal.FreeHGlobal((IntPtr)pMem);
+            return Result;
+        }
+
+        //------------------------------------------------------------------------------------------------
+        // Stack-allocating UpdateSubresources implementation
+        public static ulong UpdateSubresources(uint MaxSubresources, ID3D12GraphicsCommandList* pCmdList, ID3D12Resource* pDestinationResource, ID3D12Resource* pIntermediate, ulong IntermediateOffset, uint FirstSubresource, uint NumSubresources, D3D12_SUBRESOURCE_DATA* pSrcData)
+        {
+            ulong RequiredSize = 0;
+            var Layouts = stackalloc D3D12_PLACED_SUBRESOURCE_FOOTPRINT[(int)MaxSubresources];
+            var NumRows = stackalloc uint[(int)MaxSubresources];
+            var RowSizesInBytes = stackalloc ulong[(int)MaxSubresources];
+
+            D3D12_RESOURCE_DESC Desc = pDestinationResource->GetDesc();
+            ID3D12Device* pDevice;
+            var iid = IID_ID3D12Device;
+            pDestinationResource->GetDevice(&iid, (void**)&pDevice);
+            pDevice->GetCopyableFootprints(&Desc, FirstSubresource, NumSubresources, IntermediateOffset, Layouts, NumRows, RowSizesInBytes, &RequiredSize);
+            pDevice->Release();
+    
+            return UpdateSubresources(pCmdList, pDestinationResource, pIntermediate, FirstSubresource, NumSubresources, RequiredSize, Layouts, NumRows, RowSizesInBytes, pSrcData);
+        }
+
+        public static bool D3D12IsLayoutOpaque(D3D12_TEXTURE_LAYOUT Layout)
+        {
+            return (Layout == D3D12_TEXTURE_LAYOUT_UNKNOWN) || (Layout == D3D12_TEXTURE_LAYOUT_64KB_UNDEFINED_SWIZZLE);
+        }
+
+        public static ID3D12CommandList** CommandListCast(ID3D12GraphicsCommandList** pp)
+        {
+            // This cast is useful for passing strongly typed command list pointers into
+            // ExecuteCommandLists.
+            // This cast is valid as long as the const-ness is respected. D3D12 APIs do
+            // respect the const-ness of their arguments.
+            return (ID3D12CommandList**)pp;
+        }
         #endregion
     }
 }

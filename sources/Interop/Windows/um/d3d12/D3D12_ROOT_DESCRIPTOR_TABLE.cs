@@ -17,5 +17,33 @@ namespace TerraFX.Interop
         [NativeTypeName("D3D12_DESCRIPTOR_RANGE[]")]
         public D3D12_DESCRIPTOR_RANGE* pDescriptorRanges;
         #endregion
+
+        #region Constructors
+        public D3D12_ROOT_DESCRIPTOR_TABLE(uint numDescriptorRanges, D3D12_DESCRIPTOR_RANGE* _pDescriptorRanges)
+        {
+            fixed (D3D12_ROOT_DESCRIPTOR_TABLE* pThis = &this)
+            {
+                Init(pThis, numDescriptorRanges, _pDescriptorRanges);
+            }
+        }
+        #endregion
+
+        #region Methods
+        public static void Init(D3D12_ROOT_DESCRIPTOR_TABLE* rootDescriptorTable, uint numDescriptorRanges, D3D12_DESCRIPTOR_RANGE* _pDescriptorRanges)
+        {
+            rootDescriptorTable->NumDescriptorRanges = numDescriptorRanges;
+            rootDescriptorTable->pDescriptorRanges = _pDescriptorRanges;
+
+
+        }
+
+        public void Init(uint numDescriptorRanges, D3D12_DESCRIPTOR_RANGE* _pDescriptorRanges)
+        {
+            fixed (D3D12_ROOT_DESCRIPTOR_TABLE* pThis = &this)
+            {
+                Init(pThis, numDescriptorRanges, _pDescriptorRanges);
+            }
+        }
+        #endregion
     }
 }
