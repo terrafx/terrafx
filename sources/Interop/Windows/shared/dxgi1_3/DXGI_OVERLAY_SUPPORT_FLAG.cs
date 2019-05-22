@@ -5,15 +5,13 @@
 
 using System;
 
-namespace TerraFX.Interop.Desktop
+namespace TerraFX.Interop
 {
     [Flags]
-    public enum DXGI_MULTIPLANE_OVERLAY_YCbCr_FLAGS : uint
+    public enum DXGI_OVERLAY_SUPPORT_FLAG : uint
     {
-        DXGI_MULTIPLANE_OVERLAY_YCbCr_FLAG_NOMINAL_RANGE = 0x1,
+        DXGI_OVERLAY_SUPPORT_FLAG_DIRECT = 0x1,
 
-        DXGI_MULTIPLANE_OVERLAY_YCbCr_FLAG_BT709 = 0x2,
-
-        DXGI_MULTIPLANE_OVERLAY_YCbCr_FLAG_xvYCC = 0x4
+        DXGI_OVERLAY_SUPPORT_FLAG_SCALING = 0x2
     }
 }

@@ -5,18 +5,15 @@
 
 using TerraFX.Utilities;
 
-namespace TerraFX.Interop.Desktop
+namespace TerraFX.Interop
 {
     [Unmanaged]
-    public struct DXGI_OUTDUPL_DESC
+    public struct DXGI_OUTDUPL_MOVE_RECT
     {
         #region Fields
-        public DXGI_MODE_DESC ModeDesc;
+        public POINT SourcePoint;
 
-        public DXGI_MODE_ROTATION Rotation;
-
-        [NativeTypeName("BOOL")]
-        public int DesktopImageInSystemMemory;
+        public RECT DestinationRect;
         #endregion
     }
 }

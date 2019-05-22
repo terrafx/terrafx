@@ -5,7 +5,7 @@
 
 using TerraFX.Utilities;
 
-namespace TerraFX.Interop.Desktop
+namespace TerraFX.Interop
 {
     [Unmanaged]
     public struct DXGI_FRAME_STATISTICS_MEDIA

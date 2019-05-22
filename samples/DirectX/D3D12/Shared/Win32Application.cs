@@ -6,9 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 using TerraFX.Interop;
-using TerraFX.Interop.Desktop;
 using TerraFX.Utilities;
-using static TerraFX.Interop.Desktop.User32;
 using static TerraFX.Interop.User32;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Utilities.InteropUtilities;

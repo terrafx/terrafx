@@ -6,7 +6,6 @@ using TerraFX.Interop;
 using TerraFX.UI;
 using static TerraFX.Interop.User32;
 using static TerraFX.Interop.Windows;
-using static TerraFX.Interop.Desktop.User32;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 

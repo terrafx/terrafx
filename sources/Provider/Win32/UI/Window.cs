@@ -11,7 +11,6 @@ using TerraFX.UI;
 using TerraFX.Utilities;
 using static TerraFX.Interop.User32;
 using static TerraFX.Interop.Windows;
-using static TerraFX.Interop.Desktop.User32;
 using static TerraFX.Provider.Win32.UI.WindowProvider;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;

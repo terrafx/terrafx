@@ -121,6 +121,14 @@ namespace TerraFX.Interop
         #endregion
 
         #region External Methods
+        [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CreateDXGIFactory", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [SuppressUnmanagedCodeSecurity]
+        [return: NativeTypeName("HRESULT")]
+        public static extern int CreateDXGIFactory(
+            [In, NativeTypeName("REFIID")] Guid* riid,
+            [Out] void** ppFactory
+        );
+
         [DllImport(DllName, BestFitMapping = false, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode, EntryPoint = "CreateDXGIFactory1", ExactSpelling = true, PreserveSig = true, SetLastError = false, ThrowOnUnmappableChar = false)]
         [SuppressUnmanagedCodeSecurity]
         [return: NativeTypeName("HRESULT")]

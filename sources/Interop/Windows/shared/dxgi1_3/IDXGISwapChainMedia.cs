@@ -9,11 +9,11 @@ using System.Security;
 using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
-namespace TerraFX.Interop.Desktop
+namespace TerraFX.Interop
 {
-    [Guid("41E7D1F2-A591-4F7B-A2E5-FA9C843E1C12")]
+    [Guid("DD95B90B-F05F-4F6A-BD65-25BFB264BD84")]
     [Unmanaged]
-    public unsafe struct IDXGIFactoryMedia
+    public unsafe struct IDXGISwapChainMedia
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -24,7 +24,7 @@ namespace TerraFX.Interop.Desktop
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
-            [In] IDXGIFactoryMedia* This,
+            [In] IDXGISwapChainMedia* This,
             [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
@@ -33,14 +33,14 @@ namespace TerraFX.Interop.Desktop
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
-            [In] IDXGIFactoryMedia* This
+            [In] IDXGISwapChainMedia* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
-            [In] IDXGIFactoryMedia* This
+            [In] IDXGISwapChainMedia* This
         );
         #endregion
 
@@ -48,26 +48,27 @@ namespace TerraFX.Interop.Desktop
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
-        public /* static */ delegate int _CreateSwapChainForCompositionSurfaceHandle(
-            [In] IDXGIFactoryMedia* This,
-            [In] IUnknown* pDevice,
-            [In, Optional, NativeTypeName("HANDLE")] IntPtr hSurface,
-            [In] DXGI_SWAP_CHAIN_DESC1* pDesc,
-            [In, Optional] IDXGIOutput* pRestrictToOutput,
-            [Out] IDXGISwapChain1** ppSwapChain
+        public /* static */ delegate int _GetFrameStatisticsMedia(
+            [In] IDXGISwapChainMedia* This,
+            [Out] DXGI_FRAME_STATISTICS_MEDIA* pStats
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
-        public /* static */ delegate int _CreateDecodeSwapChainForCompositionSurfaceHandle(
-            [In] IDXGIFactoryMedia* This,
-            [In] IUnknown* pDevice,
-            [In, Optional, NativeTypeName("HANDLE")] IntPtr hSurface,
-            [In] DXGI_DECODE_SWAP_CHAIN_DESC* pDesc,
-            [In] IDXGIResource* pYuvDecodeBuffers,
-            [In, Optional] IDXGIOutput* pRestrictToOutput,
-            [Out] IDXGIDecodeSwapChain** ppSwapChain
+        public /* static */ delegate int _SetPresentDuration(
+            [In] IDXGISwapChainMedia* This,
+            [In, NativeTypeName("UINT")] uint Duration
+        );
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
+        [return: NativeTypeName("HRESULT")]
+        public /* static */ delegate int _CheckPresentDurationSupport(
+            [In] IDXGISwapChainMedia* This,
+            [In, NativeTypeName("UINT")] uint DesiredPresentDuration,
+            [Out, NativeTypeName("UINT")] uint* pClosestSmallerPresentDuration,
+            [Out, NativeTypeName("UINT")] uint* pClosestLargerPresentDuration
         );
         #endregion
 
@@ -78,7 +79,7 @@ namespace TerraFX.Interop.Desktop
             [Out] void** ppvObject
         )
         {
-            fixed (IDXGIFactoryMedia* This = &this)
+            fixed (IDXGISwapChainMedia* This = &this)
             {
                 return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
                     This,
@@ -91,7 +92,7 @@ namespace TerraFX.Interop.Desktop
         [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
-            fixed (IDXGIFactoryMedia* This = &this)
+            fixed (IDXGISwapChainMedia* This = &this)
             {
                 return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
                     This
@@ -102,7 +103,7 @@ namespace TerraFX.Interop.Desktop
         [return: NativeTypeName("ULONG")]
         public uint Release()
         {
-            fixed (IDXGIFactoryMedia* This = &this)
+            fixed (IDXGISwapChainMedia* This = &this)
             {
                 return MarshalFunction<_Release>(lpVtbl->Release)(
                     This
@@ -113,47 +114,47 @@ namespace TerraFX.Interop.Desktop
 
         #region Methods
         [return: NativeTypeName("HRESULT")]
-        public int CreateSwapChainForCompositionSurfaceHandle(
-            [In] IUnknown* pDevice,
-            [In, Optional, NativeTypeName("HANDLE")] IntPtr hSurface,
-            [In] DXGI_SWAP_CHAIN_DESC1* pDesc,
-            [In, Optional] IDXGIOutput* pRestrictToOutput,
-            [Out] IDXGISwapChain1** ppSwapChain
+        public int GetFrameStatisticsMedia(
+            [Out] DXGI_FRAME_STATISTICS_MEDIA* pStats
         )
         {
-            fixed (IDXGIFactoryMedia* This = &this)
+            fixed (IDXGISwapChainMedia* This = &this)
             {
-                return MarshalFunction<_CreateSwapChainForCompositionSurfaceHandle>(lpVtbl->CreateSwapChainForCompositionSurfaceHandle)(
+                return MarshalFunction<_GetFrameStatisticsMedia>(lpVtbl->GetFrameStatisticsMedia)(
                     This,
-                    pDevice,
-                    hSurface,
-                    pDesc,
-                    pRestrictToOutput,
-                    ppSwapChain
+                    pStats
                 );
             }
         }
 
         [return: NativeTypeName("HRESULT")]
-        public int CreateDecodeSwapChainForCompositionSurfaceHandle(
-            [In] IUnknown* pDevice,
-            [In, Optional, NativeTypeName("HANDLE")] IntPtr hSurface,
-            [In] DXGI_DECODE_SWAP_CHAIN_DESC* pDesc,
-            [In] IDXGIResource* pYuvDecodeBuffers,
-            [In, Optional] IDXGIOutput* pRestrictToOutput,
-            [Out] IDXGIDecodeSwapChain** ppSwapChain
+        public int SetPresentDuration(
+            [In, NativeTypeName("UINT")] uint Duration
         )
         {
-            fixed (IDXGIFactoryMedia* This = &this)
+            fixed (IDXGISwapChainMedia* This = &this)
             {
-                return MarshalFunction<_CreateDecodeSwapChainForCompositionSurfaceHandle>(lpVtbl->CreateDecodeSwapChainForCompositionSurfaceHandle)(
+                return MarshalFunction<_SetPresentDuration>(lpVtbl->SetPresentDuration)(
                     This,
-                    pDevice,
-                    hSurface,
-                    pDesc,
-                    pYuvDecodeBuffers,
-                    pRestrictToOutput,
-                    ppSwapChain
+                    Duration
+                );
+            }
+        }
+
+        [return: NativeTypeName("HRESULT")]
+        public int CheckPresentDurationSupport(
+            [In, NativeTypeName("UINT")] uint DesiredPresentDuration,
+            [Out, NativeTypeName("UINT")] uint* pClosestSmallerPresentDuration,
+            [Out, NativeTypeName("UINT")] uint* pClosestLargerPresentDuration
+        )
+        {
+            fixed (IDXGISwapChainMedia* This = &this)
+            {
+                return MarshalFunction<_CheckPresentDurationSupport>(lpVtbl->CheckPresentDurationSupport)(
+                    This,
+                    DesiredPresentDuration,
+                    pClosestSmallerPresentDuration,
+                    pClosestLargerPresentDuration
                 );
             }
         }
@@ -172,9 +173,11 @@ namespace TerraFX.Interop.Desktop
             #endregion
 
             #region Fields
-            public IntPtr CreateSwapChainForCompositionSurfaceHandle;
+            public IntPtr GetFrameStatisticsMedia;
 
-            public IntPtr CreateDecodeSwapChainForCompositionSurfaceHandle;
+            public IntPtr SetPresentDuration;
+
+            public IntPtr CheckPresentDurationSupport;
             #endregion
         }
         #endregion

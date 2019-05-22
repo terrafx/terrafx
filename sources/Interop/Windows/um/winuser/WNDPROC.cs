@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using TerraFX.Utilities;
 
-namespace TerraFX.Interop.Desktop
+namespace TerraFX.Interop
 {
     [SuppressUnmanagedCodeSecurity]
     [UnmanagedFunctionPointer(CallingConvention.Winapi, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]

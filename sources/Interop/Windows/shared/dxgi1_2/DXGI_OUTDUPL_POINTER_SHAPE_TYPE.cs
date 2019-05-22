@@ -3,17 +3,14 @@
 // Ported from shared\dxgi1_2.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-using TerraFX.Utilities;
-
-namespace TerraFX.Interop.Desktop
+namespace TerraFX.Interop
 {
-    [Unmanaged]
-    public struct DXGI_OUTDUPL_MOVE_RECT
+    public enum DXGI_OUTDUPL_POINTER_SHAPE_TYPE
     {
-        #region Fields
-        public POINT SourcePoint;
+        DXGI_OUTDUPL_POINTER_SHAPE_TYPE_MONOCHROME = 0x1,
 
-        public RECT DestinationRect;
-        #endregion
+        DXGI_OUTDUPL_POINTER_SHAPE_TYPE_COLOR = 0x2,
+
+        DXGI_OUTDUPL_POINTER_SHAPE_TYPE_MASKED_COLOR = 0x4
     }
 }

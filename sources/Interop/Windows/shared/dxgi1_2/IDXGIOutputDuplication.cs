@@ -9,7 +9,7 @@ using System.Security;
 using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
-namespace TerraFX.Interop.Desktop
+namespace TerraFX.Interop
 {
     [Guid("191CFAC3-A341-470D-B26E-A864F428319C")]
     [Unmanaged]

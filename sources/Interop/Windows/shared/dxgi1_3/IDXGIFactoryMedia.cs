@@ -1,6 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-// Ported from shared\dxgi1_2.h in the Windows SDK for Windows 10.0.15063.0
+// Ported from shared\dxgi1_3.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
 using System;
@@ -9,11 +9,11 @@ using System.Security;
 using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
-namespace TerraFX.Interop.Desktop
+namespace TerraFX.Interop
 {
-    [Guid("EA9DBF1A-C88E-4486-854A-98AA0138F30C")]
+    [Guid("41E7D1F2-A591-4F7B-A2E5-FA9C843E1C12")]
     [Unmanaged]
-    public unsafe struct IDXGIDisplayControl
+    public unsafe struct IDXGIFactoryMedia
     {
         #region Fields
         public readonly Vtbl* lpVtbl;
@@ -24,7 +24,7 @@ namespace TerraFX.Interop.Desktop
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("HRESULT")]
         public /* static */ delegate int _QueryInterface(
-            [In] IDXGIDisplayControl* This,
+            [In] IDXGIFactoryMedia* This,
             [In, NativeTypeName("REFIID")] Guid* riid,
             [Out] void** ppvObject
         );
@@ -33,30 +33,41 @@ namespace TerraFX.Interop.Desktop
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _AddRef(
-            [In] IDXGIDisplayControl* This
+            [In] IDXGIFactoryMedia* This
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
         [return: NativeTypeName("ULONG")]
         public /* static */ delegate uint _Release(
-            [In] IDXGIDisplayControl* This
+            [In] IDXGIFactoryMedia* This
         );
         #endregion
 
         #region Delegates
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        [return: NativeTypeName("BOOL")]
-        public /* static */ delegate int _IsStereoEnabled(
-            [In] IDXGIDisplayControl* This
+        [return: NativeTypeName("HRESULT")]
+        public /* static */ delegate int _CreateSwapChainForCompositionSurfaceHandle(
+            [In] IDXGIFactoryMedia* This,
+            [In] IUnknown* pDevice,
+            [In, Optional, NativeTypeName("HANDLE")] IntPtr hSurface,
+            [In] DXGI_SWAP_CHAIN_DESC1* pDesc,
+            [In, Optional] IDXGIOutput* pRestrictToOutput,
+            [Out] IDXGISwapChain1** ppSwapChain
         );
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.StdCall, BestFitMapping = false, CharSet = CharSet.Unicode, SetLastError = false, ThrowOnUnmappableChar = false)]
-        public /* static */ delegate void _SetStereoEnabled(
-            [In] IDXGIDisplayControl* This,
-            [In, NativeTypeName("BOOL")] int enabled
+        [return: NativeTypeName("HRESULT")]
+        public /* static */ delegate int _CreateDecodeSwapChainForCompositionSurfaceHandle(
+            [In] IDXGIFactoryMedia* This,
+            [In] IUnknown* pDevice,
+            [In, Optional, NativeTypeName("HANDLE")] IntPtr hSurface,
+            [In] DXGI_DECODE_SWAP_CHAIN_DESC* pDesc,
+            [In] IDXGIResource* pYuvDecodeBuffers,
+            [In, Optional] IDXGIOutput* pRestrictToOutput,
+            [Out] IDXGIDecodeSwapChain** ppSwapChain
         );
         #endregion
 
@@ -67,7 +78,7 @@ namespace TerraFX.Interop.Desktop
             [Out] void** ppvObject
         )
         {
-            fixed (IDXGIDisplayControl* This = &this)
+            fixed (IDXGIFactoryMedia* This = &this)
             {
                 return MarshalFunction<_QueryInterface>(lpVtbl->QueryInterface)(
                     This,
@@ -80,7 +91,7 @@ namespace TerraFX.Interop.Desktop
         [return: NativeTypeName("ULONG")]
         public uint AddRef()
         {
-            fixed (IDXGIDisplayControl* This = &this)
+            fixed (IDXGIFactoryMedia* This = &this)
             {
                 return MarshalFunction<_AddRef>(lpVtbl->AddRef)(
                     This
@@ -91,7 +102,7 @@ namespace TerraFX.Interop.Desktop
         [return: NativeTypeName("ULONG")]
         public uint Release()
         {
-            fixed (IDXGIDisplayControl* This = &this)
+            fixed (IDXGIFactoryMedia* This = &this)
             {
                 return MarshalFunction<_Release>(lpVtbl->Release)(
                     This
@@ -101,26 +112,48 @@ namespace TerraFX.Interop.Desktop
         #endregion
 
         #region Methods
-        [return: NativeTypeName("BOOL")]
-        public int IsStereoEnabled()
+        [return: NativeTypeName("HRESULT")]
+        public int CreateSwapChainForCompositionSurfaceHandle(
+            [In] IUnknown* pDevice,
+            [In, Optional, NativeTypeName("HANDLE")] IntPtr hSurface,
+            [In] DXGI_SWAP_CHAIN_DESC1* pDesc,
+            [In, Optional] IDXGIOutput* pRestrictToOutput,
+            [Out] IDXGISwapChain1** ppSwapChain
+        )
         {
-            fixed (IDXGIDisplayControl* This = &this)
+            fixed (IDXGIFactoryMedia* This = &this)
             {
-                return MarshalFunction<_IsStereoEnabled>(lpVtbl->IsStereoEnabled)(
-                    This
+                return MarshalFunction<_CreateSwapChainForCompositionSurfaceHandle>(lpVtbl->CreateSwapChainForCompositionSurfaceHandle)(
+                    This,
+                    pDevice,
+                    hSurface,
+                    pDesc,
+                    pRestrictToOutput,
+                    ppSwapChain
                 );
             }
         }
 
-        public void SetStereoEnabled(
-            [In, NativeTypeName("BOOL")] int enabled
+        [return: NativeTypeName("HRESULT")]
+        public int CreateDecodeSwapChainForCompositionSurfaceHandle(
+            [In] IUnknown* pDevice,
+            [In, Optional, NativeTypeName("HANDLE")] IntPtr hSurface,
+            [In] DXGI_DECODE_SWAP_CHAIN_DESC* pDesc,
+            [In] IDXGIResource* pYuvDecodeBuffers,
+            [In, Optional] IDXGIOutput* pRestrictToOutput,
+            [Out] IDXGIDecodeSwapChain** ppSwapChain
         )
         {
-            fixed (IDXGIDisplayControl* This = &this)
+            fixed (IDXGIFactoryMedia* This = &this)
             {
-                MarshalFunction<_SetStereoEnabled>(lpVtbl->SetStereoEnabled)(
+                return MarshalFunction<_CreateDecodeSwapChainForCompositionSurfaceHandle>(lpVtbl->CreateDecodeSwapChainForCompositionSurfaceHandle)(
                     This,
-                    enabled
+                    pDevice,
+                    hSurface,
+                    pDesc,
+                    pYuvDecodeBuffers,
+                    pRestrictToOutput,
+                    ppSwapChain
                 );
             }
         }
@@ -139,9 +172,9 @@ namespace TerraFX.Interop.Desktop
             #endregion
 
             #region Fields
-            public IntPtr IsStereoEnabled;
+            public IntPtr CreateSwapChainForCompositionSurfaceHandle;
 
-            public IntPtr SetStereoEnabled;
+            public IntPtr CreateDecodeSwapChainForCompositionSurfaceHandle;
             #endregion
         }
         #endregion

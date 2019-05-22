@@ -5,7 +5,7 @@
 
 using TerraFX.Utilities;
 
-namespace TerraFX.Interop.Desktop
+namespace TerraFX.Interop
 {
     [Unmanaged]
     public struct DXGI_OUTDUPL_FRAME_INFO

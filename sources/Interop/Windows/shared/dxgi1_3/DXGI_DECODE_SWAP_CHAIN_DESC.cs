@@ -3,16 +3,16 @@
 // Ported from shared\dxgi1_3.h in the Windows SDK for Windows 10.0.15063.0
 // Original source is Copyright © Microsoft. All rights reserved.
 
-namespace TerraFX.Interop.Desktop
+using TerraFX.Utilities;
+
+namespace TerraFX.Interop
 {
-    public enum DXGI_FRAME_PRESENTATION_MODE
+    [Unmanaged]
+    public struct DXGI_DECODE_SWAP_CHAIN_DESC
     {
-        DXGI_FRAME_PRESENTATION_MODE_COMPOSED = 0,
-
-        DXGI_FRAME_PRESENTATION_MODE_OVERLAY = 1,
-
-        DXGI_FRAME_PRESENTATION_MODE_NONE = 2,
-
-        DXGI_FRAME_PRESENTATION_MODE_COMPOSITION_FAILURE = 3
+        #region Fields
+        [NativeTypeName("UINT")]
+        public uint Flags;
+        #endregion
     }
 }
