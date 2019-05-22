@@ -20,5 +20,17 @@ namespace TerraFX.Interop
 
         public const int D2DERR_FILE_NOT_FOUND = unchecked((int)(ERROR_FILE_NOT_FOUND | (FACILITY_WIN32 << 16) | 0x80000000));
         #endregion
+
+        #region Methods
+        public static int MAKE_D2DHR(int sev, int code)
+        {
+            return MAKE_HRESULT(sev, FACILITY_D2D, code);
+        }
+
+        public static int MAKE_D2DHR_ERR(int code)
+        {
+            return MAKE_D2DHR(1, code);
+        }
+        #endregion
     }
 }

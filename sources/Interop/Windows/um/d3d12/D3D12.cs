@@ -8,6 +8,8 @@ using System.Runtime.InteropServices;
 using System.Security;
 using TerraFX.Utilities;
 using static TerraFX.Interop.D3D12_FEATURE;
+using static TerraFX.Interop.D3D12_FILTER_TYPE;
+using static TerraFX.Interop.D3D12_FILTER_REDUCTION_TYPE;
 using static TerraFX.Interop.D3D12_RESOURCE_DIMENSION;
 using static TerraFX.Interop.D3D12_TEXTURE_LAYOUT;
 using static TerraFX.Interop.Windows;
@@ -21,6 +23,8 @@ namespace TerraFX.Interop
 
         #region Constants
         public const int D3D12_ANISOTROPIC_FILTERING_BIT = 0x40;
+
+        public const int D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING = 0x1688;
 
         public static readonly Guid D3D12ExperimentalShaderModels = new Guid(0x76F5573E, 0xF13A, 0x40F5, 0xB2, 0x97, 0x81, 0xCE, 0x9E, 0x18, 0x93, 0x3F);
         #endregion
@@ -961,6 +965,66 @@ namespace TerraFX.Interop
         #endregion
 
         #region Methods
+        public static int D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(D3D12_SHADER_COMPONENT_MAPPING Src0, D3D12_SHADER_COMPONENT_MAPPING Src1, D3D12_SHADER_COMPONENT_MAPPING Src2, D3D12_SHADER_COMPONENT_MAPPING Src3)
+        {
+            return ((int)Src0 & D3D12_SHADER_COMPONENT_MAPPING_MASK)
+                 | (((int)Src1 & D3D12_SHADER_COMPONENT_MAPPING_MASK) << D3D12_SHADER_COMPONENT_MAPPING_SHIFT)
+                 | (((int)Src2 & D3D12_SHADER_COMPONENT_MAPPING_MASK) << (D3D12_SHADER_COMPONENT_MAPPING_SHIFT * 2))
+                 | (((int)Src3 & D3D12_SHADER_COMPONENT_MAPPING_MASK) << (D3D12_SHADER_COMPONENT_MAPPING_SHIFT * 3))
+                 | D3D12_SHADER_COMPONENT_MAPPING_ALWAYS_SET_BIT_AVOIDING_ZEROMEM_MISTAKES;
+        }
+
+        public static D3D12_SHADER_COMPONENT_MAPPING D3D12_DECODE_SHADER_4_COMPONENT_MAPPING(int ComponentToExtract, int Mapping)
+        {
+            return (D3D12_SHADER_COMPONENT_MAPPING)((Mapping >> (D3D12_SHADER_COMPONENT_MAPPING_SHIFT * ComponentToExtract)) & D3D12_SHADER_COMPONENT_MAPPING_MASK);
+        }
+
+        public static D3D12_FILTER D3D12_ENCODE_BASIC_FILTER(D3D12_FILTER_TYPE min, D3D12_FILTER_TYPE mag, D3D12_FILTER_TYPE mip, D3D12_FILTER_REDUCTION_TYPE reduction)
+        {
+            return (D3D12_FILTER)((((int)min & D3D12_FILTER_TYPE_MASK) << D3D12_MIN_FILTER_SHIFT)
+                                | (((int)mag & D3D12_FILTER_TYPE_MASK) << D3D12_MAG_FILTER_SHIFT)
+                                | (((int)mip & D3D12_FILTER_TYPE_MASK) << D3D12_MIP_FILTER_SHIFT)
+                                | (((int)reduction & D3D12_FILTER_REDUCTION_TYPE_MASK) << D3D12_FILTER_REDUCTION_TYPE_SHIFT));
+        }
+
+        public static D3D12_FILTER D3D12_ENCODE_ANISOTROPIC_FILTER(D3D12_FILTER_REDUCTION_TYPE reduction)
+        {
+            return (D3D12_FILTER)(D3D12_ANISOTROPIC_FILTERING_BIT
+                                | (int)D3D12_ENCODE_BASIC_FILTER(D3D12_FILTER_TYPE_LINEAR, D3D12_FILTER_TYPE_LINEAR, D3D12_FILTER_TYPE_LINEAR, reduction));
+        }
+
+        public static D3D12_FILTER_TYPE D3D12_DECODE_MIN_FILTER(D3D12_FILTER D3D12Filter)
+        {
+            return (D3D12_FILTER_TYPE)(((int)D3D12Filter >> D3D12_MIN_FILTER_SHIFT) & D3D12_FILTER_TYPE_MASK);
+        }
+
+        public static D3D12_FILTER_TYPE D3D12_DECODE_MAG_FILTER(D3D12_FILTER D3D12Filter)
+        {
+            return (D3D12_FILTER_TYPE)(((int)D3D12Filter >> D3D12_MAG_FILTER_SHIFT) & D3D12_FILTER_TYPE_MASK);
+        }
+
+        public static D3D12_FILTER_TYPE D3D12_DECODE_MIP_FILTER(D3D12_FILTER D3D12Filter)
+        {
+            return (D3D12_FILTER_TYPE)(((int)D3D12Filter >> D3D12_MIP_FILTER_SHIFT) & D3D12_FILTER_TYPE_MASK);
+        }
+
+        public static D3D12_FILTER_REDUCTION_TYPE D3D12_DECODE_FILTER_REDUCTION(D3D12_FILTER D3D12Filter)
+        {
+            return (D3D12_FILTER_REDUCTION_TYPE)(((int)D3D12Filter >> D3D12_FILTER_REDUCTION_TYPE_SHIFT) & D3D12_FILTER_REDUCTION_TYPE_MASK);
+        }
+
+        public static bool D3D12_DECODE_IS_COMPARISON_FILTER(D3D12_FILTER D3D12Filter)
+        {
+            return D3D12_DECODE_FILTER_REDUCTION(D3D12Filter) == D3D12_FILTER_REDUCTION_TYPE_COMPARISON;
+        }
+        public static bool D3D12_DECODE_IS_ANISOTROPIC_FILTER(D3D12_FILTER D3D12Filter)
+        {
+            return (((int)D3D12Filter & D3D12_ANISOTROPIC_FILTERING_BIT) != 0)
+                && (D3D12_FILTER_TYPE_LINEAR == D3D12_DECODE_MIN_FILTER(D3D12Filter))
+                && (D3D12_FILTER_TYPE_LINEAR == D3D12_DECODE_MAG_FILTER(D3D12Filter))
+                && (D3D12_FILTER_TYPE_LINEAR == D3D12_DECODE_MIP_FILTER(D3D12Filter));
+        }
+
         public static uint D3D12CalcSubresource(uint MipSlice, uint ArraySlice, uint PlaneSlice, uint MipLevels, uint ArraySize)
         {
             return MipSlice + (ArraySlice * MipLevels) + (PlaneSlice * MipLevels * ArraySize);

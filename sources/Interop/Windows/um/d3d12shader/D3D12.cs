@@ -58,5 +58,22 @@ namespace TerraFX.Interop
 
         public static readonly Guid IID_ID3D12FunctionParameterReflection = new Guid(0xEC25F42D, 0x7006, 0x4F2B, 0xB3, 0x3E, 0x02, 0xCC, 0x33, 0x75, 0x73, 0x3F);
         #endregion
+
+        #region Methods
+        public static D3D12_SHADER_VERSION_TYPE D3D12_SHVER_GET_TYPE(int _Version)
+        {
+            return (D3D12_SHADER_VERSION_TYPE)((_Version >> 16) & 0xFFFF);
+        }
+
+        public static int D3D12_SHVER_GET_MAJOR(int _Version)
+        {
+            return (_Version >> 4) & 0xF;
+        }
+
+        public static int D3D12_SHVER_GET_MINOR(int _Version)
+        {
+            return (_Version >> 0) & 0xF;
+        }
+        #endregion
     }
 }

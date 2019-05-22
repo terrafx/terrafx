@@ -39,6 +39,12 @@ namespace TerraFX.Interop
         public const int ERROR_ARITHMETIC_OVERFLOW = 534;
         #endregion
 
+        #region SEVERITY_* Constants 27912
+        public const int SEVERITY_SUCCESS = 0;
+
+        public const int SEVERITY_ERROR = 1;
+        #endregion
+
         #region E_* Constants
         public const int E_UNEXPECTED = unchecked((int)0x8000FFFF);
 
@@ -342,6 +348,61 @@ namespace TerraFX.Interop
         public static bool FAILED(int hr)
         {
             return hr < 0;
+        }
+
+        public static bool IS_ERROR(int Status)
+        {
+            return ((uint)Status >> 31) == SEVERITY_ERROR;
+        }
+
+        public static int HRESULT_CODE(int hr)
+        {
+            return hr & 0xFFFF;
+        }
+
+        public static int SCODE_CODE(int sc)
+        {
+            return sc & 0xFFFF;
+        }
+
+        public static int HRESULT_FACILITY(int hr)
+        {
+            return (hr >> 16) & 0x1FFF;
+        }
+
+        public static int SCODE_FACILITY(int sc)
+        {
+            return (sc >> 16) & 0x1FFF;
+        }
+
+        public static int HRESULT_SEVERITY(int hr)
+        {
+            return (hr >> 31) & 0x1;
+        }
+
+        public static int SCODE_SEVERITY(int sc)
+        {
+            return (sc >> 31) & 0x1;
+        }
+
+        public static int MAKE_HRESULT(int sev, int fac, int code)
+        {
+            return (int)(((uint)sev << 31) | ((uint)fac << 16) | (uint)code);
+        }
+
+        public static int MAKE_SCODE(int sev, int fac, int code)
+        {
+            return (int)(((uint)sev << 31) | ((uint)fac << 16) | (uint)code);
+        }
+
+        public static int __HRESULT_FROM_WIN32(int x)
+        {
+            return (x <= 0) ? x : ((x & 0x0000FFFF) | (FACILITY_WIN32 << 16) | unchecked((int)0x80000000));
+        }
+
+        public static int HRESULT_FROM_WIN32(int x)
+        {
+            return __HRESULT_FROM_WIN32(x);
         }
         #endregion
     }

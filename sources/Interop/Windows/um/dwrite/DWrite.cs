@@ -7,6 +7,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Security;
 using TerraFX.Utilities;
+using static TerraFX.Interop.Windows;
 
 namespace TerraFX.Interop
 {
@@ -98,6 +99,23 @@ namespace TerraFX.Interop
             [In, NativeTypeName("REFIID")] Guid* iid,
             [Out] IUnknown** factory
         );
+        #endregion
+
+        #region Methods
+        public static uint DWRITE_MAKE_OPENTYPE_TAG(byte a, byte b, byte c, byte d)
+        {
+            return ((uint)d << 24) | ((uint)c << 16) | ((uint)b << 8) | a;
+        }
+
+        public static int MAKE_DWRITE_HR(int severity, int code)
+        {
+            return MAKE_HRESULT(severity, FACILITY_DWRITE, DWRITE_ERR_BASE + code);
+        }
+
+        public static int MAKE_DWRITE_HR_ERR(int code)
+        {
+            return MAKE_DWRITE_HR(SEVERITY_ERROR, code);
+        }
         #endregion
     }
 }

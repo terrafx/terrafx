@@ -25,7 +25,7 @@ namespace TerraFX.Interop
         public const uint D3D_COMPRESS_SHADER_KEEP_ALL_PARTS = 0x00000001;
         #endregion
 
-        #region D3DCOMPILER_* Constants
+        #region D3DCOMPILE_* Constants
         public const uint D3DCOMPILE_DEBUG = 1 << 0;
 
         public const uint D3DCOMPILE_SKIP_VALIDATION = 1 << 1;
@@ -113,14 +113,6 @@ namespace TerraFX.Interop
         public const uint D3D_DISASM_INSTRUCTION_ONLY = 0x00000040;
 
         public const uint D3D_DISASM_PRINT_HEX_LITERALS = 0x00000080;
-        #endregion
-
-        #region Static Methods
-        public static int D3D12ReflectLibrary(void* pSrcData, UIntPtr SrcDataSize, ID3D12LibraryReflection** ppReflector)
-        {
-            var iid = IID_ID3D12LibraryReflection;
-            return D3DReflectLibrary(pSrcData, SrcDataSize, &iid, (void**)ppReflector);
-        }
         #endregion
 
         #region External Methods
@@ -365,6 +357,14 @@ namespace TerraFX.Interop
             [Out] ID3DBlob** ppShaders,
             [Out, Optional, NativeTypeName("UINT")] uint* pTotalShaders
         );
+        #endregion
+
+        #region Methods
+        public static int D3D12ReflectLibrary(void* pSrcData, UIntPtr SrcDataSize, ID3D12LibraryReflection** ppReflector)
+        {
+            var iid = IID_ID3D12LibraryReflection;
+            return D3DReflectLibrary(pSrcData, SrcDataSize, &iid, (void**)ppReflector);
+        }
         #endregion
     }
 }
