@@ -1008,13 +1008,13 @@ namespace TerraFX.Interop
 
                     if (IntPtr.Size == 4)
                     {
-                        pDestSlice += (uint)pDest->RowPitch * y;
-                        pSrcSlice += (uint)pDest->RowPitch * y;
+                        pTempDest += (uint)pDest->RowPitch * y;
+                        pTempSrc += (uint)pSrc->RowPitch * y;
                     }
                     else
                     {
-                        pDestSlice += (ulong)pDest->RowPitch * y;
-                        pSrcSlice += (ulong)pDest->RowPitch * y;
+                        pTempDest += (ulong)pDest->RowPitch * y;
+                        pTempSrc += (ulong)pSrc->RowPitch * y;
                     }
 
                     Buffer.MemoryCopy(pTempSrc, pTempDest, (long)RowSizeInBytes, (long)RowSizeInBytes);
