@@ -27,7 +27,7 @@ trim_trailing_whitespace = true
 # Set file behavior to:
 #   2 space indentation
 ###############################################################################
-[*.{cmd,config,csproj,json,props,ps1,resx,sh,targets}]
+[*.{cmd,config,csproj,json,props,ps1,resx,sh,targets,yml}]
 indent_size = 2
 
 ###############################################################################
