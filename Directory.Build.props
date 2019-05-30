@@ -67,19 +67,9 @@
     <UseSharedCompilation>true</UseSharedCompilation>
   </PropertyGroup>
 
-  <!-- Package versions for package references across all projects -->
-  <PropertyGroup>
-    <MicrosoftNetCompilersToolsetPackageVersion>3.1.0-beta3-final</MicrosoftNetCompilersToolsetPackageVersion>
-    <MicrosoftNetTestSdkPackageVersion>16.1.0</MicrosoftNetTestSdkPackageVersion>
-    <NUnitPackageVersion>3.12.0</NUnitPackageVersion>
-    <NUnit3TestAdapterPackageVersion>3.13.0</NUnit3TestAdapterPackageVersion>
-    <SystemCompositionPackageVersion>1.3.0-preview5.19224.8</SystemCompositionPackageVersion>
-    <SystemRuntimeCompilerServicesUnsafePackageVersion>4.6.0-preview6.19259.10</SystemRuntimeCompilerServicesUnsafePackageVersion>
-  </PropertyGroup>
-
   <!-- Package references which are consumed by all projects -->
   <ItemGroup>
-    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="$(MicrosoftNetCompilersToolsetPackageVersion)" IsImplicitlyDefined="true" />
+    <PackageReference Include="Microsoft.Net.Compilers.Toolset" IsImplicitlyDefined="true" />
   </ItemGroup>
 
 </Project>

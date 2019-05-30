@@ -12,15 +12,12 @@
 
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileDirectory)..\Directory.Build.props</MSBuildAllProjects>
-    <TerraFXProjectCategory>tests</TerraFXProjectCategory>
   </PropertyGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.props" />
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" IsImplicitlyDefined="true" />
-    <PackageReference Include="NUnit" IsImplicitlyDefined="true" />
-    <PackageReference Include="NUnit3TestAdapter" IsImplicitlyDefined="true" />
+    <PackageReference Include="System.Composition" IsImplicitlyDefined="true" />
   </ItemGroup>
 
 </Project>
