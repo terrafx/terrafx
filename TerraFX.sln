@@ -202,6 +202,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "design", "design", "{33AB5B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerraFX.Audio", "sources\Audio\TerraFX.Audio.csproj", "{C3BA7677-7F56-446B-971F-36F3EAEC434E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerraFX.Provider.PulseAudio", "sources\Provider\PulseAudio\TerraFX.Provider.PulseAudio.csproj", "{57ADC019-5B6E-4EC5-9FBA-6D6C3EFA48EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerraFX.Interop.PulseAudio", "sources\Interop\PulseAudio\TerraFX.Interop.PulseAudio.csproj", "{1BFA19DD-BE72-4162-82F1-219B79064611}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -332,6 +336,14 @@ Global
 		{C3BA7677-7F56-446B-971F-36F3EAEC434E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3BA7677-7F56-446B-971F-36F3EAEC434E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3BA7677-7F56-446B-971F-36F3EAEC434E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57ADC019-5B6E-4EC5-9FBA-6D6C3EFA48EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57ADC019-5B6E-4EC5-9FBA-6D6C3EFA48EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57ADC019-5B6E-4EC5-9FBA-6D6C3EFA48EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57ADC019-5B6E-4EC5-9FBA-6D6C3EFA48EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BFA19DD-BE72-4162-82F1-219B79064611}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BFA19DD-BE72-4162-82F1-219B79064611}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BFA19DD-BE72-4162-82F1-219B79064611}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BFA19DD-BE72-4162-82F1-219B79064611}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -404,6 +416,8 @@ Global
 		{1E2FD09A-6C12-439A-A6E0-E4F0FE24AE42} = {07436576-8F5B-4B59-9EE9-B47ED375FF4D}
 		{33AB5B62-51A9-4248-9672-E1699FBEBD9B} = {8793898A-6542-4606-AA82-AB14151D2D20}
 		{C3BA7677-7F56-446B-971F-36F3EAEC434E} = {0B821858-8E47-4485-AC06-D2E971A53EB2}
+		{57ADC019-5B6E-4EC5-9FBA-6D6C3EFA48EE} = {1E3A071E-418D-46C8-9064-CC625EC2408D}
+		{1BFA19DD-BE72-4162-82F1-219B79064611} = {70FBCFD9-B96E-4E72-B35C-681D9B2DA3D6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2FE36DF8-2D9C-4F20-8787-45DC74B57461}

@@ -9,7 +9,7 @@ namespace TerraFX.Audio
         private readonly Pipe _pipe;
 
         public AudioEncoder(AudioEncoderOptions options,
-            PipeOptions pipeOptions = null)
+            PipeOptions? pipeOptions = null)
         {
             _pipe = new Pipe(pipeOptions ?? PipeOptions.Default);
         }

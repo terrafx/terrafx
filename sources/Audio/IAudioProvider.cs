@@ -1,12 +1,14 @@
-using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace TerraFX.Audio
 {
     public interface IAudioProvider
     {
-        IAudioDevice RequestAudioDevice(IAudioDeviceOptions options = null);
+        ValueTask StartAsync();
+        ValueTask StopAsync();
 
+        ValueTask<IAudioDevice> RequestAudioDeviceAsync(IAudioDeviceOptions? options = null);
         IEnumerable<IAudioDeviceOptions> EnumerateAudioDevices();
     }
 }
