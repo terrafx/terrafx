@@ -46,3 +46,17 @@ jobs:
     pool: Hosted Ubuntu 1604
     configuration: Release
     architecture: x64
+
+- template: scripts/azure-unix.yml
+  parameters:
+    name: macos_debug_x64
+    pool: Hosted macOS
+    configuration: Debug
+    architecture: x64
+
+- template: scripts/azure-unix.yml
+  parameters:
+    name: macos_release_x64
+    pool: Hosted macOS
+    configuration: Release
+    architecture: x64
