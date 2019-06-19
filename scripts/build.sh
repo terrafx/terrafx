@@ -196,7 +196,7 @@ CreateDirectory "$LogDir"
 if [[ ! -z "$architecture" ]]; then
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
 
-  DotNetInstallScript="$ArtifactsDir/dotnet-install.ps1"
+  DotNetInstallScript="$ArtifactsDir/dotnet-install.sh"
   wget -O "$DotNetInstallScript" "https://dot.net/v1/dotnet-install.sh"
 
   DotNetInstallDirectory="$ArtifactsDir/dotnet"

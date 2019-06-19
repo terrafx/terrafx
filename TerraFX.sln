@@ -188,6 +188,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{48E1F49D-7103-4DE6-9F69-915183B85095}"
 	ProjectSection(SolutionItems) = preProject
 		scripts\azure-pipelines.yml = scripts\azure-pipelines.yml
+		scripts\azure-unix.yml = scripts\azure-unix.yml
+		scripts\azure-windows.yml = scripts\azure-windows.yml
 		scripts\build.ps1 = scripts\build.ps1
 		scripts\build.sh = scripts\build.sh
 		scripts\cibuild.cmd = scripts\cibuild.cmd

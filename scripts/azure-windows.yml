@@ -1,0 +1,11 @@
+jobs:
+- job: ${{parameters.name}}
+  pool:
+    name: ${{parameters.pool}}
+    demands: Cmd
+  steps:
+  - task: BatchScript@1
+    displayName: 'Run scripts/cibuild.cmd'
+    inputs:
+      filename: scripts/cibuild.cmd
+      arguments: '-configuration ${{parameters.configuration}} -architecture ${{parameters.architecture}}'

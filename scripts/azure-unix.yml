@@ -1,0 +1,11 @@
+jobs:
+- job: ${{parameters.name}}
+  pool:
+    name: ${{parameters.pool}}
+  steps:
+  - task: Bash@3
+    displayName: 'Run scripts/cibuild.sh'
+    inputs:
+      targetType: filePath
+      filePath: ./scripts/cibuild.sh
+      arguments: '--configuration ${{parameters.configuration}} --architecture ${{parameters.architecture}}'
