@@ -9,3 +9,13 @@ jobs:
       targetType: filePath
       filePath: ./scripts/cibuild.sh
       arguments: '--configuration ${{parameters.configuration}} --architecture ${{parameters.architecture}}'
+  - task: PublishTestResults@2
+    displayName: 'Publish Test Results'
+    inputs:
+      testResultsFormat: VSTest
+      testResultsFiles: artifacts/tst/${{parameters.configuration}}/*.trx
+      mergeTestResults: true
+      failTaskOnFailedTests: true
+      testRunTitle: '${{parameters.name}}'
+      buildConfiguration: ${{parameters.configuration}}
+      buildPlatform: ${{parameters.architecture}}
