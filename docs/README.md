@@ -1,4 +1,4 @@
-# Contributing to TerraFX
+# TerraFX
 
 A framework for developing multimedia-based applications.
 
