@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 namespace TerraFX.Audio
 {
+    /// <summary>A pipe used to encode audio from one format to another.</summary>
     public abstract class AudioEncoder : IDisposable
     {
         /// <summary> The input pipe for decoded data.</summary>
@@ -24,9 +25,9 @@ namespace TerraFX.Audio
         }
 
         /// <summary>Reader for encoded output data.</summary>
-        public PipeReader Reader => _pipe.Reader;
+        public PipeReader Reader => _outputPipe.Reader;
         /// <summary>Writer for decoded input data.</summary>
-        public PipeWriter Writer => _pipe.Writer;
+        public PipeWriter Writer => _inputPipe.Writer;
 
         /// <summary>Runs the decoder pipeline.</summary>
         public abstract Task RunAsync();
@@ -35,7 +36,8 @@ namespace TerraFX.Audio
         /// <param name="disposing"><code>true</code> if Dispose was called.</param>
         protected abstract void Dispose(bool disposing);
 
-        void Dispose()
+        /// <inheritdoc/>
+        public void Dispose()
         {
             Dispose(true);
         }

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace TerraFX.Audio
 {
     /// <summary>Represents an enumerable collection of audio devices.</summary>
