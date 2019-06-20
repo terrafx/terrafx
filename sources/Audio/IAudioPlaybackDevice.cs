@@ -1,0 +1,16 @@
+﻿using System;
+using System.IO.Pipelines;
+using System.Threading.Tasks;
+
+namespace TerraFX.Audio
+{
+    /// <summary>Represents a device which can be used for audio playback.</summary>
+    public interface IAudioPlaybackDevice : IDisposable
+    {
+        /// <summary>The input data to be given to the underlying device.</summary>
+        PipeWriter Writer { get; }
+
+        /// <summary>Starts the audio playback device.</summary>
+        Task RunAsync();
+    }
+}

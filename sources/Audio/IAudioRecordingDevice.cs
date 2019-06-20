@@ -1,0 +1,16 @@
+﻿using System;
+using System.IO.Pipelines;
+using System.Threading.Tasks;
+
+namespace TerraFX.Audio
+{
+    /// <summary>Represents a device which can be used for audio recording.</summary>
+    public interface IAudioRecordingDevice : IDisposable
+    {
+        /// <summary>The output data from the underlying device.</summary>
+        PipeReader Reader { get; }
+
+        /// <summary>Starts the audio recording device.</summary>
+        Task RunAsync();
+    }
+}
