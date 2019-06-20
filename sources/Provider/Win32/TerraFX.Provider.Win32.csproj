@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Interop\Windows\TerraFX.Interop.Windows.csproj" />
     <ProjectReference Include="..\..\UI\TerraFX.UI.csproj" />
   </ItemGroup>
 
