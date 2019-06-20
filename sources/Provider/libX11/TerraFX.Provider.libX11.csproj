@@ -7,8 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Interop\libc\TerraFX.Interop.libc.csproj" />
-    <ProjectReference Include="..\..\Interop\libX11\TerraFX.Interop.libX11.csproj" />
     <ProjectReference Include="..\..\UI\TerraFX.UI.csproj" />
   </ItemGroup>
 
