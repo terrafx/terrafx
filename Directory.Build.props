@@ -43,6 +43,7 @@
     <Product>TerraFX</Product>
     <VersionPrefix>0.1.0</VersionPrefix>
     <VersionSuffix>alpha</VersionSuffix>
+    <VersionSuffix Condition="'$(SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)' != ''">pr$(SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)</VersionSuffix>
   </PropertyGroup>
 
   <!-- Default settings that are otherwise undefined -->
@@ -55,6 +56,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <HighEntropyVA>true</HighEntropyVA>
     <LangVersion>preview</LangVersion>
+    <MinClientVersion>4.3</MinClientVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
     <OverwriteReadOnlyFiles>true</OverwriteReadOnlyFiles>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
