@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\TerraFX.csproj" />
-    <ProjectReference Include="..\Utilities\TerraFX.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

@@ -10,8 +10,4 @@
     <Compile Update="Collections\PropertySet.DebugView.cs" DependentUpon="PropertySet.cs" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Utilities\TerraFX.Utilities.csproj" />
-  </ItemGroup>
-
 </Project>
