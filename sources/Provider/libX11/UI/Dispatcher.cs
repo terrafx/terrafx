@@ -4,6 +4,7 @@ using System;
 using System.Threading;
 using TerraFX.Interop;
 using TerraFX.UI;
+using TerraFX.Utilities;
 using static TerraFX.Interop.libX11;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;

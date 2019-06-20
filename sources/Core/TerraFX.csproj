@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Utilities\TerraFX.Utilities.csproj" />
+    <PackageReference Include="TerraFX.Utilities" />
   </ItemGroup>
 
 </Project>
