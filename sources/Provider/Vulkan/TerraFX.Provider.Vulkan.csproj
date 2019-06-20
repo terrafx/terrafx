@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Interop\Vulkan\TerraFX.Interop.Vulkan.csproj" />
     <ProjectReference Include="..\..\Graphics\TerraFX.Graphics.csproj" />
   </ItemGroup>
 
