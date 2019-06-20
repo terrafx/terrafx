@@ -18,7 +18,7 @@ The following is a set of guidelines for contributing to TerraFX.
 TerraFX and everyone contributing (this includes issues, pull requests, the
 wiki, etc) must abide by the [CODE_OF_CONDUCT](docs/CODE_OF_CONDUCT.md).
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported by contacting the project team at terrafx@outlook.com.
+reported by contacting the project team at admin@terrafx.dev.
 
 ### License
 
