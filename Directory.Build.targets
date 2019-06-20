@@ -13,6 +13,7 @@
   <!-- Settings that append the existing setting value -->
   <PropertyGroup>
     <DefineConstants>$(DefineConstants);$(OS)</DefineConstants>
+    <PackageVersion Condition="'$(BUILD_BUILDNUMBER)' != ''">$(Version)-$(BUILD_BUILDNUMBER)</PackageVersion>
   </PropertyGroup>
 
   <!-- Package versions for package references across all projects -->
