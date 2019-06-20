@@ -18,6 +18,6 @@ namespace TerraFX.Audio
         ValueTask<IAudioDevice> RequestAudioDeviceAsync(IAudioDeviceOptions? options = null);
 
         /// <summary>Enumerates the available audio devices reported by the underlying subsystem.</summary>
-        IEnumerable<IAudioDeviceOptions> EnumerateAudioDevices();
+        IAudioDeviceEnumerable EnumerateAudioDevices();
     }
 }
