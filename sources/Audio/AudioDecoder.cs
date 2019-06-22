@@ -23,12 +23,6 @@ namespace TerraFX.Audio
             _outputPipe = new Pipe(pipeOptions ?? PipeOptions.Default);
         }
 
-        /// <summary>Finalizes an existing instance of the <see cref="AudioDecoder"/> class.</summary>
-        ~AudioDecoder()
-        {
-            Dispose(false);
-        }
-
         /// <summary>Reader for decoded output data.</summary>
         public PipeReader Reader => _outputPipe.Reader;
 
@@ -36,16 +30,18 @@ namespace TerraFX.Audio
         public PipeWriter Writer => _inputPipe.Writer;
 
         /// <summary>Runs the decoder pipeline.</summary>
-        public abstract Task RunAsync();
+        public abstract Task DecodeAsync();
 
-        /// <summary>Used to dispose of managed and unmanaged state.</summary>
-        /// <param name="disposing"><code>true</code> if Dispose was called.</param>
-        protected abstract void Dispose(bool disposing);
-
-        /// <inheritdoc/>
-        public void Dispose()
+        /// <summary>Resets the decoder pipeline.</summary>
+        public virtual void Reset()
         {
-            Dispose(true);
+            _inputPipe.Writer.Complete();
+
+            _inputPipe.Reset();
+            _outputPipe.Reset();
         }
+
+        /// <inheritdoc />
+        public abstract void Dispose();
     }
 }

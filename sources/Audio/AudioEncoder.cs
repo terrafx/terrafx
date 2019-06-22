@@ -29,17 +29,19 @@ namespace TerraFX.Audio
         /// <summary>Writer for decoded input data.</summary>
         public PipeWriter Writer => _inputPipe.Writer;
 
-        /// <summary>Runs the decoder pipeline.</summary>
-        public abstract Task RunAsync();
+        /// <summary>Runs the encoder pipeline.</summary>
+        public abstract Task EncodeAsync();
 
-        /// <summary>Used to dispose of managed and unmanaged state.</summary>
-        /// <param name="disposing"><code>true</code> if Dispose was called.</param>
-        protected abstract void Dispose(bool disposing);
+        /// <summary>Resets the encoder pipeline.</summary>
+        public virtual void Reset()
+        {
+            _inputPipe.Writer.Complete();
+
+            _inputPipe.Reset();
+            _outputPipe.Reset();
+        }
 
         /// <inheritdoc/>
-        public void Dispose()
-        {
-            Dispose(true);
-        }
+        public abstract void Dispose();
     }
 }
