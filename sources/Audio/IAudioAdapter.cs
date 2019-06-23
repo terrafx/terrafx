@@ -27,6 +27,6 @@ namespace TerraFX.Audio
         /// If the adapter operates in big endian mode (MSB first), this will be <code>true</code>.
         /// If it operates in little endian mode (LSB first), this will be <code>false</code>.
         /// </remarks>
-        bool BigEndian { get; set; }
+        bool IsBigEndian { get; set; }
     }
 }
