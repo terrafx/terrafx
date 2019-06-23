@@ -1,3 +1,5 @@
+// Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
+
 namespace TerraFX.Audio
 {
     /// <summary>Options for a <see cref="AudioDecoder"/>.</summary>
