@@ -9,6 +9,9 @@ namespace TerraFX.Audio
     /// <summary>Represents a device which can be used for audio recording.</summary>
     public interface IAudioRecordingDevice : IDisposable
     {
+        /// <summary>The adapter used for this recording device.</summary>
+        IAudioAdapter Adapter { get; }
+
         /// <summary>The output data from the underlying device.</summary>
         PipeReader Reader { get; }
 

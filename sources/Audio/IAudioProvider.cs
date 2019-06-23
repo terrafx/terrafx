@@ -14,16 +14,16 @@ namespace TerraFX.Audio
         ValueTask StopAsync();
 
         /// <summary>Requests an available audio playback device from the underlying subsystem.</summary>
-        /// <param name="options">The settings for the device to operate at.</param>
+        /// <param name="adapter">The adapter to use.</param>
         /// <returns>Returns a Task which, when completed, returns the audio device requested.</returns>
-        ValueTask<IAudioPlaybackDevice> RequestAudioPlaybackDeviceAsync(IAudioDeviceOptions? options = null);
+        ValueTask<IAudioPlaybackDevice> RequestAudioPlaybackDeviceAsync(IAudioAdapter adapter);
 
         /// <summary>Requests an available audio recording device from the underlying subsystem.</summary>
-        /// <param name="options">The settings for the device to operate at.</param>
+        /// <param name="adapter">The adapter to use.</param>
         /// <returns>Returns a Task which, when completed, returns the audio device requested.</returns>
-        ValueTask<IAudioRecordingDevice> RequestAudioRecordingDeviceAsync(IAudioDeviceOptions? options = null);
+        ValueTask<IAudioRecordingDevice> RequestAudioRecordingDeviceAsync(IAudioAdapter adapter);
 
-        /// <summary>Enumerates the available audio devices reported by the underlying subsystem.</summary>
-        IAudioDeviceEnumerable EnumerateAudioDevices();
+        /// <summary>Enumerates the available audio adapters reported by the underlying subsystem.</summary>
+        IAudioAdapterEnumerable EnumerateAudioDevices();
     }
 }

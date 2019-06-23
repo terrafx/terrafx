@@ -10,10 +10,10 @@ namespace TerraFX.Audio
     public abstract class AudioDecoder : IDisposable
     {
         /// <summary> The input pipe for encoded data.</summary>
-        protected readonly Pipe _inputPipe;
+        private readonly Pipe _inputPipe;
 
         /// <summary>The output pipe for decoded data.</summary>
-        protected readonly Pipe _outputPipe;
+        private readonly Pipe _outputPipe;
 
         /// <summary>Initializes a new instance of the <see cref="AudioDecoder"/> class.</summary>
         /// <param name="options">Audio decoder options.</param>
@@ -24,6 +24,13 @@ namespace TerraFX.Audio
             _inputPipe = new Pipe(pipeOptions ?? PipeOptions.Default);
             _outputPipe = new Pipe(pipeOptions ?? PipeOptions.Default);
         }
+
+        /// <summary>Reader for encoded input data.</summary>
+        protected PipeReader InputReader => _inputPipe.Reader;
+
+        /// <summary>Writer for decoded output data.</summary>
+        protected PipeWriter OutputWriter => _outputPipe.Writer;
+
 
         /// <summary>Reader for decoded output data.</summary>
         public PipeReader Reader => _outputPipe.Reader;
