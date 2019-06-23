@@ -2,7 +2,7 @@
 
 namespace TerraFX.Audio
 {
-    /// <summary>Represents a type of <see cref="IAudioDeviceOptions"/></summary>
+    /// <summary>Represents a type of <see cref="IAudioAdapter"/></summary>
     public enum AudioDeviceType
     {
         /// <summary>Indicates that this is a device used for recording.</summary>
