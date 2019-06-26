@@ -44,8 +44,6 @@ namespace TerraFX.Audio
         /// <summary>Resets the decoder pipeline.</summary>
         public virtual void Reset()
         {
-            _inputPipe.Writer.Complete();
-
             _inputPipe.Reset();
             _outputPipe.Reset();
         }
