@@ -8,7 +8,6 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX
 {
     /// <summary>Defines a timestamp.</summary>
-    [Unmanaged]
     public readonly struct Timestamp : IComparable, IComparable<Timestamp>, IEquatable<Timestamp>, IFormattable
     {
         #region Constants
