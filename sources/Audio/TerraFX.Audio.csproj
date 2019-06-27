@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core\TerraFX.csproj" />
+    <PackageReference Include="System.IO.Pipelines" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.IO.Pipelines" />
+    <ProjectReference Include="..\Core\TerraFX.csproj" />
   </ItemGroup>
 
 </Project>
