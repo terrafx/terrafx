@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information. -->
 <Project Sdk="Microsoft.NET.Sdk">
 
@@ -7,11 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TerraFX.Interop.libX11" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\UI\TerraFX.UI.csproj" />
+    <ProjectReference Include="..\..\..\sources\Provider\X11\TerraFX.Provider.X11.csproj" />
   </ItemGroup>
 
 </Project>

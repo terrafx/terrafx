@@ -5,11 +5,11 @@ using System.Threading;
 using TerraFX.Interop;
 using TerraFX.UI;
 using TerraFX.Utilities;
-using static TerraFX.Interop.libX11;
+using static TerraFX.Interop.X11;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
-namespace TerraFX.Provider.libX11.UI
+namespace TerraFX.Provider.X11.UI
 {
     /// <summary>Provides a means of dispatching events for a thread.</summary>
     public sealed unsafe class Dispatcher : IDispatcher
@@ -56,10 +56,10 @@ namespace TerraFX.Provider.libX11.UI
             {
                 name[0] = 0x2E58466172726554;   // TerraFX.
                 name[1] = 0x72656469766F7250;   // Provider
-                name[2] = 0x2E31315862696C2E;   // .libX11.
-                name[3] = 0x572E776F646E6957;   // Window.W
-                name[4] = 0x6E614D776F646E69;   // indowMan
-                name[5] = 0x0000000072656761;   // ager
+                name[2] = 0x6E69572E3131582E;   // .X11.Win
+                name[3] = 0x646E69572E776F64;   // dow.Wind
+                name[4] = 0x6567616E614D776F;   // owManage
+                name[5] = 0x0000000000000072;   // r
             };
 
             return XInternAtom(

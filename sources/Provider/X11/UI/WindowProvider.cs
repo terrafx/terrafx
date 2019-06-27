@@ -8,12 +8,12 @@ using System.Runtime.InteropServices;
 using TerraFX.Interop;
 using TerraFX.UI;
 using TerraFX.Utilities;
-using static TerraFX.Interop.libX11;
+using static TerraFX.Interop.X11;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
-namespace TerraFX.Provider.libX11.UI
+namespace TerraFX.Provider.X11.UI
 {
     /// <summary>Provides access to an X11 based window subsystem.</summary>
     [Export(typeof(IWindowProvider))]
