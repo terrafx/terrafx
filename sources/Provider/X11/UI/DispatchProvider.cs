@@ -8,13 +8,14 @@ using System.Threading;
 using TerraFX.Interop;
 using TerraFX.UI;
 using TerraFX.Utilities;
+using static TerraFX.Interop.c;
 using static TerraFX.Interop.libc;
-using static TerraFX.Interop.libX11;
+using static TerraFX.Interop.X11;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
-namespace TerraFX.Provider.libX11.UI
+namespace TerraFX.Provider.X11.UI
 {
     /// <summary>Provides access to an X11 based dispatch subsystem.</summary>
     [Export(typeof(IDispatchProvider))]
@@ -105,17 +106,17 @@ namespace TerraFX.Provider.libX11.UI
         #region Static Methods
         /// <summary>Creates a <see cref="Display" />.</summary>
         /// <returns>The created <see cref="Display" />.</returns>
-        /// <exception cref="ExternalException">The call to <see cref="XOpenDisplay(byte*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="XOpenDisplay(sbyte*)" /> failed.</exception>
         private static IntPtr CreateDisplay()
         {
-            var display = XOpenDisplay(display_name: null);
+            var display = XOpenDisplay(param0: null);
 
-            if (display == IntPtr.Zero)
+            if (display == null)
             {
                 ThrowExternalExceptionForLastError(nameof(XOpenDisplay));
             }
 
-            return display;
+            return (IntPtr)display;
         }
         #endregion
 
@@ -141,7 +142,7 @@ namespace TerraFX.Provider.libX11.UI
 
             if (_display.IsValueCreated)
             {
-                XCloseDisplay(_display.Value);
+                XCloseDisplay((XDisplay*)_display.Value);
             }
         }
         #endregion

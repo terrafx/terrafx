@@ -8,15 +8,26 @@ using TerraFX.Graphics.Geometry2D;
 using TerraFX.Interop;
 using TerraFX.UI;
 using TerraFX.Utilities;
-using static TerraFX.Interop.libX11;
+using static TerraFX.Interop.X11;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
-namespace TerraFX.Provider.libX11.UI
+namespace TerraFX.Provider.X11.UI
 {
     /// <summary>Defines a window.</summary>
     public sealed unsafe class Window : IDisposable, IWindow
     {
+        private const int CirculateNotify = 26;
+        private const int ConfigureNotify = 22;
+        private const int CopyFromParent = 0;
+        private const int InputOutput = 1;
+        private const int None = 0;
+        private const int PlaceOnTop = 0;
+        private const int StructureNotifyMask = 1 << 17;
+        private const int VisibilityChangeMask = 1 << 16;
+        private const int VisibilityFullyObscured = 2;
+        private const int VisibilityNotify = 15;
+
         #region Fields
         /// <summary>The native window handle for the instance.</summary>
         private readonly Lazy<UIntPtr> _handle;
@@ -201,10 +212,10 @@ namespace TerraFX.Provider.libX11.UI
         #region Methods
         /// <summary>Creates a <c>Window</c> for the instance.</summary>
         /// <returns>A <c>Window</c> for the created native window.</returns>
-        /// <exception cref="ExternalException">The call to <see cref="XCreateWindow(IntPtr, UIntPtr, int, int, uint, uint, uint, int, uint, Visual*, UIntPtr, XSetWindowAttributes*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="XCreateWindow(XDisplay*, UIntPtr, int, int, uint, uint, uint, int, uint, Visual*, UIntPtr, XSetWindowAttributes*)" /> failed.</exception>
         private UIntPtr CreateWindowHandle()
         {
-            var display = _windowProvider.DispatchProvider.Display;
+            var display = (XDisplay*)_windowProvider.DispatchProvider.Display;
 
             var defaultScreen = XDefaultScreenOfDisplay(display);
             var rootWindow = XRootWindowOfScreen(defaultScreen);
@@ -214,17 +225,17 @@ namespace TerraFX.Provider.libX11.UI
 
             var window = XCreateWindow(
                 display,
-                parent: rootWindow,
-                x: float.IsNaN(Bounds.X) ? (int)(screenWidth * 0.75f) : (int)Bounds.X,
-                y: float.IsNaN(Bounds.Y) ? (int)(screenHeight * 0.75f) : (int)Bounds.Y,
-                width: float.IsNaN(Bounds.Width) ? (uint)(screenWidth * 0.125f) : (uint)Bounds.Width,
-                height: float.IsNaN(Bounds.Height) ? (uint)(screenHeight * 0.125f) : (uint)Bounds.Height,
-                border_width: 0,
-                depth: CopyFromParent,
-                @class: InputOutput,
-                visual: (Visual*)CopyFromParent,
-                valuemask: UIntPtr.Zero,
-                attributes: null
+                rootWindow,
+                float.IsNaN(Bounds.X) ? (int)(screenWidth * 0.75f) : (int)Bounds.X,
+                float.IsNaN(Bounds.Y) ? (int)(screenHeight * 0.75f) : (int)Bounds.Y,
+                float.IsNaN(Bounds.Width) ? (uint)(screenWidth * 0.125f) : (uint)Bounds.Width,
+                float.IsNaN(Bounds.Height) ? (uint)(screenHeight * 0.125f) : (uint)Bounds.Height,
+                0,
+                CopyFromParent,
+                InputOutput,
+                (Visual*)CopyFromParent,
+                UIntPtr.Zero,
+                null
             );
 
             if (window == (UIntPtr)None)
@@ -235,7 +246,7 @@ namespace TerraFX.Provider.libX11.UI
             XSelectInput(
                 display,
                 window,
-                event_mask: (IntPtr)(VisibilityChangeMask | StructureNotifyMask)
+                (IntPtr)(VisibilityChangeMask | StructureNotifyMask)
             );
 
             return window;
@@ -262,7 +273,7 @@ namespace TerraFX.Provider.libX11.UI
 
             if (_handle.IsValueCreated)
             {
-                var display = _windowProvider.DispatchProvider.Display;
+                var display = (XDisplay*)_windowProvider.DispatchProvider.Display;
                 XDestroyWindow(display, _handle.Value);
             }
         }
@@ -367,7 +378,7 @@ namespace TerraFX.Provider.libX11.UI
 
             if (_isVisible)
             {
-                var display = _windowProvider.DispatchProvider.Display;
+                var display = (XDisplay*)_windowProvider.DispatchProvider.Display;
                 XUnmapWindow(display, _handle.Value);
             }
         }
@@ -380,7 +391,7 @@ namespace TerraFX.Provider.libX11.UI
 
             if (_windowState != WindowState.Maximized)
             {
-                var display = _windowProvider.DispatchProvider.Display;
+                var display = (XDisplay*)_windowProvider.DispatchProvider.Display;
                 XWindowAttributes windowAttributes;
                 XGetWindowAttributes(display, _handle.Value, &windowAttributes);
                 _restoredBounds = new Rectangle(windowAttributes.x, windowAttributes.y, windowAttributes.width, windowAttributes.height);
@@ -401,7 +412,7 @@ namespace TerraFX.Provider.libX11.UI
 
             if (_windowState != WindowState.Minimized)
             {
-                var display = _windowProvider.DispatchProvider.Display;
+                var display = (XDisplay*)_windowProvider.DispatchProvider.Display;
                 XWindowAttributes windowAttributes;
                 XGetWindowAttributes(display, _handle.Value, &windowAttributes);
 
@@ -422,7 +433,7 @@ namespace TerraFX.Provider.libX11.UI
             {
                 if (_windowState == WindowState.Maximized)
                 {
-                    var display = _windowProvider.DispatchProvider.Display;
+                    var display = (XDisplay*)_windowProvider.DispatchProvider.Display;
                     XMoveResizeWindow(display, _handle.Value, (int)_restoredBounds.X, (int)_restoredBounds.Y, (uint)_restoredBounds.Width, (uint)_restoredBounds.Height);
                 }
 
@@ -439,7 +450,7 @@ namespace TerraFX.Provider.libX11.UI
 
             if (_isVisible == false)
             {
-                var display = _windowProvider.DispatchProvider.Display;
+                var display = (XDisplay*)_windowProvider.DispatchProvider.Display;
                 XMapWindow(display, _handle.Value);
             }
 
@@ -454,7 +465,7 @@ namespace TerraFX.Provider.libX11.UI
 
             if (_isActive == false)
             {
-                var display = _windowProvider.DispatchProvider.Display;
+                var display = (XDisplay*)_windowProvider.DispatchProvider.Display;
                 XRaiseWindow(display, _handle.Value);
             }
 

@@ -11,7 +11,7 @@ namespace TerraFX.Samples
     {
         #region Default Providers
         private static readonly Assembly s_win32Provider = Assembly.LoadFrom("TerraFX.Provider.Win32.dll");
-        private static readonly Assembly s_libX11Provider = Assembly.LoadFrom("TerraFX.Provider.libX11.dll");
+        private static readonly Assembly s_x11Provider = Assembly.LoadFrom("TerraFX.Provider.X11.dll");
         #endregion
 
         #region Fields
@@ -31,7 +31,7 @@ namespace TerraFX.Samples
             }
             else
             {
-                _compositionAssemblies[0] = s_libX11Provider;
+                _compositionAssemblies[0] = s_x11Provider;
             }
 
             Array.Copy(compositionAssemblies, 0, _compositionAssemblies, 1, compositionAssemblies.Length);
