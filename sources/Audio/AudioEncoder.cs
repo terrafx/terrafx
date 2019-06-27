@@ -39,7 +39,7 @@ namespace TerraFX.Audio
         public PipeWriter Writer => _inputPipe.Writer;
 
         /// <summary>Runs the encoder pipeline.</summary>
-        public abstract Task EncodeAsync();
+        public abstract Task EncodeAsync(CancellationToken token = default);
 
         /// <summary>Resets the encoder pipeline.</summary>
         public virtual void Reset()

@@ -8,10 +8,10 @@ namespace TerraFX.Audio
     public interface IAudioProvider
     {
         /// <summary>Starts any asynchronous processing necessary to use this device.</summary>
-        ValueTask StartAsync();
+        ValueTask StartAsync(CancellationToken token = default);
 
         /// <summary>Stops any asynchronous processing necessary for this device to function.</summary>
-        ValueTask StopAsync();
+        ValueTask StopAsync(CancellationToken token = default);
 
         /// <summary>Requests an available audio playback device from the underlying subsystem.</summary>
         /// <param name="adapter">The adapter to use.</param>

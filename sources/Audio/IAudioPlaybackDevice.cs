@@ -17,6 +17,6 @@ namespace TerraFX.Audio
         PipeWriter Writer { get; }
 
         /// <summary>Starts the audio playback device.</summary>
-        Task RunAsync();
+        Task RunAsync(CancellationToken token = default);
     }
 }
