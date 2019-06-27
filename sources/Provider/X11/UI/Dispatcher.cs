@@ -14,6 +14,9 @@ namespace TerraFX.Provider.X11.UI
     /// <summary>Provides a means of dispatching events for a thread.</summary>
     public sealed unsafe class Dispatcher : IDispatcher
     {
+        private const int False = 0;
+        private const int NoExpose = 14;
+
         #region Fields
         /// <summary>The <see cref="UI.DispatchProvider" /> for the instance.</summary>
         private readonly DispatchProvider _dispatchProvider;
@@ -34,8 +37,8 @@ namespace TerraFX.Provider.X11.UI
             Assert(dispatchProvider != null, Resources.ArgumentNullExceptionMessage, nameof(dispatchProvider));
             Assert(parentThread != null, Resources.ArgumentNullExceptionMessage, nameof(parentThread));
 
-            _dispatchProvider = dispatchProvider;
-            _parentThread = parentThread;
+            _dispatchProvider = dispatchProvider!;
+            _parentThread = parentThread!;
             _windowProviderProperty = new Lazy<UIntPtr>(CreateWindowProviderProperty, isThreadSafe: true);
         }
         #endregion
@@ -50,7 +53,7 @@ namespace TerraFX.Provider.X11.UI
         /// <returns>An <c>Atom</c> for the window provider property.</returns>
         private UIntPtr CreateWindowProviderProperty()
         {
-            var display = _dispatchProvider.Display;
+            var display = (XDisplay*)_dispatchProvider.Display;
 
             var name = stackalloc ulong[6];
             {
@@ -65,7 +68,7 @@ namespace TerraFX.Provider.X11.UI
             return XInternAtom(
                 display,
                 (sbyte*)name,
-                only_if_exists: False
+                False
             );
         }
 
@@ -117,7 +120,7 @@ namespace TerraFX.Provider.X11.UI
         {
             ThrowIfNotThread(_parentThread);
 
-            var display = _dispatchProvider.Display;
+            var display = (XDisplay*)_dispatchProvider.Display;
 
             while (XPending(display) != 0)
             {

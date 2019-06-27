@@ -21,6 +21,9 @@ namespace TerraFX.Provider.X11.UI
     [Shared]
     public sealed unsafe class WindowProvider : IDisposable, IWindowProvider
     {
+        private const int False = 0;
+        private const int Success = 0;
+
         #region Fields
         /// <summary>The <see cref="DispatchProvider" /> for the instance.</summary>
         private readonly Lazy<DispatchProvider> _dispatchProvider;
@@ -80,7 +83,7 @@ namespace TerraFX.Provider.X11.UI
         /// <summary>Forwards native window messages to the appropriate <see cref="Window" /> instance for processing.</summary>
         /// <param name="windowProviderProperty">The property used to get the <see cref="WindowProvider" /> associated with the event.</param>
         /// <param name="xevent">The event to be processed.</param>
-        /// <exception cref="ExternalException">The call to <see cref="XGetWindowProperty(IntPtr, UIntPtr, UIntPtr, IntPtr, IntPtr, int, UIntPtr, UIntPtr*, int*, UIntPtr*, UIntPtr*, byte**)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="XGetWindowProperty(XDisplay*, UIntPtr, UIntPtr, IntPtr, IntPtr, int, UIntPtr, UIntPtr*, int*, UIntPtr*, UIntPtr*, byte**)" /> failed.</exception>
         internal static void ForwardWindowEvent(UIntPtr windowProviderProperty, in XEvent xevent)
         {
             byte* prop;
@@ -89,15 +92,15 @@ namespace TerraFX.Provider.X11.UI
                 xevent.xany.display,
                 xevent.xany.window,
                 windowProviderProperty,
-                long_offset: IntPtr.Zero,
-                long_length: (IntPtr)(IntPtr.Size >> 2),
-                delete: False,
-                req_type: (UIntPtr)32,
-                actual_type_return: null,
-                actual_format_return: null,
-                nitems_return: null,
-                bytes_after_return: null,
-                prop_return: &prop
+                IntPtr.Zero,
+                (IntPtr)(IntPtr.Size >> 2),
+                False,
+                (UIntPtr)32,
+                null,
+                null,
+                null,
+                null,
+                &prop
             );
 
             if (result != Success)

@@ -32,8 +32,8 @@ namespace TerraFX.Provider.Win32.UI
             Assert(dispatchProvider != null, Resources.ArgumentNullExceptionMessage, nameof(dispatchProvider));
             Assert(parentThread != null, Resources.ArgumentNullExceptionMessage, nameof(parentThread));
 
-            _dispatchProvider = dispatchProvider;
-            _parentThread = parentThread;
+            _dispatchProvider = dispatchProvider!;
+            _parentThread = parentThread!;
         }
         #endregion
 
