@@ -2,6 +2,7 @@
 
 using System;
 using System.IO.Pipelines;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TerraFX.Audio
@@ -17,6 +18,6 @@ namespace TerraFX.Audio
         PipeWriter Writer { get; }
 
         /// <summary>Starts the audio playback device.</summary>
-        Task RunAsync(CancellationToken token = default);
+        Task RunAsync(CancellationToken cancellationToken = default);
     }
 }

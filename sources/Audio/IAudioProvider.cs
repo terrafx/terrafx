@@ -1,5 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TerraFX.Audio
@@ -8,10 +9,10 @@ namespace TerraFX.Audio
     public interface IAudioProvider
     {
         /// <summary>Starts any asynchronous processing necessary to use this device.</summary>
-        ValueTask StartAsync(CancellationToken token = default);
+        ValueTask StartAsync(CancellationToken cancellationToken = default);
 
         /// <summary>Stops any asynchronous processing necessary for this device to function.</summary>
-        ValueTask StopAsync(CancellationToken token = default);
+        ValueTask StopAsync(CancellationToken cancellationToken = default);
 
         /// <summary>Requests an available audio playback device from the underlying subsystem.</summary>
         /// <param name="adapter">The adapter to use.</param>

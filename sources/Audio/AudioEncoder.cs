@@ -2,6 +2,7 @@
 
 using System;
 using System.IO.Pipelines;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TerraFX.Audio
@@ -39,7 +40,7 @@ namespace TerraFX.Audio
         public PipeWriter Writer => _inputPipe.Writer;
 
         /// <summary>Runs the encoder pipeline.</summary>
-        public abstract Task EncodeAsync(CancellationToken token = default);
+        public abstract Task EncodeAsync(CancellationToken cancellationToken = default);
 
         /// <summary>Resets the encoder pipeline.</summary>
         public virtual void Reset()
