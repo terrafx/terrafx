@@ -32,7 +32,6 @@ namespace TerraFX.Audio
         /// <summary>Writer for decoded output data.</summary>
         protected PipeWriter OutputWriter => _outputPipe.Writer;
 
-
         /// <summary>Reader for decoded output data.</summary>
         public PipeReader Reader => _outputPipe.Reader;
 

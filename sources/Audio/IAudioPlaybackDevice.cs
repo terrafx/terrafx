@@ -13,7 +13,6 @@ namespace TerraFX.Audio
         /// <summary>The adapter used for this playback device.</summary>
         IAudioAdapter Adapter { get; }
 
-
         /// <summary>The input data to be given to the underlying device.</summary>
         PipeWriter Writer { get; }
 

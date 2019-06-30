@@ -16,7 +16,6 @@ namespace TerraFX.Audio
         /// <summary>The output pipe for encoded data.</summary>
         private readonly Pipe _outputPipe;
 
-
         /// <summary>Initializes a new instance of the <see cref="AudioEncoder"/> class.</summary>
         /// <param name="options">Audio encoder options.</param>
         /// <param name="pipeOptions">Options for input/output pipes. Defaults to <see cref="PipeOptions.Default" />.</param>
