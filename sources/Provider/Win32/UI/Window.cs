@@ -71,7 +71,7 @@ namespace TerraFX.Provider.Win32.UI
 
             _parentThread = Thread.CurrentThread;
             _properties = new PropertySet();
-            _title = typeof(Window).FullName;
+            _title = typeof(Window).FullName!;
             _bounds = new Rectangle(float.NaN, float.NaN, float.NaN, float.NaN);
             _flowDirection = FlowDirection.TopToBottom;
             _readingDirection = ReadingDirection.LeftToRight;
@@ -420,7 +420,7 @@ namespace TerraFX.Provider.Win32.UI
             if (result == (IntPtr)TRUE)
             {
                 // We only need to update the title if the text was set
-                _title = Marshal.PtrToStringUni(lParam);
+                _title = Marshal.PtrToStringUni(lParam)!;
             }
 
             return result;

@@ -45,7 +45,7 @@ namespace TerraFX.Provider.X11.UI
 
         #region TerraFX.UI.IDispatcher Events
         /// <summary>Occurs when an exit event is dispatched from the queue.</summary>
-        public event EventHandler ExitRequested;
+        public event EventHandler? ExitRequested;
         #endregion
 
         #region Methods

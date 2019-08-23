@@ -81,7 +81,7 @@ namespace TerraFX.Provider.X11.UI
 
             _parentThread = Thread.CurrentThread;
             _properties = new PropertySet();
-            _title = typeof(Window).FullName;
+            _title = typeof(Window).FullName!;
             _bounds = new Rectangle(float.NaN, float.NaN, float.NaN, float.NaN);
             _flowDirection = FlowDirection.TopToBottom;
             _readingDirection = ReadingDirection.LeftToRight;

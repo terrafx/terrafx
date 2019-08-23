@@ -126,7 +126,7 @@ namespace TerraFX
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns>A value <c>less than zero</c> if <paramref name="obj" /> is greater than the current instance, <c>zero</c> if <paramref name="obj"/> is equal to the current instance; and <c>greater than zero</c> if <paramref name="obj" /> is <c>null</c> or greater than the current instance.</returns>
         /// <exception cref="ArgumentException"><paramref name="obj" /> is not <c>null</c> and is not an instance of <see cref="Timestamp" />.</exception>
-        public int CompareTo(object obj)
+        public int CompareTo(object? obj)
         {
             if (obj is null)
             {
@@ -169,7 +169,7 @@ namespace TerraFX
         /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
         /// <param name="formatProvider">The provider to use when formatting the current instance or <c>null</c> to use the default provider.</param>
         /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
-        public string ToString(string format, IFormatProvider formatProvider)
+        public string ToString(string? format, IFormatProvider? formatProvider)
         {
             return _ticks.ToString(format, formatProvider);
         }
@@ -179,7 +179,7 @@ namespace TerraFX
         /// <summary>Compares an <see cref="object" /> with the current instance to determine equality.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="Timestamp" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return (obj is Timestamp other)
                 && Equals(other);

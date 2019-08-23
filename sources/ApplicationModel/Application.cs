@@ -46,7 +46,7 @@ namespace TerraFX.ApplicationModel
 
         #region Events
         /// <summary>Occurs when the event loop for the current instance becomes idle.</summary>
-        public event EventHandler<ApplicationIdleEventArgs> Idle;
+        public event EventHandler<ApplicationIdleEventArgs>? Idle;
         #endregion
 
         #region Properties

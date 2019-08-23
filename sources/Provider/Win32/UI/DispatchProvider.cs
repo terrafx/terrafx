@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Composition;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.Interop;
@@ -105,10 +106,10 @@ namespace TerraFX.Provider.Win32.UI
         /// <param name="dispatcher">The <see cref="IDispatcher" /> instance associated with <paramref name="thread" />.</param>
         /// <returns><c>true</c> if a <see cref="IDispatcher" /> instance was found for <paramref name="thread" />; otherwise, <c>false</c>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="thread" /> is <c>null</c>.</exception>
-        public bool TryGetDispatcher(Thread thread, out IDispatcher dispatcher)
+        public bool TryGetDispatcher(Thread thread, [MaybeNullWhen(false)] out IDispatcher dispatcher)
         {
             ThrowIfNull(thread, nameof(thread));
-            return _dispatchers.TryGetValue(thread, out dispatcher);
+            return _dispatchers.TryGetValue(thread, out dispatcher!);
         }
         #endregion
     }
