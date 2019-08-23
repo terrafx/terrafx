@@ -108,7 +108,7 @@ namespace TerraFX.Provider.X11.UI
                 ThrowExternalException(nameof(XGetWindowProperty), result);
             }
 
-            var windowProvider = (WindowProvider)GCHandle.FromIntPtr((IntPtr)prop).Target;
+            var windowProvider = (WindowProvider)GCHandle.FromIntPtr((IntPtr)prop).Target!;
 
             if (windowProvider._windows.TryGetValue((IntPtr)(void*)xevent.xany.window, out var window))
             {

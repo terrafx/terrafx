@@ -21,7 +21,7 @@ namespace TerraFX.Samples
 
         public static void Main(string[] args)
         {
-            Environment.CurrentDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            Environment.CurrentDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly()!.Location)!;
 
             if ((args.Length == 0) || args.Any((arg) => Matches(arg, "?", "h", "help")))
             {

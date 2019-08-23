@@ -49,7 +49,7 @@ namespace TerraFX.Provider.D3D12.Graphics
             DXGI_ADAPTER_DESC1 desc;
             ThrowExternalExceptionIfFailed(nameof(IDXGIAdapter1.GetDesc1), adapter->GetDesc1(&desc));
 
-            _deviceName = Marshal.PtrToStringUni((IntPtr)desc.Description);
+            _deviceName = Marshal.PtrToStringUni((IntPtr)desc.Description)!;
             _vendorId = desc.VendorId;
             _deviceId = desc.DeviceId;
 

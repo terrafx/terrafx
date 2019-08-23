@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Collections
@@ -55,7 +56,7 @@ namespace TerraFX.Collections
 
         #region TerraFX.Collections.INotifyDictionaryChanged<string, object> Events
         /// <summary>Occurs when the underlying dictionary changes.</summary>
-        public event EventHandler<NotifyDictionaryChangedEventArgs<string, object>> DictionaryChanged;
+        public event EventHandler<NotifyDictionaryChangedEventArgs<string, object>>? DictionaryChanged;
         #endregion
 
         #region System.Collections.Generic.ICollection<KeyValuePair<string, object>> Properties
@@ -254,9 +255,9 @@ namespace TerraFX.Collections
         /// <param name="key">The key of the item to get from the instance.</param>
         /// <param name="value">On <c>return</c>: Contains the value of the item if it was found; otherwise, <c>null</c>.</param>
         /// <returns><c>true</c> if an item with the specified <paramref name="key" /> was found; otherwise, <c>false</c>.</returns>
-        public bool TryGetValue(string key, out object value)
+        public bool TryGetValue(string key, [MaybeNullWhen(false)] out object value)
         {
-            return _items.TryGetValue(key, out value);
+            return _items.TryGetValue(key, out value!);
         }
         #endregion
 
