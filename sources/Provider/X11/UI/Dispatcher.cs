@@ -43,31 +43,13 @@ namespace TerraFX.Provider.X11.UI
         public event EventHandler? ExitRequested;
 
         /// <summary>Gets the <see cref="IDispatchProvider" /> associated with the instance.</summary>
-        public IDispatchProvider DispatchProvider
-        {
-            get
-            {
-                return _dispatchProvider;
-            }
-        }
+        public IDispatchProvider DispatchProvider => _dispatchProvider;
 
         /// <summary>Gets the handle for the instance.</summary>
-        public IntPtr Handle
-        {
-            get
-            {
-                return (IntPtr)(void*)_windowProviderProperty.Value;
-            }
-        }
+        public IntPtr Handle => (IntPtr)(void*)_windowProviderProperty.Value;
 
         /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
-        public Thread ParentThread
-        {
-            get
-            {
-                return _parentThread;
-            }
-        }
+        public Thread ParentThread => _parentThread;
 
         /// <summary>Dispatches all events currently pending in the queue.</summary>
         /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</exception>
@@ -85,7 +67,7 @@ namespace TerraFX.Provider.X11.UI
             while (XPending(display) != 0)
             {
                 XEvent xevent;
-                XNextEvent(display, &xevent);
+                _ = XNextEvent(display, &xevent);
 
                 if (xevent.type != NoExpose)
                 {
@@ -118,9 +100,6 @@ namespace TerraFX.Provider.X11.UI
         }
 
         /// <summary>Raises the <see cref="ExitRequested" /> event.</summary>
-        private void OnExitRequested()
-        {
-            ExitRequested?.Invoke(this, EventArgs.Empty);
-        }
+        private void OnExitRequested() => ExitRequested?.Invoke(this, EventArgs.Empty);
     }
 }

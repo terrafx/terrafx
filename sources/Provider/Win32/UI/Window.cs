@@ -64,7 +64,7 @@ namespace TerraFX.Provider.Win32.UI
         /// <param name="windowProvider">The <see cref="WindowProvider" /> for the instance.</param>
         internal Window(WindowProvider windowProvider)
         {
-            _handle = new Lazy<IntPtr>((Func<IntPtr>)this.CreateWindowHandle, isThreadSafe: true);
+            _handle = new Lazy<IntPtr>(CreateWindowHandle, isThreadSafe: true);
 
             _parentThread = Thread.CurrentThread;
             _properties = new PropertySet();
@@ -74,7 +74,7 @@ namespace TerraFX.Provider.Win32.UI
             _readingDirection = ReadingDirection.LeftToRight;
 
             _windowProvider = windowProvider;
-            _state.Transition(to: Initialized);
+            _ = _state.Transition(to: Initialized);
         }
 
         /// <summary>Finalizes an instance of the <see cref="Window" /> class.</summary>
@@ -84,112 +84,40 @@ namespace TerraFX.Provider.Win32.UI
         }
 
         /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
-        public Rectangle Bounds
-        {
-            get
-            {
-                return _bounds;
-            }
-        }
+        public Rectangle Bounds => _bounds;
 
         /// <summary>Gets <see cref="FlowDirection" /> for the instance.</summary>
-        public FlowDirection FlowDirection
-        {
-            get
-            {
-                return _flowDirection;
-            }
-        }
+        public FlowDirection FlowDirection => _flowDirection;
 
         /// <summary>Gets the handle for the instance.</summary>
-        public IntPtr Handle
-        {
-            get
-            {
-                return _state.IsNotDisposedOrDisposing ? _handle.Value : IntPtr.Zero;
-            }
-        }
+        public IntPtr Handle => _state.IsNotDisposedOrDisposing ? _handle.Value : IntPtr.Zero;
 
         /// <summary>Gets a value that indicates whether the instance is the active window.</summary>
-        public bool IsActive
-        {
-            get
-            {
-                return _isActive;
-            }
-        }
+        public bool IsActive => _isActive;
 
         /// <summary>Gets a value that indicates whether the instance is enabled.</summary>
-        public bool IsEnabled
-        {
-            get
-            {
-                return _isEnabled;
-            }
-        }
+        public bool IsEnabled => _isEnabled;
 
         /// <summary>Gets a value that indicates whether the instance is visible.</summary>
-        public bool IsVisible
-        {
-            get
-            {
-                return _isVisible;
-            }
-        }
+        public bool IsVisible => _isVisible;
 
         /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
-        public Thread ParentThread
-        {
-            get
-            {
-                return _parentThread;
-            }
-        }
+        public Thread ParentThread => _parentThread;
 
         /// <summary>Gets the <see cref="IPropertySet" /> for the instance.</summary>
-        public IPropertySet Properties
-        {
-            get
-            {
-                return _properties;
-            }
-        }
+        public IPropertySet Properties => _properties;
 
         /// <summary>Gets the <see cref="ReadingDirection" /> for the instance.</summary>
-        public ReadingDirection ReadingDirection
-        {
-            get
-            {
-                return _readingDirection;
-            }
-        }
+        public ReadingDirection ReadingDirection => _readingDirection;
 
         /// <summary>Gets the title for the instance.</summary>
-        public string Title
-        {
-            get
-            {
-                return _title;
-            }
-        }
+        public string Title => _title;
 
         /// <summary>Gets the <see cref="IWindowProvider" /> for the instance.</summary>
-        public IWindowProvider WindowProvider
-        {
-            get
-            {
-                return _windowProvider;
-            }
-        }
+        public IWindowProvider WindowProvider => _windowProvider;
 
         /// <summary>Gets the <see cref="WindowState" /> for the instance.</summary>
-        public WindowState WindowState
-        {
-            get
-            {
-                return _windowState;
-            }
-        }
+        public WindowState WindowState => _windowState;
 
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
         public void Dispose()
@@ -223,7 +151,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (_handle.IsValueCreated)
             {
-                SendMessage(_handle.Value, WM_CLOSE, wParam: UIntPtr.Zero, lParam: IntPtr.Zero);
+                _ = SendMessage(_handle.Value, WM_CLOSE, wParam: UIntPtr.Zero, lParam: IntPtr.Zero);
             }
         }
 
@@ -235,7 +163,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (_isEnabled)
             {
-                EnableWindow(_handle.Value, FALSE);
+                _ = EnableWindow(_handle.Value, FALSE);
             }
         }
 
@@ -247,7 +175,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (_isEnabled == false)
             {
-                EnableWindow(_handle.Value, TRUE);
+                _ = EnableWindow(_handle.Value, TRUE);
             }
         }
 
@@ -259,7 +187,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (_isVisible)
             {
-                ShowWindow(_handle.Value, SW_HIDE);
+                _ = ShowWindow(_handle.Value, SW_HIDE);
             }
         }
 
@@ -271,7 +199,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (_windowState != WindowState.Maximized)
             {
-                ShowWindow(_handle.Value, SW_MAXIMIZE);
+                _ = ShowWindow(_handle.Value, SW_MAXIMIZE);
             }
         }
 
@@ -283,7 +211,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (_windowState != WindowState.Minimized)
             {
-                ShowWindow(_handle.Value, SW_MINIMIZE);
+                _ = ShowWindow(_handle.Value, SW_MINIMIZE);
             }
         }
 
@@ -295,7 +223,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (_windowState != WindowState.Restored)
             {
-                ShowWindow(_handle.Value, SW_RESTORE);
+                _ = ShowWindow(_handle.Value, SW_RESTORE);
             }
         }
 
@@ -307,7 +235,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (_isVisible == false)
             {
-                ShowWindow(_handle.Value, SW_SHOW);
+                _ = ShowWindow(_handle.Value, SW_SHOW);
             }
         }
 
@@ -322,15 +250,15 @@ namespace TerraFX.Provider.Win32.UI
         }
 
         /// <summary>Processes a window message sent to the instance.</summary>
-        /// <param name="Msg">The message to be processed.</param>
+        /// <param name="msg">The message to be processed.</param>
         /// <param name="wParam">The first parameter of the message.</param>
         /// <param name="lParam">The second parameter of the message.</param>
         /// <returns>A value that varies based on the exact message that was processed.</returns>
-        internal IntPtr ProcessWindowMessage(uint Msg, UIntPtr wParam, IntPtr lParam)
+        internal IntPtr ProcessWindowMessage(uint msg, UIntPtr wParam, IntPtr lParam)
         {
             ThrowIfNotThread(_parentThread);
 
-            switch (Msg)
+            switch (msg)
             {
                 case WM_DESTROY:
                 {
@@ -374,7 +302,7 @@ namespace TerraFX.Provider.Win32.UI
 
                 default:
                 {
-                    return DefWindowProc(_handle.Value, Msg, wParam, lParam);
+                    return DefWindowProc(_handle.Value, msg, wParam, lParam);
                 }
             }
         }
@@ -562,7 +490,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (_state != Disposing)
             {
-                _state.Transition(to: Disposed);
+                _ = _state.Transition(to: Disposed);
             }
             return IntPtr.Zero;
         }

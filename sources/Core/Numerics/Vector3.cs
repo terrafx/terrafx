@@ -41,31 +41,13 @@ namespace TerraFX.Numerics
         }
 
         /// <summary>Gets the value of the x-dimension.</summary>
-        public float X
-        {
-            get
-            {
-                return _x;
-            }
-        }
+        public float X => _x;
 
         /// <summary>Gets the value of the y-dimension.</summary>
-        public float Y
-        {
-            get
-            {
-                return _y;
-            }
-        }
+        public float Y => _y;
 
         /// <summary>Gets the value of the z-dimension.</summary>
-        public float Z
-        {
-            get
-            {
-                return _z;
-            }
-        }
+        public float Z => _z;
 
         /// <summary>Compares two <see cref="Vector3" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="Vector3" /> to compare with <paramref name="right" />.</param>
@@ -92,34 +74,22 @@ namespace TerraFX.Numerics
         /// <summary>Creates a new <see cref="Vector3" /> instance with <see cref="X" /> set to the specified value.</summary>
         /// <param name="value">The new value of the x-dimension.</param>
         /// <returns>A new <see cref="Vector3" /> instance with <see cref="X" /> set to <paramref name="value" />.</returns>
-        public Vector3 WithX(float value)
-        {
-            return new Vector3(value, Y, Z);
-        }
+        public Vector3 WithX(float value) => new Vector3(value, Y, Z);
 
         /// <summary>Creates a new <see cref="Vector3" /> instance with <see cref="Y" /> set to the specified value.</summary>
         /// <param name="value">The new value of the y-dimension.</param>
         /// <returns>A new <see cref="Vector3" /> instance with <see cref="Y" /> set to <paramref name="value" />.</returns>
-        public Vector3 WithY(float value)
-        {
-            return new Vector3(X, value, Z);
-        }
+        public Vector3 WithY(float value) => new Vector3(X, value, Z);
 
         /// <summary>Creates a new <see cref="Vector3" /> instance with <see cref="Z" /> set to the specified value.</summary>
         /// <param name="value">The new value of the z-dimension.</param>
         /// <returns>A new <see cref="Vector3" /> instance with <see cref="Z" /> set to <paramref name="value" />.</returns>
-        public Vector3 WithZ(float value)
-        {
-            return new Vector3(X, Y, value);
-        }
+        public Vector3 WithZ(float value) => new Vector3(X, Y, value);
 
         /// <summary>Compares a <see cref="Vector3" /> with the current instance to determine equality.</summary>
         /// <param name="other">The <see cref="Vector3" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
-        public bool Equals(Vector3 other)
-        {
-            return this == other;
-        }
+        public bool Equals(Vector3 other) => this == other;
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
@@ -166,9 +136,6 @@ namespace TerraFX.Numerics
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
-        public override string ToString()
-        {
-            return ToString(format: null, formatProvider: null);
-        }
+        public override string ToString() => ToString(format: null, formatProvider: null);
     }
 }

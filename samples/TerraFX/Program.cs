@@ -55,7 +55,7 @@ namespace TerraFX.Samples
 
         private static void Run(Sample sample)
         {
-            var application = new Application(sample.CompositionAssemblies);
+            using var application = new Application(sample.CompositionAssemblies);
             {
                 application.Idle += sample.OnIdle;
             }

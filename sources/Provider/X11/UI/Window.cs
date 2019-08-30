@@ -84,7 +84,7 @@ namespace TerraFX.Provider.X11.UI
             _readingDirection = ReadingDirection.LeftToRight;
 
             _windowProvider = windowProvider;
-            _state.Transition(to: Initialized);
+            _ = _state.Transition(to: Initialized);
         }
 
         /// <summary>Finalizes an instance of the <see cref="Window" /> class.</summary>
@@ -94,112 +94,40 @@ namespace TerraFX.Provider.X11.UI
         }
 
         /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
-        public Rectangle Bounds
-        {
-            get
-            {
-                return _bounds;
-            }
-        }
+        public Rectangle Bounds => _bounds;
 
         /// <summary>Gets <see cref="FlowDirection" /> for the instance.</summary>
-        public FlowDirection FlowDirection
-        {
-            get
-            {
-                return _flowDirection;
-            }
-        }
+        public FlowDirection FlowDirection => _flowDirection;
 
         /// <summary>Gets the handle for the instance.</summary>
-        public IntPtr Handle
-        {
-            get
-            {
-                return _state.IsNotDisposedOrDisposing ? (IntPtr)(void*)_handle.Value : IntPtr.Zero;
-            }
-        }
+        public IntPtr Handle => _state.IsNotDisposedOrDisposing ? (IntPtr)(void*)_handle.Value : IntPtr.Zero;
 
         /// <summary>Gets a value that indicates whether the instance is the active window.</summary>
-        public bool IsActive
-        {
-            get
-            {
-                return _isActive;
-            }
-        }
+        public bool IsActive => _isActive;
 
         /// <summary>Gets a value that indicates whether the instance is enabled.</summary>
-        public bool IsEnabled
-        {
-            get
-            {
-                return _isEnabled;
-            }
-        }
+        public bool IsEnabled => _isEnabled;
 
         /// <summary>Gets a value that indicates whether the instance is visible.</summary>
-        public bool IsVisible
-        {
-            get
-            {
-                return _isVisible;
-            }
-        }
+        public bool IsVisible => _isVisible;
 
         /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
-        public Thread ParentThread
-        {
-            get
-            {
-                return _parentThread;
-            }
-        }
+        public Thread ParentThread => _parentThread;
 
         /// <summary>Gets the set of properties for the instance.</summary>
-        public IPropertySet Properties
-        {
-            get
-            {
-                return _properties;
-            }
-        }
+        public IPropertySet Properties => _properties;
 
         /// <summary>Gets the <see cref="ReadingDirection" /> for the instance.</summary>
-        public ReadingDirection ReadingDirection
-        {
-            get
-            {
-                return _readingDirection;
-            }
-        }
+        public ReadingDirection ReadingDirection => _readingDirection;
 
         /// <summary>Gets the title for the instance.</summary>
-        public string Title
-        {
-            get
-            {
-                return _title;
-            }
-        }
+        public string Title => _title;
 
         /// <summary>Gets the <see cref="IWindowProvider" /> for the instance.</summary>
-        public IWindowProvider WindowProvider
-        {
-            get
-            {
-                return _windowProvider;
-            }
-        }
+        public IWindowProvider WindowProvider => _windowProvider;
 
         /// <summary>Gets the <see cref="WindowState" /> for the instance.</summary>
-        public WindowState WindowState
-        {
-            get
-            {
-                return _windowState;
-            }
-        }
+        public WindowState WindowState => _windowState;
 
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
         public void Dispose()
@@ -221,24 +149,15 @@ namespace TerraFX.Provider.X11.UI
         }
 
         /// <summary>Closes the instance.</summary>
-        public void Close()
-        {
-            Dispose();
-        }
+        public void Close() => Dispose();
 
         /// <summary>Disables the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public void Disable()
-        {
-            _isEnabled = false;
-        }
+        public void Disable() => _isEnabled = false;
 
         /// <summary>Enables the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public void Enable()
-        {
-            _isEnabled = true;
-        }
+        public void Enable() => _isEnabled = true;
 
         /// <summary>Hides the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
@@ -249,7 +168,7 @@ namespace TerraFX.Provider.X11.UI
             if (_isVisible)
             {
                 var display = (XDisplay*)_windowProvider.DispatchProvider.Display;
-                XUnmapWindow(display, _handle.Value);
+                _ = XUnmapWindow(display, _handle.Value);
             }
         }
 
@@ -263,13 +182,13 @@ namespace TerraFX.Provider.X11.UI
             {
                 var display = (XDisplay*)_windowProvider.DispatchProvider.Display;
                 XWindowAttributes windowAttributes;
-                XGetWindowAttributes(display, _handle.Value, &windowAttributes);
+                _ = XGetWindowAttributes(display, _handle.Value, &windowAttributes);
                 _restoredBounds = new Rectangle(windowAttributes.x, windowAttributes.y, windowAttributes.width, windowAttributes.height);
 
                 var screenWidth = XWidthOfScreen(windowAttributes.screen);
                 var screenHeight = XHeightOfScreen(windowAttributes.screen);
 
-                XMoveResizeWindow(display, _handle.Value, 0, 0, (uint)screenWidth, (uint)screenHeight);
+                _ = XMoveResizeWindow(display, _handle.Value, 0, 0, (uint)screenWidth, (uint)screenHeight);
                 _windowState = WindowState.Maximized;
             }
         }
@@ -284,11 +203,11 @@ namespace TerraFX.Provider.X11.UI
             {
                 var display = (XDisplay*)_windowProvider.DispatchProvider.Display;
                 XWindowAttributes windowAttributes;
-                XGetWindowAttributes(display, _handle.Value, &windowAttributes);
+                _ = XGetWindowAttributes(display, _handle.Value, &windowAttributes);
 
                 var screenNumber = XScreenNumberOfScreen(windowAttributes.screen);
 
-                XIconifyWindow(display, _handle.Value, screenNumber);
+                _ = XIconifyWindow(display, _handle.Value, screenNumber);
                 _windowState = WindowState.Minimized;
             }
         }
@@ -304,7 +223,7 @@ namespace TerraFX.Provider.X11.UI
                 if (_windowState == WindowState.Maximized)
                 {
                     var display = (XDisplay*)_windowProvider.DispatchProvider.Display;
-                    XMoveResizeWindow(display, _handle.Value, (int)_restoredBounds.X, (int)_restoredBounds.Y, (uint)_restoredBounds.Width, (uint)_restoredBounds.Height);
+                    _ = XMoveResizeWindow(display, _handle.Value, (int)_restoredBounds.X, (int)_restoredBounds.Y, (uint)_restoredBounds.Width, (uint)_restoredBounds.Height);
                 }
 
                 Show();
@@ -321,10 +240,10 @@ namespace TerraFX.Provider.X11.UI
             if (_isVisible == false)
             {
                 var display = (XDisplay*)_windowProvider.DispatchProvider.Display;
-                XMapWindow(display, _handle.Value);
+                _ = XMapWindow(display, _handle.Value);
             }
 
-            TryActivate();
+            _ = TryActivate();
         }
 
         /// <summary>Tries to activate the instance.</summary>
@@ -336,7 +255,7 @@ namespace TerraFX.Provider.X11.UI
             if (_isActive == false)
             {
                 var display = (XDisplay*)_windowProvider.DispatchProvider.Display;
-                XRaiseWindow(display, _handle.Value);
+                _ = XRaiseWindow(display, _handle.Value);
             }
 
             return true;
@@ -403,7 +322,7 @@ namespace TerraFX.Provider.X11.UI
                 ThrowExternalExceptionForLastError(nameof(XCreateSimpleWindow));
             }
 
-            XSelectInput(
+            _ = XSelectInput(
                 display,
                 window,
                 (IntPtr)(VisibilityChangeMask | StructureNotifyMask)
@@ -434,29 +353,20 @@ namespace TerraFX.Provider.X11.UI
             if (_handle.IsValueCreated)
             {
                 var display = (XDisplay*)_windowProvider.DispatchProvider.Display;
-                XDestroyWindow(display, _handle.Value);
+                _ = XDestroyWindow(display, _handle.Value);
             }
         }
 
         /// <summary>Handles the <c>XCirculate</c> event.</summary>
         /// <param name="xcirculate">The <c>XCirculate</c> event.</param>
-        private void HandleXCirculate(in XCirculateEvent xcirculate)
-        {
-            _isActive = xcirculate.place == PlaceOnTop;
-        }
+        private void HandleXCirculate(in XCirculateEvent xcirculate) => _isActive = xcirculate.place == PlaceOnTop;
 
         /// <summary>Handles the <c>XConfigure</c> event.</summary>
         /// <param name="xconfigure">The <c>XConfigure</c> event.</param>
-        private void HandleXConfigure(in XConfigureEvent xconfigure)
-        {
-            _bounds = new Rectangle(xconfigure.x, xconfigure.y, xconfigure.width, xconfigure.height);
-        }
+        private void HandleXConfigure(in XConfigureEvent xconfigure) => _bounds = new Rectangle(xconfigure.x, xconfigure.y, xconfigure.width, xconfigure.height);
 
         /// <summary>Handles the <c>XVisiblity</c> event.</summary>
         /// <param name="xvisibility">The <c>XVisibility</c> event.</param>
-        private void HandleXVisibility(in XVisibilityEvent xvisibility)
-        {
-            _isVisible = xvisibility.state != VisibilityFullyObscured;
-        }
+        private void HandleXVisibility(in XVisibilityEvent xvisibility) => _isVisible = xvisibility.state != VisibilityFullyObscured;
     }
 }

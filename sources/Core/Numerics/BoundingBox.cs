@@ -24,22 +24,10 @@ namespace TerraFX.Numerics
         }
 
         /// <summary>Gets the center of the bounding box.</summary>
-        public Vector3 Center
-        {
-            get
-            {
-                return _center;
-            }
-        }
+        public Vector3 Center => _center;
 
         /// <summary>Gets the size of the bounding box.</summary>
-        public Vector3 Size
-        {
-            get
-            {
-                return _size;
-            }
-        }
+        public Vector3 Size => _size;
 
         /// <summary>Compares two <see cref="BoundingBox" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="BoundingBox" /> to compare with <paramref name="right" />.</param>
@@ -64,26 +52,17 @@ namespace TerraFX.Numerics
         /// <summary>Creates a new <see cref="BoundingBox" /> instance with <see cref="Center" /> set to the specified value.</summary>
         /// <param name="value">The new center of the bounding box.</param>
         /// <returns>A new <see cref="BoundingBox" /> instance with <see cref="Center" /> set to <paramref name="value" />.</returns>
-        public BoundingBox WithCenter(Vector3 value)
-        {
-            return new BoundingBox(value, Size);
-        }
+        public BoundingBox WithCenter(Vector3 value) => new BoundingBox(value, Size);
 
         /// <summary>Creates a new <see cref="BoundingBox" /> instance with <see cref="Size" /> set to the specified value.</summary>
         /// <param name="value">The new size of the bounding box.</param>
         /// <returns>A new <see cref="BoundingBox" /> instance with <see cref="Size" /> set to <paramref name="value" />.</returns>
-        public BoundingBox WithY(Vector3 value)
-        {
-            return new BoundingBox(Center, value);
-        }
+        public BoundingBox WithY(Vector3 value) => new BoundingBox(Center, value);
 
         /// <summary>Compares a <see cref="BoundingBox" /> with the current instance to determine equality.</summary>
         /// <param name="other">The <see cref="BoundingBox" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
-        public bool Equals(BoundingBox other)
-        {
-            return this == other;
-        }
+        public bool Equals(BoundingBox other) => this == other;
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
@@ -126,9 +105,6 @@ namespace TerraFX.Numerics
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
-        public override string ToString()
-        {
-            return ToString(format: null, formatProvider: null);
-        }
+        public override string ToString() => ToString(format: null, formatProvider: null);
     }
 }

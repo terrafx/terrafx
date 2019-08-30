@@ -33,40 +33,16 @@ namespace TerraFX.Numerics
         }
 
         /// <summary>Gets the value of the x-dimension.</summary>
-        public Vector4 X
-        {
-            get
-            {
-                return _x;
-            }
-        }
+        public Vector4 X => _x;
 
         /// <summary>Gets the value of the y-dimension.</summary>
-        public Vector4 Y
-        {
-            get
-            {
-                return _y;
-            }
-        }
+        public Vector4 Y => _y;
 
         /// <summary>Gets the value of the z-dimension.</summary>
-        public Vector4 Z
-        {
-            get
-            {
-                return _z;
-            }
-        }
+        public Vector4 Z => _z;
 
         /// <summary>Gets the value of the w-dimension.</summary>
-        public Vector4 W
-        {
-            get
-            {
-                return _w;
-            }
-        }
+        public Vector4 W => _w;
 
         /// <summary>Compares two <see cref="Matrix4x4" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="Matrix4x4" /> to compare with <paramref name="right" />.</param>
@@ -95,42 +71,27 @@ namespace TerraFX.Numerics
         /// <summary>Creates a new <see cref="Matrix4x4" /> instance with <see cref="X" /> set to the specified value.</summary>
         /// <param name="value">The new value of the x-dimension.</param>
         /// <returns>A new <see cref="Matrix4x4" /> instance with <see cref="X" /> set to <paramref name="value" />.</returns>
-        public Matrix4x4 WithX(Vector4 value)
-        {
-            return new Matrix4x4(value, Y, Z, W);
-        }
+        public Matrix4x4 WithX(Vector4 value) => new Matrix4x4(value, Y, Z, W);
 
         /// <summary>Creates a new <see cref="Matrix4x4" /> instance with <see cref="Y" /> set to the specified value.</summary>
         /// <param name="value">The new value of the y-dimension.</param>
         /// <returns>A new <see cref="Matrix4x4" /> instance with <see cref="Y" /> set to <paramref name="value" />.</returns>
-        public Matrix4x4 WithY(Vector4 value)
-        {
-            return new Matrix4x4(X, value, Z, W);
-        }
+        public Matrix4x4 WithY(Vector4 value) => new Matrix4x4(X, value, Z, W);
 
         /// <summary>Creates a new <see cref="Matrix4x4" /> instance with <see cref="Z" /> set to the specified value.</summary>
         /// <param name="value">The new value of the z-dimension.</param>
         /// <returns>A new <see cref="Matrix4x4" /> instance with <see cref="Z" /> set to <paramref name="value" />.</returns>
-        public Matrix4x4 WithZ(Vector4 value)
-        {
-            return new Matrix4x4(X, Y, value, W);
-        }
+        public Matrix4x4 WithZ(Vector4 value) => new Matrix4x4(X, Y, value, W);
 
         /// <summary>Creates a new <see cref="Matrix4x4" /> instance with <see cref="W" /> set to the specified value.</summary>
         /// <param name="value">The new value of the w-dimension.</param>
         /// <returns>A new <see cref="Matrix4x4" /> instance with <see cref="W" /> set to <paramref name="value" />.</returns>
-        public Matrix4x4 WithW(Vector4 value)
-        {
-            return new Matrix4x4(X, Y, Z, value);
-        }
+        public Matrix4x4 WithW(Vector4 value) => new Matrix4x4(X, Y, Z, value);
 
         /// <summary>Compares a <see cref="Matrix4x4" /> with the current instance to determine equality.</summary>
         /// <param name="other">The <see cref="Matrix4x4" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
-        public bool Equals(Matrix4x4 other)
-        {
-            return this == other;
-        }
+        public bool Equals(Matrix4x4 other) => this == other;
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
@@ -181,9 +142,6 @@ namespace TerraFX.Numerics
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
-        public override string ToString()
-        {
-            return ToString(format: null, formatProvider: null);
-        }
+        public override string ToString() => ToString(format: null, formatProvider: null);
     }
 }

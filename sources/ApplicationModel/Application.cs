@@ -35,36 +35,24 @@ namespace TerraFX.ApplicationModel
             _parentThread = Thread.CurrentThread;
             _compositionHost = new Lazy<CompositionHost>(CreateCompositionHost, isThreadSafe: true);
 
-            _state.Transition(to: Stopped);
+            _ = _state.Transition(to: Stopped);
         }
 
         /// <summary>Occurs when the event loop for the current instance becomes idle.</summary>
         public event EventHandler<ApplicationIdleEventArgs>? Idle;
 
         /// <summary>Gets a value that indicates whether the event loop for the instance is running.</summary>
-        public bool IsRunning
-        {
-            get
-            {
-                return _state == Running;
-            }
-        }
+        public bool IsRunning => _state == Running;
 
         /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
-        public Thread ParentThread
-        {
-            get
-            {
-                return _parentThread;
-            }
-        }
+        public Thread ParentThread => _parentThread;
 
         /// <summary>Gets the service object of the specified type.</summary>
         /// <typeparam name="TService">The type of the service object to get.</typeparam>
         /// <returns>A service object of <typeparamref name="TService" /> if one exists; otherwise, <c>default</c>.</returns>
         public TService GetService<TService>()
         {
-            _compositionHost.Value.TryGetExport<TService>(out var service);
+            _ = _compositionHost.Value.TryGetExport<TService>(out var service);
             return service;
         }
 
@@ -73,10 +61,7 @@ namespace TerraFX.ApplicationModel
         ///   <para>This method does nothing if <see cref="IsRunning" /> is <c>false</c>.</para>
         ///   <para>This method can be called from any thread.</para>
         /// </remarks>
-        public void RequestExit()
-        {
-            _state.TryTransition(from: Running, to: Exiting);
-        }
+        public void RequestExit() => _ = _state.TryTransition(from: Running, to: Exiting);
 
         /// <summary>Runs the event loop for the instance.</summary>
         /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</exception>
@@ -114,7 +99,7 @@ namespace TerraFX.ApplicationModel
                     dispatcher.DispatchPending();
                 }
             }
-            _state.TryTransition(from: Exiting, to: Stopped);
+            _ = _state.TryTransition(from: Exiting, to: Stopped);
         }
 
         /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
@@ -135,7 +120,7 @@ namespace TerraFX.ApplicationModel
         /// <returns>A service object of <paramref name="serviceType" /> if one exists; otherwise, <c>null</c>.</returns>
         public object GetService(Type serviceType)
         {
-            _compositionHost.Value.TryGetExport(serviceType, out var service);
+            _ = _compositionHost.Value.TryGetExport(serviceType, out var service);
             return service;
         }
 

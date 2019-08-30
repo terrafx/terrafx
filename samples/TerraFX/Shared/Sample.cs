@@ -18,16 +18,9 @@ namespace TerraFX.Samples
         protected Sample(string name, Assembly[] compositionAssemblies)
         {
             _name = name;
-            _compositionAssemblies = new Assembly[compositionAssemblies.Length + 1];
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                _compositionAssemblies[0] = s_win32Provider;
-            }
-            else
-            {
-                _compositionAssemblies[0] = s_x11Provider;
-            }
+            _compositionAssemblies = new Assembly[compositionAssemblies.Length + 1];
+            _compositionAssemblies[0] = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? s_win32Provider : s_x11Provider;
 
             Array.Copy(compositionAssemblies, 0, _compositionAssemblies, 1, compositionAssemblies.Length);
         }
@@ -37,21 +30,9 @@ namespace TerraFX.Samples
             Dispose(isDisposing: false);
         }
 
-        public Assembly[] CompositionAssemblies
-        {
-            get
-            {
-                return _compositionAssemblies;
-            }
-        }
+        public Assembly[] CompositionAssemblies => _compositionAssemblies;
 
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-        }
+        public string Name => _name;
 
         public abstract void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs);
 

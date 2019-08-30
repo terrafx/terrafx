@@ -35,58 +35,22 @@ namespace TerraFX.Graphics.Geometry2D
         }
 
         /// <summary>Gets the height of the instance.</summary>
-        public float Height
-        {
-            get
-            {
-                return _size.Y;
-            }
-        }
+        public float Height => _size.Y;
 
         /// <summary>Gets the location of the instance.</summary>
-        public Vector2 Location
-        {
-            get
-            {
-                return _location;
-            }
-        }
+        public Vector2 Location => _location;
 
         /// <summary>Gets the size of the instance.</summary>
-        public Vector2 Size
-        {
-            get
-            {
-                return _size;
-            }
-        }
+        public Vector2 Size => _size;
 
         /// <summary>Gets the width of the instance.</summary>
-        public float Width
-        {
-            get
-            {
-                return _size.X;
-            }
-        }
+        public float Width => _size.X;
 
         /// <summary>Gets the value of the x-coordinate.</summary>
-        public float X
-        {
-            get
-            {
-                return _location.X;
-            }
-        }
+        public float X => _location.X;
 
         /// <summary>Gets the value of the y-coordinate.</summary>
-        public float Y
-        {
-            get
-            {
-                return _location.Y;
-            }
-        }
+        public float Y => _location.Y;
 
         /// <summary>Compares two <see cref="Rectangle" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="Rectangle" /> to compare with <paramref name="right" />.</param>
@@ -120,18 +84,12 @@ namespace TerraFX.Graphics.Geometry2D
         /// <summary>Creates a new <see cref="Rectangle" /> instance with <see cref="Location" /> set to the specified value.</summary>
         /// <param name="value">The new location of the instance.</param>
         /// <returns>A new <see cref="Rectangle" /> instance with <see cref="Location" /> set to <paramref name="value" />.</returns>
-        public Rectangle WithLocation(Vector2 value)
-        {
-            return new Rectangle(value, Size);
-        }
+        public Rectangle WithLocation(Vector2 value) => new Rectangle(value, Size);
 
         /// <summary>Creates a new <see cref="Rectangle" /> instance with <see cref="Size" /> set to the specified value.</summary>
         /// <param name="value">The new size of the instance.</param>
         /// <returns>A new <see cref="Rectangle" /> instance with <see cref="Size" /> set to <paramref name="value" />.</returns>
-        public Rectangle WithSize(Vector2 value)
-        {
-            return new Rectangle(Location, value);
-        }
+        public Rectangle WithSize(Vector2 value) => new Rectangle(Location, value);
 
         /// <summary>Creates a new <see cref="Rectangle" /> instance with <see cref="Width" /> set to the specified value.</summary>
         /// <param name="value">The new width of the instance.</param>
@@ -163,10 +121,7 @@ namespace TerraFX.Graphics.Geometry2D
         /// <summary>Compares a <see cref="Rectangle" /> with the current instance to determine equality.</summary>
         /// <param name="other">The <see cref="Rectangle" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
-        public bool Equals(Rectangle other)
-        {
-            return this == other;
-        }
+        public bool Equals(Rectangle other) => this == other;
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
@@ -217,9 +172,6 @@ namespace TerraFX.Graphics.Geometry2D
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
-        public override string ToString()
-        {
-            return ToString(format: null, formatProvider: null);
-        }
+        public override string ToString() => ToString(format: null, formatProvider: null);
     }
 }

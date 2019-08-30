@@ -29,13 +29,7 @@ namespace TerraFX.Collections
         }
 
         /// <summary>Gets the action that caused the event.</summary>
-        public NotifyDictionaryChangedAction Action
-        {
-            get
-            {
-                return _action;
-            }
-        }
+        public NotifyDictionaryChangedAction Action => _action;
 
         /// <summary>Gets the key of the item that caused the event.</summary>
         /// <exception cref="InvalidOperationException"><see cref="Action" /> is not <see cref="NotifyDictionaryChangedAction.Add" />, <see cref="NotifyDictionaryChangedAction.Remove" />, or <see cref="NotifyDictionaryChangedAction.ValueChanged" />.</exception>
@@ -85,34 +79,22 @@ namespace TerraFX.Collections
         /// <summary>Gets or creates an instance of the <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> class for the <see cref="NotifyDictionaryChangedAction.Add" /> action.</summary>
         /// <param name="key">The key of the item that caused the event.</param>
         /// <returns>An instance of the <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> class.</returns>
-        public static NotifyDictionaryChangedEventArgs<TKey, TValue> ForAddAction(TKey key)
-        {
-            return new NotifyDictionaryChangedEventArgs<TKey, TValue>(NotifyDictionaryChangedAction.Add, key);
-        }
+        public static NotifyDictionaryChangedEventArgs<TKey, TValue> ForAddAction(TKey key) => new NotifyDictionaryChangedEventArgs<TKey, TValue>(NotifyDictionaryChangedAction.Add, key);
 
         /// <summary>Gets or creates an instance of the <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> class for the <see cref="NotifyDictionaryChangedAction.Remove" /> action.</summary>
         /// <param name="key">The key of the item that caused the event.</param>
         /// <returns>An instance of the <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> class.</returns>
-        public static NotifyDictionaryChangedEventArgs<TKey, TValue> ForRemoveAction(TKey key)
-        {
-            return new NotifyDictionaryChangedEventArgs<TKey, TValue>(NotifyDictionaryChangedAction.Remove, key);
-        }
+        public static NotifyDictionaryChangedEventArgs<TKey, TValue> ForRemoveAction(TKey key) => new NotifyDictionaryChangedEventArgs<TKey, TValue>(NotifyDictionaryChangedAction.Remove, key);
 
         /// <summary>Gets or creates an instance of the <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> class for the <see cref="NotifyDictionaryChangedAction.Reset" /> action.</summary>
         /// <returns>An instance of the <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> class.</returns>
-        public static NotifyDictionaryChangedEventArgs<TKey, TValue> ForResetAction()
-        {
-            return Reset;
-        }
+        public static NotifyDictionaryChangedEventArgs<TKey, TValue> ForResetAction() => Reset;
 
         /// <summary>Gets or creates an instance of the <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> class for the <see cref="NotifyDictionaryChangedAction.ValueChanged" /> action.</summary>
         /// <param name="key">The key of the item that caused the event.</param>
         /// <param name="oldValue">The old value of the item that caused the event.</param>
         /// <param name="newValue">The new value of the item that caused the event.</param>
         /// <returns>An instance of the <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> class.</returns>
-        public static NotifyDictionaryChangedEventArgs<TKey, TValue> ForValueChangedAction(TKey key, TValue oldValue, TValue newValue)
-        {
-            return new NotifyDictionaryChangedEventArgs<TKey, TValue>(NotifyDictionaryChangedAction.ValueChanged, key, oldValue, newValue);
-        }
+        public static NotifyDictionaryChangedEventArgs<TKey, TValue> ForValueChangedAction(TKey key, TValue oldValue, TValue newValue) => new NotifyDictionaryChangedEventArgs<TKey, TValue>(NotifyDictionaryChangedAction.ValueChanged, key, oldValue, newValue);
     }
 }

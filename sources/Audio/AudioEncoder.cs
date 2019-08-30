@@ -19,8 +19,7 @@ namespace TerraFX.Audio
         /// <summary>Initializes a new instance of the <see cref="AudioEncoder" /> class.</summary>
         /// <param name="options">Audio encoder options.</param>
         /// <param name="pipeOptions">Options for input/output pipes. Defaults to <see cref="PipeOptions.Default" />.</param>
-        public AudioEncoder(AudioEncoderOptions options,
-            PipeOptions? pipeOptions = null)
+        public AudioEncoder(AudioEncoderOptions options, PipeOptions? pipeOptions = null)
         {
             _inputPipe = new Pipe(pipeOptions ?? PipeOptions.Default);
             _outputPipe = new Pipe(pipeOptions ?? PipeOptions.Default);

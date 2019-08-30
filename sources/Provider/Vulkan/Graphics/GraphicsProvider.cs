@@ -41,7 +41,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
         {
             _instance = new Lazy<IntPtr>((Func<IntPtr>)CreateInstance, isThreadSafe: true);
             _adapters = new Lazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters, isThreadSafe: true);
-            _state.Transition(to: Initialized);
+            _ = _state.Transition(to: Initialized);
         }
 
         /// <summary>Finalizes an instance of the <see cref="GraphicsProvider" /> class.</summary>
@@ -61,13 +61,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
         }
 
         /// <summary>Gets the underlying handle for the instance.</summary>
-        public IntPtr Handle
-        {
-            get
-            {
-                return _instance.Value;
-            }
-        }
+        public IntPtr Handle => _instance.Value;
 
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
         public void Dispose()

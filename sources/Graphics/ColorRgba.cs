@@ -29,40 +29,16 @@ namespace TerraFX.Graphics
         }
 
         /// <summary>Gets the value of the alpha component.</summary>
-        public float Alpha
-        {
-            get
-            {
-                return _alpha;
-            }
-        }
+        public float Alpha => _alpha;
 
         /// <summary>Gets the value of the blue component.</summary>
-        public float Blue
-        {
-            get
-            {
-                return _blue;
-            }
-        }
+        public float Blue => _blue;
 
         /// <summary>Gets the value of the green component.</summary>
-        public float Green
-        {
-            get
-            {
-                return _green;
-            }
-        }
+        public float Green => _green;
 
         /// <summary>Gets the value of the red component.</summary>
-        public float Red
-        {
-            get
-            {
-                return _red;
-            }
-        }
+        public float Red => _red;
 
         /// <summary>Compares two <see cref="ColorRgba" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="ColorRgba" /> to compare with <paramref name="right" />.</param>
@@ -91,42 +67,27 @@ namespace TerraFX.Graphics
         /// <summary>Creates a new <see cref="ColorRgba" /> instance with <see cref="Alpha" /> set to the specified value.</summary>
         /// <param name="value">The new value of the alpha component.</param>
         /// <returns>A new <see cref="ColorRgba" /> instance with <see cref="Alpha" /> set to <paramref name="value" />.</returns>
-        public ColorRgba WithAlpha(float value)
-        {
-            return new ColorRgba(Red, Green, Blue, value);
-        }
+        public ColorRgba WithAlpha(float value) => new ColorRgba(Red, Green, Blue, value);
 
         /// <summary>Creates a new <see cref="ColorRgba" /> instance with <see cref="Blue" /> set to the specified value.</summary>
         /// <param name="value">The new value of the blue component.</param>
         /// <returns>A new <see cref="ColorRgba" /> instance with <see cref="Blue" /> set to <paramref name="value" />.</returns>
-        public ColorRgba WithBlue(float value)
-        {
-            return new ColorRgba(Red, Green, value, Alpha);
-        }
+        public ColorRgba WithBlue(float value) => new ColorRgba(Red, Green, value, Alpha);
 
         /// <summary>Creates a new <see cref="ColorRgba" /> instance with <see cref="Green" /> set to the specified value.</summary>
         /// <param name="value">The new value of the green component.</param>
         /// <returns>A new <see cref="ColorRgba" /> instance with <see cref="Green" /> set to <paramref name="value" />.</returns>
-        public ColorRgba WithGreen(float value)
-        {
-            return new ColorRgba(Red, value, Blue, Alpha);
-        }
+        public ColorRgba WithGreen(float value) => new ColorRgba(Red, value, Blue, Alpha);
 
         /// <summary>Creates a new <see cref="ColorRgba" /> instance with <see cref="Red" /> set to the specified value.</summary>
         /// <param name="value">The new value of the red component.</param>
         /// <returns>A new <see cref="ColorRgba" /> instance with <see cref="Red" /> set to <paramref name="value" />.</returns>
-        public ColorRgba WithRed(float value)
-        {
-            return new ColorRgba(value, Green, Blue, Alpha);
-        }
+        public ColorRgba WithRed(float value) => new ColorRgba(value, Green, Blue, Alpha);
 
         /// <summary>Compares a <see cref="ColorRgba" /> with the current instance to determine equality.</summary>
         /// <param name="other">The <see cref="ColorRgba" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
-        public bool Equals(ColorRgba other)
-        {
-            return this == other;
-        }
+        public bool Equals(ColorRgba other) => this == other;
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
@@ -177,9 +138,6 @@ namespace TerraFX.Graphics
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
-        public override string ToString()
-        {
-            return ToString(format: null, formatProvider: null);
-        }
+        public override string ToString() => ToString(format: null, formatProvider: null);
     }
 }

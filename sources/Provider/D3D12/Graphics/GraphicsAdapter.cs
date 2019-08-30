@@ -50,53 +50,23 @@ namespace TerraFX.Provider.D3D12.Graphics
             _vendorId = desc.VendorId;
             _deviceId = desc.DeviceId;
 
-            _state.Transition(to: Initialized);
+            _ = _state.Transition(to: Initialized);
         }
 
         /// <summary>Gets the PCI ID of the device.</summary>
-        public uint DeviceId
-        {
-            get
-            {
-                return _deviceId;
-            }
-        }
+        public uint DeviceId => _deviceId;
 
         /// <summary>Gets the name of the device.</summary>
-        public string DeviceName
-        {
-            get
-            {
-                return _deviceName;
-            }
-        }
+        public string DeviceName => _deviceName;
 
         /// <summary>Gets the <see cref="IGraphicsProvider" /> for the instance.</summary>
-        public IGraphicsProvider GraphicsProvider
-        {
-            get
-            {
-                return _graphicsProvider;
-            }
-        }
+        public IGraphicsProvider GraphicsProvider => _graphicsProvider;
 
         /// <summary>Gets the underlying handle for the instance.</summary>
-        public IntPtr Handle
-        {
-            get
-            {
-                return (IntPtr)_adapter;
-            }
-        }
+        public IntPtr Handle => (IntPtr)_adapter;
 
         /// <summary>Gets the PCI ID of the vendor.</summary>
-        public uint VendorId
-        {
-            get
-            {
-                return _vendorId;
-            }
-        }
+        public uint VendorId => _vendorId;
 
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
         public void Dispose()
@@ -136,7 +106,7 @@ namespace TerraFX.Provider.D3D12.Graphics
 
             if (_adapter != null)
             {
-                _adapter->Release();
+                _ = _adapter->Release();
             }
         }
     }

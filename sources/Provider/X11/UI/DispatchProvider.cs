@@ -39,7 +39,7 @@ namespace TerraFX.Provider.X11.UI
         {
             _display = new Lazy<IntPtr>((Func<IntPtr>)CreateDisplay, isThreadSafe: true);
             _dispatchers = new ConcurrentDictionary<Thread, IDispatcher>();
-            _state.Transition(to: Initialized);
+            _ = _state.Transition(to: Initialized);
         }
 
         /// <summary>Finalizes an instance of the <see cref="DispatchProvider" /> class.</summary>
@@ -49,13 +49,7 @@ namespace TerraFX.Provider.X11.UI
         }
 
         /// <summary>Gets the <c>Display</c> that was created for the instance.</summary>
-        public IntPtr Display
-        {
-            get
-            {
-                return _state.IsNotDisposedOrDisposing ? _display.Value : IntPtr.Zero;
-            }
-        }
+        public IntPtr Display => _state.IsNotDisposedOrDisposing ? _display.Value : IntPtr.Zero;
 
         /// <summary>Gets the current <see cref="Timestamp" /> for the instance.</summary>
         public Timestamp CurrentTimestamp
@@ -86,13 +80,7 @@ namespace TerraFX.Provider.X11.UI
         /// <summary>Gets the <see cref="IDispatcher" /> instance associated with <see cref="Thread.CurrentThread" />.</summary>
         /// <returns>The <see cref="IDispatcher" /> instance associated with <see cref="Thread.CurrentThread" />.</returns>
         /// <remarks>This will create a new <see cref="IDispatcher" /> instance if one does not already exist.</remarks>
-        public IDispatcher DispatcherForCurrentThread
-        {
-            get
-            {
-                return GetDispatcher(Thread.CurrentThread);
-            }
-        }
+        public IDispatcher DispatcherForCurrentThread => GetDispatcher(Thread.CurrentThread);
 
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
         public void Dispose()
@@ -159,7 +147,7 @@ namespace TerraFX.Provider.X11.UI
 
             if (_display.IsValueCreated)
             {
-                XCloseDisplay((XDisplay*)_display.Value);
+                _ = XCloseDisplay((XDisplay*)_display.Value);
             }
         }
     }

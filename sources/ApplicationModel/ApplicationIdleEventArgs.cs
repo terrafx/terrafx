@@ -18,12 +18,6 @@ namespace TerraFX.ApplicationModel
         }
 
         /// <summary>Gets the delta between the current and previous <see cref="Application.Idle" /> events.</summary>
-        public TimeSpan Delta
-        {
-            get
-            {
-                return _delta;
-            }
-        }
+        public TimeSpan Delta => _delta;
     }
 }

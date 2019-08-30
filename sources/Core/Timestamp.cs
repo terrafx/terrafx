@@ -36,67 +36,43 @@ namespace TerraFX
         }
 
         /// <summary>Gets the number of 100-nanosecond ticks represented by the current instance.</summary>
-        public long Ticks
-        {
-            get
-            {
-                return _ticks;
-            }
-        }
+        public long Ticks => _ticks;
 
         /// <summary>Compares two <see cref="Timestamp" /> values to determine equality.</summary>
         /// <param name="left">The <see cref="Timestamp" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="Timestamp" /> to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
-        public static bool operator ==(Timestamp left, Timestamp right)
-        {
-            return left._ticks == right._ticks;
-        }
+        public static bool operator ==(Timestamp left, Timestamp right) => left._ticks == right._ticks;
 
         /// <summary>Compares two <see cref="Timestamp" /> values to determine inequality.</summary>
         /// <param name="left">The <see cref="Timestamp" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="Timestamp" /> to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
-        public static bool operator !=(Timestamp left, Timestamp right)
-        {
-            return left._ticks == right._ticks;
-        }
+        public static bool operator !=(Timestamp left, Timestamp right) => left._ticks == right._ticks;
 
         /// <summary>Compares two <see cref="Timestamp" /> values to determine relative sort-order.</summary>
         /// <param name="left">The <see cref="Timestamp" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="Timestamp" /> to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise, <c>false</c>.</returns>
-        public static bool operator >(Timestamp left, Timestamp right)
-        {
-            return left._ticks > right._ticks;
-        }
+        public static bool operator >(Timestamp left, Timestamp right) => left._ticks > right._ticks;
 
         /// <summary>Compares two <see cref="Timestamp" /> values to determine relative sort-order.</summary>
         /// <param name="left">The <see cref="Timestamp" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="Timestamp" /> to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> is greater than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
-        public static bool operator >=(Timestamp left, Timestamp right)
-        {
-            return left._ticks >= right._ticks;
-        }
+        public static bool operator >=(Timestamp left, Timestamp right) => left._ticks >= right._ticks;
 
         /// <summary>Compares two <see cref="Timestamp" /> values to determine relative sort-order.</summary>
         /// <param name="left">The <see cref="Timestamp" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="Timestamp" /> to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> is less than <paramref name="right" />; otherwise, <c>false</c>.</returns>
-        public static bool operator <(Timestamp left, Timestamp right)
-        {
-            return left._ticks < right._ticks;
-        }
+        public static bool operator <(Timestamp left, Timestamp right) => left._ticks < right._ticks;
 
         /// <summary>Compares two <see cref="Timestamp" /> values to determine relative sort-order.</summary>
         /// <param name="left">The <see cref="Timestamp" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="Timestamp" /> to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> is less than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
-        public static bool operator <=(Timestamp left, Timestamp right)
-        {
-            return left._ticks <= right._ticks;
-        }
+        public static bool operator <=(Timestamp left, Timestamp right) => left._ticks <= right._ticks;
 
         /// <summary>Subtracts two <see cref="Timestamp" /> values to determine their delta.</summary>
         /// <param name="left">The <see cref="Timestamp" /> from which <paramref name="right" /> will be subtracted.</param>
@@ -133,27 +109,18 @@ namespace TerraFX
         /// <summary>Compares a <see cref="Timestamp" /> with the current instance to determine relative sort-order.</summary>
         /// <param name="other">The <see cref="Timestamp" /> to compare with the current instance.</param>
         /// <returns>A value <c>less than zero</c> if <paramref name="other" /> is greater than the current instance, <c>zero</c> if <paramref name="other" /> is equal to the current instance; and <c>greater than zero</c> if <paramref name="other" /> is greater than the current instance.</returns>
-        public int CompareTo(Timestamp other)
-        {
-            return _ticks.CompareTo(other._ticks);
-        }
+        public int CompareTo(Timestamp other) => _ticks.CompareTo(other._ticks);
 
         /// <summary>Compares a <see cref="Timestamp" /> with the current instance to determine equality.</summary>
         /// <param name="other">The <see cref="Timestamp" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
-        public bool Equals(Timestamp other)
-        {
-            return _ticks.Equals(other._ticks);
-        }
+        public bool Equals(Timestamp other) => _ticks.Equals(other._ticks);
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
         /// <param name="formatProvider">The provider to use when formatting the current instance or <c>null</c> to use the default provider.</param>
         /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
-        public string ToString(string? format, IFormatProvider? formatProvider)
-        {
-            return _ticks.ToString(format, formatProvider);
-        }
+        public string ToString(string? format, IFormatProvider? formatProvider) => _ticks.ToString(format, formatProvider);
 
         /// <summary>Compares an <see cref="object" /> with the current instance to determine equality.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
@@ -166,16 +133,10 @@ namespace TerraFX
 
         /// <summary>Gets a hash code for the current instance.</summary>
         /// <returns>A hash code for the current instance.</returns>
-        public override int GetHashCode()
-        {
-            return _ticks.GetHashCode();
-        }
+        public override int GetHashCode() => _ticks.GetHashCode();
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
-        public override string ToString()
-        {
-            return _ticks.ToString();
-        }
+        public override string ToString() => _ticks.ToString();
     }
 }

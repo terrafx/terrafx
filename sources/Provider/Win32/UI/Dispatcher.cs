@@ -37,22 +37,10 @@ namespace TerraFX.Provider.Win32.UI
         public event EventHandler? ExitRequested;
 
         /// <summary>Gets the <see cref="IDispatchProvider" /> for the instance.</summary>
-        public IDispatchProvider DispatchProvider
-        {
-            get
-            {
-                return _dispatchProvider;
-            }
-        }
+        public IDispatchProvider DispatchProvider => _dispatchProvider;
 
         /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
-        public Thread ParentThread
-        {
-            get
-            {
-                return _parentThread;
-            }
-        }
+        public Thread ParentThread => _parentThread;
 
         /// <summary>Dispatches all events currently pending in the queue.</summary>
         /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</exception>
@@ -70,7 +58,7 @@ namespace TerraFX.Provider.Win32.UI
             {
                 if (msg.message != WM_QUIT)
                 {
-                    DispatchMessage(&msg);
+                    _ = DispatchMessage(&msg);
                 }
                 else
                 {
@@ -80,9 +68,6 @@ namespace TerraFX.Provider.Win32.UI
         }
 
         /// <summary>Raises the <see cref="ExitRequested" /> event.</summary>
-        private void OnExitRequested()
-        {
-            ExitRequested?.Invoke(this, EventArgs.Empty);
-        }
+        private void OnExitRequested() => ExitRequested?.Invoke(this, EventArgs.Empty);
     }
 }

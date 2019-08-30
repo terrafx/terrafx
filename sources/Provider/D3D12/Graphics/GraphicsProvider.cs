@@ -44,7 +44,7 @@ namespace TerraFX.Provider.D3D12.Graphics
         {
             _factory = new Lazy<IntPtr>((Func<IntPtr>)CreateFactory, isThreadSafe: true);
             _adapters = new Lazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters, isThreadSafe: true);
-            _state.Transition(to: Initialized);
+            _ = _state.Transition(to: Initialized);
         }
 
         /// <summary>Finalizes an instance of the <see cref="GraphicsProvider" /> class.</summary>
@@ -64,13 +64,7 @@ namespace TerraFX.Provider.D3D12.Graphics
         }
 
         /// <summary>Gets the underlying handle for the instance.</summary>
-        public IntPtr Handle
-        {
-            get
-            {
-                return IntPtr.Zero;
-            }
-        }
+        public IntPtr Handle => IntPtr.Zero;
 
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
         public void Dispose()
@@ -113,7 +107,7 @@ namespace TerraFX.Provider.D3D12.Graphics
             if (_factory.IsValueCreated)
             {
                 var factory = (IDXGIFactory3*)_factory.Value;
-                factory->Release();
+                _ = factory->Release();
             }
         }
 
@@ -175,7 +169,7 @@ namespace TerraFX.Provider.D3D12.Graphics
 
                 if (adapter != null)
                 {
-                    adapter->Release();
+                    _ = adapter->Release();
                 }
             }
 

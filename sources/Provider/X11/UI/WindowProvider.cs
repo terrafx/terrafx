@@ -41,7 +41,7 @@ namespace TerraFX.Provider.X11.UI
         {
             _dispatchProvider = dispatchProvider;
             _windows = new ConcurrentDictionary<IntPtr, Window>();
-            _state.Transition(to: Initialized);
+            _ = _state.Transition(to: Initialized);
         }
 
         /// <summary>Finalizes an instance of the <see cref="WindowProvider" /> class.</summary>
@@ -61,13 +61,7 @@ namespace TerraFX.Provider.X11.UI
         }
 
         /// <summary>Gets the <see cref="IWindow" /> objects created by the instance.</summary>
-        public IEnumerable<IWindow> Windows
-        {
-            get
-            {
-                return _state.IsNotDisposedOrDisposing ? (IEnumerable<IWindow>)_windows : Array.Empty<IWindow>();
-            }
-        }
+        public IEnumerable<IWindow> Windows => _state.IsNotDisposedOrDisposing ? (IEnumerable<IWindow>)_windows : Array.Empty<IWindow>();
 
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
         public void Dispose()
@@ -84,7 +78,7 @@ namespace TerraFX.Provider.X11.UI
             _state.ThrowIfDisposedOrDisposing();
 
             var window = new Window(this);
-            _windows.TryAdd(window.Handle, window);
+            _ = _windows.TryAdd(window.Handle, window);
 
             return window;
         }

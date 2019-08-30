@@ -56,7 +56,7 @@ namespace TerraFX.Provider.Win32.UI
             _nativeHandle = new Lazy<GCHandle>(() => GCHandle.Alloc(this, GCHandleType.Normal), isThreadSafe: true);
 
             _windows = new ConcurrentDictionary<IntPtr, Window>();
-            _state.Transition(to: Initialized);
+            _ = _state.Transition(to: Initialized);
         }
 
         /// <summary>Finalizes an instance of the <see cref="WindowProvider" /> class.</summary>
@@ -66,13 +66,7 @@ namespace TerraFX.Provider.Win32.UI
         }
 
         /// <summary>Gets the <c>ATOM</c> of the <see cref="WNDCLASSEX" /> registered for the instance.</summary>
-        public ushort ClassAtom
-        {
-            get
-            {
-                return _state.IsNotDisposedOrDisposing ? _classAtom.Value : (ushort)0;
-            }
-        }
+        public ushort ClassAtom => _state.IsNotDisposedOrDisposing ? _classAtom.Value : (ushort)0;
 
         /// <summary>Gets the <see cref="DispatchProvider" /> for the instance.</summary>
         public DispatchProvider DispatchProvider
@@ -95,13 +89,7 @@ namespace TerraFX.Provider.Win32.UI
         }
 
         /// <summary>Gets the <see cref="IWindow" /> objects created by the instance.</summary>
-        public IEnumerable<IWindow> Windows
-        {
-            get
-            {
-                return _state.IsNotDisposedOrDisposing ? (IEnumerable<IWindow>)_windows : Array.Empty<IWindow>();
-            }
-        }
+        public IEnumerable<IWindow> Windows => _state.IsNotDisposedOrDisposing ? (IEnumerable<IWindow>)_windows : Array.Empty<IWindow>();
 
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
         public void Dispose()
@@ -118,22 +106,22 @@ namespace TerraFX.Provider.Win32.UI
             _state.ThrowIfDisposedOrDisposing();
 
             var window = new Window(this);
-            _windows.TryAdd(window.Handle, window);
+            _ = _windows.TryAdd(window.Handle, window);
 
             return window;
         }
 
         /// <summary>Forwards native window messages to the appropriate <see cref="Window" /> instance for processing.</summary>
         /// <param name="hWnd">The <c>HWND</c> of the <see cref="Window" /> the message should be forwarded to.</param>
-        /// <param name="Msg">The message to be processed.</param>
+        /// <param name="msg">The message to be processed.</param>
         /// <param name="wParam">The first parameter of the message to be processed.</param>
         /// <param name="lParam">The second parameter of the message to be processed.</param>
         /// <returns>A value that varies based on the exact message that was processed.</returns>
-        private static IntPtr ForwardWindowMessage(IntPtr hWnd, uint Msg, UIntPtr wParam, IntPtr lParam)
+        private static IntPtr ForwardWindowMessage(IntPtr hWnd, uint msg, UIntPtr wParam, IntPtr lParam)
         {
             IntPtr result, userData;
 
-            if (Msg == WM_CREATE)
+            if (msg == WM_CREATE)
             {
                 // We allow the WM_CREATE message to be forwarded to the Window instance
                 // for hWnd. This allows some delayed initialization to occur since most
@@ -141,7 +129,7 @@ namespace TerraFX.Provider.Win32.UI
 
                 ref var pCreateStruct = ref AsRef<CREATESTRUCT>(lParam);
                 userData = (IntPtr)pCreateStruct.lpCreateParams;
-                SetWindowLongPtr(hWnd, GWLP_USERDATA, userData);
+                _ = SetWindowLongPtr(hWnd, GWLP_USERDATA, userData);
             }
             else
             {
@@ -158,20 +146,20 @@ namespace TerraFX.Provider.Win32.UI
 
             if (windowProvider._windows.TryGetValue(hWnd, out var window))
             {
-                if (Msg == WM_DESTROY)
+                if (msg == WM_DESTROY)
                 {
                     // We forward the WM_DESTROY message to the corresponding Window instance
                     // so that it can still be properly disposed of in the scenario that the
                     // hWnd was destroyed externally.
 
-                    windowProvider._windows.TryRemove(hWnd, out window);
+                    _ = windowProvider._windows.TryRemove(hWnd, out window);
                 }
 
-                result = window!.ProcessWindowMessage(Msg, wParam, lParam);
+                result = window!.ProcessWindowMessage(msg, wParam, lParam);
             }
             else
             {
-                result = DefWindowProc(hWnd, Msg, wParam, lParam);
+                result = DefWindowProc(hWnd, msg, wParam, lParam);
             }
 
             return result;
