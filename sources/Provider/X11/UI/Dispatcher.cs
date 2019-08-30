@@ -17,7 +17,6 @@ namespace TerraFX.Provider.X11.UI
         private const int False = 0;
         private const int NoExpose = 14;
 
-        #region Fields
         /// <summary>The <see cref="UI.DispatchProvider" /> for the instance.</summary>
         private readonly DispatchProvider _dispatchProvider;
 
@@ -26,9 +25,7 @@ namespace TerraFX.Provider.X11.UI
 
         /// <summary>The <c>Atom</c> used to access the <c>Window</c> property containing the associated <see cref="WindowProvider" />.</summary>
         private readonly Lazy<UIntPtr> _windowProviderProperty;
-        #endregion
 
-        #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Dispatcher" /> class.</summary>
         /// <param name="dispatchProvider">The <see cref="DispatchProvider" /> the instance is associated with.</param>
         /// <param name="parentThread">The <see cref="Thread" /> that was used to create the instance.</param>
@@ -41,14 +38,10 @@ namespace TerraFX.Provider.X11.UI
             _parentThread = parentThread!;
             _windowProviderProperty = new Lazy<UIntPtr>(CreateWindowProviderProperty, isThreadSafe: true);
         }
-        #endregion
 
-        #region TerraFX.UI.IDispatcher Events
         /// <summary>Occurs when an exit event is dispatched from the queue.</summary>
         public event EventHandler? ExitRequested;
-        #endregion
 
-        #region Methods
         /// <summary>Creates an <c>Atom</c> for the window provider property.</summary>
         /// <returns>An <c>Atom</c> for the window provider property.</returns>
         private UIntPtr CreateWindowProviderProperty()
@@ -77,9 +70,7 @@ namespace TerraFX.Provider.X11.UI
         {
             ExitRequested?.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region TerraFX.UI.IDispatcher Properties
         /// <summary>Gets the <see cref="IDispatchProvider" /> associated with the instance.</summary>
         public IDispatchProvider DispatchProvider
         {
@@ -106,9 +97,7 @@ namespace TerraFX.Provider.X11.UI
                 return _parentThread;
             }
         }
-        #endregion
 
-        #region TerraFX.UI.IDispatcher Methods
         /// <summary>Dispatches all events currently pending in the queue.</summary>
         /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</exception>
         /// <remarks>
@@ -133,6 +122,5 @@ namespace TerraFX.Provider.X11.UI
                 }
             }
         }
-        #endregion
     }
 }

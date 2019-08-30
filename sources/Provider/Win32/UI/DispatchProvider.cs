@@ -20,15 +20,12 @@ namespace TerraFX.Provider.Win32.UI
     [Shared]
     public sealed unsafe class DispatchProvider : IDispatchProvider
     {
-        #region Fields
         /// <summary>The tick frequency for the system's monotonic timer.</summary>
         private readonly double _tickFrequency;
 
         /// <summary>The <see cref="IDispatcher" /> instances that have been created by the instance.</summary>
         private readonly ConcurrentDictionary<Thread, IDispatcher> _dispatchers;
-        #endregion
 
-        #region Constructors
         /// <summary>Initializes a new instance of the <see cref="DispatchProvider" /> class.</summary>
         /// <exception cref="ExternalException">The call to <see cref="QueryPerformanceFrequency(LARGE_INTEGER*)" /> failed.</exception>
         public DispatchProvider()
@@ -36,9 +33,7 @@ namespace TerraFX.Provider.Win32.UI
             _tickFrequency = GetTickFrequency();
             _dispatchers = new ConcurrentDictionary<Thread, IDispatcher>();
         }
-        #endregion
 
-        #region Static Methods
         /// <summary>Gets the tick frequency for the system's monotonic timer.</summary>
         /// <returns>The tick frequency for the system's monotonic timer.</returns>
         /// <exception cref="ExternalException">The call to <see cref="QueryPerformanceFrequency(LARGE_INTEGER*)" /> failed.</exception>
@@ -55,9 +50,7 @@ namespace TerraFX.Provider.Win32.UI
             const double ticksPerSecond = Timestamp.TicksPerSecond;
             return ticksPerSecond / frequency.QuadPart;
         }
-        #endregion
 
-        #region TerraFX.UI.IDispatchProvider Properties
         /// <summary>Gets the current <see cref="Timestamp" /> for the instance.</summary>
         /// <exception cref="ExternalException">The call to <see cref="QueryPerformanceCounter(LARGE_INTEGER*)" /> failed.</exception>
         public Timestamp CurrentTimestamp
@@ -87,9 +80,7 @@ namespace TerraFX.Provider.Win32.UI
                 return GetDispatcher(Thread.CurrentThread);
             }
         }
-        #endregion
 
-        #region TerraFX.UI.IDispatchProvider Methods
         /// <summary>Gets the <see cref="IDispatcher" /> instance associated with a <see cref="Thread" />, creating one if it does not exist.</summary>
         /// <param name="thread">The <see cref="Thread" /> for which the <see cref="IDispatcher" /> instance should be retrieved.</param>
         /// <returns>The <see cref="IDispatcher" /> instance associated with <paramref name="thread" />.</returns>
@@ -111,6 +102,5 @@ namespace TerraFX.Provider.Win32.UI
             ThrowIfNull(thread, nameof(thread));
             return _dispatchers.TryGetValue(thread, out dispatcher!);
         }
-        #endregion
     }
 }

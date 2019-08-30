@@ -11,19 +11,14 @@ namespace TerraFX.Numerics
     /// <summary>Defines a 4x4 row-major matrix.</summary>
     public readonly struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable
     {
-        #region Defaults
         /// <summary>Defines the identity matrix.</summary>
         public static readonly Matrix4x4 Identity = new Matrix4x4(Vector4.UnitX, Vector4.UnitY, Vector4.UnitZ, Vector4.UnitW);
-        #endregion
 
-        #region Fields
         private readonly Vector4 _x;
         private readonly Vector4 _y;
         private readonly Vector4 _z;
         private readonly Vector4 _w;
-        #endregion
 
-        #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Matrix4x4" /> struct.</summary>
         /// <param name="x">The value of the x-dimension.</param>
         /// <param name="y">The value of the y-dimension.</param>
@@ -36,9 +31,7 @@ namespace TerraFX.Numerics
             _z = z;
             _w = w;
         }
-        #endregion
 
-        #region Properties
         /// <summary>Gets the value of the x-dimension.</summary>
         public Vector4 X
         {
@@ -74,9 +67,7 @@ namespace TerraFX.Numerics
                 return _w;
             }
         }
-        #endregion
 
-        #region Comparison Operators
         /// <summary>Compares two <see cref="Matrix4x4" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="Matrix4x4" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="Matrix4x4" /> to compare with <paramref name="left" />.</param>
@@ -100,9 +91,7 @@ namespace TerraFX.Numerics
                 || (left.Z != right.Z)
                 || (left.W != right.W);
         }
-        #endregion
 
-        #region Methods
         /// <summary>Creates a new <see cref="Matrix4x4" /> instance with <see cref="X" /> set to the specified value.</summary>
         /// <param name="value">The new value of the x-dimension.</param>
         /// <returns>A new <see cref="Matrix4x4" /> instance with <see cref="X" /> set to <paramref name="value" />.</returns>
@@ -134,9 +123,7 @@ namespace TerraFX.Numerics
         {
             return new Matrix4x4(X, Y, Z, value);
         }
-        #endregion
 
-        #region System.IEquatable<Matrix4x4> Methods
         /// <summary>Compares a <see cref="Matrix4x4" /> with the current instance to determine equality.</summary>
         /// <param name="other">The <see cref="Matrix4x4" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
@@ -144,9 +131,7 @@ namespace TerraFX.Numerics
         {
             return this == other;
         }
-        #endregion
 
-        #region System.IFormattable Methods
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
         /// <param name="formatProvider">The provider to use when formatting the current instance or <c>null</c> to use the default provider.</param>
@@ -170,9 +155,7 @@ namespace TerraFX.Numerics
                 .Append('>')
                 .ToString();
         }
-        #endregion
 
-        #region System.Object Methods
         /// <summary>Compares a <see cref="object" /> with the current instance to determine equality.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="Matrix4x4" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>
@@ -202,6 +185,5 @@ namespace TerraFX.Numerics
         {
             return ToString(format: null, formatProvider: null);
         }
-        #endregion
     }
 }

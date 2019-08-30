@@ -11,12 +11,9 @@ namespace TerraFX.Graphics.Geometry2D
     /// <summary>Defines a rectangle.</summary>
     public readonly struct Rectangle : IEquatable<Rectangle>, IFormattable
     {
-        #region Fields
         private readonly Vector2 _location;
         private readonly Vector2 _size;
-        #endregion
 
-        #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Rectangle" /> struct.</summary>
         /// <param name="location">The location of the instance.</param>
         /// <param name="size">The size of the instance.</param>
@@ -36,9 +33,7 @@ namespace TerraFX.Graphics.Geometry2D
             _location = new Vector2(x, y);
             _size = new Vector2(width, height);
         }
-        #endregion
 
-        #region Properties
         /// <summary>Gets the height of the instance.</summary>
         public float Height
         {
@@ -92,9 +87,7 @@ namespace TerraFX.Graphics.Geometry2D
                 return _location.Y;
             }
         }
-        #endregion
 
-        #region Comparison Operators
         /// <summary>Compares two <see cref="Rectangle" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="Rectangle" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="Rectangle" /> to compare with <paramref name="left" />.</param>
@@ -114,9 +107,7 @@ namespace TerraFX.Graphics.Geometry2D
             return (left.Location != right.Location)
                 || (left.Size != right.Size);
         }
-        #endregion
 
-        #region Methods
         /// <summary>Creates a new <see cref="Rectangle" /> instance with <see cref="Height" /> set to the specified value.</summary>
         /// <param name="value">The new height of the instance.</param>
         /// <returns>A new <see cref="Rectangle" /> instance with <see cref="Height" /> set to <paramref name="value" />.</returns>
@@ -168,9 +159,7 @@ namespace TerraFX.Graphics.Geometry2D
             var location = new Vector2(X, value);
             return new Rectangle(location, Size);
         }
-        #endregion
 
-        #region System.IEquatable<Rectangle> Methods
         /// <summary>Compares a <see cref="Rectangle" /> with the current instance to determine equality.</summary>
         /// <param name="other">The <see cref="Rectangle" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
@@ -178,9 +167,7 @@ namespace TerraFX.Graphics.Geometry2D
         {
             return this == other;
         }
-        #endregion
 
-        #region System.IFormattable Methods
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
         /// <param name="formatProvider">The provider to use when formatting the current instance or <c>null</c> to use the default provider.</param>
@@ -204,9 +191,7 @@ namespace TerraFX.Graphics.Geometry2D
                 .Append('>')
                 .ToString();
         }
-        #endregion
 
-        #region System.Object Methods
         /// <summary>Compares a <see cref="object" /> with the current instance to determine equality.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="Rectangle" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>
@@ -236,6 +221,5 @@ namespace TerraFX.Graphics.Geometry2D
         {
             return ToString(format: null, formatProvider: null);
         }
-        #endregion
     }
 }

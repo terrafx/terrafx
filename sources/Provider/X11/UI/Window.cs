@@ -28,7 +28,6 @@ namespace TerraFX.Provider.X11.UI
         private const int VisibilityFullyObscured = 2;
         private const int VisibilityNotify = 15;
 
-        #region Fields
         /// <summary>The native window handle for the instance.</summary>
         private readonly Lazy<UIntPtr> _handle;
 
@@ -70,9 +69,7 @@ namespace TerraFX.Provider.X11.UI
 
         /// <summary>A value that indicates whether the instance is visible.</summary>
         private bool _isVisible;
-        #endregion
 
-        #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Window" /> class.</summary>
         /// <param name="windowProvider">The <see cref="WindowProvider" /> for the instance.</param>
         internal Window(WindowProvider windowProvider)
@@ -89,17 +86,13 @@ namespace TerraFX.Provider.X11.UI
             _windowProvider = windowProvider;
             _state.Transition(to: Initialized);
         }
-        #endregion
 
-        #region Destructors
         /// <summary>Finalizes an instance of the <see cref="Window" /> class.</summary>
         ~Window()
         {
             Dispose(isDisposing: false);
         }
-        #endregion
 
-        #region TerraFX.UI.IWindow Properties
         /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
         public Rectangle Bounds
         {
@@ -207,9 +200,7 @@ namespace TerraFX.Provider.X11.UI
                 return _windowState;
             }
         }
-        #endregion
 
-        #region Methods
         /// <summary>Creates a <c>Window</c> for the instance.</summary>
         /// <returns>A <c>Window</c> for the created native window.</returns>
         /// <exception cref="ExternalException">The call to <see cref="XCreateWindow(XDisplay*, UIntPtr, int, int, uint, uint, uint, int, uint, Visual*, UIntPtr, XSetWindowAttributes*)" /> failed.</exception>
@@ -326,18 +317,14 @@ namespace TerraFX.Provider.X11.UI
                 }
             }
         }
-        #endregion
 
-        #region System.IDisposable Methods
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
         public void Dispose()
         {
             Dispose(isDisposing: true);
             GC.SuppressFinalize(this);
         }
-        #endregion
 
-        #region TerraFX.UI.IWindow Methods
         /// <summary>Activates the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public void Activate()
@@ -471,6 +458,5 @@ namespace TerraFX.Provider.X11.UI
 
             return true;
         }
-        #endregion
     }
 }

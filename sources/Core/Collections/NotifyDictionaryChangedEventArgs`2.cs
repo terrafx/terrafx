@@ -11,18 +11,13 @@ namespace TerraFX.Collections
     /// <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
     public sealed class NotifyDictionaryChangedEventArgs<TKey, TValue> : EventArgs
     {
-        #region Static Fields
         private static readonly NotifyDictionaryChangedEventArgs<TKey, TValue> Reset = new NotifyDictionaryChangedEventArgs<TKey, TValue>(NotifyDictionaryChangedAction.Reset);
-        #endregion
 
-        #region Fields
         private readonly NotifyDictionaryChangedAction _action;
         private readonly TKey _key;
         private readonly TValue _oldValue;
         private readonly TValue _newValue;
-        #endregion
 
-        #region Constructors
         private NotifyDictionaryChangedEventArgs(NotifyDictionaryChangedAction action, TKey key = default, TValue oldValue = default, TValue newValue = default)
         {
             Debug.Assert(Enum.IsDefined(typeof(NotifyDictionaryChangedAction), action));
@@ -32,9 +27,7 @@ namespace TerraFX.Collections
             _oldValue = oldValue;
             _newValue = newValue;
         }
-        #endregion
 
-        #region Properties
         /// <summary>Gets the action that caused the event.</summary>
         public NotifyDictionaryChangedAction Action
         {
@@ -88,9 +81,7 @@ namespace TerraFX.Collections
                 return _newValue;
             }
         }
-        #endregion
 
-        #region Static Methods
         /// <summary>Gets or creates an instance of the <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> class for the <see cref="NotifyDictionaryChangedAction.Add" /> action.</summary>
         /// <param name="key">The key of the item that caused the event.</param>
         /// <returns>An instance of the <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> class.</returns>
@@ -123,6 +114,5 @@ namespace TerraFX.Collections
         {
             return new NotifyDictionaryChangedEventArgs<TKey, TValue>(NotifyDictionaryChangedAction.ValueChanged, key, oldValue, newValue);
         }
-        #endregion
     }
 }

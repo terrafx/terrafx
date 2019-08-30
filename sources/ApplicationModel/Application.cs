@@ -15,20 +15,15 @@ namespace TerraFX.ApplicationModel
     /// <summary>A multimedia-based application.</summary>
     public sealed class Application : IDisposable, IServiceProvider
     {
-        #region State Constants
         private const int Stopped = 1;
         private const int Running = 2;
         private const int Exiting = 3;
-        #endregion
 
-        #region Fields
         private readonly Assembly[] _compositionAssemblies;
         private readonly Thread _parentThread;
         private readonly Lazy<CompositionHost> _compositionHost;
         private State _state;
-        #endregion
 
-        #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Application" /> class.</summary>
         /// <param name="compositionAssemblies">The <see cref="Assembly" /> instances to search for type exports.</param>
         /// <exception cref="ArgumentNullException"><paramref name="compositionAssemblies" /> is <c>null</c>.</exception>
@@ -42,14 +37,10 @@ namespace TerraFX.ApplicationModel
 
             _state.Transition(to: Stopped);
         }
-        #endregion
 
-        #region Events
         /// <summary>Occurs when the event loop for the current instance becomes idle.</summary>
         public event EventHandler<ApplicationIdleEventArgs>? Idle;
-        #endregion
 
-        #region Properties
         /// <summary>Gets a value that indicates whether the event loop for the instance is running.</summary>
         public bool IsRunning
         {
@@ -67,9 +58,7 @@ namespace TerraFX.ApplicationModel
                 return _parentThread;
             }
         }
-        #endregion
 
-        #region Methods
         private CompositionHost CreateCompositionHost()
         {
             _state.ThrowIfDisposedOrDisposing();
@@ -149,9 +138,7 @@ namespace TerraFX.ApplicationModel
             }
             _state.TryTransition(from: Exiting, to: Stopped);
         }
-        #endregion
 
-        #region System.IDisposable Methods
         /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
         public void Dispose()
         {
@@ -164,9 +151,7 @@ namespace TerraFX.ApplicationModel
 
             _state.EndDispose();
         }
-        #endregion
 
-        #region System.IServiceProvider Methods
         /// <summary>Gets the service object of the specified type.</summary>
         /// <param name="serviceType">The type of the service object to get.</param>
         /// <returns>A service object of <paramref name="serviceType" /> if one exists; otherwise, <c>null</c>.</returns>
@@ -175,6 +160,5 @@ namespace TerraFX.ApplicationModel
             _compositionHost.Value.TryGetExport(serviceType, out var service);
             return service;
         }
-        #endregion
     }
 }

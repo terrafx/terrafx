@@ -13,7 +13,6 @@ namespace TerraFX.Provider.Vulkan.Graphics
     /// <summary>Represents a graphics adapter.</summary>
     public sealed unsafe class GraphicsAdapter : IGraphicsAdapter
     {
-        #region Fields
         /// <summary>The <see cref="GraphicsProvider" /> for the instance.</summary>
         private readonly GraphicsProvider _graphicsProvider;
 
@@ -28,9 +27,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
         /// <summary>The PCI ID of the device.</summary>
         private readonly uint _deviceId;
-        #endregion
 
-        #region Constructors
         /// <summary>Initializes a new instance of the <see cref="GraphicsAdapter" /> class.</summary>
         /// <param name="graphicsProvider">The <see cref="GraphicsProvider" /> for the instance.</param>
         /// <param name="physicalDevice">The Vulkan device for the instance.</param>
@@ -46,9 +43,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
             _vendorId = properties.vendorID;
             _deviceId = properties.deviceID;
         }
-        #endregion
 
-        #region TerraFX.Graphics.IGraphicsAdapter Properties
         /// <summary>Gets the PCI ID of the device.</summary>
         public uint DeviceId
         {
@@ -93,6 +88,5 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 return _vendorId;
             }
         }
-        #endregion
     }
 }

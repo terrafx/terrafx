@@ -24,15 +24,12 @@ namespace TerraFX.Provider.Win32.UI
     [Shared]
     public sealed unsafe class WindowProvider : IDisposable, IWindowProvider
     {
-        #region Static Fields
         /// <summary>A <c>HMODULE</c> to the entry point module.</summary>
         public static readonly IntPtr EntryPointModule = GetModuleHandle();
 
         /// <summary>The <see cref="NativeDelegate{TDelegate}" /> for the <see cref="WNDPROC" /> method.</summary>
         private static readonly NativeDelegate<WNDPROC> ForwardWndProc = new NativeDelegate<WNDPROC>(ForwardWindowMessage);
-        #endregion
 
-        #region Fields
         /// <summary>The <c>ATOM</c> of the <see cref="WNDCLASSEX" /> registered for the instance.</summary>
         private readonly Lazy<ushort> _classAtom;
 
@@ -47,9 +44,7 @@ namespace TerraFX.Provider.Win32.UI
 
         /// <summary>The <see cref="State" /> of the instance.</summary>
         private State _state;
-        #endregion
 
-        #region Constructors
         /// <summary>Initializes a new instance of the <see cref="WindowProvider" /> class.</summary>
         [ImportingConstructor]
         public WindowProvider(
@@ -63,17 +58,13 @@ namespace TerraFX.Provider.Win32.UI
             _windows = new ConcurrentDictionary<IntPtr, Window>();
             _state.Transition(to: Initialized);
         }
-        #endregion
 
-        #region Destructors
         /// <summary>Finalizes an instance of the <see cref="WindowProvider" /> class.</summary>
         ~WindowProvider()
         {
             Dispose(isDisposing: false);
         }
-        #endregion
 
-        #region Properties
         /// <summary>Gets the <c>ATOM</c> of the <see cref="WNDCLASSEX" /> registered for the instance.</summary>
         public ushort ClassAtom
         {
@@ -102,9 +93,7 @@ namespace TerraFX.Provider.Win32.UI
                 return _nativeHandle.Value;
             }
         }
-        #endregion
 
-        #region TerraFX.UI.IWindowProvider Properties
         /// <summary>Gets the <see cref="IWindow" /> objects created by the instance.</summary>
         public IEnumerable<IWindow> Windows
         {
@@ -113,9 +102,7 @@ namespace TerraFX.Provider.Win32.UI
                 return _state.IsNotDisposedOrDisposing ? (IEnumerable<IWindow>)_windows : Array.Empty<IWindow>();
             }
         }
-        #endregion
 
-        #region Static Methods
         /// <summary>Forwards native window messages to the appropriate <see cref="Window" /> instance for processing.</summary>
         /// <param name="hWnd">The <c>HWND</c> of the <see cref="Window" /> the message should be forwarded to.</param>
         /// <param name="Msg">The message to be processed.</param>
@@ -199,9 +186,7 @@ namespace TerraFX.Provider.Win32.UI
 
             return desktopWindowClass.hCursor;
         }
-        #endregion
 
-        #region Methods
         /// <summary>Creates an <c>ATOM</c> by registering a <see cref="WNDCLASSEX" /> for the entry point module.</summary>
         /// <exception cref="ExternalException">The call to <see cref="GetClassName(IntPtr, char*, int)" /> failed.</exception>
         /// <exception cref="ExternalException">The call to <see cref="GetClassInfoEx(IntPtr, char*, WNDCLASSEX*)" /> failed.</exception>
@@ -317,18 +302,14 @@ namespace TerraFX.Provider.Win32.UI
 
             Assert(_windows.IsEmpty, Resources.ArgumentOutOfRangeExceptionMessage, nameof(_windows.IsEmpty), _windows.IsEmpty);
         }
-        #endregion
 
-        #region System.IDisposable Methods
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
         public void Dispose()
         {
             Dispose(isDisposing: true);
             GC.SuppressFinalize(this);
         }
-        #endregion
 
-        #region TerraFX.UI.IWindowProvider Methods
         /// <summary>Create a new <see cref="IWindow"/> instance.</summary>
         /// <returns>A new <see cref="IWindow" /> instance</returns>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
@@ -341,6 +322,5 @@ namespace TerraFX.Provider.Win32.UI
 
             return window;
         }
-        #endregion
     }
 }

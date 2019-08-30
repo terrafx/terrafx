@@ -10,7 +10,6 @@ namespace TerraFX.UI
     /// <summary>Defines a window.</summary>
     public interface IWindow
     {
-        #region Properties
         /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
         Rectangle Bounds { get; }
 
@@ -46,9 +45,7 @@ namespace TerraFX.UI
 
         /// <summary>Gets the <see cref="WindowState" /> for the instance.</summary>
         WindowState WindowState { get; }
-        #endregion
 
-        #region Methods
         /// <summary>Activates the instance.</summary>
         void Activate();
 
@@ -79,6 +76,5 @@ namespace TerraFX.UI
         /// <summary>Tries to activate the instance.</summary>
         /// <returns><c>true</c> if the instance was succesfully activated; otherwise, <c>false</c>.</returns>
         bool TryActivate();
-        #endregion
     }
 }

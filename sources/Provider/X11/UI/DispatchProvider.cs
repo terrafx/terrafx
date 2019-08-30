@@ -24,7 +24,6 @@ namespace TerraFX.Provider.X11.UI
     [Shared]
     public sealed unsafe class DispatchProvider : IDisposable, IDispatchProvider
     {
-        #region Fields
         /// <summary>The <c>Display</c> that was created for the instance.</summary>
         private readonly Lazy<IntPtr> _display;
 
@@ -33,9 +32,7 @@ namespace TerraFX.Provider.X11.UI
 
         /// <summary>The <see cref="State" /> of the instance.</summary>
         private State _state;
-        #endregion
 
-        #region Constructors
         /// <summary>Initializes a new instance of the <see cref="DispatchProvider" /> class.</summary>
         [ImportingConstructor]
         public DispatchProvider()
@@ -44,17 +41,13 @@ namespace TerraFX.Provider.X11.UI
             _dispatchers = new ConcurrentDictionary<Thread, IDispatcher>();
             _state.Transition(to: Initialized);
         }
-        #endregion
 
-        #region Destructors
         /// <summary>Finalizes an instance of the <see cref="DispatchProvider" /> class.</summary>
         ~DispatchProvider()
         {
             Dispose(isDisposing: false);
         }
-        #endregion
 
-        #region Properties
         /// <summary>Gets the <c>Display</c> that was created for the instance.</summary>
         public IntPtr Display
         {
@@ -63,9 +56,7 @@ namespace TerraFX.Provider.X11.UI
                 return _state.IsNotDisposedOrDisposing ? _display.Value : IntPtr.Zero;
             }
         }
-        #endregion
 
-        #region TerraFX.UI.IDispatchProvider Properties
         /// <summary>Gets the current <see cref="Timestamp" /> for the instance.</summary>
         public Timestamp CurrentTimestamp
         {
@@ -102,9 +93,7 @@ namespace TerraFX.Provider.X11.UI
                 return GetDispatcher(Thread.CurrentThread);
             }
         }
-        #endregion
 
-        #region Static Methods
         /// <summary>Creates a <see cref="Display" />.</summary>
         /// <returns>The created <see cref="Display" />.</returns>
         /// <exception cref="ExternalException">The call to <see cref="XOpenDisplay(sbyte*)" /> failed.</exception>
@@ -119,9 +108,7 @@ namespace TerraFX.Provider.X11.UI
 
             return (IntPtr)display;
         }
-        #endregion
 
-        #region Methods
         /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
         /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
         private void Dispose(bool isDisposing)
@@ -146,18 +133,14 @@ namespace TerraFX.Provider.X11.UI
                 XCloseDisplay((XDisplay*)_display.Value);
             }
         }
-        #endregion
 
-        #region System.IDisposable Methods
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
         public void Dispose()
         {
             Dispose(isDisposing: true);
             GC.SuppressFinalize(this);
         }
-        #endregion
 
-        #region TerraFX.UI.IDispatchProvider Methods
         /// <summary>Gets the <see cref="IDispatcher" /> instance associated with a <see cref="Thread" />, creating one if it does not exist.</summary>
         /// <param name="thread">The <see cref="Thread" /> for which the <see cref="IDispatcher" /> instance should be retrieved.</param>
         /// <returns>The <see cref="IDispatcher" /> instance associated with <paramref name="thread" />.</returns>
@@ -179,6 +162,5 @@ namespace TerraFX.Provider.X11.UI
             ThrowIfNull(thread, nameof(thread));
             return _dispatchers.TryGetValue(thread, out dispatcher!);
         }
-        #endregion
     }
 }

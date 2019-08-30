@@ -21,7 +21,6 @@ namespace TerraFX.Provider.Win32.UI
     /// <summary>Defines a window.</summary>
     public sealed unsafe class Window : IDisposable, IWindow
     {
-        #region Fields
         /// <summary>The native window handle for the instance.</summary>
         private readonly Lazy<IntPtr> _handle;
 
@@ -60,9 +59,7 @@ namespace TerraFX.Provider.Win32.UI
 
         /// <summary>A value that indicates whether the instance is visible.</summary>
         private bool _isVisible;
-        #endregion
 
-        #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Window" /> class.</summary>
         /// <param name="windowProvider">The <see cref="WindowProvider" /> for the instance.</param>
         internal Window(WindowProvider windowProvider)
@@ -79,17 +76,13 @@ namespace TerraFX.Provider.Win32.UI
             _windowProvider = windowProvider;
             _state.Transition(to: Initialized);
         }
-        #endregion
 
-        #region Destructors
         /// <summary>Finalizes an instance of the <see cref="Window" /> class.</summary>
         ~Window()
         {
             Dispose(isDisposing: false);
         }
-        #endregion
 
-        #region TerraFX.UI.IWindow Properties
         /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
         public Rectangle Bounds
         {
@@ -197,9 +190,7 @@ namespace TerraFX.Provider.Win32.UI
                 return _windowState;
             }
         }
-        #endregion
 
-        #region Static Methods
         /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of a native window.</summary>
         /// <param name="handle">A handle to the native window to get the bounds for.</param>
         /// <returns>A <see cref="Rectangle" /> that represents the bounds of <paramref name="handle" />.</returns>
@@ -225,9 +216,7 @@ namespace TerraFX.Provider.Win32.UI
             var activeWindow = GetActiveWindow();
             return activeWindow == handle;
         }
-        #endregion
 
-        #region Methods
         /// <summary>Creates a <c>HWND</c> for the instance.</summary>
         /// <returns>A <c>HWND</c> for the created native window.</returns>
         /// <exception cref="ExternalException">The call to <see cref="CreateWindowEx(uint, char*, char*, uint, int, int, int, int, IntPtr, IntPtr, IntPtr, void*)" /> failed.</exception>
@@ -506,18 +495,14 @@ namespace TerraFX.Provider.Win32.UI
                 }
             }
         }
-        #endregion
 
-        #region System.IDisposable Methods
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
         public void Dispose()
         {
             Dispose(isDisposing: true);
             GC.SuppressFinalize(this);
         }
-        #endregion
 
-        #region TerraFX.UI.IWindow Methods
         /// <summary>Activates the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         /// <exception cref="ExternalException">The call to <see cref="SetForegroundWindow(IntPtr)" /> failed.</exception>
@@ -640,6 +625,5 @@ namespace TerraFX.Provider.Win32.UI
 
             return _isActive || (SetForegroundWindow(_handle.Value) != FALSE);
         }
-        #endregion
     }
 }

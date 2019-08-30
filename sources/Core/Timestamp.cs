@@ -10,7 +10,6 @@ namespace TerraFX
     /// <summary>Defines a timestamp.</summary>
     public readonly struct Timestamp : IComparable, IComparable<Timestamp>, IEquatable<Timestamp>, IFormattable
     {
-        #region Constants
         /// <summary>The number of ticks that occur per day.</summary>
         public const long TicksPerDay = TimeSpan.TicksPerDay;
 
@@ -25,23 +24,17 @@ namespace TerraFX
 
         /// <summary>The number of ticks that occur per second.</summary>
         public const long TicksPerSecond = TimeSpan.TicksPerSecond;
-        #endregion
 
-        #region Fields
         /// <summary>The number of 100-nanosecond ticks represented by the instance.</summary>
         private readonly long _ticks;
-        #endregion
 
-        #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Timestamp" /> struct.</summary>
         /// <param name="ticks">The number of 100-nanosecond ticks represented by the instance.</param>
         public Timestamp(long ticks)
         {
             _ticks = ticks;
         }
-        #endregion
 
-        #region Properties
         /// <summary>Gets the number of 100-nanosecond ticks represented by the current instance.</summary>
         public long Ticks
         {
@@ -50,9 +43,7 @@ namespace TerraFX
                 return _ticks;
             }
         }
-        #endregion
 
-        #region Comparison Operators
         /// <summary>Compares two <see cref="Timestamp" /> values to determine equality.</summary>
         /// <param name="left">The <see cref="Timestamp" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="Timestamp" /> to compare with <paramref name="left" />.</param>
@@ -106,9 +97,7 @@ namespace TerraFX
         {
             return left._ticks <= right._ticks;
         }
-        #endregion
 
-        #region Binary Operators
         /// <summary>Subtracts two <see cref="Timestamp" /> values to determine their delta.</summary>
         /// <param name="left">The <see cref="Timestamp" /> from which <paramref name="right" /> will be subtracted.</param>
         /// <param name="right">The <see cref="Timestamp" /> to subtract from <paramref name="left" />.</param>
@@ -119,9 +108,7 @@ namespace TerraFX
             var deltaTicks = unchecked(left._ticks - right._ticks);
             return new TimeSpan(deltaTicks);
         }
-        #endregion
 
-        #region System.IComparable Methods
         /// <summary>Compares an <see cref="object" /> with the current instance to determine relative sort-order.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns>A value <c>less than zero</c> if <paramref name="obj" /> is greater than the current instance, <c>zero</c> if <paramref name="obj"/> is equal to the current instance; and <c>greater than zero</c> if <paramref name="obj" /> is <c>null</c> or greater than the current instance.</returns>
@@ -142,9 +129,7 @@ namespace TerraFX
                 return 0;
             }
         }
-        #endregion
 
-        #region System.IComparable<Timestamp> Methods
         /// <summary>Compares a <see cref="Timestamp" /> with the current instance to determine relative sort-order.</summary>
         /// <param name="other">The <see cref="Timestamp" /> to compare with the current instance.</param>
         /// <returns>A value <c>less than zero</c> if <paramref name="other" /> is greater than the current instance, <c>zero</c> if <paramref name="other"/> is equal to the current instance; and <c>greater than zero</c> if <paramref name="other" /> is greater than the current instance.</returns>
@@ -152,9 +137,7 @@ namespace TerraFX
         {
             return _ticks.CompareTo(other._ticks);
         }
-        #endregion
 
-        #region System.IEquatable<Timestamp> Methods
         /// <summary>Compares a <see cref="Timestamp" /> with the current instance to determine equality.</summary>
         /// <param name="other">The <see cref="Timestamp" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
@@ -162,9 +145,7 @@ namespace TerraFX
         {
             return _ticks.Equals(other._ticks);
         }
-        #endregion
 
-        #region System.IFormattable Methods
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
         /// <param name="formatProvider">The provider to use when formatting the current instance or <c>null</c> to use the default provider.</param>
@@ -173,9 +154,7 @@ namespace TerraFX
         {
             return _ticks.ToString(format, formatProvider);
         }
-        #endregion
 
-        #region System.Object Methods
         /// <summary>Compares an <see cref="object" /> with the current instance to determine equality.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="Timestamp" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>
@@ -198,6 +177,5 @@ namespace TerraFX
         {
             return _ticks.ToString();
         }
-        #endregion
     }
 }

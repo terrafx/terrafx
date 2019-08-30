@@ -10,7 +10,6 @@ namespace TerraFX.Numerics
     /// <summary>Defines a three-dimensional Euclidean vector.</summary>
     public readonly struct Vector3 : IEquatable<Vector3>, IFormattable
     {
-        #region Defaults
         /// <summary>Defines a <see cref="Vector3" /> where all components are zero.</summary>
         public static readonly Vector3 Zero = new Vector3(0.0f, 0.0f, 0.0f);
 
@@ -25,15 +24,11 @@ namespace TerraFX.Numerics
 
         /// <summary>Defines a <see cref="Vector3" /> where all components are one.</summary>
         public static readonly Vector3 One = new Vector3(1.0f, 1.0f, 1.0f);
-        #endregion
 
-        #region Fields
         private readonly float _x;
         private readonly float _y;
         private readonly float _z;
-        #endregion
 
-        #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Vector3" /> struct.</summary>
         /// <param name="x">The value of the x-dimension.</param>
         /// <param name="y">The value of the y-dimension.</param>
@@ -44,9 +39,7 @@ namespace TerraFX.Numerics
             _y = y;
             _z = z;
         }
-        #endregion
 
-        #region Properties
         /// <summary>Gets the value of the x-dimension.</summary>
         public float X
         {
@@ -73,9 +66,7 @@ namespace TerraFX.Numerics
                 return _z;
             }
         }
-        #endregion
 
-        #region Comparison Operators
         /// <summary>Compares two <see cref="Vector3" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="Vector3" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="Vector3" /> to compare with <paramref name="left" />.</param>
@@ -97,9 +88,7 @@ namespace TerraFX.Numerics
                 || (left.Y != right.Y)
                 || (left.Z != right.Z);
         }
-        #endregion
 
-        #region Methods
         /// <summary>Creates a new <see cref="Vector3" /> instance with <see cref="X" /> set to the specified value.</summary>
         /// <param name="value">The new value of the x-dimension.</param>
         /// <returns>A new <see cref="Vector3" /> instance with <see cref="X" /> set to <paramref name="value" />.</returns>
@@ -123,9 +112,7 @@ namespace TerraFX.Numerics
         {
             return new Vector3(X, Y, value);
         }
-        #endregion
 
-        #region System.IEquatable<Vector3> Methods
         /// <summary>Compares a <see cref="Vector3" /> with the current instance to determine equality.</summary>
         /// <param name="other">The <see cref="Vector3" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
@@ -133,9 +120,7 @@ namespace TerraFX.Numerics
         {
             return this == other;
         }
-        #endregion
 
-        #region System.IFormattable Methods
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
         /// <param name="formatProvider">The provider to use when formatting the current instance or <c>null</c> to use the default provider.</param>
@@ -156,9 +141,7 @@ namespace TerraFX.Numerics
                 .Append('>')
                 .ToString();
         }
-        #endregion
 
-        #region System.Object Methods
         /// <summary>Compares a <see cref="object" /> with the current instance to determine equality.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="Vector3" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>
@@ -187,6 +170,5 @@ namespace TerraFX.Numerics
         {
             return ToString(format: null, formatProvider: null);
         }
-        #endregion
     }
 }

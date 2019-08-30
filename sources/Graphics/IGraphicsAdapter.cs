@@ -7,7 +7,6 @@ namespace TerraFX.Graphics
     /// <summary>Represents a graphics adapter.</summary>
     public interface IGraphicsAdapter
     {
-        #region Properties
         /// <summary>Gets the PCI ID of the device.</summary>
         uint DeviceId { get; }
 
@@ -22,6 +21,5 @@ namespace TerraFX.Graphics
 
         /// <summary>Gets the PCI ID of the vendor.</summary>
         uint VendorId { get; }
-        #endregion
     }
 }

@@ -24,7 +24,6 @@ namespace TerraFX.Provider.X11.UI
         private const int False = 0;
         private const int Success = 0;
 
-        #region Fields
         /// <summary>The <see cref="DispatchProvider" /> for the instance.</summary>
         private readonly Lazy<DispatchProvider> _dispatchProvider;
 
@@ -33,9 +32,7 @@ namespace TerraFX.Provider.X11.UI
 
         /// <summary>The <see cref="State" /> of the instance.</summary>
         private State _state;
-        #endregion
 
-        #region Constructors
         /// <summary>Initializes a new instance of the <see cref="WindowProvider" /> class.</summary>
         [ImportingConstructor]
         public WindowProvider(
@@ -46,17 +43,13 @@ namespace TerraFX.Provider.X11.UI
             _windows = new ConcurrentDictionary<IntPtr, Window>();
             _state.Transition(to: Initialized);
         }
-        #endregion
 
-        #region Destructors
         /// <summary>Finalizes an instance of the <see cref="WindowProvider" /> class.</summary>
         ~WindowProvider()
         {
             Dispose(isDisposing: false);
         }
-        #endregion
 
-        #region Properties
         /// <summary>Gets the <see cref="DispatchProvider" /> for the instance.</summary>
         public DispatchProvider DispatchProvider
         {
@@ -66,9 +59,7 @@ namespace TerraFX.Provider.X11.UI
                 return _dispatchProvider.Value;
             }
         }
-        #endregion
 
-        #region TerraFX.UI.IWindowProvider Properties
         /// <summary>Gets the <see cref="IWindow" /> objects created by the instance.</summary>
         public IEnumerable<IWindow> Windows
         {
@@ -77,9 +68,7 @@ namespace TerraFX.Provider.X11.UI
                 return _state.IsNotDisposedOrDisposing ? (IEnumerable<IWindow>)_windows : Array.Empty<IWindow>();
             }
         }
-        #endregion
 
-        #region Static Methods
         /// <summary>Forwards native window messages to the appropriate <see cref="Window" /> instance for processing.</summary>
         /// <param name="windowProviderProperty">The property used to get the <see cref="WindowProvider" /> associated with the event.</param>
         /// <param name="xevent">The event to be processed.</param>
@@ -115,9 +104,7 @@ namespace TerraFX.Provider.X11.UI
                 window.ProcessWindowEvent(in xevent);
             }
         }
-        #endregion
 
-        #region Methods
         /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
         /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
         private void Dispose(bool isDisposing)
@@ -155,18 +142,14 @@ namespace TerraFX.Provider.X11.UI
 
             Assert(_windows.IsEmpty, Resources.ArgumentOutOfRangeExceptionMessage, nameof(_windows.IsEmpty), _windows.IsEmpty);
         }
-        #endregion
 
-        #region System.IDisposable Methods
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
         public void Dispose()
         {
             Dispose(isDisposing: true);
             GC.SuppressFinalize(this);
         }
-        #endregion
 
-        #region TerraFX.UI.IWindowProvider Methods
         /// <summary>Create a new <see cref="IWindow"/> instance.</summary>
         /// <returns>A new <see cref="IWindow" /> instance</returns>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
@@ -179,6 +162,5 @@ namespace TerraFX.Provider.X11.UI
 
             return window;
         }
-        #endregion
     }
 }

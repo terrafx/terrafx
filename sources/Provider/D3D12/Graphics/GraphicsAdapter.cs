@@ -16,7 +16,6 @@ namespace TerraFX.Provider.D3D12.Graphics
     /// <summary>Represents a graphics adapter.</summary>
     public sealed unsafe class GraphicsAdapter : IDisposable, IGraphicsAdapter
     {
-        #region Fields
         /// <summary>The <see cref="GraphicsProvider" /> for the instance.</summary>
         private readonly GraphicsProvider _graphicsProvider;
 
@@ -34,9 +33,7 @@ namespace TerraFX.Provider.D3D12.Graphics
 
         /// <summary>The <see cref="State" /> of the instance.</summary>
         private State _state;
-        #endregion
 
-        #region Constructors
         /// <summary>Initializes a new instance of the <see cref="GraphicsAdapter" /> class.</summary>
         /// <param name="graphicsProvider">The <see cref="GraphicsProvider" /> for the instance.</param>
         /// <param name="adapter">The <see cref="IDXGIAdapter1" /> for the instance.</param>
@@ -55,9 +52,7 @@ namespace TerraFX.Provider.D3D12.Graphics
 
             _state.Transition(to: Initialized);
         }
-        #endregion
 
-        #region TerraFX.Graphics.IGraphicsAdapter Properties
         /// <summary>Gets the PCI ID of the device.</summary>
         public uint DeviceId
         {
@@ -102,9 +97,7 @@ namespace TerraFX.Provider.D3D12.Graphics
                 return _vendorId;
             }
         }
-        #endregion
 
-        #region Static Methods
         /// <summary>Throws a <see cref="ObjectDisposedException" /> if the instance has already been disposed.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         private static void ThrowIfDisposed(int state)
@@ -114,9 +107,7 @@ namespace TerraFX.Provider.D3D12.Graphics
                 ThrowObjectDisposedException(nameof(GraphicsProvider));
             }
         }
-        #endregion
 
-        #region Methods
         /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
         /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
         private void Dispose(bool isDisposing)
@@ -141,15 +132,12 @@ namespace TerraFX.Provider.D3D12.Graphics
                 _adapter->Release();
             }
         }
-        #endregion
 
-        #region System.IDisposable Methods
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
         public void Dispose()
         {
             Dispose(isDisposing: true);
             GC.SuppressFinalize(this);
         }
-        #endregion
     }
 }

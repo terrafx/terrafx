@@ -15,11 +15,8 @@ namespace TerraFX.Collections
     [Serializable]
     public sealed partial class PropertySet : IPropertySet
     {
-        #region Fields
         private readonly IDictionary<string, object> _items;
-        #endregion
 
-        #region Constructors
         /// <summary>Initializes a new instance of the <see cref="PropertySet" /> class.</summary>
         /// <remarks>This constructor is equivalent to calling <see cref="PropertySet(IDictionary{string, object})" /> with <see cref="Dictionary{TKey, TValue}()" />.</remarks>
         public PropertySet()
@@ -52,14 +49,10 @@ namespace TerraFX.Collections
             ThrowIfNull(items, nameof(items));
             _items = new Dictionary<string, object>(items);
         }
-        #endregion
 
-        #region TerraFX.Collections.INotifyDictionaryChanged<string, object> Events
         /// <summary>Occurs when the underlying dictionary changes.</summary>
         public event EventHandler<NotifyDictionaryChangedEventArgs<string, object>>? DictionaryChanged;
-        #endregion
 
-        #region System.Collections.Generic.ICollection<KeyValuePair<string, object>> Properties
         /// <summary>Gets the number of items contained by the instance.</summary>
         public int Count
         {
@@ -78,9 +71,7 @@ namespace TerraFX.Collections
                 return _items.IsReadOnly;
             }
         }
-        #endregion
 
-        #region System.Collections.Generic.IDictionary<string, object> Properties
         /// <summary>Gets a <see cref="ICollection{TKey}" /> that contains the keys for the instance.</summary>
         public ICollection<string> Keys
         {
@@ -127,9 +118,7 @@ namespace TerraFX.Collections
                 }
             }
         }
-        #endregion
 
-        #region Methods
         private void OnDictionaryReset()
         {
             if (DictionaryChanged != null)
@@ -165,16 +154,12 @@ namespace TerraFX.Collections
                 DictionaryChanged(this, eventArgs);
             }
         }
-        #endregion
 
-        #region System.Collections.IEnumerable Methods
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
-        #endregion
 
-        #region System.Collections.Generic.ICollection<KeyValuePair<string, object>> Methods
         /// <summary>Removes all items from the instance.</summary>
         /// <exception cref="NotSupportedException">The instance is <c>read-only</c>.</exception>
         public void Clear()
@@ -210,9 +195,7 @@ namespace TerraFX.Collections
 
             return removed;
         }
-        #endregion
 
-        #region System.Collections.Generic.IDictionary<string, object> Methods
         /// <summary>Adds an item to the instance.</summary>
         /// <param name="key">The key of the item to add to the instance.</param>
         /// <param name="value">The value of the item to add to the instance.</param>
@@ -259,15 +242,12 @@ namespace TerraFX.Collections
         {
             return _items.TryGetValue(key, out value!);
         }
-        #endregion
 
-        #region System.Collections.Generic.IEnumerable<KeyValuePair<string, object>> Methods
         /// <summary>Gets an <see cref="IEnumerator{T}" /> that can iterate through the items contained by the instance.</summary>
         /// <returns>An <see cref="IEnumerator{T}" /> that can iterate through the items contained by the instance.</returns>
         public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
         {
             return _items.GetEnumerator();
         }
-        #endregion
     }
 }
