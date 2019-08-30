@@ -24,7 +24,6 @@ namespace TerraFX.Provider.Vulkan.Graphics
     [Shared]
     public sealed unsafe class GraphicsProvider : IDisposable, IGraphicsProvider
     {
-        #region Fields
         /// <summary>The Vulkan instance.</summary>
         private readonly Lazy<IntPtr> _instance;
 
@@ -33,9 +32,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
         /// <summary>The <see cref="State" /> of the instance.</summary>
         private State _state;
-        #endregion
 
-        #region Constructors
         /// <summary>Initializes a new instance of the <see cref="GraphicsProvider" /> class.</summary>
         /// <exception cref="ExternalException">The call to <see cref="vkCreateInstance(VkInstanceCreateInfo*, VkAllocationCallbacks*, IntPtr*)" /> failed.</exception>
         /// <exception cref="ExternalException">The call to <see cref="vkEnumeratePhysicalDevices(IntPtr, uint*, IntPtr*)" /> failed.</exception>
@@ -44,19 +41,15 @@ namespace TerraFX.Provider.Vulkan.Graphics
         {
             _instance = new Lazy<IntPtr>((Func<IntPtr>)CreateInstance, isThreadSafe: true);
             _adapters = new Lazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters, isThreadSafe: true);
-            _state.Transition(to: Initialized);
+            _ = _state.Transition(to: Initialized);
         }
-        #endregion
 
-        #region Destructors
         /// <summary>Finalizes an instance of the <see cref="GraphicsProvider" /> class.</summary>
         ~GraphicsProvider()
         {
             Dispose(isDisposing: false);
         }
-        #endregion
 
-        #region TerraFX.Graphics.IGraphicsProvider Properties
         /// <summary>Gets the <see cref="IGraphicsAdapter" /> instances currently available.</summary>
         public IEnumerable<IGraphicsAdapter> GraphicsAdapters
         {
@@ -68,16 +61,15 @@ namespace TerraFX.Provider.Vulkan.Graphics
         }
 
         /// <summary>Gets the underlying handle for the instance.</summary>
-        public IntPtr Handle
-        {
-            get
-            {
-                return _instance.Value;
-            }
-        }
-        #endregion
+        public IntPtr Handle => _instance.Value;
 
-        #region Static Methods
+        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
+        public void Dispose()
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+
         /// <summary>Creates a Vulkan instance.</summary>
         /// <returns>A Vulkan instance.</returns>
         /// <exception cref="ExternalException">The call to <see cref="vkCreateInstance(VkInstanceCreateInfo*, VkAllocationCallbacks*, IntPtr*)" /> failed.</exception>
@@ -104,9 +96,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
             return instance;
         }
-        #endregion
 
-        #region Methods
         /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
         /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
         /// <exception cref="ExternalException">The call to <see cref="vkDestroyInstance(IntPtr, VkAllocationCallbacks*)" /> failed.</exception>
@@ -165,15 +155,5 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
             return adapters.ToImmutable();
         }
-        #endregion
-
-        #region System.IDisposable Methods
-        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
-        }
-        #endregion
     }
 }

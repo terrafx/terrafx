@@ -8,28 +8,22 @@ namespace TerraFX.UI
     /// <summary>Provides a means of dispatching events for a thread.</summary>
     public interface IDispatcher
     {
-        #region Events
         /// <summary>Occurs when an exit event is dispatched from the queue.</summary>
         event EventHandler ExitRequested;
-        #endregion
 
-        #region Properties
         /// <summary>Gets the <see cref="IDispatchProvider" /> for the instance.</summary>
         IDispatchProvider DispatchProvider { get; }
 
         /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
         Thread ParentThread { get; }
-        #endregion
 
-        #region Methods
         /// <summary>Dispatches all events currently pending in the queue.</summary>
         /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</exception>
         /// <remarks>
-        ///     <para>This method does not wait for a new event to be raised if the queue is empty.</para>
-        ///     <para>This method does not performing any translation or pre-processing on the dispatched events.</para>
-        ///     <para>This method will continue dispatching pending events even after the <see cref="ExitRequested" /> event is raised.</para>
+        ///   <para>This method does not wait for a new event to be raised if the queue is empty.</para>
+        ///   <para>This method does not performing any translation or pre-processing on the dispatched events.</para>
+        ///   <para>This method will continue dispatching pending events even after the <see cref="ExitRequested" /> event is raised.</para>
         /// </remarks>
         void DispatchPending();
-        #endregion
     }
 }

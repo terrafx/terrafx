@@ -8,12 +8,10 @@ namespace TerraFX.Graphics
     /// <summary>Provides access to a graphics subsystem.</summary>
     public interface IGraphicsProvider
     {
-        #region Properties
         /// <summary>Gets the <see cref="IGraphicsAdapter" /> instances currently available.</summary>
         IEnumerable<IGraphicsAdapter> GraphicsAdapters { get; }
 
         /// <summary>Gets the underlying handle for the instance.</summary>
         IntPtr Handle { get; }
-        #endregion
     }
 }

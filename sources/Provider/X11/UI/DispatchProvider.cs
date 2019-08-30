@@ -24,7 +24,6 @@ namespace TerraFX.Provider.X11.UI
     [Shared]
     public sealed unsafe class DispatchProvider : IDisposable, IDispatchProvider
     {
-        #region Fields
         /// <summary>The <c>Display</c> that was created for the instance.</summary>
         private readonly Lazy<IntPtr> _display;
 
@@ -33,39 +32,25 @@ namespace TerraFX.Provider.X11.UI
 
         /// <summary>The <see cref="State" /> of the instance.</summary>
         private State _state;
-        #endregion
 
-        #region Constructors
         /// <summary>Initializes a new instance of the <see cref="DispatchProvider" /> class.</summary>
         [ImportingConstructor]
         public DispatchProvider()
         {
             _display = new Lazy<IntPtr>((Func<IntPtr>)CreateDisplay, isThreadSafe: true);
             _dispatchers = new ConcurrentDictionary<Thread, IDispatcher>();
-            _state.Transition(to: Initialized);
+            _ = _state.Transition(to: Initialized);
         }
-        #endregion
 
-        #region Destructors
         /// <summary>Finalizes an instance of the <see cref="DispatchProvider" /> class.</summary>
         ~DispatchProvider()
         {
             Dispose(isDisposing: false);
         }
-        #endregion
 
-        #region Properties
         /// <summary>Gets the <c>Display</c> that was created for the instance.</summary>
-        public IntPtr Display
-        {
-            get
-            {
-                return _state.IsNotDisposedOrDisposing ? _display.Value : IntPtr.Zero;
-            }
-        }
-        #endregion
+        public IntPtr Display => _state.IsNotDisposedOrDisposing ? _display.Value : IntPtr.Zero;
 
-        #region TerraFX.UI.IDispatchProvider Properties
         /// <summary>Gets the current <see cref="Timestamp" /> for the instance.</summary>
         public Timestamp CurrentTimestamp
         {
@@ -95,69 +80,15 @@ namespace TerraFX.Provider.X11.UI
         /// <summary>Gets the <see cref="IDispatcher" /> instance associated with <see cref="Thread.CurrentThread" />.</summary>
         /// <returns>The <see cref="IDispatcher" /> instance associated with <see cref="Thread.CurrentThread" />.</returns>
         /// <remarks>This will create a new <see cref="IDispatcher" /> instance if one does not already exist.</remarks>
-        public IDispatcher DispatcherForCurrentThread
-        {
-            get
-            {
-                return GetDispatcher(Thread.CurrentThread);
-            }
-        }
-        #endregion
+        public IDispatcher DispatcherForCurrentThread => GetDispatcher(Thread.CurrentThread);
 
-        #region Static Methods
-        /// <summary>Creates a <see cref="Display" />.</summary>
-        /// <returns>The created <see cref="Display" />.</returns>
-        /// <exception cref="ExternalException">The call to <see cref="XOpenDisplay(sbyte*)" /> failed.</exception>
-        private static IntPtr CreateDisplay()
-        {
-            var display = XOpenDisplay(param0: null);
-
-            if (display == null)
-            {
-                ThrowExternalExceptionForLastError(nameof(XOpenDisplay));
-            }
-
-            return (IntPtr)display;
-        }
-        #endregion
-
-        #region Methods
-        /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
-        /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
-        private void Dispose(bool isDisposing)
-        {
-            var priorState = _state.BeginDispose();
-
-            if (priorState < Disposing) // (previousState != Disposing) && (previousState != Disposed)
-            {
-                DisposeDisplay();
-            }
-
-            _state.EndDispose();
-        }
-
-        /// <summary>Disposes of the <c>Display</c> that was created for the instance.</summary>
-        private void DisposeDisplay()
-        {
-            _state.AssertDisposing();
-
-            if (_display.IsValueCreated)
-            {
-                XCloseDisplay((XDisplay*)_display.Value);
-            }
-        }
-        #endregion
-
-        #region System.IDisposable Methods
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
         public void Dispose()
         {
             Dispose(isDisposing: true);
             GC.SuppressFinalize(this);
         }
-        #endregion
 
-        #region TerraFX.UI.IDispatchProvider Methods
         /// <summary>Gets the <see cref="IDispatcher" /> instance associated with a <see cref="Thread" />, creating one if it does not exist.</summary>
         /// <param name="thread">The <see cref="Thread" /> for which the <see cref="IDispatcher" /> instance should be retrieved.</param>
         /// <returns>The <see cref="IDispatcher" /> instance associated with <paramref name="thread" />.</returns>
@@ -179,6 +110,45 @@ namespace TerraFX.Provider.X11.UI
             ThrowIfNull(thread, nameof(thread));
             return _dispatchers.TryGetValue(thread, out dispatcher!);
         }
-        #endregion
+
+        /// <summary>Creates a <see cref="Display" />.</summary>
+        /// <returns>The created <see cref="Display" />.</returns>
+        /// <exception cref="ExternalException">The call to <see cref="XOpenDisplay(sbyte*)" /> failed.</exception>
+        private static IntPtr CreateDisplay()
+        {
+            var display = XOpenDisplay(param0: null);
+
+            if (display == null)
+            {
+                ThrowExternalExceptionForLastError(nameof(XOpenDisplay));
+            }
+
+            return (IntPtr)display;
+        }
+
+        /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
+        /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
+        private void Dispose(bool isDisposing)
+        {
+            var priorState = _state.BeginDispose();
+
+            if (priorState < Disposing) // (previousState != Disposing) && (previousState != Disposed)
+            {
+                DisposeDisplay();
+            }
+
+            _state.EndDispose();
+        }
+
+        /// <summary>Disposes of the <c>Display</c> that was created for the instance.</summary>
+        private void DisposeDisplay()
+        {
+            _state.AssertDisposing();
+
+            if (_display.IsValueCreated)
+            {
+                _ = XCloseDisplay((XDisplay*)_display.Value);
+            }
+        }
     }
 }

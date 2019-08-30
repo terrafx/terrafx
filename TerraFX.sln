@@ -1,4 +1,5 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28721.148
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -140,7 +141,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "design", "design", "{33AB5B
 		docs\design\Overview.md = docs\design\Overview.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerraFX.Audio", "sources\Audio\TerraFX.Audio.csproj", "{B0D481A2-0844-4304-AF23-C0D4753EF016}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Audio", "sources\Audio\TerraFX.Audio.csproj", "{B0D481A2-0844-4304-AF23-C0D4753EF016}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Audio", "Audio", "{21EAA242-CD5C-43AB-8E85-A8C657499142}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -262,7 +265,8 @@ Global
 		{D7FDC089-3AB5-4A13-8495-60CA01CBA609} = {EFB05081-EC44-49D3-B6D1-52AE42085B5B}
 		{F81C3272-3809-46F3-8954-8E5B5F603699} = {D7FDC089-3AB5-4A13-8495-60CA01CBA609}
 		{33AB5B62-51A9-4248-9672-E1699FBEBD9B} = {8793898A-6542-4606-AA82-AB14151D2D20}
-		{B0D481A2-0844-4304-AF23-C0D4753EF016} = {0B821858-8E47-4485-AC06-D2E971A53EB2}
+		{B0D481A2-0844-4304-AF23-C0D4753EF016} = {21EAA242-CD5C-43AB-8E85-A8C657499142}
+		{21EAA242-CD5C-43AB-8E85-A8C657499142} = {0B821858-8E47-4485-AC06-D2E971A53EB2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2FE36DF8-2D9C-4F20-8787-45DC74B57461}

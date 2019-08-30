@@ -10,16 +10,11 @@ namespace TerraFX.Collections
     /// <typeparam name="T">The type of the items in the collection.</typeparam>
     public sealed class NotifyCollectionChangedEventArgs<T> : EventArgs
     {
-        #region Static Fields
         private static readonly NotifyCollectionChangedEventArgs<T> Reset = new NotifyCollectionChangedEventArgs<T>(NotifyCollectionChangedAction.Reset);
-        #endregion
 
-        #region Fields
         private readonly NotifyCollectionChangedAction _action;
         private readonly T _value;
-        #endregion
 
-        #region Constructors
         private NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, T value = default)
         {
             Debug.Assert(Enum.IsDefined(typeof(NotifyCollectionChangedAction), action));
@@ -27,17 +22,9 @@ namespace TerraFX.Collections
             _action = action;
             _value = value;
         }
-        #endregion
 
-        #region Properties
         /// <summary>Gets the action that caused the event.</summary>
-        public NotifyCollectionChangedAction Action
-        {
-            get
-            {
-                return _action;
-            }
-        }
+        public NotifyCollectionChangedAction Action => _action;
 
         /// <summary>Gets the value of the item that caused the event.</summary>
         /// <exception cref="InvalidOperationException"><see cref="Action" /> is not <see cref="NotifyDictionaryChangedAction.Add" /> or <see cref="NotifyDictionaryChangedAction.Remove" />.</exception>
@@ -53,31 +40,19 @@ namespace TerraFX.Collections
                 return _value;
             }
         }
-        #endregion
 
-        #region Static Methods
         /// <summary>Gets or creates an instance of the <see cref="NotifyCollectionChangedEventArgs{T}" /> class for the <see cref="NotifyCollectionChangedAction.Add" /> action.</summary>
         /// <param name="value">The item that caused the event.</param>
         /// <returns>An instance of the <see cref="NotifyCollectionChangedEventArgs{T}" /> class.</returns>
-        public static NotifyCollectionChangedEventArgs<T> ForAddAction(T value)
-        {
-            return new NotifyCollectionChangedEventArgs<T>(NotifyCollectionChangedAction.Add, value);
-        }
+        public static NotifyCollectionChangedEventArgs<T> ForAddAction(T value) => new NotifyCollectionChangedEventArgs<T>(NotifyCollectionChangedAction.Add, value);
 
         /// <summary>Gets or creates an instance of the <see cref="NotifyCollectionChangedEventArgs{T}" /> class for the <see cref="NotifyCollectionChangedAction.Remove" /> action.</summary>
         /// <param name="value">The item that caused the event.</param>
         /// <returns>An instance of the <see cref="NotifyCollectionChangedEventArgs{T}" /> class.</returns>
-        public static NotifyCollectionChangedEventArgs<T> ForRemoveAction(T value)
-        {
-            return new NotifyCollectionChangedEventArgs<T>(NotifyCollectionChangedAction.Remove, value);
-        }
+        public static NotifyCollectionChangedEventArgs<T> ForRemoveAction(T value) => new NotifyCollectionChangedEventArgs<T>(NotifyCollectionChangedAction.Remove, value);
 
         /// <summary>Gets or creates an instance of the <see cref="NotifyCollectionChangedEventArgs{T}" /> class for the <see cref="NotifyCollectionChangedAction.Reset" /> action.</summary>
         /// <returns>An instance of the <see cref="NotifyCollectionChangedEventArgs{T}" /> class.</returns>
-        public static NotifyCollectionChangedEventArgs<T> ForResetAction()
-        {
-            return Reset;
-        }
-        #endregion
+        public static NotifyCollectionChangedEventArgs<T> ForResetAction() => Reset;
     }
 }

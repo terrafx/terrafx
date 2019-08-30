@@ -10,14 +10,11 @@ namespace TerraFX.Graphics
     /// <summary>Defines a red-green-blue-alpha color triple.</summary>
     public readonly struct ColorRgba : IEquatable<ColorRgba>, IFormattable
     {
-        #region Fields
         private readonly float _red;
         private readonly float _green;
         private readonly float _blue;
         private readonly float _alpha;
-        #endregion
 
-        #region Constructors
         /// <summary>Initializes a new instance of the <see cref="ColorRgba" /> struct.</summary>
         /// <param name="red">The value of the red component.</param>
         /// <param name="green">The value of the green component.</param>
@@ -30,47 +27,19 @@ namespace TerraFX.Graphics
             _blue = blue;
             _alpha = alpha;
         }
-        #endregion
 
-        #region Properties
         /// <summary>Gets the value of the alpha component.</summary>
-        public float Alpha
-        {
-            get
-            {
-                return _alpha;
-            }
-        }
+        public float Alpha => _alpha;
 
         /// <summary>Gets the value of the blue component.</summary>
-        public float Blue
-        {
-            get
-            {
-                return _blue;
-            }
-        }
+        public float Blue => _blue;
 
         /// <summary>Gets the value of the green component.</summary>
-        public float Green
-        {
-            get
-            {
-                return _green;
-            }
-        }
+        public float Green => _green;
 
         /// <summary>Gets the value of the red component.</summary>
-        public float Red
-        {
-            get
-            {
-                return _red;
-            }
-        }
-        #endregion
+        public float Red => _red;
 
-        #region Comparison Operators
         /// <summary>Compares two <see cref="ColorRgba" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="ColorRgba" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="ColorRgba" /> to compare with <paramref name="left" />.</param>
@@ -94,53 +63,32 @@ namespace TerraFX.Graphics
                 || (left.Blue != right.Blue)
                 || (left.Alpha != right.Alpha);
         }
-        #endregion
 
-        #region Methods
         /// <summary>Creates a new <see cref="ColorRgba" /> instance with <see cref="Alpha" /> set to the specified value.</summary>
         /// <param name="value">The new value of the alpha component.</param>
         /// <returns>A new <see cref="ColorRgba" /> instance with <see cref="Alpha" /> set to <paramref name="value" />.</returns>
-        public ColorRgba WithAlpha(float value)
-        {
-            return new ColorRgba(Red, Green, Blue, value);
-        }
+        public ColorRgba WithAlpha(float value) => new ColorRgba(Red, Green, Blue, value);
 
         /// <summary>Creates a new <see cref="ColorRgba" /> instance with <see cref="Blue" /> set to the specified value.</summary>
         /// <param name="value">The new value of the blue component.</param>
         /// <returns>A new <see cref="ColorRgba" /> instance with <see cref="Blue" /> set to <paramref name="value" />.</returns>
-        public ColorRgba WithBlue(float value)
-        {
-            return new ColorRgba(Red, Green, value, Alpha);
-        }
+        public ColorRgba WithBlue(float value) => new ColorRgba(Red, Green, value, Alpha);
 
         /// <summary>Creates a new <see cref="ColorRgba" /> instance with <see cref="Green" /> set to the specified value.</summary>
         /// <param name="value">The new value of the green component.</param>
         /// <returns>A new <see cref="ColorRgba" /> instance with <see cref="Green" /> set to <paramref name="value" />.</returns>
-        public ColorRgba WithGreen(float value)
-        {
-            return new ColorRgba(Red, value, Blue, Alpha);
-        }
+        public ColorRgba WithGreen(float value) => new ColorRgba(Red, value, Blue, Alpha);
 
         /// <summary>Creates a new <see cref="ColorRgba" /> instance with <see cref="Red" /> set to the specified value.</summary>
         /// <param name="value">The new value of the red component.</param>
         /// <returns>A new <see cref="ColorRgba" /> instance with <see cref="Red" /> set to <paramref name="value" />.</returns>
-        public ColorRgba WithRed(float value)
-        {
-            return new ColorRgba(value, Green, Blue, Alpha);
-        }
-        #endregion
+        public ColorRgba WithRed(float value) => new ColorRgba(value, Green, Blue, Alpha);
 
-        #region System.IEquatable<ColorRgba> Methods
         /// <summary>Compares a <see cref="ColorRgba" /> with the current instance to determine equality.</summary>
         /// <param name="other">The <see cref="ColorRgba" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
-        public bool Equals(ColorRgba other)
-        {
-            return this == other;
-        }
-        #endregion
+        public bool Equals(ColorRgba other) => this == other;
 
-        #region System.IFormattable Methods
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
         /// <param name="formatProvider">The provider to use when formatting the current instance or <c>null</c> to use the default provider.</param>
@@ -164,9 +112,7 @@ namespace TerraFX.Graphics
                 .Append('>')
                 .ToString();
         }
-        #endregion
 
-        #region System.Object Methods
         /// <summary>Compares a <see cref="object" /> with the current instance to determine equality.</summary>
         /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
         /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="ColorRgba" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>
@@ -192,10 +138,6 @@ namespace TerraFX.Graphics
 
         /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
         /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
-        public override string ToString()
-        {
-            return ToString(format: null, formatProvider: null);
-        }
-        #endregion
+        public override string ToString() => ToString(format: null, formatProvider: null);
     }
 }

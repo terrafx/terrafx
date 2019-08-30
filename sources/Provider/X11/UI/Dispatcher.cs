@@ -17,7 +17,6 @@ namespace TerraFX.Provider.X11.UI
         private const int False = 0;
         private const int NoExpose = 14;
 
-        #region Fields
         /// <summary>The <see cref="UI.DispatchProvider" /> for the instance.</summary>
         private readonly DispatchProvider _dispatchProvider;
 
@@ -26,9 +25,7 @@ namespace TerraFX.Provider.X11.UI
 
         /// <summary>The <c>Atom</c> used to access the <c>Window</c> property containing the associated <see cref="WindowProvider" />.</summary>
         private readonly Lazy<UIntPtr> _windowProviderProperty;
-        #endregion
 
-        #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Dispatcher" /> class.</summary>
         /// <param name="dispatchProvider">The <see cref="DispatchProvider" /> the instance is associated with.</param>
         /// <param name="parentThread">The <see cref="Thread" /> that was used to create the instance.</param>
@@ -41,14 +38,44 @@ namespace TerraFX.Provider.X11.UI
             _parentThread = parentThread!;
             _windowProviderProperty = new Lazy<UIntPtr>(CreateWindowProviderProperty, isThreadSafe: true);
         }
-        #endregion
 
-        #region TerraFX.UI.IDispatcher Events
         /// <summary>Occurs when an exit event is dispatched from the queue.</summary>
         public event EventHandler? ExitRequested;
-        #endregion
 
-        #region Methods
+        /// <summary>Gets the <see cref="IDispatchProvider" /> associated with the instance.</summary>
+        public IDispatchProvider DispatchProvider => _dispatchProvider;
+
+        /// <summary>Gets the handle for the instance.</summary>
+        public IntPtr Handle => (IntPtr)(void*)_windowProviderProperty.Value;
+
+        /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
+        public Thread ParentThread => _parentThread;
+
+        /// <summary>Dispatches all events currently pending in the queue.</summary>
+        /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</exception>
+        /// <remarks>
+        ///   <para>This method does not wait for a new event to be raised if the queue is empty.</para>
+        ///   <para>This method does not performing any translation or pre-processing on the dispatched events.</para>
+        ///   <para>This method will continue dispatching pending events even after the <see cref="ExitRequested" /> event is raised.</para>
+        /// </remarks>
+        public void DispatchPending()
+        {
+            ThrowIfNotThread(_parentThread);
+
+            var display = (XDisplay*)_dispatchProvider.Display;
+
+            while (XPending(display) != 0)
+            {
+                XEvent xevent;
+                _ = XNextEvent(display, &xevent);
+
+                if (xevent.type != NoExpose)
+                {
+                    WindowProvider.ForwardWindowEvent(_windowProviderProperty.Value, in xevent);
+                }
+            }
+        }
+
         /// <summary>Creates an <c>Atom</c> for the window provider property.</summary>
         /// <returns>An <c>Atom</c> for the window provider property.</returns>
         private UIntPtr CreateWindowProviderProperty()
@@ -73,66 +100,6 @@ namespace TerraFX.Provider.X11.UI
         }
 
         /// <summary>Raises the <see cref="ExitRequested" /> event.</summary>
-        private void OnExitRequested()
-        {
-            ExitRequested?.Invoke(this, EventArgs.Empty);
-        }
-        #endregion
-
-        #region TerraFX.UI.IDispatcher Properties
-        /// <summary>Gets the <see cref="IDispatchProvider" /> associated with the instance.</summary>
-        public IDispatchProvider DispatchProvider
-        {
-            get
-            {
-                return _dispatchProvider;
-            }
-        }
-
-        /// <summary>Gets the handle for the instance.</summary>
-        public IntPtr Handle
-        {
-            get
-            {
-                return (IntPtr)(void*)_windowProviderProperty.Value;
-            }
-        }
-
-        /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
-        public Thread ParentThread
-        {
-            get
-            {
-                return _parentThread;
-            }
-        }
-        #endregion
-
-        #region TerraFX.UI.IDispatcher Methods
-        /// <summary>Dispatches all events currently pending in the queue.</summary>
-        /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</exception>
-        /// <remarks>
-        ///     <para>This method does not wait for a new event to be raised if the queue is empty.</para>
-        ///     <para>This method does not performing any translation or pre-processing on the dispatched events.</para>
-        ///     <para>This method will continue dispatching pending events even after the <see cref="ExitRequested" /> event is raised.</para>
-        /// </remarks>
-        public void DispatchPending()
-        {
-            ThrowIfNotThread(_parentThread);
-
-            var display = (XDisplay*)_dispatchProvider.Display;
-
-            while (XPending(display) != 0)
-            {
-                XEvent xevent;
-                XNextEvent(display, &xevent);
-
-                if (xevent.type != NoExpose)
-                {
-                    WindowProvider.ForwardWindowEvent(_windowProviderProperty.Value, in xevent);
-                }
-            }
-        }
-        #endregion
+        private void OnExitRequested() => ExitRequested?.Invoke(this, EventArgs.Empty);
     }
 }

@@ -12,11 +12,8 @@ namespace TerraFX.Collections
         /// <summary>Represents a debug-view for an <see cref="IPropertySet" /> instance.</summary>
         private sealed class DebugView
         {
-            #region Fields
             private readonly IPropertySet _propertySet;
-            #endregion
 
-            #region Constructors
             /// <summary>Initializes a new instance of the <see cref="DebugView" /> class.</summary>
             /// <param name="propertySet">The <see cref="IPropertySet" /> which the instance represents.</param>
             /// <exception cref="ArgumentNullException"><paramref name="propertySet" /> is <c>null</c>.</exception>
@@ -25,9 +22,7 @@ namespace TerraFX.Collections
                 ThrowIfNull(propertySet, nameof(propertySet));
                 _propertySet = propertySet;
             }
-            #endregion
 
-            #region Properties
             /// <summary>Gets the items contained by the underlying <see cref="IPropertySet" />.</summary>
             [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
             public KeyValuePair<string, object>[] Items
@@ -39,7 +34,6 @@ namespace TerraFX.Collections
                     return items;
                 }
             }
-            #endregion
         }
     }
 }

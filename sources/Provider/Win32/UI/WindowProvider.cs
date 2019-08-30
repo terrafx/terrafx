@@ -24,15 +24,12 @@ namespace TerraFX.Provider.Win32.UI
     [Shared]
     public sealed unsafe class WindowProvider : IDisposable, IWindowProvider
     {
-        #region Static Fields
         /// <summary>A <c>HMODULE</c> to the entry point module.</summary>
         public static readonly IntPtr EntryPointModule = GetModuleHandle();
 
         /// <summary>The <see cref="NativeDelegate{TDelegate}" /> for the <see cref="WNDPROC" /> method.</summary>
         private static readonly NativeDelegate<WNDPROC> ForwardWndProc = new NativeDelegate<WNDPROC>(ForwardWindowMessage);
-        #endregion
 
-        #region Fields
         /// <summary>The <c>ATOM</c> of the <see cref="WNDCLASSEX" /> registered for the instance.</summary>
         private readonly Lazy<ushort> _classAtom;
 
@@ -47,9 +44,7 @@ namespace TerraFX.Provider.Win32.UI
 
         /// <summary>The <see cref="State" /> of the instance.</summary>
         private State _state;
-        #endregion
 
-        #region Constructors
         /// <summary>Initializes a new instance of the <see cref="WindowProvider" /> class.</summary>
         [ImportingConstructor]
         public WindowProvider(
@@ -61,27 +56,17 @@ namespace TerraFX.Provider.Win32.UI
             _nativeHandle = new Lazy<GCHandle>(() => GCHandle.Alloc(this, GCHandleType.Normal), isThreadSafe: true);
 
             _windows = new ConcurrentDictionary<IntPtr, Window>();
-            _state.Transition(to: Initialized);
+            _ = _state.Transition(to: Initialized);
         }
-        #endregion
 
-        #region Destructors
         /// <summary>Finalizes an instance of the <see cref="WindowProvider" /> class.</summary>
         ~WindowProvider()
         {
             Dispose(isDisposing: false);
         }
-        #endregion
 
-        #region Properties
         /// <summary>Gets the <c>ATOM</c> of the <see cref="WNDCLASSEX" /> registered for the instance.</summary>
-        public ushort ClassAtom
-        {
-            get
-            {
-                return _state.IsNotDisposedOrDisposing ? _classAtom.Value : (ushort)0;
-            }
-        }
+        public ushort ClassAtom => _state.IsNotDisposedOrDisposing ? _classAtom.Value : (ushort)0;
 
         /// <summary>Gets the <see cref="DispatchProvider" /> for the instance.</summary>
         public DispatchProvider DispatchProvider
@@ -102,31 +87,41 @@ namespace TerraFX.Provider.Win32.UI
                 return _nativeHandle.Value;
             }
         }
-        #endregion
 
-        #region TerraFX.UI.IWindowProvider Properties
         /// <summary>Gets the <see cref="IWindow" /> objects created by the instance.</summary>
-        public IEnumerable<IWindow> Windows
-        {
-            get
-            {
-                return _state.IsNotDisposedOrDisposing ? (IEnumerable<IWindow>)_windows : Array.Empty<IWindow>();
-            }
-        }
-        #endregion
+        public IEnumerable<IWindow> Windows => _state.IsNotDisposedOrDisposing ? (IEnumerable<IWindow>)_windows : Array.Empty<IWindow>();
 
-        #region Static Methods
+        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
+        public void Dispose()
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>Create a new <see cref="IWindow" /> instance.</summary>
+        /// <returns>A new <see cref="IWindow" /> instance</returns>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public IWindow CreateWindow()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            var window = new Window(this);
+            _ = _windows.TryAdd(window.Handle, window);
+
+            return window;
+        }
+
         /// <summary>Forwards native window messages to the appropriate <see cref="Window" /> instance for processing.</summary>
         /// <param name="hWnd">The <c>HWND</c> of the <see cref="Window" /> the message should be forwarded to.</param>
-        /// <param name="Msg">The message to be processed.</param>
+        /// <param name="msg">The message to be processed.</param>
         /// <param name="wParam">The first parameter of the message to be processed.</param>
         /// <param name="lParam">The second parameter of the message to be processed.</param>
         /// <returns>A value that varies based on the exact message that was processed.</returns>
-        private static IntPtr ForwardWindowMessage(IntPtr hWnd, uint Msg, UIntPtr wParam, IntPtr lParam)
+        private static IntPtr ForwardWindowMessage(IntPtr hWnd, uint msg, UIntPtr wParam, IntPtr lParam)
         {
             IntPtr result, userData;
 
-            if (Msg == WM_CREATE)
+            if (msg == WM_CREATE)
             {
                 // We allow the WM_CREATE message to be forwarded to the Window instance
                 // for hWnd. This allows some delayed initialization to occur since most
@@ -134,7 +129,7 @@ namespace TerraFX.Provider.Win32.UI
 
                 ref var pCreateStruct = ref AsRef<CREATESTRUCT>(lParam);
                 userData = (IntPtr)pCreateStruct.lpCreateParams;
-                SetWindowLongPtr(hWnd, GWLP_USERDATA, userData);
+                _ = SetWindowLongPtr(hWnd, GWLP_USERDATA, userData);
             }
             else
             {
@@ -151,20 +146,20 @@ namespace TerraFX.Provider.Win32.UI
 
             if (windowProvider._windows.TryGetValue(hWnd, out var window))
             {
-                if (Msg == WM_DESTROY)
+                if (msg == WM_DESTROY)
                 {
                     // We forward the WM_DESTROY message to the corresponding Window instance
                     // so that it can still be properly disposed of in the scenario that the
                     // hWnd was destroyed externally.
 
-                    windowProvider._windows.TryRemove(hWnd, out window);
+                    _ = windowProvider._windows.TryRemove(hWnd, out window);
                 }
 
-                result = window!.ProcessWindowMessage(Msg, wParam, lParam);
+                result = window!.ProcessWindowMessage(msg, wParam, lParam);
             }
             else
             {
-                result = DefWindowProc(hWnd, Msg, wParam, lParam);
+                result = DefWindowProc(hWnd, msg, wParam, lParam);
             }
 
             return result;
@@ -199,9 +194,7 @@ namespace TerraFX.Provider.Win32.UI
 
             return desktopWindowClass.hCursor;
         }
-        #endregion
 
-        #region Methods
         /// <summary>Creates an <c>ATOM</c> by registering a <see cref="WNDCLASSEX" /> for the entry point module.</summary>
         /// <exception cref="ExternalException">The call to <see cref="GetClassName(IntPtr, char*, int)" /> failed.</exception>
         /// <exception cref="ExternalException">The call to <see cref="GetClassInfoEx(IntPtr, char*, WNDCLASSEX*)" /> failed.</exception>
@@ -317,30 +310,5 @@ namespace TerraFX.Provider.Win32.UI
 
             Assert(_windows.IsEmpty, Resources.ArgumentOutOfRangeExceptionMessage, nameof(_windows.IsEmpty), _windows.IsEmpty);
         }
-        #endregion
-
-        #region System.IDisposable Methods
-        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
-        }
-        #endregion
-
-        #region TerraFX.UI.IWindowProvider Methods
-        /// <summary>Create a new <see cref="IWindow"/> instance.</summary>
-        /// <returns>A new <see cref="IWindow" /> instance</returns>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public IWindow CreateWindow()
-        {
-            _state.ThrowIfDisposedOrDisposing();
-
-            var window = new Window(this);
-            _windows.TryAdd(window.Handle, window);
-
-            return window;
-        }
-        #endregion
     }
 }

@@ -1,7 +1,5 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using System;
-
 namespace TerraFX.Audio
 {
     /// <summary>An interface representing an audio adapter.</summary>
@@ -23,10 +21,7 @@ namespace TerraFX.Audio
         int Channels { get; set; }
 
         /// <summary>The endianness of the adapter.</summary>
-        /// <remarks>
-        /// If the adapter operates in big endian mode (MSB first), this will be <code>true</code>.
-        /// If it operates in little endian mode (LSB first), this will be <code>false</code>.
-        /// </remarks>
+        /// <remarks>If the adapter operates in big endian mode (MSB first), this will be <c>true</c>; otherwise, it operates in little endian mode (LSB first) and will be <c>false</c>.</remarks>
         bool IsBigEndian { get; set; }
     }
 }

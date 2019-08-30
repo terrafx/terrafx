@@ -23,15 +23,12 @@ namespace TerraFX.Provider.D3D12.Graphics
     [Shared]
     public sealed unsafe class GraphicsProvider : IDisposable, IGraphicsProvider
     {
-        #region Constants
 #if DEBUG
         private const uint CreateFactoryFlags = DXGI_CREATE_FACTORY_DEBUG;
 #else
         private const uint CreateFactoryFlags = 0;
 #endif
-        #endregion
 
-        #region Fields
         /// <summary>The DXGI factory.</summary>
         private readonly Lazy<IntPtr> _factory;
 
@@ -40,28 +37,22 @@ namespace TerraFX.Provider.D3D12.Graphics
 
         /// <summary>The <see cref="State" /> of the instance.</summary>
         private State _state;
-        #endregion
 
-        #region Constructors
         /// <summary>Initializes a new instance of the <see cref="GraphicsProvider" /> class.</summary>
         [ImportingConstructor]
         public GraphicsProvider()
         {
             _factory = new Lazy<IntPtr>((Func<IntPtr>)CreateFactory, isThreadSafe: true);
             _adapters = new Lazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters, isThreadSafe: true);
-            _state.Transition(to: Initialized);
+            _ = _state.Transition(to: Initialized);
         }
-        #endregion
 
-        #region Destructors
         /// <summary>Finalizes an instance of the <see cref="GraphicsProvider" /> class.</summary>
         ~GraphicsProvider()
         {
             Dispose(isDisposing: false);
         }
-        #endregion
 
-        #region TerraFX.Graphics.IGraphicsProvider Properties
         /// <summary>Gets the <see cref="IGraphicsAdapter" /> instances currently available.</summary>
         public IEnumerable<IGraphicsAdapter> GraphicsAdapters
         {
@@ -73,16 +64,15 @@ namespace TerraFX.Provider.D3D12.Graphics
         }
 
         /// <summary>Gets the underlying handle for the instance.</summary>
-        public IntPtr Handle
-        {
-            get
-            {
-                return IntPtr.Zero;
-            }
-        }
-        #endregion
+        public IntPtr Handle => IntPtr.Zero;
 
-        #region Static Methods
+        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
+        public void Dispose()
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+
         /// <summary>Creates a DXGI factory</summary>
         /// <returns>A DXGI factory.</returns>
         /// <exception cref="ExternalException">The call to <see cref="CreateDXGIFactory2(uint, Guid*, void**)" /> failed.</exception>
@@ -95,9 +85,7 @@ namespace TerraFX.Provider.D3D12.Graphics
 
             return factory;
         }
-        #endregion
 
-        #region Methods
         /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
         /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
         private void Dispose(bool isDisposing)
@@ -119,7 +107,7 @@ namespace TerraFX.Provider.D3D12.Graphics
             if (_factory.IsValueCreated)
             {
                 var factory = (IDXGIFactory3*)_factory.Value;
-                factory->Release();
+                _ = factory->Release();
             }
         }
 
@@ -181,21 +169,11 @@ namespace TerraFX.Provider.D3D12.Graphics
 
                 if (adapter != null)
                 {
-                    adapter->Release();
+                    _ = adapter->Release();
                 }
             }
 
             return graphicsAdapters.ToImmutable();
         }
-        #endregion
-
-        #region System.IDisposable Methods
-        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
-        }
-        #endregion
     }
 }

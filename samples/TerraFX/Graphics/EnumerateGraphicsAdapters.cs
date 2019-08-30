@@ -10,14 +10,11 @@ namespace TerraFX.Samples.Graphics
 {
     public sealed class EnumerateGraphicsAdapters : Sample
     {
-        #region Constructors
         public EnumerateGraphicsAdapters(string name, params Assembly[] compositionAssemblies)
             : base(name, compositionAssemblies)
         {
         }
-        #endregion
 
-        #region Methods
         public override void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs)
         {
             ExceptionUtilities.ThrowIfNull(sender, nameof(sender));
@@ -35,6 +32,5 @@ namespace TerraFX.Samples.Graphics
             }
             application.RequestExit();
         }
-        #endregion
     }
 }

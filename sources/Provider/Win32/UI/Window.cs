@@ -21,7 +21,6 @@ namespace TerraFX.Provider.Win32.UI
     /// <summary>Defines a window.</summary>
     public sealed unsafe class Window : IDisposable, IWindow
     {
-        #region Fields
         /// <summary>The native window handle for the instance.</summary>
         private readonly Lazy<IntPtr> _handle;
 
@@ -31,20 +30,20 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>The <see cref="PropertySet" /> for the instance.</summary>
         private readonly PropertySet _properties;
 
-        /// <summary>The title for the instance.</summary>
-        private string _title;
-
         /// <summary>The <see cref="WindowProvider" /> for the instance.</summary>
         private readonly WindowProvider _windowProvider;
-
-        /// <summary>A <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
-        private Rectangle _bounds;
 
         /// <summary>The <see cref="FlowDirection" /> for the instance.</summary>
         private readonly FlowDirection _flowDirection;
 
         /// <summary>The <see cref="ReadingDirection" /> for the instance.</summary>
         private readonly ReadingDirection _readingDirection;
+
+        /// <summary>The title for the instance.</summary>
+        private string _title;
+
+        /// <summary>A <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
+        private Rectangle _bounds;
 
         /// <summary>The <see cref="WindowState" /> for the instance.</summary>
         private WindowState _windowState;
@@ -60,14 +59,12 @@ namespace TerraFX.Provider.Win32.UI
 
         /// <summary>A value that indicates whether the instance is visible.</summary>
         private bool _isVisible;
-        #endregion
 
-        #region Constructors
         /// <summary>Initializes a new instance of the <see cref="Window" /> class.</summary>
         /// <param name="windowProvider">The <see cref="WindowProvider" /> for the instance.</param>
         internal Window(WindowProvider windowProvider)
         {
-            _handle = new Lazy<IntPtr>((Func<IntPtr>)this.CreateWindowHandle, isThreadSafe: true);
+            _handle = new Lazy<IntPtr>(CreateWindowHandle, isThreadSafe: true);
 
             _parentThread = Thread.CurrentThread;
             _properties = new PropertySet();
@@ -77,129 +74,239 @@ namespace TerraFX.Provider.Win32.UI
             _readingDirection = ReadingDirection.LeftToRight;
 
             _windowProvider = windowProvider;
-            _state.Transition(to: Initialized);
+            _ = _state.Transition(to: Initialized);
         }
-        #endregion
 
-        #region Destructors
         /// <summary>Finalizes an instance of the <see cref="Window" /> class.</summary>
         ~Window()
         {
             Dispose(isDisposing: false);
         }
-        #endregion
 
-        #region TerraFX.UI.IWindow Properties
         /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
-        public Rectangle Bounds
-        {
-            get
-            {
-                return _bounds;
-            }
-        }
+        public Rectangle Bounds => _bounds;
 
         /// <summary>Gets <see cref="FlowDirection" /> for the instance.</summary>
-        public FlowDirection FlowDirection
-        {
-            get
-            {
-                return _flowDirection;
-            }
-        }
+        public FlowDirection FlowDirection => _flowDirection;
 
         /// <summary>Gets the handle for the instance.</summary>
-        public IntPtr Handle
-        {
-            get
-            {
-                return _state.IsNotDisposedOrDisposing ? _handle.Value : IntPtr.Zero;
-            }
-        }
+        public IntPtr Handle => _state.IsNotDisposedOrDisposing ? _handle.Value : IntPtr.Zero;
 
         /// <summary>Gets a value that indicates whether the instance is the active window.</summary>
-        public bool IsActive
-        {
-            get
-            {
-                return _isActive;
-            }
-        }
+        public bool IsActive => _isActive;
 
         /// <summary>Gets a value that indicates whether the instance is enabled.</summary>
-        public bool IsEnabled
-        {
-            get
-            {
-                return _isEnabled;
-            }
-        }
+        public bool IsEnabled => _isEnabled;
 
         /// <summary>Gets a value that indicates whether the instance is visible.</summary>
-        public bool IsVisible
-        {
-            get
-            {
-                return _isVisible;
-            }
-        }
+        public bool IsVisible => _isVisible;
 
         /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
-        public Thread ParentThread
-        {
-            get
-            {
-                return _parentThread;
-            }
-        }
+        public Thread ParentThread => _parentThread;
 
         /// <summary>Gets the <see cref="IPropertySet" /> for the instance.</summary>
-        public IPropertySet Properties
-        {
-            get
-            {
-                return _properties;
-            }
-        }
+        public IPropertySet Properties => _properties;
 
         /// <summary>Gets the <see cref="ReadingDirection" /> for the instance.</summary>
-        public ReadingDirection ReadingDirection
-        {
-            get
-            {
-                return _readingDirection;
-            }
-        }
+        public ReadingDirection ReadingDirection => _readingDirection;
 
         /// <summary>Gets the title for the instance.</summary>
-        public string Title
-        {
-            get
-            {
-                return _title;
-            }
-        }
+        public string Title => _title;
 
         /// <summary>Gets the <see cref="IWindowProvider" /> for the instance.</summary>
-        public IWindowProvider WindowProvider
-        {
-            get
-            {
-                return _windowProvider;
-            }
-        }
+        public IWindowProvider WindowProvider => _windowProvider;
 
         /// <summary>Gets the <see cref="WindowState" /> for the instance.</summary>
-        public WindowState WindowState
+        public WindowState WindowState => _windowState;
+
+        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
+        public void Dispose()
         {
-            get
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>Activates the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="SetForegroundWindow(IntPtr)" /> failed.</exception>
+        public void Activate()
+        {
+            var succeeded = TryActivate();
+
+            if (succeeded == false)
             {
-                return _windowState;
+                ThrowExternalExceptionForLastError(nameof(SetForegroundWindow));
             }
         }
-        #endregion
 
-        #region Static Methods
+        /// <summary>Closes the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        /// <remarks>
+        /// <para>This method can be called from any thread.</para>
+        /// <para>This method does nothing if the underlying <c>HWND</c> has not been created.</para>
+        /// </remarks>
+        public void Close()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            if (_handle.IsValueCreated)
+            {
+                _ = SendMessage(_handle.Value, WM_CLOSE, wParam: UIntPtr.Zero, lParam: IntPtr.Zero);
+            }
+        }
+
+        /// <summary>Disables the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public void Disable()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            if (_isEnabled)
+            {
+                _ = EnableWindow(_handle.Value, FALSE);
+            }
+        }
+
+        /// <summary>Enables the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public void Enable()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            if (_isEnabled == false)
+            {
+                _ = EnableWindow(_handle.Value, TRUE);
+            }
+        }
+
+        /// <summary>Hides the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public void Hide()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            if (_isVisible)
+            {
+                _ = ShowWindow(_handle.Value, SW_HIDE);
+            }
+        }
+
+        /// <summary>Maximizes the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public void Maximize()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            if (_windowState != WindowState.Maximized)
+            {
+                _ = ShowWindow(_handle.Value, SW_MAXIMIZE);
+            }
+        }
+
+        /// <summary>Minimizes the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public void Minimize()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            if (_windowState != WindowState.Minimized)
+            {
+                _ = ShowWindow(_handle.Value, SW_MINIMIZE);
+            }
+        }
+
+        /// <summary>Restores the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public void Restore()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            if (_windowState != WindowState.Restored)
+            {
+                _ = ShowWindow(_handle.Value, SW_RESTORE);
+            }
+        }
+
+        /// <summary>Shows the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public void Show()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            if (_isVisible == false)
+            {
+                _ = ShowWindow(_handle.Value, SW_SHOW);
+            }
+        }
+
+        /// <summary>Tries to activate the instance.</summary>
+        /// <returns><c>true</c> if the instance was succesfully activated; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public bool TryActivate()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            return _isActive || (SetForegroundWindow(_handle.Value) != FALSE);
+        }
+
+        /// <summary>Processes a window message sent to the instance.</summary>
+        /// <param name="msg">The message to be processed.</param>
+        /// <param name="wParam">The first parameter of the message.</param>
+        /// <param name="lParam">The second parameter of the message.</param>
+        /// <returns>A value that varies based on the exact message that was processed.</returns>
+        internal IntPtr ProcessWindowMessage(uint msg, UIntPtr wParam, IntPtr lParam)
+        {
+            ThrowIfNotThread(_parentThread);
+
+            switch (msg)
+            {
+                case WM_DESTROY:
+                {
+                    return HandleWmDestroy();
+                }
+
+                case WM_MOVE:
+                {
+                    return HandleWmMove(lParam);
+                }
+
+                case WM_SIZE:
+                {
+                    return HandleWmSize(wParam, lParam);
+                }
+
+                case WM_ACTIVATE:
+                {
+                    return HandleWmActivate(wParam);
+                }
+
+                case WM_ENABLE:
+                {
+                    return HandleWmEnable(wParam);
+                }
+
+                case WM_SETTEXT:
+                {
+                    return HandleWmSetText(wParam, lParam);
+                }
+
+                case WM_CLOSE:
+                {
+                    return HandleWmClose();
+                }
+
+                case WM_SHOWWINDOW:
+                {
+                    return HandleWmShowWindow(wParam);
+                }
+
+                default:
+                {
+                    return DefWindowProc(_handle.Value, msg, wParam, lParam);
+                }
+            }
+        }
+
         /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of a native window.</summary>
         /// <param name="handle">A handle to the native window to get the bounds for.</param>
         /// <returns>A <see cref="Rectangle" /> that represents the bounds of <paramref name="handle" />.</returns>
@@ -225,9 +332,7 @@ namespace TerraFX.Provider.Win32.UI
             var activeWindow = GetActiveWindow();
             return activeWindow == handle;
         }
-        #endregion
 
-        #region Methods
         /// <summary>Creates a <c>HWND</c> for the instance.</summary>
         /// <returns>A <c>HWND</c> for the created native window.</returns>
         /// <exception cref="ExternalException">The call to <see cref="CreateWindowEx(uint, char*, char*, uint, int, int, int, int, IntPtr, IntPtr, IntPtr, void*)" /> failed.</exception>
@@ -385,7 +490,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (_state != Disposing)
             {
-                _state.Transition(to: Disposed);
+                _ = _state.Transition(to: Disposed);
             }
             return IntPtr.Zero;
         }
@@ -448,198 +553,5 @@ namespace TerraFX.Provider.Win32.UI
             _bounds = _bounds.WithSize(size);
             return IntPtr.Zero;
         }
-
-        /// <summary>Processes a window message sent to the instance.</summary>
-        /// <param name="Msg">The message to be processed.</param>
-        /// <param name="wParam">The first parameter of the message.</param>
-        /// <param name="lParam">The second parameter of the message.</param>
-        /// <returns>A value that varies based on the exact message that was processed.</returns>
-        internal IntPtr ProcessWindowMessage(uint Msg, UIntPtr wParam, IntPtr lParam)
-        {
-            ThrowIfNotThread(_parentThread);
-
-            switch (Msg)
-            {
-                case WM_DESTROY:
-                {
-                    return HandleWmDestroy();
-                }
-
-                case WM_MOVE:
-                {
-                    return HandleWmMove(lParam);
-                }
-
-                case WM_SIZE:
-                {
-                    return HandleWmSize(wParam, lParam);
-                }
-
-                case WM_ACTIVATE:
-                {
-                    return HandleWmActivate(wParam);
-                }
-
-                case WM_ENABLE:
-                {
-                    return HandleWmEnable(wParam);
-                }
-
-                case WM_SETTEXT:
-                {
-                    return HandleWmSetText(wParam, lParam);
-                }
-
-                case WM_CLOSE:
-                {
-                    return HandleWmClose();
-                }
-
-                case WM_SHOWWINDOW:
-                {
-                    return HandleWmShowWindow(wParam);
-                }
-
-                default:
-                {
-                    return DefWindowProc(_handle.Value, Msg, wParam, lParam);
-                }
-            }
-        }
-        #endregion
-
-        #region System.IDisposable Methods
-        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
-        }
-        #endregion
-
-        #region TerraFX.UI.IWindow Methods
-        /// <summary>Activates the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="SetForegroundWindow(IntPtr)" /> failed.</exception>
-        public void Activate()
-        {
-            var succeeded = TryActivate();
-
-            if (succeeded == false)
-            {
-                ThrowExternalExceptionForLastError(nameof(SetForegroundWindow));
-            }
-        }
-
-        /// <summary>Closes the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        /// <remarks>
-        ///     <para>This method can be called from any thread.</para>
-        ///     <para>This method does nothing if the underlying <c>HWND</c> has not been created.</para>
-        /// </remarks>
-        public void Close()
-        {
-            _state.ThrowIfDisposedOrDisposing();
-
-            if (_handle.IsValueCreated)
-            {
-                SendMessage(_handle.Value, WM_CLOSE, wParam: UIntPtr.Zero, lParam: IntPtr.Zero);
-            }
-        }
-
-        /// <summary>Disables the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public void Disable()
-        {
-            _state.ThrowIfDisposedOrDisposing();
-
-            if (_isEnabled)
-            {
-                EnableWindow(_handle.Value, FALSE);
-            }
-        }
-
-        /// <summary>Enables the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public void Enable()
-        {
-            _state.ThrowIfDisposedOrDisposing();
-
-            if (_isEnabled == false)
-            {
-                EnableWindow(_handle.Value, TRUE);
-            }
-        }
-
-        /// <summary>Hides the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public void Hide()
-        {
-            _state.ThrowIfDisposedOrDisposing();
-
-            if (_isVisible)
-            {
-                ShowWindow(_handle.Value, SW_HIDE);
-            }
-        }
-
-        /// <summary>Maximizes the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public void Maximize()
-        {
-            _state.ThrowIfDisposedOrDisposing();
-
-            if (_windowState != WindowState.Maximized)
-            {
-                ShowWindow(_handle.Value, SW_MAXIMIZE);
-            }
-        }
-
-        /// <summary>Minimizes the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public void Minimize()
-        {
-            _state.ThrowIfDisposedOrDisposing();
-
-            if (_windowState != WindowState.Minimized)
-            {
-                ShowWindow(_handle.Value, SW_MINIMIZE);
-            }
-        }
-
-        /// <summary>Restores the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public void Restore()
-        {
-            _state.ThrowIfDisposedOrDisposing();
-
-            if (_windowState != WindowState.Restored)
-            {
-                ShowWindow(_handle.Value, SW_RESTORE);
-            }
-        }
-
-        /// <summary>Shows the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public void Show()
-        {
-            _state.ThrowIfDisposedOrDisposing();
-
-            if (_isVisible == false)
-            {
-                ShowWindow(_handle.Value, SW_SHOW);
-            }
-        }
-
-        /// <summary>Tries to activate the instance.</summary>
-        /// <returns><c>true</c> if the instance was succesfully activated; otherwise, <c>false</c>.</returns>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public bool TryActivate()
-        {
-            _state.ThrowIfDisposedOrDisposing();
-
-            return _isActive || (SetForegroundWindow(_handle.Value) != FALSE);
-        }
-        #endregion
     }
 }

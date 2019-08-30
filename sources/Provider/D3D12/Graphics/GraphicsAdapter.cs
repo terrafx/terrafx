@@ -16,7 +16,6 @@ namespace TerraFX.Provider.D3D12.Graphics
     /// <summary>Represents a graphics adapter.</summary>
     public sealed unsafe class GraphicsAdapter : IDisposable, IGraphicsAdapter
     {
-        #region Fields
         /// <summary>The <see cref="GraphicsProvider" /> for the instance.</summary>
         private readonly GraphicsProvider _graphicsProvider;
 
@@ -34,9 +33,7 @@ namespace TerraFX.Provider.D3D12.Graphics
 
         /// <summary>The <see cref="State" /> of the instance.</summary>
         private State _state;
-        #endregion
 
-        #region Constructors
         /// <summary>Initializes a new instance of the <see cref="GraphicsAdapter" /> class.</summary>
         /// <param name="graphicsProvider">The <see cref="GraphicsProvider" /> for the instance.</param>
         /// <param name="adapter">The <see cref="IDXGIAdapter1" /> for the instance.</param>
@@ -53,58 +50,31 @@ namespace TerraFX.Provider.D3D12.Graphics
             _vendorId = desc.VendorId;
             _deviceId = desc.DeviceId;
 
-            _state.Transition(to: Initialized);
+            _ = _state.Transition(to: Initialized);
         }
-        #endregion
 
-        #region TerraFX.Graphics.IGraphicsAdapter Properties
         /// <summary>Gets the PCI ID of the device.</summary>
-        public uint DeviceId
-        {
-            get
-            {
-                return _deviceId;
-            }
-        }
+        public uint DeviceId => _deviceId;
 
         /// <summary>Gets the name of the device.</summary>
-        public string DeviceName
-        {
-            get
-            {
-                return _deviceName;
-            }
-        }
+        public string DeviceName => _deviceName;
 
         /// <summary>Gets the <see cref="IGraphicsProvider" /> for the instance.</summary>
-        public IGraphicsProvider GraphicsProvider
-        {
-            get
-            {
-                return _graphicsProvider;
-            }
-        }
+        public IGraphicsProvider GraphicsProvider => _graphicsProvider;
 
         /// <summary>Gets the underlying handle for the instance.</summary>
-        public IntPtr Handle
-        {
-            get
-            {
-                return (IntPtr)_adapter;
-            }
-        }
+        public IntPtr Handle => (IntPtr)_adapter;
 
         /// <summary>Gets the PCI ID of the vendor.</summary>
-        public uint VendorId
-        {
-            get
-            {
-                return _vendorId;
-            }
-        }
-        #endregion
+        public uint VendorId => _vendorId;
 
-        #region Static Methods
+        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
+        public void Dispose()
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+
         /// <summary>Throws a <see cref="ObjectDisposedException" /> if the instance has already been disposed.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         private static void ThrowIfDisposed(int state)
@@ -114,9 +84,7 @@ namespace TerraFX.Provider.D3D12.Graphics
                 ThrowObjectDisposedException(nameof(GraphicsProvider));
             }
         }
-        #endregion
 
-        #region Methods
         /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
         /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
         private void Dispose(bool isDisposing)
@@ -138,18 +106,8 @@ namespace TerraFX.Provider.D3D12.Graphics
 
             if (_adapter != null)
             {
-                _adapter->Release();
+                _ = _adapter->Release();
             }
         }
-        #endregion
-
-        #region System.IDisposable Methods
-        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
-        }
-        #endregion
     }
 }
