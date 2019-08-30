@@ -43,17 +43,17 @@ namespace TerraFX.Provider.X11.UI
         /// <summary>The <see cref="WindowProvider" /> for the instance.</summary>
         private readonly WindowProvider _windowProvider;
 
-        /// <summary>A <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
-        private Rectangle _bounds;
-
-        /// <summary>A <see cref="Rectangle" /> that represents the restored bounds of the instance.</summary>
-        private Rectangle _restoredBounds;
-
         /// <summary>The <see cref="FlowDirection" /> for the instance.</summary>
         private readonly FlowDirection _flowDirection;
 
         /// <summary>The <see cref="ReadingDirection" /> for the instance.</summary>
         private readonly ReadingDirection _readingDirection;
+
+        /// <summary>A <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
+        private Rectangle _bounds;
+
+        /// <summary>A <see cref="Rectangle" /> that represents the restored bounds of the instance.</summary>
+        private Rectangle _restoredBounds;
 
         /// <summary>The <see cref="WindowState" /> for the instance.</summary>
         private WindowState _windowState;
@@ -201,123 +201,6 @@ namespace TerraFX.Provider.X11.UI
             }
         }
 
-        /// <summary>Creates a <c>Window</c> for the instance.</summary>
-        /// <returns>A <c>Window</c> for the created native window.</returns>
-        /// <exception cref="ExternalException">The call to <see cref="XCreateWindow(XDisplay*, UIntPtr, int, int, uint, uint, uint, int, uint, Visual*, UIntPtr, XSetWindowAttributes*)" /> failed.</exception>
-        private UIntPtr CreateWindowHandle()
-        {
-            var display = (XDisplay*)_windowProvider.DispatchProvider.Display;
-
-            var defaultScreen = XDefaultScreenOfDisplay(display);
-            var rootWindow = XRootWindowOfScreen(defaultScreen);
-
-            var screenWidth = XWidthOfScreen(defaultScreen);
-            var screenHeight = XHeightOfScreen(defaultScreen);
-
-            var window = XCreateWindow(
-                display,
-                rootWindow,
-                float.IsNaN(Bounds.X) ? (int)(screenWidth * 0.75f) : (int)Bounds.X,
-                float.IsNaN(Bounds.Y) ? (int)(screenHeight * 0.75f) : (int)Bounds.Y,
-                float.IsNaN(Bounds.Width) ? (uint)(screenWidth * 0.125f) : (uint)Bounds.Width,
-                float.IsNaN(Bounds.Height) ? (uint)(screenHeight * 0.125f) : (uint)Bounds.Height,
-                0,
-                CopyFromParent,
-                InputOutput,
-                (Visual*)CopyFromParent,
-                UIntPtr.Zero,
-                null
-            );
-
-            if (window == (UIntPtr)None)
-            {
-                ThrowExternalExceptionForLastError(nameof(XCreateSimpleWindow));
-            }
-
-            XSelectInput(
-                display,
-                window,
-                (IntPtr)(VisibilityChangeMask | StructureNotifyMask)
-            );
-
-            return window;
-        }
-
-        /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
-        /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
-        private void Dispose(bool isDisposing)
-        {
-            var priorState = _state.BeginDispose();
-
-            if (priorState < Disposing) // (previousState != Disposing) && (previousState != Disposed)
-            {
-                DisposeWindowHandle();
-            }
-
-            _state.EndDispose();
-        }
-
-        /// <summary>Disposes of the <c>Window</c> for the instance.</summary>
-        private void DisposeWindowHandle()
-        {
-            _state.AssertDisposing();
-
-            if (_handle.IsValueCreated)
-            {
-                var display = (XDisplay*)_windowProvider.DispatchProvider.Display;
-                XDestroyWindow(display, _handle.Value);
-            }
-        }
-
-        /// <summary>Handles the <c>XCirculate</c> event.</summary>
-        /// <param name="xcirculate">The <c>XCirculate</c> event.</param>
-        private void HandleXCirculate(in XCirculateEvent xcirculate)
-        {
-            _isActive = xcirculate.place == PlaceOnTop;
-        }
-
-        /// <summary>Handles the <c>XConfigure</c> event.</summary>
-        /// <param name="xconfigure">The <c>XConfigure</c> event.</param>
-        private void HandleXConfigure(in XConfigureEvent xconfigure)
-        {
-            _bounds = new Rectangle(xconfigure.x, xconfigure.y, xconfigure.width, xconfigure.height);
-        }
-
-        /// <summary>Handles the <c>XVisiblity</c> event.</summary>
-        /// <param name="xvisibility">The <c>XVisibility</c> event.</param>
-        private void HandleXVisibility(in XVisibilityEvent xvisibility)
-        {
-            _isVisible = xvisibility.state != VisibilityFullyObscured;
-        }
-
-        /// <summary>Processes a window event sent to the instance.</summary>
-        /// <param name="xevent">The event to be processed.</param>
-        internal void ProcessWindowEvent(in XEvent xevent)
-        {
-            ThrowIfNotThread(_parentThread);
-
-            switch (xevent.type)
-            {
-                case VisibilityNotify:
-                {
-                    HandleXVisibility(in xevent.xvisibility);
-                    break;
-                }
-
-                case ConfigureNotify:
-                {
-                    HandleXConfigure(in xevent.xconfigure);
-                    break;
-                }
-
-                case CirculateNotify:
-                {
-                    HandleXCirculate(in xevent.xcirculate);
-                    break;
-                }
-            }
-        }
-
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
         public void Dispose()
         {
@@ -457,6 +340,123 @@ namespace TerraFX.Provider.X11.UI
             }
 
             return true;
+        }
+
+        /// <summary>Processes a window event sent to the instance.</summary>
+        /// <param name="xevent">The event to be processed.</param>
+        internal void ProcessWindowEvent(in XEvent xevent)
+        {
+            ThrowIfNotThread(_parentThread);
+
+            switch (xevent.type)
+            {
+                case VisibilityNotify:
+                {
+                    HandleXVisibility(in xevent.xvisibility);
+                    break;
+                }
+
+                case ConfigureNotify:
+                {
+                    HandleXConfigure(in xevent.xconfigure);
+                    break;
+                }
+
+                case CirculateNotify:
+                {
+                    HandleXCirculate(in xevent.xcirculate);
+                    break;
+                }
+            }
+        }
+
+        /// <summary>Creates a <c>Window</c> for the instance.</summary>
+        /// <returns>A <c>Window</c> for the created native window.</returns>
+        /// <exception cref="ExternalException">The call to <see cref="XCreateWindow(XDisplay*, UIntPtr, int, int, uint, uint, uint, int, uint, Visual*, UIntPtr, XSetWindowAttributes*)" /> failed.</exception>
+        private UIntPtr CreateWindowHandle()
+        {
+            var display = (XDisplay*)_windowProvider.DispatchProvider.Display;
+
+            var defaultScreen = XDefaultScreenOfDisplay(display);
+            var rootWindow = XRootWindowOfScreen(defaultScreen);
+
+            var screenWidth = XWidthOfScreen(defaultScreen);
+            var screenHeight = XHeightOfScreen(defaultScreen);
+
+            var window = XCreateWindow(
+                display,
+                rootWindow,
+                float.IsNaN(Bounds.X) ? (int)(screenWidth * 0.75f) : (int)Bounds.X,
+                float.IsNaN(Bounds.Y) ? (int)(screenHeight * 0.75f) : (int)Bounds.Y,
+                float.IsNaN(Bounds.Width) ? (uint)(screenWidth * 0.125f) : (uint)Bounds.Width,
+                float.IsNaN(Bounds.Height) ? (uint)(screenHeight * 0.125f) : (uint)Bounds.Height,
+                0,
+                CopyFromParent,
+                InputOutput,
+                (Visual*)CopyFromParent,
+                UIntPtr.Zero,
+                null
+            );
+
+            if (window == (UIntPtr)None)
+            {
+                ThrowExternalExceptionForLastError(nameof(XCreateSimpleWindow));
+            }
+
+            XSelectInput(
+                display,
+                window,
+                (IntPtr)(VisibilityChangeMask | StructureNotifyMask)
+            );
+
+            return window;
+        }
+
+        /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
+        /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
+        private void Dispose(bool isDisposing)
+        {
+            var priorState = _state.BeginDispose();
+
+            if (priorState < Disposing) // (previousState != Disposing) && (previousState != Disposed)
+            {
+                DisposeWindowHandle();
+            }
+
+            _state.EndDispose();
+        }
+
+        /// <summary>Disposes of the <c>Window</c> for the instance.</summary>
+        private void DisposeWindowHandle()
+        {
+            _state.AssertDisposing();
+
+            if (_handle.IsValueCreated)
+            {
+                var display = (XDisplay*)_windowProvider.DispatchProvider.Display;
+                XDestroyWindow(display, _handle.Value);
+            }
+        }
+
+        /// <summary>Handles the <c>XCirculate</c> event.</summary>
+        /// <param name="xcirculate">The <c>XCirculate</c> event.</param>
+        private void HandleXCirculate(in XCirculateEvent xcirculate)
+        {
+            _isActive = xcirculate.place == PlaceOnTop;
+        }
+
+        /// <summary>Handles the <c>XConfigure</c> event.</summary>
+        /// <param name="xconfigure">The <c>XConfigure</c> event.</param>
+        private void HandleXConfigure(in XConfigureEvent xconfigure)
+        {
+            _bounds = new Rectangle(xconfigure.x, xconfigure.y, xconfigure.width, xconfigure.height);
+        }
+
+        /// <summary>Handles the <c>XVisiblity</c> event.</summary>
+        /// <param name="xvisibility">The <c>XVisibility</c> event.</param>
+        private void HandleXVisibility(in XVisibilityEvent xvisibility)
+        {
+            _isVisible = xvisibility.state != VisibilityFullyObscured;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace TerraFX.UI
         /// <summary>Gets the <see cref="IWindow" /> objects created by the instance.</summary>
         IEnumerable<IWindow> Windows { get; }
 
-        /// <summary>Create a new <see cref="IWindow"/> instance.</summary>
+        /// <summary>Create a new <see cref="IWindow" /> instance.</summary>
         /// <returns>A new <see cref="IWindow" /> instance</returns>
         IWindow CreateWindow();
     }

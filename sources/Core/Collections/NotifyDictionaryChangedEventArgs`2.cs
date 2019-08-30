@@ -38,7 +38,7 @@ namespace TerraFX.Collections
         }
 
         /// <summary>Gets the key of the item that caused the event.</summary>
-        /// <exception cref="InvalidOperationException"><see cref="Action" /> is not <see cref="NotifyDictionaryChangedAction.Add" />, <see cref="NotifyDictionaryChangedAction.Remove" />, or <see cref="NotifyDictionaryChangedAction.ValueChanged"/>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="Action" /> is not <see cref="NotifyDictionaryChangedAction.Add" />, <see cref="NotifyDictionaryChangedAction.Remove" />, or <see cref="NotifyDictionaryChangedAction.ValueChanged" />.</exception>
         public TKey Key
         {
             get
@@ -53,7 +53,7 @@ namespace TerraFX.Collections
         }
 
         /// <summary>Gets the old value of the item that caused the event.</summary>
-        /// <exception cref="InvalidOperationException"><see cref="Action" /> is not <see cref="NotifyDictionaryChangedAction.ValueChanged"/>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="Action" /> is not <see cref="NotifyDictionaryChangedAction.ValueChanged" />.</exception>
         public TValue OldValue
         {
             get
@@ -68,7 +68,7 @@ namespace TerraFX.Collections
         }
 
         /// <summary>Gets the new value of the item that caused the event.</summary>
-        /// <exception cref="InvalidOperationException"><see cref="Action" /> is not <see cref="NotifyDictionaryChangedAction.ValueChanged"/>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="Action" /> is not <see cref="NotifyDictionaryChangedAction.ValueChanged" />.</exception>
         public TValue NewValue
         {
             get

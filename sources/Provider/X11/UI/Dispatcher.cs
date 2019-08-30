@@ -42,35 +42,6 @@ namespace TerraFX.Provider.X11.UI
         /// <summary>Occurs when an exit event is dispatched from the queue.</summary>
         public event EventHandler? ExitRequested;
 
-        /// <summary>Creates an <c>Atom</c> for the window provider property.</summary>
-        /// <returns>An <c>Atom</c> for the window provider property.</returns>
-        private UIntPtr CreateWindowProviderProperty()
-        {
-            var display = (XDisplay*)_dispatchProvider.Display;
-
-            var name = stackalloc ulong[6];
-            {
-                name[0] = 0x2E58466172726554;   // TerraFX.
-                name[1] = 0x72656469766F7250;   // Provider
-                name[2] = 0x6E69572E3131582E;   // .X11.Win
-                name[3] = 0x646E69572E776F64;   // dow.Wind
-                name[4] = 0x6567616E614D776F;   // owManage
-                name[5] = 0x0000000000000072;   // r
-            };
-
-            return XInternAtom(
-                display,
-                (sbyte*)name,
-                False
-            );
-        }
-
-        /// <summary>Raises the <see cref="ExitRequested" /> event.</summary>
-        private void OnExitRequested()
-        {
-            ExitRequested?.Invoke(this, EventArgs.Empty);
-        }
-
         /// <summary>Gets the <see cref="IDispatchProvider" /> associated with the instance.</summary>
         public IDispatchProvider DispatchProvider
         {
@@ -101,9 +72,9 @@ namespace TerraFX.Provider.X11.UI
         /// <summary>Dispatches all events currently pending in the queue.</summary>
         /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</exception>
         /// <remarks>
-        ///     <para>This method does not wait for a new event to be raised if the queue is empty.</para>
-        ///     <para>This method does not performing any translation or pre-processing on the dispatched events.</para>
-        ///     <para>This method will continue dispatching pending events even after the <see cref="ExitRequested" /> event is raised.</para>
+        ///   <para>This method does not wait for a new event to be raised if the queue is empty.</para>
+        ///   <para>This method does not performing any translation or pre-processing on the dispatched events.</para>
+        ///   <para>This method will continue dispatching pending events even after the <see cref="ExitRequested" /> event is raised.</para>
         /// </remarks>
         public void DispatchPending()
         {
@@ -121,6 +92,35 @@ namespace TerraFX.Provider.X11.UI
                     WindowProvider.ForwardWindowEvent(_windowProviderProperty.Value, in xevent);
                 }
             }
+        }
+
+        /// <summary>Creates an <c>Atom</c> for the window provider property.</summary>
+        /// <returns>An <c>Atom</c> for the window provider property.</returns>
+        private UIntPtr CreateWindowProviderProperty()
+        {
+            var display = (XDisplay*)_dispatchProvider.Display;
+
+            var name = stackalloc ulong[6];
+            {
+                name[0] = 0x2E58466172726554;   // TerraFX.
+                name[1] = 0x72656469766F7250;   // Provider
+                name[2] = 0x6E69572E3131582E;   // .X11.Win
+                name[3] = 0x646E69572E776F64;   // dow.Wind
+                name[4] = 0x6567616E614D776F;   // owManage
+                name[5] = 0x0000000000000072;   // r
+            };
+
+            return XInternAtom(
+                display,
+                (sbyte*)name,
+                False
+            );
+        }
+
+        /// <summary>Raises the <see cref="ExitRequested" /> event.</summary>
+        private void OnExitRequested()
+        {
+            ExitRequested?.Invoke(this, EventArgs.Empty);
         }
     }
 }

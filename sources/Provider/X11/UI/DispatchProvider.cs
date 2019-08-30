@@ -94,6 +94,35 @@ namespace TerraFX.Provider.X11.UI
             }
         }
 
+        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
+        public void Dispose()
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>Gets the <see cref="IDispatcher" /> instance associated with a <see cref="Thread" />, creating one if it does not exist.</summary>
+        /// <param name="thread">The <see cref="Thread" /> for which the <see cref="IDispatcher" /> instance should be retrieved.</param>
+        /// <returns>The <see cref="IDispatcher" /> instance associated with <paramref name="thread" />.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="thread" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">A <see cref="IDispatcher" /> instance for <paramref name="thread" /> could not be found.</exception>
+        public IDispatcher GetDispatcher(Thread thread)
+        {
+            ThrowIfNull(thread, nameof(thread));
+            return _dispatchers.GetOrAdd(thread, (parentThread) => new Dispatcher(this, parentThread));
+        }
+
+        /// <summary>Gets the <see cref="IDispatcher" /> instance associated with a <see cref="Thread" /> or <c>null</c> if one does not exist.</summary>
+        /// <param name="thread">The <see cref="Thread" /> for which the <see cref="IDispatcher" /> instance should be retrieved.</param>
+        /// <param name="dispatcher">The <see cref="IDispatcher" /> instance associated with <paramref name="thread" />.</param>
+        /// <returns><c>true</c> if a <see cref="IDispatcher" /> instance was found for <paramref name="thread" />; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="thread" /> is <c>null</c>.</exception>
+        public bool TryGetDispatcher(Thread thread, [MaybeNullWhen(false)] out IDispatcher dispatcher)
+        {
+            ThrowIfNull(thread, nameof(thread));
+            return _dispatchers.TryGetValue(thread, out dispatcher!);
+        }
+
         /// <summary>Creates a <see cref="Display" />.</summary>
         /// <returns>The created <see cref="Display" />.</returns>
         /// <exception cref="ExternalException">The call to <see cref="XOpenDisplay(sbyte*)" /> failed.</exception>
@@ -132,35 +161,6 @@ namespace TerraFX.Provider.X11.UI
             {
                 XCloseDisplay((XDisplay*)_display.Value);
             }
-        }
-
-        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>Gets the <see cref="IDispatcher" /> instance associated with a <see cref="Thread" />, creating one if it does not exist.</summary>
-        /// <param name="thread">The <see cref="Thread" /> for which the <see cref="IDispatcher" /> instance should be retrieved.</param>
-        /// <returns>The <see cref="IDispatcher" /> instance associated with <paramref name="thread" />.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="thread" /> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">A <see cref="IDispatcher" /> instance for <paramref name="thread" /> could not be found.</exception>
-        public IDispatcher GetDispatcher(Thread thread)
-        {
-            ThrowIfNull(thread, nameof(thread));
-            return _dispatchers.GetOrAdd(thread, (parentThread) => new Dispatcher(this, parentThread));
-        }
-
-        /// <summary>Gets the <see cref="IDispatcher" /> instance associated with a <see cref="Thread" /> or <c>null</c> if one does not exist.</summary>
-        /// <param name="thread">The <see cref="Thread" /> for which the <see cref="IDispatcher" /> instance should be retrieved.</param>
-        /// <param name="dispatcher">The <see cref="IDispatcher" /> instance associated with <paramref name="thread" />.</param>
-        /// <returns><c>true</c> if a <see cref="IDispatcher" /> instance was found for <paramref name="thread" />; otherwise, <c>false</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="thread" /> is <c>null</c>.</exception>
-        public bool TryGetDispatcher(Thread thread, [MaybeNullWhen(false)] out IDispatcher dispatcher)
-        {
-            ThrowIfNull(thread, nameof(thread));
-            return _dispatchers.TryGetValue(thread, out dispatcher!);
         }
     }
 }

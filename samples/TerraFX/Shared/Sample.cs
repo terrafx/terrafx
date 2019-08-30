@@ -55,14 +55,14 @@ namespace TerraFX.Samples
 
         public abstract void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs);
 
-        protected virtual void Dispose(bool isDisposing)
-        {
-        }
-
         public void Dispose()
         {
             Dispose(isDisposing: true);
             GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool isDisposing)
+        {
         }
     }
 }

@@ -34,23 +34,6 @@ namespace TerraFX.Provider.Win32.UI
             _dispatchers = new ConcurrentDictionary<Thread, IDispatcher>();
         }
 
-        /// <summary>Gets the tick frequency for the system's monotonic timer.</summary>
-        /// <returns>The tick frequency for the system's monotonic timer.</returns>
-        /// <exception cref="ExternalException">The call to <see cref="QueryPerformanceFrequency(LARGE_INTEGER*)" /> failed.</exception>
-        private static double GetTickFrequency()
-        {
-            LARGE_INTEGER frequency;
-            var succeeded = QueryPerformanceFrequency(&frequency);
-
-            if (succeeded == FALSE)
-            {
-                ThrowExternalExceptionForLastError(nameof(QueryPerformanceFrequency));
-            }
-
-            const double ticksPerSecond = Timestamp.TicksPerSecond;
-            return ticksPerSecond / frequency.QuadPart;
-        }
-
         /// <summary>Gets the current <see cref="Timestamp" /> for the instance.</summary>
         /// <exception cref="ExternalException">The call to <see cref="QueryPerformanceCounter(LARGE_INTEGER*)" /> failed.</exception>
         public Timestamp CurrentTimestamp
@@ -101,6 +84,23 @@ namespace TerraFX.Provider.Win32.UI
         {
             ThrowIfNull(thread, nameof(thread));
             return _dispatchers.TryGetValue(thread, out dispatcher!);
+        }
+
+        /// <summary>Gets the tick frequency for the system's monotonic timer.</summary>
+        /// <returns>The tick frequency for the system's monotonic timer.</returns>
+        /// <exception cref="ExternalException">The call to <see cref="QueryPerformanceFrequency(LARGE_INTEGER*)" /> failed.</exception>
+        private static double GetTickFrequency()
+        {
+            LARGE_INTEGER frequency;
+            var succeeded = QueryPerformanceFrequency(&frequency);
+
+            if (succeeded == FALSE)
+            {
+                ThrowExternalExceptionForLastError(nameof(QueryPerformanceFrequency));
+            }
+
+            const double ticksPerSecond = Timestamp.TicksPerSecond;
+            return ticksPerSecond / frequency.QuadPart;
         }
     }
 }

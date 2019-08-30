@@ -69,6 +69,13 @@ namespace TerraFX.Provider.Vulkan.Graphics
             }
         }
 
+        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
+        public void Dispose()
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+
         /// <summary>Creates a Vulkan instance.</summary>
         /// <returns>A Vulkan instance.</returns>
         /// <exception cref="ExternalException">The call to <see cref="vkCreateInstance(VkInstanceCreateInfo*, VkAllocationCallbacks*, IntPtr*)" /> failed.</exception>
@@ -153,13 +160,6 @@ namespace TerraFX.Provider.Vulkan.Graphics
             }
 
             return adapters.ToImmutable();
-        }
-
-        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
         }
     }
 }

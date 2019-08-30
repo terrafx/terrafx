@@ -6,8 +6,8 @@ using System.Reflection;
 using System.Threading;
 using TerraFX.UI;
 using TerraFX.Utilities;
-using static TerraFX.Utilities.LazyExtensions;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.LazyExtensions;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.ApplicationModel
@@ -59,17 +59,6 @@ namespace TerraFX.ApplicationModel
             }
         }
 
-        private CompositionHost CreateCompositionHost()
-        {
-            _state.ThrowIfDisposedOrDisposing();
-
-            var containerConfiguration = new ContainerConfiguration();
-            {
-                containerConfiguration = containerConfiguration.WithAssemblies(_compositionAssemblies);
-            }
-            return containerConfiguration.CreateContainer();
-        }
-
         /// <summary>Gets the service object of the specified type.</summary>
         /// <typeparam name="TService">The type of the service object to get.</typeparam>
         /// <returns>A service object of <typeparamref name="TService" /> if one exists; otherwise, <c>default</c>.</returns>
@@ -79,21 +68,10 @@ namespace TerraFX.ApplicationModel
             return service;
         }
 
-        private void OnIdle(TimeSpan delta)
-        {
-            var idle = Idle;
-
-            if (idle != null)
-            {
-                var eventArgs = new ApplicationIdleEventArgs(delta);
-                idle(this, eventArgs);
-            }
-        }
-
         /// <summary>Requests that the instance exits the event loop.</summary>
         /// <remarks>
-        ///     <para>This method does nothing if <see cref="IsRunning" /> is <c>false</c>.</para>
-        ///     <para>This method can be called from any thread.</para>
+        ///   <para>This method does nothing if <see cref="IsRunning" /> is <c>false</c>.</para>
+        ///   <para>This method can be called from any thread.</para>
         /// </remarks>
         public void RequestExit()
         {
@@ -120,7 +98,7 @@ namespace TerraFX.ApplicationModel
                 // We need to do an initial dispatch to cover the case where a quit
                 // message was posted before the message pump was started, otherwise
                 // we can end up with a NullReferenceException when we try to execute
-                // OnIdle
+                // OnIdle.
 
                 dispatcher.DispatchPending();
 
@@ -159,6 +137,28 @@ namespace TerraFX.ApplicationModel
         {
             _compositionHost.Value.TryGetExport(serviceType, out var service);
             return service;
+        }
+
+        private CompositionHost CreateCompositionHost()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            var containerConfiguration = new ContainerConfiguration();
+            {
+                containerConfiguration = containerConfiguration.WithAssemblies(_compositionAssemblies);
+            }
+            return containerConfiguration.CreateContainer();
+        }
+
+        private void OnIdle(TimeSpan delta)
+        {
+            var idle = Idle;
+
+            if (idle != null)
+            {
+                var eventArgs = new ApplicationIdleEventArgs(delta);
+                idle(this, eventArgs);
+            }
         }
     }
 }

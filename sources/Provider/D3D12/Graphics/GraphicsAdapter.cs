@@ -98,6 +98,13 @@ namespace TerraFX.Provider.D3D12.Graphics
             }
         }
 
+        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
+        public void Dispose()
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+
         /// <summary>Throws a <see cref="ObjectDisposedException" /> if the instance has already been disposed.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         private static void ThrowIfDisposed(int state)
@@ -131,13 +138,6 @@ namespace TerraFX.Provider.D3D12.Graphics
             {
                 _adapter->Release();
             }
-        }
-
-        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
         }
     }
 }

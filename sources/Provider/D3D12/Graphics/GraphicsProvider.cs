@@ -72,6 +72,13 @@ namespace TerraFX.Provider.D3D12.Graphics
             }
         }
 
+        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
+        public void Dispose()
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+
         /// <summary>Creates a DXGI factory</summary>
         /// <returns>A DXGI factory.</returns>
         /// <exception cref="ExternalException">The call to <see cref="CreateDXGIFactory2(uint, Guid*, void**)" /> failed.</exception>
@@ -173,13 +180,6 @@ namespace TerraFX.Provider.D3D12.Graphics
             }
 
             return graphicsAdapters.ToImmutable();
-        }
-
-        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
         }
     }
 }

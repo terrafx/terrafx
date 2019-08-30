@@ -103,6 +103,26 @@ namespace TerraFX.Provider.Win32.UI
             }
         }
 
+        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
+        public void Dispose()
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>Create a new <see cref="IWindow" /> instance.</summary>
+        /// <returns>A new <see cref="IWindow" /> instance</returns>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public IWindow CreateWindow()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            var window = new Window(this);
+            _windows.TryAdd(window.Handle, window);
+
+            return window;
+        }
+
         /// <summary>Forwards native window messages to the appropriate <see cref="Window" /> instance for processing.</summary>
         /// <param name="hWnd">The <c>HWND</c> of the <see cref="Window" /> the message should be forwarded to.</param>
         /// <param name="Msg">The message to be processed.</param>
@@ -301,26 +321,6 @@ namespace TerraFX.Provider.Win32.UI
             }
 
             Assert(_windows.IsEmpty, Resources.ArgumentOutOfRangeExceptionMessage, nameof(_windows.IsEmpty), _windows.IsEmpty);
-        }
-
-        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>Create a new <see cref="IWindow"/> instance.</summary>
-        /// <returns>A new <see cref="IWindow" /> instance</returns>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public IWindow CreateWindow()
-        {
-            _state.ThrowIfDisposedOrDisposing();
-
-            var window = new Window(this);
-            _windows.TryAdd(window.Handle, window);
-
-            return window;
         }
     }
 }

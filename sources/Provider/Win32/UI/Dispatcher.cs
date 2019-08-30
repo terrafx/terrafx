@@ -36,12 +36,6 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Occurs when an exit event is dispatched from the queue.</summary>
         public event EventHandler? ExitRequested;
 
-        /// <summary>Raises the <see cref="ExitRequested" /> event.</summary>
-        private void OnExitRequested()
-        {
-            ExitRequested?.Invoke(this, EventArgs.Empty);
-        }
-
         /// <summary>Gets the <see cref="IDispatchProvider" /> for the instance.</summary>
         public IDispatchProvider DispatchProvider
         {
@@ -63,9 +57,9 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Dispatches all events currently pending in the queue.</summary>
         /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</exception>
         /// <remarks>
-        ///     <para>This method does not wait for a new event to be raised if the queue is empty.</para>
-        ///     <para>This method does not performing any translation or pre-processing on the dispatched events.</para>
-        ///     <para>This method will continue dispatching pending events even after the <see cref="ExitRequested" /> event is raised.</para>
+        ///   <para>This method does not wait for a new event to be raised if the queue is empty.</para>
+        ///   <para>This method does not performing any translation or pre-processing on the dispatched events.</para>
+        ///   <para>This method will continue dispatching pending events even after the <see cref="ExitRequested" /> event is raised.</para>
         /// </remarks>
         public void DispatchPending()
         {
@@ -83,6 +77,12 @@ namespace TerraFX.Provider.Win32.UI
                     OnExitRequested();
                 }
             }
+        }
+
+        /// <summary>Raises the <see cref="ExitRequested" /> event.</summary>
+        private void OnExitRequested()
+        {
+            ExitRequested?.Invoke(this, EventArgs.Empty);
         }
     }
 }

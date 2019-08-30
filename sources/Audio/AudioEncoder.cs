@@ -10,13 +10,13 @@ namespace TerraFX.Audio
     /// <summary>A pipe used to encode audio from one format to another.</summary>
     public abstract class AudioEncoder : IDisposable
     {
-        /// <summary> The input pipe for decoded data.</summary>
+        /// <summary>The input pipe for decoded data.</summary>
         private readonly Pipe _inputPipe;
 
         /// <summary>The output pipe for encoded data.</summary>
         private readonly Pipe _outputPipe;
 
-        /// <summary>Initializes a new instance of the <see cref="AudioEncoder"/> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="AudioEncoder" /> class.</summary>
         /// <param name="options">Audio encoder options.</param>
         /// <param name="pipeOptions">Options for input/output pipes. Defaults to <see cref="PipeOptions.Default" />.</param>
         public AudioEncoder(AudioEncoderOptions options,
@@ -26,17 +26,17 @@ namespace TerraFX.Audio
             _outputPipe = new Pipe(pipeOptions ?? PipeOptions.Default);
         }
 
-        /// <summary>Reader for decoded input data.</summary>
-        protected PipeReader InputReader => _inputPipe.Reader;
-
-        /// <summary>Writer for encoded output data.</summary>
-        protected PipeWriter OutputWriter => _outputPipe.Writer;
-
         /// <summary>Reader for encoded output data.</summary>
         public PipeReader Reader => _outputPipe.Reader;
 
         /// <summary>Writer for decoded input data.</summary>
         public PipeWriter Writer => _inputPipe.Writer;
+
+        /// <summary>Reader for decoded input data.</summary>
+        protected PipeReader InputReader => _inputPipe.Reader;
+
+        /// <summary>Writer for encoded output data.</summary>
+        protected PipeWriter OutputWriter => _outputPipe.Writer;
 
         /// <summary>Runs the encoder pipeline.</summary>
         public abstract Task EncodeAsync(CancellationToken cancellationToken = default);
@@ -48,7 +48,7 @@ namespace TerraFX.Audio
             _outputPipe.Reset();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public abstract void Dispose();
     }
 }
