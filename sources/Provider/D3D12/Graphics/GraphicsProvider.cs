@@ -29,13 +29,9 @@ namespace TerraFX.Provider.D3D12.Graphics
         private const uint CreateFactoryFlags = 0;
 #endif
 
-        /// <summary>The DXGI factory.</summary>
         private readonly Lazy<IntPtr> _factory;
-
-        /// <summary>The <see cref="GraphicsAdapter" /> instances available in the system.</summary>
         private readonly Lazy<ImmutableArray<GraphicsAdapter>> _adapters;
 
-        /// <summary>The <see cref="State" /> of the instance.</summary>
         private State _state;
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsProvider" /> class.</summary>
@@ -73,9 +69,6 @@ namespace TerraFX.Provider.D3D12.Graphics
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>Creates a DXGI factory</summary>
-        /// <returns>A DXGI factory.</returns>
-        /// <exception cref="ExternalException">The call to <see cref="CreateDXGIFactory2(uint, Guid*, void**)" /> failed.</exception>
         private static IntPtr CreateFactory()
         {
             IntPtr factory;
@@ -86,8 +79,6 @@ namespace TerraFX.Provider.D3D12.Graphics
             return factory;
         }
 
-        /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
-        /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
         private void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
@@ -101,7 +92,6 @@ namespace TerraFX.Provider.D3D12.Graphics
             _state.EndDispose();
         }
 
-        /// <summary>Disposes of the DXGI factory that was created.</summary>
         private void DisposeFactory()
         {
             if (_factory.IsValueCreated)
@@ -111,8 +101,6 @@ namespace TerraFX.Provider.D3D12.Graphics
             }
         }
 
-        /// <summary>Disposes of all <see cref="GraphicsAdapter" /> instances that have been created.</summary>
-        /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
         private void DisposeGraphicsAdapters(bool isDisposing)
         {
             if (isDisposing && _adapters.IsValueCreated)
@@ -126,10 +114,6 @@ namespace TerraFX.Provider.D3D12.Graphics
             }
         }
 
-        /// <summary>Gets the <see cref="GraphicsAdapter" /> instances available in the system.</summary>
-        /// <returns>The <see cref="GraphicsAdapter" /> instances available in the system.</returns>
-        /// <exception cref="ExternalException">The call to <see cref="IDXGIFactory1.EnumAdapters1(uint, IDXGIAdapter1**)" /> failed.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="IDXGIAdapter1.GetDesc1(DXGI_ADAPTER_DESC1*)" /> failed.</exception>
         private ImmutableArray<GraphicsAdapter> GetGraphicsAdapters()
         {
             var factory = (IDXGIFactory3*)_factory.Value;

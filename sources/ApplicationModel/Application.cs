@@ -22,6 +22,7 @@ namespace TerraFX.ApplicationModel
         private readonly Assembly[] _compositionAssemblies;
         private readonly Thread _parentThread;
         private readonly Lazy<CompositionHost> _compositionHost;
+
         private State _state;
 
         /// <summary>Initializes a new instance of the <see cref="Application" /> class.</summary>

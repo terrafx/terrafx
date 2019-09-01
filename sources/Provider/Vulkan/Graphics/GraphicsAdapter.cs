@@ -13,24 +13,12 @@ namespace TerraFX.Provider.Vulkan.Graphics
     /// <summary>Represents a graphics adapter.</summary>
     public sealed unsafe class GraphicsAdapter : IGraphicsAdapter
     {
-        /// <summary>The <see cref="GraphicsProvider" /> for the instance.</summary>
         private readonly GraphicsProvider _graphicsProvider;
-
-        /// <summary>The Vulkan device for the instance.</summary>
         private readonly IntPtr _physicalDevice;
-
-        /// <summary>The name of the device.</summary>
         private readonly string _deviceName;
-
-        /// <summary>The PCI ID of the vendor.</summary>
         private readonly uint _vendorId;
-
-        /// <summary>The PCI ID of the device.</summary>
         private readonly uint _deviceId;
 
-        /// <summary>Initializes a new instance of the <see cref="GraphicsAdapter" /> class.</summary>
-        /// <param name="graphicsProvider">The <see cref="GraphicsProvider" /> for the instance.</param>
-        /// <param name="physicalDevice">The Vulkan device for the instance.</param>
         internal GraphicsAdapter(GraphicsProvider graphicsProvider, IntPtr physicalDevice)
         {
             _graphicsProvider = graphicsProvider;

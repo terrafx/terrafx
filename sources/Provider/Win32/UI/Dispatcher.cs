@@ -15,15 +15,9 @@ namespace TerraFX.Provider.Win32.UI
     /// <summary>Provides a means of dispatching events for a thread.</summary>
     public sealed unsafe class Dispatcher : IDispatcher
     {
-        /// <summary>The <see cref="DispatchProvider" /> for the instance.</summary>
         private readonly DispatchProvider _dispatchProvider;
-
-        /// <summary>The <see cref="Thread" /> that was used to create the instance.</summary>
         private readonly Thread _parentThread;
 
-        /// <summary>Initializes a new instance of the <see cref="Dispatcher" /> class.</summary>
-        /// <param name="dispatchProvider">The <see cref="DispatchProvider" /> for the instance.</param>
-        /// <param name="parentThread">The <see cref="Thread" /> that was used to create the instance.</param>
         internal Dispatcher(DispatchProvider dispatchProvider, Thread parentThread)
         {
             Assert(dispatchProvider != null, Resources.ArgumentNullExceptionMessage, nameof(dispatchProvider));
@@ -67,7 +61,6 @@ namespace TerraFX.Provider.Win32.UI
             }
         }
 
-        /// <summary>Raises the <see cref="ExitRequested" /> event.</summary>
         private void OnExitRequested() => ExitRequested?.Invoke(this, EventArgs.Empty);
     }
 }

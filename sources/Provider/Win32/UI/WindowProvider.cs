@@ -27,22 +27,13 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>A <c>HMODULE</c> to the entry point module.</summary>
         public static readonly IntPtr EntryPointModule = GetModuleHandle();
 
-        /// <summary>The <see cref="NativeDelegate{TDelegate}" /> for the <see cref="WNDPROC" /> method.</summary>
         private static readonly NativeDelegate<WNDPROC> ForwardWndProc = new NativeDelegate<WNDPROC>(ForwardWindowMessage);
 
-        /// <summary>The <c>ATOM</c> of the <see cref="WNDCLASSEX" /> registered for the instance.</summary>
         private readonly Lazy<ushort> _classAtom;
-
-        /// <summary>The <see cref="DispatchProvider" /> for the instance.</summary>
         private readonly Lazy<DispatchProvider> _dispatchProvider;
-
-        /// <summary>The <see cref="GCHandle" /> containing the native handle for the instance.</summary>
         private readonly Lazy<GCHandle> _nativeHandle;
-
-        /// <summary>A map of <c>HWND</c> to <see cref="Window" /> objects created for the instance.</summary>
         private readonly ConcurrentDictionary<IntPtr, Window> _windows;
 
-        /// <summary>The <see cref="State" /> of the instance.</summary>
         private State _state;
 
         /// <summary>Initializes a new instance of the <see cref="WindowProvider" /> class.</summary>
@@ -111,12 +102,6 @@ namespace TerraFX.Provider.Win32.UI
             return window;
         }
 
-        /// <summary>Forwards native window messages to the appropriate <see cref="Window" /> instance for processing.</summary>
-        /// <param name="hWnd">The <c>HWND</c> of the <see cref="Window" /> the message should be forwarded to.</param>
-        /// <param name="msg">The message to be processed.</param>
-        /// <param name="wParam">The first parameter of the message to be processed.</param>
-        /// <param name="lParam">The second parameter of the message to be processed.</param>
-        /// <returns>A value that varies based on the exact message that was processed.</returns>
         private static IntPtr ForwardWindowMessage(IntPtr hWnd, uint msg, UIntPtr wParam, IntPtr lParam)
         {
             IntPtr result, userData;
@@ -165,10 +150,6 @@ namespace TerraFX.Provider.Win32.UI
             return result;
         }
 
-        /// <summary>Gets the <c>HCURSOR</c> for the desktop window.</summary>
-        /// <returns>The <c>HCURSOR</c> for the desktop window.</returns>
-        /// <exception cref="ExternalException">The call to <see cref="GetClassName(IntPtr, char*, int)" /> failed.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="GetClassInfoEx(IntPtr, char*, WNDCLASSEX*)" /> failed.</exception>
         private static IntPtr GetDesktopCursor()
         {
             var desktopWindowHandle = GetDesktopWindow();
@@ -195,11 +176,6 @@ namespace TerraFX.Provider.Win32.UI
             return desktopWindowClass.hCursor;
         }
 
-        /// <summary>Creates an <c>ATOM</c> by registering a <see cref="WNDCLASSEX" /> for the entry point module.</summary>
-        /// <exception cref="ExternalException">The call to <see cref="GetClassName(IntPtr, char*, int)" /> failed.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="GetClassInfoEx(IntPtr, char*, WNDCLASSEX*)" /> failed.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="RegisterClassEx(WNDCLASSEX*)" /> failed.</exception>
-        /// <returns>The <c>ATOM</c> created by registering a <see cref="WNDCLASSEX" /> for the entry point module.</returns>
         private ushort CreateClassAtom()
         {
             _state.AssertNotDisposedOrDisposing();
@@ -240,10 +216,6 @@ namespace TerraFX.Provider.Win32.UI
             return classAtom;
         }
 
-        /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
-        /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
-        /// <exception cref="ExternalException">The call to <see cref="DestroyWindow(IntPtr)" /> failed.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="UnregisterClass(char*, IntPtr)" /> failed.</exception>
         private void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
@@ -258,8 +230,6 @@ namespace TerraFX.Provider.Win32.UI
             _state.EndDispose();
         }
 
-        /// <summary>Disposes of the <c>ATOM</c> of the <see cref="WNDCLASSEX" /> registered for the instance.</summary>
-        /// <exception cref="ExternalException">The call to <see cref="UnregisterClass(char*, IntPtr)" /> failed.</exception>
         private void DisposeClassAtom()
         {
             _state.AssertDisposing();
@@ -275,7 +245,6 @@ namespace TerraFX.Provider.Win32.UI
             }
         }
 
-        /// <summary>Disposes of the <see cref="GCHandle" /> containing the native handle of the instance.</summary>
         private void DisposeNativeHandle()
         {
             _state.AssertDisposing();
@@ -286,9 +255,6 @@ namespace TerraFX.Provider.Win32.UI
             }
         }
 
-        /// <summary>Disposes of all <see cref="Window" /> objects that were created by the instance.</summary>
-        /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
-        /// <exception cref="ExternalException">The call to <see cref="DestroyWindow(IntPtr)" /> failed.</exception>
         private void DisposeWindows(bool isDisposing)
         {
             _state.AssertDisposing();

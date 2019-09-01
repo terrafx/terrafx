@@ -10,10 +10,7 @@ namespace TerraFX.Audio
     /// <summary>A pipe used to encode audio from one format to another.</summary>
     public abstract class AudioEncoder : IDisposable
     {
-        /// <summary>The input pipe for decoded data.</summary>
         private readonly Pipe _inputPipe;
-
-        /// <summary>The output pipe for encoded data.</summary>
         private readonly Pipe _outputPipe;
 
         /// <summary>Initializes a new instance of the <see cref="AudioEncoder" /> class.</summary>
