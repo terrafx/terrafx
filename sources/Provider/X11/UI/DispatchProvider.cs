@@ -24,13 +24,9 @@ namespace TerraFX.Provider.X11.UI
     [Shared]
     public sealed unsafe class DispatchProvider : IDisposable, IDispatchProvider
     {
-        /// <summary>The <c>Display</c> that was created for the instance.</summary>
         private readonly Lazy<IntPtr> _display;
-
-        /// <summary>The <see cref="IDispatcher" /> instances that have been created by the instance.</summary>
         private readonly ConcurrentDictionary<Thread, IDispatcher> _dispatchers;
 
-        /// <summary>The <see cref="State" /> of the instance.</summary>
         private State _state;
 
         /// <summary>Initializes a new instance of the <see cref="DispatchProvider" /> class.</summary>
@@ -111,9 +107,6 @@ namespace TerraFX.Provider.X11.UI
             return _dispatchers.TryGetValue(thread, out dispatcher!);
         }
 
-        /// <summary>Creates a <see cref="Display" />.</summary>
-        /// <returns>The created <see cref="Display" />.</returns>
-        /// <exception cref="ExternalException">The call to <see cref="XOpenDisplay(sbyte*)" /> failed.</exception>
         private static IntPtr CreateDisplay()
         {
             var display = XOpenDisplay(param0: null);
@@ -126,8 +119,6 @@ namespace TerraFX.Provider.X11.UI
             return (IntPtr)display;
         }
 
-        /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
-        /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
         private void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
@@ -140,7 +131,6 @@ namespace TerraFX.Provider.X11.UI
             _state.EndDispose();
         }
 
-        /// <summary>Disposes of the <c>Display</c> that was created for the instance.</summary>
         private void DisposeDisplay()
         {
             _state.AssertDisposing();

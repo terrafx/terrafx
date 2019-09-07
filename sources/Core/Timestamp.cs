@@ -25,7 +25,6 @@ namespace TerraFX
         /// <summary>The number of ticks that occur per second.</summary>
         public const long TicksPerSecond = TimeSpan.TicksPerSecond;
 
-        /// <summary>The number of 100-nanosecond ticks represented by the instance.</summary>
         private readonly long _ticks;
 
         /// <summary>Initializes a new instance of the <see cref="Timestamp" /> struct.</summary>

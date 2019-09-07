@@ -17,18 +17,10 @@ namespace TerraFX.Provider.X11.UI
         private const int False = 0;
         private const int NoExpose = 14;
 
-        /// <summary>The <see cref="UI.DispatchProvider" /> for the instance.</summary>
         private readonly DispatchProvider _dispatchProvider;
-
-        /// <summary>The <see cref="Thread" /> that was used to create the instance.</summary>
         private readonly Thread _parentThread;
-
-        /// <summary>The <c>Atom</c> used to access the <c>Window</c> property containing the associated <see cref="WindowProvider" />.</summary>
         private readonly Lazy<UIntPtr> _windowProviderProperty;
 
-        /// <summary>Initializes a new instance of the <see cref="Dispatcher" /> class.</summary>
-        /// <param name="dispatchProvider">The <see cref="DispatchProvider" /> the instance is associated with.</param>
-        /// <param name="parentThread">The <see cref="Thread" /> that was used to create the instance.</param>
         internal Dispatcher(DispatchProvider dispatchProvider, Thread parentThread)
         {
             Assert(dispatchProvider != null, Resources.ArgumentNullExceptionMessage, nameof(dispatchProvider));
@@ -76,8 +68,6 @@ namespace TerraFX.Provider.X11.UI
             }
         }
 
-        /// <summary>Creates an <c>Atom</c> for the window provider property.</summary>
-        /// <returns>An <c>Atom</c> for the window provider property.</returns>
         private UIntPtr CreateWindowProviderProperty()
         {
             var display = (XDisplay*)_dispatchProvider.Display;
@@ -99,7 +89,6 @@ namespace TerraFX.Provider.X11.UI
             );
         }
 
-        /// <summary>Raises the <see cref="ExitRequested" /> event.</summary>
         private void OnExitRequested() => ExitRequested?.Invoke(this, EventArgs.Empty);
     }
 }

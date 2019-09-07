@@ -24,13 +24,9 @@ namespace TerraFX.Provider.X11.UI
         private const int False = 0;
         private const int Success = 0;
 
-        /// <summary>The <see cref="DispatchProvider" /> for the instance.</summary>
         private readonly Lazy<DispatchProvider> _dispatchProvider;
-
-        /// <summary>A map of <c>Window</c> to <see cref="Window" /> objects created for the instance.</summary>
         private readonly ConcurrentDictionary<IntPtr, Window> _windows;
 
-        /// <summary>The <see cref="State" /> of the instance.</summary>
         private State _state;
 
         /// <summary>Initializes a new instance of the <see cref="WindowProvider" /> class.</summary>
@@ -83,10 +79,6 @@ namespace TerraFX.Provider.X11.UI
             return window;
         }
 
-        /// <summary>Forwards native window messages to the appropriate <see cref="Window" /> instance for processing.</summary>
-        /// <param name="windowProviderProperty">The property used to get the <see cref="WindowProvider" /> associated with the event.</param>
-        /// <param name="xevent">The event to be processed.</param>
-        /// <exception cref="ExternalException">The call to <see cref="XGetWindowProperty(XDisplay*, UIntPtr, UIntPtr, IntPtr, IntPtr, int, UIntPtr, UIntPtr*, int*, UIntPtr*, UIntPtr*, byte**)" /> failed.</exception>
         internal static void ForwardWindowEvent(UIntPtr windowProviderProperty, in XEvent xevent)
         {
             byte* prop;
@@ -119,8 +111,6 @@ namespace TerraFX.Provider.X11.UI
             }
         }
 
-        /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
-        /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
         private void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
@@ -133,8 +123,6 @@ namespace TerraFX.Provider.X11.UI
             _state.EndDispose();
         }
 
-        /// <summary>Disposes of all <see cref="Window" /> objects that were created by the instance.</summary>
-        /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
         private void DisposeWindows(bool isDisposing)
         {
             _state.AssertDisposing();

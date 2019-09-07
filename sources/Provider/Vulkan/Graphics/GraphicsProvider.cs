@@ -24,13 +24,9 @@ namespace TerraFX.Provider.Vulkan.Graphics
     [Shared]
     public sealed unsafe class GraphicsProvider : IDisposable, IGraphicsProvider
     {
-        /// <summary>The Vulkan instance.</summary>
         private readonly Lazy<IntPtr> _instance;
-
-        /// <summary>The <see cref="GraphicsAdapter" /> instances available in the system.</summary>
         private readonly Lazy<ImmutableArray<GraphicsAdapter>> _adapters;
 
-        /// <summary>The <see cref="State" /> of the instance.</summary>
         private State _state;
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsProvider" /> class.</summary>
@@ -70,9 +66,6 @@ namespace TerraFX.Provider.Vulkan.Graphics
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>Creates a Vulkan instance.</summary>
-        /// <returns>A Vulkan instance.</returns>
-        /// <exception cref="ExternalException">The call to <see cref="vkCreateInstance(VkInstanceCreateInfo*, VkAllocationCallbacks*, IntPtr*)" /> failed.</exception>
         private static IntPtr CreateInstance()
         {
             var createInfo = new VkInstanceCreateInfo() {
@@ -97,9 +90,6 @@ namespace TerraFX.Provider.Vulkan.Graphics
             return instance;
         }
 
-        /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
-        /// <param name="isDisposing"><c>true</c> if called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
-        /// <exception cref="ExternalException">The call to <see cref="vkDestroyInstance(IntPtr, VkAllocationCallbacks*)" /> failed.</exception>
         private void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
@@ -112,8 +102,6 @@ namespace TerraFX.Provider.Vulkan.Graphics
             _state.EndDispose();
         }
 
-        /// <summary>Disposes of the Vulkan instance that was created.</summary>
-        /// <exception cref="ExternalException">The call to <see cref="vkDestroyInstance(IntPtr, VkAllocationCallbacks*)" /> failed.</exception>
         private void DisposeInstance()
         {
             if (_instance.IsValueCreated)
@@ -122,9 +110,6 @@ namespace TerraFX.Provider.Vulkan.Graphics
             }
         }
 
-        /// <summary>Gets the <see cref="GraphicsAdapter" /> instances available in the system.</summary>
-        /// <returns>The <see cref="GraphicsAdapter" /> instances available in the system.</returns>
-        /// <exception cref="ExternalException">The call to <see cref="vkEnumeratePhysicalDevices(IntPtr, uint*, IntPtr*)" /> failed.</exception>
         private ImmutableArray<GraphicsAdapter> GetGraphicsAdapters()
         {
             var instance = _instance.Value;
