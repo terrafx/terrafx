@@ -2,10 +2,8 @@
 
 using System;
 using System.Runtime.InteropServices;
-
 using TerraFX.Graphics;
 using TerraFX.Interop;
-
 using static TerraFX.Interop.Vulkan;
 
 namespace TerraFX.Provider.Vulkan.Graphics

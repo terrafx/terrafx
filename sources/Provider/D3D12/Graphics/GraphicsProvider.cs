@@ -4,12 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
-using System.Runtime.InteropServices;
-
 using TerraFX.Graphics;
 using TerraFX.Interop;
 using TerraFX.Utilities;
-
 using static TerraFX.Interop.DXGI;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -38,7 +35,7 @@ namespace TerraFX.Provider.D3D12.Graphics
         [ImportingConstructor]
         public GraphicsProvider()
         {
-            _factory = new Lazy<IntPtr>((Func<IntPtr>)CreateFactory, isThreadSafe: true);
+            _factory = new Lazy<IntPtr>(CreateFactory, isThreadSafe: true);
             _adapters = new Lazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters, isThreadSafe: true);
             _ = _state.Transition(to: Initialized);
         }

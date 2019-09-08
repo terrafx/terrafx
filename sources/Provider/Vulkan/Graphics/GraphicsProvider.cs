@@ -5,11 +5,9 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
 using System.Runtime.InteropServices;
-
 using TerraFX.Graphics;
 using TerraFX.Interop;
 using TerraFX.Utilities;
-
 using static TerraFX.Interop.VkResult;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
@@ -35,7 +33,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
         [ImportingConstructor]
         public GraphicsProvider()
         {
-            _instance = new Lazy<IntPtr>((Func<IntPtr>)CreateInstance, isThreadSafe: true);
+            _instance = new Lazy<IntPtr>(CreateInstance, isThreadSafe: true);
             _adapters = new Lazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters, isThreadSafe: true);
             _ = _state.Transition(to: Initialized);
         }
