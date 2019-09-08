@@ -11,10 +11,9 @@ namespace TerraFX.Provider.X11.UI
     public sealed unsafe class GraphicsSurface : IGraphicsSurface
     {
         private readonly Window _window;
-        private readonly Vector2 _size;
         private readonly int _bufferCount;
 
-        internal GraphicsSurface(Window window, Vector2 size, int bufferCount)
+        internal GraphicsSurface(Window window, int bufferCount)
         {
             if (bufferCount <= 0)
             {
@@ -22,7 +21,6 @@ namespace TerraFX.Provider.X11.UI
             }
 
             _window = window;
-            _size = size;
             _bufferCount = bufferCount;
         }
 
@@ -33,7 +31,7 @@ namespace TerraFX.Provider.X11.UI
         public GraphicsSurfaceKind Kind => GraphicsSurfaceKind.Win32;
 
         /// <summary>Gets the size of the instance.</summary>
-        public Vector2 Size => _size;
+        public Vector2 Size => _window.Bounds.Size;
 
         /// <summary>Gets the window provider handle for the instance.</summary>
         public IntPtr WindowProviderHandle => _window.WindowProvider.Handle;

@@ -23,14 +23,16 @@ namespace TerraFX.Provider.Vulkan.Graphics
         private readonly GraphicsAdapter _graphicsAdapter;
         private readonly IntPtr _device;
         private readonly IntPtr _queue;
+        private readonly uint _queueFamilyIndex;
 
         private State _state;
 
-        internal GraphicsDevice(GraphicsAdapter graphicsAdapter, IntPtr device, IntPtr queue)
+        internal GraphicsDevice(GraphicsAdapter graphicsAdapter, IntPtr device, IntPtr queue, uint queueFamilyIndex)
         {
             _graphicsAdapter = graphicsAdapter;
             _device = device;
             _queue = queue;
+            _queueFamilyIndex = queueFamilyIndex;
         }
 
         /// <summary>Finalizes an instance of the <see cref="GraphicsDevice" /> class.</summary>
@@ -59,7 +61,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 case GraphicsSurfaceKind.Win32:
                 {
                     var surfaceCreateInfo = new VkWin32SurfaceCreateInfoKHR {
-                        sType = VK_STRUCTURE_TYPE_DISPLAY_SURFACE_CREATE_INFO_KHR,
+                        sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
                         hinstance = graphicsSurface.WindowProviderHandle,
                         hwnd = graphicsSurface.WindowHandle
                     };
@@ -76,7 +78,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 case GraphicsSurfaceKind.Xlib:
                 {
                     var surfaceCreateInfo = new VkXlibSurfaceCreateInfoKHR {
-                        sType = VK_STRUCTURE_TYPE_DISPLAY_SURFACE_CREATE_INFO_KHR,
+                        sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
                         dpy = graphicsSurface.WindowProviderHandle,
                         window = (UIntPtr)graphicsSurface.WindowHandle.ToPointer()
                     };
@@ -98,11 +100,48 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 }
             }
 
+            uint supported;
+            result = vkGetPhysicalDeviceSurfaceSupportKHR(_graphicsAdapter.Handle, _queueFamilyIndex, surface, &supported);
+
+            if (result != VK_SUCCESS)
+            {
+                ThrowExternalException(nameof(vkGetPhysicalDeviceSurfaceSupportKHR), (int)result);
+            }
+
+            if (supported == VK_FALSE)
+            {
+                ThrowInvalidOperationException(nameof(supported), supported);
+            }
+
+            VkSurfaceCapabilitiesKHR surfaceCapabilities;
+            result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(_graphicsAdapter.Handle, surface, &surfaceCapabilities);
+
+            if (result != VK_SUCCESS)
+            {
+                ThrowExternalException(nameof(vkGetPhysicalDeviceSurfaceCapabilitiesKHR), (int)result);
+            }
+
+            uint presentModeCount;
+            result = vkGetPhysicalDeviceSurfacePresentModesKHR(_graphicsAdapter.Handle, surface, &presentModeCount, pPresentModes: null);
+
+            if (result != VK_SUCCESS)
+            {
+                ThrowExternalException(nameof(vkGetPhysicalDeviceSurfacePresentModesKHR), (int)result);
+            }
+
+            var presentModes = stackalloc VkPresentModeKHR[(int)presentModeCount];
+            result = vkGetPhysicalDeviceSurfacePresentModesKHR(_graphicsAdapter.Handle, surface, &presentModeCount, presentModes);
+
+            if (result != VK_SUCCESS)
+            {
+                ThrowExternalException(nameof(vkGetPhysicalDeviceSurfacePresentModesKHR), (int)result);
+            }
+
             var swapChainCreateInfo = new VkSwapchainCreateInfoKHR {
                 sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
                 surface = surface,
                 minImageCount = (uint)graphicsSurface.BufferCount,
-                imageFormat = VK_FORMAT_A8B8G8R8_UNORM_PACK32,
+                imageFormat = VK_FORMAT_R8G8B8A8_UNORM,
                 imageExtent = new VkExtent2D {
                     width = (uint)graphicsSurface.Width,
                     height = (uint)graphicsSurface.Height,

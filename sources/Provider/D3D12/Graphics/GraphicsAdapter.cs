@@ -63,7 +63,7 @@ namespace TerraFX.Provider.D3D12.Graphics
             ID3D12CommandQueue* commandQueue;
 
             var iid = IID_ID3D12Device;
-            ThrowExternalExceptionIfFailed(nameof(D3D12CreateDevice), D3D12CreateDevice((IUnknown*)_adapter, D3D_FEATURE_LEVEL_10_0, &iid, (void**)&device));
+            ThrowExternalExceptionIfFailed(nameof(D3D12CreateDevice), D3D12CreateDevice((IUnknown*)_adapter, D3D_FEATURE_LEVEL_11_0, &iid, (void**)&device));
 
             var queueDesc = new D3D12_COMMAND_QUEUE_DESC();
 

@@ -126,7 +126,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
             vkGetDeviceQueue(device, queueFamilyIndex.GetValueOrDefault(), 0, &queue);
 
-            return new GraphicsDevice(this, device, queue);
+            return new GraphicsDevice(this, device, queue, queueFamilyIndex.GetValueOrDefault());
         }
     }
 }

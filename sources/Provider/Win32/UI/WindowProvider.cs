@@ -130,9 +130,17 @@ namespace TerraFX.Provider.Win32.UI
             // without passing in a GCHandle as the lParam to CreateWindowEx. We will just fail
             // by allowing the runtime to throw an exception in that scenario.
 
-            var windowProvider = (WindowProvider)GCHandle.FromIntPtr(userData).Target!;
+            WindowProvider windowProvider = null!;
+            var forwardMessage = false;
+            Window? window = null;
 
-            if (windowProvider._windows.TryGetValue(hWnd, out var window))
+            if (userData != IntPtr.Zero)
+            {
+                windowProvider = (WindowProvider)GCHandle.FromIntPtr(userData).Target!;
+                forwardMessage = windowProvider._windows.TryGetValue(hWnd, out window);
+            }
+
+            if (forwardMessage)
             {
                 if (msg == WM_DESTROY)
                 {
