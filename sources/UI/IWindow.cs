@@ -3,6 +3,7 @@
 using System;
 using System.Threading;
 using TerraFX.Collections;
+using TerraFX.Graphics;
 using TerraFX.Graphics.Geometry2D;
 
 namespace TerraFX.UI
@@ -51,6 +52,10 @@ namespace TerraFX.UI
 
         /// <summary>Closes the instance.</summary>
         void Close();
+
+        /// <summary>Creates a new <see cref="IGraphicsSurface" /> for the instance.</summary>
+        /// <returns>A new <see cref="IGraphicsSurface" /> for the instance.</returns>
+        IGraphicsSurface CreateGraphicsSurface();
 
         /// <summary>Disables the instance.</summary>
         void Disable();

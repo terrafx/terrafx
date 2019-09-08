@@ -69,6 +69,9 @@ namespace TerraFX.Provider.Win32.UI
             }
         }
 
+        /// <summary>Gets the handle for the instance.</summary>
+        public IntPtr Handle => EntryPointModule;
+
         /// <summary>Gets the <see cref="GCHandle" /> containing the native handle for the instance.</summary>
         public GCHandle NativeHandle
         {

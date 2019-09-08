@@ -3,6 +3,7 @@
 using System;
 using System.Threading;
 using TerraFX.Collections;
+using TerraFX.Graphics;
 using TerraFX.Graphics.Geometry2D;
 using TerraFX.Interop;
 using TerraFX.UI;
@@ -121,6 +122,10 @@ namespace TerraFX.Provider.X11.UI
 
         /// <summary>Closes the instance.</summary>
         public void Close() => Dispose();
+
+        /// <summary>Creates a new <see cref="IGraphicsSurface" /> for the instance.</summary>
+        /// <returns>A new <see cref="IGraphicsSurface" /> for the instance.</returns>
+        public IGraphicsSurface CreateGraphicsSurface() => new GraphicsSurface(this, _bounds.Size);
 
         /// <summary>Disables the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
