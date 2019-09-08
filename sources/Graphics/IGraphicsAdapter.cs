@@ -21,5 +21,9 @@ namespace TerraFX.Graphics
 
         /// <summary>Gets the PCI ID of the vendor.</summary>
         uint VendorId { get; }
+
+        /// <summary>Creates a new <see cref="IGraphicsDevice" /> for the instance.</summary>
+        /// <returns>A new <see cref="IGraphicsDevice" /> for the instance.</returns>
+        IGraphicsDevice CreateDevice();
     }
 }

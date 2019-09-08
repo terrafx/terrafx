@@ -5,8 +5,9 @@ using System.Runtime.InteropServices;
 using TerraFX.Graphics;
 using TerraFX.Interop;
 using TerraFX.Utilities;
+using static TerraFX.Interop.D3D_FEATURE_LEVEL;
+using static TerraFX.Interop.D3D12;
 using static TerraFX.Interop.Windows;
-using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.Provider.D3D12.Graphics
@@ -52,19 +53,31 @@ namespace TerraFX.Provider.D3D12.Graphics
         /// <summary>Gets the PCI ID of the vendor.</summary>
         public uint VendorId => _vendorId;
 
+        /// <summary>Creates a new <see cref="IGraphicsDevice" /> for the instance.</summary>
+        /// <returns>A new <see cref="IGraphicsDevice" /> for the instance.</returns>
+        public IGraphicsDevice CreateDevice()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            ID3D12Device* device;
+            ID3D12CommandQueue* commandQueue;
+
+            var iid = IID_ID3D12Device;
+            ThrowExternalExceptionIfFailed(nameof(D3D12CreateDevice), D3D12CreateDevice((IUnknown*)_adapter, D3D_FEATURE_LEVEL_10_0, &iid, (void**)&device));
+
+            var queueDesc = new D3D12_COMMAND_QUEUE_DESC();
+
+            iid = IID_ID3D12CommandQueue;
+            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateCommandQueue), device->CreateCommandQueue(&queueDesc, &iid, (void**)&commandQueue));
+
+            return new GraphicsDevice(this, device, commandQueue);
+        }
+
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
         public void Dispose()
         {
             Dispose(isDisposing: true);
             GC.SuppressFinalize(this);
-        }
-
-        private static void ThrowIfDisposed(int state)
-        {
-            if (state >= Disposing) // (_state == Disposing) || (_state == Disposed)
-            {
-                ThrowObjectDisposedException(nameof(GraphicsProvider));
-            }
         }
 
         private void Dispose(bool isDisposing)

@@ -4,7 +4,11 @@ using System;
 using System.Runtime.InteropServices;
 using TerraFX.Graphics;
 using TerraFX.Interop;
+using static TerraFX.Interop.VkQueueFlagBits;
+using static TerraFX.Interop.VkResult;
+using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Provider.Vulkan.Graphics
 {
@@ -44,5 +48,58 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
         /// <summary>Gets the PCI ID of the vendor.</summary>
         public uint VendorId => _vendorId;
+
+        /// <summary>Creates a new <see cref="IGraphicsDevice" /> for the instance.</summary>
+        /// <returns>A new <see cref="IGraphicsDevice" /> for the instance.</returns>
+        public IGraphicsDevice CreateDevice()
+        {
+            IntPtr device;
+            IntPtr queue;
+
+            uint queueFamilyPropertyCount;
+            vkGetPhysicalDeviceQueueFamilyProperties(_physicalDevice, &queueFamilyPropertyCount, pQueueFamilyProperties: null);
+
+            var queueFamilyProperties = stackalloc VkQueueFamilyProperties[(int)queueFamilyPropertyCount];
+            vkGetPhysicalDeviceQueueFamilyProperties(_physicalDevice, &queueFamilyPropertyCount, queueFamilyProperties);
+
+            uint? queueFamilyIndex = default;
+
+            for (uint i = 0; i < queueFamilyPropertyCount; i++)
+            {
+                if ((queueFamilyProperties[i].queueFlags & (uint)VK_QUEUE_GRAPHICS_BIT) != 0)
+                {
+                    queueFamilyIndex = i;
+                    break;
+                }
+            }
+
+            if (!queueFamilyIndex.HasValue)
+            {
+                ThrowInvalidOperationException(nameof(queueFamilyIndex), queueFamilyIndex!);
+            }
+
+            var queueCreateInfo = new VkDeviceQueueCreateInfo {
+                sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
+                queueFamilyIndex = queueFamilyIndex.GetValueOrDefault(),
+                queueCount = 1,
+            };
+
+            var createInfo = new VkDeviceCreateInfo {
+                sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+                queueCreateInfoCount = 1,
+                pQueueCreateInfos = &queueCreateInfo,
+            };
+
+            var result = vkCreateDevice(_physicalDevice, &createInfo, pAllocator: null, &device);
+
+            if (result != VK_SUCCESS)
+            {
+                ThrowExternalException(nameof(vkCreateDevice), (int)result);
+            }
+
+            vkGetDeviceQueue(device, queueFamilyIndex.GetValueOrDefault(), 0, &queue);
+
+            return new GraphicsDevice(this, device, queue);
+        }
     }
 }
