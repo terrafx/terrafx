@@ -12,5 +12,10 @@ namespace TerraFX.Graphics
 
         /// <summary>Gets the underlying handle for the instance.</summary>
         IntPtr Handle { get; }
+
+        /// <summary>Creates a new <see cref="ISwapChain" /> for the instance.</summary>
+        /// <param name="graphicsSurface">The <see cref="IGraphicsSurface" /> to which the swap chain belongs.</param>
+        /// <returns>A new <see cref="ISwapChain" /> for the instance.</returns>
+        ISwapChain CreateSwapChain(IGraphicsSurface graphicsSurface);
     }
 }

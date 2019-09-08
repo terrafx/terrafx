@@ -57,7 +57,7 @@ namespace TerraFX.Provider.D3D12.Graphics
         }
 
         /// <summary>Gets the underlying handle for the instance.</summary>
-        public IntPtr Handle => IntPtr.Zero;
+        public IntPtr Handle => _factory.Value;
 
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
         public void Dispose()

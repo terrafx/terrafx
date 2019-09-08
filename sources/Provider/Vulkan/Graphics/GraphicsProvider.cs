@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using TerraFX.Graphics;
 using TerraFX.Interop;
@@ -22,6 +23,119 @@ namespace TerraFX.Provider.Vulkan.Graphics
     [Shared]
     public sealed unsafe class GraphicsProvider : IDisposable, IGraphicsProvider
     {
+        private static ReadOnlySpan<sbyte> VK_KHR_surface => new sbyte[] {
+            0x56,
+            0x4B,
+            0x5F,
+            0x4B,
+            0x48,
+            0x52,
+            0x5F,
+            0x73,
+            0x75,
+            0x72,
+            0x66,
+            0x61,
+            0x63,
+            0x65,
+            0x00,
+        };
+
+        private static ReadOnlySpan<sbyte> VK_KHR_wayland_surface => new sbyte[] {
+            0x56,
+            0x4b,
+            0x5f,
+            0x4b,
+            0x48,
+            0x52,
+            0x5f,
+            0x77,
+            0x61,
+            0x79,
+            0x6c,
+            0x61,
+            0x6e,
+            0x64,
+            0x5f,
+            0x73,
+            0x75,
+            0x72,
+            0x66,
+            0x61,
+            0x63,
+            0x65,
+            0x00,
+        };
+
+        private static ReadOnlySpan<sbyte> VK_KHR_win32_surface => new sbyte[] {
+            0x56,
+            0x4B,
+            0x5F,
+            0x4B,
+            0x48,
+            0x52,
+            0x5F,
+            0x77,
+            0x69,
+            0x6E,
+            0x33,
+            0x32,
+            0x5F,
+            0x73,
+            0x75,
+            0x72,
+            0x66,
+            0x61,
+            0x63,
+            0x65,
+            0x00,
+        };
+
+        private static ReadOnlySpan<sbyte> VK_KHR_xcb_surface => new sbyte[] {
+            0x56,
+            0x4B,
+            0x5F,
+            0x4B,
+            0x48,
+            0x52,
+            0x5F,
+            0x78,
+            0x63,
+            0x62,
+            0x5F,
+            0x73,
+            0x75,
+            0x72,
+            0x66,
+            0x61,
+            0x63,
+            0x65,
+            0x00,
+        };
+
+        private static ReadOnlySpan<sbyte> VK_KHR_xlib_surface => new sbyte[] {
+            0x56,
+            0x4B,
+            0x5F,
+            0x4B,
+            0x48,
+            0x52,
+            0x5F,
+            0x78,
+            0x6C,
+            0x69,
+            0x62,
+            0x5F,
+            0x73,
+            0x75,
+            0x72,
+            0x66,
+            0x61,
+            0x63,
+            0x65,
+            0x00,
+        };
+
         private readonly Lazy<IntPtr> _instance;
         private readonly Lazy<ImmutableArray<GraphicsAdapter>> _adapters;
 
@@ -66,15 +180,26 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
         private static IntPtr CreateInstance()
         {
-            var createInfo = new VkInstanceCreateInfo() {
+            uint enabledExtensionCount = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? 2u : 4u;
+
+            sbyte** enabledExtensionNames = stackalloc sbyte*[(int)enabledExtensionCount];
+            enabledExtensionNames[0] = (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in VK_KHR_surface[0]));
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                enabledExtensionNames[1] = (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in VK_KHR_win32_surface[0]));
+            }
+            else
+            {
+                enabledExtensionNames[1] = (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in VK_KHR_wayland_surface[0]));
+                enabledExtensionNames[2] = (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in VK_KHR_xcb_surface[0]));
+                enabledExtensionNames[3] = (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in VK_KHR_xlib_surface[0]));
+            }
+
+            var createInfo = new VkInstanceCreateInfo {
                 sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-                pNext = null,
-                flags = 0,
-                pApplicationInfo = null,
-                enabledLayerCount = 0,
-                ppEnabledLayerNames = null,
-                enabledExtensionCount = 0,
-                ppEnabledExtensionNames = null
+                enabledExtensionCount = enabledExtensionCount,
+                ppEnabledExtensionNames = enabledExtensionNames,
             };
 
             IntPtr instance;

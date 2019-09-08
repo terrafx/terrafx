@@ -1,6 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using TerraFX.Graphics;
 using TerraFX.Interop;
@@ -15,6 +16,26 @@ namespace TerraFX.Provider.Vulkan.Graphics
     /// <summary>Represents a graphics adapter.</summary>
     public sealed unsafe class GraphicsAdapter : IGraphicsAdapter
     {
+        private static ReadOnlySpan<sbyte> VK_KHR_swapchain => new sbyte[] {
+            0x56,
+            0x4B,
+            0x5F,
+            0x4B,
+            0x48,
+            0x52,
+            0x5F,
+            0x73,
+            0x77,
+            0x61,
+            0x70,
+            0x63,
+            0x68,
+            0x61,
+            0x69,
+            0x6E,
+            0x00,
+        };
+
         private readonly GraphicsProvider _graphicsProvider;
         private readonly IntPtr _physicalDevice;
         private readonly string _deviceName;
@@ -84,10 +105,16 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 queueCount = 1,
             };
 
+            var enabledExtensionNames = stackalloc sbyte*[] {
+                (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in VK_KHR_swapchain[0]))
+            };
+
             var createInfo = new VkDeviceCreateInfo {
                 sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
                 queueCreateInfoCount = 1,
                 pQueueCreateInfos = &queueCreateInfo,
+                enabledExtensionCount = 1,
+                ppEnabledExtensionNames = enabledExtensionNames,
             };
 
             var result = vkCreateDevice(_physicalDevice, &createInfo, pAllocator: null, &device);
