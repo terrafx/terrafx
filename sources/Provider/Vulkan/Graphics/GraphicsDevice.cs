@@ -101,7 +101,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
             var swapChainCreateInfo = new VkSwapchainCreateInfoKHR {
                 sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
                 surface = surface,
-                minImageCount = 2,
+                minImageCount = (uint)graphicsSurface.BufferCount,
                 imageFormat = VK_FORMAT_A8B8G8R8_UNORM_PACK32,
                 imageExtent = new VkExtent2D {
                     width = (uint)graphicsSurface.Width,

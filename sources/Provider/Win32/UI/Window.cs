@@ -131,8 +131,10 @@ namespace TerraFX.Provider.Win32.UI
         }
 
         /// <summary>Creates a new <see cref="IGraphicsSurface" /> for the instance.</summary>
+        /// <param name="bufferCount">The number of buffers created for the instance.</param>
         /// <returns>A new <see cref="IGraphicsSurface" /> for the instance.</returns>
-        public IGraphicsSurface CreateGraphicsSurface() => new GraphicsSurface(this, _bounds.Size);
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="bufferCount" /> is less than or equal to zero.</exception>
+        public IGraphicsSurface CreateGraphicsSurface(int bufferCount) => new GraphicsSurface(this, _bounds.Size, bufferCount);
 
         /// <summary>Disables the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>

@@ -8,6 +8,9 @@ namespace TerraFX.Graphics
     /// <summary>Represents a graphics surface.</summary>
     public interface IGraphicsSurface
     {
+        /// <summary>Gets the number of buffers for the instance.</summary>
+        int BufferCount { get; }
+
         /// <summary>Gets the height of the instance.</summary>
         float Height => Size.Y;
 

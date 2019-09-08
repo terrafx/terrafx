@@ -49,7 +49,7 @@ namespace TerraFX.Provider.D3D12.Graphics
             IDXGISwapChain1* swapChain;
 
             var swapChainDesc = new DXGI_SWAP_CHAIN_DESC1 {
-                BufferCount = 2,
+                BufferCount = (uint)graphicsSurface.BufferCount,
                 Width = (uint)graphicsSurface.Width,
                 Height = (uint)graphicsSurface.Height,
                 Format = DXGI_FORMAT_R8G8B8A8_UNORM,
