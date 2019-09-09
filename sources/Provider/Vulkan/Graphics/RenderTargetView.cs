@@ -14,14 +14,18 @@ namespace TerraFX.Provider.Vulkan.Graphics
         private readonly SwapChain _swapChain;
         private readonly IntPtr _imageView;
         private readonly IntPtr _frameBuffer;
+        private readonly IntPtr _commandBuffer;
+        private readonly IntPtr _fence;
 
         private State _state;
 
-        internal RenderTargetView(SwapChain swapChain, IntPtr imageView, IntPtr frameBuffer)
+        internal RenderTargetView(SwapChain swapChain, IntPtr imageView, IntPtr frameBuffer, IntPtr commandBuffer, IntPtr fence)
         {
             _swapChain = swapChain;
             _imageView = imageView;
             _frameBuffer = frameBuffer;
+            _commandBuffer = commandBuffer;
+            _fence = fence;
         }
 
         /// <summary>Finalizes an instance of the <see cref="RenderTargetView" /> class.</summary>
@@ -58,6 +62,16 @@ namespace TerraFX.Provider.Vulkan.Graphics
         private void DisposeRenderTargetView()
         {
             _state.AssertDisposing();
+
+            if (_fence != IntPtr.Zero)
+            {
+                vkDestroyFence(_swapChain.GraphicsDevice.Handle, (ulong)_fence, pAllocator: null);
+            }
+
+            if (_frameBuffer != IntPtr.Zero)
+            {
+                vkDestroyFramebuffer(_swapChain.GraphicsDevice.Handle, (ulong)_frameBuffer, pAllocator: null);
+            }
 
             if (_imageView != IntPtr.Zero)
             {

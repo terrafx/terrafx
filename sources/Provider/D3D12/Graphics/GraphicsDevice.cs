@@ -4,6 +4,8 @@ using System;
 using TerraFX.Graphics;
 using TerraFX.Interop;
 using TerraFX.Utilities;
+using static TerraFX.Interop.D3D12;
+using static TerraFX.Interop.D3D12_COMMAND_LIST_TYPE;
 using static TerraFX.Interop.DXGI;
 using static TerraFX.Interop.DXGI_FORMAT;
 using static TerraFX.Interop.DXGI_SWAP_EFFECT;
@@ -47,6 +49,7 @@ namespace TerraFX.Provider.D3D12.Graphics
         public ISwapChain CreateSwapChain(IGraphicsSurface graphicsSurface)
         {
             IDXGISwapChain1* swapChain;
+            ID3D12CommandAllocator* commandAllocator;
 
             var swapChainDesc = new DXGI_SWAP_CHAIN_DESC1 {
                 BufferCount = (uint)graphicsSurface.BufferCount,
@@ -68,7 +71,10 @@ namespace TerraFX.Provider.D3D12.Graphics
             var factory = (IDXGIFactory2*)_graphicsAdapter.GraphicsProvider.Handle;
             ThrowExternalExceptionIfFailed(nameof(IDXGIFactory2.CreateSwapChainForHwnd), factory->CreateSwapChainForHwnd((IUnknown*)_commandQueue, graphicsSurface.WindowHandle, &swapChainDesc, pFullscreenDesc: null, pRestrictToOutput: null, &swapChain));
 
-            return new SwapChain(this, graphicsSurface, swapChain);
+            var iid = IID_ID3D12CommandAllocator;
+            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateCommandAllocator), _device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, &iid, (void**)&commandAllocator));
+
+            return new SwapChain(this, graphicsSurface, swapChain, commandAllocator);
         }
 
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>

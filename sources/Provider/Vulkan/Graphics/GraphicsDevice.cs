@@ -6,6 +6,7 @@ using TerraFX.Interop;
 using TerraFX.Utilities;
 using static TerraFX.Interop.VkAttachmentLoadOp;
 using static TerraFX.Interop.VkAttachmentStoreOp;
+using static TerraFX.Interop.VkCommandPoolCreateFlagBits;
 using static TerraFX.Interop.VkCompositeAlphaFlagBitsKHR;
 using static TerraFX.Interop.VkFormat;
 using static TerraFX.Interop.VkImageLayout;
@@ -60,6 +61,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
             IntPtr surface;
             IntPtr swapChain;
             IntPtr renderPass;
+            IntPtr commandPool;
 
             VkResult result;
 
@@ -203,7 +205,20 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 ThrowExternalException(nameof(vkCreateRenderPass), (int)result);
             }
 
-            return new SwapChain(this, graphicsSurface, surface, swapChain, renderPass);
+            var commandPoolCreateInfo = new VkCommandPoolCreateInfo {
+                sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
+                flags = (uint)VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
+                queueFamilyIndex = _queueFamilyIndex,
+            };
+
+            result = vkCreateCommandPool(_device, &commandPoolCreateInfo, pAllocator: null, (ulong*)&commandPool);
+
+            if (result != VK_SUCCESS)
+            {
+                ThrowExternalException(nameof(vkCreateCommandPool), (int)result);
+            }
+
+            return new SwapChain(this, graphicsSurface, surface, swapChain, renderPass, commandPool);
         }
 
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>

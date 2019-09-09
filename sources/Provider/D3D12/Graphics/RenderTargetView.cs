@@ -13,13 +13,17 @@ namespace TerraFX.Provider.D3D12.Graphics
     {
         private readonly SwapChain _swapChain;
         private readonly ID3D12Resource* _renderTarget;
+        private readonly ID3D12GraphicsCommandList* _graphicsCommandList;
+        private readonly ID3D12Fence* _fence;
 
         private State _state;
 
-        internal RenderTargetView(SwapChain swapChain, ID3D12Resource* renderTarget)
+        internal RenderTargetView(SwapChain swapChain, ID3D12Resource* renderTarget, ID3D12GraphicsCommandList* graphicsCommandList, ID3D12Fence* fence)
         {
             _swapChain = swapChain;
             _renderTarget = renderTarget;
+            _graphicsCommandList = graphicsCommandList;
+            _fence = fence;
         }
 
         /// <summary>Finalizes an instance of the <see cref="RenderTargetView" /> class.</summary>
@@ -56,6 +60,16 @@ namespace TerraFX.Provider.D3D12.Graphics
         private void DisposeRenderTargetView()
         {
             _state.AssertDisposing();
+
+            if (_fence != null)
+            {
+                _ = _fence->Release();
+            }
+
+            if (_graphicsCommandList != null)
+            {
+                _ = _graphicsCommandList->Release();
+            }
 
             if (_renderTarget != null)
             {

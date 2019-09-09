@@ -4,6 +4,7 @@ using System;
 using TerraFX.Graphics;
 using TerraFX.Interop;
 using TerraFX.Utilities;
+using static TerraFX.Interop.VkFenceCreateFlagBits;
 using static TerraFX.Interop.VkFormat;
 using static TerraFX.Interop.VkImageAspectFlagBits;
 using static TerraFX.Interop.VkImageViewType;
@@ -23,16 +24,18 @@ namespace TerraFX.Provider.Vulkan.Graphics
         private readonly IntPtr _surface;
         private readonly IntPtr _swapChain;
         private readonly IntPtr _renderPass;
+        private readonly IntPtr _commandPool;
 
         private State _state;
 
-        internal SwapChain(GraphicsDevice graphicsDevice, IGraphicsSurface graphicsSurface, IntPtr surface, IntPtr swapChain, IntPtr renderPass)
+        internal SwapChain(GraphicsDevice graphicsDevice, IGraphicsSurface graphicsSurface, IntPtr surface, IntPtr swapChain, IntPtr renderPass, IntPtr commandPool)
         {
             _graphicsDevice = graphicsDevice;
             _graphicsSurface = graphicsSurface;
             _surface = surface;
             _swapChain = swapChain;
             _renderPass = renderPass;
+            _commandPool = commandPool;
         }
 
         /// <summary>Finalizes an instance of the <see cref="SwapChain" /> class.</summary>
@@ -70,6 +73,20 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 ThrowExternalException(nameof(vkGetSwapchainImagesKHR), (int)result);
             }
 
+            var commandBufferAllocateInfo = new VkCommandBufferAllocateInfo {
+                sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+                commandPool = (ulong)_commandPool,
+                commandBufferCount = swapChainImageCount
+            };
+
+            var commandBuffers = stackalloc IntPtr[(int)swapChainImageCount];
+            result = vkAllocateCommandBuffers(_graphicsDevice.Handle, &commandBufferAllocateInfo, commandBuffers);
+
+            if (result != VK_SUCCESS)
+            {
+                ThrowExternalException(nameof(vkAllocateCommandBuffers), (int)result);
+            }
+
             var imageViewCreateInfo = new VkImageViewCreateInfo {
                 sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
                 viewType = VK_IMAGE_VIEW_TYPE_2D,
@@ -88,6 +105,11 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 width = (uint)_graphicsSurface.Width,
                 height = (uint)_graphicsSurface.Height,
                 layers = 1
+            };
+
+            var fenceCreateInfo = new VkFenceCreateInfo {
+                sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
+                flags = (uint)VK_FENCE_CREATE_SIGNALED_BIT,
             };
 
             var renderTargetViews = new RenderTargetView[swapChainImageCount];
@@ -114,7 +136,10 @@ namespace TerraFX.Provider.Vulkan.Graphics
                     ThrowExternalException(nameof(vkCreateFramebuffer), (int)result);
                 }
 
-                renderTargetViews[i] = new RenderTargetView(this, imageView, frameBuffer);
+                IntPtr fence;
+                result = vkCreateFence(_graphicsDevice.Handle, &fenceCreateInfo, pAllocator: null, (ulong*)&fence);
+
+                renderTargetViews[i] = new RenderTargetView(this, imageView, frameBuffer, commandBuffers[i], fence);
             }
 
             return renderTargetViews;
@@ -142,6 +167,11 @@ namespace TerraFX.Provider.Vulkan.Graphics
         private void DisposeSwapChain()
         {
             _state.AssertDisposing();
+
+            if (_commandPool != IntPtr.Zero)
+            {
+                vkDestroyCommandPool(_graphicsDevice.Handle, (ulong)_commandPool, pAllocator: null);
+            }
 
             if (_renderPass != IntPtr.Zero)
             {

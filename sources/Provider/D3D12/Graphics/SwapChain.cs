@@ -5,7 +5,9 @@ using TerraFX.Graphics;
 using TerraFX.Interop;
 using TerraFX.Utilities;
 using static TerraFX.Interop.D3D12;
+using static TerraFX.Interop.D3D12_COMMAND_LIST_TYPE;
 using static TerraFX.Interop.D3D12_DESCRIPTOR_HEAP_TYPE;
+using static TerraFX.Interop.D3D12_FENCE_FLAGS;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Utilities.State;
 
@@ -17,14 +19,16 @@ namespace TerraFX.Provider.D3D12.Graphics
         private readonly GraphicsDevice _graphicsDevice;
         private readonly IGraphicsSurface _graphicsSurface;
         private readonly IDXGISwapChain1* _swapChain;
+        private readonly ID3D12CommandAllocator* _commandAllocator;
 
         private State _state;
 
-        internal SwapChain(GraphicsDevice graphicsDevice, IGraphicsSurface graphicsSurface, IDXGISwapChain1* swapChain)
+        internal SwapChain(GraphicsDevice graphicsDevice, IGraphicsSurface graphicsSurface, IDXGISwapChain1* swapChain, ID3D12CommandAllocator* commandAllocator)
         {
             _graphicsDevice = graphicsDevice;
             _graphicsSurface = graphicsSurface;
             _swapChain = swapChain;
+            _commandAllocator = commandAllocator;
         }
 
         /// <summary>Finalizes an instance of the <see cref="SwapChain" /> class.</summary>
@@ -47,6 +51,10 @@ namespace TerraFX.Provider.D3D12.Graphics
         public IRenderTargetView[] CreateRenderTargetViews()
         {
             ID3D12DescriptorHeap* rtvHeap;
+            ID3D12Resource* renderTarget;
+            ID3D12GraphicsCommandList* graphicsCommandList;
+            ID3D12Fence* fence;
+
             ID3D12Device* device = (ID3D12Device*)_graphicsDevice.Handle;
 
             var rtvHeapDesc = new D3D12_DESCRIPTOR_HEAP_DESC {
@@ -64,13 +72,20 @@ namespace TerraFX.Provider.D3D12.Graphics
 
             for (uint i = 0; i < rtvHeapDesc.NumDescriptors; i++)
             {
-                ID3D12Resource* renderTarget;
+                iid = IID_ID3D12Resource;
                 ThrowExternalExceptionIfFailed(nameof(IDXGISwapChain.GetBuffer), _swapChain->GetBuffer(i, &iid, (void**)&renderTarget));
 
                 device->CreateRenderTargetView(renderTarget, null, rtvHandle);
                 rtvHandle.ptr = (UIntPtr)((byte*)rtvHandle.ptr + rtvDescriptorSize);
 
-                renderTargetViews[i] = new RenderTargetView(this, renderTarget);
+                iid = IID_ID3D12GraphicsCommandList;
+                ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateCommandList), device->CreateCommandList(NodeMask: 0, D3D12_COMMAND_LIST_TYPE_DIRECT, _commandAllocator, pInitialState: null, &iid, (void**)&graphicsCommandList));
+                ThrowExternalExceptionIfFailed(nameof(ID3D12GraphicsCommandList.Close), graphicsCommandList->Close());
+
+                iid = IID_ID3D12Fence;
+                ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateFence), device->CreateFence(InitialValue: 0, D3D12_FENCE_FLAG_NONE, &iid, (void**)&fence));
+
+                renderTargetViews[i] = new RenderTargetView(this, renderTarget, graphicsCommandList, fence);
             }
 
             return renderTargetViews;
@@ -98,6 +113,11 @@ namespace TerraFX.Provider.D3D12.Graphics
         private void DisposeSwapChain()
         {
             _state.AssertDisposing();
+
+            if (_commandAllocator != null)
+            {
+                _ = _commandAllocator->Release();
+            }
 
             if (_swapChain != null)
             {
