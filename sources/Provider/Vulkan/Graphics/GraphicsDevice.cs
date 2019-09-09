@@ -4,11 +4,16 @@ using System;
 using TerraFX.Graphics;
 using TerraFX.Interop;
 using TerraFX.Utilities;
+using static TerraFX.Interop.VkAttachmentLoadOp;
+using static TerraFX.Interop.VkAttachmentStoreOp;
 using static TerraFX.Interop.VkCompositeAlphaFlagBitsKHR;
 using static TerraFX.Interop.VkFormat;
+using static TerraFX.Interop.VkImageLayout;
 using static TerraFX.Interop.VkImageUsageFlagBits;
+using static TerraFX.Interop.VkPipelineBindPoint;
 using static TerraFX.Interop.VkPresentModeKHR;
 using static TerraFX.Interop.VkResult;
+using static TerraFX.Interop.VkSampleCountFlagBits;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.VkSurfaceTransformFlagBitsKHR;
 using static TerraFX.Interop.Vulkan;
@@ -54,6 +59,8 @@ namespace TerraFX.Provider.Vulkan.Graphics
         {
             IntPtr surface;
             IntPtr swapChain;
+            IntPtr renderPass;
+
             VkResult result;
 
             switch (graphicsSurface.Kind)
@@ -161,7 +168,42 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 ThrowExternalException(nameof(vkCreateSwapchainKHR), (int)result);
             }
 
-            return new SwapChain(this, surface, swapChain);
+            var attachment = new VkAttachmentDescription {
+                format = VK_FORMAT_R8G8B8A8_UNORM,
+                samples = VK_SAMPLE_COUNT_1_BIT,
+                loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
+                storeOp = VK_ATTACHMENT_STORE_OP_STORE,
+                stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+                stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
+                finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+            };
+
+            var colorAttachment = new VkAttachmentReference {
+                layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+            };
+
+            var subpass = new VkSubpassDescription {
+                pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS,
+                colorAttachmentCount = 1,
+                pColorAttachments = &colorAttachment,
+            };
+
+            var renderPassCreateInfo = new VkRenderPassCreateInfo {
+                sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
+                attachmentCount = 1,
+                pAttachments = &attachment,
+                subpassCount = 1,
+                pSubpasses = &subpass,
+            };
+
+            result = vkCreateRenderPass(_device, &renderPassCreateInfo, pAllocator: null, (ulong*)&renderPass);
+
+            if (result != VK_SUCCESS)
+            {
+                ThrowExternalException(nameof(vkCreateRenderPass), (int)result);
+            }
+
+            return new SwapChain(this, graphicsSurface, surface, swapChain, renderPass);
         }
 
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>

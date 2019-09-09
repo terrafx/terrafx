@@ -68,7 +68,7 @@ namespace TerraFX.Provider.D3D12.Graphics
             var factory = (IDXGIFactory2*)_graphicsAdapter.GraphicsProvider.Handle;
             ThrowExternalExceptionIfFailed(nameof(IDXGIFactory2.CreateSwapChainForHwnd), factory->CreateSwapChainForHwnd((IUnknown*)_commandQueue, graphicsSurface.WindowHandle, &swapChainDesc, pFullscreenDesc: null, pRestrictToOutput: null, &swapChain));
 
-            return new SwapChain(this, swapChain);
+            return new SwapChain(this, graphicsSurface, swapChain);
         }
 
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
