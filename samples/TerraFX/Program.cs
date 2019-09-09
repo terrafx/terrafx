@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using TerraFX.ApplicationModel;
 using TerraFX.Samples.Graphics;
 
@@ -17,6 +18,8 @@ namespace TerraFX.Samples
         private static readonly Sample[] s_samples = {
             new EnumerateGraphicsAdapters("D3D12.EnumerateGraphicsAdapter", s_d3d12Provider),
             new EnumerateGraphicsAdapters("Vulkan.EnumerateGraphicsAdapter", s_vulkanProvider),
+            new HelloWindow("D3D12.HelloWindow", s_d3d12Provider),
+            new HelloWindow("Vulkan.HelloWindow", s_vulkanProvider),
         };
 
         public static void Main(string[] args)
@@ -49,7 +52,26 @@ namespace TerraFX.Samples
 
             foreach (var sample in s_samples)
             {
-                Console.WriteLine($"    {sample.Name}");
+                bool isSupported;
+                var compositionAssemblies = sample.CompositionAssemblies;
+
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    isSupported = true;
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    isSupported = !compositionAssemblies.Contains(s_d3d12Provider);
+                }
+                else
+                {
+                    isSupported = false;
+                }
+
+                if (isSupported)
+                {
+                    Console.WriteLine($"    {sample.Name}");
+                }
             }
         }
 

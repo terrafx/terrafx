@@ -4,12 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
-using System.Runtime.InteropServices;
-
 using TerraFX.Graphics;
 using TerraFX.Interop;
 using TerraFX.Utilities;
-
 using static TerraFX.Interop.DXGI;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -29,8 +26,8 @@ namespace TerraFX.Provider.D3D12.Graphics
         private const uint CreateFactoryFlags = 0;
 #endif
 
-        private readonly Lazy<IntPtr> _factory;
         private readonly Lazy<ImmutableArray<GraphicsAdapter>> _adapters;
+        private readonly Lazy<IntPtr> _factory;
 
         private State _state;
 
@@ -38,8 +35,8 @@ namespace TerraFX.Provider.D3D12.Graphics
         [ImportingConstructor]
         public GraphicsProvider()
         {
-            _factory = new Lazy<IntPtr>((Func<IntPtr>)CreateFactory, isThreadSafe: true);
             _adapters = new Lazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters, isThreadSafe: true);
+            _factory = new Lazy<IntPtr>(CreateFactory, isThreadSafe: true);
             _ = _state.Transition(to: Initialized);
         }
 
@@ -50,6 +47,7 @@ namespace TerraFX.Provider.D3D12.Graphics
         }
 
         /// <summary>Gets the <see cref="IGraphicsAdapter" /> instances currently available.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public IEnumerable<IGraphicsAdapter> GraphicsAdapters
         {
             get
@@ -59,8 +57,16 @@ namespace TerraFX.Provider.D3D12.Graphics
             }
         }
 
-        /// <summary>Gets the underlying handle for the instance.</summary>
-        public IntPtr Handle => IntPtr.Zero;
+        /// <summary>Gets the <see cref="IDXGIFactory2" /> for the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public IDXGIFactory2* Factory
+        {
+            get
+            {
+                _state.ThrowIfDisposedOrDisposing();
+                return (IDXGIFactory2*)_factory.Value;
+            }
+        }
 
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
         public void Dispose()
@@ -73,7 +79,7 @@ namespace TerraFX.Provider.D3D12.Graphics
         {
             IntPtr factory;
 
-            var iid = IID_IDXGIFactory3;
+            var iid = IID_IDXGIFactory2;
             ThrowExternalExceptionIfFailed(nameof(CreateDXGIFactory2), CreateDXGIFactory2(CreateFactoryFlags, &iid, (void**)&factory));
 
             return factory;
@@ -96,7 +102,7 @@ namespace TerraFX.Provider.D3D12.Graphics
         {
             if (_factory.IsValueCreated)
             {
-                var factory = (IDXGIFactory3*)_factory.Value;
+                var factory = (IDXGIFactory2*)_factory.Value;
                 _ = factory->Release();
             }
         }
@@ -116,9 +122,7 @@ namespace TerraFX.Provider.D3D12.Graphics
 
         private ImmutableArray<GraphicsAdapter> GetGraphicsAdapters()
         {
-            var factory = (IDXGIFactory3*)_factory.Value;
-            var adapter = (IDXGIAdapter1*)null;
-
+            IDXGIAdapter1* adapter = null;
             var graphicsAdapters = ImmutableArray.CreateBuilder<GraphicsAdapter>();
 
             try
@@ -127,7 +131,7 @@ namespace TerraFX.Provider.D3D12.Graphics
 
                 while (true)
                 {
-                    var hr = factory->EnumAdapters1(index, &adapter);
+                    var hr = Factory->EnumAdapters1(index, &adapter);
 
                     if (FAILED(hr))
                     {

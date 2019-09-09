@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "TerraFX.Samples.DirectX": {
+    "TerraFX.Samples": {
       "commandName": "Project",
       "commandLineArgs": "all"
     }

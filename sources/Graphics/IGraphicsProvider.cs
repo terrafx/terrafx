@@ -10,8 +10,5 @@ namespace TerraFX.Graphics
     {
         /// <summary>Gets the <see cref="IGraphicsAdapter" /> instances currently available.</summary>
         IEnumerable<IGraphicsAdapter> GraphicsAdapters { get; }
-
-        /// <summary>Gets the underlying handle for the instance.</summary>
-        IntPtr Handle { get; }
     }
 }

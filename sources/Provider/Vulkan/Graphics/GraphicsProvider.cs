@@ -4,12 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-
 using TerraFX.Graphics;
 using TerraFX.Interop;
 using TerraFX.Utilities;
-
 using static TerraFX.Interop.VkResult;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
@@ -24,8 +23,146 @@ namespace TerraFX.Provider.Vulkan.Graphics
     [Shared]
     public sealed unsafe class GraphicsProvider : IDisposable, IGraphicsProvider
     {
-        private readonly Lazy<IntPtr> _instance;
+#if DEBUG
+        private static ReadOnlySpan<sbyte> VK_EXT_debug_report => new sbyte[] {
+            0x56,
+            0x4B,
+            0x5F,
+            0x45,
+            0x58,
+            0x54,
+            0x5F,
+            0x64,
+            0x65,
+            0x62,
+            0x75,
+            0x67,
+            0x5F,
+            0x72,
+            0x65,
+            0x70,
+            0x6F,
+            0x72,
+            0x74,
+            0x00,
+        };
+#endif
+
+        private static ReadOnlySpan<sbyte> VK_KHR_surface => new sbyte[] {
+            0x56,
+            0x4B,
+            0x5F,
+            0x4B,
+            0x48,
+            0x52,
+            0x5F,
+            0x73,
+            0x75,
+            0x72,
+            0x66,
+            0x61,
+            0x63,
+            0x65,
+            0x00,
+        };
+
+        private static ReadOnlySpan<sbyte> VK_KHR_wayland_surface => new sbyte[] {
+            0x56,
+            0x4b,
+            0x5f,
+            0x4b,
+            0x48,
+            0x52,
+            0x5f,
+            0x77,
+            0x61,
+            0x79,
+            0x6c,
+            0x61,
+            0x6e,
+            0x64,
+            0x5f,
+            0x73,
+            0x75,
+            0x72,
+            0x66,
+            0x61,
+            0x63,
+            0x65,
+            0x00,
+        };
+
+        private static ReadOnlySpan<sbyte> VK_KHR_win32_surface => new sbyte[] {
+            0x56,
+            0x4B,
+            0x5F,
+            0x4B,
+            0x48,
+            0x52,
+            0x5F,
+            0x77,
+            0x69,
+            0x6E,
+            0x33,
+            0x32,
+            0x5F,
+            0x73,
+            0x75,
+            0x72,
+            0x66,
+            0x61,
+            0x63,
+            0x65,
+            0x00,
+        };
+
+        private static ReadOnlySpan<sbyte> VK_KHR_xcb_surface => new sbyte[] {
+            0x56,
+            0x4B,
+            0x5F,
+            0x4B,
+            0x48,
+            0x52,
+            0x5F,
+            0x78,
+            0x63,
+            0x62,
+            0x5F,
+            0x73,
+            0x75,
+            0x72,
+            0x66,
+            0x61,
+            0x63,
+            0x65,
+            0x00,
+        };
+
+        private static ReadOnlySpan<sbyte> VK_KHR_xlib_surface => new sbyte[] {
+            0x56,
+            0x4B,
+            0x5F,
+            0x4B,
+            0x48,
+            0x52,
+            0x5F,
+            0x78,
+            0x6C,
+            0x69,
+            0x62,
+            0x5F,
+            0x73,
+            0x75,
+            0x72,
+            0x66,
+            0x61,
+            0x63,
+            0x65,
+            0x00,
+        };
+
         private readonly Lazy<ImmutableArray<GraphicsAdapter>> _adapters;
+        private readonly Lazy<IntPtr> _instance;
 
         private State _state;
 
@@ -35,8 +172,8 @@ namespace TerraFX.Provider.Vulkan.Graphics
         [ImportingConstructor]
         public GraphicsProvider()
         {
-            _instance = new Lazy<IntPtr>((Func<IntPtr>)CreateInstance, isThreadSafe: true);
             _adapters = new Lazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters, isThreadSafe: true);
+            _instance = new Lazy<IntPtr>(CreateInstance, isThreadSafe: true);
             _ = _state.Transition(to: Initialized);
         }
 
@@ -47,6 +184,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
         }
 
         /// <summary>Gets the <see cref="IGraphicsAdapter" /> instances currently available.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public IEnumerable<IGraphicsAdapter> GraphicsAdapters
         {
             get
@@ -56,8 +194,16 @@ namespace TerraFX.Provider.Vulkan.Graphics
             }
         }
 
-        /// <summary>Gets the underlying handle for the instance.</summary>
-        public IntPtr Handle => _instance.Value;
+        /// <summary>Gets the <c>vkInstance</c> for the current instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public IntPtr Instance
+        {
+            get
+            {
+                _state.ThrowIfDisposedOrDisposing();
+                return _instance.Value;
+            }
+        }
 
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
         public void Dispose()
@@ -68,15 +214,31 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
         private static IntPtr CreateInstance()
         {
-            var createInfo = new VkInstanceCreateInfo() {
+            var enabledExtensionCount = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? 2u : 4u;
+
+            var enabledExtensionNames = stackalloc sbyte*[(int)enabledExtensionCount];
+            enabledExtensionNames[0] = (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in VK_KHR_surface[0]));
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                enabledExtensionNames[1] = (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in VK_KHR_win32_surface[0]));
+            }
+            else
+            {
+                enabledExtensionNames[1] = (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in VK_KHR_wayland_surface[0]));
+                enabledExtensionNames[2] = (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in VK_KHR_xcb_surface[0]));
+                enabledExtensionNames[3] = (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in VK_KHR_xlib_surface[0]));
+            }
+
+            var createInfo = new VkInstanceCreateInfo {
                 sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
                 pNext = null,
                 flags = 0,
                 pApplicationInfo = null,
                 enabledLayerCount = 0,
                 ppEnabledLayerNames = null,
-                enabledExtensionCount = 0,
-                ppEnabledExtensionNames = null
+                enabledExtensionCount = enabledExtensionCount,
+                ppEnabledExtensionNames = enabledExtensionNames,
             };
 
             IntPtr instance;

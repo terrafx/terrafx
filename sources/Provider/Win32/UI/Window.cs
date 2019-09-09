@@ -4,6 +4,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.Collections;
+using TerraFX.Graphics;
 using TerraFX.Graphics.Geometry2D;
 using TerraFX.Interop;
 using TerraFX.Numerics;
@@ -128,6 +129,12 @@ namespace TerraFX.Provider.Win32.UI
                 _ = SendMessage(_handle.Value, WM_CLOSE, wParam: UIntPtr.Zero, lParam: IntPtr.Zero);
             }
         }
+
+        /// <summary>Creates a new <see cref="IGraphicsSurface" /> for the instance.</summary>
+        /// <param name="bufferCount">The number of buffers created for the instance.</param>
+        /// <returns>A new <see cref="IGraphicsSurface" /> for the instance.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="bufferCount" /> is less than or equal to zero.</exception>
+        public IGraphicsSurface CreateGraphicsSurface(int bufferCount) => new GraphicsSurface(this, bufferCount);
 
         /// <summary>Disables the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>

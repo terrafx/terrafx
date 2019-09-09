@@ -1,9 +1,9 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.Collections;
+using TerraFX.Graphics;
 using TerraFX.Graphics.Geometry2D;
 using TerraFX.Interop;
 using TerraFX.UI;
@@ -122,6 +122,12 @@ namespace TerraFX.Provider.X11.UI
 
         /// <summary>Closes the instance.</summary>
         public void Close() => Dispose();
+
+        /// <summary>Creates a new <see cref="IGraphicsSurface" /> for the instance.</summary>
+        /// <param name="bufferCount">The number of buffers created for the instance.</param>
+        /// <returns>A new <see cref="IGraphicsSurface" /> for the instance.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="bufferCount" /> is less than or equal to zero.</exception>
+        public IGraphicsSurface CreateGraphicsSurface(int bufferCount) => new GraphicsSurface(this, bufferCount);
 
         /// <summary>Disables the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>

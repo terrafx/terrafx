@@ -4,7 +4,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Composition;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.Interop;
 using TerraFX.UI;
@@ -33,7 +32,7 @@ namespace TerraFX.Provider.X11.UI
         [ImportingConstructor]
         public DispatchProvider()
         {
-            _display = new Lazy<IntPtr>((Func<IntPtr>)CreateDisplay, isThreadSafe: true);
+            _display = new Lazy<IntPtr>(CreateDisplay, isThreadSafe: true);
             _dispatchers = new ConcurrentDictionary<Thread, IDispatcher>();
             _ = _state.Transition(to: Initialized);
         }

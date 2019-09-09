@@ -2,11 +2,10 @@
 
 using System;
 using System.Runtime.InteropServices;
-
 using TerraFX.Graphics;
 using TerraFX.Interop;
-
 using static TerraFX.Interop.Vulkan;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Provider.Vulkan.Graphics
 {
@@ -41,10 +40,20 @@ namespace TerraFX.Provider.Vulkan.Graphics
         /// <summary>Gets the <see cref="IGraphicsProvider" /> for the instance.</summary>
         public IGraphicsProvider GraphicsProvider => _graphicsProvider;
 
-        /// <summary>Gets the underlying handle for the instance.</summary>
-        public IntPtr Handle => _physicalDevice;
+        /// <summary>Gets the physical device for the instance.</summary>
+        public IntPtr PhysicalDevice => _physicalDevice;
 
         /// <summary>Gets the PCI ID of the vendor.</summary>
         public uint VendorId => _vendorId;
+
+        /// <summary>Creates a new <see cref="IGraphicsContext" />.</summary>
+        /// <param name="graphicsSurface">The <see cref="IGraphicsSurface" /> on which the graphics context can draw.</param>
+        /// <returns>A new <see cref="IGraphicsContext" /> which utilizes the current instance and which can draw on <paramref name="graphicsSurface" />.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="graphicsSurface" /> is <c>null</c>.</exception>
+        public IGraphicsContext CreateGraphicsContext(IGraphicsSurface graphicsSurface)
+        {
+            ThrowIfNull(graphicsSurface, nameof(graphicsSurface));
+            return new GraphicsContext(this, graphicsSurface);
+        }
     }
 }

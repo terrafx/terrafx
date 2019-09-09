@@ -56,6 +56,9 @@ namespace TerraFX.Provider.X11.UI
             }
         }
 
+        /// <summary>Gets the handle for the instance.</summary>
+        public IntPtr Handle => DispatchProvider.Display;
+
         /// <summary>Gets the <see cref="IWindow" /> objects created by the instance.</summary>
         public IEnumerable<IWindow> Windows => _state.IsNotDisposedOrDisposing ? (IEnumerable<IWindow>)_windows : Array.Empty<IWindow>();
 

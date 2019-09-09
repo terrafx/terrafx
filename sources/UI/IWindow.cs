@@ -3,6 +3,7 @@
 using System;
 using System.Threading;
 using TerraFX.Collections;
+using TerraFX.Graphics;
 using TerraFX.Graphics.Geometry2D;
 
 namespace TerraFX.UI
@@ -51,6 +52,12 @@ namespace TerraFX.UI
 
         /// <summary>Closes the instance.</summary>
         void Close();
+
+        /// <summary>Creates a new <see cref="IGraphicsSurface" /> for the instance.</summary>
+        /// <param name="bufferCount">The number of buffers created for the instance.</param>
+        /// <returns>A new <see cref="IGraphicsSurface" /> for the instance.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="bufferCount" /> is less than or equal to zero.</exception>
+        IGraphicsSurface CreateGraphicsSurface(int bufferCount);
 
         /// <summary>Disables the instance.</summary>
         void Disable();
