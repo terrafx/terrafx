@@ -5,9 +5,8 @@ using System.Runtime.InteropServices;
 using TerraFX.Graphics;
 using TerraFX.Interop;
 using TerraFX.Utilities;
-using static TerraFX.Interop.D3D_FEATURE_LEVEL;
-using static TerraFX.Interop.D3D12;
 using static TerraFX.Interop.Windows;
+using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.Provider.D3D12.Graphics
@@ -17,6 +16,7 @@ namespace TerraFX.Provider.D3D12.Graphics
     {
         private readonly GraphicsProvider _graphicsProvider;
         private readonly IDXGIAdapter1* _adapter;
+
         private readonly string _deviceName;
         private readonly uint _vendorId;
         private readonly uint _deviceId;
@@ -44,33 +44,33 @@ namespace TerraFX.Provider.D3D12.Graphics
         /// <summary>Gets the name of the device.</summary>
         public string DeviceName => _deviceName;
 
+        /// <summary>Gets the <see cref="IDXGIAdapter1" /> for the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public IDXGIAdapter1* Adapter
+        {
+            get
+            {
+                _state.ThrowIfDisposedOrDisposing();
+                return _adapter;
+            }
+        }
+
         /// <summary>Gets the <see cref="IGraphicsProvider" /> for the instance.</summary>
         public IGraphicsProvider GraphicsProvider => _graphicsProvider;
-
-        /// <summary>Gets the underlying handle for the instance.</summary>
-        public IntPtr Handle => (IntPtr)_adapter;
 
         /// <summary>Gets the PCI ID of the vendor.</summary>
         public uint VendorId => _vendorId;
 
-        /// <summary>Creates a new <see cref="IGraphicsDevice" /> for the instance.</summary>
-        /// <returns>A new <see cref="IGraphicsDevice" /> for the instance.</returns>
-        public IGraphicsDevice CreateDevice()
+        /// <summary>Creates a new <see cref="IGraphicsContext" />.</summary>
+        /// <param name="graphicsSurface">The <see cref="IGraphicsSurface" /> on which the graphics context can draw.</param>
+        /// <returns>A new <see cref="IGraphicsContext" /> which utilizes the current instance and which can draw on <paramref name="graphicsSurface" />.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="graphicsSurface" /> is <c>null</c>.</exception>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public IGraphicsContext CreateGraphicsContext(IGraphicsSurface graphicsSurface)
         {
             _state.ThrowIfDisposedOrDisposing();
-
-            ID3D12Device* device;
-            ID3D12CommandQueue* commandQueue;
-
-            var iid = IID_ID3D12Device;
-            ThrowExternalExceptionIfFailed(nameof(D3D12CreateDevice), D3D12CreateDevice((IUnknown*)_adapter, D3D_FEATURE_LEVEL_11_0, &iid, (void**)&device));
-
-            var queueDesc = new D3D12_COMMAND_QUEUE_DESC();
-
-            iid = IID_ID3D12CommandQueue;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateCommandQueue), device->CreateCommandQueue(&queueDesc, &iid, (void**)&commandQueue));
-
-            return new GraphicsDevice(this, device, commandQueue);
+            ThrowIfNull(graphicsSurface, nameof(graphicsSurface));
+            return new GraphicsContext(this, graphicsSurface);
         }
 
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>

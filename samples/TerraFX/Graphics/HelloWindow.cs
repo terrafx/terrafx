@@ -12,8 +12,7 @@ namespace TerraFX.Samples.Graphics
 {
     public sealed class HelloWindow : Sample
     {
-        private IGraphicsDevice? _graphicsDevice;
-        private ISwapChain? _swapChain;
+        private IGraphicsContext? _graphicsContext;
         private IWindow? _window;
         private TimeSpan _elapsedTime;
 
@@ -37,15 +36,13 @@ namespace TerraFX.Samples.Graphics
             }
             else if (_window.IsVisible)
             {
-                if (_graphicsDevice is null)
+                if (_graphicsContext is null)
                 {
                     var graphicsProvider = application.GetService<IGraphicsProvider>();
-
                     var graphicsAdapter = graphicsProvider.GraphicsAdapters.First();
-                    _graphicsDevice = graphicsAdapter.CreateDevice();
 
                     var graphicsSurface = _window.CreateGraphicsSurface(bufferCount: 2);
-                    _swapChain = _graphicsDevice.CreateSwapChain(graphicsSurface);
+                    _graphicsContext = graphicsAdapter.CreateGraphicsContext(graphicsSurface);
                 }
                 else
                 {
@@ -55,6 +52,12 @@ namespace TerraFX.Samples.Graphics
                     {
                         application.RequestExit();
                     }
+
+                    var backgroundColor = new ColorRgba(red: 100.0f / 255.0f, green: 149.0f / 255.0f, blue: 237.0f / 255.0f, alpha: 1.0f);
+                    _graphicsContext.BeginFrame(backgroundColor);
+
+                    _graphicsContext.EndFrame();
+                    _graphicsContext.PresentFrame();
                 }
             }
         }

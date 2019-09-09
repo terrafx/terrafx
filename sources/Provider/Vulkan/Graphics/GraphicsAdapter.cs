@@ -1,13 +1,9 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using TerraFX.Graphics;
 using TerraFX.Interop;
-using static TerraFX.Interop.VkQueueFlagBits;
-using static TerraFX.Interop.VkResult;
-using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
 using static TerraFX.Utilities.ExceptionUtilities;
 
@@ -16,26 +12,6 @@ namespace TerraFX.Provider.Vulkan.Graphics
     /// <summary>Represents a graphics adapter.</summary>
     public sealed unsafe class GraphicsAdapter : IGraphicsAdapter
     {
-        private static ReadOnlySpan<sbyte> VK_KHR_swapchain => new sbyte[] {
-            0x56,
-            0x4B,
-            0x5F,
-            0x4B,
-            0x48,
-            0x52,
-            0x5F,
-            0x73,
-            0x77,
-            0x61,
-            0x70,
-            0x63,
-            0x68,
-            0x61,
-            0x69,
-            0x6E,
-            0x00,
-        };
-
         private readonly GraphicsProvider _graphicsProvider;
         private readonly IntPtr _physicalDevice;
         private readonly string _deviceName;
@@ -64,69 +40,20 @@ namespace TerraFX.Provider.Vulkan.Graphics
         /// <summary>Gets the <see cref="IGraphicsProvider" /> for the instance.</summary>
         public IGraphicsProvider GraphicsProvider => _graphicsProvider;
 
-        /// <summary>Gets the underlying handle for the instance.</summary>
-        public IntPtr Handle => _physicalDevice;
+        /// <summary>Gets the physical device for the instance.</summary>
+        public IntPtr PhysicalDevice => _physicalDevice;
 
         /// <summary>Gets the PCI ID of the vendor.</summary>
         public uint VendorId => _vendorId;
 
-        /// <summary>Creates a new <see cref="IGraphicsDevice" /> for the instance.</summary>
-        /// <returns>A new <see cref="IGraphicsDevice" /> for the instance.</returns>
-        public IGraphicsDevice CreateDevice()
+        /// <summary>Creates a new <see cref="IGraphicsContext" />.</summary>
+        /// <param name="graphicsSurface">The <see cref="IGraphicsSurface" /> on which the graphics context can draw.</param>
+        /// <returns>A new <see cref="IGraphicsContext" /> which utilizes the current instance and which can draw on <paramref name="graphicsSurface" />.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="graphicsSurface" /> is <c>null</c>.</exception>
+        public IGraphicsContext CreateGraphicsContext(IGraphicsSurface graphicsSurface)
         {
-            IntPtr device;
-            IntPtr queue;
-
-            uint queueFamilyPropertyCount;
-            vkGetPhysicalDeviceQueueFamilyProperties(_physicalDevice, &queueFamilyPropertyCount, pQueueFamilyProperties: null);
-
-            var queueFamilyProperties = stackalloc VkQueueFamilyProperties[(int)queueFamilyPropertyCount];
-            vkGetPhysicalDeviceQueueFamilyProperties(_physicalDevice, &queueFamilyPropertyCount, queueFamilyProperties);
-
-            uint? queueFamilyIndex = default;
-
-            for (uint i = 0; i < queueFamilyPropertyCount; i++)
-            {
-                if ((queueFamilyProperties[i].queueFlags & (uint)VK_QUEUE_GRAPHICS_BIT) != 0)
-                {
-                    queueFamilyIndex = i;
-                    break;
-                }
-            }
-
-            if (!queueFamilyIndex.HasValue)
-            {
-                ThrowInvalidOperationException(nameof(queueFamilyIndex), queueFamilyIndex!);
-            }
-
-            var queueCreateInfo = new VkDeviceQueueCreateInfo {
-                sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
-                queueFamilyIndex = queueFamilyIndex.GetValueOrDefault(),
-                queueCount = 1,
-            };
-
-            var enabledExtensionNames = stackalloc sbyte*[] {
-                (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in VK_KHR_swapchain[0]))
-            };
-
-            var createInfo = new VkDeviceCreateInfo {
-                sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
-                queueCreateInfoCount = 1,
-                pQueueCreateInfos = &queueCreateInfo,
-                enabledExtensionCount = 1,
-                ppEnabledExtensionNames = enabledExtensionNames,
-            };
-
-            var result = vkCreateDevice(_physicalDevice, &createInfo, pAllocator: null, &device);
-
-            if (result != VK_SUCCESS)
-            {
-                ThrowExternalException(nameof(vkCreateDevice), (int)result);
-            }
-
-            vkGetDeviceQueue(device, queueFamilyIndex.GetValueOrDefault(), 0, &queue);
-
-            return new GraphicsDevice(this, device, queue, queueFamilyIndex.GetValueOrDefault());
+            ThrowIfNull(graphicsSurface, nameof(graphicsSurface));
+            return new GraphicsContext(this, graphicsSurface);
         }
     }
 }
