@@ -4,41 +4,27 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using TerraFX.ApplicationModel;
 using TerraFX.Audio;
+using TerraFX.Provider.PulseAudio.Audio;
+using TerraFX.Utilities;
 
 namespace TerraFX.Samples.Audio
 {
     public sealed class EnumerateAudioAdapters : Sample
     {
-        bool _started = false;
-        public EnumerateAudioAdapters(string name, params Assembly[] compositionAssemblies)
+        private readonly bool _async = false;
+
+        public EnumerateAudioAdapters(string name, bool @async, params Assembly[] compositionAssemblies)
             : base(name, compositionAssemblies)
         {
+            _async = @async;
         }
 
-        public override async void OnIdle(object sender, ApplicationIdleEventArgs eventArgs)
+        public override void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs)
         {
+            ExceptionUtilities.ThrowIfNull(sender, nameof(sender));
+
             var application = (Application)sender;
-
-            if (_started)
-            {
-                return;
-            }
-            else
-            {
-                _started = true;
-            }
-
-            try
-            {
-                await RunAsync(application);
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine($"Unhandled exception caught: {e.GetType().Name}");
-                Console.WriteLine(e);
-            }
-
-            application.RequestExit();
+            RunAsync(application).Wait();
         }
 
         private async Task RunAsync(Application application)
@@ -49,17 +35,42 @@ namespace TerraFX.Samples.Audio
             {
                 await audioProvider.StartAsync();
 
-                await foreach (var audioAdapter in audioProvider.EnumerateAudioDevices())
+                if (_async)
                 {
-                    Console.WriteLine($"Adapter null: {audioAdapter == null}");
-                    if (audioAdapter != null)
+                    await foreach (var audioAdapter in audioProvider.EnumerateAudioDevices())
                     {
+                        PrintAudioAdapter(audioAdapter);
+                    }
+                }
+                else
+                {
+                    foreach (var audioAdapter in audioProvider.EnumerateAudioDevices())
+                    {
+                        PrintAudioAdapter(audioAdapter);
+                    }
+                }
+
+                void PrintAudioAdapter(IAudioAdapter audioAdapter)
+                {
                     Console.WriteLine($"    Name: {audioAdapter.Name}");
                     Console.WriteLine($"        Type: {audioAdapter.DeviceType}");
                     Console.WriteLine($"        Channel count: {audioAdapter.Channels}");
                     Console.WriteLine($"        Sample rate: {audioAdapter.SampleRate}");
                     Console.WriteLine($"        Bit depth: {audioAdapter.BitDepth}");
                     Console.WriteLine($"        Endianness: {(audioAdapter.IsBigEndian ? "Big" : "Little")}");
+
+                    if (audioAdapter is PulseSourceAdapter source)
+                    {
+                        Console.WriteLine($"        Number type: {(source.IsFloatingPoint ? "float" : $"{(source.IsUnsigned ? "unsigned " : "signed ")}integer")}");
+                        Console.WriteLine($"        Number of bits per sample: {source.PackedSize}");
+                        Console.WriteLine($"        Description: {source.Description}");
+                    }
+
+                    if (audioAdapter is PulseSinkAdapter sink)
+                    {
+                        Console.WriteLine($"        Number type: {(sink.IsFloatingPoint ? "float" : $"{(sink.IsUnsigned ? "unsigned " : "signed ")}integer")}");
+                        Console.WriteLine($"        Number of bits per sample: {sink.PackedSize}");
+                        Console.WriteLine($"        Description: {sink.Description}");
                     }
                 }
             }
@@ -67,6 +78,8 @@ namespace TerraFX.Samples.Audio
             {
                 await audioProvider.StopAsync();
             }
+
+            application.RequestExit();
         }
     }
 }

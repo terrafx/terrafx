@@ -25,7 +25,8 @@ namespace TerraFX.Samples
             new HelloWindow("D3D12.HelloWindow", s_d3d12Provider),
             new HelloWindow("Vulkan.HelloWindow", s_vulkanProvider),
 
-            new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapter", s_pulseAudioProvider)
+            new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapter.Sync", false, s_pulseAudioProvider),
+            new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapter.Async", true, s_pulseAudioProvider),
         };
 
         public static void Main(string[] args)

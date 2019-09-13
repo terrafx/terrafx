@@ -10,8 +10,8 @@ namespace TerraFX.Provider.PulseAudio.Audio
     {
         internal unsafe PulseSourceAdapter(pa_source_info* i)
         {
-            Name = Marshal.PtrToStringUTF8((IntPtr)i->name);
-            Description = Marshal.PtrToStringUTF8((IntPtr)i->description);
+            Name = Marshal.PtrToStringUTF8((IntPtr)i->name)!;
+            Description = Marshal.PtrToStringUTF8((IntPtr)i->description)!;
             SampleRate = (int)i->sample_spec.rate;
             Channels = i->sample_spec.channels;
 
@@ -37,7 +37,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
                 case pa_sample_format.PA_SAMPLE_FLOAT32BE:
                     IsUnsigned = false;
                     BitDepth = 32;
-                    PackedSize = 23;
+                    PackedSize = 32;
                     IsBigEndian = format == pa_sample_format.PA_SAMPLE_FLOAT32BE;
                     IsFloatingPoint = true;
                     break;
