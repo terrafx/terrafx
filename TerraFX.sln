@@ -170,6 +170,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{B7F2
 		docs\samples\Vulkan.HelloWindow - Linux.png = docs\samples\Vulkan.HelloWindow - Linux.png
 		docs\samples\Vulkan.HelloWindow - Windows.png = docs\samples\Vulkan.HelloWindow - Windows.png
 	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerraFX.Provider.PulseAudio", "sources\Provider\PulseAudio\TerraFX.Provider.PulseAudio.csproj", "{2581172C-0AE1-440A-B33B-27CE5CC2AC05}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -257,6 +258,10 @@ Global
 		{B56B6C8D-47C9-4D61-A65B-FBBF629A9DE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B56B6C8D-47C9-4D61-A65B-FBBF629A9DE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B56B6C8D-47C9-4D61-A65B-FBBF629A9DE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2581172C-0AE1-440A-B33B-27CE5CC2AC05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2581172C-0AE1-440A-B33B-27CE5CC2AC05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2581172C-0AE1-440A-B33B-27CE5CC2AC05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2581172C-0AE1-440A-B33B-27CE5CC2AC05}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

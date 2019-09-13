@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.ApplicationModel;
+using TerraFX.Samples.Audio;
 using TerraFX.Samples.Graphics;
 
 namespace TerraFX.Samples
@@ -16,11 +17,15 @@ namespace TerraFX.Samples
         private static readonly Assembly s_d3d12Provider = Assembly.LoadFrom("TerraFX.Provider.D3D12.dll");
         private static readonly Assembly s_vulkanProvider = Assembly.LoadFrom("TerraFX.Provider.Vulkan.dll");
 
+        private static readonly Assembly s_pulseAudioProvider = Assembly.LoadFrom("TerraFX.Provider.PulseAudio.dll");
+
         private static readonly Sample[] s_samples = {
             new EnumerateGraphicsAdapters("D3D12.EnumerateGraphicsAdapters", s_d3d12Provider),
             new EnumerateGraphicsAdapters("Vulkan.EnumerateGraphicsAdapters", s_vulkanProvider),
             new HelloWindow("D3D12.HelloWindow", s_d3d12Provider),
             new HelloWindow("Vulkan.HelloWindow", s_vulkanProvider),
+
+            new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapter", s_pulseAudioProvider)
         };
 
         public static void Main(string[] args)
