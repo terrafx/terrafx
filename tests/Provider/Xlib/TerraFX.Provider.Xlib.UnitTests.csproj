@@ -7,11 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TerraFX.Interop.X11" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\UI\TerraFX.UI.csproj" />
+    <ProjectReference Include="..\..\..\sources\Provider\Xlib\TerraFX.Provider.Xlib.csproj" />
   </ItemGroup>
 
 </Project>

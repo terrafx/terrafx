@@ -11,7 +11,7 @@
     <ProjectReference Include="..\..\sources\Provider\D3D12\TerraFX.Provider.D3D12.csproj" />
     <ProjectReference Include="..\..\sources\Provider\Vulkan\TerraFX.Provider.Vulkan.csproj" />
     <ProjectReference Include="..\..\sources\Provider\Win32\TerraFX.Provider.Win32.csproj" />
-    <ProjectReference Include="..\..\sources\Provider\X11\TerraFX.Provider.X11.csproj" />
+    <ProjectReference Include="..\..\sources\Provider\Xlib\TerraFX.Provider.Xlib.csproj" />
   </ItemGroup>
 
 </Project>
