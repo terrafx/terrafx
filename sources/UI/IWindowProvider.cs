@@ -8,9 +8,6 @@ namespace TerraFX.UI
     /// <summary>Provides access to a window subsystem.</summary>
     public interface IWindowProvider
     {
-        /// <summary>Gets the handle for the instance.</summary>
-        IntPtr Handle { get; }
-
         /// <summary>Gets the <see cref="IWindow" /> objects created by the instance.</summary>
         IEnumerable<IWindow> Windows { get; }
 

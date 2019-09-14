@@ -5,7 +5,7 @@ using TerraFX.Graphics;
 using TerraFX.Numerics;
 using static TerraFX.Utilities.ExceptionUtilities;
 
-namespace TerraFX.Provider.X11.UI
+namespace TerraFX.Provider.Xlib.UI
 {
     /// <summary>Represents a graphics surface.</summary>
     public sealed unsafe class GraphicsSurface : IGraphicsSurface
@@ -28,15 +28,15 @@ namespace TerraFX.Provider.X11.UI
         public int BufferCount => _bufferCount;
 
         /// <summary>Gets the kind of surface represented by the instance.</summary>
-        public GraphicsSurfaceKind Kind => GraphicsSurfaceKind.Win32;
+        public GraphicsSurfaceKind Kind => GraphicsSurfaceKind.Xlib;
 
         /// <summary>Gets the size of the instance.</summary>
         public Vector2 Size => _window.Bounds.Size;
 
         /// <summary>Gets the window provider handle for the instance.</summary>
-        public IntPtr WindowProviderHandle => _window.WindowProvider.Handle;
+        public IntPtr WindowProviderHandle => (IntPtr)(void*)((WindowProvider)_window.WindowProvider).DispatchProvider.Display;
 
         /// <summary>Gets the window handle for the instance.</summary>
-        public IntPtr WindowHandle => _window.Handle;
+        public IntPtr WindowHandle => (IntPtr)(void*)_window.Handle;
     }
 }

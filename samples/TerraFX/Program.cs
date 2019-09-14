@@ -36,6 +36,26 @@ namespace TerraFX.Samples
             }
         }
 
+        private static bool IsSupported(Sample sample)
+        {
+            bool isSupported;
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                isSupported = true;
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                isSupported = !sample.CompositionAssemblies.Contains(s_d3d12Provider);
+            }
+            else
+            {
+                isSupported = false;
+            }
+
+            return isSupported;
+        }
+
         private static bool Matches(string arg, params string[] keywords)
         {
             return keywords.Any((keyword) => ((arg.Length == keyword.Length) && arg.Equals(keyword, StringComparison.OrdinalIgnoreCase))
@@ -52,23 +72,7 @@ namespace TerraFX.Samples
 
             foreach (var sample in s_samples)
             {
-                bool isSupported;
-                var compositionAssemblies = sample.CompositionAssemblies;
-
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    isSupported = true;
-                }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
-                    isSupported = !compositionAssemblies.Contains(s_d3d12Provider);
-                }
-                else
-                {
-                    isSupported = false;
-                }
-
-                if (isSupported)
+                if (IsSupported(sample))
                 {
                     Console.WriteLine($"    {sample.Name}");
                 }
@@ -92,8 +96,11 @@ namespace TerraFX.Samples
             {
                 foreach (var sample in s_samples)
                 {
-                    RunSample(sample);
-                    ranAnySamples = true;
+                    if (IsSupported(sample))
+                    {
+                        RunSample(sample);
+                        ranAnySamples = true;
+                    }
                 }
             }
 
@@ -101,8 +108,11 @@ namespace TerraFX.Samples
             {
                 foreach (var sample in s_samples.Where((sample) => arg.Equals(sample.Name, StringComparison.OrdinalIgnoreCase)))
                 {
-                    RunSample(sample);
-                    ranAnySamples = true;
+                    if (IsSupported(sample))
+                    {
+                        RunSample(sample);
+                        ranAnySamples = true;
+                    }
                 }
             }
 
