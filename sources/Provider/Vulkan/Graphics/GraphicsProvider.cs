@@ -214,7 +214,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
         private static IntPtr CreateInstance()
         {
-            var enabledExtensionCount = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? 2u : 4u;
+            var enabledExtensionCount = 2u;
 
             var enabledExtensionNames = stackalloc sbyte*[(int)enabledExtensionCount];
             enabledExtensionNames[0] = (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in VK_KHR_surface[0]));
@@ -225,9 +225,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
             }
             else
             {
-                enabledExtensionNames[1] = (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in VK_KHR_wayland_surface[0]));
-                enabledExtensionNames[2] = (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in VK_KHR_xcb_surface[0]));
-                enabledExtensionNames[3] = (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in VK_KHR_xlib_surface[0]));
+                enabledExtensionNames[1] = (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in VK_KHR_xlib_surface[0]));
             }
 
             var createInfo = new VkInstanceCreateInfo {

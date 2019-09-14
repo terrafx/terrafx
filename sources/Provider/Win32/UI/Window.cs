@@ -47,6 +47,7 @@ namespace TerraFX.Provider.Win32.UI
             _bounds = new Rectangle(float.NaN, float.NaN, float.NaN, float.NaN);
             _flowDirection = FlowDirection.TopToBottom;
             _readingDirection = ReadingDirection.LeftToRight;
+            _isEnabled = true;
 
             _windowProvider = windowProvider;
             _ = _state.Transition(to: Initialized);
@@ -65,7 +66,15 @@ namespace TerraFX.Provider.Win32.UI
         public FlowDirection FlowDirection => _flowDirection;
 
         /// <summary>Gets the handle for the instance.</summary>
-        public IntPtr Handle => _state.IsNotDisposedOrDisposing ? _handle.Value : IntPtr.Zero;
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public IntPtr Handle
+        {
+            get
+            {
+                _state.ThrowIfDisposedOrDisposing();
+                return _handle.Value;
+            }
+        }
 
         /// <summary>Gets a value that indicates whether the instance is the active window.</summary>
         public bool IsActive => _isActive;
@@ -102,8 +111,8 @@ namespace TerraFX.Provider.Win32.UI
         }
 
         /// <summary>Activates the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         /// <exception cref="ExternalException">The call to <see cref="SetForegroundWindow(IntPtr)" /> failed.</exception>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public void Activate()
         {
             var succeeded = TryActivate();

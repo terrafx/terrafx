@@ -17,9 +17,6 @@ namespace TerraFX.UI
         /// <summary>Gets <see cref="FlowDirection" /> for the instance.</summary>
         FlowDirection FlowDirection { get; }
 
-        /// <summary>Gets the handle for the instance.</summary>
-        IntPtr Handle { get; }
-
         /// <summary>Gets a value that indicates whether the instance is the active window.</summary>
         bool IsActive { get; }
 

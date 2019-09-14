@@ -60,6 +60,7 @@ namespace TerraFX.Provider.Win32.UI
         public ushort ClassAtom => _state.IsNotDisposedOrDisposing ? _classAtom.Value : (ushort)0;
 
         /// <summary>Gets the <see cref="DispatchProvider" /> for the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public DispatchProvider DispatchProvider
         {
             get
@@ -69,10 +70,8 @@ namespace TerraFX.Provider.Win32.UI
             }
         }
 
-        /// <summary>Gets the handle for the instance.</summary>
-        public IntPtr Handle => EntryPointModule;
-
         /// <summary>Gets the <see cref="GCHandle" /> containing the native handle for the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public GCHandle NativeHandle
         {
             get
@@ -83,7 +82,15 @@ namespace TerraFX.Provider.Win32.UI
         }
 
         /// <summary>Gets the <see cref="IWindow" /> objects created by the instance.</summary>
-        public IEnumerable<IWindow> Windows => _state.IsNotDisposedOrDisposing ? (IEnumerable<IWindow>)_windows : Array.Empty<IWindow>();
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public IEnumerable<IWindow> Windows
+        {
+            get
+            {
+                _state.ThrowIfDisposedOrDisposing();
+                return _windows.Values;
+            }
+        }
 
         /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
         public void Dispose()
@@ -123,12 +130,6 @@ namespace TerraFX.Provider.Win32.UI
             {
                 userData = GetWindowLongPtr(hWnd, GWLP_USERDATA);
             }
-
-            // We are assuming that userData will definitely be set here and that it will be set
-            // to a GCHandle for a WindowProvider instance. It is certainly possible, although unsupported,
-            // for a user to get our registered class information and to create a new window from that
-            // without passing in a GCHandle as the lParam to CreateWindowEx. We will just fail
-            // by allowing the runtime to throw an exception in that scenario.
 
             WindowProvider windowProvider = null!;
             var forwardMessage = false;

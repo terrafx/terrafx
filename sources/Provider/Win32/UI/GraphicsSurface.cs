@@ -34,7 +34,7 @@ namespace TerraFX.Provider.Win32.UI
         public Vector2 Size => _window.Bounds.Size;
 
         /// <summary>Gets the window provider handle for the instance.</summary>
-        public IntPtr WindowProviderHandle => _window.WindowProvider.Handle;
+        public IntPtr WindowProviderHandle => WindowProvider.EntryPointModule;
 
         /// <summary>Gets the window handle for the instance.</summary>
         public IntPtr WindowHandle => _window.Handle;
