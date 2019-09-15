@@ -47,19 +47,16 @@ namespace TerraFX.Provider.Xlib.UI
             ThrowIfNotThread(_parentThread);
 
             var display = _dispatchProvider.Display;
-            var wmProtocolsAtom = _dispatchProvider.WmProtocolsAtom;
-            var dispatcherExitRequestedAtom = (IntPtr)(void*)_dispatchProvider.DispatcherExitRequestedAtom;
-
             while (XPending(display) != 0)
             {
                 XEvent xevent;
                 _ = XNextEvent(display, &xevent);
 
-                var isWmProtocolsEvent = (xevent.type == ClientMessage) && (xevent.xclient.format == 32) && (xevent.xclient.message_type == wmProtocolsAtom);
+                var isWmProtocolsEvent = (xevent.type == ClientMessage) && (xevent.xclient.format == 32) && (xevent.xclient.message_type == _dispatchProvider.WmProtocolsAtom);
 
-                if (!isWmProtocolsEvent || (xevent.xclient.data.l[0] != dispatcherExitRequestedAtom))
+                if (!isWmProtocolsEvent || (xevent.xclient.data.l[0] != (IntPtr)(void*)_dispatchProvider.DispatcherExitRequestedAtom))
                 {
-                    WindowProvider.ForwardWindowEvent(_dispatchProvider, &xevent, isWmProtocolsEvent);
+                    WindowProvider.ForwardWindowEvent(&xevent, isWmProtocolsEvent);
                 }
                 else
                 {

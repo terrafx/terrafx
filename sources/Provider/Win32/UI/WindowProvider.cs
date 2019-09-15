@@ -20,17 +20,15 @@ namespace TerraFX.Provider.Win32.UI
 {
     /// <summary>Provides access to a Win32 based window subsystem.</summary>
     [Export(typeof(IWindowProvider))]
-    [Export(typeof(WindowProvider))]
     [Shared]
     public sealed unsafe class WindowProvider : IDisposable, IWindowProvider
     {
         /// <summary>A <c>HMODULE</c> to the entry point module.</summary>
         public static readonly IntPtr EntryPointModule = GetModuleHandle();
 
-        private static readonly NativeDelegate<WNDPROC> ForwardWndProc = new NativeDelegate<WNDPROC>(ForwardWindowMessage);
+        private static readonly NativeDelegate<WNDPROC> s_forwardWndProc = new NativeDelegate<WNDPROC>(ForwardWindowMessage);
 
         private readonly Lazy<ushort> _classAtom;
-        private readonly Lazy<DispatchProvider> _dispatchProvider;
         private readonly Lazy<GCHandle> _nativeHandle;
         private readonly ConcurrentDictionary<IntPtr, Window> _windows;
 
@@ -38,13 +36,10 @@ namespace TerraFX.Provider.Win32.UI
 
         /// <summary>Initializes a new instance of the <see cref="WindowProvider" /> class.</summary>
         [ImportingConstructor]
-        public WindowProvider(
-            [Import] Lazy<DispatchProvider> dispatchProvider
-        )
+        public WindowProvider()
         {
             _classAtom = new Lazy<ushort>(CreateClassAtom, isThreadSafe: true);
-            _dispatchProvider = dispatchProvider;
-            _nativeHandle = new Lazy<GCHandle>(() => GCHandle.Alloc(this, GCHandleType.Normal), isThreadSafe: true);
+            _nativeHandle = new Lazy<GCHandle>(CreateNativeHandle, isThreadSafe: true);
 
             _windows = new ConcurrentDictionary<IntPtr, Window>();
             _ = _state.Transition(to: Initialized);
@@ -57,18 +52,17 @@ namespace TerraFX.Provider.Win32.UI
         }
 
         /// <summary>Gets the <c>ATOM</c> of the <see cref="WNDCLASSEX" /> registered for the instance.</summary>
-        public ushort ClassAtom => _state.IsNotDisposedOrDisposing ? _classAtom.Value : (ushort)0;
-
-        /// <summary>Gets the <see cref="DispatchProvider" /> for the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public DispatchProvider DispatchProvider
+        public ushort ClassAtom
         {
             get
             {
                 _state.ThrowIfDisposedOrDisposing();
-                return _dispatchProvider.Value;
+                return _classAtom.Value;
             }
         }
+
+        /// <summary>Gets the <see cref="IDispatchProvider" /> for the instance.</summary>
+        public IDispatchProvider DispatchProvider => UI.DispatchProvider.Instance;
 
         /// <summary>Gets the <see cref="GCHandle" /> containing the native handle for the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
@@ -205,16 +199,16 @@ namespace TerraFX.Provider.Win32.UI
                     var wndClassEx = new WNDCLASSEX {
                         cbSize = SizeOf<WNDCLASSEX>(),
                         style = CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS,
-                        lpfnWndProc = ForwardWndProc,
-                        /* cbClsExtra = 0, */
-                        /* cbWndExtra = 0, */
+                        lpfnWndProc = s_forwardWndProc,
+                        cbClsExtra = 0,
+                        cbWndExtra = 0,
                         hInstance = EntryPointModule,
-                        /* hIcon = IntPtr.Zero, */
+                        hIcon = IntPtr.Zero,
                         hCursor = GetDesktopCursor(),
                         hbrBackground = (IntPtr)(COLOR_WINDOW + 1),
-                        /* lpszMenuName = null, */
+                        lpszMenuName = null,
                         lpszClassName = lpszClassName,
-                        /* hIconSm = IntPtr.Zero */
+                        hIconSm = IntPtr.Zero
                     };
 
                     classAtom = RegisterClassEx(&wndClassEx);
@@ -228,11 +222,13 @@ namespace TerraFX.Provider.Win32.UI
             return classAtom;
         }
 
+        private GCHandle CreateNativeHandle() => GCHandle.Alloc(this, GCHandleType.Normal);
+
         private void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
 
-            if (priorState < Disposing) // (previousState != Disposing) && (previousState != Disposed)
+            if (priorState < Disposing)
             {
                 DisposeWindows(isDisposing);
                 DisposeClassAtom();

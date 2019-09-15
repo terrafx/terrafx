@@ -21,7 +21,6 @@ namespace TerraFX.Provider.Xlib.UI
     [Shared]
     public sealed unsafe class WindowProvider : IDisposable, IWindowProvider
     {
-        private readonly Lazy<DispatchProvider> _dispatchProvider;
         private readonly Lazy<GCHandle> _nativeHandle;
         private readonly ConcurrentDictionary<UIntPtr, Window> _windows;
 
@@ -29,13 +28,10 @@ namespace TerraFX.Provider.Xlib.UI
 
         /// <summary>Initializes a new instance of the <see cref="WindowProvider" /> class.</summary>
         [ImportingConstructor]
-        public WindowProvider(
-            [Import] Lazy<DispatchProvider> dispatchProvider
-        )
+        public WindowProvider()
         {
-            _dispatchProvider = dispatchProvider;
-            _windows = new ConcurrentDictionary<UIntPtr, Window>();
             _nativeHandle = new Lazy<GCHandle>(() => GCHandle.Alloc(this, GCHandleType.Normal), isThreadSafe: true);
+            _windows = new ConcurrentDictionary<UIntPtr, Window>();
             _ = _state.Transition(to: Initialized);
         }
 
@@ -45,16 +41,8 @@ namespace TerraFX.Provider.Xlib.UI
             Dispose(isDisposing: false);
         }
 
-        /// <summary>Gets the <see cref="DispatchProvider" /> for the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public DispatchProvider DispatchProvider
-        {
-            get
-            {
-                _state.ThrowIfDisposedOrDisposing();
-                return _dispatchProvider.Value;
-            }
-        }
+        /// <summary>Gets the <see cref="IDispatchProvider" /> for the instance.</summary>
+        public IDispatchProvider DispatchProvider => UI.DispatchProvider.Instance;
 
         /// <summary>Gets the <see cref="GCHandle" /> containing the native handle for the instance.</summary>
         public GCHandle NativeHandle
@@ -92,14 +80,16 @@ namespace TerraFX.Provider.Xlib.UI
             _state.ThrowIfDisposedOrDisposing();
 
             var window = new Window(this);
-            _ = _windows.TryAdd((UIntPtr)(void*)window.Handle, window);
+            _ = _windows.TryAdd(window.Handle, window);
 
             return window;
         }
 
-        internal static void ForwardWindowEvent(DispatchProvider dispatchProvider, XEvent* xevent, bool isWmProtocolsEvent)
+        internal static void ForwardWindowEvent(XEvent* xevent, bool isWmProtocolsEvent)
         {
             IntPtr userData;
+
+            var dispatchProvider = UI.DispatchProvider.Instance;
 
             if (isWmProtocolsEvent && (xevent->xclient.data.l[0] == (IntPtr)(void*)dispatchProvider.WindowProviderCreateWindowAtom))
             {
@@ -190,7 +180,7 @@ namespace TerraFX.Provider.Xlib.UI
         {
             var priorState = _state.BeginDispose();
 
-            if (priorState < Disposing)  // (previousState != Disposing) && (previousState != Disposed)
+            if (priorState < Disposing)
             {
                 DisposeWindows(isDisposing);
             }

@@ -1,7 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using TerraFX.Graphics;
 using TerraFX.Interop;
@@ -765,7 +764,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
                         sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
                         pNext = null,
                         flags = 0,
-                        hinstance = _graphicsSurface.WindowProviderHandle,
+                        hinstance = _graphicsSurface.DisplayHandle,
                         hwnd = _graphicsSurface.WindowHandle,
                     };
 
@@ -784,7 +783,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
                         sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
                         pNext = null,
                         flags = 0,
-                        dpy = _graphicsSurface.WindowProviderHandle,
+                        dpy = _graphicsSurface.DisplayHandle,
                         window = (UIntPtr)_graphicsSurface.WindowHandle.ToPointer(),
                     };
 
