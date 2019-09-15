@@ -21,6 +21,7 @@ namespace TerraFX.Provider.Xlib.UI
     /// <summary>Provides access to an X11 based dispatch subsystem.</summary>
     public sealed unsafe class DispatchProvider : IDisposable, IDispatchProvider
     {
+        private static readonly NativeDelegate<XErrorHandler> s_errorHandler = new NativeDelegate<XErrorHandler>(HandleXlibError);
         private static readonly Lazy<DispatchProvider> s_instance = new Lazy<DispatchProvider>(CreateDispatchProvider, isThreadSafe: true);
 
         private readonly Lazy<UIntPtr> _dispatcherExitRequestedAtom;
@@ -416,6 +417,21 @@ namespace TerraFX.Provider.Xlib.UI
 
         private static DispatchProvider CreateDispatchProvider() => new DispatchProvider();
 
+        private static int HandleXlibError(UIntPtr display, XErrorEvent* errorEvent)
+        {
+            // Due to the asynchronous nature of Xlib, there can be a race between
+            // the window being deleted and it being unmapped. This ignores the warning
+            // raised by the unmap event in that scenario, as the call to XGetWindowProperty
+            // will fail.
+
+            if ((errorEvent->error_code != BadWindow) || (errorEvent->request_code != X_GetProperty))
+            {
+                ThrowExternalException(nameof(XErrorHandler), errorEvent->error_code);
+            }
+
+            return 0;
+        }
+
         private static UIntPtr CreateDisplay()
         {
             var display = XOpenDisplay(display_name: null);
@@ -424,6 +440,7 @@ namespace TerraFX.Provider.Xlib.UI
             {
                 ThrowExternalExceptionForLastError(nameof(XOpenDisplay));
             }
+            _ = XSetErrorHandler(s_errorHandler);
 
             return display;
         }
@@ -542,6 +559,7 @@ namespace TerraFX.Provider.Xlib.UI
 
             if (_display.IsValueCreated)
             {
+                _ = XSetErrorHandler(IntPtr.Zero);
                 _ = XCloseDisplay(_display.Value);
             }
         }

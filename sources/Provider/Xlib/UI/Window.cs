@@ -396,6 +396,14 @@ namespace TerraFX.Provider.Xlib.UI
                 (IntPtr)(VisibilityChangeMask | StructureNotifyMask)
             );
 
+            var wmDeleteWindowAtom = dispatchProvider.WmDeleteWindowAtom;
+            var status = XSetWMProtocols(display, window, &wmDeleteWindowAtom, count: 1);
+
+            if (status == 0)
+            {
+                ThrowExternalException(nameof(XSetWMProtocols), status);
+            }
+
             var clientEvent = new XClientMessageEvent {
                 type = ClientMessage,
                 serial = UIntPtr.Zero,
@@ -422,7 +430,7 @@ namespace TerraFX.Provider.Xlib.UI
                 clientEvent.data.l[1] = (IntPtr)bits;
             }
 
-            var status = XSendEvent(
+            status = XSendEvent(
                 clientEvent.display,
                 clientEvent.window,
                 propagate: False,
