@@ -9,15 +9,21 @@ namespace TerraFX.ApplicationModel
     public readonly struct ApplicationIdleEventArgs
     {
         private readonly TimeSpan _delta;
+        private readonly uint _framesPerSecond;
 
         /// <summary>Initializes a new instance of the <see cref="ApplicationIdleEventArgs" /> class.</summary>
         /// <param name="delta">The delta between the current and previous <see cref="Application.Idle" /> events.</param>
-        public ApplicationIdleEventArgs(TimeSpan delta)
+        /// <param name="framesPerSecond">The number of frames per second.</param>
+        public ApplicationIdleEventArgs(TimeSpan delta, uint framesPerSecond)
         {
             _delta = delta;
+            _framesPerSecond = framesPerSecond;
         }
 
         /// <summary>Gets the delta between the current and previous <see cref="Application.Idle" /> events.</summary>
         public TimeSpan Delta => _delta;
+
+        /// <summary>Gets the number of frames per second.</summary>
+        public uint FramesPerSecond => _framesPerSecond;
     }
 }
