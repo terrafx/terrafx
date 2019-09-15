@@ -11,6 +11,9 @@ namespace TerraFX.Graphics
         /// <summary>Gets the number of buffers for the instance.</summary>
         int BufferCount { get; }
 
+        /// <summary>Gets the display handle for the instance.</summary>
+        IntPtr DisplayHandle { get; }
+
         /// <summary>Gets the height of the instance.</summary>
         float Height => Size.Y;
 
@@ -22,9 +25,6 @@ namespace TerraFX.Graphics
 
         /// <summary>Gets the width of the instance.</summary>
         float Width => Size.X;
-
-        /// <summary>Gets the window provider handle for the instance.</summary>
-        IntPtr WindowProviderHandle { get; }
 
         /// <summary>Gets the window handle for the instance.</summary>
         IntPtr WindowHandle { get; }

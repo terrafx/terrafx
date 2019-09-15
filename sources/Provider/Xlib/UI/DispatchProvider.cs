@@ -19,13 +19,48 @@ using static TerraFX.Utilities.State;
 namespace TerraFX.Provider.Xlib.UI
 {
     /// <summary>Provides access to an X11 based dispatch subsystem.</summary>
-    [Export(typeof(IDispatchProvider))]
-    [Export(typeof(DispatchProvider))]
-    [Shared]
     public sealed unsafe class DispatchProvider : IDisposable, IDispatchProvider
     {
+        private static readonly NativeDelegate<XErrorHandler> s_errorHandler = new NativeDelegate<XErrorHandler>(HandleXlibError);
+        private static readonly Lazy<DispatchProvider> s_instance = new Lazy<DispatchProvider>(CreateDispatchProvider, isThreadSafe: true);
+
+        private readonly Lazy<UIntPtr> _dispatcherExitRequestedAtom;
+        private readonly ConcurrentDictionary<Thread, IDispatcher> _dispatchers;
+        private readonly Lazy<UIntPtr> _display;
+        private readonly Lazy<UIntPtr> _systemIntPtrAtom;
+        private readonly Lazy<UIntPtr> _windowProviderCreateWindowAtom;
+        private readonly Lazy<UIntPtr> _windowWindowProviderAtom;
+        private readonly Lazy<UIntPtr> _wmProtocolsAtom;
+        private readonly Lazy<UIntPtr> _wmDeleteWindowAtom;
+
+        private State _state;
+
+        private DispatchProvider()
+        {
+            _display = new Lazy<UIntPtr>(CreateDisplay, isThreadSafe: true);
+            _dispatchers = new ConcurrentDictionary<Thread, IDispatcher>();
+
+            _dispatcherExitRequestedAtom = new Lazy<UIntPtr>(CreateDispatcherExitRequestedAtom, isThreadSafe: true);
+            _systemIntPtrAtom = new Lazy<UIntPtr>(CreateSystemIntPtrAtom, isThreadSafe: true);
+            _windowProviderCreateWindowAtom = new Lazy<UIntPtr>(CreateWindowProviderCreateWindowAtom, isThreadSafe: true);
+            _windowWindowProviderAtom = new Lazy<UIntPtr>(CreateWindowWindowProviderAtom, isThreadSafe: true);
+            _wmProtocolsAtom = new Lazy<UIntPtr>(CreateWmProtocolsAtom, isThreadSafe: true);
+            _wmDeleteWindowAtom = new Lazy<UIntPtr>(CreateWmDeleteWindowAtom, isThreadSafe: true);
+
+            _ = _state.Transition(to: Initialized);
+        }
+
+        /// <summary>Finalizes an instance of the <see cref="DispatchProvider" /> class.</summary>
+        ~DispatchProvider()
+        {
+            Dispose(isDisposing: false);
+        }
+
+        /// <summary>Gets the <see cref="DispatchProvider" /> instance for the current program.</summary>
+        public static DispatchProvider Instance => s_instance.Value;
+
         // TerraFX.Provider.Xlib.UI.Dispatcher.ExitRequested
-        private static ReadOnlySpan<byte> s_dispatcherExitRequestedAtomName => new byte[] {
+        private static ReadOnlySpan<byte> DispatcherExitRequestedAtomName => new byte[] {
             0x54,
             0x65,
             0x72,
@@ -79,7 +114,7 @@ namespace TerraFX.Provider.Xlib.UI
         };
 
         // System.IntPtr
-        private static ReadOnlySpan<byte> s_systemIntPtrAtomName=> new byte[] {
+        private static ReadOnlySpan<byte> SystemIntPtrAtomName => new byte[] {
             0x53,
             0x79,
             0x73,
@@ -97,7 +132,7 @@ namespace TerraFX.Provider.Xlib.UI
         };
 
         // TerraFX.Provider.Xlib.UI.WindowProvider.CreateWindow
-        private static ReadOnlySpan<byte> s_windowProviderCreateWindowAtomName => new byte[] {
+        private static ReadOnlySpan<byte> WindowProviderCreateWindowAtomName => new byte[] {
             0x54,
             0x65,
             0x72,
@@ -154,7 +189,7 @@ namespace TerraFX.Provider.Xlib.UI
         };
 
         // TerraFX.Provider.Xlib.UI.Window.WindowProvider
-        private static ReadOnlySpan<byte> s_windowWindowProviderAtomName => new byte[] {
+        private static ReadOnlySpan<byte> WindowWindowProviderAtomName => new byte[] {
             0x54,
             0x65,
             0x72,
@@ -205,7 +240,7 @@ namespace TerraFX.Provider.Xlib.UI
         };
 
         // WM_PROTOCOLS
-        private static ReadOnlySpan<byte> s_wmProtocolsAtomName => new byte[] {
+        private static ReadOnlySpan<byte> WmProtocolsAtomName => new byte[] {
             0x57,
             0x4D,
             0x5F,
@@ -222,7 +257,7 @@ namespace TerraFX.Provider.Xlib.UI
         };
 
         // WM_DELETE_WINDOW
-        private static ReadOnlySpan<byte> s_wmDeleteWindowAtomName => new byte[] {
+        private static ReadOnlySpan<byte> WmDeleteWindowAtomName => new byte[] {
             0x57,
             0x4D,
             0x5F,
@@ -241,40 +276,6 @@ namespace TerraFX.Provider.Xlib.UI
             0x57,
             0x00
         };
-
-        private readonly Lazy<UIntPtr> _dispatcherExitRequestedAtom;
-        private readonly ConcurrentDictionary<Thread, IDispatcher> _dispatchers;
-        private readonly Lazy<UIntPtr> _display;
-        private readonly Lazy<UIntPtr> _systemIntPtrAtom;
-        private readonly Lazy<UIntPtr> _windowProviderCreateWindowAtom;
-        private readonly Lazy<UIntPtr> _windowWindowProviderAtom;
-        private readonly Lazy<UIntPtr> _wmProtocolsAtom;
-        private readonly Lazy<UIntPtr> _wmDeleteWindowAtom;
-
-        private State _state;
-
-        /// <summary>Initializes a new instance of the <see cref="DispatchProvider" /> class.</summary>
-        [ImportingConstructor]
-        public DispatchProvider()
-        {
-            _display = new Lazy<UIntPtr>(CreateDisplay, isThreadSafe: true);
-            _dispatchers = new ConcurrentDictionary<Thread, IDispatcher>();
-
-            _dispatcherExitRequestedAtom = new Lazy<UIntPtr>(CreateDispatcherExitRequestedAtom, isThreadSafe: true);
-            _systemIntPtrAtom = new Lazy<UIntPtr>(CreateSystemIntPtrAtom, isThreadSafe: true);
-            _windowProviderCreateWindowAtom = new Lazy<UIntPtr>(CreateWindowProviderCreateWindowAtom, isThreadSafe: true);
-            _windowWindowProviderAtom = new Lazy<UIntPtr>(CreateWindowWindowProviderAtom, isThreadSafe: true);
-            _wmProtocolsAtom = new Lazy<UIntPtr>(CreateWmProtocolsAtom, isThreadSafe: true);
-            _wmDeleteWindowAtom = new Lazy<UIntPtr>(CreateWmDeleteWindowAtom, isThreadSafe: true);
-
-            _ = _state.Transition(to: Initialized);
-        }
-
-        /// <summary>Finalizes an instance of the <see cref="DispatchProvider" /> class.</summary>
-        ~DispatchProvider()
-        {
-            Dispose(isDisposing: false);
-        }
 
         /// <summary>Gets the current <see cref="Timestamp" /> for the instance.</summary>
         /// <exception cref="ExternalException">The call to <see cref="clock_gettime(int, timespec*)" /> failed.</exception>
@@ -414,6 +415,23 @@ namespace TerraFX.Provider.Xlib.UI
             return _dispatchers.TryGetValue(thread, out dispatcher!);
         }
 
+        private static DispatchProvider CreateDispatchProvider() => new DispatchProvider();
+
+        private static int HandleXlibError(UIntPtr display, XErrorEvent* errorEvent)
+        {
+            // Due to the asynchronous nature of Xlib, there can be a race between
+            // the window being deleted and it being unmapped. This ignores the warning
+            // raised by the unmap event in that scenario, as the call to XGetWindowProperty
+            // will fail.
+
+            if ((errorEvent->error_code != BadWindow) || (errorEvent->request_code != X_GetProperty))
+            {
+                ThrowExternalException(nameof(XErrorHandler), errorEvent->error_code);
+            }
+
+            return 0;
+        }
+
         private static UIntPtr CreateDisplay()
         {
             var display = XOpenDisplay(display_name: null);
@@ -422,6 +440,7 @@ namespace TerraFX.Provider.Xlib.UI
             {
                 ThrowExternalExceptionForLastError(nameof(XOpenDisplay));
             }
+            _ = XSetErrorHandler(s_errorHandler);
 
             return display;
         }
@@ -430,7 +449,7 @@ namespace TerraFX.Provider.Xlib.UI
         {
             var atom = XInternAtom(
                 Display,
-                atom_name: (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in s_dispatcherExitRequestedAtomName[0])),
+                atom_name: (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in DispatcherExitRequestedAtomName[0])),
                 only_if_exists: False
             );
 
@@ -446,7 +465,7 @@ namespace TerraFX.Provider.Xlib.UI
         {
             var atom = XInternAtom(
                 Display,
-                atom_name: (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in s_systemIntPtrAtomName[0])),
+                atom_name: (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in SystemIntPtrAtomName[0])),
                 only_if_exists: False
             );
 
@@ -462,7 +481,7 @@ namespace TerraFX.Provider.Xlib.UI
         {
             var atom = XInternAtom(
                 Display,
-                atom_name: (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in s_windowProviderCreateWindowAtomName[0])),
+                atom_name: (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in WindowProviderCreateWindowAtomName[0])),
                 only_if_exists: False
             );
 
@@ -478,7 +497,7 @@ namespace TerraFX.Provider.Xlib.UI
         {
             var atom = XInternAtom(
                 Display,
-                atom_name: (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in s_windowWindowProviderAtomName[0])),
+                atom_name: (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in WindowWindowProviderAtomName[0])),
                 only_if_exists: False
             );
 
@@ -494,7 +513,7 @@ namespace TerraFX.Provider.Xlib.UI
         {
             var atom = XInternAtom(
                 Display,
-                atom_name: (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in s_wmProtocolsAtomName[0])),
+                atom_name: (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in WmProtocolsAtomName[0])),
                 only_if_exists: False
             );
 
@@ -510,7 +529,7 @@ namespace TerraFX.Provider.Xlib.UI
         {
             var atom = XInternAtom(
                 Display,
-                atom_name: (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in s_wmDeleteWindowAtomName[0])),
+                atom_name: (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in WmDeleteWindowAtomName[0])),
                 only_if_exists: False
             );
 
@@ -526,7 +545,7 @@ namespace TerraFX.Provider.Xlib.UI
         {
             var priorState = _state.BeginDispose();
 
-            if (priorState < Disposing) // (previousState != Disposing) && (previousState != Disposed)
+            if (priorState < Disposing)
             {
                 DisposeDisplay();
             }
@@ -540,6 +559,7 @@ namespace TerraFX.Provider.Xlib.UI
 
             if (_display.IsValueCreated)
             {
+                _ = XSetErrorHandler(IntPtr.Zero);
                 _ = XCloseDisplay(_display.Value);
             }
         }

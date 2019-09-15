@@ -77,7 +77,9 @@ namespace TerraFX.ApplicationModel
 
             _state.Transition(from: Stopped, to: Running);
             {
-                var dispatchProvider = _compositionHost.Value.GetExport<IDispatchProvider>();
+                var windowProvider = _compositionHost.Value.GetExport<IWindowProvider>();
+
+                var dispatchProvider = windowProvider.DispatchProvider;
                 var dispatcher = dispatchProvider.DispatcherForCurrentThread;
                 var previousTimestamp = dispatchProvider.CurrentTimestamp;
 
@@ -108,7 +110,7 @@ namespace TerraFX.ApplicationModel
         {
             var priorState = _state.BeginDispose();
 
-            if (priorState < Disposing) // (previousState != Disposing) && (previousState != Disposed)
+            if (priorState < Disposing)
             {
                 _compositionHost?.Dispose();
             }

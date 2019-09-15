@@ -6,7 +6,6 @@ using System.Threading;
 using TerraFX.Collections;
 using TerraFX.Graphics;
 using TerraFX.Graphics.Geometry2D;
-using TerraFX.Interop;
 using TerraFX.Numerics;
 using TerraFX.UI;
 using TerraFX.Utilities;
@@ -39,6 +38,8 @@ namespace TerraFX.Provider.Win32.UI
 
         internal Window(WindowProvider windowProvider)
         {
+            Assert(windowProvider != null, Resources.ArgumentNullExceptionMessage, nameof(windowProvider));
+
             _handle = new Lazy<IntPtr>(CreateWindowHandle, isThreadSafe: true);
 
             _parentThread = Thread.CurrentThread;
@@ -112,7 +113,7 @@ namespace TerraFX.Provider.Win32.UI
 
         /// <summary>Activates the instance.</summary>
         /// <exception cref="ExternalException">The call to <see cref="SetForegroundWindow(IntPtr)" /> failed.</exception>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        /// <exception cref="ObjectDisposedException"><see cref="IsActive" /> was <c>false</c> but the instance has already been disposed.</exception>
         public void Activate()
         {
             var succeeded = TryActivate();
@@ -126,16 +127,14 @@ namespace TerraFX.Provider.Win32.UI
         /// <summary>Closes the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         /// <remarks>
-        /// <para>This method can be called from any thread.</para>
-        /// <para>This method does nothing if the underlying <c>HWND</c> has not been created.</para>
+        ///   <para>This method can be called from any thread.</para>
+        ///   <para>This method does nothing if the underlying <c>HWND</c> has not been created.</para>
         /// </remarks>
         public void Close()
         {
-            _state.ThrowIfDisposedOrDisposing();
-
             if (_handle.IsValueCreated)
             {
-                _ = SendMessage(_handle.Value, WM_CLOSE, wParam: UIntPtr.Zero, lParam: IntPtr.Zero);
+                _ = SendMessage(Handle, WM_CLOSE, wParam: UIntPtr.Zero, lParam: IntPtr.Zero);
             }
         }
 
@@ -143,100 +142,94 @@ namespace TerraFX.Provider.Win32.UI
         /// <param name="bufferCount">The number of buffers created for the instance.</param>
         /// <returns>A new <see cref="IGraphicsSurface" /> for the instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="bufferCount" /> is less than or equal to zero.</exception>
-        public IGraphicsSurface CreateGraphicsSurface(int bufferCount) => new GraphicsSurface(this, bufferCount);
+        public IGraphicsSurface CreateGraphicsSurface(int bufferCount)
+        {
+            if (bufferCount <= 0)
+            {
+                ThrowArgumentOutOfRangeException(nameof(bufferCount), bufferCount);
+            }
+
+            return new GraphicsSurface(this, bufferCount);
+        }
 
         /// <summary>Disables the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        /// <exception cref="ObjectDisposedException"><see cref="IsEnabled" /> was <c>true</c> but the instance has already been disposed.</exception>
         public void Disable()
         {
-            _state.ThrowIfDisposedOrDisposing();
-
             if (_isEnabled)
             {
-                _ = EnableWindow(_handle.Value, FALSE);
+                _ = EnableWindow(Handle, FALSE);
             }
         }
 
         /// <summary>Enables the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        /// <exception cref="ObjectDisposedException"><see cref="IsEnabled" /> was <c>false</c> but the instance has already been disposed.</exception>
         public void Enable()
         {
-            _state.ThrowIfDisposedOrDisposing();
-
             if (_isEnabled == false)
             {
-                _ = EnableWindow(_handle.Value, TRUE);
+                _ = EnableWindow(Handle, TRUE);
             }
         }
 
         /// <summary>Hides the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        /// <exception cref="ObjectDisposedException"><see cref="IsVisible" /> was <c>true</c> but the instance has already been disposed.</exception>
         public void Hide()
         {
-            _state.ThrowIfDisposedOrDisposing();
-
             if (_isVisible)
             {
-                _ = ShowWindow(_handle.Value, SW_HIDE);
+                _ = ShowWindow(Handle, SW_HIDE);
             }
         }
 
         /// <summary>Maximizes the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Maximized" /> but the instance has already been disposed.</exception>
         public void Maximize()
         {
-            _state.ThrowIfDisposedOrDisposing();
-
             if (_windowState != WindowState.Maximized)
             {
-                _ = ShowWindow(_handle.Value, SW_MAXIMIZE);
+                _ = ShowWindow(Handle, SW_MAXIMIZE);
             }
         }
 
         /// <summary>Minimizes the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Minimized" /> but the instance has already been disposed.</exception>
         public void Minimize()
         {
-            _state.ThrowIfDisposedOrDisposing();
-
             if (_windowState != WindowState.Minimized)
             {
-                _ = ShowWindow(_handle.Value, SW_MINIMIZE);
+                _ = ShowWindow(Handle, SW_MINIMIZE);
             }
         }
 
         /// <summary>Restores the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Restored" /> but the instance has already been disposed.</exception>
         public void Restore()
         {
-            _state.ThrowIfDisposedOrDisposing();
-
             if (_windowState != WindowState.Restored)
             {
-                _ = ShowWindow(_handle.Value, SW_RESTORE);
+                _ = ShowWindow(Handle, SW_RESTORE);
             }
         }
 
         /// <summary>Shows the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        /// <exception cref="ObjectDisposedException"><see cref="IsVisible" /> was <c>false</c> but the instance has already been disposed.</exception>
         public void Show()
         {
-            _state.ThrowIfDisposedOrDisposing();
-
             if (_isVisible == false)
             {
-                _ = ShowWindow(_handle.Value, SW_SHOW);
+                _ = ShowWindow(Handle, SW_SHOW);
             }
         }
 
         /// <summary>Tries to activate the instance.</summary>
         /// <returns><c>true</c> if the instance was succesfully activated; otherwise, <c>false</c>.</returns>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        /// <exception cref="ObjectDisposedException"><see cref="IsActive" /> was <c>false</c> but the instance has already been disposed.</exception>
         public bool TryActivate()
         {
             _state.ThrowIfDisposedOrDisposing();
 
-            return _isActive || (SetForegroundWindow(_handle.Value) != FALSE);
+            return _isActive || (SetForegroundWindow(Handle) != FALSE);
         }
 
         internal IntPtr ProcessWindowMessage(uint msg, UIntPtr wParam, IntPtr lParam)
@@ -292,75 +285,19 @@ namespace TerraFX.Provider.Win32.UI
             }
         }
 
-        private static Rectangle GetWindowBounds(IntPtr handle)
-        {
-            RECT rect;
-            var succeeded = GetWindowRect(handle, &rect);
-
-            if (succeeded == FALSE)
-            {
-                ThrowExternalExceptionForLastError(nameof(GetWindowRect));
-            }
-
-            return new Rectangle(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
-        }
-
-        private static bool IsWindowActive(IntPtr handle)
-        {
-            var activeWindow = GetActiveWindow();
-            return activeWindow == handle;
-        }
-
         private IntPtr CreateWindowHandle()
         {
             _state.AssertNotDisposedOrDisposing();
 
             IntPtr hWnd;
 
-            var windowStyle = WS_OVERLAPPEDWINDOW;
-
-            if (_windowState == WindowState.Minimized)
-            {
-                windowStyle |= WS_MAXIMIZE;
-            }
-            else if (_windowState == WindowState.Maximized)
-            {
-                windowStyle |= WS_MINIMIZE;
-            }
-            else
-            {
-                Assert(_windowState == WindowState.Restored, Resources.ArgumentOutOfRangeExceptionMessage, nameof(WindowState), _windowState);
-            }
-
-            if (_isEnabled == false)
-            {
-                windowStyle |= WS_DISABLED;
-            }
-
-            if (_isVisible)
-            {
-                windowStyle |= WS_VISIBLE;
-            }
-
-            var windowStyleEx = WS_EX_OVERLAPPEDWINDOW;
-
-            if (_flowDirection == FlowDirection.RightToLeft)
-            {
-                windowStyleEx |= WS_EX_LAYOUTRTL;
-            }
-
-            if (_readingDirection == ReadingDirection.RightToLeft)
-            {
-                windowStyleEx |= WS_EX_RIGHT | WS_EX_RTLREADING | WS_EX_LEFTSCROLLBAR;
-            }
-
             fixed (char* lpWindowName = _title)
             {
                 hWnd = CreateWindowEx(
-                    windowStyleEx,
+                    WS_EX_OVERLAPPEDWINDOW,
                     (char*)_windowProvider.ClassAtom,
                     lpWindowName,
-                    windowStyle,
+                    WS_OVERLAPPEDWINDOW,
                     X: float.IsNaN(Bounds.X) ? CW_USEDEFAULT : (int)Bounds.X,
                     Y: float.IsNaN(Bounds.Y) ? CW_USEDEFAULT : (int)Bounds.Y,
                     nWidth: float.IsNaN(Bounds.Width) ? CW_USEDEFAULT : (int)Bounds.Width,
@@ -384,7 +321,7 @@ namespace TerraFX.Provider.Win32.UI
         {
             var priorState = _state.BeginDispose();
 
-            if (priorState < Disposing) // (previousState != Disposing) && (previousState != Disposed)
+            if (priorState < Disposing)
             {
                 // We are only allowed to dispose of the window handle from the parent
                 // thread. So, if we are on the wrong thread, we will close the window
@@ -473,7 +410,7 @@ namespace TerraFX.Provider.Win32.UI
 
         private IntPtr HandleWmSetText(UIntPtr wParam, IntPtr lParam)
         {
-            var result = DefWindowProc(_handle.Value, WM_SETTEXT, wParam, lParam);
+            var result = DefWindowProc(Handle, WM_SETTEXT, wParam, lParam);
 
             if (result == (IntPtr)TRUE)
             {

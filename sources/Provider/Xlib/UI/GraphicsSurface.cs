@@ -3,7 +3,8 @@
 using System;
 using TerraFX.Graphics;
 using TerraFX.Numerics;
-using static TerraFX.Utilities.ExceptionUtilities;
+using TerraFX.Utilities;
+using static TerraFX.Utilities.AssertionUtilities;
 
 namespace TerraFX.Provider.Xlib.UI
 {
@@ -15,10 +16,8 @@ namespace TerraFX.Provider.Xlib.UI
 
         internal GraphicsSurface(Window window, int bufferCount)
         {
-            if (bufferCount <= 0)
-            {
-                ThrowArgumentOutOfRangeException(nameof(bufferCount), bufferCount);
-            }
+            Assert(window != null, Resources.ArgumentNullExceptionMessage, nameof(bufferCount));
+            Assert(bufferCount <= 0, Resources.ArgumentOutOfRangeExceptionMessage, nameof(bufferCount), bufferCount);
 
             _window = window;
             _bufferCount = bufferCount;
@@ -27,14 +26,14 @@ namespace TerraFX.Provider.Xlib.UI
         /// <summary>Gets the number of buffers for the instance.</summary>
         public int BufferCount => _bufferCount;
 
+        /// <summary>Gets the display handle for the instance.</summary>
+        public IntPtr DisplayHandle => (IntPtr)(void*)DispatchProvider.Instance.Display;
+
         /// <summary>Gets the kind of surface represented by the instance.</summary>
         public GraphicsSurfaceKind Kind => GraphicsSurfaceKind.Xlib;
 
         /// <summary>Gets the size of the instance.</summary>
         public Vector2 Size => _window.Bounds.Size;
-
-        /// <summary>Gets the window provider handle for the instance.</summary>
-        public IntPtr WindowProviderHandle => (IntPtr)(void*)((WindowProvider)_window.WindowProvider).DispatchProvider.Display;
 
         /// <summary>Gets the window handle for the instance.</summary>
         public IntPtr WindowHandle => (IntPtr)(void*)_window.Handle;

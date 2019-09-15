@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Composition;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -15,21 +14,21 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.Provider.Win32.UI
 {
     /// <summary>Provides access to a Win32 based dispatch subsystem.</summary>
-    [Export(typeof(IDispatchProvider))]
-    [Export(typeof(DispatchProvider))]
-    [Shared]
     public sealed unsafe class DispatchProvider : IDispatchProvider
     {
+        private static readonly Lazy<DispatchProvider> s_instance = new Lazy<DispatchProvider>(CreateDispatchProvider, isThreadSafe: true);
+
         private readonly double _tickFrequency;
         private readonly ConcurrentDictionary<Thread, IDispatcher> _dispatchers;
 
-        /// <summary>Initializes a new instance of the <see cref="DispatchProvider" /> class.</summary>
-        /// <exception cref="ExternalException">The call to <see cref="QueryPerformanceFrequency(LARGE_INTEGER*)" /> failed.</exception>
-        public DispatchProvider()
+        private DispatchProvider()
         {
             _tickFrequency = GetTickFrequency();
             _dispatchers = new ConcurrentDictionary<Thread, IDispatcher>();
         }
+
+        /// <summary>Gets the <see cref="DispatchProvider" /> instance for the current program.</summary>
+        public static DispatchProvider Instance => s_instance.Value;
 
         /// <summary>Gets the current <see cref="Timestamp" /> for the instance.</summary>
         /// <exception cref="ExternalException">The call to <see cref="QueryPerformanceCounter(LARGE_INTEGER*)" /> failed.</exception>
@@ -77,6 +76,8 @@ namespace TerraFX.Provider.Win32.UI
             return _dispatchers.TryGetValue(thread, out dispatcher!);
         }
 
+        private static DispatchProvider CreateDispatchProvider() => new DispatchProvider();
+
         private static double GetTickFrequency()
         {
             LARGE_INTEGER frequency;
@@ -87,8 +88,8 @@ namespace TerraFX.Provider.Win32.UI
                 ThrowExternalExceptionForLastError(nameof(QueryPerformanceFrequency));
             }
 
-            const double ticksPerSecond = Timestamp.TicksPerSecond;
-            return ticksPerSecond / frequency.QuadPart;
+            const double TicksPerSecond = Timestamp.TicksPerSecond;
+            return TicksPerSecond / frequency.QuadPart;
         }
     }
 }

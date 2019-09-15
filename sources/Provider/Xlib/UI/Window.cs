@@ -37,6 +37,8 @@ namespace TerraFX.Provider.Xlib.UI
 
         internal Window(WindowProvider windowProvider)
         {
+            Assert(windowProvider != null, Resources.ArgumentNullExceptionMessage, nameof(windowProvider));
+
             _handle = new Lazy<UIntPtr>(CreateWindowHandle, isThreadSafe: true);
 
             _parentThread = Thread.CurrentThread;
@@ -109,8 +111,8 @@ namespace TerraFX.Provider.Xlib.UI
         }
 
         /// <summary>Activates the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         /// <exception cref="ExternalException">The call to <see cref="XRaiseWindow(UIntPtr, UIntPtr)" /> failed.</exception>
+        /// <exception cref="ObjectDisposedException"><see cref="IsActive" /> was <c>false</c> but the instance has already been disposed.</exception>
         public void Activate()
         {
             var succeeded = TryActivate();
@@ -122,19 +124,17 @@ namespace TerraFX.Provider.Xlib.UI
         }
 
         /// <summary>Closes the instance.</summary>
-        /// <exception cref="ExternalException">The call to <see cref="XSendEvent(UIntPtr, UIntPtr, int, IntPtr, XEvent*)" /> failed.</exception>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="XSendEvent(UIntPtr, UIntPtr, int, IntPtr, XEvent*)" /> failed.</exception>
         /// <remarks>
         ///   <para>This method can be called from any thread.</para>
         ///   <para>This method does nothing if the underlying <c>HWND</c> has not been created.</para>
         /// </remarks>
         public void Close()
         {
-            _state.ThrowIfDisposedOrDisposing();
-
             if (_handle.IsValueCreated)
             {
-                var dispatchProvider = _windowProvider.DispatchProvider;
+                var dispatchProvider = DispatchProvider.Instance;
 
                 var clientEvent = new XClientMessageEvent {
                     type = ClientMessage,
@@ -166,73 +166,71 @@ namespace TerraFX.Provider.Xlib.UI
         /// <param name="bufferCount">The number of buffers created for the instance.</param>
         /// <returns>A new <see cref="IGraphicsSurface" /> for the instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="bufferCount" /> is less than or equal to zero.</exception>
-        public IGraphicsSurface CreateGraphicsSurface(int bufferCount) => new GraphicsSurface(this, bufferCount);
+        public IGraphicsSurface CreateGraphicsSurface(int bufferCount)
+        {
+            if (bufferCount <= 0)
+            {
+                ThrowArgumentOutOfRangeException(nameof(bufferCount), bufferCount);
+            }
+
+            return new GraphicsSurface(this, bufferCount);
+        }
 
         /// <summary>Disables the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        /// <exception cref="ObjectDisposedException"><see cref="IsEnabled" /> was <c>true</c> but the instance has already been disposed.</exception>
         public void Disable()
         {
-            _state.ThrowIfDisposedOrDisposing();
-
             if (_isEnabled)
             {
-                var display = _windowProvider.DispatchProvider.Display;
                 var wmHints = new XWMHints {
                     flags = (IntPtr)InputHint,
                     input = False
                 };
 
-                _ = XSetWMHints(display, _handle.Value, &wmHints);
+                _ = XSetWMHints(DispatchProvider.Instance.Display, Handle, &wmHints);
                 _isEnabled = false;
             }
         }
 
         /// <summary>Enables the instance.</summary>
         /// <exception cref="ExternalException">The call to <see cref="XGetWMHints(UIntPtr, UIntPtr)" /> failed.</exception>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        /// <exception cref="ObjectDisposedException"><see cref="IsEnabled" /> was <c>false</c> but the instance has already been disposed.</exception>
         public void Enable()
         {
-            _state.ThrowIfDisposedOrDisposing();
-
             if (_isEnabled == false)
             {
-                var display = _windowProvider.DispatchProvider.Display;
                 var wmHints = new XWMHints {
                     flags = (IntPtr)InputHint,
                     input = True
                 };
 
-                _ = XSetWMHints(display, _handle.Value, &wmHints);
+                _ = XSetWMHints(DispatchProvider.Instance.Display, Handle, &wmHints);
                 _isEnabled = true;
             }
         }
 
         /// <summary>Hides the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        /// <exception cref="ObjectDisposedException"><see cref="IsVisible" /> was <c>true</c> but the instance has already been disposed.</exception>
         public void Hide()
         {
-            _state.ThrowIfDisposedOrDisposing();
-
             if (_isVisible)
             {
-                var display = _windowProvider.DispatchProvider.Display;
-                _ = XUnmapWindow(display, _handle.Value);
+                _ = XUnmapWindow(DispatchProvider.Instance.Display, Handle);
             }
         }
 
         /// <summary>Maximizes the instance.</summary>
         /// <exception cref="ExternalException">The call to <see cref="XGetWindowAttributes(UIntPtr, UIntPtr, XWindowAttributes*)" /> failed.</exception>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Maximized" /> but the instance has already been disposed.</exception>
         public void Maximize()
         {
-            _state.ThrowIfDisposedOrDisposing();
-
             if (_windowState != WindowState.Maximized)
             {
-                var display = _windowProvider.DispatchProvider.Display;
+                var display = DispatchProvider.Instance.Display;
+                var handle = Handle;
 
                 XWindowAttributes windowAttributes;
-                var status = XGetWindowAttributes(display, _handle.Value, &windowAttributes);
+                var status = XGetWindowAttributes(display, handle, &windowAttributes);
 
                 if (status != Success)
                 {
@@ -244,7 +242,7 @@ namespace TerraFX.Provider.Xlib.UI
                 var screenWidth = XWidthOfScreen(windowAttributes.screen);
                 var screenHeight = XHeightOfScreen(windowAttributes.screen);
 
-                _ = XMoveResizeWindow(display, _handle.Value, 0, 0, (uint)screenWidth, (uint)screenHeight);
+                _ = XMoveResizeWindow(display, handle, 0, 0, (uint)screenWidth, (uint)screenHeight);
                 _windowState = WindowState.Maximized;
             }
         }
@@ -252,17 +250,16 @@ namespace TerraFX.Provider.Xlib.UI
         /// <summary>Minimizes the instance.</summary>
         /// <exception cref="ExternalException">The call to <see cref="XGetWindowAttributes(UIntPtr, UIntPtr, XWindowAttributes*)" /> failed.</exception>
         /// <exception cref="ExternalException">The call to <see cref="XIconifyWindow(UIntPtr, UIntPtr, int)" /> failed.</exception>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Minimized" /> but the instance has already been disposed.</exception>
         public void Minimize()
         {
-            _state.ThrowIfDisposedOrDisposing();
-
             if (_windowState != WindowState.Minimized)
             {
-                var display = _windowProvider.DispatchProvider.Display;
+                var display = DispatchProvider.Instance.Display;
+                var handle = Handle;
 
                 XWindowAttributes windowAttributes;
-                var status = XGetWindowAttributes(display, _handle.Value, &windowAttributes);
+                var status = XGetWindowAttributes(display, handle, &windowAttributes);
 
                 if (status != Success)
                 {
@@ -271,7 +268,7 @@ namespace TerraFX.Provider.Xlib.UI
 
                 var screenNumber = XScreenNumberOfScreen(windowAttributes.screen);
 
-                status = XIconifyWindow(display, _handle.Value, screenNumber);
+                status = XIconifyWindow(display, handle, screenNumber);
 
                 if (status == 0)
                 {
@@ -283,17 +280,14 @@ namespace TerraFX.Provider.Xlib.UI
         }
 
         /// <summary>Restores the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Restored" /> but the instance has already been disposed.</exception>
         public void Restore()
         {
-            _state.ThrowIfDisposedOrDisposing();
-
             if (_windowState != WindowState.Restored)
             {
                 if (_windowState == WindowState.Maximized)
                 {
-                    var display = _windowProvider.DispatchProvider.Display;
-                    _ = XMoveResizeWindow(display, _handle.Value, (int)_restoredBounds.X, (int)_restoredBounds.Y, (uint)_restoredBounds.Width, (uint)_restoredBounds.Height);
+                    _ = XMoveResizeWindow(DispatchProvider.Instance.Display, Handle, (int)_restoredBounds.X, (int)_restoredBounds.Y, (uint)_restoredBounds.Width, (uint)_restoredBounds.Height);
                 }
 
                 Show();
@@ -302,31 +296,24 @@ namespace TerraFX.Provider.Xlib.UI
         }
 
         /// <summary>Shows the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        /// <exception cref="ObjectDisposedException"><see cref="IsVisible" /> was <c>false</c> but the instance has already been disposed.</exception>
         public void Show()
         {
-            _state.ThrowIfDisposedOrDisposing();
-
             if (_isVisible == false)
             {
-                var display = _windowProvider.DispatchProvider.Display;
-                _ = XMapWindow(display, _handle.Value);
-
+                _ = XMapWindow(DispatchProvider.Instance.Display, Handle);
                 _ = TryActivate();
             }
         }
 
         /// <summary>Tries to activate the instance.</summary>
         /// <returns><c>true</c> if the instance was succesfully activated; otherwise, <c>false</c>.</returns>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        /// <exception cref="ObjectDisposedException"><see cref="IsActive" /> was <c>false</c> but the instance has already been disposed.</exception>
         public bool TryActivate()
         {
-            _state.ThrowIfDisposedOrDisposing();
-
             if (_isActive == false)
             {
-                var display = _windowProvider.DispatchProvider.Display;
-                _ = XRaiseWindow(display, _handle.Value);
+                _ = XRaiseWindow(DispatchProvider.Instance.Display, Handle);
             }
 
             return true;
@@ -374,7 +361,7 @@ namespace TerraFX.Provider.Xlib.UI
         {
             _state.AssertNotDisposedOrDisposing();
 
-            var dispatchProvider = _windowProvider.DispatchProvider;
+            var dispatchProvider = DispatchProvider.Instance;
             var display = dispatchProvider.Display;
 
             var defaultScreen = XDefaultScreenOfDisplay(display);
@@ -390,12 +377,12 @@ namespace TerraFX.Provider.Xlib.UI
                 float.IsNaN(Bounds.Y) ? (int)(screenHeight * 0.125f) : (int)Bounds.Y,
                 float.IsNaN(Bounds.Width) ? (uint)(screenWidth * 0.75f) : (uint)Bounds.Width,
                 float.IsNaN(Bounds.Height) ? (uint)(screenHeight * 0.75f) : (uint)Bounds.Height,
-                0,
-                CopyFromParent,
-                InputOutput,
+                border_width: 0,
+                depth :CopyFromParent,
+                c_class: InputOutput,
                 (Visual*)CopyFromParent,
-                UIntPtr.Zero,
-                null
+                valuemask: UIntPtr.Zero,
+                attributes: null
             );
 
             if (window == (UIntPtr)None)
@@ -408,6 +395,14 @@ namespace TerraFX.Provider.Xlib.UI
                 window,
                 (IntPtr)(VisibilityChangeMask | StructureNotifyMask)
             );
+
+            var wmDeleteWindowAtom = dispatchProvider.WmDeleteWindowAtom;
+            var status = XSetWMProtocols(display, window, &wmDeleteWindowAtom, count: 1);
+
+            if (status == 0)
+            {
+                ThrowExternalException(nameof(XSetWMProtocols), status);
+            }
 
             var clientEvent = new XClientMessageEvent {
                 type = ClientMessage,
@@ -435,7 +430,7 @@ namespace TerraFX.Provider.Xlib.UI
                 clientEvent.data.l[1] = (IntPtr)bits;
             }
 
-            var status = XSendEvent(
+            status = XSendEvent(
                 clientEvent.display,
                 clientEvent.window,
                 propagate: False,
@@ -455,7 +450,7 @@ namespace TerraFX.Provider.Xlib.UI
         {
             var priorState = _state.BeginDispose();
 
-            if (priorState < Disposing) // (previousState != Disposing) && (previousState != Disposed)
+            if (priorState < Disposing)
             {
                 // We are only allowed to dispose of the window handle from the parent
                 // thread. So, if we are on the wrong thread, we will close the window
@@ -481,21 +476,15 @@ namespace TerraFX.Provider.Xlib.UI
 
             if (_handle.IsValueCreated)
             {
-                // TODO: This fails due to ObjectDisposedException if the application terminates
-                // due to the application disposing.
-                //
-                // var display = _windowProvider.DispatchProvider.Display;
-                // _ = XDestroyWindow(display, _handle.Value);
+                _ = XDestroyWindow(DispatchProvider.Instance.Display, _handle.Value);
             }
         }
 
         private void HandleXClientMessage(XClientMessageEvent* xclientMessage, bool isWmProtocolsEvent)
         {
-            var dispatchProvider = _windowProvider.DispatchProvider;
-
             if (isWmProtocolsEvent)
             {
-                if (xclientMessage->data.l[0] == (IntPtr)(void*)dispatchProvider.WmDeleteWindowAtom)
+                if (xclientMessage->data.l[0] == (IntPtr)(void*)DispatchProvider.Instance.WmDeleteWindowAtom)
                 {
                     // If we are already disposing, then Dispose is happening on some other thread
                     // and Close was called in order for us to continue disposal on the parent thread.
