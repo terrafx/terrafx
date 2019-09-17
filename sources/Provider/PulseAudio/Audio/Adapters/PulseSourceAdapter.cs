@@ -30,6 +30,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
                     IsBigEndian = false;
                     break;
                 }
+
                 case pa_sample_format.PA_SAMPLE_S16LE:
                 case pa_sample_format.PA_SAMPLE_S16BE:
                 {
@@ -39,6 +40,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
                     IsBigEndian = format == pa_sample_format.PA_SAMPLE_S16BE;
                     break;
                 }
+
                 case pa_sample_format.PA_SAMPLE_FLOAT32LE:
                 case pa_sample_format.PA_SAMPLE_FLOAT32BE:
                 {
@@ -49,6 +51,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
                     IsFloatingPoint = true;
                     break;
                 }
+
                 case pa_sample_format.PA_SAMPLE_S32LE:
                 case pa_sample_format.PA_SAMPLE_S32BE:
                 {
@@ -59,6 +62,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
                     IsFloatingPoint = false;
                     break;
                 }
+
                 case pa_sample_format.PA_SAMPLE_S24LE:
                 case pa_sample_format.PA_SAMPLE_S24BE:
                 {
@@ -69,6 +73,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
                     IsFloatingPoint = false;
                     break;
                 }
+
                 case pa_sample_format.PA_SAMPLE_S24_32LE:
                 case pa_sample_format.PA_SAMPLE_S24_32BE:
                 {
@@ -79,6 +84,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
                     IsFloatingPoint = false;
                     break;
                 }
+
                 case pa_sample_format.PA_SAMPLE_MAX:
                 case pa_sample_format.PA_SAMPLE_INVALID:
                 default:
