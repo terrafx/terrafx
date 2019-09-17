@@ -2,6 +2,7 @@
 
 using System;
 using System.Composition;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -109,7 +110,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
             }
         }
 
-        // Runs an iteration of the main loop. Returns true to indicate continuation.
+        // Runs an iteration of the main loop. Returns true to indicate exit request.
         private unsafe bool RunMainLoopIteration()
         {
             int retval = 0;
@@ -122,10 +123,10 @@ namespace TerraFX.Provider.PulseAudio.Audio
                     ThrowExternalException(nameof(RunMainLoopIteration), status);
                 }
 
-                return false;
+                return true;
             }
 
-            return true;
+            return false;
         }
 
         private async Task WaitForState(pa_context_state desired)
@@ -179,6 +180,21 @@ namespace TerraFX.Provider.PulseAudio.Audio
             }
         }
 
+        // Small helper class to explicitly capture state for EnumerateAudioDevices
+        // Using a class to avoid boxing/unboxing a value type and potentially mutating a copied instance
+        private unsafe class AudioDeviceEnumeratorHelper
+        {
+            public AudioDeviceEnumeratorHelper(PulseAudioAdapterEnumerable enumerable)
+            {
+                this.enumerable = enumerable;
+            }
+
+            public PulseAudioAdapterEnumerable enumerable;
+            public pa_operation* source_op;
+            public pa_operation* sink_op;
+            public int completed;
+        }
+
         /// <summary>
         /// Returns an enumerable which can be used to discover the input and output devices supported by PulseAudio
         /// </summary>
@@ -191,53 +207,59 @@ namespace TerraFX.Provider.PulseAudio.Audio
         /// </returns>
         public unsafe PulseAudioAdapterEnumerable EnumerateAudioDevices()
         {
-            PulseAudioAdapterEnumerable enumerable = null!;
-            pa_operation* source_op = null, sink_op = null;
-            int completed = 0;
+            AudioDeviceEnumeratorHelper helper = new AudioDeviceEnumeratorHelper(
+                new PulseAudioAdapterEnumerable(AddSourceDevice, AddSinkDevice));
+            var handle = GCHandle.Alloc(helper);
+            var userdata = (void*)GCHandle.ToIntPtr(handle);
 
-            enumerable = new PulseAudioAdapterEnumerable(
-                AddSourceDevice, AddSinkDevice);
+            helper.source_op = pa_context_get_source_info_list(Context, helper.enumerable.SourceCallback, userdata);
+            helper.sink_op = pa_context_get_sink_info_list(Context, helper.enumerable.SinkCallback, userdata);
 
-            source_op = pa_context_get_source_info_list(Context, enumerable.SourceCallback, null);
-            sink_op = pa_context_get_sink_info_list(Context, enumerable.SinkCallback, null);
-
-            void AddSourceDevice(pa_context* c, pa_source_info* i, int eol, void* userdata)
+            static void AddSourceDevice(pa_context* c, pa_source_info* i, int eol, void* userdata)
             {
+                var handle = GCHandle.FromIntPtr((IntPtr)userdata);
+                var helper = (AudioDeviceEnumeratorHelper)handle.Target!;
+
                 if (i != null)
                 {
-                    enumerable.Add(i);
+                    helper.enumerable.Add(i);
                 }
 
                 if (eol != 0)
                 {
-                    pa_operation_unref(source_op);
+                    pa_operation_unref(helper.source_op);
 
-                    if (Interlocked.Increment(ref completed) == 2)
+                    if (Interlocked.Increment(ref helper.completed) == 2)
                     {
-                        enumerable.Complete();
+                        helper.enumerable.Complete();
+                        handle.Free();
                     }
                 }
             }
 
-            void AddSinkDevice(pa_context* c, pa_sink_info* i, int eol, void* userdata)
+            static void AddSinkDevice(pa_context* c, pa_sink_info* i, int eol, void* userdata)
             {
+                var handle = GCHandle.FromIntPtr((IntPtr)userdata);
+                var helper = (AudioDeviceEnumeratorHelper)handle.Target!;
+
                 if (i != null)
                 {
-                    enumerable.Add(i);
+                    helper.enumerable.Add(i);
                 }
 
                 if (eol != 0)
                 {
-                    pa_operation_unref(sink_op);
+                    pa_operation_unref(helper.sink_op);
 
-                    if (Interlocked.Increment(ref completed) == 2)
+                    if (Interlocked.Increment(ref helper.completed) == 2)
                     {
-                        enumerable.Complete();
+                        helper.enumerable.Complete();
+                        handle.Free();
                     }
                 }
             }
 
-            return enumerable;
+            return helper.enumerable;
         }
 
         /// <inheritdoc/>

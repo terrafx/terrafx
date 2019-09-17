@@ -19,23 +19,35 @@ namespace TerraFX.Provider.PulseAudio.Audio
         // _completeSignal may be overwritten improperly causing a deadlock if multiple threads try
         // to call internal methods concurrently
 
-        private readonly LinkedList<IAudioAdapter> _backingCollection;
+        private readonly List<IAudioAdapter> _backingCollection;
 
         private TaskCompletionSource<bool> _completeSignal;
 
-        private readonly NativeDelegate<pa_source_info_cb_t> _sourceCallback;
-        private readonly NativeDelegate<pa_sink_info_cb_t> _sinkCallback;
+        // WORKAROUND: https://github.com/dotnet/roslyn/issues/38143
+        // 'static' local functions might not be emitted as static
 
-        internal IntPtr SourceCallback => _sourceCallback;
-        internal IntPtr SinkCallback => _sinkCallback;
+        //private readonly NativeDelegate<pa_source_info_cb_t> _sourceCallback;
+        //private readonly NativeDelegate<pa_sink_info_cb_t> _sinkCallback;
+        private readonly pa_source_info_cb_t _sourceCallback;
+        private readonly pa_sink_info_cb_t _sinkCallback;
+
+        internal IntPtr SourceCallback //=> _sourceCallback;
+            { get; }
+        internal IntPtr SinkCallback //=> _sinkCallback;
+            { get; }
 
         internal PulseAudioAdapterEnumerable(pa_source_info_cb_t sourceCallback, pa_sink_info_cb_t sinkCallback)
         {
-            _backingCollection = new LinkedList<IAudioAdapter>();
+            _backingCollection = new List<IAudioAdapter>(16);
             // Run continuations asynchronously so that we do not block the event loop thread and potentially deadlock
             _completeSignal = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-            _sourceCallback = new NativeDelegate<pa_source_info_cb_t>(sourceCallback);
-            _sinkCallback = new NativeDelegate<pa_sink_info_cb_t>(sinkCallback);
+            //_sourceCallback = new NativeDelegate<pa_source_info_cb_t>(sourceCallback);
+            //_sinkCallback = new NativeDelegate<pa_sink_info_cb_t>(sinkCallback);
+            _sourceCallback = sourceCallback;
+            _sinkCallback = sinkCallback;
+
+            SourceCallback = Marshal.GetFunctionPointerForDelegate(_sourceCallback);
+            SinkCallback = Marshal.GetFunctionPointerForDelegate(_sinkCallback);
         }
 
         private void SetCompleteSignal(bool value)
@@ -50,7 +62,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
         {
             var adapter = new PulseSourceAdapter(i);
 
-            _backingCollection.AddLast(adapter);
+            _backingCollection.Add(adapter);
             SetCompleteSignal(false);
         }
 
@@ -58,7 +70,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
         {
             var adapter = new PulseSinkAdapter(i);
 
-            _backingCollection.AddLast(adapter);
+            _backingCollection.Add(adapter);
             SetCompleteSignal(false);
         }
 
@@ -72,54 +84,42 @@ namespace TerraFX.Provider.PulseAudio.Audio
         /// <inheritdoc />
         public async IAsyncEnumerator<IAudioAdapter> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            var current = _backingCollection.First;
-            var done = false;
+            var complete = false;
 
-            while (current?.Next != null || !done)
+            for (int position = 0; !complete; position++)
             {
-                if (current == null)
+                if (position == _backingCollection.Count)
                 {
-                    done = await _completeSignal.Task;
-                    current = _backingCollection.First!;
+                    var done = await _completeSignal.Task;
+                    complete = position == _backingCollection.Count && done;
                 }
 
-                yield return current.Value;
-
-                if (current.Next == null)
+                if (!complete)
                 {
-                    done = await _completeSignal.Task;
+                    yield return _backingCollection[position];
                 }
-
-                current = current.Next;
             }
         }
 
         /// <inheritdoc />
         public IEnumerator<IAudioAdapter> GetEnumerator()
         {
-            var current = _backingCollection.First;
-            var done = false;
+            var complete = false;
 
-            while (current?.Next != null || !done)
+            for (int position = 0; !complete; position++)
             {
-                if (current == null)
+                if (position == _backingCollection.Count)
                 {
-                    var tsk = _completeSignal.Task;
-                    tsk.Wait();
-                    done = tsk.Result;
-                    current = _backingCollection.First!;
+                    var task = _completeSignal.Task;
+                    task.Wait();
+                    var done = task.Result;
+                    complete = position == _backingCollection.Count && done;
                 }
 
-                yield return current.Value;
-
-                if (current.Next == null)
+                if (!complete)
                 {
-                    var tsk = _completeSignal.Task;
-                    tsk.Wait();
-                    done = tsk.Result;
+                    yield return _backingCollection[position];
                 }
-
-                current = current.Next;
             }
         }
 
