@@ -96,7 +96,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
         }
 
         /// <inhertidoc />
-        public AudioDeviceType DeviceType { get; set; } = AudioDeviceType.Recording;
+        public AudioDeviceType DeviceType { get; set; } = AudioDeviceType.Playback;
 
         /// <inhertidoc />
         public string Name { get; set; }

@@ -12,6 +12,7 @@ using TerraFX.Interop;
 using TerraFX.Utilities;
 
 using static TerraFX.Interop.Pulse;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
@@ -116,6 +117,17 @@ namespace TerraFX.Provider.PulseAudio.Audio
 
                         exitRequested = RunMainLoopIteration();
                     }
+                    catch (Exception)
+                    {
+                        // Disconnect in case of an unhandled exception, so we're in a safe state to reconnect if the user wishes
+                        unsafe
+                        {
+                            pa_context_disconnect(Context);
+                        }
+                        _state.Transition(to: Initialized);
+
+                        throw;
+                    }
                     finally
                     {
                         _mainLoopMutex.Release();
@@ -127,6 +139,8 @@ namespace TerraFX.Provider.PulseAudio.Audio
         // Runs an iteration of the main loop. Returns true to indicate exit request.
         private unsafe bool RunMainLoopIteration()
         {
+            _state.AssertNotDisposedOrDisposing();
+
             int retval = 0;
             int status = pa_mainloop_iterate(MainLoop, 1, &retval);
 
@@ -168,6 +182,8 @@ namespace TerraFX.Provider.PulseAudio.Audio
         /// <inheritdoc/>
         public async ValueTask StopAsync(CancellationToken cancellationToken = default)
         {
+            _state.ThrowIfDisposedOrDisposing();
+
             if (_state.TryTransition(from: Running, to: Stopping) != Running)
             {
                 throw new InvalidOperationException("Provider cannot be stopped in this state");
@@ -228,8 +244,17 @@ namespace TerraFX.Provider.PulseAudio.Audio
         /// </returns>
         public unsafe PulseAudioAdapterEnumerable EnumerateAudioDevices()
         {
+            _state.ThrowIfDisposedOrDisposing();
+            if (_state != Running)
+            {
+                throw new InvalidOperationException("Cannot enumerate audio devices when not running");
+            }
+
+            Assert(_mainLoopThread != null, "Mainloop should not be null");
+
+            // Main loop thread is not null if running
             AudioDeviceEnumeratorHelper helper = new AudioDeviceEnumeratorHelper(
-                new PulseAudioAdapterEnumerable(AddSourceDevice, AddSinkDevice));
+                new PulseAudioAdapterEnumerable(_mainLoopThread!, AddSourceDevice, AddSinkDevice));
             var handle = GCHandle.Alloc(helper);
             var userdata = (void*)GCHandle.ToIntPtr(handle);
 

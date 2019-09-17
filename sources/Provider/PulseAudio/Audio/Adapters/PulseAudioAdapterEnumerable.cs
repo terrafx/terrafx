@@ -10,6 +10,8 @@ using TerraFX.Audio;
 using TerraFX.Interop;
 using TerraFX.Utilities;
 
+using static TerraFX.Utilities.ExceptionUtilities;
+
 namespace TerraFX.Provider.PulseAudio.Audio
 {
     /// <inheritdoc />
@@ -20,8 +22,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
         // to call internal methods concurrently
 
         private readonly List<IAudioAdapter> _backingCollection;
-
-        private TaskCompletionSource<bool> _completeSignal;
+        private readonly Thread _eventLoopThread;
 
         // WORKAROUND: https://github.com/dotnet/roslyn/issues/38143
         // 'static' local functions might not be emitted as static
@@ -31,20 +32,23 @@ namespace TerraFX.Provider.PulseAudio.Audio
         private readonly pa_source_info_cb_t _sourceCallback;
         private readonly pa_sink_info_cb_t _sinkCallback;
 
+        private TaskCompletionSource<bool> _completeSignal;
+
         internal IntPtr SourceCallback //=> _sourceCallback;
             { get; }
         internal IntPtr SinkCallback //=> _sinkCallback;
             { get; }
 
-        internal PulseAudioAdapterEnumerable(pa_source_info_cb_t sourceCallback, pa_sink_info_cb_t sinkCallback)
+        internal PulseAudioAdapterEnumerable(Thread eventLoopThread, pa_source_info_cb_t sourceCallback, pa_sink_info_cb_t sinkCallback)
         {
             _backingCollection = new List<IAudioAdapter>(16);
-            // Run continuations asynchronously so that we do not block the event loop thread and potentially deadlock
-            _completeSignal = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            _eventLoopThread = eventLoopThread;
             //_sourceCallback = new NativeDelegate<pa_source_info_cb_t>(sourceCallback);
             //_sinkCallback = new NativeDelegate<pa_sink_info_cb_t>(sinkCallback);
             _sourceCallback = sourceCallback;
             _sinkCallback = sinkCallback;
+            // Run continuations asynchronously so that we do not block the event loop thread and potentially deadlock
+            _completeSignal = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
             SourceCallback = Marshal.GetFunctionPointerForDelegate(_sourceCallback);
             SinkCallback = Marshal.GetFunctionPointerForDelegate(_sinkCallback);
@@ -60,6 +64,8 @@ namespace TerraFX.Provider.PulseAudio.Audio
 
         internal unsafe void Add(pa_source_info* i)
         {
+            ThrowIfNotThread(_eventLoopThread);
+
             var adapter = new PulseSourceAdapter(i);
 
             _backingCollection.Add(adapter);
@@ -68,6 +74,8 @@ namespace TerraFX.Provider.PulseAudio.Audio
 
         internal unsafe void Add(pa_sink_info* i)
         {
+            ThrowIfNotThread(_eventLoopThread);
+
             var adapter = new PulseSinkAdapter(i);
 
             _backingCollection.Add(adapter);
@@ -76,6 +84,8 @@ namespace TerraFX.Provider.PulseAudio.Audio
 
         internal void Complete()
         {
+            ThrowIfNotThread(_eventLoopThread);
+
             // Should always be successful due to being called only from one thread
             // Do not overwrite _completeSignal past this point
             _completeSignal.TrySetResult(true);
