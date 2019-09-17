@@ -83,6 +83,12 @@ namespace TerraFX.ApplicationModel
                 var dispatcher = dispatchProvider.DispatcherForCurrentThread;
                 var previousTimestamp = dispatchProvider.CurrentTimestamp;
 
+                var previousFrameCount = 0u;
+                var framesPerSecond = 0u;
+                var framesThisSecond = 0u;
+
+                var secondCounter = TimeSpan.Zero;
+
                 // We need to do an initial dispatch to cover the case where a quit
                 // message was posted before the message pump was started, otherwise
                 // we can end up with a NullReferenceException when we try to execute
@@ -93,10 +99,24 @@ namespace TerraFX.ApplicationModel
                 while (_state == Running)
                 {
                     var currentTimestamp = dispatchProvider.CurrentTimestamp;
+                    var frameCount = previousFrameCount++;
                     {
                         var delta = currentTimestamp - previousTimestamp;
-                        OnIdle(delta);
+                        secondCounter += delta;
+
+                        OnIdle(delta, framesPerSecond);
+                        framesThisSecond++;
+
+                        if (secondCounter.TotalSeconds >= 1.0)
+                        {
+                            framesPerSecond = framesThisSecond;
+                            framesThisSecond = 0;
+
+                            var ticks = secondCounter.Ticks - TimeSpan.TicksPerSecond;
+                            secondCounter = TimeSpan.FromTicks(ticks);
+                        }
                     }
+                    previousFrameCount = frameCount;
                     previousTimestamp = currentTimestamp;
 
                     dispatcher.DispatchPending();
@@ -138,13 +158,13 @@ namespace TerraFX.ApplicationModel
             return containerConfiguration.CreateContainer();
         }
 
-        private void OnIdle(TimeSpan delta)
+        private void OnIdle(TimeSpan delta, uint framesPerSecond)
         {
             var idle = Idle;
 
             if (idle != null)
             {
-                var eventArgs = new ApplicationIdleEventArgs(delta);
+                var eventArgs = new ApplicationIdleEventArgs(delta, framesPerSecond);
                 idle(this, eventArgs);
             }
         }
