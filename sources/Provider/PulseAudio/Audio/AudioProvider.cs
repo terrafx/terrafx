@@ -9,9 +9,11 @@ using System.Threading.Tasks;
 
 using TerraFX.Audio;
 using TerraFX.Interop;
+using TerraFX.Utilities;
 
 using static TerraFX.Interop.Pulse;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.State;
 
 namespace TerraFX.Provider.PulseAudio.Audio
 {
@@ -20,12 +22,16 @@ namespace TerraFX.Provider.PulseAudio.Audio
     [Shared]
     public sealed class AudioProvider : IDisposable, IAudioProvider
     {
+        private const int Starting = 2;
+        private const int Running = 3;
+        private const int Stopping = 4;
+
         private readonly Lazy<IntPtr> _mainloop;
         private readonly Lazy<IntPtr> _context;
         private readonly SemaphoreSlim _mainLoopMutex;
 
         private Thread? _mainLoopThread;
-        private bool _disposed;
+        private State _state;
 
         private unsafe pa_mainloop* MainLoop => (pa_mainloop*)_mainloop.Value;
         private unsafe pa_context* Context => (pa_context*)_context.Value;
@@ -37,7 +43,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
             _mainloop = new Lazy<IntPtr>(CreateMainLoop, isThreadSafe: true);
             _context = new Lazy<IntPtr>(CreateContext, isThreadSafe: true);
             _mainLoopMutex = new SemaphoreSlim(1);
-            _disposed = false;
+            _ = _state.Transition(to: Initialized);
         }
 
         /// <summary>Finalizes an instance of the <see cref="AudioProvider" /> class.</summary>
@@ -74,11 +80,19 @@ namespace TerraFX.Provider.PulseAudio.Audio
 
 
         /// <inheritdoc/>
-        public unsafe ValueTask StartAsync(CancellationToken cancellationToken = default)
+        public async ValueTask StartAsync(CancellationToken cancellationToken = default)
         {
-            if (pa_context_connect(Context, null, pa_context_flags.PA_CONTEXT_NOFLAGS, null) < 0)
+            if (_state.TryTransition(from: Initialized, to: Starting) != Initialized)
             {
-                ThrowExternalException(nameof(StartAsync), pa_context_errno(Context));
+                throw new InvalidOperationException("Provider is already starting");
+            }
+
+            unsafe
+            {
+                if (pa_context_connect(Context, null, pa_context_flags.PA_CONTEXT_NOFLAGS, null) < 0)
+                {
+                    ThrowExternalException(nameof(StartAsync), pa_context_errno(Context));
+                }
             }
 
             _mainLoopThread = new Thread(ThreadMain)
@@ -87,8 +101,8 @@ namespace TerraFX.Provider.PulseAudio.Audio
             };
             _mainLoopThread.Start();
 
-            return new ValueTask(
-                WaitForState(pa_context_state.PA_CONTEXT_READY));
+            await WaitForState(pa_context_state.PA_CONTEXT_READY);
+            _ = _state.Transition(to: Running);
 
             void ThreadMain()
             {
@@ -154,6 +168,11 @@ namespace TerraFX.Provider.PulseAudio.Audio
         /// <inheritdoc/>
         public async ValueTask StopAsync(CancellationToken cancellationToken = default)
         {
+            if (_state.TryTransition(from: Running, to: Stopping) != Running)
+            {
+                throw new InvalidOperationException("Provider cannot be stopped in this state");
+            }
+
             try
             {
                 // TODO: possible deadlock if mainloop re-enters the mutex before us?
@@ -178,6 +197,8 @@ namespace TerraFX.Provider.PulseAudio.Audio
             {
                 _mainLoopThread.Join();
             }
+
+            _state.Transition(to: Initialized);
         }
 
         // Small helper class to explicitly capture state for EnumerateAudioDevices
@@ -291,22 +312,27 @@ namespace TerraFX.Provider.PulseAudio.Audio
         {
             // TODO: check if running and stop if necessary
 
-            if (disposing)
+            var priorState = _state.BeginDispose();
+
+            if (priorState < Disposing)
             {
-                _mainLoopMutex.Dispose();
+                if (disposing)
+                {
+                    _mainLoopMutex.Dispose();
+                }
+
+                if (_context.IsValueCreated)
+                {
+                    pa_context_unref((pa_context*)_context.Value);
+                }
+
+                if (_mainloop.IsValueCreated)
+                {
+                    pa_mainloop_free((pa_mainloop*)_mainloop.Value);
+                }
             }
 
-            if (_context.IsValueCreated && !_disposed)
-            {
-                pa_context_unref((pa_context*)_context.Value);
-            }
-
-            if (_mainloop.IsValueCreated && !_disposed)
-            {
-                pa_mainloop_free((pa_mainloop*)_mainloop.Value);
-            }
-
-            _disposed = true;
+            _state.EndDispose();
         }
     }
 }
