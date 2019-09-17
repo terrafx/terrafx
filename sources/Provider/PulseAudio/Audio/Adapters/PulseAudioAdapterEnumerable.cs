@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TerraFX.Audio;
 using TerraFX.Interop;
+using TerraFX.Utilities;
 
 namespace TerraFX.Provider.PulseAudio.Audio
 {
@@ -22,22 +23,19 @@ namespace TerraFX.Provider.PulseAudio.Audio
 
         private TaskCompletionSource<bool> _completeSignal;
 
-        private readonly pa_source_info_cb_t _sourceCallback;
-        private readonly pa_sink_info_cb_t _sinkCallback;
+        private readonly NativeDelegate<pa_source_info_cb_t> _sourceCallback;
+        private readonly NativeDelegate<pa_sink_info_cb_t> _sinkCallback;
 
-        internal IntPtr SourceCallback { get; }
-        internal IntPtr SinkCallback { get; }
+        internal IntPtr SourceCallback => _sourceCallback;
+        internal IntPtr SinkCallback => _sinkCallback;
 
         internal PulseAudioAdapterEnumerable(pa_source_info_cb_t sourceCallback, pa_sink_info_cb_t sinkCallback)
         {
             _backingCollection = new LinkedList<IAudioAdapter>();
             // Run continuations asynchronously so that we do not block the event loop thread and potentially deadlock
             _completeSignal = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-            _sourceCallback = sourceCallback;
-            _sinkCallback = sinkCallback;
-
-            SourceCallback = Marshal.GetFunctionPointerForDelegate(_sourceCallback);
-            SinkCallback = Marshal.GetFunctionPointerForDelegate(_sinkCallback);
+            _sourceCallback = new NativeDelegate<pa_source_info_cb_t>(sourceCallback);
+            _sinkCallback = new NativeDelegate<pa_sink_info_cb_t>(sinkCallback);
         }
 
         private void SetCompleteSignal(bool value)
@@ -125,9 +123,6 @@ namespace TerraFX.Provider.PulseAudio.Audio
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new NotSupportedException();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 using TerraFX.Audio;
 using TerraFX.Interop;
 
+using static TerraFX.Interop.Pulse;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Provider.PulseAudio.Audio
 {
     /// <summary>Provides access to a PulseAudio-based audio subsystem.</summary>
     [Export(typeof(IAudioProvider))]
-    [Export(typeof(AudioProvider))]
     [Shared]
     public sealed class AudioProvider : IDisposable, IAudioProvider
     {
@@ -24,6 +24,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
         private readonly SemaphoreSlim _mainLoopMutex;
 
         private Thread? _mainLoopThread;
+        private bool _disposed;
 
         private unsafe pa_mainloop* MainLoop => (pa_mainloop*)_mainloop.Value;
         private unsafe pa_context* Context => (pa_context*)_context.Value;
@@ -35,6 +36,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
             _mainloop = new Lazy<IntPtr>(CreateMainLoop, isThreadSafe: true);
             _context = new Lazy<IntPtr>(CreateContext, isThreadSafe: true);
             _mainLoopMutex = new SemaphoreSlim(1);
+            _disposed = false;
         }
 
         /// <summary>Finalizes an instance of the <see cref="AudioProvider" /> class.</summary>
@@ -45,7 +47,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
 
         private unsafe IntPtr CreateMainLoop()
         {
-            var mainloop = Pulse.pa_mainloop_new();
+            var mainloop = pa_mainloop_new();
 
             if (mainloop == null)
             {
@@ -57,9 +59,9 @@ namespace TerraFX.Provider.PulseAudio.Audio
 
         private unsafe IntPtr CreateContext()
         {
-            var api = Pulse.pa_mainloop_get_api(MainLoop);
+            var api = pa_mainloop_get_api(MainLoop);
 
-            var context = Pulse.pa_context_new(api, null);
+            var context = pa_context_new(api, null);
 
             if (context == null)
             {
@@ -73,9 +75,9 @@ namespace TerraFX.Provider.PulseAudio.Audio
         /// <inheritdoc/>
         public unsafe ValueTask StartAsync(CancellationToken cancellationToken = default)
         {
-            if (Pulse.pa_context_connect(Context, null, pa_context_flags.PA_CONTEXT_NOFLAGS, null) < 0)
+            if (pa_context_connect(Context, null, pa_context_flags.PA_CONTEXT_NOFLAGS, null) < 0)
             {
-                ThrowExternalException(nameof(StartAsync), Pulse.pa_context_errno(Context));
+                ThrowExternalException(nameof(StartAsync), pa_context_errno(Context));
             }
 
             _mainLoopThread = new Thread(ThreadMain)
@@ -89,16 +91,15 @@ namespace TerraFX.Provider.PulseAudio.Audio
 
             void ThreadMain()
             {
-                while (true)
+                var exitRequested = false;
+
+                while (!exitRequested)
                 {
                     try
                     {
                         _mainLoopMutex.Wait();
 
-                        if (!RunMainLoopIteration())
-                        {
-                            break;
-                        }
+                        exitRequested = RunMainLoopIteration();
                     }
                     finally
                     {
@@ -112,20 +113,26 @@ namespace TerraFX.Provider.PulseAudio.Audio
         private unsafe bool RunMainLoopIteration()
         {
             int retval = 0;
-            int status = Pulse.pa_mainloop_iterate(MainLoop, 1, &retval);
+            int status = pa_mainloop_iterate(MainLoop, 1, &retval);
 
-            // exit request
-            if (status < 0 && retval != 0)
+            if (status < 0)
+            {
+                if (retval == 0)
+                {
+                    ThrowExternalException(nameof(RunMainLoopIteration), status);
+                }
+
                 return false;
-            else if (status < 0)
-                ThrowExternalException(nameof(RunMainLoopIteration), status);
+            }
 
             return true;
         }
 
         private async Task WaitForState(pa_context_state desired)
         {
-            while (true)
+            pa_context_state current = default;
+
+            while (current != desired)
             {
                 try
                 {
@@ -133,12 +140,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
 
                     unsafe
                     {
-                        var current = Pulse.pa_context_get_state(Context);
-
-                        if (current == desired)
-                        {
-                            break;
-                        }
+                        current = pa_context_get_state(Context);
                     }
                 }
                 finally
@@ -156,14 +158,14 @@ namespace TerraFX.Provider.PulseAudio.Audio
                 // TODO: possible deadlock if mainloop re-enters the mutex before us?
                 unsafe
                 {
-                    Pulse.pa_mainloop_wakeup(MainLoop);
+                    pa_mainloop_wakeup(MainLoop);
                 }
 
                 await _mainLoopMutex.WaitAsync();
 
                 unsafe
                 {
-                    Pulse.pa_mainloop_quit(MainLoop, 1);
+                    pa_mainloop_quit(MainLoop, 1);
                 }
             }
             finally
@@ -196,17 +198,19 @@ namespace TerraFX.Provider.PulseAudio.Audio
             enumerable = new PulseAudioAdapterEnumerable(
                 AddSourceDevice, AddSinkDevice);
 
-            source_op = Pulse.pa_context_get_source_info_list(Context, enumerable.SourceCallback, null);
-            sink_op = Pulse.pa_context_get_sink_info_list(Context, enumerable.SinkCallback, null);
+            source_op = pa_context_get_source_info_list(Context, enumerable.SourceCallback, null);
+            sink_op = pa_context_get_sink_info_list(Context, enumerable.SinkCallback, null);
 
             void AddSourceDevice(pa_context* c, pa_source_info* i, int eol, void* userdata)
             {
                 if (i != null)
+                {
                     enumerable.Add(i);
+                }
 
                 if (eol != 0)
                 {
-                    Pulse.pa_operation_unref(source_op);
+                    pa_operation_unref(source_op);
 
                     if (Interlocked.Increment(ref completed) == 2)
                     {
@@ -218,11 +222,13 @@ namespace TerraFX.Provider.PulseAudio.Audio
             void AddSinkDevice(pa_context* c, pa_sink_info* i, int eol, void* userdata)
             {
                 if (i != null)
+                {
                     enumerable.Add(i);
+                }
 
                 if (eol != 0)
                 {
-                    Pulse.pa_operation_unref(sink_op);
+                    pa_operation_unref(sink_op);
 
                     if (Interlocked.Increment(ref completed) == 2)
                     {
@@ -268,10 +274,17 @@ namespace TerraFX.Provider.PulseAudio.Audio
                 _mainLoopMutex.Dispose();
             }
 
-            if (_context.IsValueCreated)
-                Pulse.pa_context_unref((pa_context*)_context.Value);
-            if (_mainloop.IsValueCreated)
-                Pulse.pa_mainloop_free((pa_mainloop*)_mainloop.Value);
+            if (_context.IsValueCreated && !_disposed)
+            {
+                pa_context_unref((pa_context*)_context.Value);
+            }
+
+            if (_mainloop.IsValueCreated && !_disposed)
+            {
+                pa_mainloop_free((pa_mainloop*)_mainloop.Value);
+            }
+
+            _disposed = true;
         }
     }
 }

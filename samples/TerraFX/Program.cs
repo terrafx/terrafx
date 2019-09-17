@@ -22,11 +22,12 @@ namespace TerraFX.Samples
         private static readonly Sample[] s_samples = {
             new EnumerateGraphicsAdapters("D3D12.EnumerateGraphicsAdapters", s_d3d12Provider),
             new EnumerateGraphicsAdapters("Vulkan.EnumerateGraphicsAdapters", s_vulkanProvider),
+
             new HelloWindow("D3D12.HelloWindow", s_d3d12Provider),
             new HelloWindow("Vulkan.HelloWindow", s_vulkanProvider),
 
-            new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapter.Sync", false, s_pulseAudioProvider),
-            new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapter.Async", true, s_pulseAudioProvider),
+            new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Sync", false, s_pulseAudioProvider),
+            new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Async", true, s_pulseAudioProvider),
         };
 
         public static void Main(string[] args)
