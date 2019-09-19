@@ -2,6 +2,7 @@
 
 using System;
 using System.Composition;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -217,15 +218,9 @@ namespace TerraFX.Provider.PulseAudio.Audio
             _state.Transition(to: Initialized);
         }
 
-        // Small helper class to explicitly capture state for EnumerateAudioDevices
-        // Using a class to avoid boxing/unboxing a value type and potentially mutating a copied instance
-        private unsafe class AudioDeviceEnumeratorHelper
+        // Small helper struct to explicitly capture state for EnumerateAudioDevices
+        private unsafe struct AudioDeviceEnumeratorHelper
         {
-            public AudioDeviceEnumeratorHelper(PulseAudioAdapterEnumerable enumerable)
-            {
-                this.enumerable = enumerable;
-            }
-
             public PulseAudioAdapterEnumerable enumerable;
             public pa_operation* source_op;
             public pa_operation* sink_op;
@@ -253,59 +248,62 @@ namespace TerraFX.Provider.PulseAudio.Audio
             Assert(_mainLoopThread != null, "Mainloop should not be null");
 
             // Main loop thread is not null if running
-            AudioDeviceEnumeratorHelper helper = new AudioDeviceEnumeratorHelper(
-                new PulseAudioAdapterEnumerable(_mainLoopThread!, AddSourceDevice, AddSinkDevice));
-            var handle = GCHandle.Alloc(helper);
+            var handle = GCHandle.Alloc(new AudioDeviceEnumeratorHelper());
             var userdata = (void*)GCHandle.ToIntPtr(handle);
+            ref var helper = ref Unsafe.Unbox<AudioDeviceEnumeratorHelper>(handle.Target);
 
+            helper.enumerable = new PulseAudioAdapterEnumerable(_mainLoopThread!, AddSourceDevice, AddSinkDevice);
             helper.source_op = pa_context_get_source_info_list(Context, helper.enumerable.SourceCallback, userdata);
             helper.sink_op = pa_context_get_sink_info_list(Context, helper.enumerable.SinkCallback, userdata);
+
+            return helper.enumerable;
 
             static void AddSourceDevice(pa_context* c, pa_source_info* i, int eol, void* userdata)
             {
                 var handle = GCHandle.FromIntPtr((IntPtr)userdata);
-                var helper = (AudioDeviceEnumeratorHelper)handle.Target!;
+                IAudioAdapter? adapter = null;
 
                 if (i != null)
                 {
-                    helper.enumerable.Add(i);
+                    adapter = new PulseSourceAdapter(i);
                 }
 
-                if (eol != 0)
-                {
-                    pa_operation_unref(helper.source_op);
-
-                    if (Interlocked.Increment(ref helper.completed) == 2)
-                    {
-                        helper.enumerable.Complete();
-                        handle.Free();
-                    }
-                }
+                AddAdapter(adapter, eol, handle);
             }
 
             static void AddSinkDevice(pa_context* c, pa_sink_info* i, int eol, void* userdata)
             {
                 var handle = GCHandle.FromIntPtr((IntPtr)userdata);
-                var helper = (AudioDeviceEnumeratorHelper)handle.Target!;
+                IAudioAdapter? adapter = null;
 
                 if (i != null)
                 {
-                    helper.enumerable.Add(i);
+                    adapter = new PulseSinkAdapter(i);
+                }
+
+                AddAdapter(adapter, eol, handle);
+            }
+
+            static void AddAdapter(IAudioAdapter? adapter, int eol, GCHandle handle)
+            {
+                ref var helper = ref Unsafe.Unbox<AudioDeviceEnumeratorHelper>(handle.Target);
+
+                if (adapter != null)
+                {
+                    helper.enumerable.Add(adapter);
                 }
 
                 if (eol != 0)
                 {
-                    pa_operation_unref(helper.sink_op);
-
                     if (Interlocked.Increment(ref helper.completed) == 2)
                     {
+                        pa_operation_unref(helper.source_op);
+                        pa_operation_unref(helper.sink_op);
                         helper.enumerable.Complete();
                         handle.Free();
                     }
                 }
             }
-
-            return helper.enumerable;
         }
 
         /// <inheritdoc/>

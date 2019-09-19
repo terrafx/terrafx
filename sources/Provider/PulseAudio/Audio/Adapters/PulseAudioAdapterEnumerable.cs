@@ -62,21 +62,9 @@ namespace TerraFX.Provider.PulseAudio.Audio
             _completeSignal = new TaskCompletionSource<bool>();
         }
 
-        internal unsafe void Add(pa_source_info* i)
+        internal unsafe void Add(IAudioAdapter adapter)
         {
             ThrowIfNotThread(_eventLoopThread);
-
-            var adapter = new PulseSourceAdapter(i);
-
-            _backingCollection.Add(adapter);
-            SetCompleteSignal(false);
-        }
-
-        internal unsafe void Add(pa_sink_info* i)
-        {
-            ThrowIfNotThread(_eventLoopThread);
-
-            var adapter = new PulseSinkAdapter(i);
 
             _backingCollection.Add(adapter);
             SetCompleteSignal(false);
