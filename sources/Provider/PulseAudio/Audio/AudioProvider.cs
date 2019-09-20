@@ -86,7 +86,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
         {
             if (_state.TryTransition(from: Initialized, to: Starting) != Initialized)
             {
-                throw new InvalidOperationException("Provider is already starting");
+                throw new InvalidOperationException("Provider is already started");
             }
 
             unsafe
@@ -313,9 +313,9 @@ namespace TerraFX.Provider.PulseAudio.Audio
         }
 
         /// <inheritdoc/>
-        public ValueTask<IAudioPlaybackDevice> RequestAudioPlaybackDeviceAsync(IAudioAdapter adapter)
+        public unsafe ValueTask<IAudioPlaybackDevice> RequestAudioPlaybackDeviceAsync(IAudioAdapter adapter)
         {
-            throw new NotImplementedException();
+            return new ValueTask<IAudioPlaybackDevice>(new PulseAudioPlaybackDevice(adapter, Context));
         }
 
         /// <inheritdoc/>

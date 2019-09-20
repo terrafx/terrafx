@@ -28,6 +28,8 @@ namespace TerraFX.Samples
 
             new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Sync", false, s_pulseAudioProvider),
             new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Async", true, s_pulseAudioProvider),
+
+            new PlaySampleAudio("PulseAudio.PlaySampleAudio", s_pulseAudioProvider),
         };
 
         public static void Main(string[] args)
