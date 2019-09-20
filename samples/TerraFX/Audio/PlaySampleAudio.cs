@@ -14,6 +14,8 @@ namespace TerraFX.Samples.Audio
 {
     public sealed class PlaySampleAudio : Sample
     {
+        public const int SineWaveFrequency = 440; // 440Hz
+
         public PlaySampleAudio(string name, params Assembly[] compositionAssemblies)
             : base(name, compositionAssemblies)
         {}
@@ -56,7 +58,7 @@ namespace TerraFX.Samples.Audio
                 {
                     var device = await audioProvider.RequestAudioPlaybackDeviceAsync(preferredAdapter);
 
-                    Console.WriteLine("    Playing a tune...");
+                    Console.WriteLine($"    Playing a {SineWaveFrequency}Hz sine wave...");
 
                     await Task.WhenAll(
                         ProduceAudioAsync(device.Writer),
@@ -96,9 +98,7 @@ namespace TerraFX.Samples.Audio
 
                 for (int x = 0; x < buffer.Length; x += 2)
                 {
-                    var value = unchecked((short)(
-                        ((samplePosition << 5) & 0x07ff) | ((samplePosition >> 4) & 0x0720) | (samplePosition >> 6) | (samplePosition & 0x030f)
-                    ));
+                    var value = (short)(Math.Sin(SineWaveFrequency * 2 * Math.PI * samplePosition / WellKnownSampleRates.CdAudio) * short.MaxValue);
 
                     buffer[x] = value;
                     buffer[x + 1] = value;
