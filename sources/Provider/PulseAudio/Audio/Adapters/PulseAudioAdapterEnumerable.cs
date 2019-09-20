@@ -56,12 +56,9 @@ namespace TerraFX.Provider.PulseAudio.Audio
 
         private void SetCompleteSignal(bool value)
         {
-            // No need to use Interlocked.CompareExchange or anything like this
-            // since we are only called from one thread
-            _completeSignal.TrySetResult(value);
-            _completeSignal = new TaskCompletionSource<bool>();
+            var previous = Interlocked.Exchange(ref _completeSignal, new TaskCompletionSource<bool>());
+            previous.TrySetResult(value);
         }
-
         internal unsafe void Add(IAudioAdapter adapter)
         {
             ThrowIfNotThread(_eventLoopThread);
