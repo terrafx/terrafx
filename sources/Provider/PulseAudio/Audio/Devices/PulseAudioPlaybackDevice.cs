@@ -176,7 +176,8 @@ namespace TerraFX.Provider.PulseAudio.Audio
                         bytesToWrite = (int)result.Buffer.Length;
                     }
 
-                    Assert(TryPrepareAndWriteBlock(result.Buffer, bytesToWrite, out int written), "Failed to prepare and write block");
+                    var status = TryPrepareAndWriteBlock(result.Buffer, bytesToWrite, out int written);
+                    Assert(status, "Failed to prepare and write block");
                     bytesWritten += written;
                 }
             }
