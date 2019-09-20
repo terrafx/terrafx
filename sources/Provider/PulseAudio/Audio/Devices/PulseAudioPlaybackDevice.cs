@@ -27,7 +27,6 @@ namespace TerraFX.Provider.PulseAudio.Audio
 
         private static readonly byte[] PlaybackName = Encoding.UTF8.GetBytes("Playback");
 
-
         private unsafe readonly pa_context* _context;
         private readonly Pipe _sampleDataPipe;
         private readonly Lazy<IntPtr> _stream;
@@ -106,6 +105,8 @@ namespace TerraFX.Provider.PulseAudio.Audio
             }
         }
 
+        // Called from the event loop thread when it wants audio data.
+        // This happens infrequently, so in theory using a valuetask-based event should be fine
         private static unsafe void WriteCallback(pa_stream* stream, UIntPtr length, void* userdata)
         {
             var handle = GCHandle.FromIntPtr((IntPtr)userdata);
