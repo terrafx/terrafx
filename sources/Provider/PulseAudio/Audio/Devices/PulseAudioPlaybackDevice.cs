@@ -59,7 +59,10 @@ namespace TerraFX.Provider.PulseAudio.Audio
             _stream = new Lazy<IntPtr>(CreateStream, isThreadSafe: true);
             _writeDelegateHandle = new Lazy<GCHandle>(CreateHandle, isThreadSafe: true);
             _writeDelegate = new NativeDelegate<pa_stream_request_cb_t>(WriteCallback);
-            _writeRequest = new ManualResetValueTaskSource<int>();
+            _writeRequest = new ManualResetValueTaskSource<int>()
+            {
+                RunContinuationsAsynchronously = true
+            };
 
             Adapter = adapter;
 
@@ -107,12 +110,17 @@ namespace TerraFX.Provider.PulseAudio.Audio
 
         // Called from the event loop thread when it wants audio data.
         // This happens infrequently, so in theory using a valuetask-based event should be fine
+        private short _lastToken = -1; // cache the previous token used so we can detect cases where we're called twice
         private static unsafe void WriteCallback(pa_stream* stream, UIntPtr length, void* userdata)
         {
             var handle = GCHandle.FromIntPtr((IntPtr)userdata);
             var device = (PulseAudioPlaybackDevice)handle.Target!;
 
-            device._writeRequest.Set((int)length);
+            if (device._writeRequest.Token != device._lastToken)
+            {
+                device._lastToken = device._writeRequest.Token;
+                device._writeRequest.Set((int)length);
+            }
         }
 
         /// <summary>Resets the playback device to a usable state if it was completed.</summary>
@@ -168,8 +176,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
                         bytesToWrite = (int)result.Buffer.Length;
                     }
 
-                    var status = TryPrepareAndWriteBlock(result.Buffer, bytesToWrite, out int written);
-                    Assert(status, "Failed to prepare and write block");
+                    Assert(TryPrepareAndWriteBlock(result.Buffer, bytesToWrite, out int written), "Failed to prepare and write block");
                     bytesWritten += written;
                 }
             }

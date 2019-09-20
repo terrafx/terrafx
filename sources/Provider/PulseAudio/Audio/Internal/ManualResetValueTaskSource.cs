@@ -8,6 +8,12 @@ namespace TerraFX.Provider.PulseAudio.Audio
     {
         private ManualResetValueTaskSourceCore<TResult> _core;
 
+        public bool RunContinuationsAsynchronously
+        {
+            get => _core.RunContinuationsAsynchronously;
+            set => _core.RunContinuationsAsynchronously = value;
+        }
+
         public short Token => _core.Version;
 
         public void Set(TResult result)
