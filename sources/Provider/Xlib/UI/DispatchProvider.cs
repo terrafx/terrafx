@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Composition;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;

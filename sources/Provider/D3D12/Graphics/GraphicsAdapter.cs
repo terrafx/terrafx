@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using TerraFX.Graphics;
 using TerraFX.Interop;
 using TerraFX.Utilities;
-using static TerraFX.Interop.Windows;
+using static TerraFX.Provider.D3D12.HelperUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
