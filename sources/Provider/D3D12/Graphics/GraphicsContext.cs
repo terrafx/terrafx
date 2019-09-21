@@ -22,6 +22,7 @@ using static TerraFX.Interop.DXGI_SCALING;
 using static TerraFX.Interop.DXGI_SWAP_EFFECT;
 using static TerraFX.Interop.Kernel32;
 using static TerraFX.Interop.Windows;
+using static TerraFX.Provider.D3D12.HelperUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
