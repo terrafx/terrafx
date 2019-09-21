@@ -14,7 +14,7 @@ namespace TerraFX.Samples.Audio
 {
     public sealed class PlaySampleAudio : Sample
     {
-        public const int SineWaveFrequency = 440; // 440Hz
+        public const double SineWaveFrequency = 277.18; // Middle C is 261.626 Hz. Guess what note this is :)
 
         public PlaySampleAudio(string name, params Assembly[] compositionAssemblies)
             : base(name, compositionAssemblies)
