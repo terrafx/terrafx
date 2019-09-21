@@ -7,7 +7,7 @@ using TerraFX.ApplicationModel;
 
 namespace TerraFX.Samples
 {
-    public abstract class Sample : IDisposable
+    public abstract class Sample
     {
         private static readonly Assembly s_win32Provider = Assembly.LoadFrom("TerraFX.Provider.Win32.dll");
         private static readonly Assembly s_xlibProvider = Assembly.LoadFrom("TerraFX.Provider.Xlib.dll");
@@ -25,25 +25,10 @@ namespace TerraFX.Samples
             Array.Copy(compositionAssemblies, 0, _compositionAssemblies, 1, compositionAssemblies.Length);
         }
 
-        ~Sample()
-        {
-            Dispose(isDisposing: false);
-        }
-
         public Assembly[] CompositionAssemblies => _compositionAssemblies;
 
         public string Name => _name;
 
         public abstract void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs);
-
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool isDisposing)
-        {
-        }
     }
 }

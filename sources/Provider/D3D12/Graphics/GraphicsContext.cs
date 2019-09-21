@@ -34,16 +34,16 @@ namespace TerraFX.Provider.D3D12.Graphics
         private readonly GraphicsAdapter _graphicsAdapter;
         private readonly IGraphicsSurface _graphicsSurface;
 
-        private readonly Lazy<ID3D12CommandAllocator*[]> _commandAllocators;
-        private readonly Lazy<IntPtr> _commandQueue;
-        private readonly Lazy<IntPtr> _device;
-        private readonly Lazy<ID3D12Fence*[]> _fences;
-        private readonly Lazy<IntPtr[]> _fenceEvents;
-        private readonly Lazy<ulong[]> _fenceValues;
-        private readonly Lazy<ID3D12GraphicsCommandList*[]> _graphicsCommandLists;
-        private readonly Lazy<IntPtr> _renderTargetsHeap;
-        private readonly Lazy<ID3D12Resource*[]> _renderTargets;
-        private readonly Lazy<IntPtr> _swapChain;
+        private ResettableLazy<ID3D12CommandAllocator*[]> _commandAllocators;
+        private ResettableLazy<IntPtr> _commandQueue;
+        private ResettableLazy<IntPtr> _device;
+        private ResettableLazy<ID3D12Fence*[]> _fences;
+        private ResettableLazy<IntPtr[]> _fenceEvents;
+        private ResettableLazy<ulong[]> _fenceValues;
+        private ResettableLazy<ID3D12GraphicsCommandList*[]> _graphicsCommandLists;
+        private ResettableLazy<IntPtr> _renderTargetsHeap;
+        private ResettableLazy<ID3D12Resource*[]> _renderTargets;
+        private ResettableLazy<IntPtr> _swapChain;
 
         private ulong _fenceValue;
         private uint _frameIndex;
@@ -54,16 +54,16 @@ namespace TerraFX.Provider.D3D12.Graphics
             _graphicsAdapter = graphicsAdapter;
             _graphicsSurface = graphicsSurface;
 
-            _commandAllocators = new Lazy<ID3D12CommandAllocator*[]>(CreateCommandAllocators, isThreadSafe: true);
-            _commandQueue = new Lazy<IntPtr>(CreateCommandQueue, isThreadSafe: true);
-            _device = new Lazy<IntPtr>(CreateDevice, isThreadSafe: true);
-            _fences = new Lazy<ID3D12Fence*[]>(CreateFences, isThreadSafe: true);
-            _fenceEvents = new Lazy<IntPtr[]>(CreateFenceEvents, isThreadSafe: true);
-            _fenceValues = new Lazy<ulong[]>(CreateFenceValues, isThreadSafe: true);
-            _graphicsCommandLists = new Lazy<ID3D12GraphicsCommandList*[]>(CreateGraphicsCommandLists, isThreadSafe: true);
-            _renderTargets = new Lazy<ID3D12Resource*[]>(CreateRenderTargets, isThreadSafe: true);
-            _renderTargetsHeap = new Lazy<IntPtr>(CreateRenderTargetsHeap, isThreadSafe: true);
-            _swapChain = new Lazy<IntPtr>(CreateSwapChain, isThreadSafe: true);
+            _commandAllocators = new ResettableLazy<ID3D12CommandAllocator*[]>(CreateCommandAllocators);
+            _commandQueue = new ResettableLazy<IntPtr>(CreateCommandQueue);
+            _device = new ResettableLazy<IntPtr>(CreateDevice);
+            _fences = new ResettableLazy<ID3D12Fence*[]>(CreateFences);
+            _fenceEvents = new ResettableLazy<IntPtr[]>(CreateFenceEvents);
+            _fenceValues = new ResettableLazy<ulong[]>(CreateFenceValues);
+            _graphicsCommandLists = new ResettableLazy<ID3D12GraphicsCommandList*[]>(CreateGraphicsCommandLists);
+            _renderTargets = new ResettableLazy<ID3D12Resource*[]>(CreateRenderTargets);
+            _renderTargetsHeap = new ResettableLazy<IntPtr>(CreateRenderTargetsHeap);
+            _swapChain = new ResettableLazy<IntPtr>(CreateSwapChain);
 
             _ = _state.Transition(to: Initialized);
         }
@@ -512,7 +512,9 @@ namespace TerraFX.Provider.D3D12.Graphics
 
         private void DisposeCommandAllocators()
         {
-            if (_commandAllocators.IsValueCreated)
+            _state.AssertDisposing();
+
+            if (_commandAllocators.IsCreated)
             {
                 foreach (var commandAllocator in _commandAllocators.Value)
                 {
@@ -526,7 +528,9 @@ namespace TerraFX.Provider.D3D12.Graphics
 
         private void DisposeCommandQueue()
         {
-            if (_commandQueue.IsValueCreated)
+            _state.AssertDisposing();
+
+            if (_commandQueue.IsCreated)
             {
                 var commandQueue = (ID3D12CommandQueue*)_commandQueue.Value;
                 _ = commandQueue->Release();
@@ -535,7 +539,9 @@ namespace TerraFX.Provider.D3D12.Graphics
 
         private void DisposeDevice()
         {
-            if (_device.IsValueCreated)
+            _state.AssertDisposing();
+
+            if (_device.IsCreated)
             {
                 var device = (ID3D12Device*)_device.Value;
                 _ = device->Release();
@@ -544,7 +550,9 @@ namespace TerraFX.Provider.D3D12.Graphics
 
         private void DisposeFences()
         {
-            if (_fences.IsValueCreated)
+            _state.AssertDisposing();
+
+            if (_fences.IsCreated)
             {
                 foreach (var fence in _fences.Value)
                 {
@@ -558,7 +566,9 @@ namespace TerraFX.Provider.D3D12.Graphics
 
         private void DisposeFenceEvents()
         {
-            if (_fenceEvents.IsValueCreated)
+            _state.AssertDisposing();
+
+            if (_fenceEvents.IsCreated)
             {
                 foreach (var fenceEvent in _fenceEvents.Value)
                 {
@@ -572,7 +582,9 @@ namespace TerraFX.Provider.D3D12.Graphics
 
         private void DisposeGraphicsCommandLists()
         {
-            if (_graphicsCommandLists.IsValueCreated)
+            _state.AssertDisposing();
+
+            if (_graphicsCommandLists.IsCreated)
             {
                 foreach (var graphicsCommandList in _graphicsCommandLists.Value)
                 {
@@ -586,7 +598,9 @@ namespace TerraFX.Provider.D3D12.Graphics
 
         private void DisposeRenderTargetsHeap()
         {
-            if (_renderTargetsHeap.IsValueCreated)
+            _state.AssertDisposing();
+
+            if (_renderTargetsHeap.IsCreated)
             {
                 var renderTargetsHeap = (ID3D12DescriptorHeap*)_renderTargetsHeap.Value;
                 _ = renderTargetsHeap->Release();
@@ -595,7 +609,9 @@ namespace TerraFX.Provider.D3D12.Graphics
 
         private void DisposeRenderTargets()
         {
-            if (_renderTargets.IsValueCreated)
+            _state.AssertDisposing();
+
+            if (_renderTargets.IsCreated)
             {
                 foreach (var renderTarget in _renderTargets.Value)
                 {
@@ -609,7 +625,9 @@ namespace TerraFX.Provider.D3D12.Graphics
 
         private void DisposeSwapChain()
         {
-            if (_swapChain.IsValueCreated)
+            _state.AssertDisposing();
+
+            if (_swapChain.IsCreated)
             {
                 var swapChain = (IDXGISwapChain3*)_swapChain.Value;
                 _ = swapChain->Release();

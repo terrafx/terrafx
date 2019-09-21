@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.Interop;
 using TerraFX.UI;
+using TerraFX.Utilities;
 using static TerraFX.Interop.Kernel32;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -16,7 +17,7 @@ namespace TerraFX.Provider.Win32.UI
     /// <summary>Provides access to a Win32 based dispatch subsystem.</summary>
     public sealed unsafe class DispatchProvider : IDispatchProvider
     {
-        private static readonly Lazy<DispatchProvider> s_instance = new Lazy<DispatchProvider>(CreateDispatchProvider, isThreadSafe: true);
+        private static ResettableLazy<DispatchProvider> s_instance = new ResettableLazy<DispatchProvider>(CreateDispatchProvider);
 
         private readonly double _tickFrequency;
         private readonly ConcurrentDictionary<Thread, IDispatcher> _dispatchers;

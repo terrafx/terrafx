@@ -7,7 +7,6 @@ using System.Threading;
 using TerraFX.UI;
 using TerraFX.Utilities;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.LazyExtensions;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.ApplicationModel
@@ -21,7 +20,7 @@ namespace TerraFX.ApplicationModel
 
         private readonly Assembly[] _compositionAssemblies;
         private readonly Thread _parentThread;
-        private readonly Lazy<CompositionHost> _compositionHost;
+        private ResettableLazy<CompositionHost> _compositionHost;
 
         private State _state;
 
@@ -34,7 +33,7 @@ namespace TerraFX.ApplicationModel
 
             _compositionAssemblies = compositionAssemblies;
             _parentThread = Thread.CurrentThread;
-            _compositionHost = new Lazy<CompositionHost>(CreateCompositionHost, isThreadSafe: true);
+            _compositionHost = new ResettableLazy<CompositionHost>(CreateCompositionHost);
 
             _ = _state.Transition(to: Stopped);
         }
@@ -132,7 +131,7 @@ namespace TerraFX.ApplicationModel
 
             if (priorState < Disposing)
             {
-                _compositionHost?.Dispose();
+                DisposeCompositionHost(isDisposing: true);
             }
 
             _state.EndDispose();
@@ -156,6 +155,16 @@ namespace TerraFX.ApplicationModel
                 containerConfiguration = containerConfiguration.WithAssemblies(_compositionAssemblies);
             }
             return containerConfiguration.CreateContainer();
+        }
+
+        private void DisposeCompositionHost(bool isDisposing)
+        {
+            _state.AssertDisposing();
+
+            if (isDisposing && _compositionHost.IsCreated)
+            {
+                _compositionHost.Value.Dispose();
+            }
         }
 
         private void OnIdle(TimeSpan delta, uint framesPerSecond)

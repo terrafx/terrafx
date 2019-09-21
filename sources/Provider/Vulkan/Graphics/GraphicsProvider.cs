@@ -161,8 +161,8 @@ namespace TerraFX.Provider.Vulkan.Graphics
             0x00,
         };
 
-        private readonly Lazy<ImmutableArray<GraphicsAdapter>> _adapters;
-        private readonly Lazy<IntPtr> _instance;
+        private ResettableLazy<ImmutableArray<GraphicsAdapter>> _adapters;
+        private ResettableLazy<IntPtr> _instance;
 
         private State _state;
 
@@ -172,8 +172,8 @@ namespace TerraFX.Provider.Vulkan.Graphics
         [ImportingConstructor]
         public GraphicsProvider()
         {
-            _adapters = new Lazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters, isThreadSafe: true);
-            _instance = new Lazy<IntPtr>(CreateInstance, isThreadSafe: true);
+            _adapters = new ResettableLazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters);
+            _instance = new ResettableLazy<IntPtr>(CreateInstance);
             _ = _state.Transition(to: Initialized);
         }
 
@@ -264,7 +264,9 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
         private void DisposeInstance()
         {
-            if (_instance.IsValueCreated)
+            _state.AssertDisposing();
+
+            if (_instance.IsCreated)
             {
                 vkDestroyInstance(_instance.Value, null);
             }

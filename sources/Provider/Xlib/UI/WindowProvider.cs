@@ -21,16 +21,16 @@ namespace TerraFX.Provider.Xlib.UI
     [Shared]
     public sealed unsafe class WindowProvider : IDisposable, IWindowProvider
     {
-        private readonly Lazy<GCHandle> _nativeHandle;
         private readonly ConcurrentDictionary<UIntPtr, Window> _windows;
 
+        private ResettableLazy<GCHandle> _nativeHandle;
         private State _state;
 
         /// <summary>Initializes a new instance of the <see cref="WindowProvider" /> class.</summary>
         [ImportingConstructor]
         public WindowProvider()
         {
-            _nativeHandle = new Lazy<GCHandle>(() => GCHandle.Alloc(this, GCHandleType.Normal), isThreadSafe: true);
+            _nativeHandle = new ResettableLazy<GCHandle>(() => GCHandle.Alloc(this, GCHandleType.Normal));
             _windows = new ConcurrentDictionary<UIntPtr, Window>();
             _ = _state.Transition(to: Initialized);
         }

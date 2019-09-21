@@ -28,8 +28,8 @@ namespace TerraFX.Provider.Win32.UI
 
         private static readonly NativeDelegate<WNDPROC> s_forwardWndProc = new NativeDelegate<WNDPROC>(ForwardWindowMessage);
 
-        private readonly Lazy<ushort> _classAtom;
-        private readonly Lazy<GCHandle> _nativeHandle;
+        private ResettableLazy<ushort> _classAtom;
+        private ResettableLazy<GCHandle> _nativeHandle;
         private readonly ConcurrentDictionary<IntPtr, Window> _windows;
 
         private State _state;
@@ -38,8 +38,8 @@ namespace TerraFX.Provider.Win32.UI
         [ImportingConstructor]
         public WindowProvider()
         {
-            _classAtom = new Lazy<ushort>(CreateClassAtom, isThreadSafe: true);
-            _nativeHandle = new Lazy<GCHandle>(CreateNativeHandle, isThreadSafe: true);
+            _classAtom = new ResettableLazy<ushort>(CreateClassAtom);
+            _nativeHandle = new ResettableLazy<GCHandle>(CreateNativeHandle);
 
             _windows = new ConcurrentDictionary<IntPtr, Window>();
             _ = _state.Transition(to: Initialized);
@@ -242,7 +242,7 @@ namespace TerraFX.Provider.Win32.UI
         {
             _state.AssertDisposing();
 
-            if (_classAtom.IsValueCreated)
+            if (_classAtom.IsCreated)
             {
                 var result = UnregisterClass((char*)_classAtom.Value, EntryPointModule);
 
@@ -257,7 +257,7 @@ namespace TerraFX.Provider.Win32.UI
         {
             _state.AssertDisposing();
 
-            if (_nativeHandle.IsValueCreated)
+            if (_nativeHandle.IsCreated)
             {
                 _nativeHandle.Value.Free();
             }

@@ -27,8 +27,8 @@ namespace TerraFX.Provider.D3D12.Graphics
         private const uint CreateFactoryFlags = 0;
 #endif
 
-        private readonly Lazy<ImmutableArray<GraphicsAdapter>> _adapters;
-        private readonly Lazy<IntPtr> _factory;
+        private ResettableLazy<ImmutableArray<GraphicsAdapter>> _adapters;
+        private ResettableLazy<IntPtr> _factory;
 
         private State _state;
 
@@ -36,8 +36,8 @@ namespace TerraFX.Provider.D3D12.Graphics
         [ImportingConstructor]
         public GraphicsProvider()
         {
-            _adapters = new Lazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters, isThreadSafe: true);
-            _factory = new Lazy<IntPtr>(CreateFactory, isThreadSafe: true);
+            _adapters = new ResettableLazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters);
+            _factory = new ResettableLazy<IntPtr>(CreateFactory);
             _ = _state.Transition(to: Initialized);
         }
 
@@ -101,7 +101,9 @@ namespace TerraFX.Provider.D3D12.Graphics
 
         private void DisposeFactory()
         {
-            if (_factory.IsValueCreated)
+            _state.AssertDisposing();
+
+            if (_factory.IsCreated)
             {
                 var factory = (IDXGIFactory2*)_factory.Value;
                 _ = factory->Release();
@@ -110,7 +112,9 @@ namespace TerraFX.Provider.D3D12.Graphics
 
         private void DisposeGraphicsAdapters(bool isDisposing)
         {
-            if (isDisposing && _adapters.IsValueCreated)
+            _state.AssertDisposing();
+
+            if (isDisposing && _adapters.IsCreated)
             {
                 var adapters = _adapters.Value;
 
