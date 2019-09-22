@@ -60,6 +60,9 @@ namespace TerraFX.Provider.Xlib.UI
             Dispose(isDisposing: false);
         }
 
+        /// <summary>Occurs when the <see cref="IWindow.Location" /> property changes.</summary>
+        public event EventHandler<PropertyChangedEventArgs<Vector2>>? LocationChanged;
+
         /// <summary>Occurs when the <see cref="IWindow.Size" /> property changes.</summary>
         public event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged;
 
@@ -517,6 +520,7 @@ namespace TerraFX.Provider.Xlib.UI
             if (currentLocation != previousLocation)
             {
                 _bounds = _bounds.WithLocation(currentLocation);
+                OnLocationChanged(previousLocation, currentLocation);
             }
 
             var previousSize = _bounds.Size;
@@ -546,6 +550,15 @@ namespace TerraFX.Provider.Xlib.UI
         }
 
         private void HandleXVisibility(XVisibilityEvent* xvisibility) => _isVisible = xvisibility->state != VisibilityFullyObscured;
+
+        private void OnLocationChanged(Vector2 previousLocation, Vector2 currentLocation)
+        {
+            if (LocationChanged != null)
+            {
+                var eventArgs = new PropertyChangedEventArgs<Vector2>(previousLocation, currentLocation);
+                LocationChanged(this, eventArgs);
+            }
+        }
 
         private void OnSizeChanged(Vector2 previousSize, Vector2 currentSize)
         {

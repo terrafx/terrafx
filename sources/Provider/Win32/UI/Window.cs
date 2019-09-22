@@ -60,6 +60,9 @@ namespace TerraFX.Provider.Win32.UI
             Dispose(isDisposing: false);
         }
 
+        /// <summary>Occurs when the <see cref="IWindow.Location" /> property changes.</summary>
+        public event EventHandler<PropertyChangedEventArgs<Vector2>>? LocationChanged;
+
         /// <summary>Occurs when the <see cref="IWindow.Size" /> property changes.</summary>
         public event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged;
 
@@ -406,8 +409,12 @@ namespace TerraFX.Provider.Win32.UI
 
         private IntPtr HandleWmMove(IntPtr lParam)
         {
-            var location = new Vector2(x: LOWORD(lParam), y: HIWORD(lParam));
-            _bounds = _bounds.WithLocation(location);
+            var previousLocation = _bounds.Location;
+            var currentLocation = new Vector2(x: LOWORD(lParam), y: HIWORD(lParam));
+
+            _bounds = _bounds.WithLocation(currentLocation);
+            OnLocationChanged(previousLocation, currentLocation);
+
             return IntPtr.Zero;
         }
 
@@ -442,6 +449,15 @@ namespace TerraFX.Provider.Win32.UI
             OnSizeChanged(previousSize, currentSize);
 
             return IntPtr.Zero;
+        }
+
+        private void OnLocationChanged(Vector2 previousLocation, Vector2 currentLocation)
+        {
+            if (LocationChanged != null)
+            {
+                var eventArgs = new PropertyChangedEventArgs<Vector2>(previousLocation, currentLocation);
+                LocationChanged(this, eventArgs);
+            }
         }
 
         private void OnSizeChanged(Vector2 previousSize, Vector2 currentSize)
