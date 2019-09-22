@@ -10,6 +10,6 @@ namespace TerraFX.Collections
     public interface INotifyCollectionChanged<T>
     {
         /// <summary>Occurs when the underlying <see cref="ICollection{T}" /> changes.</summary>
-        event EventHandler<NotifyCollectionChangedEventArgs<T>> CollectionChanged;
+        event EventHandler<NotifyCollectionChangedEventArgs<T>>? CollectionChanged;
     }
 }
