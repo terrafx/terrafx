@@ -1,16 +1,18 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Composition;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using TerraFX.Interop;
 using TerraFX.UI;
 using TerraFX.Utilities;
 using static TerraFX.Interop.Kernel32;
 using static TerraFX.Interop.User32;
 using static TerraFX.Interop.Windows;
+using static TerraFX.Provider.Win32.HelperUtilities;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.InteropUtilities;
@@ -28,9 +30,10 @@ namespace TerraFX.Provider.Win32.UI
 
         private static readonly NativeDelegate<WNDPROC> s_forwardWndProc = new NativeDelegate<WNDPROC>(ForwardWindowMessage);
 
+        private readonly ThreadLocal<Dictionary<IntPtr, Window>> _windows;
+
         private ResettableLazy<ushort> _classAtom;
         private ResettableLazy<GCHandle> _nativeHandle;
-        private readonly ConcurrentDictionary<IntPtr, Window> _windows;
 
         private State _state;
 
@@ -41,7 +44,7 @@ namespace TerraFX.Provider.Win32.UI
             _classAtom = new ResettableLazy<ushort>(CreateClassAtom);
             _nativeHandle = new ResettableLazy<GCHandle>(CreateNativeHandle);
 
-            _windows = new ConcurrentDictionary<IntPtr, Window>();
+            _windows = new ThreadLocal<Dictionary<IntPtr, Window>>(trackAllValues: true);
             _ = _state.Transition(to: Initialized);
         }
 
@@ -75,14 +78,14 @@ namespace TerraFX.Provider.Win32.UI
             }
         }
 
-        /// <summary>Gets the <see cref="IWindow" /> objects created by the instance.</summary>
+        /// <summary>Gets the <see cref="IWindow" /> objects created by the instance which are associated with <see cref="Thread.CurrentThread" />.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public IEnumerable<IWindow> Windows
+        public IEnumerable<IWindow> WindowsForCurrentThread
         {
             get
             {
                 _state.ThrowIfDisposedOrDisposing();
-                return _windows.Values;
+                return _windows.Value?.Values ?? Enumerable.Empty<Window>();
             }
         }
 
@@ -100,8 +103,16 @@ namespace TerraFX.Provider.Win32.UI
         {
             _state.ThrowIfDisposedOrDisposing();
 
+            var windows = _windows.Value;
+
+            if (windows is null)
+            {
+                windows = new Dictionary<IntPtr, Window>(capacity: 4);
+                _windows.Value = windows;
+            }
+
             var window = new Window(this);
-            _ = _windows.TryAdd(window.Handle, window);
+            _ = windows.TryAdd(window.Handle, window);
 
             return window;
         }
@@ -116,8 +127,8 @@ namespace TerraFX.Provider.Win32.UI
                 // for hWnd. This allows some delayed initialization to occur since most
                 // of the fields in Window are lazy.
 
-                ref var pCreateStruct = ref AsRef<CREATESTRUCT>(lParam);
-                userData = (IntPtr)pCreateStruct.lpCreateParams;
+                var createStruct = (CREATESTRUCT*)lParam;
+                userData = (IntPtr)createStruct->lpCreateParams;
                 _ = SetWindowLongPtr(hWnd, GWLP_USERDATA, userData);
             }
             else
@@ -126,27 +137,32 @@ namespace TerraFX.Provider.Win32.UI
             }
 
             WindowProvider windowProvider = null!;
+            Dictionary<IntPtr, Window>? windows = null;
             var forwardMessage = false;
             Window? window = null;
 
             if (userData != IntPtr.Zero)
             {
                 windowProvider = (WindowProvider)GCHandle.FromIntPtr(userData).Target!;
-                forwardMessage = windowProvider._windows.TryGetValue(hWnd, out window);
+                windows = windowProvider._windows.Value;
+                forwardMessage = (windows?.TryGetValue(hWnd, out window)).GetValueOrDefault();
             }
 
             if (forwardMessage)
             {
+                Assert(windows != null, Resources.ArgumentNullExceptionMessage, nameof(windows));
+                Assert(window != null, Resources.ArgumentNullExceptionMessage, nameof(window));
+
+                result = window.ProcessWindowMessage(msg, wParam, lParam);
+
                 if (msg == WM_DESTROY)
                 {
                     // We forward the WM_DESTROY message to the corresponding Window instance
                     // so that it can still be properly disposed of in the scenario that the
                     // hWnd was destroyed externally.
 
-                    _ = windowProvider._windows.TryRemove(hWnd, out window);
+                    _ = RemoveWindow(windows, hWnd);
                 }
-
-                result = window!.ProcessWindowMessage(msg, wParam, lParam);
             }
             else
             {
@@ -156,28 +172,32 @@ namespace TerraFX.Provider.Win32.UI
             return result;
         }
 
+        private static Window RemoveWindow(Dictionary<IntPtr, Window> windows, IntPtr hWnd)
+        {
+            _ = windows.Remove(hWnd, out var window);
+            Assert(window != null, Resources.ArgumentNullExceptionMessage, nameof(window));
+
+            if (windows.Count == 0)
+            {
+                PostQuitMessage(nExitCode: 0);
+            }
+
+            return window;
+        }
+
         private static IntPtr GetDesktopCursor()
         {
             var desktopWindowHandle = GetDesktopWindow();
 
             var desktopClassName = stackalloc char[256]; // 256 is the maximum length of WNDCLASSEX.lpszClassName
-            var desktopClassNameLength = GetClassName(desktopWindowHandle, desktopClassName, 256);
-
-            if (desktopClassNameLength == 0)
-            {
-                ThrowExternalExceptionForLastError(nameof(GetClassName));
-            }
+            ThrowExternalExceptionIfZero(nameof(GetClassName), GetClassName(desktopWindowHandle, desktopClassName, 256));
 
             WNDCLASSEX desktopWindowClass;
-            var succeeded = GetClassInfoEx(
+
+            ThrowExternalExceptionIfFalse(nameof(GetClassInfoEx), GetClassInfoEx(
                 lpszClass: desktopClassName,
                 lpwcx: &desktopWindowClass
-            );
-
-            if (succeeded == FALSE)
-            {
-                ThrowExternalExceptionForLastError(nameof(GetClassInfoEx));
-            }
+            ));
 
             return desktopWindowClass.hCursor;
         }
@@ -213,11 +233,7 @@ namespace TerraFX.Provider.Win32.UI
 
                     classAtom = RegisterClassEx(&wndClassEx);
                 }
-
-                if (classAtom == 0)
-                {
-                    ThrowExternalExceptionForLastError(nameof(RegisterClassEx));
-                }
+                ThrowExternalExceptionIfZero(nameof(RegisterClassEx), classAtom);
             }
             return classAtom;
         }
@@ -244,12 +260,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (_classAtom.IsCreated)
             {
-                var result = UnregisterClass((char*)_classAtom.Value, EntryPointModule);
-
-                if (result == FALSE)
-                {
-                    ThrowExternalExceptionForLastError(nameof(UnregisterClass));
-                }
+                ThrowExternalExceptionIfFalse(nameof(UnregisterClass), UnregisterClass((char*)_classAtom.Value, EntryPointModule));
             }
         }
 
@@ -269,20 +280,29 @@ namespace TerraFX.Provider.Win32.UI
 
             if (isDisposing)
             {
-                foreach (var windowHandle in _windows.Keys)
+                var threadWindows = _windows.Values;
+
+                for (var i = 0; i < threadWindows.Count; i++)
                 {
-                    if (_windows.TryRemove(windowHandle, out var createdWindow))
+                    var windows = threadWindows[i];
+
+                    if (windows != null)
                     {
-                        createdWindow.Dispose();
+                        var hWnds = windows.Keys;
+
+                        foreach (var hWnd in hWnds)
+                        {
+                            var dispatchProvider = UI.DispatchProvider.Instance;
+                            var window = RemoveWindow(windows, hWnd);
+                            window.Dispose();
+                        }
+
+                        Assert(windows.Count == 0, Resources.ArgumentOutOfRangeExceptionMessage, nameof(windows.Count), windows.Count);
                     }
                 }
-            }
-            else
-            {
-                _windows.Clear();
-            }
 
-            Assert(_windows.IsEmpty, Resources.ArgumentOutOfRangeExceptionMessage, nameof(_windows.IsEmpty), _windows.IsEmpty);
+                _windows.Dispose();
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ using TerraFX.UI;
 using TerraFX.Utilities;
 using static TerraFX.Interop.User32;
 using static TerraFX.Interop.Windows;
+using static TerraFX.Provider.Win32.HelperUtilities;
 using static TerraFX.Provider.Win32.UI.WindowProvider;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -314,11 +315,7 @@ namespace TerraFX.Provider.Win32.UI
                     lpParam: GCHandle.ToIntPtr(_windowProvider.NativeHandle).ToPointer()
                 );
             }
-
-            if (hWnd == IntPtr.Zero)
-            {
-                ThrowExternalExceptionForLastError(nameof(CreateWindowEx));
-            }
+            ThrowExternalExceptionIfZero(nameof(CreateWindowEx), hWnd);
 
             return hWnd;
         }
@@ -353,12 +350,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (_handle.IsCreated)
             {
-                var result = DestroyWindow(_handle.Value);
-
-                if (result == FALSE)
-                {
-                    ThrowExternalExceptionForLastError(nameof(DestroyWindow));
-                }
+                ThrowExternalExceptionIfFalse(nameof(DestroyWindow), DestroyWindow(_handle.Value));
             }
         }
 

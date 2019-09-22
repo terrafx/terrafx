@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.Interop;
@@ -11,6 +10,7 @@ using TerraFX.UI;
 using TerraFX.Utilities;
 using static TerraFX.Interop.Libc;
 using static TerraFX.Interop.Xlib;
+using static TerraFX.Provider.Xlib.HelperUtilities;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
@@ -435,111 +435,23 @@ namespace TerraFX.Provider.Xlib.UI
         private static UIntPtr CreateDisplay()
         {
             var display = XOpenDisplay(display_name: null);
+            ThrowExternalExceptionIfZero(nameof(XOpenDisplay), display);
 
-            if (display == UIntPtr.Zero)
-            {
-                ThrowExternalExceptionForLastError(nameof(XOpenDisplay));
-            }
             _ = XSetErrorHandler(s_errorHandler);
-
             return display;
         }
 
-        private UIntPtr CreateDispatcherExitRequestedAtom()
-        {
-            var atom = XInternAtom(
-                Display,
-                atom_name: (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in DispatcherExitRequestedAtomName[0])),
-                only_if_exists: False
-            );
+        private UIntPtr CreateDispatcherExitRequestedAtom() => CreateAtom(Display, DispatcherExitRequestedAtomName);
 
-            if (atom == (UIntPtr)None)
-            {
-                ThrowExternalExceptionForLastError(nameof(XInternAtom));
-            }
+        private UIntPtr CreateSystemIntPtrAtom() => CreateAtom(Display, SystemIntPtrAtomName);
 
-            return atom;
-        }
+        private UIntPtr CreateWindowProviderCreateWindowAtom() => CreateAtom(Display, WindowProviderCreateWindowAtomName);
 
-        private UIntPtr CreateSystemIntPtrAtom()
-        {
-            var atom = XInternAtom(
-                Display,
-                atom_name: (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in SystemIntPtrAtomName[0])),
-                only_if_exists: False
-            );
+        private UIntPtr CreateWindowWindowProviderAtom() => CreateAtom(Display, WindowWindowProviderAtomName);
 
-            if (atom == (UIntPtr)None)
-            {
-                ThrowExternalExceptionForLastError(nameof(XInternAtom));
-            }
+        private UIntPtr CreateWmProtocolsAtom() => CreateAtom(Display, WmProtocolsAtomName);
 
-            return atom;
-        }
-
-        private UIntPtr CreateWindowProviderCreateWindowAtom()
-        {
-            var atom = XInternAtom(
-                Display,
-                atom_name: (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in WindowProviderCreateWindowAtomName[0])),
-                only_if_exists: False
-            );
-
-            if (atom == (UIntPtr)None)
-            {
-                ThrowExternalExceptionForLastError(nameof(XInternAtom));
-            }
-
-            return atom;
-        }
-
-        private UIntPtr CreateWindowWindowProviderAtom()
-        {
-            var atom = XInternAtom(
-                Display,
-                atom_name: (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in WindowWindowProviderAtomName[0])),
-                only_if_exists: False
-            );
-
-            if (atom == (UIntPtr)None)
-            {
-                ThrowExternalExceptionForLastError(nameof(XInternAtom));
-            }
-
-            return atom;
-        }
-
-        private UIntPtr CreateWmProtocolsAtom()
-        {
-            var atom = XInternAtom(
-                Display,
-                atom_name: (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in WmProtocolsAtomName[0])),
-                only_if_exists: False
-            );
-
-            if (atom == (UIntPtr)None)
-            {
-                ThrowExternalExceptionForLastError(nameof(XInternAtom));
-            }
-
-            return atom;
-        }
-
-        private UIntPtr CreateWmDeleteWindowAtom()
-        {
-            var atom = XInternAtom(
-                Display,
-                atom_name: (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in WmDeleteWindowAtomName[0])),
-                only_if_exists: False
-            );
-
-            if (atom == (UIntPtr)None)
-            {
-                ThrowExternalExceptionForLastError(nameof(XInternAtom));
-            }
-
-            return atom;
-        }
+        private UIntPtr CreateWmDeleteWindowAtom() => CreateAtom(Display, WmDeleteWindowAtomName);
 
         private void Dispose(bool isDisposing)
         {

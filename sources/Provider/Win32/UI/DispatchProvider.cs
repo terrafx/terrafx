@@ -9,7 +9,7 @@ using TerraFX.Interop;
 using TerraFX.UI;
 using TerraFX.Utilities;
 using static TerraFX.Interop.Kernel32;
-using static TerraFX.Interop.Windows;
+using static TerraFX.Provider.Win32.HelperUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Provider.Win32.UI
@@ -38,12 +38,7 @@ namespace TerraFX.Provider.Win32.UI
             get
             {
                 LARGE_INTEGER performanceCount;
-                var succeeded = QueryPerformanceCounter(&performanceCount);
-
-                if (succeeded == FALSE)
-                {
-                    ThrowExternalExceptionForLastError(nameof(QueryPerformanceCounter));
-                }
+                ThrowExternalExceptionIfFalse(nameof(QueryPerformanceCounter), QueryPerformanceCounter(&performanceCount));
 
                 var ticks = (long)(performanceCount.QuadPart * _tickFrequency);
                 return new Timestamp(ticks);
@@ -82,12 +77,7 @@ namespace TerraFX.Provider.Win32.UI
         private static double GetTickFrequency()
         {
             LARGE_INTEGER frequency;
-            var succeeded = QueryPerformanceFrequency(&frequency);
-
-            if (succeeded == FALSE)
-            {
-                ThrowExternalExceptionForLastError(nameof(QueryPerformanceFrequency));
-            }
+            ThrowExternalExceptionIfFalse(nameof(QueryPerformanceFrequency), QueryPerformanceFrequency(&frequency));
 
             const double TicksPerSecond = Timestamp.TicksPerSecond;
             return TicksPerSecond / frequency.QuadPart;
