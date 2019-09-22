@@ -3,6 +3,7 @@
 using System;
 using TerraFX.Graphics;
 using TerraFX.Interop;
+using TerraFX.Numerics;
 using TerraFX.Utilities;
 using static TerraFX.Interop.D3D_FEATURE_LEVEL;
 using static TerraFX.Interop.D3D12;
@@ -47,6 +48,7 @@ namespace TerraFX.Provider.D3D12.Graphics
 
         private ulong _fenceValue;
         private uint _frameIndex;
+        private Vector2 _previousGraphicsSurfaceSize;
         private State _state;
 
         internal GraphicsContext(GraphicsAdapter graphicsAdapter, IGraphicsSurface graphicsSurface)
@@ -201,6 +203,12 @@ namespace TerraFX.Provider.D3D12.Graphics
         /// <param name="backgroundColor">A color to which the background should be cleared.</param>
         public void BeginFrame(ColorRgba backgroundColor)
         {
+            if (_graphicsSurface.Size != _previousGraphicsSurfaceSize)
+            {
+                ResetSizeDependentResources();
+                _previousGraphicsSurfaceSize = _graphicsSurface.Size;
+            }
+
             var frameIndex = SwapChain->GetCurrentBackBufferIndex();
             _frameIndex = frameIndex;
             WaitForFence(Fences[frameIndex], FenceEvents[frameIndex], FenceValues[frameIndex]);
@@ -516,7 +524,9 @@ namespace TerraFX.Provider.D3D12.Graphics
 
             if (_commandAllocators.IsCreated)
             {
-                foreach (var commandAllocator in _commandAllocators.Value)
+                var commandAllocators = _commandAllocators.Value;
+
+                foreach (var commandAllocator in commandAllocators)
                 {
                     if (commandAllocator != null)
                     {
@@ -554,7 +564,9 @@ namespace TerraFX.Provider.D3D12.Graphics
 
             if (_fences.IsCreated)
             {
-                foreach (var fence in _fences.Value)
+                var fences = _fences.Value;
+
+                foreach (var fence in fences)
                 {
                     if (fence != null)
                     {
@@ -570,7 +582,9 @@ namespace TerraFX.Provider.D3D12.Graphics
 
             if (_fenceEvents.IsCreated)
             {
-                foreach (var fenceEvent in _fenceEvents.Value)
+                var fenceEvents = _fenceEvents.Value;
+
+                foreach (var fenceEvent in fenceEvents)
                 {
                     if (fenceEvent != IntPtr.Zero)
                     {
@@ -586,7 +600,9 @@ namespace TerraFX.Provider.D3D12.Graphics
 
             if (_graphicsCommandLists.IsCreated)
             {
-                foreach (var graphicsCommandList in _graphicsCommandLists.Value)
+                var graphicsCommandLists = _graphicsCommandLists.Value;
+
+                foreach (var graphicsCommandList in graphicsCommandLists)
                 {
                     if (graphicsCommandList != null)
                     {
@@ -613,7 +629,9 @@ namespace TerraFX.Provider.D3D12.Graphics
 
             if (_renderTargets.IsCreated)
             {
-                foreach (var renderTarget in _renderTargets.Value)
+                var renderTargets = _renderTargets.Value;
+
+                foreach (var renderTarget in renderTargets)
                 {
                     if (renderTarget != null)
                     {
@@ -631,6 +649,41 @@ namespace TerraFX.Provider.D3D12.Graphics
             {
                 var swapChain = (IDXGISwapChain3*)_swapChain.Value;
                 _ = swapChain->Release();
+            }
+        }
+
+        private void ResetSizeDependentResources()
+        {
+            if (_renderTargets.IsCreated)
+            {
+                var renderTargets = _renderTargets.Value;
+
+                foreach (var renderTarget in renderTargets)
+                {
+                    if (renderTarget != null)
+                    {
+                        _ = renderTarget->Release();
+                    }
+                }
+
+                _renderTargets.Reset();
+            }
+
+            if (_fenceValues.IsCreated)
+            {
+                var bufferCount = _graphicsSurface.BufferCount;
+                var fenceValues = _fenceValues.Value;
+                var fenceValue = fenceValues[_frameIndex];
+
+                for (uint i = 0; i < bufferCount; i++)
+                {
+                    fenceValues[i] = fenceValue;
+                }
+            }
+
+            if (_swapChain.IsCreated)
+            {
+                ThrowExternalExceptionIfFailed(nameof(IDXGISwapChain.ResizeBuffers), SwapChain->ResizeBuffers((uint)_graphicsSurface.BufferCount, (uint)_graphicsSurface.Width, (uint)_graphicsSurface.Height, DXGI_FORMAT_R8G8B8A8_UNORM, SwapChainFlags: 0));
             }
         }
 

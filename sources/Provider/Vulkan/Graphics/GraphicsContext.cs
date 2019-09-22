@@ -4,6 +4,7 @@ using System;
 using System.Runtime.CompilerServices;
 using TerraFX.Graphics;
 using TerraFX.Interop;
+using TerraFX.Numerics;
 using TerraFX.Utilities;
 using static TerraFX.Interop.VkAttachmentLoadOp;
 using static TerraFX.Interop.VkAttachmentStoreOp;
@@ -72,10 +73,10 @@ namespace TerraFX.Provider.Vulkan.Graphics
         private ResettableLazy<IntPtr> _renderPass;
         private ResettableLazy<IntPtr> _surface;
         private ResettableLazy<IntPtr> _swapChain;
-        private ResettableLazy<IntPtr[]> _swapChainImages;
         private ResettableLazy<IntPtr[]> _swapChainImageViews;
 
         private uint _frameIndex;
+        private Vector2 _previousGraphicsSurfaceSize;
         private State _state;
         private VkFormat _swapChainFormat;
 
@@ -96,7 +97,6 @@ namespace TerraFX.Provider.Vulkan.Graphics
             _renderPass = new ResettableLazy<IntPtr>(CreateRenderPass);
             _surface = new ResettableLazy<IntPtr>(CreateSurface);
             _swapChain = new ResettableLazy<IntPtr>(CreateSwapChain);
-            _swapChainImages = new ResettableLazy<IntPtr[]>(CreateSwapChainImages);
             _swapChainImageViews = new ResettableLazy<IntPtr[]>(CreateSwapChainImageViews);
 
             _ = _state.Transition(to: Initialized);
@@ -246,17 +246,6 @@ namespace TerraFX.Provider.Vulkan.Graphics
             }
         }
 
-        /// <summary>Gets an array of <c>VkImage</c> for the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public IntPtr[] SwapChainImages
-        {
-            get
-            {
-                _state.ThrowIfDisposedOrDisposing();
-                return _swapChainImages.Value;
-            }
-        }
-
         /// <summary>Gets an array of <c>VkImageView</c> for the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public IntPtr[] SwapChainImageViews
@@ -279,6 +268,12 @@ namespace TerraFX.Provider.Vulkan.Graphics
         /// <param name="backgroundColor">A color to which the background should be cleared.</param>
         public void BeginFrame(ColorRgba backgroundColor)
         {
+            if (_graphicsSurface.Size != _previousGraphicsSurfaceSize)
+            {
+                ResetSizeDependentResources();
+                _previousGraphicsSurfaceSize = _graphicsSurface.Size;
+            }
+
             uint frameIndex;
             var result = vkAcquireNextImageKHR(Device, SwapChain, timeout: ulong.MaxValue, AcquireNextImageSemaphore, fence: IntPtr.Zero, &frameIndex);
             _frameIndex = frameIndex;
@@ -916,27 +911,19 @@ namespace TerraFX.Provider.Vulkan.Graphics
             return swapChain;
         }
 
-        private IntPtr[] CreateSwapChainImages()
-        {
-            var swapChainImageCount = (uint)_graphicsSurface.BufferCount;
-            var swapChainImages = new IntPtr[swapChainImageCount];
-
-            fixed (IntPtr* pSwapChainImages = swapChainImages)
-            {
-                var result = vkGetSwapchainImagesKHR(Device, SwapChain, &swapChainImageCount, pSwapChainImages);
-
-                if (result != VK_SUCCESS)
-                {
-                    ThrowExternalException(nameof(vkGetSwapchainImagesKHR), (int)result);
-                }
-            }
-
-            return swapChainImages;
-        }
-
         private IntPtr[] CreateSwapChainImageViews()
         {
-            var swapChainImageViews = new IntPtr[(uint)_graphicsSurface.BufferCount];
+            var swapChainImageCount = (uint)_graphicsSurface.BufferCount;
+            var swapChainImages = stackalloc IntPtr[(int)swapChainImageCount];
+
+            var result = vkGetSwapchainImagesKHR(Device, SwapChain, &swapChainImageCount, swapChainImages);
+
+            if (result != VK_SUCCESS)
+            {
+                ThrowExternalException(nameof(vkGetSwapchainImagesKHR), (int)result);
+            }
+
+            var swapChainImageViews = new IntPtr[swapChainImageCount];
 
             var swapChainImageViewCreateInfo = new VkImageViewCreateInfo {
                 sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
@@ -962,10 +949,10 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
             for (var i = 0; i < swapChainImageViews.Length; i++)
             {
-                swapChainImageViewCreateInfo.image = (ulong)SwapChainImages[i];
+                swapChainImageViewCreateInfo.image = (ulong)swapChainImages[i];
 
                 IntPtr swapChainImageView;
-                var result = vkCreateImageView(Device, &swapChainImageViewCreateInfo, pAllocator: null, (ulong)&swapChainImageView);
+                result = vkCreateImageView(Device, &swapChainImageViewCreateInfo, pAllocator: null, (ulong)&swapChainImageView);
 
                 if (result != VK_SUCCESS)
                 {
@@ -992,7 +979,6 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 DisposeFrameBuffers();
                 DisposeSwapChainImageViews();
                 DisposeRenderPass();
-                DisposeSwapChainImages();
                 DisposeSwapChain();
                 DisposeSurface();
                 DisposeDevice();
@@ -1050,7 +1036,9 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
             if (_fences.IsCreated)
             {
-                foreach (var fence in _fences.Value)
+                var fences = _fences.Value;
+
+                foreach (var fence in fences)
                 {
                     if (fence != IntPtr.Zero)
                     {
@@ -1066,7 +1054,9 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
             if (_frameBuffers.IsCreated)
             {
-                foreach (var frameBuffer in _frameBuffers.Value)
+                var frameBuffers = _frameBuffers.Value;
+
+                foreach (var frameBuffer in frameBuffers)
                 {
                     if (frameBuffer != IntPtr.Zero)
                     {
@@ -1113,24 +1103,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
             if (_swapChain.IsCreated)
             {
-                var graphicsProvider = (GraphicsProvider)_graphicsAdapter.GraphicsProvider;
                 vkDestroySwapchainKHR(_device.Value, _swapChain.Value, pAllocator: null);
-            }
-        }
-
-        private void DisposeSwapChainImages()
-        {
-            _state.AssertDisposing();
-
-            if (_swapChainImages.IsCreated)
-            {
-                foreach (var swapChainImage in _swapChainImages.Value)
-                {
-                    if (swapChainImage != IntPtr.Zero)
-                    {
-                        vkDestroyImage(_device.Value, (ulong)swapChainImage, pAllocator: null);
-                    }
-                }
             }
         }
 
@@ -1140,7 +1113,9 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
             if (_swapChainImageViews.IsCreated)
             {
-                foreach (var swapChainImageView in _swapChainImageViews.Value)
+                var swapChainImageViews = _swapChainImageViews.Value;
+
+                foreach (var swapChainImageView in swapChainImageViews)
                 {
                     if (swapChainImageView != IntPtr.Zero)
                     {
@@ -1174,6 +1149,45 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 ThrowInvalidOperationException(nameof(queueFamilyIndex), queueFamilyIndex);
             }
             return queueFamilyIndex;
+        }
+
+        private void ResetSizeDependentResources()
+        {
+            if(_frameBuffers.IsCreated)
+            {
+                var frameBuffers = _frameBuffers.Value;
+
+                foreach (var frameBuffer in frameBuffers)
+                {
+                    if (frameBuffer != IntPtr.Zero)
+                    {
+                        vkDestroyFramebuffer(_device.Value, (ulong)frameBuffer, pAllocator: null);
+                    }
+                }
+
+                _frameBuffers.Reset();
+            }
+
+            if (_swapChainImageViews.IsCreated)
+            {
+                var swapChainImageViews = _swapChainImageViews.Value;
+
+                foreach (var swapChainImageView in swapChainImageViews)
+                {
+                    if (swapChainImageView != IntPtr.Zero)
+                    {
+                        vkDestroyImageView(_device.Value, (ulong)swapChainImageView, pAllocator: null);
+                    }
+                }
+
+                _swapChainImageViews.Reset();
+            }
+
+            if (_swapChain.IsCreated)
+            {
+                vkDestroySwapchainKHR(_device.Value, _swapChain.Value, pAllocator: null);
+                _swapChain.Reset();
+            }
         }
     }
 }
