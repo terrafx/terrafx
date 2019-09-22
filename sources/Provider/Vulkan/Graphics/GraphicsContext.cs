@@ -1125,7 +1125,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
         private uint FindGraphicsQueueFamilyIndex()
         {
-            uint queueFamilyIndex = uint.MaxValue;
+            var queueFamilyIndex = uint.MaxValue;
 
             uint queueFamilyPropertyCount;
             vkGetPhysicalDeviceQueueFamilyProperties(_graphicsAdapter.PhysicalDevice, &queueFamilyPropertyCount, pQueueFamilyProperties: null);

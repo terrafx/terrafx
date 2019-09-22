@@ -691,8 +691,8 @@ namespace TerraFX.Provider.D3D12.Graphics
         {
             if (fence->GetCompletedValue() < fenceValue)
             {
-                fence->SetEventOnCompletion(fenceValue, fenceEvent);
-                WaitForSingleObject(fenceEvent, INFINITE);
+                _ = fence->SetEventOnCompletion(fenceValue, fenceEvent);
+                _ = WaitForSingleObject(fenceEvent, INFINITE);
             }
         }
     }
