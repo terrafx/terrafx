@@ -21,30 +21,31 @@ namespace TerraFX.Provider.Xlib.UI
     public sealed unsafe class DispatchProvider : IDisposable, IDispatchProvider
     {
         private static readonly NativeDelegate<XErrorHandler> s_errorHandler = new NativeDelegate<XErrorHandler>(HandleXlibError);
-        private static readonly Lazy<DispatchProvider> s_instance = new Lazy<DispatchProvider>(CreateDispatchProvider, isThreadSafe: true);
+        private static ResettableLazy<DispatchProvider> s_instance = new ResettableLazy<DispatchProvider>(CreateDispatchProvider);
 
-        private readonly Lazy<UIntPtr> _dispatcherExitRequestedAtom;
         private readonly ConcurrentDictionary<Thread, IDispatcher> _dispatchers;
-        private readonly Lazy<UIntPtr> _display;
-        private readonly Lazy<UIntPtr> _systemIntPtrAtom;
-        private readonly Lazy<UIntPtr> _windowProviderCreateWindowAtom;
-        private readonly Lazy<UIntPtr> _windowWindowProviderAtom;
-        private readonly Lazy<UIntPtr> _wmProtocolsAtom;
-        private readonly Lazy<UIntPtr> _wmDeleteWindowAtom;
+
+        private ResettableLazy<UIntPtr> _dispatcherExitRequestedAtom;
+        private ResettableLazy<UIntPtr> _display;
+        private ResettableLazy<UIntPtr> _systemIntPtrAtom;
+        private ResettableLazy<UIntPtr> _windowProviderCreateWindowAtom;
+        private ResettableLazy<UIntPtr> _windowWindowProviderAtom;
+        private ResettableLazy<UIntPtr> _wmProtocolsAtom;
+        private ResettableLazy<UIntPtr> _wmDeleteWindowAtom;
 
         private State _state;
 
         private DispatchProvider()
         {
-            _display = new Lazy<UIntPtr>(CreateDisplay, isThreadSafe: true);
             _dispatchers = new ConcurrentDictionary<Thread, IDispatcher>();
 
-            _dispatcherExitRequestedAtom = new Lazy<UIntPtr>(CreateDispatcherExitRequestedAtom, isThreadSafe: true);
-            _systemIntPtrAtom = new Lazy<UIntPtr>(CreateSystemIntPtrAtom, isThreadSafe: true);
-            _windowProviderCreateWindowAtom = new Lazy<UIntPtr>(CreateWindowProviderCreateWindowAtom, isThreadSafe: true);
-            _windowWindowProviderAtom = new Lazy<UIntPtr>(CreateWindowWindowProviderAtom, isThreadSafe: true);
-            _wmProtocolsAtom = new Lazy<UIntPtr>(CreateWmProtocolsAtom, isThreadSafe: true);
-            _wmDeleteWindowAtom = new Lazy<UIntPtr>(CreateWmDeleteWindowAtom, isThreadSafe: true);
+            _dispatcherExitRequestedAtom = new ResettableLazy<UIntPtr>(CreateDispatcherExitRequestedAtom);
+            _display = new ResettableLazy<UIntPtr>(CreateDisplay);
+            _systemIntPtrAtom = new ResettableLazy<UIntPtr>(CreateSystemIntPtrAtom);
+            _windowProviderCreateWindowAtom = new ResettableLazy<UIntPtr>(CreateWindowProviderCreateWindowAtom);
+            _windowWindowProviderAtom = new ResettableLazy<UIntPtr>(CreateWindowWindowProviderAtom);
+            _wmProtocolsAtom = new ResettableLazy<UIntPtr>(CreateWmProtocolsAtom);
+            _wmDeleteWindowAtom = new ResettableLazy<UIntPtr>(CreateWmDeleteWindowAtom);
 
             _ = _state.Transition(to: Initialized);
         }
@@ -556,7 +557,7 @@ namespace TerraFX.Provider.Xlib.UI
         {
             _state.AssertDisposing();
 
-            if (_display.IsValueCreated)
+            if (_display.IsCreated)
             {
                 _ = XSetErrorHandler(IntPtr.Zero);
                 _ = XCloseDisplay(_display.Value);

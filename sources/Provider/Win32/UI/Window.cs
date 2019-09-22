@@ -21,13 +21,13 @@ namespace TerraFX.Provider.Win32.UI
     /// <summary>Defines a window.</summary>
     public sealed unsafe class Window : IDisposable, IWindow
     {
-        private readonly Lazy<IntPtr> _handle;
         private readonly Thread _parentThread;
         private readonly PropertySet _properties;
         private readonly WindowProvider _windowProvider;
         private readonly FlowDirection _flowDirection;
         private readonly ReadingDirection _readingDirection;
 
+        private ResettableLazy<IntPtr> _handle;
         private string _title;
         private Rectangle _bounds;
         private WindowState _windowState;
@@ -40,7 +40,7 @@ namespace TerraFX.Provider.Win32.UI
         {
             Assert(windowProvider != null, Resources.ArgumentNullExceptionMessage, nameof(windowProvider));
 
-            _handle = new Lazy<IntPtr>(CreateWindowHandle, isThreadSafe: true);
+            _handle = new ResettableLazy<IntPtr>(CreateWindowHandle);
 
             _parentThread = Thread.CurrentThread;
             _properties = new PropertySet();
@@ -132,7 +132,7 @@ namespace TerraFX.Provider.Win32.UI
         /// </remarks>
         public void Close()
         {
-            if (_handle.IsValueCreated)
+            if (_handle.IsCreated)
             {
                 _ = SendMessage(Handle, WM_CLOSE, wParam: UIntPtr.Zero, lParam: IntPtr.Zero);
             }
@@ -345,7 +345,7 @@ namespace TerraFX.Provider.Win32.UI
             Assert(Thread.CurrentThread == _parentThread, Resources.InvalidOperationExceptionMessage, nameof(Thread.CurrentThread), Thread.CurrentThread);
             _state.AssertDisposing();
 
-            if (_handle.IsValueCreated)
+            if (_handle.IsCreated)
             {
                 var result = DestroyWindow(_handle.Value);
 

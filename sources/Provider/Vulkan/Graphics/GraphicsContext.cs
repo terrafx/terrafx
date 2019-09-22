@@ -4,6 +4,7 @@ using System;
 using System.Runtime.CompilerServices;
 using TerraFX.Graphics;
 using TerraFX.Interop;
+using TerraFX.Numerics;
 using TerraFX.Utilities;
 using static TerraFX.Interop.VkAttachmentLoadOp;
 using static TerraFX.Interop.VkAttachmentStoreOp;
@@ -60,22 +61,22 @@ namespace TerraFX.Provider.Vulkan.Graphics
         private readonly GraphicsAdapter _graphicsAdapter;
         private readonly IGraphicsSurface _graphicsSurface;
 
-        private readonly Lazy<IntPtr> _acquireNextImageSemaphore;
-        private readonly Lazy<IntPtr[]> _commandBuffers;
-        private readonly Lazy<IntPtr> _commandPool;
-        private readonly Lazy<IntPtr> _device;
-        private readonly Lazy<IntPtr> _deviceQueue;
-        private readonly Lazy<IntPtr[]> _fences;
-        private readonly Lazy<IntPtr[]> _frameBuffers;
-        private readonly Lazy<uint> _graphicsQueueFamilyIndex;
-        private readonly Lazy<IntPtr> _queueSubmitSemaphore;
-        private readonly Lazy<IntPtr> _renderPass;
-        private readonly Lazy<IntPtr> _surface;
-        private readonly Lazy<IntPtr> _swapChain;
-        private readonly Lazy<IntPtr[]> _swapChainImages;
-        private readonly Lazy<IntPtr[]> _swapChainImageViews;
+        private ResettableLazy<IntPtr> _acquireNextImageSemaphore;
+        private ResettableLazy<IntPtr[]> _commandBuffers;
+        private ResettableLazy<IntPtr> _commandPool;
+        private ResettableLazy<IntPtr> _device;
+        private ResettableLazy<IntPtr> _deviceQueue;
+        private ResettableLazy<IntPtr[]> _fences;
+        private ResettableLazy<IntPtr[]> _frameBuffers;
+        private ResettableLazy<uint> _graphicsQueueFamilyIndex;
+        private ResettableLazy<IntPtr> _queueSubmitSemaphore;
+        private ResettableLazy<IntPtr> _renderPass;
+        private ResettableLazy<IntPtr> _surface;
+        private ResettableLazy<IntPtr> _swapChain;
+        private ResettableLazy<IntPtr[]> _swapChainImageViews;
 
         private uint _frameIndex;
+        private Vector2 _previousGraphicsSurfaceSize;
         private State _state;
         private VkFormat _swapChainFormat;
 
@@ -84,20 +85,19 @@ namespace TerraFX.Provider.Vulkan.Graphics
             _graphicsAdapter = graphicsAdapter;
             _graphicsSurface = graphicsSurface;
 
-            _acquireNextImageSemaphore = new Lazy<IntPtr>(CreateAcquireNextImageSemaphore, isThreadSafe: true);
-            _commandBuffers = new Lazy<IntPtr[]>(CreateCommandBuffers, isThreadSafe: true);
-            _commandPool = new Lazy<IntPtr>(CreateCommandPool, isThreadSafe: false);
-            _device = new Lazy<IntPtr>(CreateDevice, isThreadSafe: true);
-            _deviceQueue = new Lazy<IntPtr>(CreateDeviceQueue, isThreadSafe: true);
-            _fences = new Lazy<IntPtr[]>(CreateFences, isThreadSafe: true);
-            _frameBuffers = new Lazy<IntPtr[]>(CreateFrameBuffers, isThreadSafe: true);
-            _graphicsQueueFamilyIndex = new Lazy<uint>(FindGraphicsQueueFamilyIndex, isThreadSafe: true);
-            _queueSubmitSemaphore = new Lazy<IntPtr>(CreateQueueSubmitSemaphore, isThreadSafe: true);
-            _renderPass = new Lazy<IntPtr>(CreateRenderPass, isThreadSafe: true);
-            _surface = new Lazy<IntPtr>(CreateSurface, isThreadSafe: true);
-            _swapChain = new Lazy<IntPtr>(CreateSwapChain, isThreadSafe: true);
-            _swapChainImages = new Lazy<IntPtr[]>(CreateSwapChainImages, isThreadSafe: true);
-            _swapChainImageViews = new Lazy<IntPtr[]>(CreateSwapChainImageViews, isThreadSafe: true);
+            _acquireNextImageSemaphore = new ResettableLazy<IntPtr>(CreateAcquireNextImageSemaphore);
+            _commandBuffers = new ResettableLazy<IntPtr[]>(CreateCommandBuffers);
+            _commandPool = new ResettableLazy<IntPtr>(CreateCommandPool);
+            _device = new ResettableLazy<IntPtr>(CreateDevice);
+            _deviceQueue = new ResettableLazy<IntPtr>(CreateDeviceQueue);
+            _fences = new ResettableLazy<IntPtr[]>(CreateFences);
+            _frameBuffers = new ResettableLazy<IntPtr[]>(CreateFrameBuffers);
+            _graphicsQueueFamilyIndex = new ResettableLazy<uint>(FindGraphicsQueueFamilyIndex);
+            _queueSubmitSemaphore = new ResettableLazy<IntPtr>(CreateQueueSubmitSemaphore);
+            _renderPass = new ResettableLazy<IntPtr>(CreateRenderPass);
+            _surface = new ResettableLazy<IntPtr>(CreateSurface);
+            _swapChain = new ResettableLazy<IntPtr>(CreateSwapChain);
+            _swapChainImageViews = new ResettableLazy<IntPtr[]>(CreateSwapChainImageViews);
 
             _ = _state.Transition(to: Initialized);
         }
@@ -246,17 +246,6 @@ namespace TerraFX.Provider.Vulkan.Graphics
             }
         }
 
-        /// <summary>Gets an array of <c>VkImage</c> for the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public IntPtr[] SwapChainImages
-        {
-            get
-            {
-                _state.ThrowIfDisposedOrDisposing();
-                return _swapChainImages.Value;
-            }
-        }
-
         /// <summary>Gets an array of <c>VkImageView</c> for the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public IntPtr[] SwapChainImageViews
@@ -279,6 +268,12 @@ namespace TerraFX.Provider.Vulkan.Graphics
         /// <param name="backgroundColor">A color to which the background should be cleared.</param>
         public void BeginFrame(ColorRgba backgroundColor)
         {
+            if (_graphicsSurface.Size != _previousGraphicsSurfaceSize)
+            {
+                ResetSizeDependentResources();
+                _previousGraphicsSurfaceSize = _graphicsSurface.Size;
+            }
+
             uint frameIndex;
             var result = vkAcquireNextImageKHR(Device, SwapChain, timeout: ulong.MaxValue, AcquireNextImageSemaphore, fence: IntPtr.Zero, &frameIndex);
             _frameIndex = frameIndex;
@@ -842,9 +837,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 ThrowExternalException(nameof(vkGetPhysicalDeviceSurfacePresentModesKHR), (int)result);
             }
 
-            if (((uint)_graphicsSurface.Width != surfaceCapabilities.currentExtent.width) ||
-                ((uint)_graphicsSurface.Height != surfaceCapabilities.currentExtent.height) ||
-                ((uint)_graphicsSurface.BufferCount < surfaceCapabilities.minImageCount) ||
+            if (((uint)_graphicsSurface.BufferCount < surfaceCapabilities.minImageCount) ||
                 ((surfaceCapabilities.maxImageCount != 0) && ((uint)_graphicsSurface.BufferCount > surfaceCapabilities.maxImageCount)))
             {
                 ThrowArgumentOutOfRangeException(nameof(_graphicsSurface), _graphicsSurface);
@@ -916,27 +909,19 @@ namespace TerraFX.Provider.Vulkan.Graphics
             return swapChain;
         }
 
-        private IntPtr[] CreateSwapChainImages()
-        {
-            var swapChainImageCount = (uint)_graphicsSurface.BufferCount;
-            var swapChainImages = new IntPtr[swapChainImageCount];
-
-            fixed (IntPtr* pSwapChainImages = swapChainImages)
-            {
-                var result = vkGetSwapchainImagesKHR(Device, SwapChain, &swapChainImageCount, pSwapChainImages);
-
-                if (result != VK_SUCCESS)
-                {
-                    ThrowExternalException(nameof(vkGetSwapchainImagesKHR), (int)result);
-                }
-            }
-
-            return swapChainImages;
-        }
-
         private IntPtr[] CreateSwapChainImageViews()
         {
-            var swapChainImageViews = new IntPtr[(uint)_graphicsSurface.BufferCount];
+            var swapChainImageCount = (uint)_graphicsSurface.BufferCount;
+            var swapChainImages = stackalloc IntPtr[(int)swapChainImageCount];
+
+            var result = vkGetSwapchainImagesKHR(Device, SwapChain, &swapChainImageCount, swapChainImages);
+
+            if (result != VK_SUCCESS)
+            {
+                ThrowExternalException(nameof(vkGetSwapchainImagesKHR), (int)result);
+            }
+
+            var swapChainImageViews = new IntPtr[swapChainImageCount];
 
             var swapChainImageViewCreateInfo = new VkImageViewCreateInfo {
                 sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
@@ -962,10 +947,10 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
             for (var i = 0; i < swapChainImageViews.Length; i++)
             {
-                swapChainImageViewCreateInfo.image = (ulong)SwapChainImages[i];
+                swapChainImageViewCreateInfo.image = (ulong)swapChainImages[i];
 
                 IntPtr swapChainImageView;
-                var result = vkCreateImageView(Device, &swapChainImageViewCreateInfo, pAllocator: null, (ulong)&swapChainImageView);
+                result = vkCreateImageView(Device, &swapChainImageViewCreateInfo, pAllocator: null, (ulong)&swapChainImageView);
 
                 if (result != VK_SUCCESS)
                 {
@@ -992,7 +977,6 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 DisposeFrameBuffers();
                 DisposeSwapChainImageViews();
                 DisposeRenderPass();
-                DisposeSwapChainImages();
                 DisposeSwapChain();
                 DisposeSurface();
                 DisposeDevice();
@@ -1003,7 +987,9 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
         private void DisposeAcquireNextImageSemaphore()
         {
-            if (_acquireNextImageSemaphore.IsValueCreated)
+            _state.AssertDisposing();
+
+            if (_acquireNextImageSemaphore.IsCreated)
             {
                 vkDestroySemaphore(_device.Value, (ulong)_acquireNextImageSemaphore.Value, pAllocator: null);
             }
@@ -1011,7 +997,9 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
         private void DisposeCommandBuffers()
         {
-            if (_commandBuffers.IsValueCreated)
+            _state.AssertDisposing();
+
+            if (_commandBuffers.IsCreated)
             {
                 fixed (IntPtr* commandBuffers = _commandBuffers.Value)
                 {
@@ -1022,7 +1010,9 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
         private void DisposeCommandPool()
         {
-            if (_commandPool.IsValueCreated)
+            _state.AssertDisposing();
+
+            if (_commandPool.IsCreated)
             {
                 vkDestroyCommandPool(_device.Value, (ulong)_commandPool.Value, pAllocator: null);
             }
@@ -1030,7 +1020,9 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
         private void DisposeDevice()
         {
-            if (_device.IsValueCreated)
+            _state.AssertDisposing();
+
+            if (_device.IsCreated)
             {
                 vkDestroyDevice(_device.Value, pAllocator: null);
             }
@@ -1038,9 +1030,13 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
         private void DisposeFences()
         {
-            if (_fences.IsValueCreated)
+            _state.AssertDisposing();
+
+            if (_fences.IsCreated)
             {
-                foreach (var fence in _fences.Value)
+                var fences = _fences.Value;
+
+                foreach (var fence in fences)
                 {
                     if (fence != IntPtr.Zero)
                     {
@@ -1052,9 +1048,13 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
         private void DisposeFrameBuffers()
         {
-            if (_frameBuffers.IsValueCreated)
+            _state.AssertDisposing();
+
+            if (_frameBuffers.IsCreated)
             {
-                foreach (var frameBuffer in _frameBuffers.Value)
+                var frameBuffers = _frameBuffers.Value;
+
+                foreach (var frameBuffer in frameBuffers)
                 {
                     if (frameBuffer != IntPtr.Zero)
                     {
@@ -1066,7 +1066,9 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
         private void DisposeQueueSubmitSemaphore()
         {
-            if (_queueSubmitSemaphore.IsValueCreated)
+            _state.AssertDisposing();
+
+            if (_queueSubmitSemaphore.IsCreated)
             {
                 vkDestroySemaphore(_device.Value, (ulong)_queueSubmitSemaphore.Value, pAllocator: null);
             }
@@ -1074,7 +1076,9 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
         private void DisposeRenderPass()
         {
-            if (_renderPass.IsValueCreated)
+            _state.AssertDisposing();
+
+            if (_renderPass.IsCreated)
             {
                 vkDestroyRenderPass(_device.Value, (ulong)_renderPass.Value, pAllocator: null);
             }
@@ -1082,7 +1086,9 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
         private void DisposeSurface()
         {
-            if (_surface.IsValueCreated)
+            _state.AssertDisposing();
+
+            if (_surface.IsCreated)
             {
                 var graphicsProvider = (GraphicsProvider)_graphicsAdapter.GraphicsProvider;
                 vkDestroySurfaceKHR(graphicsProvider.Instance, _surface.Value, pAllocator: null);
@@ -1091,32 +1097,23 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
         private void DisposeSwapChain()
         {
-            if (_swapChain.IsValueCreated)
-            {
-                var graphicsProvider = (GraphicsProvider)_graphicsAdapter.GraphicsProvider;
-                vkDestroySwapchainKHR(_device.Value, _swapChain.Value, pAllocator: null);
-            }
-        }
+            _state.AssertDisposing();
 
-        private void DisposeSwapChainImages()
-        {
-            if (_swapChainImages.IsValueCreated)
+            if (_swapChain.IsCreated)
             {
-                foreach (var swapChainImage in _swapChainImages.Value)
-                {
-                    if (swapChainImage != IntPtr.Zero)
-                    {
-                        vkDestroyImage(_device.Value, (ulong)swapChainImage, pAllocator: null);
-                    }
-                }
+                vkDestroySwapchainKHR(_device.Value, _swapChain.Value, pAllocator: null);
             }
         }
 
         private void DisposeSwapChainImageViews()
         {
-            if (_swapChainImageViews.IsValueCreated)
+            _state.AssertDisposing();
+
+            if (_swapChainImageViews.IsCreated)
             {
-                foreach (var swapChainImageView in _swapChainImageViews.Value)
+                var swapChainImageViews = _swapChainImageViews.Value;
+
+                foreach (var swapChainImageView in swapChainImageViews)
                 {
                     if (swapChainImageView != IntPtr.Zero)
                     {
@@ -1150,6 +1147,45 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 ThrowInvalidOperationException(nameof(queueFamilyIndex), queueFamilyIndex);
             }
             return queueFamilyIndex;
+        }
+
+        private void ResetSizeDependentResources()
+        {
+            if(_frameBuffers.IsCreated)
+            {
+                var frameBuffers = _frameBuffers.Value;
+
+                foreach (var frameBuffer in frameBuffers)
+                {
+                    if (frameBuffer != IntPtr.Zero)
+                    {
+                        vkDestroyFramebuffer(_device.Value, (ulong)frameBuffer, pAllocator: null);
+                    }
+                }
+
+                _frameBuffers.Reset();
+            }
+
+            if (_swapChainImageViews.IsCreated)
+            {
+                var swapChainImageViews = _swapChainImageViews.Value;
+
+                foreach (var swapChainImageView in swapChainImageViews)
+                {
+                    if (swapChainImageView != IntPtr.Zero)
+                    {
+                        vkDestroyImageView(_device.Value, (ulong)swapChainImageView, pAllocator: null);
+                    }
+                }
+
+                _swapChainImageViews.Reset();
+            }
+
+            if (_swapChain.IsCreated)
+            {
+                vkDestroySwapchainKHR(_device.Value, _swapChain.Value, pAllocator: null);
+                _swapChain.Reset();
+            }
         }
     }
 }
