@@ -12,6 +12,9 @@ namespace TerraFX.UI
     /// <summary>Defines a window.</summary>
     public interface IWindow
     {
+        /// <summary>Occurs when the <see cref="Size" /> property changes.</summary>
+        event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged;
+
         /// <summary>Gets a <see cref="Vector2" /> that represents the location of the instance.</summary>
         public Vector2 Location => Bounds.Location;
 

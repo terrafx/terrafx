@@ -60,6 +60,9 @@ namespace TerraFX.Provider.Win32.UI
             Dispose(isDisposing: false);
         }
 
+        /// <summary>Occurs when the <see cref="IWindow.Size" /> property changes.</summary>
+        public event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged;
+
         /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
         public Rectangle Bounds => _bounds;
 
@@ -432,9 +435,22 @@ namespace TerraFX.Provider.Win32.UI
             _windowState = (WindowState)(uint)wParam;
             Assert(Enum.IsDefined(typeof(WindowState), _windowState), Resources.ArgumentOutOfRangeExceptionMessage, nameof(wParam), wParam);
 
-            var size = new Vector2(x: LOWORD(lParam), y: HIWORD(lParam));
-            _bounds = _bounds.WithSize(size);
+            var previousSize = _bounds.Size;
+            var currentSize = new Vector2(x: LOWORD(lParam), y: HIWORD(lParam));
+
+            _bounds = _bounds.WithSize(currentSize);
+            OnSizeChanged(previousSize, currentSize);
+
             return IntPtr.Zero;
+        }
+
+        private void OnSizeChanged(Vector2 previousSize, Vector2 currentSize)
+        {
+            if (SizeChanged != null)
+            {
+                var eventArgs = new PropertyChangedEventArgs<Vector2>(previousSize, currentSize);
+                SizeChanged(this, eventArgs);
+            }
         }
     }
 }
