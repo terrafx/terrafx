@@ -11,6 +11,7 @@ using TerraFX.Numerics;
 using TerraFX.UI;
 using TerraFX.Utilities;
 using static TerraFX.Interop.Xlib;
+using static TerraFX.Provider.Xlib.HelperUtilities;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
@@ -59,6 +60,9 @@ namespace TerraFX.Provider.Xlib.UI
         {
             Dispose(isDisposing: false);
         }
+
+        /// <summary>Occurs when the <see cref="IWindow.Location" /> property changes.</summary>
+        public event EventHandler<PropertyChangedEventArgs<Vector2>>? LocationChanged;
 
         /// <summary>Occurs when the <see cref="IWindow.Size" /> property changes.</summary>
         public event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged;
@@ -139,30 +143,12 @@ namespace TerraFX.Provider.Xlib.UI
             if (_handle.IsCreated)
             {
                 var dispatchProvider = DispatchProvider.Instance;
-
-                var clientEvent = new XClientMessageEvent {
-                    type = ClientMessage,
-                    serial = UIntPtr.Zero,
-                    send_event = True,
-                    display = dispatchProvider.Display,
-                    window = Handle,
-                    message_type = dispatchProvider.WmProtocolsAtom,
-                    format = 32
-                };
-                clientEvent.data.l[0] = (IntPtr)(void*)dispatchProvider.WmDeleteWindowAtom;
-
-                var status = XSendEvent(
-                    clientEvent.display,
-                    clientEvent.window,
-                    propagate: False,
-                    (IntPtr)NoEventMask,
-                    (XEvent*)&clientEvent
+                SendClientMessage(
+                    dispatchProvider.Display,
+                    window: Handle,
+                    messageType: dispatchProvider.WmProtocolsAtom,
+                    message: dispatchProvider.WmDeleteWindowAtom
                 );
-
-                if (status == 0)
-                {
-                    ThrowExternalException(nameof(XSendEvent), status);
-                }
             }
         }
 
@@ -234,12 +220,7 @@ namespace TerraFX.Provider.Xlib.UI
                 var handle = Handle;
 
                 XWindowAttributes windowAttributes;
-                var status = XGetWindowAttributes(display, handle, &windowAttributes);
-
-                if (status != Success)
-                {
-                    ThrowExternalExceptionForLastError(nameof(XGetWindowAttributes));
-                }
+                ThrowExternalExceptionIfFailed(nameof(XGetWindowAttributes), XGetWindowAttributes(display, handle, &windowAttributes));
 
                 _restoredBounds = new Rectangle(windowAttributes.x, windowAttributes.y, windowAttributes.width, windowAttributes.height);
 
@@ -263,21 +244,11 @@ namespace TerraFX.Provider.Xlib.UI
                 var handle = Handle;
 
                 XWindowAttributes windowAttributes;
-                var status = XGetWindowAttributes(display, handle, &windowAttributes);
-
-                if (status != Success)
-                {
-                    ThrowExternalExceptionForLastError(nameof(XGetWindowAttributes));
-                }
+                ThrowExternalExceptionIfFailed(nameof(XGetWindowAttributes), XGetWindowAttributes(display, handle, &windowAttributes));
 
                 var screenNumber = XScreenNumberOfScreen(windowAttributes.screen);
 
-                status = XIconifyWindow(display, handle, screenNumber);
-
-                if (status == 0)
-                {
-                    ThrowExternalExceptionForLastError(nameof(XIconifyWindow));
-                }
+                ThrowExternalExceptionIfZero(nameof(XIconifyWindow), XIconifyWindow(display, handle, screenNumber));
 
                 _windowState = WindowState.Minimized;
             }
@@ -388,11 +359,7 @@ namespace TerraFX.Provider.Xlib.UI
                 valuemask: UIntPtr.Zero,
                 attributes: null
             );
-
-            if (window == (UIntPtr)None)
-            {
-                ThrowExternalExceptionForLastError(nameof(XCreateSimpleWindow));
-            }
+            ThrowExternalExceptionIfZero(nameof(XCreateSimpleWindow), window);
 
             _ = XSelectInput(
                 display,
@@ -401,51 +368,15 @@ namespace TerraFX.Provider.Xlib.UI
             );
 
             var wmDeleteWindowAtom = dispatchProvider.WmDeleteWindowAtom;
-            var status = XSetWMProtocols(display, window, &wmDeleteWindowAtom, count: 1);
+            ThrowExternalExceptionIfZero(nameof(XSetWMProtocols), XSetWMProtocols(display, window, &wmDeleteWindowAtom, count: 1));
 
-            if (status == 0)
-            {
-                ThrowExternalException(nameof(XSetWMProtocols), status);
-            }
-
-            var clientEvent = new XClientMessageEvent {
-                type = ClientMessage,
-                serial = UIntPtr.Zero,
-                send_event = True,
-                display = dispatchProvider.Display,
-                window = window,
-                message_type = dispatchProvider.WmProtocolsAtom,
-                format = 32
-            };
-
-            clientEvent.data.l[0] = (IntPtr)(void*)dispatchProvider.WindowProviderCreateWindowAtom;
-
-            var windowProviderNativeHandle = GCHandle.ToIntPtr(_windowProvider.NativeHandle);
-
-            if (Environment.Is64BitProcess)
-            {
-                var bits = windowProviderNativeHandle.ToInt64();
-                clientEvent.data.l[1] = unchecked((IntPtr)(uint)bits);
-                clientEvent.data.l[2] = (IntPtr)(uint)(bits >> 32);
-            }
-            else
-            {
-                var bits = windowProviderNativeHandle.ToInt32();
-                clientEvent.data.l[1] = (IntPtr)bits;
-            }
-
-            status = XSendEvent(
-                clientEvent.display,
-                clientEvent.window,
-                propagate: False,
-                (IntPtr)NoEventMask,
-                (XEvent*)&clientEvent
+            SendClientMessage(
+                display,
+                window,
+                messageType: dispatchProvider.WmProtocolsAtom,
+                message: dispatchProvider.WindowProviderCreateWindowAtom,
+                data: GCHandle.ToIntPtr(_windowProvider.NativeHandle)
             );
-
-            if (status == 0)
-            {
-                ThrowExternalException(nameof(XSendEvent), status);
-            }
 
             return window;
         }
@@ -517,6 +448,7 @@ namespace TerraFX.Provider.Xlib.UI
             if (currentLocation != previousLocation)
             {
                 _bounds = _bounds.WithLocation(currentLocation);
+                OnLocationChanged(previousLocation, currentLocation);
             }
 
             var previousSize = _bounds.Size;
@@ -546,6 +478,15 @@ namespace TerraFX.Provider.Xlib.UI
         }
 
         private void HandleXVisibility(XVisibilityEvent* xvisibility) => _isVisible = xvisibility->state != VisibilityFullyObscured;
+
+        private void OnLocationChanged(Vector2 previousLocation, Vector2 currentLocation)
+        {
+            if (LocationChanged != null)
+            {
+                var eventArgs = new PropertyChangedEventArgs<Vector2>(previousLocation, currentLocation);
+                LocationChanged(this, eventArgs);
+            }
+        }
 
         private void OnSizeChanged(Vector2 previousSize, Vector2 currentSize)
         {

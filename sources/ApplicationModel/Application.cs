@@ -93,6 +93,7 @@ namespace TerraFX.ApplicationModel
                 // we can end up with a NullReferenceException when we try to execute
                 // OnIdle.
 
+                dispatcher.ExitRequested += OnDispatcherExitRequested;
                 dispatcher.DispatchPending();
 
                 while (_state == Running)
@@ -120,6 +121,8 @@ namespace TerraFX.ApplicationModel
 
                     dispatcher.DispatchPending();
                 }
+
+                dispatcher.ExitRequested -= OnDispatcherExitRequested;
             }
             _ = _state.TryTransition(from: Exiting, to: Stopped);
         }
@@ -166,6 +169,8 @@ namespace TerraFX.ApplicationModel
                 _compositionHost.Value.Dispose();
             }
         }
+
+        private void OnDispatcherExitRequested(object? sender, EventArgs e) => RequestExit();
 
         private void OnIdle(TimeSpan delta, uint framesPerSecond)
         {
