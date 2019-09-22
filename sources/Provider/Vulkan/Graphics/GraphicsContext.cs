@@ -76,7 +76,6 @@ namespace TerraFX.Provider.Vulkan.Graphics
         private ResettableLazy<IntPtr[]> _swapChainImageViews;
 
         private uint _frameIndex;
-        private Vector2 _previousGraphicsSurfaceSize;
         private State _state;
         private VkFormat _swapChainFormat;
 
@@ -100,6 +99,11 @@ namespace TerraFX.Provider.Vulkan.Graphics
             _swapChainImageViews = new ResettableLazy<IntPtr[]>(CreateSwapChainImageViews);
 
             _ = _state.Transition(to: Initialized);
+
+            // Do event hookups after we are in the initialized state, since an event could
+            // technically fire while the constructor is still running.
+
+            _graphicsSurface.SizeChanged += HandleGraphicsSurfaceSizeChanged;
         }
 
         /// <summary>Finalizes an instance of the <see cref="GraphicsContext" /> class.</summary>
@@ -268,12 +272,6 @@ namespace TerraFX.Provider.Vulkan.Graphics
         /// <param name="backgroundColor">A color to which the background should be cleared.</param>
         public void BeginFrame(ColorRgba backgroundColor)
         {
-            if (_graphicsSurface.Size != _previousGraphicsSurfaceSize)
-            {
-                ResetSizeDependentResources();
-                _previousGraphicsSurfaceSize = _graphicsSurface.Size;
-            }
-
             uint frameIndex;
             var result = vkAcquireNextImageKHR(Device, SwapChain, timeout: ulong.MaxValue, AcquireNextImageSemaphore, fence: IntPtr.Zero, &frameIndex);
             _frameIndex = frameIndex;
@@ -1149,9 +1147,16 @@ namespace TerraFX.Provider.Vulkan.Graphics
             return queueFamilyIndex;
         }
 
-        private void ResetSizeDependentResources()
+        private void HandleGraphicsSurfaceSizeChanged(object? sender, PropertyChangedEventArgs<Vector2> e)
         {
-            if(_frameBuffers.IsCreated)
+            var result = vkDeviceWaitIdle(Device);
+
+            if (result != VK_SUCCESS)
+            {
+                ThrowExternalException(nameof(vkDeviceWaitIdle), (int)result);
+            }
+
+            if (_frameBuffers.IsCreated)
             {
                 var frameBuffers = _frameBuffers.Value;
 

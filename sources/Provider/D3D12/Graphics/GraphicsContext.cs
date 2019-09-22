@@ -48,7 +48,6 @@ namespace TerraFX.Provider.D3D12.Graphics
 
         private ulong _fenceValue;
         private uint _frameIndex;
-        private Vector2 _previousGraphicsSurfaceSize;
         private State _state;
 
         internal GraphicsContext(GraphicsAdapter graphicsAdapter, IGraphicsSurface graphicsSurface)
@@ -68,6 +67,11 @@ namespace TerraFX.Provider.D3D12.Graphics
             _swapChain = new ResettableLazy<IntPtr>(CreateSwapChain);
 
             _ = _state.Transition(to: Initialized);
+
+            // Do event hookups after we are in the initialized state, since an event could
+            // technically fire while the constructor is still running.
+
+            _graphicsSurface.SizeChanged += HandleGraphicsSurfaceSizeChanged;
         }
 
         /// <summary>Finalizes an instance of the <see cref="GraphicsContext" /> class.</summary>
@@ -203,12 +207,6 @@ namespace TerraFX.Provider.D3D12.Graphics
         /// <param name="backgroundColor">A color to which the background should be cleared.</param>
         public void BeginFrame(ColorRgba backgroundColor)
         {
-            if (_graphicsSurface.Size != _previousGraphicsSurfaceSize)
-            {
-                ResetSizeDependentResources();
-                _previousGraphicsSurfaceSize = _graphicsSurface.Size;
-            }
-
             var frameIndex = SwapChain->GetCurrentBackBufferIndex();
             _frameIndex = frameIndex;
             WaitForFence(Fences[frameIndex], FenceEvents[frameIndex], FenceValues[frameIndex]);
@@ -652,8 +650,27 @@ namespace TerraFX.Provider.D3D12.Graphics
             }
         }
 
-        private void ResetSizeDependentResources()
+        private void HandleGraphicsSurfaceSizeChanged(object? sender, PropertyChangedEventArgs<Vector2> e)
         {
+            ID3D12Fence* fence;
+
+            var iid = IID_ID3D12Fence;
+            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateFence), Device->CreateFence(InitialValue: 0, D3D12_FENCE_FLAG_NONE, &iid, (void**)&fence));
+
+            ThrowExternalExceptionIfFailed(nameof(ID3D12CommandQueue.Signal), CommandQueue->Signal(fence, Value: 1));
+
+            var fenceEvent = CreateEvent(lpEventAttributes: null, bManualReset: FALSE, bInitialState: FALSE, lpName: null);
+
+            if (fenceEvent == IntPtr.Zero)
+            {
+                ThrowExternalExceptionForLastHRESULT(nameof(CreateEvent));
+            }
+
+            WaitForFence(fence, fenceEvent, fenceValue: 1);
+
+            _ = CloseHandle(fenceEvent);
+            _ = fence->Release();
+
             if (_renderTargets.IsCreated)
             {
                 var renderTargets = _renderTargets.Value;
@@ -667,18 +684,6 @@ namespace TerraFX.Provider.D3D12.Graphics
                 }
 
                 _renderTargets.Reset();
-            }
-
-            if (_fenceValues.IsCreated)
-            {
-                var bufferCount = _graphicsSurface.BufferCount;
-                var fenceValues = _fenceValues.Value;
-                var fenceValue = fenceValues[_frameIndex];
-
-                for (uint i = 0; i < bufferCount; i++)
-                {
-                    fenceValues[i] = fenceValue;
-                }
             }
 
             if (_swapChain.IsCreated)
