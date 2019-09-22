@@ -8,6 +8,9 @@ namespace TerraFX.Graphics
     /// <summary>Represents a graphics surface.</summary>
     public interface IGraphicsSurface
     {
+        /// <summary>Occurs when the <see cref="Size" /> property changes.</summary>
+        event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged;
+
         /// <summary>Gets the height of the instance.</summary>
         public float Height => Size.Y;
 
