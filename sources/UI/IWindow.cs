@@ -5,12 +5,22 @@ using System.Threading;
 using TerraFX.Collections;
 using TerraFX.Graphics;
 using TerraFX.Graphics.Geometry2D;
+using TerraFX.Numerics;
 
 namespace TerraFX.UI
 {
     /// <summary>Defines a window.</summary>
     public interface IWindow
     {
+        /// <summary>Occurs when the <see cref="Size" /> property changes.</summary>
+        event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged;
+
+        /// <summary>Gets a <see cref="Vector2" /> that represents the location of the instance.</summary>
+        public Vector2 Location => Bounds.Location;
+
+        /// <summary>Gets a <see cref="Vector2" /> that represents the size of the instance.</summary>
+        public Vector2 Size => Bounds.Size;
+
         /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
         Rectangle Bounds { get; }
 

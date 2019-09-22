@@ -16,7 +16,6 @@ namespace TerraFX.Provider.D3D12.Graphics
     {
         private readonly GraphicsProvider _graphicsProvider;
         private readonly IDXGIAdapter1* _adapter;
-
         private readonly string _deviceName;
         private readonly uint _vendorId;
         private readonly uint _deviceId;

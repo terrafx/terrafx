@@ -7,6 +7,7 @@ using TerraFX.Collections;
 using TerraFX.Graphics;
 using TerraFX.Graphics.Geometry2D;
 using TerraFX.Interop;
+using TerraFX.Numerics;
 using TerraFX.UI;
 using TerraFX.Utilities;
 using static TerraFX.Interop.Xlib;
@@ -58,6 +59,9 @@ namespace TerraFX.Provider.Xlib.UI
         {
             Dispose(isDisposing: false);
         }
+
+        /// <summary>Occurs when the <see cref="IWindow.Size" /> property changes.</summary>
+        public event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged;
 
         /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
         public Rectangle Bounds => _bounds;
@@ -505,7 +509,27 @@ namespace TerraFX.Provider.Xlib.UI
 
         private void HandleXCirculate(XCirculateEvent* xcirculate) => _isActive = xcirculate->place == PlaceOnTop;
 
-        private void HandleXConfigure(XConfigureEvent* xconfigure) => _bounds = new Rectangle(xconfigure->x, xconfigure->y, xconfigure->width, xconfigure->height);
+        private void HandleXConfigure(XConfigureEvent* xconfigure)
+        {
+            var previousLocation = _bounds.Location;
+            var currentLocation = new Vector2(xconfigure->x, xconfigure->y);
+
+            if (currentLocation != previousLocation)
+            {
+                _bounds = _bounds.WithLocation(currentLocation);
+            }
+
+            var previousSize = _bounds.Size;
+            var currentSize = new Vector2(xconfigure->width, xconfigure->height);
+
+            if (currentSize != previousSize)
+            {
+                _bounds = _bounds.WithSize(currentSize);
+                OnSizeChanged(previousSize, currentSize);
+            }
+
+            _bounds = new Rectangle(xconfigure->x, xconfigure->y, xconfigure->width, xconfigure->height);
+        }
 
         private void HandleXDestroyWindow(XDestroyWindowEvent* xdestroyWindow)
         {
@@ -522,5 +546,14 @@ namespace TerraFX.Provider.Xlib.UI
         }
 
         private void HandleXVisibility(XVisibilityEvent* xvisibility) => _isVisible = xvisibility->state != VisibilityFullyObscured;
+
+        private void OnSizeChanged(Vector2 previousSize, Vector2 currentSize)
+        {
+            if (SizeChanged != null)
+            {
+                var eventArgs = new PropertyChangedEventArgs<Vector2>(previousSize, currentSize);
+                SizeChanged(this, eventArgs);
+            }
+        }
     }
 }

@@ -23,6 +23,20 @@ namespace TerraFX.Provider.Win32.UI
             _bufferCount = bufferCount;
         }
 
+        /// <summary>Occurs when the <see cref="Size" /> property changes.</summary>
+        public event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged
+        {
+            add
+            {
+                _window.SizeChanged += value;
+            }
+
+            remove
+            {
+                _window.SizeChanged -= value;
+            }
+        }
+
         /// <summary>Gets the number of buffers for the instance.</summary>
         public int BufferCount => _bufferCount;
 

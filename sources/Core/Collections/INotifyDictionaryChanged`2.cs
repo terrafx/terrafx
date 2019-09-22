@@ -11,6 +11,6 @@ namespace TerraFX.Collections
     public interface INotifyDictionaryChanged<TKey, TValue>
     {
         /// <summary>Occurs when the underlying <see cref="IDictionary{TKey, TValue}" /> changes.</summary>
-        event EventHandler<NotifyDictionaryChangedEventArgs<TKey, TValue>> DictionaryChanged;
+        event EventHandler<NotifyDictionaryChangedEventArgs<TKey, TValue>>? DictionaryChanged;
     }
 }
