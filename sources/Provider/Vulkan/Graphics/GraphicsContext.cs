@@ -837,9 +837,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 ThrowExternalException(nameof(vkGetPhysicalDeviceSurfacePresentModesKHR), (int)result);
             }
 
-            if (((uint)_graphicsSurface.Width != surfaceCapabilities.currentExtent.width) ||
-                ((uint)_graphicsSurface.Height != surfaceCapabilities.currentExtent.height) ||
-                ((uint)_graphicsSurface.BufferCount < surfaceCapabilities.minImageCount) ||
+            if (((uint)_graphicsSurface.BufferCount < surfaceCapabilities.minImageCount) ||
                 ((surfaceCapabilities.maxImageCount != 0) && ((uint)_graphicsSurface.BufferCount > surfaceCapabilities.maxImageCount)))
             {
                 ThrowArgumentOutOfRangeException(nameof(_graphicsSurface), _graphicsSurface);

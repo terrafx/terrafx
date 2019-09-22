@@ -17,7 +17,7 @@ namespace TerraFX.Provider.Xlib.UI
         internal GraphicsSurface(Window window, int bufferCount)
         {
             Assert(window != null, Resources.ArgumentNullExceptionMessage, nameof(bufferCount));
-            Assert(bufferCount <= 0, Resources.ArgumentOutOfRangeExceptionMessage, nameof(bufferCount), bufferCount);
+            Assert(bufferCount > 0, Resources.ArgumentOutOfRangeExceptionMessage, nameof(bufferCount), bufferCount);
 
             _window = window;
             _bufferCount = bufferCount;
