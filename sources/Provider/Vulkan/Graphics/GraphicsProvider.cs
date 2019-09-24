@@ -23,144 +23,6 @@ namespace TerraFX.Provider.Vulkan.Graphics
     [Shared]
     public sealed unsafe class GraphicsProvider : IDisposable, IGraphicsProvider
     {
-#if DEBUG
-        private static ReadOnlySpan<sbyte> VK_EXT_debug_report => new sbyte[] {
-            0x56,
-            0x4B,
-            0x5F,
-            0x45,
-            0x58,
-            0x54,
-            0x5F,
-            0x64,
-            0x65,
-            0x62,
-            0x75,
-            0x67,
-            0x5F,
-            0x72,
-            0x65,
-            0x70,
-            0x6F,
-            0x72,
-            0x74,
-            0x00,
-        };
-#endif
-
-        private static ReadOnlySpan<sbyte> VK_KHR_surface => new sbyte[] {
-            0x56,
-            0x4B,
-            0x5F,
-            0x4B,
-            0x48,
-            0x52,
-            0x5F,
-            0x73,
-            0x75,
-            0x72,
-            0x66,
-            0x61,
-            0x63,
-            0x65,
-            0x00,
-        };
-
-        private static ReadOnlySpan<sbyte> VK_KHR_wayland_surface => new sbyte[] {
-            0x56,
-            0x4b,
-            0x5f,
-            0x4b,
-            0x48,
-            0x52,
-            0x5f,
-            0x77,
-            0x61,
-            0x79,
-            0x6c,
-            0x61,
-            0x6e,
-            0x64,
-            0x5f,
-            0x73,
-            0x75,
-            0x72,
-            0x66,
-            0x61,
-            0x63,
-            0x65,
-            0x00,
-        };
-
-        private static ReadOnlySpan<sbyte> VK_KHR_win32_surface => new sbyte[] {
-            0x56,
-            0x4B,
-            0x5F,
-            0x4B,
-            0x48,
-            0x52,
-            0x5F,
-            0x77,
-            0x69,
-            0x6E,
-            0x33,
-            0x32,
-            0x5F,
-            0x73,
-            0x75,
-            0x72,
-            0x66,
-            0x61,
-            0x63,
-            0x65,
-            0x00,
-        };
-
-        private static ReadOnlySpan<sbyte> VK_KHR_xcb_surface => new sbyte[] {
-            0x56,
-            0x4B,
-            0x5F,
-            0x4B,
-            0x48,
-            0x52,
-            0x5F,
-            0x78,
-            0x63,
-            0x62,
-            0x5F,
-            0x73,
-            0x75,
-            0x72,
-            0x66,
-            0x61,
-            0x63,
-            0x65,
-            0x00,
-        };
-
-        private static ReadOnlySpan<sbyte> VK_KHR_xlib_surface => new sbyte[] {
-            0x56,
-            0x4B,
-            0x5F,
-            0x4B,
-            0x48,
-            0x52,
-            0x5F,
-            0x78,
-            0x6C,
-            0x69,
-            0x62,
-            0x5F,
-            0x73,
-            0x75,
-            0x72,
-            0x66,
-            0x61,
-            0x63,
-            0x65,
-            0x00,
-        };
-
         private ResettableLazy<ImmutableArray<GraphicsAdapter>> _adapters;
         private ResettableLazy<IntPtr> _instance;
 
@@ -217,15 +79,15 @@ namespace TerraFX.Provider.Vulkan.Graphics
             var enabledExtensionCount = 2u;
 
             var enabledExtensionNames = stackalloc sbyte*[(int)enabledExtensionCount];
-            enabledExtensionNames[0] = (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in VK_KHR_surface[0]));
+            enabledExtensionNames[0] = (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in VK_KHR_SURFACE_EXTENSION_NAME[0]));
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                enabledExtensionNames[1] = (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in VK_KHR_win32_surface[0]));
+                enabledExtensionNames[1] = (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in VK_KHR_WIN32_SURFACE_EXTENSION_NAME[0]));
             }
             else
             {
-                enabledExtensionNames[1] = (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in VK_KHR_xlib_surface[0]));
+                enabledExtensionNames[1] = (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in VK_KHR_XLIB_SURFACE_EXTENSION_NAME[0]));
             }
 
             var createInfo = new VkInstanceCreateInfo {
