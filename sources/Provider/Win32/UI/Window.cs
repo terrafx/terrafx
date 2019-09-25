@@ -302,8 +302,8 @@ namespace TerraFX.Provider.Win32.UI
             {
                 hWnd = CreateWindowEx(
                     WS_EX_OVERLAPPEDWINDOW,
-                    (char*)_windowProvider.ClassAtom,
-                    lpWindowName,
+                    (ushort*)_windowProvider.ClassAtom,
+                    (ushort*)lpWindowName,
                     WS_OVERLAPPEDWINDOW,
                     X: float.IsNaN(Bounds.X) ? CW_USEDEFAULT : (int)Bounds.X,
                     Y: float.IsNaN(Bounds.Y) ? CW_USEDEFAULT : (int)Bounds.Y,
