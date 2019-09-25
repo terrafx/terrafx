@@ -189,7 +189,7 @@ namespace TerraFX.Provider.Win32.UI
         {
             var desktopWindowHandle = GetDesktopWindow();
 
-            var desktopClassName = stackalloc char[256]; // 256 is the maximum length of WNDCLASSEX.lpszClassName
+            var desktopClassName = stackalloc ushort[256]; // 256 is the maximum length of WNDCLASSEX.lpszClassName
             ThrowExternalExceptionIfZero(nameof(GetClassName), GetClassName(desktopWindowHandle, desktopClassName, 256));
 
             WNDCLASSEX desktopWindowClass;
@@ -227,7 +227,7 @@ namespace TerraFX.Provider.Win32.UI
                         hCursor = GetDesktopCursor(),
                         hbrBackground = (IntPtr)(COLOR_WINDOW + 1),
                         lpszMenuName = null,
-                        lpszClassName = lpszClassName,
+                        lpszClassName = (ushort*)lpszClassName,
                         hIconSm = IntPtr.Zero
                     };
 
@@ -260,7 +260,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (_classAtom.IsCreated)
             {
-                ThrowExternalExceptionIfFalse(nameof(UnregisterClass), UnregisterClass((char*)_classAtom.Value, EntryPointModule));
+                ThrowExternalExceptionIfFalse(nameof(UnregisterClass), UnregisterClass((ushort*)_classAtom.Value, EntryPointModule));
             }
         }
 
