@@ -40,3 +40,6 @@ If you are looking to contribute you should read our
 Design
   * [Overview](docs/Overview.md)
   * [Audio](docs/Audio.md)
+
+Project
+  * [Building](docs/Building.md)
