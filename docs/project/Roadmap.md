@@ -12,7 +12,7 @@ The current status for each "component" is listed below. More details about the 
 Each component provides access to a different multimedia "subsystem". These components are brought together in the `Application` which exposes the various components and provides access to the "main loop".
 
 ### Audio
-The audio subsystem is being actively developed on Linux first. The initial support will be provided via [Pulse Audio](https://www.freedesktop.org/wiki/Software/PulseAudio). For Windows support, Pulse Audio can be used but a more ideal system would utilize [XAudio2](https://docs.microsoft.com/en-us/windows/win32/xaudio2/xaudio2-introduction) or the Windows Audio Session API ([WASAPI](https://docs.microsoft.com/en-us/windows/win32/coreaudio/wasapi)).
+The audio subsystem is being actively developed on Linux first. The initial support will be provided via [PulseAudio](https://www.freedesktop.org/wiki/Software/PulseAudio). For Windows support, PulseAudio can be used but a more ideal system would utilize [XAudio2](https://docs.microsoft.com/en-us/windows/win32/xaudio2/xaudio2-introduction) or the Windows Audio Session API ([WASAPI](https://docs.microsoft.com/en-us/windows/win32/coreaudio/wasapi)).
 
 ### Graphics
 The graphics subsystem is being actively developed on Windows and Linux simultaneously. It is currently utilizing [Vulkan](https://www.khronos.org/vulkan/) on both platforms and [Direct3D 12](https://docs.microsoft.com/en-us/windows/win32/direct3d12/what-is-directx-12-) on Windows. Currently users can render a clear screen of any specified color. Adding support for rendering a set of primitives and meshes are next on the list.
