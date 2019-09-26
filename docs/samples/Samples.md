@@ -1,6 +1,6 @@
 # Samples
 
-TerraFXprovides multiple samples; both to showcase the current features and help provides examples of how to utilize the framework.
+TerraFX provides multiple samples; both to showcase the current features and help provides examples of how to utilize the framework.
 
 Each example will give a brief explanation, share the that can be used to run the sample, and provide a screenshot showing an example of the output.
 
