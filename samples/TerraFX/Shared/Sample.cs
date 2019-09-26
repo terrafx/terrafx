@@ -29,6 +29,10 @@ namespace TerraFX.Samples
 
         public string Name => _name;
 
+        public virtual void Cleanup()
+        {
+        }
+
         public virtual void Initialize(Application application)
         {
             application.Idle += OnIdle;

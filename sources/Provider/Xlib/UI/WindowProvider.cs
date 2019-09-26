@@ -18,7 +18,6 @@ namespace TerraFX.Provider.Xlib.UI
 {
     /// <summary>Provides access to an X11 based window subsystem.</summary>
     [Export(typeof(IWindowProvider))]
-    [Export(typeof(WindowProvider))]
     [Shared]
     public sealed unsafe class WindowProvider : IDisposable, IWindowProvider
     {
