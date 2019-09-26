@@ -154,6 +154,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Utilities.UnitTests", "tests\Utilities\TerraFX.Utilities.UnitTests.csproj", "{B56B6C8D-47C9-4D61-A65B-FBBF629A9DE7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "project", "project", "{6253FE6C-B410-40A7-B278-70AFF1C22787}"
+	ProjectSection(SolutionItems) = preProject
+		docs\project\Building.md = docs\project\Building.md
+		docs\project\Roadmap.md = docs\project\Roadmap.md
+		docs\project\Versioning.md = docs\project\Versioning.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

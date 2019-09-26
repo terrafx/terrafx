@@ -84,7 +84,7 @@ namespace TerraFX.Samples
         {
             using var application = new Application(sample.CompositionAssemblies);
             {
-                application.Idle += sample.OnIdle;
+                sample.Initialize(application);
             }
             application.Run();
         }

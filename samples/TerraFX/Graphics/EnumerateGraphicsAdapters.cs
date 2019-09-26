@@ -15,7 +15,7 @@ namespace TerraFX.Samples.Graphics
         {
         }
 
-        public override void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs)
+        protected override void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs)
         {
             ExceptionUtilities.ThrowIfNull(sender, nameof(sender));
 
