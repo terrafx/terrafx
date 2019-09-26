@@ -16,8 +16,7 @@ A framework for developing multimedia-based applications.
 * [Code of Conduct](#code-of-conduct)
 * [License](#license)
 * [Contributing](#contributing)
-* [Goals](#goals)
-* [Languages and Frameworks](#languages-and-frameworks)
+* [Documentation](#documentation)
 
 ### Code of Conduct
 
@@ -36,17 +35,13 @@ Copyright © Tanner Gooding and Contributors. Licensed under the MIT License
 If you are looking to contribute you should read our
 [Contributing](CONTRIBUTING.md) documentation.
 
-### Goals
+### Documentation
 
-TerraFX is aiming to be a cross-platform framework for developing multimedia-
-based applications.
+Design
+  * [Overview](docs/Overview.md)
+  * [Audio](docs/Audio.md)
 
-* We plan on primarily supporting Linux and Windows and are looking at the
-  possibility of supporting MacOS as well.
-* We plan on providing an API that abstracts over the various lower-level
-  graphics, audio, and windowing libraries APIs and makes them easy to use.
-
-### Languages and Frameworks
-
-TerraFX uses C# as its primary development language and .NET Core as our primary
-target framework.
+Project
+  * [Building](docs/Building.md)
+  * [Roadmap](docs/Roadmap.md)
+  * [Versioning](docs/Versioning.md)
