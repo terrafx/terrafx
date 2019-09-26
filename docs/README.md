@@ -45,3 +45,5 @@ Project
   * [Building](docs/Building.md)
   * [Roadmap](docs/Roadmap.md)
   * [Versioning](docs/Versioning.md)
+
+[Samples](docs/samples/Samples.md)
