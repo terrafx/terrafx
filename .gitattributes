@@ -36,4 +36,5 @@
 # Set explicit file behavior to:
 #   treat as binary
 ###############################################################################
+*.png       binary
 *.snk       binary

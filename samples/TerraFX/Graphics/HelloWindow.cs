@@ -12,8 +12,8 @@ namespace TerraFX.Samples.Graphics
 {
     public sealed class HelloWindow : Sample
     {
-        private IGraphicsContext? _graphicsContext;
-        private IWindow? _window;
+        private IGraphicsContext _graphicsContext = null!;
+        private IWindow _window = null!;
         private TimeSpan _elapsedTime;
 
         public HelloWindow(string name, params Assembly[] compositionAssemblies)
@@ -21,44 +21,42 @@ namespace TerraFX.Samples.Graphics
         {
         }
 
-        public override void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs)
+        public override void Initialize(Application application)
+        {
+            ExceptionUtilities.ThrowIfNull(application, nameof(application));
+
+            var windowProvider = application.GetService<IWindowProvider>();
+            _window = windowProvider.CreateWindow();
+            _window.Show();
+
+            var graphicsProvider = application.GetService<IGraphicsProvider>();
+            var graphicsAdapter = graphicsProvider.GraphicsAdapters.First();
+
+            var graphicsSurface = _window.CreateGraphicsSurface(bufferCount: 2);
+            _graphicsContext = graphicsAdapter.CreateGraphicsContext(graphicsSurface);
+
+            base.Initialize(application);
+        }
+
+        protected override void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs)
         {
             ExceptionUtilities.ThrowIfNull(sender, nameof(sender));
 
-            var application = (Application)sender;
+            _elapsedTime += eventArgs.Delta;
 
-            if (_window is null)
+            if (_elapsedTime.TotalSeconds >= 2.5)
             {
-                var windowProvider = application.GetService<IWindowProvider>();
-                _window = windowProvider.CreateWindow();
-
-                _window.Show();
+                var application = (Application)sender;
+                application.RequestExit();
             }
-            else if (_window.IsVisible)
+
+            if (_window.IsVisible)
             {
-                if (_graphicsContext is null)
-                {
-                    var graphicsProvider = application.GetService<IGraphicsProvider>();
-                    var graphicsAdapter = graphicsProvider.GraphicsAdapters.First();
+                var backgroundColor = new ColorRgba(red: 100.0f / 255.0f, green: 149.0f / 255.0f, blue: 237.0f / 255.0f, alpha: 1.0f);
+                _graphicsContext.BeginFrame(backgroundColor);
 
-                    var graphicsSurface = _window.CreateGraphicsSurface(bufferCount: 2);
-                    _graphicsContext = graphicsAdapter.CreateGraphicsContext(graphicsSurface);
-                }
-                else
-                {
-                    _elapsedTime += eventArgs.Delta;
-
-                    if (_elapsedTime.TotalSeconds >= 2.5)
-                    {
-                        application.RequestExit();
-                    }
-
-                    var backgroundColor = new ColorRgba(red: 100.0f / 255.0f, green: 149.0f / 255.0f, blue: 237.0f / 255.0f, alpha: 1.0f);
-                    _graphicsContext.BeginFrame(backgroundColor);
-
-                    _graphicsContext.EndFrame();
-                    _graphicsContext.PresentFrame();
-                }
+                _graphicsContext.EndFrame();
+                _graphicsContext.PresentFrame();
             }
         }
     }

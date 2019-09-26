@@ -17,8 +17,8 @@ namespace TerraFX.Samples
         private static readonly Assembly s_vulkanProvider = Assembly.LoadFrom("TerraFX.Provider.Vulkan.dll");
 
         private static readonly Sample[] s_samples = {
-            new EnumerateGraphicsAdapters("D3D12.EnumerateGraphicsAdapter", s_d3d12Provider),
-            new EnumerateGraphicsAdapters("Vulkan.EnumerateGraphicsAdapter", s_vulkanProvider),
+            new EnumerateGraphicsAdapters("D3D12.EnumerateGraphicsAdapters", s_d3d12Provider),
+            new EnumerateGraphicsAdapters("Vulkan.EnumerateGraphicsAdapters", s_vulkanProvider),
             new HelloWindow("D3D12.HelloWindow", s_d3d12Provider),
             new HelloWindow("Vulkan.HelloWindow", s_vulkanProvider),
         };
@@ -84,7 +84,7 @@ namespace TerraFX.Samples
         {
             using var application = new Application(sample.CompositionAssemblies);
             {
-                application.Idle += sample.OnIdle;
+                sample.Initialize(application);
             }
             application.Run();
         }

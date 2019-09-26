@@ -29,6 +29,11 @@ namespace TerraFX.Samples
 
         public string Name => _name;
 
-        public abstract void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs);
+        public virtual void Initialize(Application application)
+        {
+            application.Idle += OnIdle;
+        }
+
+        protected abstract void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs);
     }
 }

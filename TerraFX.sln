@@ -154,6 +154,20 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Utilities.UnitTests", "tests\Utilities\TerraFX.Utilities.UnitTests.csproj", "{B56B6C8D-47C9-4D61-A65B-FBBF629A9DE7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "project", "project", "{6253FE6C-B410-40A7-B278-70AFF1C22787}"
+	ProjectSection(SolutionItems) = preProject
+		docs\project\Building.md = docs\project\Building.md
+		docs\project\Roadmap.md = docs\project\Roadmap.md
+		docs\project\Versioning.md = docs\project\Versioning.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{B7F289C1-521B-4185-841D-EBFC5724C98B}"
+	ProjectSection(SolutionItems) = preProject
+		docs\samples\D3D12.EnumerateGraphicsAdapters - Windows.png = docs\samples\D3D12.EnumerateGraphicsAdapters - Windows.png
+		docs\samples\D3D12.HelloWindow - Windows.png = docs\samples\D3D12.HelloWindow - Windows.png
+		docs\samples\Samples.md = docs\samples\Samples.md
+		docs\samples\Vulkan.EnumerateGraphicsAdapters - Windows.png = docs\samples\Vulkan.EnumerateGraphicsAdapters - Windows.png
+		docs\samples\Vulkan.HelloWindow - Windows.png = docs\samples\Vulkan.HelloWindow - Windows.png
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -290,6 +304,7 @@ Global
 		{B95732CF-D97C-464C-A9C5-1125CE4AE3C6} = {EFB05081-EC44-49D3-B6D1-52AE42085B5B}
 		{B56B6C8D-47C9-4D61-A65B-FBBF629A9DE7} = {B95732CF-D97C-464C-A9C5-1125CE4AE3C6}
 		{6253FE6C-B410-40A7-B278-70AFF1C22787} = {8793898A-6542-4606-AA82-AB14151D2D20}
+		{B7F289C1-521B-4185-841D-EBFC5724C98B} = {8793898A-6542-4606-AA82-AB14151D2D20}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2FE36DF8-2D9C-4F20-8787-45DC74B57461}
