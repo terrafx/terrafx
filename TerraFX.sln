@@ -165,7 +165,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{B7F2
 		docs\samples\D3D12.EnumerateGraphicsAdapters - Windows.png = docs\samples\D3D12.EnumerateGraphicsAdapters - Windows.png
 		docs\samples\D3D12.HelloWindow - Windows.png = docs\samples\D3D12.HelloWindow - Windows.png
 		docs\samples\Samples.md = docs\samples\Samples.md
+		docs\samples\Vulkan.EnumerateGraphicsAdapters - Linux.png = docs\samples\Vulkan.EnumerateGraphicsAdapters - Linux.png
 		docs\samples\Vulkan.EnumerateGraphicsAdapters - Windows.png = docs\samples\Vulkan.EnumerateGraphicsAdapters - Windows.png
+		docs\samples\Vulkan.HelloWindow - Linux.png = docs\samples\Vulkan.HelloWindow - Linux.png
 		docs\samples\Vulkan.HelloWindow - Windows.png = docs\samples\Vulkan.HelloWindow - Windows.png
 	EndProjectSection
 EndProject
