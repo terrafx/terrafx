@@ -38,12 +38,12 @@ If you are looking to contribute you should read our
 ### Documentation
 
 Design
-  * [Overview](docs/Overview.md)
-  * [Audio](docs/Audio.md)
+  * [Overview](design/Overview.md)
+  * [Audio](design/Audio.md)
 
 Project
-  * [Building](docs/Building.md)
-  * [Roadmap](docs/Roadmap.md)
-  * [Versioning](docs/Versioning.md)
+  * [Building](project/Building.md)
+  * [Roadmap](project/Roadmap.md)
+  * [Versioning](project/Versioning.md)
 
-[Samples](docs/samples/Samples.md)
+[Samples](samples/Samples.md)
