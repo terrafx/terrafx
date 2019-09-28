@@ -195,6 +195,7 @@ namespace TerraFX.Provider.Win32.UI
             WNDCLASSEX desktopWindowClass;
 
             ThrowExternalExceptionIfFalse(nameof(GetClassInfoEx), GetClassInfoEx(
+                hInstance: IntPtr.Zero,
                 lpszClass: desktopClassName,
                 lpwcx: &desktopWindowClass
             ));
