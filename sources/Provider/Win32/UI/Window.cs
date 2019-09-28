@@ -356,7 +356,7 @@ namespace TerraFX.Provider.Win32.UI
 
         private IntPtr HandleWmActivate(UIntPtr wParam)
         {
-            _isActive = LOWORD(wParam) != WA_INACTIVE;
+            _isActive = LOWORD((uint)wParam) != WA_INACTIVE;
             return IntPtr.Zero;
         }
 
@@ -402,7 +402,7 @@ namespace TerraFX.Provider.Win32.UI
         private IntPtr HandleWmMove(IntPtr lParam)
         {
             var previousLocation = _bounds.Location;
-            var currentLocation = new Vector2(x: LOWORD(lParam), y: HIWORD(lParam));
+            var currentLocation = new Vector2(x: LOWORD((uint)lParam), y: HIWORD((uint)lParam));
 
             _bounds = _bounds.WithLocation(currentLocation);
             OnLocationChanged(previousLocation, currentLocation);
@@ -425,7 +425,7 @@ namespace TerraFX.Provider.Win32.UI
 
         private IntPtr HandleWmShowWindow(UIntPtr wParam)
         {
-            _isVisible = LOWORD(wParam) != FALSE;
+            _isVisible = LOWORD((uint)wParam) != FALSE;
             return IntPtr.Zero;
         }
 
@@ -435,7 +435,7 @@ namespace TerraFX.Provider.Win32.UI
             Assert(Enum.IsDefined(typeof(WindowState), _windowState), Resources.ArgumentOutOfRangeExceptionMessage, nameof(wParam), wParam);
 
             var previousSize = _bounds.Size;
-            var currentSize = new Vector2(x: LOWORD(lParam), y: HIWORD(lParam));
+            var currentSize = new Vector2(x: LOWORD((uint)lParam), y: HIWORD((uint)lParam));
 
             _bounds = _bounds.WithSize(currentSize);
             OnSizeChanged(previousSize, currentSize);
