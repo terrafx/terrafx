@@ -87,6 +87,8 @@ namespace TerraFX.Samples
                 sample.Initialize(application);
             }
             application.Run();
+
+            sample.Cleanup();
         }
 
         private static void RunSamples(string[] args)

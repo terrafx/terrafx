@@ -7,6 +7,7 @@ using System.Composition;
 using TerraFX.Graphics;
 using TerraFX.Interop;
 using TerraFX.Utilities;
+using static TerraFX.Interop.D3D12;
 using static TerraFX.Interop.DXGI;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Provider.D3D12.HelperUtilities;
@@ -17,16 +18,9 @@ namespace TerraFX.Provider.D3D12.Graphics
 {
     /// <summary>Provides access to a Direct3D 12 based graphics subsystem.</summary>
     [Export(typeof(IGraphicsProvider))]
-    [Export(typeof(GraphicsProvider))]
     [Shared]
     public sealed unsafe class GraphicsProvider : IDisposable, IGraphicsProvider
     {
-#if DEBUG
-        private const uint CreateFactoryFlags = DXGI_CREATE_FACTORY_DEBUG;
-#else
-        private const uint CreateFactoryFlags = 0;
-#endif
-
         private ResettableLazy<ImmutableArray<GraphicsAdapter>> _adapters;
         private ResettableLazy<IntPtr> _factory;
 
@@ -78,12 +72,39 @@ namespace TerraFX.Provider.D3D12.Graphics
 
         private static IntPtr CreateFactory()
         {
-            IntPtr factory;
+            Guid iid;
+            uint createFactoryFlags = 0;
 
-            var iid = IID_IDXGIFactory2;
-            ThrowExternalExceptionIfFailed(nameof(CreateDXGIFactory2), CreateDXGIFactory2(CreateFactoryFlags, &iid, (void**)&factory));
+#if DEBUG
+            ID3D12Debug* debug;
+            iid = IID_ID3D12Debug;
 
-            return factory;
+            if (SUCCEEDED(D3D12GetDebugInterface(&iid, (void**)&debug)))
+            {
+                // We don't want to throw if the debug interface fails to be created
+
+                debug->EnableDebugLayer();
+
+                ID3D12Debug1* debug1;
+                iid = IID_ID3D12Debug1;
+
+                if (SUCCEEDED(debug->QueryInterface(&iid, (void**)&debug1)))
+                {
+                    debug1->SetEnableGPUBasedValidation(TRUE);
+                    debug1->SetEnableSynchronizedCommandQueueValidation(TRUE);
+                }
+                _ = debug->Release();
+
+                createFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
+            }
+#endif
+
+            IDXGIFactory2* factory;
+
+            iid = IID_IDXGIFactory2;
+            ThrowExternalExceptionIfFailed(nameof(CreateDXGIFactory2), CreateDXGIFactory2(createFactoryFlags, &iid, (void**)&factory));
+
+            return (IntPtr)factory;
         }
 
         private void Dispose(bool isDisposing)

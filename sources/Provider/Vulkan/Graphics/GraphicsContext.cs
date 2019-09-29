@@ -2,6 +2,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using TerraFX.Graphics;
 using TerraFX.Interop;
 using TerraFX.Numerics;
@@ -36,7 +37,7 @@ using static TerraFX.Utilities.State;
 namespace TerraFX.Provider.Vulkan.Graphics
 {
     /// <summary>Represents a graphics context, which can be used for rendering images.</summary>
-    public sealed unsafe class GraphicsContext : IGraphicsContext
+    public sealed unsafe class GraphicsContext : IDisposable, IGraphicsContext
     {
         private readonly GraphicsAdapter _graphicsAdapter;
         private readonly IGraphicsSurface _graphicsSurface;
@@ -484,7 +485,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
             var enabledExtensionCount = 1u;
 
             var enabledExtensionNames = stackalloc sbyte*[(int)enabledExtensionCount];
-            enabledExtensionNames[0] = (sbyte*)Unsafe.AsPointer(ref Unsafe.AsRef(in VK_KHR_SWAPCHAIN_EXTENSION_NAME[0]));
+            enabledExtensionNames[0] = (sbyte*)Unsafe.AsPointer(ref MemoryMarshal.GetReference(VK_KHR_SWAPCHAIN_EXTENSION_NAME));
 
             var physicalDeviceFeatures = new VkPhysicalDeviceFeatures {
                 robustBufferAccess = VK_FALSE,
@@ -936,6 +937,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
             if (priorState < Disposing)
             {
+                WaitForIdle();
                 DisposeQueueSubmitSemaphore();
                 DisposeAcquireNextImageSemaphore();
                 DisposeFences();
@@ -1118,12 +1120,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
         private void HandleGraphicsSurfaceSizeChanged(object? sender, PropertyChangedEventArgs<Vector2> e)
         {
-            var result = vkDeviceWaitIdle(Device);
-
-            if (result != VK_SUCCESS)
-            {
-                ThrowExternalException(nameof(vkDeviceWaitIdle), (int)result);
-            }
+            WaitForIdle();
 
             if (_frameBuffers.IsCreated)
             {
@@ -1159,6 +1156,19 @@ namespace TerraFX.Provider.Vulkan.Graphics
             {
                 vkDestroySwapchainKHR(_device.Value, _swapChain.Value, pAllocator: null);
                 _swapChain.Reset();
+            }
+        }
+
+        private void WaitForIdle()
+        {
+            if (_device.IsCreated)
+            {
+                var result = vkDeviceWaitIdle(_device.Value);
+
+                if (result != VK_SUCCESS)
+                {
+                    ThrowExternalException(nameof(vkDeviceWaitIdle), (int)result);
+                }
             }
         }
     }

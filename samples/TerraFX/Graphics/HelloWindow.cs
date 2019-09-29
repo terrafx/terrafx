@@ -21,6 +21,21 @@ namespace TerraFX.Samples.Graphics
         {
         }
 
+        public override void Cleanup()
+        {
+            if (_graphicsContext is IDisposable graphicsContext)
+            {
+                graphicsContext.Dispose();
+            }
+
+            if (_window is IDisposable window)
+            {
+                window.Dispose();
+            }
+
+            base.Cleanup();
+        }
+
         public override void Initialize(Application application)
         {
             ExceptionUtilities.ThrowIfNull(application, nameof(application));

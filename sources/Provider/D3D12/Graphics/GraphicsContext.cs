@@ -502,6 +502,7 @@ namespace TerraFX.Provider.D3D12.Graphics
 
             if (priorState < Disposing)
             {
+                WaitForIdle();
                 DisposeGraphicsCommandLists();
                 DisposeCommandAllocators();
                 DisposeRenderTargetsHeap();
@@ -652,24 +653,7 @@ namespace TerraFX.Provider.D3D12.Graphics
 
         private void HandleGraphicsSurfaceSizeChanged(object? sender, PropertyChangedEventArgs<Vector2> e)
         {
-            ID3D12Fence* fence;
-
-            var iid = IID_ID3D12Fence;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateFence), Device->CreateFence(InitialValue: 0, D3D12_FENCE_FLAG_NONE, &iid, (void**)&fence));
-
-            ThrowExternalExceptionIfFailed(nameof(ID3D12CommandQueue.Signal), CommandQueue->Signal(fence, Value: 1));
-
-            var fenceEvent = CreateEvent(lpEventAttributes: null, bManualReset: FALSE, bInitialState: FALSE, lpName: null);
-
-            if (fenceEvent == IntPtr.Zero)
-            {
-                ThrowExternalExceptionForLastHRESULT(nameof(CreateEvent));
-            }
-
-            WaitForFence(fence, fenceEvent, fenceValue: 1);
-
-            _ = CloseHandle(fenceEvent);
-            _ = fence->Release();
+            WaitForIdle();
 
             if (_renderTargets.IsCreated)
             {
@@ -689,6 +673,34 @@ namespace TerraFX.Provider.D3D12.Graphics
             if (_swapChain.IsCreated)
             {
                 ThrowExternalExceptionIfFailed(nameof(IDXGISwapChain.ResizeBuffers), SwapChain->ResizeBuffers((uint)_graphicsSurface.BufferCount, (uint)_graphicsSurface.Width, (uint)_graphicsSurface.Height, DXGI_FORMAT_R8G8B8A8_UNORM, SwapChainFlags: 0));
+            }
+        }
+
+        private void WaitForIdle()
+        {
+            if (_commandQueue.IsCreated)
+            {
+                var device = (ID3D12Device*)_device.Value;
+                var commandQueue = (ID3D12CommandQueue*)_commandQueue.Value;
+
+                ID3D12Fence* fence;
+
+                var iid = IID_ID3D12Fence;
+                ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateFence), device->CreateFence(InitialValue: 0, D3D12_FENCE_FLAG_NONE, &iid, (void**)&fence));
+
+                ThrowExternalExceptionIfFailed(nameof(ID3D12CommandQueue.Signal), commandQueue->Signal(fence, Value: 1));
+
+                var fenceEvent = CreateEvent(lpEventAttributes: null, bManualReset: FALSE, bInitialState: FALSE, lpName: null);
+
+                if (fenceEvent == IntPtr.Zero)
+                {
+                    ThrowExternalExceptionForLastHRESULT(nameof(CreateEvent));
+                }
+
+                WaitForFence(fence, fenceEvent, fenceValue: 1);
+
+                _ = CloseHandle(fenceEvent);
+                _ = fence->Release();
             }
         }
 
