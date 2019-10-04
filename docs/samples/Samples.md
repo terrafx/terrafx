@@ -26,7 +26,7 @@ This shows how a user can get a list of the graphics adapters (both physical and
 
 ## [Graphics/HelloWindow.cs](../../samples/TerraFX/Graphics/HelloWindow.cs)
 
-This shows how a user can trivial create a blank window and then "clear" it to the specified color. In this case, [Cornflower Blue](https://en.wikipedia.org/wiki/Cornflower_blue).
+This shows how a user can trivially create a blank window and then "clear" it to the specified color. In this case, [Cornflower Blue](https://en.wikipedia.org/wiki/Cornflower_blue).
 
 ### D3D12.HelloWindow - Windows
 
@@ -39,3 +39,23 @@ This shows how a user can trivial create a blank window and then "clear" it to t
 ### Vulkan.HelloWindow - Windows
 
 ![Vulkan.HelloWindow - Windows](Vulkan.HelloWindow%20-%20Windows.png "Vulkan.EnumerateGraphicsAdapter - Windows")
+
+## [Audio/EnumerateAudioAdapters.cs](../../samples/TerraFX/Audio/EnumerateAudioAdapters.cs)
+
+This shows how a user can get a list of the audio adapters (both physical and virtual) supported by the current system.
+
+### PulseAudio.EnumerateAudioAdapters.Async and PulseAudio.EnumerateAudioAdapters.Sync - Linux
+
+Both PulseAudio.EnumerateAudioAdapters.Async and PulseAudio.EnumerateAudioAdapters.Sync operate the same way, and produce the same output.
+
+![PulseAudio.EnumerateAudioAdapters - Linux](PulseAudio.EnumerateAudioAdapters%20-%20Linux.png)
+
+## [Audio/PlaySampleAudio.cs](../../samples/TerraFX/Audio/PlaySampleAudio.cs)
+
+This shows how a user can easily play a sine wave with a specific frequency, even if the underlying device operates at a different frequency.
+
+### PulseAudio.PlaySampleAudio - Linux
+
+![PulseAudio.PlaySampleAudio - Linux](PulseAudio.PlaySampleAudio%20-%20Linux.png)
+
+[Audio File](PulseAudio.PlaySampleAudio%20-%20Linux.wav)
