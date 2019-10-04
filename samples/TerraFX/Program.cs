@@ -97,7 +97,7 @@ namespace TerraFX.Samples
             }
             application.Run();
 
-            sample.Cleanup();
+            sample.Cleanup(application);
         }
 
         private static void RunSamples(string[] args)

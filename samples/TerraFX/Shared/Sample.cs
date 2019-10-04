@@ -29,7 +29,7 @@ namespace TerraFX.Samples
 
         public string Name => _name;
 
-        public virtual void Cleanup()
+        public virtual void Cleanup(Application application)
         {
         }
 

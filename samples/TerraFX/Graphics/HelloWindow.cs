@@ -21,7 +21,7 @@ namespace TerraFX.Samples.Graphics
         {
         }
 
-        public override void Cleanup()
+        public override void Cleanup(Application application)
         {
             if (_graphicsContext is IDisposable graphicsContext)
             {
@@ -33,7 +33,7 @@ namespace TerraFX.Samples.Graphics
                 window.Dispose();
             }
 
-            base.Cleanup();
+            base.Cleanup(application);
         }
 
         public override void Initialize(Application application)

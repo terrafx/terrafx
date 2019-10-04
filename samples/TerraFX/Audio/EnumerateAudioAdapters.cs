@@ -21,7 +21,33 @@ namespace TerraFX.Samples.Audio
             _async = @async;
         }
 
-        public override void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs)
+        public override void Initialize(Application application)
+        {
+            var audioProvider = application.GetService<IAudioProvider>();
+
+            var task = audioProvider.StartAsync();
+            if (!task.IsCompleted)
+            {
+                task.AsTask().Wait();
+            }
+
+            base.Initialize(application);
+        }
+
+        public override void Cleanup(Application application)
+        {
+            var audioProvider = application.GetService<IAudioProvider>();
+
+            var task = audioProvider.StopAsync();
+            if (!task.IsCompleted)
+            {
+                task.AsTask().Wait();
+            }
+
+            base.Cleanup(application);
+        }
+
+        protected override void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs)
         {
             ExceptionUtilities.ThrowIfNull(sender, nameof(sender));
 
@@ -33,55 +59,46 @@ namespace TerraFX.Samples.Audio
         {
             var audioProvider = application.GetService<IAudioProvider>();
 
-            try
+            if (_async)
             {
-                await audioProvider.StartAsync();
-
-                if (_async)
+                await foreach (var audioAdapter in audioProvider.EnumerateAudioDevices())
                 {
-                    await foreach (var audioAdapter in audioProvider.EnumerateAudioDevices())
-                    {
-                        PrintAudioAdapter(audioAdapter);
-                    }
-                }
-                else
-                {
-                    foreach (var audioAdapter in audioProvider.EnumerateAudioDevices())
-                    {
-                        PrintAudioAdapter(audioAdapter);
-                    }
-                }
-
-                void PrintAudioAdapter(IAudioAdapter audioAdapter)
-                {
-                    Console.WriteLine($"    Name: {audioAdapter.Name}");
-                    Console.WriteLine($"        Type: {audioAdapter.DeviceType}");
-                    Console.WriteLine($"        Channel count: {audioAdapter.Channels}");
-                    Console.WriteLine($"        Sample rate: {audioAdapter.SampleRate}");
-                    Console.WriteLine($"        Bit depth: {audioAdapter.BitDepth}");
-                    Console.WriteLine($"        Endianness: {(audioAdapter.IsBigEndian ? "Big" : "Little")}");
-
-                    if (audioAdapter is PulseSourceAdapter source)
-                    {
-                        Console.WriteLine($"        Number type: {(source.IsFloatingPoint ? "float" : $"{(source.IsUnsigned ? "unsigned " : "signed ")}integer")}");
-                        Console.WriteLine($"        Number of bits per sample: {source.PackedSize}");
-                        Console.WriteLine($"        Description: {source.Description}");
-                    }
-
-                    if (audioAdapter is PulseSinkAdapter sink)
-                    {
-                        Console.WriteLine($"        Number type: {(sink.IsFloatingPoint ? "float" : $"{(sink.IsUnsigned ? "unsigned " : "signed ")}integer")}");
-                        Console.WriteLine($"        Number of bits per sample: {sink.PackedSize}");
-                        Console.WriteLine($"        Description: {sink.Description}");
-                    }
+                    PrintAudioAdapter(audioAdapter);
                 }
             }
-            finally
+            else
             {
-                await audioProvider.StopAsync();
+                foreach (var audioAdapter in audioProvider.EnumerateAudioDevices())
+                {
+                    PrintAudioAdapter(audioAdapter);
+                }
             }
 
             application.RequestExit();
+
+            static void PrintAudioAdapter(IAudioAdapter audioAdapter)
+            {
+                Console.WriteLine($"    Name: {audioAdapter.Name}");
+                Console.WriteLine($"        Type: {audioAdapter.DeviceType}");
+                Console.WriteLine($"        Channel count: {audioAdapter.Channels}");
+                Console.WriteLine($"        Sample rate: {audioAdapter.SampleRate}");
+                Console.WriteLine($"        Bit depth: {audioAdapter.BitDepth}");
+                Console.WriteLine($"        Endianness: {(audioAdapter.IsBigEndian ? "Big" : "Little")}");
+
+                if (audioAdapter is PulseSourceAdapter source)
+                {
+                    Console.WriteLine($"        Number type: {(source.IsFloatingPoint ? "float" : $"{(source.IsUnsigned ? "unsigned " : "signed ")}integer")}");
+                    Console.WriteLine($"        Number of bits per sample: {source.PackedSize}");
+                    Console.WriteLine($"        Description: {source.Description}");
+                }
+
+                if (audioAdapter is PulseSinkAdapter sink)
+                {
+                    Console.WriteLine($"        Number type: {(sink.IsFloatingPoint ? "float" : $"{(sink.IsUnsigned ? "unsigned " : "signed ")}integer")}");
+                    Console.WriteLine($"        Number of bits per sample: {sink.PackedSize}");
+                    Console.WriteLine($"        Description: {sink.Description}");
+                }
+            }
         }
     }
 }
