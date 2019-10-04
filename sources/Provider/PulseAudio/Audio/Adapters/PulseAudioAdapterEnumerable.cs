@@ -56,6 +56,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
             var previous = Interlocked.Exchange(ref _completeSignal, new TaskCompletionSource<bool>());
             previous.TrySetResult(value);
         }
+
         internal unsafe void Add(IAudioAdapter adapter)
         {
             ThrowIfNotThread(_eventLoopThread);
