@@ -44,7 +44,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
         {
             _mainloop = new Lazy<IntPtr>(CreateMainLoop, isThreadSafe: true);
             _context = new Lazy<IntPtr>(CreateContext, isThreadSafe: true);
-            _mainLoopMutex = new SemaphoreSlim(1);
+            _mainLoopMutex = new SemaphoreSlim(initialCount: 1);
             _ = _state.Transition(to: Initialized);
         }
 
@@ -192,17 +192,19 @@ namespace TerraFX.Provider.PulseAudio.Audio
 
             try
             {
-                // TODO: possible deadlock if mainloop re-enters the mutex before us?
-                unsafe
+                // TODO: make WaitAsync() timeout configurable
+                do
                 {
-                    pa_mainloop_wakeup(MainLoop);
+                    unsafe
+                    {
+                        pa_mainloop_wakeup(MainLoop);
+                    }
                 }
-
-                await _mainLoopMutex.WaitAsync();
+                while (!await _mainLoopMutex.WaitAsync(millisecondsTimeout: 8, cancellationToken));
 
                 unsafe
                 {
-                    pa_mainloop_quit(MainLoop, 1);
+                    pa_mainloop_quit(MainLoop, retval: 1);
                 }
             }
             finally
@@ -247,7 +249,6 @@ namespace TerraFX.Provider.PulseAudio.Audio
 
             Assert(_mainLoopThread != null, "Mainloop should not be null");
 
-            // Main loop thread is not null if running
             var handle = GCHandle.Alloc(new AudioDeviceEnumeratorHelper());
             var userdata = (void*)GCHandle.ToIntPtr(handle);
             ref var helper = ref Unsafe.Unbox<AudioDeviceEnumeratorHelper>(handle.Target);

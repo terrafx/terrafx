@@ -14,7 +14,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
         {
             Name = Marshal.PtrToStringUTF8((IntPtr)i->name)!;
             Description = Marshal.PtrToStringUTF8((IntPtr)i->description)!;
-            SampleRate = (int)i->sample_spec.rate;
+            SampleRate = unchecked((int)i->sample_spec.rate);
             Channels = i->sample_spec.channels;
 
             var format = i->sample_spec.format;

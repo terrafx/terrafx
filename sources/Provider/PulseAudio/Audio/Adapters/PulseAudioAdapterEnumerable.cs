@@ -21,30 +21,27 @@ namespace TerraFX.Provider.PulseAudio.Audio
         // _completeSignal may be overwritten improperly causing a deadlock if multiple threads try
         // to call internal methods concurrently
 
+        // It is unlikely that more than 16 devices will be present, so to prevent excessive resizing
+        // we allocate the backing collection with 16 elements.
+        private const int DefaultAudioAdapterCount = 16;
+
         private readonly List<IAudioAdapter> _backingCollection;
         private readonly Thread _eventLoopThread;
 
         // WORKAROUND: https://github.com/dotnet/roslyn/issues/38143
         // 'static' local functions might not be emitted as static
-
-        //private readonly NativeDelegate<pa_source_info_cb_t> _sourceCallback;
-        //private readonly NativeDelegate<pa_sink_info_cb_t> _sinkCallback;
         private readonly pa_source_info_cb_t _sourceCallback;
         private readonly pa_sink_info_cb_t _sinkCallback;
 
         private TaskCompletionSource<bool> _completeSignal;
 
-        internal IntPtr SourceCallback //=> _sourceCallback;
-            { get; }
-        internal IntPtr SinkCallback //=> _sinkCallback;
-            { get; }
+        internal IntPtr SourceCallback { get; }
+        internal IntPtr SinkCallback { get; }
 
         internal PulseAudioAdapterEnumerable(Thread eventLoopThread, pa_source_info_cb_t sourceCallback, pa_sink_info_cb_t sinkCallback)
         {
-            _backingCollection = new List<IAudioAdapter>(16);
+            _backingCollection = new List<IAudioAdapter>(DefaultAudioAdapterCount);
             _eventLoopThread = eventLoopThread;
-            //_sourceCallback = new NativeDelegate<pa_source_info_cb_t>(sourceCallback);
-            //_sinkCallback = new NativeDelegate<pa_sink_info_cb_t>(sinkCallback);
             _sourceCallback = sourceCallback;
             _sinkCallback = sinkCallback;
             // Run continuations asynchronously so that we do not block the event loop thread and potentially deadlock
@@ -83,10 +80,10 @@ namespace TerraFX.Provider.PulseAudio.Audio
 
             for (int position = 0; !complete; position++)
             {
-                if (position == _backingCollection.Count)
+                if (position >= _backingCollection.Count)
                 {
                     var done = await _completeSignal.Task;
-                    complete = position == _backingCollection.Count && done;
+                    complete = position >= _backingCollection.Count && done;
                 }
 
                 if (!complete)
@@ -103,12 +100,12 @@ namespace TerraFX.Provider.PulseAudio.Audio
 
             for (int position = 0; !complete; position++)
             {
-                if (position == _backingCollection.Count)
+                if (position >= _backingCollection.Count)
                 {
                     var task = _completeSignal.Task;
                     task.Wait();
                     var done = task.Result;
-                    complete = position == _backingCollection.Count && done;
+                    complete = position >= _backingCollection.Count && done;
                 }
 
                 if (!complete)
