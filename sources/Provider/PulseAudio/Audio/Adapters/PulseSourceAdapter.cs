@@ -15,6 +15,8 @@ namespace TerraFX.Provider.PulseAudio.Audio
     {
         internal unsafe PulseSourceAdapter(pa_source_info* i)
         {
+            SourceInfo = i;
+
             Name = Marshal.PtrToStringUTF8((IntPtr)i->name)!;
             Description = Marshal.PtrToStringUTF8((IntPtr)i->description)!;
             SampleRate = unchecked((int)i->sample_spec.rate);
@@ -97,6 +99,9 @@ namespace TerraFX.Provider.PulseAudio.Audio
                 }
             }
         }
+
+        /// <summary>Gets the underlying native pointer for the PulseAudio source info.</summary>
+        public unsafe pa_source_info* SourceInfo { get; }
 
         /// <inhertidoc />
         public AudioDeviceType DeviceType { get; set; } = AudioDeviceType.Recording;

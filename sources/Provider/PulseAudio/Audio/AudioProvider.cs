@@ -35,8 +35,10 @@ namespace TerraFX.Provider.PulseAudio.Audio
         private Thread? _mainLoopThread;
         private State _state;
 
-        private unsafe pa_mainloop* MainLoop => (pa_mainloop*)_mainloop.Value;
-        private unsafe pa_context* Context => (pa_context*)_context.Value;
+        /// <summary>Gets the underlying native pointer for the PulseAudio main loop.</summary>
+        public unsafe pa_mainloop* MainLoop => (pa_mainloop*)_mainloop.Value;
+        /// <summary>Gets the underlying native pointer for the PulseAudio context.</summary>
+        public unsafe pa_context* Context => (pa_context*)_context.Value;
 
         /// <summary>Initializes a new instance of the <see cref="AudioProvider" /> class.</summary>
         [ImportingConstructor]
