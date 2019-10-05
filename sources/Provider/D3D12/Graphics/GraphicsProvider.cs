@@ -14,6 +14,11 @@ using static TerraFX.Provider.D3D12.HelperUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
+#if DEBUG
+using static TerraFX.Interop.DXGIDebug;
+using static TerraFX.Interop.DXGI_DEBUG_RLO_FLAGS;
+#endif
+
 namespace TerraFX.Provider.D3D12.Graphics
 {
     /// <summary>Provides access to a Direct3D 12 based graphics subsystem.</summary>
@@ -128,6 +133,18 @@ namespace TerraFX.Provider.D3D12.Graphics
             {
                 var factory = (IDXGIFactory2*)_factory.Value;
                 _ = factory->Release();
+
+#if DEBUG
+                IDXGIDebug* debug;
+                var iid = IID_IDXGIDebug;
+
+                if (SUCCEEDED(DXGIGetDebugInterface1(Flags: 0, &iid, (void**)&debug)))
+                {
+                    // We don't want to throw if the debug interface fails to be created
+                    _ = debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_DETAIL | DXGI_DEBUG_RLO_IGNORE_INTERNAL);
+                    _ = debug->Release();
+                }
+#endif
             }
         }
 

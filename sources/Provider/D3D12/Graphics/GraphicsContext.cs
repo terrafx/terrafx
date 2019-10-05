@@ -466,7 +466,7 @@ namespace TerraFX.Provider.D3D12.Graphics
                 BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT,
                 BufferCount = (uint)_graphicsSurface.BufferCount,
                 Scaling = DXGI_SCALING_NONE,                
-                SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD,
+                SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL,
                 AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED,
                 Flags = 0
             };

@@ -309,8 +309,8 @@ namespace TerraFX.Provider.Vulkan.Graphics
             var renderPassBeginInfo = new VkRenderPassBeginInfo {
                 sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
                 pNext = null,
-                renderPass = (ulong)RenderPass,
-                framebuffer = (ulong)FrameBuffers[frameIndex],
+                renderPass = RenderPass,
+                framebuffer = FrameBuffers[frameIndex],
                 renderArea = new VkRect2D {
                     offset = new VkOffset2D {
                         x = 0,
@@ -326,6 +326,28 @@ namespace TerraFX.Provider.Vulkan.Graphics
             };
 
             vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+            var viewport = new VkViewport {
+                x = 0.0f,
+                y = 0.0f,
+                width = _graphicsSurface.Width,
+                height = _graphicsSurface.Height,
+                minDepth = 0.0f,
+                maxDepth = 1.0f,
+            };
+            vkCmdSetViewport(commandBuffer, firstViewport: 0, viewportCount: 1, &viewport);
+
+            var scissorRect = new VkRect2D {
+                offset = new VkOffset2D {
+                    x = 0,
+                    y = 0,
+                },
+                extent = new VkExtent2D {
+                    width = (uint)_graphicsSurface.Width,
+                    height = (uint)_graphicsSurface.Height,
+                },
+            };
+            vkCmdSetScissor(commandBuffer, firstScissor: 0, scissorCount: 1, &scissorRect);
         }
 
         /// <summary>Ends the frame currently be rendered.</summary>
@@ -393,7 +415,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 ThrowExternalException(nameof(vkQueuePresentKHR), (int)result);
             }
 
-            result = vkQueueSubmit(DeviceQueue, submitCount: 0, pSubmits: null, (ulong)Fences[frameIndex]);
+            result = vkQueueSubmit(DeviceQueue, submitCount: 0, pSubmits: null, Fences[frameIndex]);
 
             if (result != VK_SUCCESS)
             {
@@ -428,7 +450,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
             var commandBufferAllocateInfo = new VkCommandBufferAllocateInfo {
                 sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
                 pNext = null,
-                commandPool = (ulong)CommandPool,
+                commandPool = CommandPool,
                 level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
                 commandBufferCount = (uint)_graphicsSurface.BufferCount,
             };
@@ -610,7 +632,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
                 pNext = null,
                 flags = 0,
-                renderPass = (ulong)RenderPass,
+                renderPass = RenderPass,
                 attachmentCount = 1,
                 pAttachments = attachments,
                 width = (uint)_graphicsSurface.Width,
@@ -620,7 +642,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
             for (var i = 0; i < frameBuffers.Length; i++)
             {
-                attachments[0] = (ulong)SwapChainImageViews[i];
+                attachments[0] = SwapChainImageViews[i];
 
                 ulong frameBuffer;
                 var result = vkCreateFramebuffer(Device, &frameBufferCreateInfo, pAllocator: null, &frameBuffer);
@@ -824,7 +846,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
                     height = (uint)_graphicsSurface.Height,
                 },
                 imageArrayLayers = 1,
-                imageUsage = (uint)VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+                imageUsage = (uint)(VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT),
                 imageSharingMode = VK_SHARING_MODE_EXCLUSIVE,
                 queueFamilyIndexCount = 0,
                 pQueueFamilyIndices = null,
@@ -856,16 +878,15 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 ThrowExternalException(nameof(vkGetPhysicalDeviceSurfaceFormatsKHR), (int)result);
             }
 
-            if ((surfaceFormatCount == 1) && (surfaceFormats[0].format == VK_FORMAT_UNDEFINED))
+            for (var i = 0u; i <surfaceFormatCount; i++)
             {
-                swapChainCreateInfo.imageFormat = VK_FORMAT_R8G8B8A8_UNORM;
+                if (surfaceFormats[i].format == VK_FORMAT_R8G8B8A8_SRGB)
+                {
+                    swapChainCreateInfo.imageFormat = surfaceFormats[i].format;
+                    swapChainCreateInfo.imageColorSpace = surfaceFormats[i].colorSpace;
+                    break;
+                }
             }
-            else
-            {
-                swapChainCreateInfo.imageFormat = surfaceFormats[0].format;
-            }
-            swapChainCreateInfo.imageColorSpace = surfaceFormats[0].colorSpace;
-
             result = vkCreateSwapchainKHR(Device, &swapChainCreateInfo, pAllocator: null, &swapChain);
 
             if (result != VK_SUCCESS)
@@ -899,10 +920,10 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 viewType = VK_IMAGE_VIEW_TYPE_2D,
                 format = _swapChainFormat,
                 components = new VkComponentMapping {
-                    r = VK_COMPONENT_SWIZZLE_IDENTITY,
-                    g = VK_COMPONENT_SWIZZLE_IDENTITY,
-                    b = VK_COMPONENT_SWIZZLE_IDENTITY,
-                    a = VK_COMPONENT_SWIZZLE_IDENTITY,
+                    r = VK_COMPONENT_SWIZZLE_R,
+                    g = VK_COMPONENT_SWIZZLE_G,
+                    b = VK_COMPONENT_SWIZZLE_B,
+                    a = VK_COMPONENT_SWIZZLE_A,
                 },
                 subresourceRange = new VkImageSubresourceRange {
                     aspectMask = (uint)VK_IMAGE_ASPECT_COLOR_BIT,
@@ -915,7 +936,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
             for (var i = 0; i < swapChainImageViews.Length; i++)
             {
-                swapChainImageViewCreateInfo.image = (ulong)swapChainImages[i];
+                swapChainImageViewCreateInfo.image = swapChainImages[i];
 
                 ulong swapChainImageView;
                 result = vkCreateImageView(Device, &swapChainImageViewCreateInfo, pAllocator: null, &swapChainImageView);
@@ -960,7 +981,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
             if (_acquireNextImageSemaphore.IsCreated)
             {
-                vkDestroySemaphore(_device.Value, (ulong)_acquireNextImageSemaphore.Value, pAllocator: null);
+                vkDestroySemaphore(_device.Value, _acquireNextImageSemaphore.Value, pAllocator: null);
             }
         }
 
@@ -972,7 +993,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
             {
                 fixed (IntPtr* commandBuffers = _commandBuffers.Value)
                 {
-                    vkFreeCommandBuffers(_device.Value, (ulong)_commandPool.Value, (uint)_graphicsSurface.BufferCount, commandBuffers);
+                    vkFreeCommandBuffers(_device.Value, _commandPool.Value, (uint)_graphicsSurface.BufferCount, commandBuffers);
                 }
             }
         }
@@ -983,7 +1004,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
             if (_commandPool.IsCreated)
             {
-                vkDestroyCommandPool(_device.Value, (ulong)_commandPool.Value, pAllocator: null);
+                vkDestroyCommandPool(_device.Value, _commandPool.Value, pAllocator: null);
             }
         }
 
@@ -1009,7 +1030,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 {
                     if (fence != VK_NULL_HANDLE)
                     {
-                        vkDestroyFence(_device.Value, (ulong)fence, pAllocator: null);
+                        vkDestroyFence(_device.Value, fence, pAllocator: null);
                     }
                 }
             }
@@ -1027,7 +1048,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 {
                     if (frameBuffer != VK_NULL_HANDLE)
                     {
-                        vkDestroyFramebuffer(_device.Value, (ulong)frameBuffer, pAllocator: null);
+                        vkDestroyFramebuffer(_device.Value, frameBuffer, pAllocator: null);
                     }
                 }
             }
@@ -1039,7 +1060,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
             if (_queueSubmitSemaphore.IsCreated)
             {
-                vkDestroySemaphore(_device.Value, (ulong)_queueSubmitSemaphore.Value, pAllocator: null);
+                vkDestroySemaphore(_device.Value, _queueSubmitSemaphore.Value, pAllocator: null);
             }
         }
 
@@ -1049,7 +1070,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
 
             if (_renderPass.IsCreated)
             {
-                vkDestroyRenderPass(_device.Value, (ulong)_renderPass.Value, pAllocator: null);
+                vkDestroyRenderPass(_device.Value, _renderPass.Value, pAllocator: null);
             }
         }
 
@@ -1086,7 +1107,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 {
                     if (swapChainImageView != VK_NULL_HANDLE)
                     {
-                        vkDestroyImageView(_device.Value, (ulong)swapChainImageView, pAllocator: null);
+                        vkDestroyImageView(_device.Value, swapChainImageView, pAllocator: null);
                     }
                 }
             }
@@ -1130,7 +1151,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 {
                     if (frameBuffer != VK_NULL_HANDLE)
                     {
-                        vkDestroyFramebuffer(_device.Value, (ulong)frameBuffer, pAllocator: null);
+                        vkDestroyFramebuffer(_device.Value, frameBuffer, pAllocator: null);
                     }
                 }
 
@@ -1145,7 +1166,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
                 {
                     if (swapChainImageView != VK_NULL_HANDLE)
                     {
-                        vkDestroyImageView(_device.Value, (ulong)swapChainImageView, pAllocator: null);
+                        vkDestroyImageView(_device.Value, swapChainImageView, pAllocator: null);
                     }
                 }
 
