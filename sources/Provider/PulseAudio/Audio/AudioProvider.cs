@@ -22,7 +22,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
     /// <summary>Provides access to a PulseAudio-based audio subsystem.</summary>
     [Export(typeof(IAudioProvider))]
     [Shared]
-    public sealed class AudioProvider : IDisposable, IAudioProvider
+    public sealed class AudioProvider : IDisposable, IAsyncDisposable, IAudioProvider
     {
         private const int Starting = 2;
         private const int Running = 3;
@@ -51,7 +51,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
         /// <summary>Finalizes an instance of the <see cref="AudioProvider" /> class.</summary>
         ~AudioProvider()
         {
-            Dispose(false);
+            DisposeAsync(false).Wait();
         }
 
         private unsafe IntPtr CreateMainLoop()
@@ -60,7 +60,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
 
             if (mainloop == null)
             {
-                ThrowExternalException(nameof(CreateMainLoop), -1);
+                ThrowExternalException(nameof(CreateMainLoop), errorCode: -1);
             }
 
             return (IntPtr)mainloop;
@@ -74,7 +74,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
 
             if (context == null)
             {
-                ThrowExternalException(nameof(CreateContext), -1);
+                ThrowExternalException(nameof(CreateContext), errorCode: -1);
             }
 
             return (IntPtr)context;
@@ -86,7 +86,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
         {
             if (_state.TryTransition(from: Initialized, to: Starting) != Initialized)
             {
-                throw new InvalidOperationException("Provider is already started");
+                ThrowInvalidOperationException(Resources.ProviderAlreadyStartedMessage);
             }
 
             unsafe
@@ -187,9 +187,16 @@ namespace TerraFX.Provider.PulseAudio.Audio
 
             if (_state.TryTransition(from: Running, to: Stopping) != Running)
             {
-                throw new InvalidOperationException("Provider cannot be stopped in this state");
+                ThrowInvalidOperationException(string.Format(Resources.ProviderCannotBeStoppedMessage, _state));
             }
 
+            await StopAsyncInternal(cancellationToken);
+
+            _state.Transition(to: Initialized);
+        }
+
+        private async Task StopAsyncInternal(CancellationToken cancellationToken = default)
+        {
             try
             {
                 // TODO: make WaitAsync() timeout configurable
@@ -216,8 +223,6 @@ namespace TerraFX.Provider.PulseAudio.Audio
             {
                 _mainLoopThread.Join();
             }
-
-            _state.Transition(to: Initialized);
         }
 
         // Small helper struct to explicitly capture state for EnumerateAudioDevices
@@ -244,7 +249,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
             _state.ThrowIfDisposedOrDisposing();
             if (_state != Running)
             {
-                throw new InvalidOperationException("Cannot enumerate audio devices when not running");
+                ThrowInvalidOperationException(Resources.CannotEnumerateAudioDevicesWhenNotRunningMessage);
             }
 
             Assert(_mainLoopThread != null, "Mainloop should not be null");
@@ -328,15 +333,25 @@ namespace TerraFX.Provider.PulseAudio.Audio
         /// <inheritdoc/>
         public void Dispose()
         {
-            Dispose(true);
+            DisposeAsync(true).Wait();
             GC.SuppressFinalize(this);
         }
 
-        private unsafe void Dispose(bool disposing)
+        /// <inheritdoc/>
+        public async ValueTask DisposeAsync()
         {
-            // TODO: check if running and stop if necessary
+            await DisposeAsync(true);
+            GC.SuppressFinalize(this);
+        }
 
+        private async Task DisposeAsync(bool disposing)
+        {
             var priorState = _state.BeginDispose();
+
+            if (priorState > Initialized && priorState < Stopping)
+            {
+                await StopAsyncInternal();
+            }
 
             if (priorState < Disposing)
             {
@@ -345,14 +360,17 @@ namespace TerraFX.Provider.PulseAudio.Audio
                     _mainLoopMutex.Dispose();
                 }
 
-                if (_context.IsValueCreated)
+                unsafe
                 {
-                    pa_context_unref((pa_context*)_context.Value);
-                }
+                    if (_context.IsValueCreated)
+                    {
+                        pa_context_unref((pa_context*)_context.Value);
+                    }
 
-                if (_mainloop.IsValueCreated)
-                {
-                    pa_mainloop_free((pa_mainloop*)_mainloop.Value);
+                    if (_mainloop.IsValueCreated)
+                    {
+                        pa_mainloop_free((pa_mainloop*)_mainloop.Value);
+                    }
                 }
             }
 
