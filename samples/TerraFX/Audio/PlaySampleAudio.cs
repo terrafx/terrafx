@@ -21,7 +21,7 @@ namespace TerraFX.Samples.Audio
         public const double SineWaveRate = SineWaveFrequency * 2 * Math.PI / WellKnownSampleRates.CdAudio;
 
         // Current position in sine wave, in samples
-        private int samplePosition = 0;
+        private int samplePosition;
 
         public PlaySampleAudio(string name, params Assembly[] compositionAssemblies)
             : base(name, compositionAssemblies)
