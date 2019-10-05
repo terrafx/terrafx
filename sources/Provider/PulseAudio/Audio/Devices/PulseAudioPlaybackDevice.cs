@@ -128,7 +128,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
         {
             if (_state.TryTransition(from: Completed, to: Initialized) != Completed)
             {
-                throw new InvalidOperationException("Device is not completed");
+                ThrowInvalidOperationException(Resources.DeviceNotCompletedMessage);
             }
 
             unsafe
@@ -144,14 +144,14 @@ namespace TerraFX.Provider.PulseAudio.Audio
         {
             if (_state.TryTransition(from: Initialized, to: Starting) != Initialized)
             {
-                throw new InvalidOperationException("Device is already started");
+                ThrowInvalidOperationException(Resources.DeviceAlreadyStartedMessage);
             }
 
             unsafe
             {
                 if (pa_stream_connect_playback(Stream, null, null, pa_stream_flags.PA_STREAM_NOFLAGS, null, null) != 0)
                 {
-                    throw new InvalidOperationException("Could not connect stream for playback");
+                    ThrowInvalidOperationException(Resources.CouldNotConnectPlaybackStreamMessage);
                 }
             }
 
