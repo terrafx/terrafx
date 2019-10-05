@@ -22,17 +22,19 @@ namespace TerraFX.Samples.Audio
 
         // Current position in sine wave, in samples
         private int samplePosition;
+        private IAudioProvider? _provider;
 
         public PlaySampleAudio(string name, params Assembly[] compositionAssemblies)
             : base(name, compositionAssemblies)
         {
+            _provider = null;
         }
 
         public override void Initialize(Application application)
         {
-            var audioProvider = application.GetService<IAudioProvider>();
+            _provider = application.GetService<IAudioProvider>();
 
-            var task = audioProvider.StartAsync();
+            var task = _provider.StartAsync();
             if (!task.IsCompleted)
             {
                 task.AsTask().Wait();
@@ -41,17 +43,17 @@ namespace TerraFX.Samples.Audio
             base.Initialize(application);
         }
 
-        public override void Cleanup(Application application)
+        public override void Cleanup()
         {
-            var audioProvider = application.GetService<IAudioProvider>();
+            ExceptionUtilities.ThrowIfNull(_provider, nameof(_provider));
 
-            var task = audioProvider.StopAsync();
+            var task = _provider.StopAsync();
             if (!task.IsCompleted)
             {
                 task.AsTask().Wait();
             }
 
-            base.Cleanup(application);
+            base.Cleanup();
         }
 
         protected override void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs)
@@ -64,10 +66,10 @@ namespace TerraFX.Samples.Audio
 
         private async Task RunAsync(Application application)
         {
-            var audioProvider = application.GetService<IAudioProvider>();
+            ExceptionUtilities.ThrowIfNull(_provider, nameof(_provider));
 
             IAudioAdapter? preferredAdapter = null;
-            await foreach (var audioAdapter in audioProvider.EnumerateAudioDevices())
+            await foreach (var audioAdapter in _provider.EnumerateAudioDevices())
             {
                 if (audioAdapter is PulseSinkAdapter sinkAdapter)
                 {
@@ -85,7 +87,7 @@ namespace TerraFX.Samples.Audio
 
             if (preferredAdapter != null)
             {
-                var device = await audioProvider.RequestAudioPlaybackDeviceAsync(preferredAdapter);
+                var device = await _provider.RequestAudioPlaybackDeviceAsync(preferredAdapter);
 
                 Console.WriteLine($"    Playing a {SineWaveFrequency}Hz sine wave...");
 

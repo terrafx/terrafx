@@ -2,7 +2,6 @@
 
 using System;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using TerraFX.ApplicationModel;
 using TerraFX.Audio;
@@ -14,18 +13,20 @@ namespace TerraFX.Samples.Audio
     public sealed class EnumerateAudioAdapters : Sample
     {
         private readonly bool _async = false;
+        private IAudioProvider? _provider;
 
         public EnumerateAudioAdapters(string name, bool @async, params Assembly[] compositionAssemblies)
             : base(name, compositionAssemblies)
         {
             _async = @async;
+            _provider = null;
         }
 
         public override void Initialize(Application application)
         {
-            var audioProvider = application.GetService<IAudioProvider>();
+            _provider = application.GetService<IAudioProvider>();
 
-            var task = audioProvider.StartAsync();
+            var task = _provider.StartAsync();
             if (!task.IsCompleted)
             {
                 task.AsTask().Wait();
@@ -34,17 +35,17 @@ namespace TerraFX.Samples.Audio
             base.Initialize(application);
         }
 
-        public override void Cleanup(Application application)
+        public override void Cleanup()
         {
-            var audioProvider = application.GetService<IAudioProvider>();
+            ExceptionUtilities.ThrowIfNull(_provider, nameof(_provider));
 
-            var task = audioProvider.StopAsync();
+            var task = _provider.StopAsync();
             if (!task.IsCompleted)
             {
                 task.AsTask().Wait();
             }
 
-            base.Cleanup(application);
+            base.Cleanup();
         }
 
         protected override void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs)
@@ -57,18 +58,18 @@ namespace TerraFX.Samples.Audio
 
         private async Task RunAsync(Application application)
         {
-            var audioProvider = application.GetService<IAudioProvider>();
+            ExceptionUtilities.ThrowIfNull(_provider, nameof(_provider));
 
             if (_async)
             {
-                await foreach (var audioAdapter in audioProvider.EnumerateAudioDevices())
+                await foreach (var audioAdapter in _provider.EnumerateAudioDevices())
                 {
                     PrintAudioAdapter(audioAdapter);
                 }
             }
             else
             {
-                foreach (var audioAdapter in audioProvider.EnumerateAudioDevices())
+                foreach (var audioAdapter in _provider.EnumerateAudioDevices())
                 {
                     PrintAudioAdapter(audioAdapter);
                 }
