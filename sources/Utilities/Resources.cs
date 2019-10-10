@@ -50,6 +50,27 @@ namespace TerraFX.Utilities
         /// <summary>Gets a localized <see cref="string" /> similar to <c>{0} is disposed</c>.</summary>
         public static string ObjectDisposedExceptionMessage => ResourceManager.GetString(nameof(ObjectDisposedExceptionMessage), Culture)!;
 
+        /// <summary>Gets a localized <see cref="string" /> similar to <c>Invalid sample format</c>.</summary>
+        public static string InvalidSampleFormatMessage => ResourceManager.GetString(nameof(InvalidSampleFormatMessage), Culture)!;
+
+        /// <summary>Gets a localized <see cref="string" /> similar to <c>Provider is already started</c>.</summary>
+        public static string ProviderAlreadyStartedMessage => ResourceManager.GetString(nameof(ProviderAlreadyStartedMessage), Culture)!;
+
+        /// <summary>Gets a localized <see cref="string" /> similar to <c>rovider cannot be stopped in the {0} state</c>.</summary>
+        public static string ProviderCannotBeStoppedMessage => ResourceManager.GetString(nameof(ProviderCannotBeStoppedMessage), Culture)!;
+
+        /// <summary>Gets a localized <see cref="string" /> similar to <c>Cannot enumerate audio devices when not running</c>.</summary>
+        public static string CannotEnumerateAudioDevicesWhenNotRunningMessage => ResourceManager.GetString(nameof(CannotEnumerateAudioDevicesWhenNotRunningMessage), Culture)!;
+
+        /// <summary>Gets a localized <see cref="string" /> similar to <c>Device is not completed</c>.</summary>
+        public static string DeviceNotCompletedMessage => ResourceManager.GetString(nameof(DeviceNotCompletedMessage), Culture)!;
+
+        /// <summary>Gets a localized <see cref="string" /> similar to <c>Device is already started</c>.</summary>
+        public static string DeviceAlreadyStartedMessage => ResourceManager.GetString(nameof(DeviceAlreadyStartedMessage), Culture)!;
+
+        /// <summary>Gets a localized <see cref="string" /> similar to <c>Could not connect stream for playback</c>.</summary>
+        public static string CouldNotConnectPlaybackStreamMessage => ResourceManager.GetString(nameof(CouldNotConnectPlaybackStreamMessage), Culture)!;
+
         /// <summary>Gets the <see cref="ResourceManager" /> instance that is used to lookup the localized resources.</summary>
         public static ResourceManager ResourceManager => s_resourceManager;
     }
