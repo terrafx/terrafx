@@ -34,8 +34,16 @@
 
 ###############################################################################
 # Set explicit file behavior to:
+#   treat as text,
+#   diff using lfs,
+#   filter using lfs, and
+#   merge using lfs
+###############################################################################
+*.png       text        diff=lfs        filter=lfs      merge=lfs
+*.wav       text        diff=lfs        filter=lfs      merge=lfs
+
+###############################################################################
+# Set explicit file behavior to:
 #   treat as binary
 ###############################################################################
-*.png       binary
-*.wav       binary
 *.snk       binary
