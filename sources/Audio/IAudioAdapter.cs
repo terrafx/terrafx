@@ -6,22 +6,22 @@ namespace TerraFX.Audio
     public interface IAudioAdapter
     {
         /// <summary>The type of device this adapter represents.</summary>
-        AudioDeviceType DeviceType { get; set; }
+        AudioDeviceType DeviceType { get; }
 
         /// <summary>The name of the adapter.</summary>
-        string Name { get; set; }
+        string Name { get; }
 
         /// <summary>The sample rate the adapter operates at.</summary>
-        int SampleRate { get; set; }
+        int SampleRate { get; }
 
         /// <summary>The number of bits in each sample this adapter operates at.</summary>
-        int BitDepth { get; set; }
+        int BitDepth { get; }
 
         /// <summary>The number of channels this adapter operates at.</summary>
-        int Channels { get; set; }
+        int Channels { get; }
 
         /// <summary>The endianness of the adapter.</summary>
         /// <remarks>If the adapter operates in big endian mode (MSB first), this will be <c>true</c>; otherwise, it operates in little endian mode (LSB first) and will be <c>false</c>.</remarks>
-        bool IsBigEndian { get; set; }
+        bool IsBigEndian { get; }
     }
 }
