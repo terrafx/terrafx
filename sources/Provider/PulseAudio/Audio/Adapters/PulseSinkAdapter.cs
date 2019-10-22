@@ -104,33 +104,33 @@ namespace TerraFX.Provider.PulseAudio.Audio
         public unsafe pa_sink_info* SinkInfo { get; }
 
         /// <inhertidoc />
-        public AudioDeviceType DeviceType { get; set; } = AudioDeviceType.Playback;
+        public AudioDeviceType DeviceType { get; } = AudioDeviceType.Playback;
 
         /// <inhertidoc />
-        public string Name { get; set; }
+        public string Name { get; }
 
         /// <summary>Gets a string representing the description of this device.</summary>
-        public string Description { get; set; }
+        public string Description { get; }
 
         /// <inhertidoc />
-        public int SampleRate { get; set; }
+        public int SampleRate { get; }
 
         /// <inhertidoc />
-        public int BitDepth { get; set; }
+        public int BitDepth { get; }
 
         /// <inhertidoc />
-        public int Channels { get; set; }
+        public int Channels { get; }
 
         /// <inhertidoc />
-        public bool IsBigEndian { get; set; }
+        public bool IsBigEndian { get; }
 
         /// <summary>Gets a value representing whether the adapter sample format is unsigned or not.</summary>
-        public bool IsUnsigned { get; set; }
+        public bool IsUnsigned { get; }
 
         /// <summary>Gets a value representing whether the adapter sample format uses floating point or not.</summary>
-        public bool IsFloatingPoint { get; set; }
+        public bool IsFloatingPoint { get; }
 
         /// <summary>Gets a value representing the packed sample size in bits.</summary>
-        public int PackedSize { get; set; }
+        public int PackedSize { get; }
     }
 }

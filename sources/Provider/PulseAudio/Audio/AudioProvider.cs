@@ -327,9 +327,9 @@ namespace TerraFX.Provider.PulseAudio.Audio
         }
 
         /// <inheritdoc/>
-        public ValueTask<IAudioRecordingDevice> RequestAudioRecordingDeviceAsync(IAudioAdapter adapter)
+        public unsafe ValueTask<IAudioRecordingDevice> RequestAudioRecordingDeviceAsync(IAudioAdapter adapter)
         {
-            throw new NotImplementedException();
+            return new ValueTask<IAudioRecordingDevice>(new PulseAudioRecordingDevice(adapter, Context));
         }
 
         /// <inheritdoc/>
