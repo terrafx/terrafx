@@ -54,7 +54,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
         private void SetCompleteSignal(bool value)
         {
             var previous = Interlocked.Exchange(ref _completeSignal, new TaskCompletionSource<bool>());
-            previous.TrySetResult(value);
+            _ = previous.TrySetResult(value);
         }
 
         internal unsafe void Add(IAudioAdapter adapter)
@@ -71,7 +71,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
 
             // Should always be successful due to being called only from one thread
             // Do not overwrite _completeSignal past this point
-            _completeSignal.TrySetResult(true);
+            _ = _completeSignal.TrySetResult(true);
         }
 
         /// <inheritdoc />
@@ -79,7 +79,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
         {
             var complete = false;
 
-            for (int position = 0; !complete; position++)
+            for (var position = 0; !complete; position++)
             {
                 if (position >= _backingCollection.Count)
                 {
@@ -99,7 +99,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
         {
             var complete = false;
 
-            for (int position = 0; !complete; position++)
+            for (var position = 0; !complete; position++)
             {
                 if (position >= _backingCollection.Count)
                 {

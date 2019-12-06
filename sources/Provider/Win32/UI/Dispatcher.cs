@@ -48,11 +48,11 @@ namespace TerraFX.Provider.Win32.UI
             ThrowIfNotThread(_parentThread);
 
             MSG msg;
-            while (PeekMessage(&msg, hWnd: IntPtr.Zero, wMsgFilterMin: WM_NULL, wMsgFilterMax: WM_NULL, wRemoveMsg: PM_REMOVE) != FALSE)
+            while (PeekMessageW(&msg, hWnd: IntPtr.Zero, wMsgFilterMin: WM_NULL, wMsgFilterMax: WM_NULL, wRemoveMsg: PM_REMOVE) != FALSE)
             {
                 if (msg.message != WM_QUIT)
                 {
-                    _ = DispatchMessage(&msg);
+                    _ = DispatchMessageW(&msg);
                 }
                 else
                 {

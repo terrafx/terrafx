@@ -141,7 +141,7 @@ namespace TerraFX.Provider.Win32.UI
         {
             if (_handle.IsCreated)
             {
-                _ = SendMessage(Handle, WM_CLOSE, wParam: UIntPtr.Zero, lParam: IntPtr.Zero);
+                _ = SendMessageW(Handle, WM_CLOSE, wParam: UIntPtr.Zero, lParam: IntPtr.Zero);
             }
         }
 
@@ -287,7 +287,7 @@ namespace TerraFX.Provider.Win32.UI
 
                 default:
                 {
-                    return DefWindowProc(_handle.Value, msg, wParam, lParam);
+                    return DefWindowProcW(_handle.Value, msg, wParam, lParam);
                 }
             }
         }
@@ -300,7 +300,7 @@ namespace TerraFX.Provider.Win32.UI
 
             fixed (char* lpWindowName = _title)
             {
-                hWnd = CreateWindowEx(
+                hWnd = CreateWindowExW(
                     WS_EX_OVERLAPPEDWINDOW,
                     (ushort*)_windowProvider.ClassAtom,
                     (ushort*)lpWindowName,
@@ -315,7 +315,7 @@ namespace TerraFX.Provider.Win32.UI
                     lpParam: GCHandle.ToIntPtr(_windowProvider.NativeHandle).ToPointer()
                 );
             }
-            ThrowExternalExceptionIfZero(nameof(CreateWindowEx), hWnd);
+            ThrowExternalExceptionIfZero(nameof(CreateWindowExW), hWnd);
 
             return hWnd;
         }
@@ -412,7 +412,7 @@ namespace TerraFX.Provider.Win32.UI
 
         private IntPtr HandleWmSetText(UIntPtr wParam, IntPtr lParam)
         {
-            var result = DefWindowProc(Handle, WM_SETTEXT, wParam, lParam);
+            var result = DefWindowProcW(Handle, WM_SETTEXT, wParam, lParam);
 
             if (result == (IntPtr)TRUE)
             {

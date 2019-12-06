@@ -361,11 +361,11 @@ namespace TerraFX.Provider.D3D12.Graphics
 
             for (var i = 0; i < fenceEvents.Length; i++)
             {
-                var fenceEvent = CreateEvent(lpEventAttributes: null, bManualReset: FALSE, bInitialState: FALSE, lpName: null);
+                var fenceEvent = CreateEventW(lpEventAttributes: null, bManualReset: FALSE, bInitialState: FALSE, lpName: null);
 
                 if (fenceEvent == IntPtr.Zero)
                 {
-                    ThrowExternalExceptionForLastHRESULT(nameof(CreateEvent));
+                    ThrowExternalExceptionForLastHRESULT(nameof(CreateEventW));
                 }
 
                 fenceEvents[i] = fenceEvent;
@@ -389,7 +389,7 @@ namespace TerraFX.Provider.D3D12.Graphics
             for (var i = 0; i < graphicsCommandLists.Length; i++)
             {
                 ID3D12GraphicsCommandList* graphicsCommandList;
-                ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateCommandList), Device->CreateCommandList(NodeMask: 0, D3D12_COMMAND_LIST_TYPE_DIRECT, CommandAllocators[i], pInitialState: null, &iid, (void**)&graphicsCommandList));
+                ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateCommandList), Device->CreateCommandList(nodeMask: 0, D3D12_COMMAND_LIST_TYPE_DIRECT, CommandAllocators[i], pInitialState: null, &iid, (void**)&graphicsCommandList));
 
                 // Command lists are created in the recording state, but there is nothing
                 // to record yet. The main loop expects it to be closed, so close it now.
@@ -690,11 +690,11 @@ namespace TerraFX.Provider.D3D12.Graphics
 
                 ThrowExternalExceptionIfFailed(nameof(ID3D12CommandQueue.Signal), commandQueue->Signal(fence, Value: 1));
 
-                var fenceEvent = CreateEvent(lpEventAttributes: null, bManualReset: FALSE, bInitialState: FALSE, lpName: null);
+                var fenceEvent = CreateEventW(lpEventAttributes: null, bManualReset: FALSE, bInitialState: FALSE, lpName: null);
 
                 if (fenceEvent == IntPtr.Zero)
                 {
-                    ThrowExternalExceptionForLastHRESULT(nameof(CreateEvent));
+                    ThrowExternalExceptionForLastHRESULT(nameof(CreateEventW));
                 }
 
                 WaitForFence(fence, fenceEvent, fenceValue: 1);

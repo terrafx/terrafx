@@ -105,7 +105,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
             };
             _mainLoopThread.Start();
 
-            await WaitForState(pa_context_state.PA_CONTEXT_READY);
+            await WaitForStateAsync(pa_context_state.PA_CONTEXT_READY);
             _ = _state.Transition(to: Running);
 
             void ThreadMain()
@@ -127,13 +127,13 @@ namespace TerraFX.Provider.PulseAudio.Audio
                         {
                             pa_context_disconnect(Context);
                         }
-                        _state.Transition(to: Initialized);
+                        _ = _state.Transition(to: Initialized);
 
                         throw;
                     }
                     finally
                     {
-                        _mainLoopMutex.Release();
+                        _ = _mainLoopMutex.Release();
                     }
                 }
             }
@@ -144,8 +144,8 @@ namespace TerraFX.Provider.PulseAudio.Audio
         {
             _state.AssertNotDisposedOrDisposing();
 
-            int retval = 0;
-            int status = pa_mainloop_iterate(MainLoop, 1, &retval);
+            var retval = 0;
+            var status = pa_mainloop_iterate(MainLoop, 1, &retval);
 
             if (status < 0)
             {
@@ -160,7 +160,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
             return false;
         }
 
-        private async Task WaitForState(pa_context_state desired)
+        private async Task WaitForStateAsync(pa_context_state desired)
         {
             pa_context_state current = default;
 
@@ -177,7 +177,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
                 }
                 finally
                 {
-                    _mainLoopMutex.Release();
+                    _ = _mainLoopMutex.Release();
                 }
             }
         }
@@ -192,12 +192,12 @@ namespace TerraFX.Provider.PulseAudio.Audio
                 ThrowInvalidOperationException(string.Format(Resources.ProviderCannotBeStoppedMessage, _state));
             }
 
-            await StopAsyncInternal(cancellationToken);
+            await StopAsyncInternalAsync(cancellationToken);
 
-            _state.Transition(to: Initialized);
+            _ = _state.Transition(to: Initialized);
         }
 
-        private async Task StopAsyncInternal(CancellationToken cancellationToken = default)
+        private async Task StopAsyncInternalAsync(CancellationToken cancellationToken = default)
         {
             try
             {
@@ -218,7 +218,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
             }
             finally
             {
-                _mainLoopMutex.Release();
+                _ = _mainLoopMutex.Release();
             }
 
             if (_mainLoopThread != null)
@@ -230,10 +230,10 @@ namespace TerraFX.Provider.PulseAudio.Audio
         // Small helper struct to explicitly capture state for EnumerateAudioDevices
         private unsafe struct AudioDeviceEnumeratorHelper
         {
-            public PulseAudioAdapterEnumerable enumerable;
-            public pa_operation* source_op;
-            public pa_operation* sink_op;
-            public int completed;
+            public PulseAudioAdapterEnumerable Enumerable;
+            public pa_operation* SourceOp;
+            public pa_operation* SinkOp;
+            public int Completed;
         }
 
         /// <summary>
@@ -260,11 +260,11 @@ namespace TerraFX.Provider.PulseAudio.Audio
             var userdata = (void*)GCHandle.ToIntPtr(handle);
             ref var helper = ref Unsafe.Unbox<AudioDeviceEnumeratorHelper>(handle.Target);
 
-            helper.enumerable = new PulseAudioAdapterEnumerable(_mainLoopThread!, AddSourceDevice, AddSinkDevice);
-            helper.source_op = pa_context_get_source_info_list(Context, helper.enumerable.SourceCallback, userdata);
-            helper.sink_op = pa_context_get_sink_info_list(Context, helper.enumerable.SinkCallback, userdata);
+            helper.Enumerable = new PulseAudioAdapterEnumerable(_mainLoopThread!, AddSourceDevice, AddSinkDevice);
+            helper.SourceOp = pa_context_get_source_info_list(Context, helper.Enumerable.SourceCallback, userdata);
+            helper.SinkOp = pa_context_get_sink_info_list(Context, helper.Enumerable.SinkCallback, userdata);
 
-            return helper.enumerable;
+            return helper.Enumerable;
 
             static void AddSourceDevice(pa_context* c, pa_source_info* i, int eol, void* userdata)
             {
@@ -298,16 +298,16 @@ namespace TerraFX.Provider.PulseAudio.Audio
 
                 if (adapter != null)
                 {
-                    helper.enumerable.Add(adapter);
+                    helper.Enumerable.Add(adapter);
                 }
 
                 if (eol != 0)
                 {
-                    if (Interlocked.Increment(ref helper.completed) == 2)
+                    if (Interlocked.Increment(ref helper.Completed) == 2)
                     {
-                        pa_operation_unref(helper.source_op);
-                        pa_operation_unref(helper.sink_op);
-                        helper.enumerable.Complete();
+                        pa_operation_unref(helper.SourceOp);
+                        pa_operation_unref(helper.SinkOp);
+                        helper.Enumerable.Complete();
                         handle.Free();
                     }
                 }
@@ -315,22 +315,13 @@ namespace TerraFX.Provider.PulseAudio.Audio
         }
 
         /// <inheritdoc/>
-        IAudioAdapterEnumerable IAudioProvider.EnumerateAudioDevices()
-        {
-            return EnumerateAudioDevices();
-        }
+        IAudioAdapterEnumerable IAudioProvider.EnumerateAudioDevices() => EnumerateAudioDevices();
 
         /// <inheritdoc/>
-        public unsafe ValueTask<IAudioPlaybackDevice> RequestAudioPlaybackDeviceAsync(IAudioAdapter adapter)
-        {
-            return new ValueTask<IAudioPlaybackDevice>(new PulseAudioPlaybackDevice(adapter, Context));
-        }
+        public unsafe ValueTask<IAudioPlaybackDevice> RequestAudioPlaybackDeviceAsync(IAudioAdapter adapter) => new ValueTask<IAudioPlaybackDevice>(new PulseAudioPlaybackDevice(adapter, Context));
 
         /// <inheritdoc/>
-        public ValueTask<IAudioRecordingDevice> RequestAudioRecordingDeviceAsync(IAudioAdapter adapter)
-        {
-            throw new NotImplementedException();
-        }
+        public ValueTask<IAudioRecordingDevice> RequestAudioRecordingDeviceAsync(IAudioAdapter adapter) => throw new NotImplementedException();
 
         /// <inheritdoc/>
         public void Dispose()
@@ -352,7 +343,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
 
             if (priorState > Initialized && priorState < Stopping)
             {
-                await StopAsyncInternal();
+                await StopAsyncInternalAsync();
             }
 
             if (priorState < Disposing)

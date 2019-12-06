@@ -14,7 +14,7 @@ namespace TerraFX.Utilities
         private const int Creating = 2;
         private const int Created = 3;
 
-        private Func<T> _factory;
+        private readonly Func<T> _factory;
         private T _value;
         private State _state;
 
