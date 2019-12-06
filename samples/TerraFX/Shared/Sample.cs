@@ -33,10 +33,7 @@ namespace TerraFX.Samples
         {
         }
 
-        public virtual void Initialize(Application application)
-        {
-            application.Idle += OnIdle;
-        }
+        public virtual void Initialize(Application application) => application.Idle += OnIdle;
 
         protected abstract void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs);
     }

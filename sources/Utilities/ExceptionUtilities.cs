@@ -116,10 +116,7 @@ namespace TerraFX.Utilities
         /// <exception cref="InvalidOperationException"><paramref name="message" /></exception>
         [DoesNotReturn]
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void ThrowInvalidOperationException(string message)
-        {
-            throw new InvalidOperationException(message);
-        }
+        public static void ThrowInvalidOperationException(string message) => throw new InvalidOperationException(message);
 
         /// <summary>Throws an instance of the <see cref="InvalidOperationException" /> class.</summary>
         /// <param name="paramName">The name of the parameter that caused the exception.</param>

@@ -24,7 +24,7 @@ namespace TerraFX.Provider.Win32.UI
     public sealed unsafe class WindowProvider : IDisposable, IWindowProvider
     {
         /// <summary>A <c>HMODULE</c> to the entry point module.</summary>
-        public static readonly IntPtr EntryPointModule = GetModuleHandle();
+        public static readonly IntPtr EntryPointModule = GetModuleHandleW(lpModuleName: null);
 
         private static readonly NativeDelegate<WNDPROC> s_forwardWndProc = new NativeDelegate<WNDPROC>(ForwardWindowMessage);
 
@@ -52,7 +52,7 @@ namespace TerraFX.Provider.Win32.UI
             Dispose(isDisposing: false);
         }
 
-        /// <summary>Gets the <c>ATOM</c> of the <see cref="WNDCLASSEX" /> registered for the instance.</summary>
+        /// <summary>Gets the <c>ATOM</c> of the <see cref="WNDCLASSEXW" /> registered for the instance.</summary>
         public ushort ClassAtom
         {
             get
@@ -125,13 +125,13 @@ namespace TerraFX.Provider.Win32.UI
                 // for hWnd. This allows some delayed initialization to occur since most
                 // of the fields in Window are lazy.
 
-                var createStruct = (CREATESTRUCT*)lParam;
+                var createStruct = (CREATESTRUCTW*)lParam;
                 userData = (IntPtr)createStruct->lpCreateParams;
-                _ = SetWindowLongPtr(hWnd, GWLP_USERDATA, userData);
+                _ = SetWindowLongPtrW(hWnd, GWLP_USERDATA, userData);
             }
             else
             {
-                userData = GetWindowLongPtr(hWnd, GWLP_USERDATA);
+                userData = GetWindowLongPtrW(hWnd, GWLP_USERDATA);
             }
 
             WindowProvider windowProvider = null!;
@@ -164,7 +164,7 @@ namespace TerraFX.Provider.Win32.UI
             }
             else
             {
-                result = DefWindowProc(hWnd, msg, wParam, lParam);
+                result = DefWindowProcW(hWnd, msg, wParam, lParam);
             }
 
             return result;
@@ -188,11 +188,11 @@ namespace TerraFX.Provider.Win32.UI
             var desktopWindowHandle = GetDesktopWindow();
 
             var desktopClassName = stackalloc ushort[256]; // 256 is the maximum length of WNDCLASSEX.lpszClassName
-            ThrowExternalExceptionIfZero(nameof(GetClassName), GetClassName(desktopWindowHandle, desktopClassName, 256));
+            ThrowExternalExceptionIfZero(nameof(GetClassNameW), GetClassNameW(desktopWindowHandle, desktopClassName, 256));
 
-            WNDCLASSEX desktopWindowClass;
+            WNDCLASSEXW desktopWindowClass;
 
-            ThrowExternalExceptionIfFalse(nameof(GetClassInfoEx), GetClassInfoEx(
+            ThrowExternalExceptionIfFalse(nameof(GetClassInfoExW), GetClassInfoExW(
                 hInstance: IntPtr.Zero,
                 lpszClass: desktopClassName,
                 lpwcx: &desktopWindowClass
@@ -215,8 +215,8 @@ namespace TerraFX.Provider.Win32.UI
 
                 fixed (char* lpszClassName = className)
                 {
-                    var wndClassEx = new WNDCLASSEX {
-                        cbSize = SizeOf<WNDCLASSEX>(),
+                    var wndClassEx = new WNDCLASSEXW {
+                        cbSize = SizeOf<WNDCLASSEXW>(),
                         style = CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS,
                         lpfnWndProc = s_forwardWndProc,
                         cbClsExtra = 0,
@@ -230,9 +230,9 @@ namespace TerraFX.Provider.Win32.UI
                         hIconSm = IntPtr.Zero
                     };
 
-                    classAtom = RegisterClassEx(&wndClassEx);
+                    classAtom = RegisterClassExW(&wndClassEx);
                 }
-                ThrowExternalExceptionIfZero(nameof(RegisterClassEx), classAtom);
+                ThrowExternalExceptionIfZero(nameof(RegisterClassExW), classAtom);
             }
             return classAtom;
         }
@@ -259,7 +259,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (_classAtom.IsCreated)
             {
-                ThrowExternalExceptionIfFalse(nameof(UnregisterClass), UnregisterClass((ushort*)_classAtom.Value, EntryPointModule));
+                ThrowExternalExceptionIfFalse(nameof(UnregisterClassW), UnregisterClassW((ushort*)_classAtom.Value, EntryPointModule));
             }
         }
 

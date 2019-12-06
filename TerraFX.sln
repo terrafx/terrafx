@@ -170,7 +170,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{B7F2
 		docs\samples\Vulkan.HelloWindow - Linux.png = docs\samples\Vulkan.HelloWindow - Linux.png
 		docs\samples\Vulkan.HelloWindow - Windows.png = docs\samples\Vulkan.HelloWindow - Windows.png
 	EndProjectSection
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerraFX.Provider.PulseAudio", "sources\Provider\PulseAudio\TerraFX.Provider.PulseAudio.csproj", "{2581172C-0AE1-440A-B33B-27CE5CC2AC05}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Provider.PulseAudio", "sources\Provider\PulseAudio\TerraFX.Provider.PulseAudio.csproj", "{2581172C-0AE1-440A-B33B-27CE5CC2AC05}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PulseAudio", "PulseAudio", "{BE34490B-EB35-4C40-BE63-C1588EAAE91F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -312,6 +315,8 @@ Global
 		{B56B6C8D-47C9-4D61-A65B-FBBF629A9DE7} = {B95732CF-D97C-464C-A9C5-1125CE4AE3C6}
 		{6253FE6C-B410-40A7-B278-70AFF1C22787} = {8793898A-6542-4606-AA82-AB14151D2D20}
 		{B7F289C1-521B-4185-841D-EBFC5724C98B} = {8793898A-6542-4606-AA82-AB14151D2D20}
+		{2581172C-0AE1-440A-B33B-27CE5CC2AC05} = {BE34490B-EB35-4C40-BE63-C1588EAAE91F}
+		{BE34490B-EB35-4C40-BE63-C1588EAAE91F} = {1E3A071E-418D-46C8-9064-CC625EC2408D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2FE36DF8-2D9C-4F20-8787-45DC74B57461}

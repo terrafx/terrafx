@@ -52,7 +52,7 @@ namespace TerraFX.Samples
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                isSupported = true;
+                isSupported = !sample.CompositionAssemblies.Contains(s_pulseAudioProvider);
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {

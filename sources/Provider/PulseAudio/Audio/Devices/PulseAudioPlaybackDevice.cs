@@ -27,7 +27,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
 
         private static readonly byte[] PlaybackName = Encoding.UTF8.GetBytes("Playback");
 
-        private unsafe readonly pa_context* _context;
+        private readonly unsafe pa_context* _context;
         private readonly Pipe _sampleDataPipe;
         private readonly Lazy<IntPtr> _stream;
         private readonly Lazy<GCHandle> _writeDelegateHandle;
@@ -75,10 +75,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
             Dispose(false);
         }
 
-        private GCHandle CreateHandle()
-        {
-            return GCHandle.Alloc(this);
-        }
+        private GCHandle CreateHandle() => GCHandle.Alloc(this);
 
         private unsafe IntPtr CreateStream()
         {
@@ -176,13 +173,13 @@ namespace TerraFX.Provider.PulseAudio.Audio
                         bytesToWrite = (int)result.Buffer.Length;
                     }
 
-                    var status = TryPrepareAndWriteBlock(result.Buffer, bytesToWrite, out int written);
+                    var status = TryPrepareAndWriteBlock(result.Buffer, bytesToWrite, out var written);
                     Assert(status, "Failed to prepare and write block");
                     bytesWritten += written;
                 }
             }
 
-            _state.TryTransition(from: Running, to: Completed);
+            _ = _state.TryTransition(from: Running, to: Completed);
 
             bool TryPrepareAndWriteBlock(ReadOnlySequence<byte> data, int bytesRequested, out int bytesWritten)
             {
@@ -202,7 +199,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
             unsafe bool TryPrepareBlock(ReadOnlySequence<byte> data, int length, out Span<byte> block)
             {
                 void* writeLocation = null;
-                UIntPtr bytesAvailable = new UIntPtr((uint)length);
+                var bytesAvailable = new UIntPtr((uint)length);
                 Assert(pa_stream_begin_write(Stream, &writeLocation, &bytesAvailable) == 0, "pa_stream_begin_write returned != 0");
                 Assert(writeLocation != null, "writeLocation == null");
 
@@ -231,7 +228,7 @@ namespace TerraFX.Provider.PulseAudio.Audio
             GC.SuppressFinalize(this);
         }
 
-        private unsafe void Dispose(bool disposing)
+        private unsafe void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
 
