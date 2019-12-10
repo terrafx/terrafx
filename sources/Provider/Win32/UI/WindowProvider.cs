@@ -23,12 +23,12 @@ namespace TerraFX.Provider.Win32.UI
     [Shared]
     public sealed unsafe class WindowProvider : IDisposable, IWindowProvider
     {
-        /// <summary>A <c>HMODULE</c> to the entry point module.</summary>
-        public static readonly IntPtr EntryPointModule = GetModuleHandleW(lpModuleName: null);
+        /// <summary>A <see cref="HINSTANCE" /> to the entry point module.</summary>
+        public static readonly HINSTANCE EntryPointModule = GetModuleHandleW(lpModuleName: null);
 
         private static readonly NativeDelegate<WNDPROC> s_forwardWndProc = new NativeDelegate<WNDPROC>(ForwardWindowMessage);
 
-        private readonly ThreadLocal<Dictionary<IntPtr, Window>> _windows;
+        private readonly ThreadLocal<Dictionary<HWND, Window>> _windows;
 
         private ResettableLazy<ushort> _classAtom;
         private ResettableLazy<GCHandle> _nativeHandle;
@@ -42,7 +42,7 @@ namespace TerraFX.Provider.Win32.UI
             _classAtom = new ResettableLazy<ushort>(CreateClassAtom);
             _nativeHandle = new ResettableLazy<GCHandle>(CreateNativeHandle);
 
-            _windows = new ThreadLocal<Dictionary<IntPtr, Window>>(trackAllValues: true);
+            _windows = new ThreadLocal<Dictionary<HWND, Window>>(trackAllValues: true);
             _ = _state.Transition(to: Initialized);
         }
 
@@ -97,7 +97,7 @@ namespace TerraFX.Provider.Win32.UI
 
             if (windows is null)
             {
-                windows = new Dictionary<IntPtr, Window>(capacity: 4);
+                windows = new Dictionary<HWND, Window>(capacity: 4);
                 _windows.Value = windows;
             }
 
@@ -116,60 +116,65 @@ namespace TerraFX.Provider.Win32.UI
 
         private static IntPtr ForwardWindowMessage(IntPtr hWnd, uint msg, UIntPtr wParam, IntPtr lParam)
         {
-            IntPtr result, userData;
+            return Impl(hWnd, msg, wParam, lParam);
 
-            if (msg == WM_CREATE)
+            static IntPtr Impl(HWND hWnd, uint msg, UIntPtr wParam, IntPtr lParam)
             {
-                // We allow the WM_CREATE message to be forwarded to the Window instance
-                // for hWnd. This allows some delayed initialization to occur since most
-                // of the fields in Window are lazy.
+                IntPtr result, userData;
 
-                var createStruct = (CREATESTRUCTW*)lParam;
-                userData = (IntPtr)createStruct->lpCreateParams;
-                _ = SetWindowLongPtrW(hWnd, GWLP_USERDATA, userData);
-            }
-            else
-            {
-                userData = GetWindowLongPtrW(hWnd, GWLP_USERDATA);
-            }
-
-            WindowProvider windowProvider = null!;
-            Dictionary<IntPtr, Window>? windows = null;
-            var forwardMessage = false;
-            Window? window = null;
-
-            if (userData != IntPtr.Zero)
-            {
-                windowProvider = (WindowProvider)GCHandle.FromIntPtr(userData).Target!;
-                windows = windowProvider._windows.Value;
-                forwardMessage = (windows?.TryGetValue(hWnd, out window)).GetValueOrDefault();
-            }
-
-            if (forwardMessage)
-            {
-                Assert(windows != null, Resources.ArgumentNullExceptionMessage, nameof(windows));
-                Assert(window != null, Resources.ArgumentNullExceptionMessage, nameof(window));
-
-                result = window.ProcessWindowMessage(msg, wParam, lParam);
-
-                if (msg == WM_DESTROY)
+                if (msg == WM_CREATE)
                 {
-                    // We forward the WM_DESTROY message to the corresponding Window instance
-                    // so that it can still be properly disposed of in the scenario that the
-                    // hWnd was destroyed externally.
+                    // We allow the WM_CREATE message to be forwarded to the Window instance
+                    // for hWnd. This allows some delayed initialization to occur since most
+                    // of the fields in Window are lazy.
 
-                    _ = RemoveWindow(windows, hWnd);
+                    var createStruct = (CREATESTRUCTW*)lParam;
+                    userData = (IntPtr)createStruct->lpCreateParams;
+                    _ = SetWindowLongPtrW(hWnd, GWLP_USERDATA, userData);
                 }
-            }
-            else
-            {
-                result = DefWindowProcW(hWnd, msg, wParam, lParam);
-            }
+                else
+                {
+                    userData = GetWindowLongPtrW(hWnd, GWLP_USERDATA);
+                }
 
-            return result;
+                WindowProvider windowProvider = null!;
+                Dictionary<HWND, Window>? windows = null;
+                var forwardMessage = false;
+                Window? window = null;
+
+                if (userData != IntPtr.Zero)
+                {
+                    windowProvider = (WindowProvider)GCHandle.FromIntPtr(userData).Target!;
+                    windows = windowProvider._windows.Value;
+                    forwardMessage = (windows?.TryGetValue(hWnd, out window)).GetValueOrDefault();
+                }
+
+                if (forwardMessage)
+                {
+                    Assert(windows != null, Resources.ArgumentNullExceptionMessage, nameof(windows));
+                    Assert(window != null, Resources.ArgumentNullExceptionMessage, nameof(window));
+
+                    result = window.ProcessWindowMessage(msg, wParam, lParam);
+
+                    if (msg == WM_DESTROY)
+                    {
+                        // We forward the WM_DESTROY message to the corresponding Window instance
+                        // so that it can still be properly disposed of in the scenario that the
+                        // hWnd was destroyed externally.
+
+                        _ = RemoveWindow(windows, hWnd);
+                    }
+                }
+                else
+                {
+                    result = DefWindowProcW(hWnd, msg, wParam, lParam);
+                }
+
+                return result;
+            }
         }
 
-        private static Window RemoveWindow(Dictionary<IntPtr, Window> windows, IntPtr hWnd)
+        private static Window RemoveWindow(Dictionary<HWND, Window> windows, HWND hWnd)
         {
             _ = windows.Remove(hWnd, out var window);
             Assert(window != null, Resources.ArgumentNullExceptionMessage, nameof(window));
@@ -182,7 +187,7 @@ namespace TerraFX.Provider.Win32.UI
             return window;
         }
 
-        private static IntPtr GetDesktopCursor()
+        private static HICON GetDesktopCursor()
         {
             var desktopWindowHandle = GetDesktopWindow();
 
@@ -192,7 +197,7 @@ namespace TerraFX.Provider.Win32.UI
             WNDCLASSEXW desktopWindowClass;
 
             ThrowExternalExceptionIfFalse(nameof(GetClassInfoExW), GetClassInfoExW(
-                hInstance: IntPtr.Zero,
+                HINSTANCE.NULL,
                 lpszClass: desktopClassName,
                 lpwcx: &desktopWindowClass
             ));
@@ -221,12 +226,12 @@ namespace TerraFX.Provider.Win32.UI
                         cbClsExtra = 0,
                         cbWndExtra = 0,
                         hInstance = EntryPointModule,
-                        hIcon = IntPtr.Zero,
+                        hIcon = HICON.NULL,
                         hCursor = GetDesktopCursor(),
                         hbrBackground = (IntPtr)(COLOR_WINDOW + 1),
                         lpszMenuName = null,
                         lpszClassName = (ushort*)lpszClassName,
-                        hIconSm = IntPtr.Zero
+                        hIconSm = HICON.NULL
                     };
 
                     classAtom = RegisterClassExW(&wndClassEx);

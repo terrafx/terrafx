@@ -13,12 +13,12 @@ namespace TerraFX.Provider.Vulkan.Graphics
     public sealed unsafe class GraphicsAdapter : IGraphicsAdapter
     {
         private readonly GraphicsProvider _graphicsProvider;
-        private readonly IntPtr _physicalDevice;
+        private readonly VkPhysicalDevice _physicalDevice;
         private readonly string _deviceName;
         private readonly uint _vendorId;
         private readonly uint _deviceId;
 
-        internal GraphicsAdapter(GraphicsProvider graphicsProvider, IntPtr physicalDevice)
+        internal GraphicsAdapter(GraphicsProvider graphicsProvider, VkPhysicalDevice physicalDevice)
         {
             _graphicsProvider = graphicsProvider;
             _physicalDevice = physicalDevice;
@@ -41,7 +41,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
         public IGraphicsProvider GraphicsProvider => _graphicsProvider;
 
         /// <summary>Gets the physical device for the instance.</summary>
-        public IntPtr PhysicalDevice => _physicalDevice;
+        public VkPhysicalDevice PhysicalDevice => _physicalDevice;
 
         /// <inheritdoc />
         public uint VendorId => _vendorId;

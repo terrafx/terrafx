@@ -39,7 +39,7 @@ namespace TerraFX.Provider.D3D12.Graphics
         private ResettableLazy<Pointer<ID3D12CommandQueue>> _commandQueue;
         private ResettableLazy<Pointer<ID3D12Device>> _device;
         private ResettableLazy<ID3D12Fence*[]> _fences;
-        private ResettableLazy<IntPtr[]> _fenceEvents;
+        private ResettableLazy<HANDLE[]> _fenceEvents;
         private ResettableLazy<ulong[]> _fenceValues;
         private ResettableLazy<ID3D12GraphicsCommandList*[]> _graphicsCommandLists;
         private ResettableLazy<Pointer<ID3D12DescriptorHeap>> _renderTargetsHeap;
@@ -59,7 +59,7 @@ namespace TerraFX.Provider.D3D12.Graphics
             _commandQueue = new ResettableLazy<Pointer<ID3D12CommandQueue>>(CreateCommandQueue);
             _device = new ResettableLazy<Pointer<ID3D12Device>>(CreateDevice);
             _fences = new ResettableLazy<ID3D12Fence*[]>(CreateFences);
-            _fenceEvents = new ResettableLazy<IntPtr[]>(CreateFenceEvents);
+            _fenceEvents = new ResettableLazy<HANDLE[]>(CreateFenceEvents);
             _fenceValues = new ResettableLazy<ulong[]>(CreateFenceValues);
             _graphicsCommandLists = new ResettableLazy<ID3D12GraphicsCommandList*[]>(CreateGraphicsCommandLists);
             _renderTargets = new ResettableLazy<ID3D12Resource*[]>(CreateRenderTargets);
@@ -126,7 +126,7 @@ namespace TerraFX.Provider.D3D12.Graphics
 
         /// <summary>Gets an array of fence event handles for protecting resources for any given <see cref="RenderTargets" />.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public IntPtr[] FenceEvents
+        public HANDLE[] FenceEvents
         {
             get
             {
@@ -354,15 +354,15 @@ namespace TerraFX.Provider.D3D12.Graphics
             return fences;
         }
 
-        private IntPtr[] CreateFenceEvents()
+        private HANDLE[] CreateFenceEvents()
         {
-            var fenceEvents = new IntPtr[_graphicsSurface.BufferCount];
+            var fenceEvents = new HANDLE[_graphicsSurface.BufferCount];
 
             for (var i = 0; i < fenceEvents.Length; i++)
             {
-                var fenceEvent = CreateEventW(lpEventAttributes: null, bManualReset: FALSE, bInitialState: FALSE, lpName: null);
+                HANDLE fenceEvent = CreateEventW(lpEventAttributes: null, bManualReset: FALSE, bInitialState: FALSE, lpName: null);
 
-                if (fenceEvent == IntPtr.Zero)
+                if (fenceEvent == null)
                 {
                     ThrowExternalExceptionForLastHRESULT(nameof(CreateEventW));
                 }
@@ -584,7 +584,7 @@ namespace TerraFX.Provider.D3D12.Graphics
 
                 foreach (var fenceEvent in fenceEvents)
                 {
-                    if (fenceEvent != IntPtr.Zero)
+                    if (fenceEvent != null)
                     {
                         _ = CloseHandle(fenceEvent);
                     }
@@ -689,9 +689,9 @@ namespace TerraFX.Provider.D3D12.Graphics
 
                 ThrowExternalExceptionIfFailed(nameof(ID3D12CommandQueue.Signal), commandQueue->Signal(fence, Value: 1));
 
-                var fenceEvent = CreateEventW(lpEventAttributes: null, bManualReset: FALSE, bInitialState: FALSE, lpName: null);
+                HANDLE fenceEvent = CreateEventW(lpEventAttributes: null, bManualReset: FALSE, bInitialState: FALSE, lpName: null);
 
-                if (fenceEvent == IntPtr.Zero)
+                if (fenceEvent == null)
                 {
                     ThrowExternalExceptionForLastHRESULT(nameof(CreateEventW));
                 }
@@ -703,7 +703,7 @@ namespace TerraFX.Provider.D3D12.Graphics
             }
         }
 
-        private static void WaitForFence(ID3D12Fence* fence, IntPtr fenceEvent, ulong fenceValue)
+        private static void WaitForFence(ID3D12Fence* fence, HANDLE fenceEvent, ulong fenceValue)
         {
             if (fence->GetCompletedValue() < fenceValue)
             {

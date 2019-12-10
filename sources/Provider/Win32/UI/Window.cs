@@ -6,6 +6,7 @@ using System.Threading;
 using TerraFX.Collections;
 using TerraFX.Graphics;
 using TerraFX.Graphics.Geometry2D;
+using TerraFX.Interop;
 using TerraFX.Numerics;
 using TerraFX.UI;
 using TerraFX.Utilities;
@@ -28,7 +29,7 @@ namespace TerraFX.Provider.Win32.UI
         private readonly FlowDirection _flowDirection;
         private readonly ReadingDirection _readingDirection;
 
-        private ResettableLazy<IntPtr> _handle;
+        private ResettableLazy<HWND> _handle;
         private string _title;
         private Rectangle _bounds;
         private WindowState _windowState;
@@ -41,7 +42,7 @@ namespace TerraFX.Provider.Win32.UI
         {
             Assert(windowProvider != null, Resources.ArgumentNullExceptionMessage, nameof(windowProvider));
 
-            _handle = new ResettableLazy<IntPtr>(CreateWindowHandle);
+            _handle = new ResettableLazy<HWND>(CreateWindowHandle);
 
             _parentThread = Thread.CurrentThread;
             _properties = new PropertySet();
@@ -75,7 +76,7 @@ namespace TerraFX.Provider.Win32.UI
 
         /// <summary>Gets the handle for the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public IntPtr Handle
+        public HWND Handle
         {
             get
             {
@@ -287,11 +288,11 @@ namespace TerraFX.Provider.Win32.UI
             }
         }
 
-        private IntPtr CreateWindowHandle()
+        private HWND CreateWindowHandle()
         {
             _state.AssertNotDisposedOrDisposing();
 
-            IntPtr hWnd;
+            HWND hWnd;
 
             fixed (char* lpWindowName = _title)
             {
