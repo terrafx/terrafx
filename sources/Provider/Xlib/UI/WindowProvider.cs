@@ -41,7 +41,7 @@ namespace TerraFX.Provider.Xlib.UI
             Dispose(isDisposing: false);
         }
 
-        /// <summary>Gets the <see cref="IDispatchProvider" /> for the instance.</summary>
+        /// <inheritdoc />
         public IDispatchProvider DispatchProvider => UI.DispatchProvider.Instance;
 
         /// <summary>Gets the <see cref="GCHandle" /> containing the native handle for the instance.</summary>
@@ -54,7 +54,7 @@ namespace TerraFX.Provider.Xlib.UI
             }
         }
 
-        /// <summary>Gets the <see cref="IWindow" /> objects created by the instance which are associated with <see cref="Thread.CurrentThread" />.</summary>
+        /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public IEnumerable<IWindow> WindowsForCurrentThread
         {
@@ -72,8 +72,7 @@ namespace TerraFX.Provider.Xlib.UI
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>Create a new <see cref="IWindow" /> instance.</summary>
-        /// <returns>A new <see cref="IWindow" /> instance</returns>
+        /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public IWindow CreateWindow()
         {

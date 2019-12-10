@@ -61,16 +61,16 @@ namespace TerraFX.Provider.Xlib.UI
             Dispose(isDisposing: false);
         }
 
-        /// <summary>Occurs when the <see cref="IWindow.Location" /> property changes.</summary>
+        /// <inheritdoc />
         public event EventHandler<PropertyChangedEventArgs<Vector2>>? LocationChanged;
 
-        /// <summary>Occurs when the <see cref="IWindow.Size" /> property changes.</summary>
+        /// <inheritdoc />
         public event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged;
 
-        /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
+        /// <inheritdoc />
         public Rectangle Bounds => _bounds;
 
-        /// <summary>Gets <see cref="FlowDirection" /> for the instance.</summary>
+        /// <inheritdoc />
         public FlowDirection FlowDirection => _flowDirection;
 
         /// <summary>Gets the handle for the instance.</summary>
@@ -84,42 +84,34 @@ namespace TerraFX.Provider.Xlib.UI
             }
         }
 
-        /// <summary>Gets a value that indicates whether the instance is the active window.</summary>
+        /// <inheritdoc />
         public bool IsActive => _isActive;
 
-        /// <summary>Gets a value that indicates whether the instance is enabled.</summary>
+        /// <inheritdoc />
         public bool IsEnabled => _isEnabled;
 
-        /// <summary>Gets a value that indicates whether the instance is visible.</summary>
+        /// <inheritdoc />
         public bool IsVisible => _isVisible;
 
-        /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
+        /// <inheritdoc />
         public Thread ParentThread => _parentThread;
 
-        /// <summary>Gets the set of properties for the instance.</summary>
+        /// <inheritdoc />
         public IPropertySet Properties => _properties;
 
-        /// <summary>Gets the <see cref="ReadingDirection" /> for the instance.</summary>
+        /// <inheritdoc />
         public ReadingDirection ReadingDirection => _readingDirection;
 
-        /// <summary>Gets the title for the instance.</summary>
+        /// <inheritdoc />
         public string Title => _title;
 
-        /// <summary>Gets the <see cref="IWindowProvider" /> for the instance.</summary>
+        /// <inheritdoc />
         public IWindowProvider WindowProvider => _windowProvider;
 
-        /// <summary>Gets the <see cref="WindowState" /> for the instance.</summary>
+        /// <inheritdoc />
         public WindowState WindowState => _windowState;
 
-        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>Activates the instance.</summary>
-        /// <exception cref="ExternalException">The call to <see cref="XRaiseWindow(UIntPtr, UIntPtr)" /> failed.</exception>
+        /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="IsActive" /> was <c>false</c> but the instance has already been disposed.</exception>
         public void Activate()
         {
@@ -131,7 +123,7 @@ namespace TerraFX.Provider.Xlib.UI
             }
         }
 
-        /// <summary>Closes the instance.</summary>
+        /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         /// <exception cref="ExternalException">The call to <see cref="XSendEvent(UIntPtr, UIntPtr, int, IntPtr, XEvent*)" /> failed.</exception>
         /// <remarks>
@@ -152,10 +144,7 @@ namespace TerraFX.Provider.Xlib.UI
             }
         }
 
-        /// <summary>Creates a new <see cref="IGraphicsSurface" /> for the instance.</summary>
-        /// <param name="bufferCount">The number of buffers created for the instance.</param>
-        /// <returns>A new <see cref="IGraphicsSurface" /> for the instance.</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="bufferCount" /> is less than or equal to zero.</exception>
+        /// <inheritdoc />
         public IGraphicsSurface CreateGraphicsSurface(int bufferCount)
         {
             if (bufferCount <= 0)
@@ -166,7 +155,7 @@ namespace TerraFX.Provider.Xlib.UI
             return new GraphicsSurface(this, bufferCount);
         }
 
-        /// <summary>Disables the instance.</summary>
+        /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="IsEnabled" /> was <c>true</c> but the instance has already been disposed.</exception>
         public void Disable()
         {
@@ -182,7 +171,14 @@ namespace TerraFX.Provider.Xlib.UI
             }
         }
 
-        /// <summary>Enables the instance.</summary>
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="XGetWMHints(UIntPtr, UIntPtr)" /> failed.</exception>
         /// <exception cref="ObjectDisposedException"><see cref="IsEnabled" /> was <c>false</c> but the instance has already been disposed.</exception>
         public void Enable()
@@ -199,7 +195,7 @@ namespace TerraFX.Provider.Xlib.UI
             }
         }
 
-        /// <summary>Hides the instance.</summary>
+        /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="IsVisible" /> was <c>true</c> but the instance has already been disposed.</exception>
         public void Hide()
         {
@@ -209,7 +205,7 @@ namespace TerraFX.Provider.Xlib.UI
             }
         }
 
-        /// <summary>Maximizes the instance.</summary>
+        /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="XGetWindowAttributes(UIntPtr, UIntPtr, XWindowAttributes*)" /> failed.</exception>
         /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Maximized" /> but the instance has already been disposed.</exception>
         public void Maximize()
@@ -232,7 +228,7 @@ namespace TerraFX.Provider.Xlib.UI
             }
         }
 
-        /// <summary>Minimizes the instance.</summary>
+        /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="XGetWindowAttributes(UIntPtr, UIntPtr, XWindowAttributes*)" /> failed.</exception>
         /// <exception cref="ExternalException">The call to <see cref="XIconifyWindow(UIntPtr, UIntPtr, int)" /> failed.</exception>
         /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Minimized" /> but the instance has already been disposed.</exception>
@@ -254,7 +250,7 @@ namespace TerraFX.Provider.Xlib.UI
             }
         }
 
-        /// <summary>Restores the instance.</summary>
+        /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Restored" /> but the instance has already been disposed.</exception>
         public void Restore()
         {
@@ -270,7 +266,7 @@ namespace TerraFX.Provider.Xlib.UI
             }
         }
 
-        /// <summary>Shows the instance.</summary>
+        /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="IsVisible" /> was <c>false</c> but the instance has already been disposed.</exception>
         public void Show()
         {
@@ -281,7 +277,7 @@ namespace TerraFX.Provider.Xlib.UI
             }
         }
 
-        /// <summary>Tries to activate the instance.</summary>
+        /// <inheritdoc />
         /// <returns><c>true</c> if the instance was succesfully activated; otherwise, <c>false</c>.</returns>
         /// <exception cref="ObjectDisposedException"><see cref="IsActive" /> was <c>false</c> but the instance has already been disposed.</exception>
         public bool TryActivate()

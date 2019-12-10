@@ -47,9 +47,7 @@ namespace TerraFX.ApplicationModel
         /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
         public Thread ParentThread => _parentThread;
 
-        /// <summary>Gets the service object of the specified type.</summary>
-        /// <typeparam name="TService">The type of the service object to get.</typeparam>
-        /// <returns>A service object of <typeparamref name="TService" /> if one exists; otherwise, <c>default</c>.</returns>
+        /// <inheritdoc />
         public TService GetService<TService>()
         {
             _ = _compositionHost.Value.TryGetExport<TService>(out var service);
@@ -127,7 +125,7 @@ namespace TerraFX.ApplicationModel
             _ = _state.TryTransition(from: Exiting, to: Stopped);
         }
 
-        /// <summary>Disposes of any unmanaged resources associated with the instance.</summary>
+        /// <inheritdoc />
         public void Dispose()
         {
             var priorState = _state.BeginDispose();

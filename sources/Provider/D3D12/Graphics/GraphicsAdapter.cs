@@ -37,13 +37,13 @@ namespace TerraFX.Provider.D3D12.Graphics
             _ = _state.Transition(to: Initialized);
         }
 
-        /// <summary>Gets the PCI ID of the device.</summary>
+        /// <inheritdoc />
         public uint DeviceId => _deviceId;
 
-        /// <summary>Gets the name of the device.</summary>
+        /// <inheritdoc />
         public string DeviceName => _deviceName;
 
-        /// <summary>Gets the <see cref="IDXGIAdapter1" /> for the instance.</summary>
+        /// <summary>Gets the <see cref="IDXGIAdapter1" /> pointer the instance represents.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public IDXGIAdapter1* Adapter
         {
@@ -54,16 +54,13 @@ namespace TerraFX.Provider.D3D12.Graphics
             }
         }
 
-        /// <summary>Gets the <see cref="IGraphicsProvider" /> for the instance.</summary>
+        /// <inheritdoc />
         public IGraphicsProvider GraphicsProvider => _graphicsProvider;
 
-        /// <summary>Gets the PCI ID of the vendor.</summary>
+        /// <inheritdoc />
         public uint VendorId => _vendorId;
 
-        /// <summary>Creates a new <see cref="IGraphicsContext" />.</summary>
-        /// <param name="graphicsSurface">The <see cref="IGraphicsSurface" /> on which the graphics context can draw.</param>
-        /// <returns>A new <see cref="IGraphicsContext" /> which utilizes the current instance and which can draw on <paramref name="graphicsSurface" />.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="graphicsSurface" /> is <c>null</c>.</exception>
+        /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public IGraphicsContext CreateGraphicsContext(IGraphicsSurface graphicsSurface)
         {
@@ -72,7 +69,7 @@ namespace TerraFX.Provider.D3D12.Graphics
             return new GraphicsContext(this, graphicsSurface);
         }
 
-        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(isDisposing: true);

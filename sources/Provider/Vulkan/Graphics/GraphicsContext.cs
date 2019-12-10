@@ -170,7 +170,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
             }
         }
 
-        /// <summary>Gets the <see cref="IGraphicsAdapter" /> for the instance.</summary>
+        /// <inheritdoc />
         public IGraphicsAdapter GraphicsAdapter => _graphicsAdapter;
 
         /// <summary>Gets the index of the graphics queue family for the instance.</summary>
@@ -184,7 +184,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
             }
         }
 
-        /// <summary>Gets the <see cref="IGraphicsSurface" /> for the instance.</summary>
+        /// <inheritdoc />
         public IGraphicsSurface GraphicsSurface => _graphicsSurface;
 
         /// <summary>Gets a <c>vkSemaphore</c> for the <see cref="vkQueueSubmit(IntPtr, uint, VkSubmitInfo*, ulong)" /> method.</summary>
@@ -242,15 +242,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
             }
         }
 
-        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>Begins a new frame for rendering.</summary>
-        /// <param name="backgroundColor">A color to which the background should be cleared.</param>
+        /// <inheritdoc />
         public void BeginFrame(ColorRgba backgroundColor)
         {
             uint frameIndex;
@@ -350,7 +342,14 @@ namespace TerraFX.Provider.Vulkan.Graphics
             vkCmdSetScissor(commandBuffer, firstScissor: 0, scissorCount: 1, &scissorRect);
         }
 
-        /// <summary>Ends the frame currently be rendered.</summary>
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <inheritdoc />
         public void EndFrame()
         {
             var frameIndex = _frameIndex;
@@ -389,7 +388,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
             }
         }
 
-        /// <summary>Presents the last frame rendered.</summary>
+        /// <inheritdoc />
         public void PresentFrame()
         {
             var frameIndex = _frameIndex;

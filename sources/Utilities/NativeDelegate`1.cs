@@ -8,7 +8,8 @@ namespace TerraFX.Utilities
 {
     /// <summary>Defines a delegate that can be passed to native code.</summary>
     /// <typeparam name="TDelegate">The type of the delegate.</typeparam>
-    public readonly struct NativeDelegate<TDelegate> where TDelegate : Delegate
+    public readonly struct NativeDelegate<TDelegate>
+        where TDelegate : Delegate
     {
         private readonly IntPtr _handle;
         private readonly TDelegate _value;

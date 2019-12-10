@@ -4,6 +4,7 @@ using System;
 using System.IO.Pipelines;
 using System.Threading;
 using System.Threading.Tasks;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Audio
 {
@@ -16,8 +17,11 @@ namespace TerraFX.Audio
         /// <summary>Initializes a new instance of the <see cref="AudioEncoder" /> class.</summary>
         /// <param name="options">Audio encoder options.</param>
         /// <param name="pipeOptions">Options for input/output pipes. Defaults to <see cref="PipeOptions.Default" />.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="options" /> is <c>null</c>.</exception>
         public AudioEncoder(AudioEncoderOptions options, PipeOptions? pipeOptions = null)
         {
+            ThrowIfNull(options, nameof(options));
+
             _inputPipe = new Pipe(pipeOptions ?? PipeOptions.Default);
             _outputPipe = new Pipe(pipeOptions ?? PipeOptions.Default);
         }
@@ -34,6 +38,9 @@ namespace TerraFX.Audio
         /// <summary>Writer for encoded output data.</summary>
         protected PipeWriter OutputWriter => _outputPipe.Writer;
 
+        /// <inheritdoc />
+        public abstract void Dispose();
+
         /// <summary>Runs the encoder pipeline.</summary>
         public abstract Task EncodeAsync(CancellationToken cancellationToken = default);
 
@@ -43,8 +50,5 @@ namespace TerraFX.Audio
             _inputPipe.Reset();
             _outputPipe.Reset();
         }
-
-        /// <inheritdoc />
-        public abstract void Dispose();
     }
 }

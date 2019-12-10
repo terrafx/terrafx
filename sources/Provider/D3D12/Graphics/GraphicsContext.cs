@@ -36,15 +36,15 @@ namespace TerraFX.Provider.D3D12.Graphics
         private readonly IGraphicsSurface _graphicsSurface;
 
         private ResettableLazy<ID3D12CommandAllocator*[]> _commandAllocators;
-        private ResettableLazy<IntPtr> _commandQueue;
-        private ResettableLazy<IntPtr> _device;
+        private ResettableLazy<Pointer<ID3D12CommandQueue>> _commandQueue;
+        private ResettableLazy<Pointer<ID3D12Device>> _device;
         private ResettableLazy<ID3D12Fence*[]> _fences;
         private ResettableLazy<IntPtr[]> _fenceEvents;
         private ResettableLazy<ulong[]> _fenceValues;
         private ResettableLazy<ID3D12GraphicsCommandList*[]> _graphicsCommandLists;
-        private ResettableLazy<IntPtr> _renderTargetsHeap;
+        private ResettableLazy<Pointer<ID3D12DescriptorHeap>> _renderTargetsHeap;
         private ResettableLazy<ID3D12Resource*[]> _renderTargets;
-        private ResettableLazy<IntPtr> _swapChain;
+        private ResettableLazy<Pointer<IDXGISwapChain3>> _swapChain;
 
         private ulong _fenceValue;
         private uint _frameIndex;
@@ -56,15 +56,15 @@ namespace TerraFX.Provider.D3D12.Graphics
             _graphicsSurface = graphicsSurface;
 
             _commandAllocators = new ResettableLazy<ID3D12CommandAllocator*[]>(CreateCommandAllocators);
-            _commandQueue = new ResettableLazy<IntPtr>(CreateCommandQueue);
-            _device = new ResettableLazy<IntPtr>(CreateDevice);
+            _commandQueue = new ResettableLazy<Pointer<ID3D12CommandQueue>>(CreateCommandQueue);
+            _device = new ResettableLazy<Pointer<ID3D12Device>>(CreateDevice);
             _fences = new ResettableLazy<ID3D12Fence*[]>(CreateFences);
             _fenceEvents = new ResettableLazy<IntPtr[]>(CreateFenceEvents);
             _fenceValues = new ResettableLazy<ulong[]>(CreateFenceValues);
             _graphicsCommandLists = new ResettableLazy<ID3D12GraphicsCommandList*[]>(CreateGraphicsCommandLists);
             _renderTargets = new ResettableLazy<ID3D12Resource*[]>(CreateRenderTargets);
-            _renderTargetsHeap = new ResettableLazy<IntPtr>(CreateRenderTargetsHeap);
-            _swapChain = new ResettableLazy<IntPtr>(CreateSwapChain);
+            _renderTargetsHeap = new ResettableLazy<Pointer<ID3D12DescriptorHeap>>(CreateRenderTargetsHeap);
+            _swapChain = new ResettableLazy<Pointer<IDXGISwapChain3>>(CreateSwapChain);
 
             _ = _state.Transition(to: Initialized);
 
@@ -98,7 +98,7 @@ namespace TerraFX.Provider.D3D12.Graphics
             get
             {
                 _state.ThrowIfDisposedOrDisposing();
-                return (ID3D12CommandQueue*)_commandQueue.Value;
+                return _commandQueue.Value;
             }
         }
 
@@ -109,7 +109,7 @@ namespace TerraFX.Provider.D3D12.Graphics
             get
             {
                 _state.ThrowIfDisposedOrDisposing();
-                return (ID3D12Device*)_device.Value;
+                return _device.Value;
             }
         }
 
@@ -146,7 +146,7 @@ namespace TerraFX.Provider.D3D12.Graphics
             }
         }
 
-        /// <summary>Gets the <see cref="IGraphicsAdapter" /> for the instance.</summary>
+        /// <inheritdoc />
         public IGraphicsAdapter GraphicsAdapter => _graphicsAdapter;
 
         /// <summary>Gets an array of <see cref="ID3D12GraphicsCommandList" /> for the instance.</summary>
@@ -160,7 +160,7 @@ namespace TerraFX.Provider.D3D12.Graphics
             }
         }
 
-        /// <summary>Gets the <see cref="IGraphicsSurface" /> for the instance.</summary>
+        /// <inheritdoc />
         public IGraphicsSurface GraphicsSurface => _graphicsSurface;
 
         /// <summary>Gets an array of <see cref="ID3D12Resource" /> representing the render targets for the instance.</summary>
@@ -181,7 +181,7 @@ namespace TerraFX.Provider.D3D12.Graphics
             get
             {
                 _state.ThrowIfDisposedOrDisposing();
-                return (ID3D12DescriptorHeap*)_renderTargetsHeap.Value;
+                return _renderTargetsHeap.Value;
             }
         }
 
@@ -192,19 +192,11 @@ namespace TerraFX.Provider.D3D12.Graphics
             get
             {
                 _state.ThrowIfDisposedOrDisposing();
-                return (IDXGISwapChain3*)_swapChain.Value;
+                return _swapChain.Value;
             }
         }
 
-        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>Begins a new frame for rendering.</summary>
-        /// <param name="backgroundColor">A color to which the background should be cleared.</param>
+        /// <inheritdoc />
         public void BeginFrame(ColorRgba backgroundColor)
         {
             var frameIndex = SwapChain->GetCurrentBackBufferIndex();
@@ -258,7 +250,14 @@ namespace TerraFX.Provider.D3D12.Graphics
             graphicsCommandList->ClearRenderTargetView(renderTargetHandle, (float*)&backgroundColor, NumRects: 0, pRects: null);
         }
 
-        /// <summary>Ends the frame currently be rendered.</summary>
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <inheritdoc />
         public void EndFrame()
         {
             var frameIndex = _frameIndex;
@@ -283,7 +282,7 @@ namespace TerraFX.Provider.D3D12.Graphics
             CommandQueue->ExecuteCommandLists(1, (ID3D12CommandList**)&graphicsCommandList);
         }
 
-        /// <summary>Presents the last frame rendered.</summary>
+        /// <inheritdoc />
         public void PresentFrame()
         {
             var frameIndex = _frameIndex;
@@ -313,7 +312,7 @@ namespace TerraFX.Provider.D3D12.Graphics
             return commandAllocators;
         }
 
-        private IntPtr CreateCommandQueue()
+        private Pointer<ID3D12CommandQueue> CreateCommandQueue()
         {
             ID3D12CommandQueue* commandQueue;
 
@@ -327,17 +326,17 @@ namespace TerraFX.Provider.D3D12.Graphics
             var iid = IID_ID3D12CommandQueue;
             ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateCommandQueue), Device->CreateCommandQueue(&commandQueueDesc, &iid, (void**)&commandQueue));
 
-            return (IntPtr)commandQueue;
+            return commandQueue;
         }
 
-        private IntPtr CreateDevice()
+        private Pointer<ID3D12Device> CreateDevice()
         {
             ID3D12Device* device;
 
             var iid = IID_ID3D12Device;
             ThrowExternalExceptionIfFailed(nameof(D3D12CreateDevice), D3D12CreateDevice((IUnknown*)_graphicsAdapter.Adapter, D3D_FEATURE_LEVEL_11_0, &iid, (void**)&device));
 
-            return (IntPtr)device;
+            return device;
         }
 
         private ID3D12Fence*[] CreateFences()
@@ -433,7 +432,7 @@ namespace TerraFX.Provider.D3D12.Graphics
             return renderTargets;
         }
 
-        private IntPtr CreateRenderTargetsHeap()
+        private Pointer<ID3D12DescriptorHeap> CreateRenderTargetsHeap()
         {
             ID3D12DescriptorHeap* renderTargetDescriptorHeap;
 
@@ -447,10 +446,10 @@ namespace TerraFX.Provider.D3D12.Graphics
             var iid = IID_ID3D12DescriptorHeap;
             ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateDescriptorHeap), Device->CreateDescriptorHeap(&renderTargetDescriptorHeapDesc, &iid, (void**)&renderTargetDescriptorHeap));
 
-            return (IntPtr)renderTargetDescriptorHeap;
+            return renderTargetDescriptorHeap;
         }
 
-        private IntPtr CreateSwapChain()
+        private Pointer<IDXGISwapChain3> CreateSwapChain()
         {
             IDXGISwapChain3* swapChain;
 
@@ -493,7 +492,7 @@ namespace TerraFX.Provider.D3D12.Graphics
             // Fullscreen transitions are not currently supported
             ThrowExternalExceptionIfFailed(nameof(IDXGIFactory.MakeWindowAssociation), graphicsProvider.Factory->MakeWindowAssociation(_graphicsSurface.WindowHandle, DXGI_MWA_NO_ALT_ENTER));
 
-            return (IntPtr)swapChain;
+            return swapChain;
         }
 
         private void Dispose(bool isDisposing)

@@ -23,7 +23,7 @@ namespace TerraFX.Provider.Xlib.UI
             _bufferCount = bufferCount;
         }
 
-        /// <summary>Occurs when the <see cref="Size" /> property changes.</summary>
+        /// <inheritdoc />
         public event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged
         {
             add
@@ -37,19 +37,19 @@ namespace TerraFX.Provider.Xlib.UI
             }
         }
 
-        /// <summary>Gets the number of buffers for the instance.</summary>
+        /// <inheritdoc />
         public int BufferCount => _bufferCount;
 
-        /// <summary>Gets the display handle for the instance.</summary>
+        /// <inheritdoc />
         public IntPtr DisplayHandle => (IntPtr)(void*)DispatchProvider.Instance.Display;
 
-        /// <summary>Gets the kind of surface represented by the instance.</summary>
+        /// <inheritdoc />
         public GraphicsSurfaceKind Kind => GraphicsSurfaceKind.Xlib;
 
-        /// <summary>Gets the size of the instance.</summary>
+        /// <inheritdoc />
         public Vector2 Size => _window.Bounds.Size;
 
-        /// <summary>Gets the window handle for the instance.</summary>
+        /// <inheritdoc />
         public IntPtr WindowHandle => (IntPtr)(void*)_window.Handle;
     }
 }
