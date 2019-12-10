@@ -277,7 +277,7 @@ namespace TerraFX.Provider.Xlib.UI
             0x00
         };
 
-        /// <summary>Gets the current <see cref="Timestamp" /> for the instance.</summary>
+        /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="clock_gettime(int, timespec*)" /> failed.</exception>
         public Timestamp CurrentTimestamp
         {
@@ -315,9 +315,7 @@ namespace TerraFX.Provider.Xlib.UI
             }
         }
 
-        /// <summary>Gets the <see cref="IDispatcher" /> instance associated with <see cref="Thread.CurrentThread" />.</summary>
-        /// <returns>The <see cref="IDispatcher" /> instance associated with <see cref="Thread.CurrentThread" />.</returns>
-        /// <remarks>This will create a new <see cref="IDispatcher" /> instance if one does not already exist.</remarks>
+        /// <inheritdoc />
         public IDispatcher DispatcherForCurrentThread => GetDispatcher(Thread.CurrentThread);
 
         /// <summary>Gets the <c>Display</c> that was created for the instance.</summary>
@@ -386,29 +384,21 @@ namespace TerraFX.Provider.Xlib.UI
             }
         }
 
-        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(isDisposing: true);
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>Gets the <see cref="IDispatcher" /> instance associated with a <see cref="Thread" />, creating one if it does not exist.</summary>
-        /// <param name="thread">The <see cref="Thread" /> for which the <see cref="IDispatcher" /> instance should be retrieved.</param>
-        /// <returns>The <see cref="IDispatcher" /> instance associated with <paramref name="thread" />.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="thread" /> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">A <see cref="IDispatcher" /> instance for <paramref name="thread" /> could not be found.</exception>
+        /// <inheritdoc />
         public IDispatcher GetDispatcher(Thread thread)
         {
             ThrowIfNull(thread, nameof(thread));
             return _dispatchers.GetOrAdd(thread, (parentThread) => new Dispatcher(this, parentThread));
         }
 
-        /// <summary>Gets the <see cref="IDispatcher" /> instance associated with a <see cref="Thread" /> or <c>null</c> if one does not exist.</summary>
-        /// <param name="thread">The <see cref="Thread" /> for which the <see cref="IDispatcher" /> instance should be retrieved.</param>
-        /// <param name="dispatcher">The <see cref="IDispatcher" /> instance associated with <paramref name="thread" />.</param>
-        /// <returns><c>true</c> if a <see cref="IDispatcher" /> instance was found for <paramref name="thread" />; otherwise, <c>false</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="thread" /> is <c>null</c>.</exception>
+        /// <inheritdoc />
         public bool TryGetDispatcher(Thread thread, [MaybeNullWhen(false)] out IDispatcher dispatcher)
         {
             ThrowIfNull(thread, nameof(thread));

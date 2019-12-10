@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using TerraFX.Audio;
 using TerraFX.Interop;
-using TerraFX.Utilities;
 
 using static TerraFX.Utilities.ExceptionUtilities;
 

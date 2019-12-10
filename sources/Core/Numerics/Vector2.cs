@@ -70,15 +70,27 @@ namespace TerraFX.Numerics
         /// <returns>A new <see cref="Vector2" /> instance with <see cref="Y" /> set to <paramref name="value" />.</returns>
         public Vector2 WithY(float value) => new Vector2(X, value);
 
-        /// <summary>Compares a <see cref="Vector2" /> with the current instance to determine equality.</summary>
-        /// <param name="other">The <see cref="Vector2" /> to compare with the current instance.</param>
-        /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
+        /// <inheritdoc />
+        public override bool Equals(object? obj) => (obj is Vector2 other) && Equals(other);
+
+        /// <inheritdoc />
         public bool Equals(Vector2 other) => this == other;
 
-        /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
-        /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
-        /// <param name="formatProvider">The provider to use when formatting the current instance or <c>null</c> to use the default provider.</param>
-        /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            var combinedValue = 0;
+            {
+                combinedValue = CombineValue(X.GetHashCode(), combinedValue);
+                combinedValue = CombineValue(Y.GetHashCode(), combinedValue);
+            }
+            return FinalizeValue(combinedValue, sizeof(float) * 2);
+        }
+
+        /// <inheritdoc />
+        public override string ToString() => ToString(format: null, formatProvider: null);
+
+        /// <inheritdoc />
         public string ToString(string? format, IFormatProvider? formatProvider)
         {
             var separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
@@ -92,30 +104,5 @@ namespace TerraFX.Numerics
                 .Append('>')
                 .ToString();
         }
-
-        /// <summary>Compares a <see cref="object" /> with the current instance to determine equality.</summary>
-        /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
-        /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="Vector2" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>
-        public override bool Equals(object? obj)
-        {
-            return (obj is Vector2 other)
-                && Equals(other);
-        }
-
-        /// <summary>Gets a hash code for the current instance.</summary>
-        /// <returns>A hash code for the current instance.</returns>
-        public override int GetHashCode()
-        {
-            var combinedValue = 0;
-            {
-                combinedValue = CombineValue(X.GetHashCode(), combinedValue);
-                combinedValue = CombineValue(Y.GetHashCode(), combinedValue);
-            }
-            return FinalizeValue(combinedValue, sizeof(float) * 2);
-        }
-
-        /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
-        /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
-        public override string ToString() => ToString(format: null, formatProvider: null);
     }
 }

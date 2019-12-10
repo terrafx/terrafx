@@ -64,7 +64,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
             Dispose(isDisposing: false);
         }
 
-        /// <summary>Gets the <see cref="IGraphicsAdapter" /> instances currently available.</summary>
+        /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public IEnumerable<IGraphicsAdapter> GraphicsAdapters
         {
@@ -86,7 +86,7 @@ namespace TerraFX.Provider.Vulkan.Graphics
             }
         }
 
-        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(isDisposing: true);

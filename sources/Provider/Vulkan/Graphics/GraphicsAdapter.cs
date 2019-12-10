@@ -13,12 +13,12 @@ namespace TerraFX.Provider.Vulkan.Graphics
     public sealed unsafe class GraphicsAdapter : IGraphicsAdapter
     {
         private readonly GraphicsProvider _graphicsProvider;
-        private readonly IntPtr _physicalDevice;
+        private readonly VkPhysicalDevice _physicalDevice;
         private readonly string _deviceName;
         private readonly uint _vendorId;
         private readonly uint _deviceId;
 
-        internal GraphicsAdapter(GraphicsProvider graphicsProvider, IntPtr physicalDevice)
+        internal GraphicsAdapter(GraphicsProvider graphicsProvider, VkPhysicalDevice physicalDevice)
         {
             _graphicsProvider = graphicsProvider;
             _physicalDevice = physicalDevice;
@@ -31,25 +31,22 @@ namespace TerraFX.Provider.Vulkan.Graphics
             _deviceId = properties.deviceID;
         }
 
-        /// <summary>Gets the PCI ID of the device.</summary>
+        /// <inheritdoc />
         public uint DeviceId => _deviceId;
 
-        /// <summary>Gets the name of the device.</summary>
+        /// <inheritdoc />
         public string DeviceName => _deviceName;
 
-        /// <summary>Gets the <see cref="IGraphicsProvider" /> for the instance.</summary>
+        /// <inheritdoc />
         public IGraphicsProvider GraphicsProvider => _graphicsProvider;
 
         /// <summary>Gets the physical device for the instance.</summary>
-        public IntPtr PhysicalDevice => _physicalDevice;
+        public VkPhysicalDevice PhysicalDevice => _physicalDevice;
 
-        /// <summary>Gets the PCI ID of the vendor.</summary>
+        /// <inheritdoc />
         public uint VendorId => _vendorId;
 
-        /// <summary>Creates a new <see cref="IGraphicsContext" />.</summary>
-        /// <param name="graphicsSurface">The <see cref="IGraphicsSurface" /> on which the graphics context can draw.</param>
-        /// <returns>A new <see cref="IGraphicsContext" /> which utilizes the current instance and which can draw on <paramref name="graphicsSurface" />.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="graphicsSurface" /> is <c>null</c>.</exception>
+        /// <inheritdoc />
         public IGraphicsContext CreateGraphicsContext(IGraphicsSurface graphicsSurface)
         {
             ThrowIfNull(graphicsSurface, nameof(graphicsSurface));

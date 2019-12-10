@@ -71,15 +71,28 @@ namespace TerraFX.Graphics
         /// <returns>A new <see cref="Color" /> instance with <see cref="Red" /> set to <paramref name="value" />.</returns>
         public Color WithRed(float value) => new Color(value, Green, Blue);
 
-        /// <summary>Compares a <see cref="Color" /> with the current instance to determine equality.</summary>
-        /// <param name="other">The <see cref="Color" /> to compare with the current instance.</param>
-        /// <returns><c>true</c> if <paramref name="other" /> is equal to the current instance; otherwise, <c>false</c>.</returns>
+        /// <inheritdoc />
+        public override bool Equals(object? obj) => (obj is Color other) && Equals(other);
+
+        /// <inheritdoc />
         public bool Equals(Color other) => this == other;
 
-        /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
-        /// <param name="format">The format to use or <c>null</c> to use the default format.</param>
-        /// <param name="formatProvider">The provider to use when formatting the current instance or <c>null</c> to use the default provider.</param>
-        /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            var combinedValue = 0;
+            {
+                combinedValue = CombineValue(Red.GetHashCode(), combinedValue);
+                combinedValue = CombineValue(Green.GetHashCode(), combinedValue);
+                combinedValue = CombineValue(Blue.GetHashCode(), combinedValue);
+            }
+            return FinalizeValue(combinedValue, sizeof(float) * 3);
+        }
+
+        /// <inheritdoc />
+        public override string ToString() => ToString(format: null, formatProvider: null);
+
+        /// <inheritdoc />
         public string ToString(string? format, IFormatProvider? formatProvider)
         {
             var separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
@@ -96,31 +109,5 @@ namespace TerraFX.Graphics
                 .Append('>')
                 .ToString();
         }
-
-        /// <summary>Compares a <see cref="object" /> with the current instance to determine equality.</summary>
-        /// <param name="obj">The <see cref="object" /> to compare with the current instance.</param>
-        /// <returns><c>true</c> if <paramref name="obj" /> is an instance of <see cref="Color" /> and is equal to the current instance; otherwise, <c>false</c>.</returns>
-        public override bool Equals(object? obj)
-        {
-            return (obj is Color other)
-                && Equals(other);
-        }
-
-        /// <summary>Gets a hash code for the current instance.</summary>
-        /// <returns>A hash code for the current instance.</returns>
-        public override int GetHashCode()
-        {
-            var combinedValue = 0;
-            {
-                combinedValue = CombineValue(Red.GetHashCode(), combinedValue);
-                combinedValue = CombineValue(Green.GetHashCode(), combinedValue);
-                combinedValue = CombineValue(Blue.GetHashCode(), combinedValue);
-            }
-            return FinalizeValue(combinedValue, sizeof(float) * 3);
-        }
-
-        /// <summary>Converts the current instance to an equivalent <see cref="string" /> value.</summary>
-        /// <returns>An equivalent <see cref="string" /> value for the current instance.</returns>
-        public override string ToString() => ToString(format: null, formatProvider: null);
     }
 }

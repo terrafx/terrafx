@@ -50,28 +50,22 @@ namespace TerraFX.Collections
             _items = new Dictionary<string, object>(items);
         }
 
-        /// <summary>Occurs when the underlying dictionary changes.</summary>
+        /// <inheritdoc />
         public event EventHandler<NotifyDictionaryChangedEventArgs<string, object>>? DictionaryChanged;
 
-        /// <summary>Gets the number of items contained by the instance.</summary>
+        /// <inheritdoc />
         public int Count => _items.Count;
 
-        /// <summary>Gets a value that indicates whether the instance is <c>read-only</c>.</summary>
-        /// <remarks>An instance that is <c>read-only</c> does not allow the modification of the items contained by an instance.</remarks>
+        /// <inheritdoc />
         public bool IsReadOnly => _items.IsReadOnly;
 
-        /// <summary>Gets a <see cref="ICollection{TKey}" /> that contains the keys for the instance.</summary>
+        /// <inheritdoc />
         public ICollection<string> Keys => _items.Keys;
 
-        /// <summary>Gets a <see cref="ICollection{TKey}" /> that contains the values for the instance.</summary>
+        /// <inheritdoc />
         public ICollection<object> Values => _items.Values;
 
-        /// <summary>Gets or sets the item with the specified <paramref name="key" />.</summary>
-        /// <param name="key">The key of the item to get or set.</param>
-        /// <returns>The item with the specified <paramref name="key" />.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="key" /> is <c>null</c>.</exception>
-        /// <exception cref="KeyNotFoundException">On <c>get</c>: An item with the specified <paramref name="key" /> could not be found.</exception>
-        /// <exception cref="NotSupportedException">On <c>set</c>: The instance is <c>read-only</c>.</exception>
+        /// <inheritdoc />
         public object this[string key]
         {
             get
@@ -95,41 +89,27 @@ namespace TerraFX.Collections
             }
         }
 
-        /// <summary>Removes all items from the instance.</summary>
-        /// <exception cref="NotSupportedException">The instance is <c>read-only</c>.</exception>
+        /// <inheritdoc />
         public void Clear()
         {
             _items.Clear();
             OnDictionaryReset();
         }
 
-        /// <summary>Adds an item to the instance.</summary>
-        /// <param name="key">The key of the item to add to the instance.</param>
-        /// <param name="value">The value of the item to add to the instance.</param>
-        /// <exception cref="ArgumentException">An item with the same <paramref name="key" /> already exists in the instance.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="key" /> is <c>null</c>.</exception>
-        /// <exception cref="NotSupportedException">The instance is <c>read-only</c>.</exception>
+        /// <inheritdoc />
         public void Add(string key, object value)
         {
             _items.Add(key, value);
             OnDictionaryItemAdded(key);
         }
 
-        /// <summary>Determines whether the instance contains a specific key.</summary>
-        /// <param name="key">The key for which to check.</param>
-        /// <returns><c>true</c> if the instance contains <paramref name="key" />; otherwise, <c>false</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="key" /> is <c>null</c>.</exception>
+        /// <inheritdoc />
         public bool ContainsKey(string key) => _items.ContainsKey(key);
 
-        /// <summary>Gets an <see cref="IEnumerator{T}" /> that can iterate through the items contained by the instance.</summary>
-        /// <returns>An <see cref="IEnumerator{T}" /> that can iterate through the items contained by the instance.</returns>
+        /// <inheritdoc />
         public IEnumerator<KeyValuePair<string, object>> GetEnumerator() => _items.GetEnumerator();
 
-        /// <summary>Removes an item from the instance.</summary>
-        /// <param name="key">The key of the item to remove from the instance.</param>
-        /// <returns><c>true</c> if the item was succesfully removed; otherwise, <c>false</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="key" /> is <c>null</c>.</exception>
-        /// <exception cref="NotSupportedException">The instance is <c>read-only</c>.</exception>
+        /// <inheritdoc />
         public bool Remove(string key)
         {
             var removed = _items.Remove(key);
@@ -142,10 +122,7 @@ namespace TerraFX.Collections
             return removed;
         }
 
-        /// <summary>Attempts to get the value of an item from the instance.</summary>
-        /// <param name="key">The key of the item to get from the instance.</param>
-        /// <param name="value">On <c>return</c>: Contains the value of the item if it was found; otherwise, <c>null</c>.</param>
-        /// <returns><c>true</c> if an item with the specified <paramref name="key" /> was found; otherwise, <c>false</c>.</returns>
+        /// <inheritdoc />
         public bool TryGetValue(string key, [MaybeNullWhen(false)] out object value) => _items.TryGetValue(key, out value!);
 
         private void OnDictionaryReset()

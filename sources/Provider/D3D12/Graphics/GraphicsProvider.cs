@@ -27,7 +27,7 @@ namespace TerraFX.Provider.D3D12.Graphics
     public sealed unsafe class GraphicsProvider : IDisposable, IGraphicsProvider
     {
         private ResettableLazy<ImmutableArray<GraphicsAdapter>> _adapters;
-        private ResettableLazy<IntPtr> _factory;
+        private ResettableLazy<Pointer<IDXGIFactory2>> _factory;
 
         private State _state;
 
@@ -36,7 +36,7 @@ namespace TerraFX.Provider.D3D12.Graphics
         public GraphicsProvider()
         {
             _adapters = new ResettableLazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters);
-            _factory = new ResettableLazy<IntPtr>(CreateFactory);
+            _factory = new ResettableLazy<Pointer<IDXGIFactory2>>(CreateFactory);
             _ = _state.Transition(to: Initialized);
         }
 
@@ -46,7 +46,7 @@ namespace TerraFX.Provider.D3D12.Graphics
             Dispose(isDisposing: false);
         }
 
-        /// <summary>Gets the <see cref="IGraphicsAdapter" /> instances currently available.</summary>
+        /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public IEnumerable<IGraphicsAdapter> GraphicsAdapters
         {
@@ -64,18 +64,18 @@ namespace TerraFX.Provider.D3D12.Graphics
             get
             {
                 _state.ThrowIfDisposedOrDisposing();
-                return (IDXGIFactory2*)_factory.Value;
+                return _factory.Value;
             }
         }
 
-        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(isDisposing: true);
             GC.SuppressFinalize(this);
         }
 
-        private static IntPtr CreateFactory()
+        private static Pointer<IDXGIFactory2> CreateFactory()
         {
             Guid iid;
             uint createFactoryFlags = 0;
@@ -109,7 +109,7 @@ namespace TerraFX.Provider.D3D12.Graphics
             iid = IID_IDXGIFactory2;
             ThrowExternalExceptionIfFailed(nameof(CreateDXGIFactory2), CreateDXGIFactory2(createFactoryFlags, &iid, (void**)&factory));
 
-            return (IntPtr)factory;
+            return factory;
         }
 
         private void Dispose(bool isDisposing)
