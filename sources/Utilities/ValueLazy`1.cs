@@ -1,6 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Runtime.InteropServices;
 using System.Threading;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -31,8 +32,22 @@ namespace TerraFX.Utilities
         /// <summary><c>true</c> if the value has already been created; otherwise, <c>false</c>.</summary>
         public bool IsCreated => _state == Created;
 
+        /// <summary>Gets a reference to the underyling value for the instance.</summary>
+        /// <remarks>This property is unsafe as it returns a reference to a struct field.</remarks>
+        public ref T RefValue
+        {
+            get
+            {
+                if (!IsCreated)
+                {
+                    CreateValue();
+                }
+                return ref MemoryMarshal.GetReference(MemoryMarshal.CreateSpan(ref _value, 1));
+            }
+        }
+
         /// <summary>Gets the value for the instance.</summary>
-        public T Value => IsCreated ? _value : CreateValue();
+        public T Value => RefValue;
 
         /// <summary>Resets the instance so the value can be recreated.</summary>
         /// <param name="factory">The factory method to call when initializing the value.</param>
@@ -44,7 +59,7 @@ namespace TerraFX.Utilities
             _ = _state.Transition(to: Initialized);
         }
 
-        private T CreateValue()
+        private void CreateValue()
         {
             var spinWait = new SpinWait();
 
@@ -66,7 +81,6 @@ namespace TerraFX.Utilities
                     spinWait.SpinOnce();
                 }
             }
-            return _value;
         }
     }
 }
