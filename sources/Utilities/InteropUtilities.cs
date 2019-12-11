@@ -10,6 +10,20 @@ namespace TerraFX.Utilities
     /// <summary>Provides a set of methods for simplifying interop code.</summary>
     public static unsafe class InteropUtilities
     {
+        /// <summary>Reinterprets a <typeparamref name="T" /> reference as a pointer.</summary>
+        /// <typeparam name="T">The type of <paramref name="value" />.</typeparam>
+        /// <param name="value">The reference to reinterpret.</param>
+        /// <returns>A pointer reinterpretation of <paramref name="value" />.</returns>
+        public static T* AsPointer<T>(ref T value)
+            where T : unmanaged => (T*)Unsafe.AsPointer(ref value);
+
+        /// <summary>Reinterprets a <see cref="ReadOnlySpan{T}" /> as a pointer.</summary>
+        /// <typeparam name="T">The type of elements contained in <paramref name="span" />.</typeparam>
+        /// <param name="span">The span to reinterpret.</param>
+        /// <returns>A pointer reinterpretation of <paramref name="span" />.</returns>
+        public static T* AsPointer<T>(ReadOnlySpan<T> span)
+            where T : unmanaged => AsPointer(ref MemoryMarshal.GetReference(span));
+
         /// <summary>Gets a reference of <typeparamref name="T" /> from a given <see cref="int" />.</summary>
         /// <typeparam name="T">The type of the reference to retrieve.</typeparam>
         /// <param name="source">The <see cref="int" /> for which to get the reference from.</param>
@@ -37,6 +51,13 @@ namespace TerraFX.Utilities
         /// <returns>A reference of <typeparamref name="T" /> from <paramref name="source" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref T AsRef<T>(void* source) => ref Unsafe.AsRef<T>(source);
+
+        /// <summary>Gets a reference of <typeparamref name="T" /> from a given readonly reference.</summary>
+        /// <typeparam name="T">The type of the reference to retrieve.</typeparam>
+        /// <param name="source">The readonly reference for which to get the reference from.</param>
+        /// <returns>A reference of <typeparamref name="T" /> from <paramref name="source" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ref T AsRef<T>(in T source) => ref Unsafe.AsRef<T>(in source);
 
         /// <summary>Marshals a function pointer to get a corresponding managed delegate.</summary>
         /// <typeparam name="TDelegate">The type of the managed delegate to get.</typeparam>
