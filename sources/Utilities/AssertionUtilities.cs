@@ -40,7 +40,7 @@ namespace TerraFX.Utilities
         /// <param name="messageFormat">The message to format if <paramref name="condition" /> is <c>false</c>.</param>
         /// <param name="formatArgs">The arguments to use when formatting <paramref name="messageFormat" />.</param>
         [Conditional("DEBUG")]
-        public static void Assert([DoesNotReturnIf(false)] bool condition, string messageFormat, params object[] formatArgs)
+        public static void Assert([DoesNotReturnIf(false)] bool condition, string messageFormat, params object?[] formatArgs)
         {
             if (!condition)
             {

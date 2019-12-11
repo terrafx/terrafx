@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace TerraFX.Utilities
 {
@@ -65,6 +66,68 @@ namespace TerraFX.Utilities
         /// <returns>A managed delegate that invokes <paramref name="function" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TDelegate MarshalFunction<TDelegate>(IntPtr function) => Marshal.GetDelegateForFunctionPointer<TDelegate>(function);
+
+        /// <summary>Marshals a native null-terminated UTF8 string to get a corresponding managed UTF16 string.</summary>
+        /// <param name="source">The pointer to the native null-terminated UTF8 string.</param>
+        /// <param name="maxLength">The maxmimum length of <paramref name="source" /> or <c>-1</c> if the maximum length is unknown.</param>
+        /// <returns>A managed <see cref="string" /> that is equivalent to <paramref name="source" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string? MarshalNullTerminatedStringUtf8(sbyte* source, int maxLength = -1) => (source != null) ? MarshalNullTerminatedStringUtf8(in *source, maxLength) : null;
+
+        /// <summary>Marshals a native null-terminated UTF8 string to get a corresponding managed UTF16 string.</summary>
+        /// <param name="source">The pointer to the native null-terminated UTF8 string.</param>
+        /// <param name="maxLength">The maxmimum length of <paramref name="source" /> or <c>-1</c> if the maximum length is unknown.</param>
+        /// <returns>A managed <see cref="string" /> that is equivalent to <paramref name="source" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string MarshalNullTerminatedStringUtf8(in sbyte source, int maxLength = -1)
+        {
+            if (maxLength < 0)
+            {
+                maxLength = int.MaxValue;
+            }
+
+            var span = MemoryMarshal.CreateReadOnlySpan(ref AsRef(in source), maxLength);
+            var length = span.IndexOf((sbyte)'\0');
+
+            if (length != -1)
+            {
+                span = span.Slice(0, length);
+            }
+
+            var bytes = MemoryMarshal.AsBytes(span);
+            return Encoding.UTF8.GetString(bytes);
+        }
+
+        /// <summary>Marshals a native null-terminated UTF16 string to get a corresponding managed UTF16 string.</summary>
+        /// <param name="source">The pointer to the native null-terminated UTF16 string.</param>
+        /// <param name="maxLength">The maxmimum length of <paramref name="source" /> or <c>-1</c> if the maximum length is unknown.</param>
+        /// <returns>A managed <see cref="string" /> that is equivalent to <paramref name="source" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string? MarshalNullTerminatedStringUtf16(ushort* source, int maxLength = -1) => (source != null) ? MarshalNullTerminatedStringUtf16(in *source, maxLength) : null;
+
+        /// <summary>Marshals a native null-terminated UTF16 string to get a corresponding managed UTF16 string.</summary>
+        /// <param name="source">The pointer to the native null-terminated UTF16 string.</param>
+        /// <param name="maxLength">The maxmimum length of <paramref name="source" /> or <c>-1</c> if the maximum length is unknown.</param>
+        /// <returns>A managed <see cref="string" /> that is equivalent to <paramref name="source" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string MarshalNullTerminatedStringUtf16(in ushort source, int maxLength = -1)
+        {
+            if (maxLength < 0)
+            {
+                maxLength = int.MaxValue;
+            }
+
+            var span = MemoryMarshal.CreateReadOnlySpan(ref AsRef(in source), maxLength);
+            var length = span.IndexOf('\0');
+
+            if (length != -1)
+            {
+                span = span.Slice(0, length);
+            }
+
+            var bytes = MemoryMarshal.AsBytes(span);
+            return Encoding.Unicode.GetString(bytes);
+        }
 
         /// <summary>Gets a null reference of <typeparamref name="T"/>.</summary>
         /// <typeparam name="T">The type of the null reference to retrieve.</typeparam>
