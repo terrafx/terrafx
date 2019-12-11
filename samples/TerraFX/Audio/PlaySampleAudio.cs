@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using TerraFX.ApplicationModel;
 using TerraFX.Audio;
-using TerraFX.Provider.PulseAudio.Audio;
+using TerraFX.Audio.Providers.PulseAudio;
 using TerraFX.Utilities;
 
 namespace TerraFX.Samples.Audio
