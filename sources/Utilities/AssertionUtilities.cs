@@ -40,7 +40,7 @@ namespace TerraFX.Utilities
         /// <param name="messageFormat">The message to format if <paramref name="condition" /> is <c>false</c>.</param>
         /// <param name="formatArgs">The arguments to use when formatting <paramref name="messageFormat" />.</param>
         [Conditional("DEBUG")]
-        public static void Assert([DoesNotReturnIf(false)] bool condition, string messageFormat, params object[] formatArgs)
+        public static void Assert([DoesNotReturnIf(false)] bool condition, string messageFormat, params object?[] formatArgs)
         {
             if (!condition)
             {
@@ -84,5 +84,13 @@ namespace TerraFX.Utilities
                 Debug.Assert(condition, message);
             }
         }
+
+        /// <summary>Asserts that <paramref name="value" /> is not <c>null</c>.</summary>
+        /// <typeparam name="T">The type of <paramref name="value" />.</typeparam>
+        /// <param name="value">The value to assert is not <c>null</c>.</param>
+        /// <param name="paramName">The name of the parameter being asserted.</param>
+        [Conditional("DEBUG")]
+        public static void AssertNotNull<T>([NotNull] T? value, string paramName)
+            where T : class => Assert(value != null, Resources.ArgumentNullExceptionMessage, paramName);
     }
 }

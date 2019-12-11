@@ -28,7 +28,7 @@ namespace TerraFX.UI.Providers.Win32
         private readonly FlowDirection _flowDirection;
         private readonly ReadingDirection _readingDirection;
 
-        private ResettableLazy<HWND> _handle;
+        private ValueLazy<HWND> _handle;
         private string _title;
         private Rectangle _bounds;
         private WindowState _windowState;
@@ -41,7 +41,7 @@ namespace TerraFX.UI.Providers.Win32
         {
             Assert(windowProvider != null, Resources.ArgumentNullExceptionMessage, nameof(windowProvider));
 
-            _handle = new ResettableLazy<HWND>(CreateWindowHandle);
+            _handle = new ValueLazy<HWND>(CreateWindowHandle);
 
             _parentThread = Thread.CurrentThread;
             _properties = new PropertySet();
