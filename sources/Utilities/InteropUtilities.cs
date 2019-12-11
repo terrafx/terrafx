@@ -1,6 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -55,5 +56,14 @@ namespace TerraFX.Utilities
         /// <returns>The size of <typeparamref name="T" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint SizeOf<T>() => unchecked((uint)Marshal.SizeOf<T>());
+
+        /// <summary>Bypasses definite assignment rules by taking advantage of <c>out</c> semantics.</summary>
+        /// <typeparam name="T">The type of <paramref name="value" />.</typeparam>
+        /// <param name="value">The value for which to skip initialization.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SkipInit<T>([MaybeNull] out T value)
+        {
+            value = default!;
+        }
     }
 }
