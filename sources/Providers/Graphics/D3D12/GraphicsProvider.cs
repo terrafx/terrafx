@@ -25,8 +25,8 @@ namespace TerraFX.Graphics.Providers.D3D12
     [Shared]
     public sealed unsafe class GraphicsProvider : IDisposable, IGraphicsProvider
     {
-        private ResettableLazy<ImmutableArray<GraphicsAdapter>> _adapters;
-        private ResettableLazy<Pointer<IDXGIFactory2>> _factory;
+        private ValueLazy<ImmutableArray<GraphicsAdapter>> _adapters;
+        private ValueLazy<Pointer<IDXGIFactory2>> _factory;
 
         private State _state;
 
@@ -34,8 +34,8 @@ namespace TerraFX.Graphics.Providers.D3D12
         [ImportingConstructor]
         public GraphicsProvider()
         {
-            _adapters = new ResettableLazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters);
-            _factory = new ResettableLazy<Pointer<IDXGIFactory2>>(CreateFactory);
+            _adapters = new ValueLazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters);
+            _factory = new ValueLazy<Pointer<IDXGIFactory2>>(CreateFactory);
             _ = _state.Transition(to: Initialized);
         }
 

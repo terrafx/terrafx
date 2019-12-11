@@ -20,7 +20,7 @@ namespace TerraFX.ApplicationModel
 
         private readonly Assembly[] _compositionAssemblies;
         private readonly Thread _parentThread;
-        private ResettableLazy<CompositionHost> _compositionHost;
+        private ValueLazy<CompositionHost> _compositionHost;
 
         private State _state;
 
@@ -33,7 +33,7 @@ namespace TerraFX.ApplicationModel
 
             _compositionAssemblies = compositionAssemblies;
             _parentThread = Thread.CurrentThread;
-            _compositionHost = new ResettableLazy<CompositionHost>(CreateCompositionHost);
+            _compositionHost = new ValueLazy<CompositionHost>(CreateCompositionHost);
 
             _ = _state.Transition(to: Stopped);
         }

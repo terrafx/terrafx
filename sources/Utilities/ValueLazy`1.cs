@@ -8,7 +8,7 @@ namespace TerraFX.Utilities
 {
     /// <summary>Provides support for lazily initializing values.</summary>
     /// <typeparam name="T">The type of the value being lazily initialized.</typeparam>
-    public struct ResettableLazy<T>
+    public struct ValueLazy<T>
     {
         private const int Initialized = 1;
         private const int Creating = 2;
@@ -18,9 +18,9 @@ namespace TerraFX.Utilities
         private T _value;
         private State _state;
 
-        /// <summary>Initializes a new instance of the <see cref="ResettableLazy{T}" /> struct.</summary>
+        /// <summary>Initializes a new instance of the <see cref="ValueLazy{T}" /> struct.</summary>
         /// <param name="factory">The factory method to call when initializing the value.</param>
-        public ResettableLazy(Func<T> factory)
+        public ValueLazy(Func<T> factory)
         {
             ThrowIfNull(factory, nameof(factory));
 

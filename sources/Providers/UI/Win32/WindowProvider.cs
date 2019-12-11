@@ -29,8 +29,8 @@ namespace TerraFX.UI.Providers.Win32
 
         private readonly ThreadLocal<Dictionary<HWND, Window>> _windows;
 
-        private ResettableLazy<ushort> _classAtom;
-        private ResettableLazy<GCHandle> _nativeHandle;
+        private ValueLazy<ushort> _classAtom;
+        private ValueLazy<GCHandle> _nativeHandle;
 
         private State _state;
 
@@ -38,8 +38,8 @@ namespace TerraFX.UI.Providers.Win32
         [ImportingConstructor]
         public WindowProvider()
         {
-            _classAtom = new ResettableLazy<ushort>(CreateClassAtom);
-            _nativeHandle = new ResettableLazy<GCHandle>(CreateNativeHandle);
+            _classAtom = new ValueLazy<ushort>(CreateClassAtom);
+            _nativeHandle = new ValueLazy<GCHandle>(CreateNativeHandle);
 
             _windows = new ThreadLocal<Dictionary<HWND, Window>>(trackAllValues: true);
             _ = _state.Transition(to: Initialized);

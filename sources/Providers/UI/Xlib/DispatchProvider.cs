@@ -20,17 +20,17 @@ namespace TerraFX.UI.Providers.Xlib
     public sealed unsafe class DispatchProvider : IDisposable, IDispatchProvider
     {
         private static readonly NativeDelegate<XErrorHandler> s_errorHandler = new NativeDelegate<XErrorHandler>(HandleXlibError);
-        private static ResettableLazy<DispatchProvider> s_instance = new ResettableLazy<DispatchProvider>(CreateDispatchProvider);
+        private static ValueLazy<DispatchProvider> s_instance = new ValueLazy<DispatchProvider>(CreateDispatchProvider);
 
         private readonly ConcurrentDictionary<Thread, IDispatcher> _dispatchers;
 
-        private ResettableLazy<UIntPtr> _dispatcherExitRequestedAtom;
-        private ResettableLazy<UIntPtr> _display;
-        private ResettableLazy<UIntPtr> _systemIntPtrAtom;
-        private ResettableLazy<UIntPtr> _windowProviderCreateWindowAtom;
-        private ResettableLazy<UIntPtr> _windowWindowProviderAtom;
-        private ResettableLazy<UIntPtr> _wmProtocolsAtom;
-        private ResettableLazy<UIntPtr> _wmDeleteWindowAtom;
+        private ValueLazy<UIntPtr> _dispatcherExitRequestedAtom;
+        private ValueLazy<UIntPtr> _display;
+        private ValueLazy<UIntPtr> _systemIntPtrAtom;
+        private ValueLazy<UIntPtr> _windowProviderCreateWindowAtom;
+        private ValueLazy<UIntPtr> _windowWindowProviderAtom;
+        private ValueLazy<UIntPtr> _wmProtocolsAtom;
+        private ValueLazy<UIntPtr> _wmDeleteWindowAtom;
 
         private State _state;
 
@@ -38,13 +38,13 @@ namespace TerraFX.UI.Providers.Xlib
         {
             _dispatchers = new ConcurrentDictionary<Thread, IDispatcher>();
 
-            _dispatcherExitRequestedAtom = new ResettableLazy<UIntPtr>(CreateDispatcherExitRequestedAtom);
-            _display = new ResettableLazy<UIntPtr>(CreateDisplay);
-            _systemIntPtrAtom = new ResettableLazy<UIntPtr>(CreateSystemIntPtrAtom);
-            _windowProviderCreateWindowAtom = new ResettableLazy<UIntPtr>(CreateWindowProviderCreateWindowAtom);
-            _windowWindowProviderAtom = new ResettableLazy<UIntPtr>(CreateWindowWindowProviderAtom);
-            _wmProtocolsAtom = new ResettableLazy<UIntPtr>(CreateWmProtocolsAtom);
-            _wmDeleteWindowAtom = new ResettableLazy<UIntPtr>(CreateWmDeleteWindowAtom);
+            _dispatcherExitRequestedAtom = new ValueLazy<UIntPtr>(CreateDispatcherExitRequestedAtom);
+            _display = new ValueLazy<UIntPtr>(CreateDisplay);
+            _systemIntPtrAtom = new ValueLazy<UIntPtr>(CreateSystemIntPtrAtom);
+            _windowProviderCreateWindowAtom = new ValueLazy<UIntPtr>(CreateWindowProviderCreateWindowAtom);
+            _windowWindowProviderAtom = new ValueLazy<UIntPtr>(CreateWindowWindowProviderAtom);
+            _wmProtocolsAtom = new ValueLazy<UIntPtr>(CreateWmProtocolsAtom);
+            _wmDeleteWindowAtom = new ValueLazy<UIntPtr>(CreateWmDeleteWindowAtom);
 
             _ = _state.Transition(to: Initialized);
         }

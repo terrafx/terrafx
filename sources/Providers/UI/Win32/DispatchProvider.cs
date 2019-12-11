@@ -15,7 +15,7 @@ namespace TerraFX.UI.Providers.Win32
     /// <summary>Provides access to a Win32 based dispatch subsystem.</summary>
     public sealed unsafe class DispatchProvider : IDispatchProvider
     {
-        private static ResettableLazy<DispatchProvider> s_instance = new ResettableLazy<DispatchProvider>(CreateDispatchProvider);
+        private static ValueLazy<DispatchProvider> s_instance = new ValueLazy<DispatchProvider>(CreateDispatchProvider);
 
         private readonly double _tickFrequency;
         private readonly ConcurrentDictionary<Thread, IDispatcher> _dispatchers;

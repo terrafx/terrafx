@@ -41,8 +41,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private ulong _debugReportCallbackExt;
 #endif
 
-        private ResettableLazy<ImmutableArray<GraphicsAdapter>> _adapters;
-        private ResettableLazy<IntPtr> _instance;
+        private ValueLazy<ImmutableArray<GraphicsAdapter>> _adapters;
+        private ValueLazy<IntPtr> _instance;
 
         private State _state;
 
@@ -52,8 +52,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
         [ImportingConstructor]
         public GraphicsProvider()
         {
-            _adapters = new ResettableLazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters);
-            _instance = new ResettableLazy<IntPtr>(CreateInstance);
+            _adapters = new ValueLazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters);
+            _instance = new ValueLazy<IntPtr>(CreateInstance);
             _ = _state.Transition(to: Initialized);
         }
 

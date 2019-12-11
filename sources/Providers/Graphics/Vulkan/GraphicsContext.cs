@@ -42,19 +42,19 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private readonly GraphicsAdapter _graphicsAdapter;
         private readonly IGraphicsSurface _graphicsSurface;
 
-        private ResettableLazy<VkSemaphore> _acquireNextImageSemaphore;
-        private ResettableLazy<VkCommandBuffer[]> _commandBuffers;
-        private ResettableLazy<VkCommandPool> _commandPool;
-        private ResettableLazy<VkDevice> _device;
-        private ResettableLazy<VkQueue> _deviceQueue;
-        private ResettableLazy<VkFence[]> _fences;
-        private ResettableLazy<VkFramebuffer[]> _frameBuffers;
-        private ResettableLazy<uint> _graphicsQueueFamilyIndex;
-        private ResettableLazy<VkSemaphore> _queueSubmitSemaphore;
-        private ResettableLazy<VkRenderPass> _renderPass;
-        private ResettableLazy<VkSurfaceKHR> _surface;
-        private ResettableLazy<VkSwapchainKHR> _swapChain;
-        private ResettableLazy<VkImageView[]> _swapChainImageViews;
+        private ValueLazy<VkSemaphore> _acquireNextImageSemaphore;
+        private ValueLazy<VkCommandBuffer[]> _commandBuffers;
+        private ValueLazy<VkCommandPool> _commandPool;
+        private ValueLazy<VkDevice> _device;
+        private ValueLazy<VkQueue> _deviceQueue;
+        private ValueLazy<VkFence[]> _fences;
+        private ValueLazy<VkFramebuffer[]> _frameBuffers;
+        private ValueLazy<uint> _graphicsQueueFamilyIndex;
+        private ValueLazy<VkSemaphore> _queueSubmitSemaphore;
+        private ValueLazy<VkRenderPass> _renderPass;
+        private ValueLazy<VkSurfaceKHR> _surface;
+        private ValueLazy<VkSwapchainKHR> _swapChain;
+        private ValueLazy<VkImageView[]> _swapChainImageViews;
 
         private uint _frameIndex;
         private State _state;
@@ -65,19 +65,19 @@ namespace TerraFX.Graphics.Providers.Vulkan
             _graphicsAdapter = graphicsAdapter;
             _graphicsSurface = graphicsSurface;
 
-            _acquireNextImageSemaphore = new ResettableLazy<VkSemaphore>(CreateAcquireNextImageSemaphore);
-            _commandBuffers = new ResettableLazy<VkCommandBuffer[]>(CreateCommandBuffers);
-            _commandPool = new ResettableLazy<VkCommandPool>(CreateCommandPool);
-            _device = new ResettableLazy<VkDevice>(CreateDevice);
-            _deviceQueue = new ResettableLazy<VkQueue>(CreateDeviceQueue);
-            _fences = new ResettableLazy<VkFence[]>(CreateFences);
-            _frameBuffers = new ResettableLazy<VkFramebuffer[]>(CreateFrameBuffers);
-            _graphicsQueueFamilyIndex = new ResettableLazy<uint>(FindGraphicsQueueFamilyIndex);
-            _queueSubmitSemaphore = new ResettableLazy<VkSemaphore>(CreateQueueSubmitSemaphore);
-            _renderPass = new ResettableLazy<VkRenderPass>(CreateRenderPass);
-            _surface = new ResettableLazy<VkSurfaceKHR>(CreateSurface);
-            _swapChain = new ResettableLazy<VkSwapchainKHR>(CreateSwapChain);
-            _swapChainImageViews = new ResettableLazy<VkImageView[]>(CreateSwapChainImageViews);
+            _acquireNextImageSemaphore = new ValueLazy<VkSemaphore>(CreateAcquireNextImageSemaphore);
+            _commandBuffers = new ValueLazy<VkCommandBuffer[]>(CreateCommandBuffers);
+            _commandPool = new ValueLazy<VkCommandPool>(CreateCommandPool);
+            _device = new ValueLazy<VkDevice>(CreateDevice);
+            _deviceQueue = new ValueLazy<VkQueue>(CreateDeviceQueue);
+            _fences = new ValueLazy<VkFence[]>(CreateFences);
+            _frameBuffers = new ValueLazy<VkFramebuffer[]>(CreateFrameBuffers);
+            _graphicsQueueFamilyIndex = new ValueLazy<uint>(FindGraphicsQueueFamilyIndex);
+            _queueSubmitSemaphore = new ValueLazy<VkSemaphore>(CreateQueueSubmitSemaphore);
+            _renderPass = new ValueLazy<VkRenderPass>(CreateRenderPass);
+            _surface = new ValueLazy<VkSurfaceKHR>(CreateSurface);
+            _swapChain = new ValueLazy<VkSwapchainKHR>(CreateSwapChain);
+            _swapChainImageViews = new ValueLazy<VkImageView[]>(CreateSwapChainImageViews);
 
             _ = _state.Transition(to: Initialized);
 

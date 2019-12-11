@@ -22,14 +22,14 @@ namespace TerraFX.UI.Providers.Xlib
     {
         private readonly ThreadLocal<Dictionary<UIntPtr, Window>> _windows;
 
-        private ResettableLazy<GCHandle> _nativeHandle;
+        private ValueLazy<GCHandle> _nativeHandle;
         private State _state;
 
         /// <summary>Initializes a new instance of the <see cref="WindowProvider" /> class.</summary>
         [ImportingConstructor]
         public WindowProvider()
         {
-            _nativeHandle = new ResettableLazy<GCHandle>(() => GCHandle.Alloc(this, GCHandleType.Normal));
+            _nativeHandle = new ValueLazy<GCHandle>(() => GCHandle.Alloc(this, GCHandleType.Normal));
             _windows = new ThreadLocal<Dictionary<UIntPtr, Window>>(trackAllValues: true);
             _ = _state.Transition(to: Initialized);
         }

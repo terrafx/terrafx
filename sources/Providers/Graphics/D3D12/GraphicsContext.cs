@@ -34,16 +34,16 @@ namespace TerraFX.Graphics.Providers.D3D12
         private readonly GraphicsAdapter _graphicsAdapter;
         private readonly IGraphicsSurface _graphicsSurface;
 
-        private ResettableLazy<ID3D12CommandAllocator*[]> _commandAllocators;
-        private ResettableLazy<Pointer<ID3D12CommandQueue>> _commandQueue;
-        private ResettableLazy<Pointer<ID3D12Device>> _device;
-        private ResettableLazy<ID3D12Fence*[]> _fences;
-        private ResettableLazy<HANDLE[]> _fenceEvents;
-        private ResettableLazy<ulong[]> _fenceValues;
-        private ResettableLazy<ID3D12GraphicsCommandList*[]> _graphicsCommandLists;
-        private ResettableLazy<Pointer<ID3D12DescriptorHeap>> _renderTargetsHeap;
-        private ResettableLazy<ID3D12Resource*[]> _renderTargets;
-        private ResettableLazy<Pointer<IDXGISwapChain3>> _swapChain;
+        private ValueLazy<ID3D12CommandAllocator*[]> _commandAllocators;
+        private ValueLazy<Pointer<ID3D12CommandQueue>> _commandQueue;
+        private ValueLazy<Pointer<ID3D12Device>> _device;
+        private ValueLazy<ID3D12Fence*[]> _fences;
+        private ValueLazy<HANDLE[]> _fenceEvents;
+        private ValueLazy<ulong[]> _fenceValues;
+        private ValueLazy<ID3D12GraphicsCommandList*[]> _graphicsCommandLists;
+        private ValueLazy<Pointer<ID3D12DescriptorHeap>> _renderTargetsHeap;
+        private ValueLazy<ID3D12Resource*[]> _renderTargets;
+        private ValueLazy<Pointer<IDXGISwapChain3>> _swapChain;
 
         private ulong _fenceValue;
         private uint _frameIndex;
@@ -54,16 +54,16 @@ namespace TerraFX.Graphics.Providers.D3D12
             _graphicsAdapter = graphicsAdapter;
             _graphicsSurface = graphicsSurface;
 
-            _commandAllocators = new ResettableLazy<ID3D12CommandAllocator*[]>(CreateCommandAllocators);
-            _commandQueue = new ResettableLazy<Pointer<ID3D12CommandQueue>>(CreateCommandQueue);
-            _device = new ResettableLazy<Pointer<ID3D12Device>>(CreateDevice);
-            _fences = new ResettableLazy<ID3D12Fence*[]>(CreateFences);
-            _fenceEvents = new ResettableLazy<HANDLE[]>(CreateFenceEvents);
-            _fenceValues = new ResettableLazy<ulong[]>(CreateFenceValues);
-            _graphicsCommandLists = new ResettableLazy<ID3D12GraphicsCommandList*[]>(CreateGraphicsCommandLists);
-            _renderTargets = new ResettableLazy<ID3D12Resource*[]>(CreateRenderTargets);
-            _renderTargetsHeap = new ResettableLazy<Pointer<ID3D12DescriptorHeap>>(CreateRenderTargetsHeap);
-            _swapChain = new ResettableLazy<Pointer<IDXGISwapChain3>>(CreateSwapChain);
+            _commandAllocators = new ValueLazy<ID3D12CommandAllocator*[]>(CreateCommandAllocators);
+            _commandQueue = new ValueLazy<Pointer<ID3D12CommandQueue>>(CreateCommandQueue);
+            _device = new ValueLazy<Pointer<ID3D12Device>>(CreateDevice);
+            _fences = new ValueLazy<ID3D12Fence*[]>(CreateFences);
+            _fenceEvents = new ValueLazy<HANDLE[]>(CreateFenceEvents);
+            _fenceValues = new ValueLazy<ulong[]>(CreateFenceValues);
+            _graphicsCommandLists = new ValueLazy<ID3D12GraphicsCommandList*[]>(CreateGraphicsCommandLists);
+            _renderTargets = new ValueLazy<ID3D12Resource*[]>(CreateRenderTargets);
+            _renderTargetsHeap = new ValueLazy<Pointer<ID3D12DescriptorHeap>>(CreateRenderTargetsHeap);
+            _swapChain = new ValueLazy<Pointer<IDXGISwapChain3>>(CreateSwapChain);
 
             _ = _state.Transition(to: Initialized);
 
