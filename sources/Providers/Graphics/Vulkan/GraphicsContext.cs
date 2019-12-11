@@ -1033,7 +1033,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     }
                 }
 
-                _frameBuffers.Reset();
+                _frameBuffers.Reset(CreateFrameBuffers);
             }
 
             if (_swapChainImageViews.IsCreated)
@@ -1048,13 +1048,13 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     }
                 }
 
-                _swapChainImageViews.Reset();
+                _swapChainImageViews.Reset(CreateSwapChainImageViews);
             }
 
             if (_swapChain.IsCreated)
             {
                 vkDestroySwapchainKHR(_device.Value, _swapChain.Value, pAllocator: null);
-                _swapChain.Reset();
+                _swapChain.Reset(CreateSwapChain);
             }
         }
 

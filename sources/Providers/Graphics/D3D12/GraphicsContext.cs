@@ -665,7 +665,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                     }
                 }
 
-                _renderTargets.Reset();
+                _renderTargets.Reset(CreateRenderTargets);
             }
 
             if (_swapChain.IsCreated)

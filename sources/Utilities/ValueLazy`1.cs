@@ -2,6 +2,7 @@
 
 using System;
 using System.Threading;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Utilities
@@ -14,21 +15,17 @@ namespace TerraFX.Utilities
         private const int Creating = 2;
         private const int Created = 3;
 
-        private readonly Func<T> _factory;
+        private Func<T>? _factory;
         private T _value;
         private State _state;
 
         /// <summary>Initializes a new instance of the <see cref="ValueLazy{T}" /> struct.</summary>
         /// <param name="factory">The factory method to call when initializing the value.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="factory" /> is <c>null</c>.</exception>
         public ValueLazy(Func<T> factory)
         {
-            ThrowIfNull(factory, nameof(factory));
-
-            _factory = factory;
-            _value = default!;
-            _state = new State();
-
-            _ = _state.Transition(to: Initialized);
+            this = default;
+            Reset(factory);
         }
 
         /// <summary><c>true</c> if the value has already been created; otherwise, <c>false</c>.</summary>
@@ -38,7 +35,14 @@ namespace TerraFX.Utilities
         public T Value => IsCreated ? _value : CreateValue();
 
         /// <summary>Resets the instance so the value can be recreated.</summary>
-        public void Reset() => _state.Transition(to: Initialized);
+        /// <param name="factory">The factory method to call when initializing the value.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="factory" /> is <c>null</c>.</exception>
+        public void Reset(Func<T> factory)
+        {
+            ThrowIfNull(factory, nameof(factory));
+            _factory = factory;
+            _ = _state.Transition(to: Initialized);
+        }
 
         private T CreateValue()
         {
@@ -50,8 +54,12 @@ namespace TerraFX.Utilities
 
                 if (previousState == Initialized)
                 {
+                    AssertNotNull(_factory, nameof(_factory));
+
                     _value = _factory();
                     _state.Transition(from: Creating, to: Created);
+
+                    _factory = null;
                 }
                 else
                 {
