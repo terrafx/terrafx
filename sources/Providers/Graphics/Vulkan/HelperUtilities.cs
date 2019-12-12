@@ -8,7 +8,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 {
     internal static partial class HelperUtilities
     {
-        public static void ThrowExternalExceptionIfFailed(string methodName, VkResult result)
+        public static void ThrowExternalExceptionIfNotSuccess(string methodName, VkResult result)
         {
             if (result != VK_SUCCESS)
             {

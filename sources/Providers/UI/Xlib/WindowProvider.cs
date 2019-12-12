@@ -20,6 +20,8 @@ namespace TerraFX.UI.Providers.Xlib
     [Shared]
     public sealed unsafe class WindowProvider : IDisposable, IWindowProvider
     {
+        private const string VulkanRequiredExtensionNamesDataName = "TerraFX.Graphics.Providers.Vulkan.GraphicsProvider.RequiredExtensionNames";
+
         private readonly ThreadLocal<Dictionary<UIntPtr, Window>> _windows;
 
         private ValueLazy<GCHandle> _nativeHandle;
@@ -29,6 +31,10 @@ namespace TerraFX.UI.Providers.Xlib
         [ImportingConstructor]
         public WindowProvider()
         {
+            var vulkanRequiredExtensionNamesDataName = AppContext.GetData(VulkanRequiredExtensionNamesDataName) as string;
+            vulkanRequiredExtensionNamesDataName += ";VK_KHR_surface;VK_KHR_xlib_surface";
+            AppDomain.CurrentDomain.SetData(VulkanRequiredExtensionNamesDataName, vulkanRequiredExtensionNamesDataName);
+
             _nativeHandle = new ValueLazy<GCHandle>(() => GCHandle.Alloc(this, GCHandleType.Normal));
             _windows = new ThreadLocal<Dictionary<UIntPtr, Window>>(trackAllValues: true);
             _ = _state.Transition(to: Initialized);
