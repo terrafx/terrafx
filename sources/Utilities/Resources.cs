@@ -44,6 +44,9 @@ namespace TerraFX.Utilities
         /// <summary>Gets a localized <see cref="string" /> similar to <c>An I/O error occurred</c>.</summary>
         public static string IOExceptionMessage => ResourceManager.GetString(nameof(IOExceptionMessage), Culture)!;
 
+        /// <summary>Gets a localized <see cref="string" /> similar to <c>One or more of the requested {0} is unavailable</c>.</summary>
+        public static string NotSupportedExceptionForMissingFeatureMessage => ResourceManager.GetString(nameof(NotSupportedExceptionForMissingFeatureMessage), Culture)!;
+
         /// <summary>Gets a localized <see cref="string" /> similar to <c>The collection is read-only</c>.</summary>
         public static string NotSupportedExceptionForReadOnlyCollectionMessage => ResourceManager.GetString(nameof(NotSupportedExceptionForReadOnlyCollectionMessage), Culture)!;
 

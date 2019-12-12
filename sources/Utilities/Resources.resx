@@ -135,6 +135,9 @@
   <data name="IOExceptionMessage" xml:space="preserve">
     <value>An I/O error occurred</value>
   </data>
+  <data name="NotSupportedExceptionForMissingFeatureMessage" xml:space="preserve">
+    <value>One or more of the requested {0} is unavailable</value>
+  </data>
   <data name="NotSupportedExceptionForReadOnlyCollectionMessage" xml:space="preserve">
     <value>The collection is read-only</value>
   </data>
