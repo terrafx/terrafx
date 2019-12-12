@@ -97,6 +97,6 @@ namespace TerraFX.Graphics.Providers.D3D12
             return desc;
         }
 
-        private string GetDeviceName() => MarshalNullTerminatedStringUtf16(in AdapterDesc.Description[0], 128);
+        private string GetDeviceName() => MarshalNullTerminatedStringUtf16(in AdapterDesc.Description[0], 128).AsString() ?? string.Empty;
     }
 }

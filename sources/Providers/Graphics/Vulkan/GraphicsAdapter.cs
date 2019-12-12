@@ -84,6 +84,6 @@ namespace TerraFX.Graphics.Providers.Vulkan
             return physicalDeviceProperties;
         }
 
-        private string GetDeviceName() => MarshalNullTerminatedStringUtf8(in PhysicalDeviceProperties.deviceName[0], 256);
+        private string GetDeviceName() => MarshalUtf8ToReadOnlySpan(in PhysicalDeviceProperties.deviceName[0], 256).AsString() ?? string.Empty;
     }
 }
