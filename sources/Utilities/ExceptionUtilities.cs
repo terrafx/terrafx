@@ -131,6 +131,17 @@ namespace TerraFX.Utilities
         }
 
         /// <summary>Throws an instance of the <see cref="NotSupportedException" /> class.</summary>
+        /// <param name="featureName">The name of the unavailable feature.</param>
+        /// <exception cref="ExternalException">One or more of the requested <paramref name="featureName" /> is unavailable.</exception>
+        [DoesNotReturn]
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void ThrowNotSupportedExceptionForMissingFeature(string featureName)
+        {
+            var message = string.Format(Resources.NotSupportedExceptionForMissingFeatureMessage, featureName);
+            throw new NotSupportedException(message);
+        }
+
+        /// <summary>Throws an instance of the <see cref="NotSupportedException" /> class.</summary>
         /// <exception cref="ExternalException">The collection is read-only.</exception>
         [DoesNotReturn]
         [MethodImpl(MethodImplOptions.NoInlining)]

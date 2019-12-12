@@ -246,12 +246,12 @@ namespace TerraFX.Graphics.Providers.Vulkan
         public void BeginFrame(ColorRgba backgroundColor)
         {
             uint frameIndex;
-            ThrowExternalExceptionIfFailed(nameof(vkAcquireNextImageKHR), vkAcquireNextImageKHR(Device, SwapChain, timeout: ulong.MaxValue, AcquireNextImageSemaphore, fence: VK_NULL_HANDLE, &frameIndex));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkAcquireNextImageKHR), vkAcquireNextImageKHR(Device, SwapChain, timeout: ulong.MaxValue, AcquireNextImageSemaphore, fence: VK_NULL_HANDLE, &frameIndex));
             _frameIndex = frameIndex;
 
             var fence = Fences[frameIndex];
-            ThrowExternalExceptionIfFailed(nameof(vkWaitForFences), vkWaitForFences(Device, fenceCount: 1, (ulong*)&fence, waitAll: VK_TRUE, timeout: ulong.MaxValue));
-            ThrowExternalExceptionIfFailed(nameof(vkResetFences), vkResetFences(Device, 1, (ulong*)&fence));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkWaitForFences), vkWaitForFences(Device, fenceCount: 1, (ulong*)&fence, waitAll: VK_TRUE, timeout: ulong.MaxValue));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkResetFences), vkResetFences(Device, 1, (ulong*)&fence));
 
             var commandBufferBeginInfo = new VkCommandBufferBeginInfo {
                 sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
@@ -261,7 +261,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             };
 
             var commandBuffer = CommandBuffers[frameIndex];
-            ThrowExternalExceptionIfFailed(nameof(vkBeginCommandBuffer), vkBeginCommandBuffer(commandBuffer, &commandBufferBeginInfo));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkBeginCommandBuffer), vkBeginCommandBuffer(commandBuffer, &commandBufferBeginInfo));
 
             var clearValue = new VkClearValue {
                 depthStencil = new VkClearDepthStencilValue {
@@ -408,7 +408,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 pNext = null,
                 flags = 0,
             };
-            ThrowExternalExceptionIfFailed(nameof(vkCreateSemaphore), vkCreateSemaphore(Device, &acquireNextImageSemaphoreCreateInfo, pAllocator: null, (ulong*)&acquireNextImageSemaphore));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateSemaphore), vkCreateSemaphore(Device, &acquireNextImageSemaphoreCreateInfo, pAllocator: null, (ulong*)&acquireNextImageSemaphore));
 
             return acquireNextImageSemaphore;
         }
@@ -427,7 +427,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             fixed (VkCommandBuffer* pCommandBuffers = commandBuffers)
             {
-                ThrowExternalExceptionIfFailed(nameof(vkAllocateCommandBuffers), vkAllocateCommandBuffers(Device, &commandBufferAllocateInfo, (IntPtr*)pCommandBuffers));
+                ThrowExternalExceptionIfNotSuccess(nameof(vkAllocateCommandBuffers), vkAllocateCommandBuffers(Device, &commandBufferAllocateInfo, (IntPtr*)pCommandBuffers));
             }
 
             return commandBuffers;
@@ -443,7 +443,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 flags = (uint)VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
                 queueFamilyIndex = GraphicsQueueFamilyIndex,
             };
-            ThrowExternalExceptionIfFailed(nameof(vkCreateCommandPool), vkCreateCommandPool(Device, &commandPoolCreateInfo, pAllocator: null, (ulong*)&commandPool));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateCommandPool), vkCreateCommandPool(Device, &commandPoolCreateInfo, pAllocator: null, (ulong*)&commandPool));
 
             return commandPool;
         }
@@ -538,7 +538,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 ppEnabledExtensionNames = enabledExtensionNames,
                 pEnabledFeatures = &physicalDeviceFeatures,
             };
-            ThrowExternalExceptionIfFailed(nameof(vkCreateDevice), vkCreateDevice(_graphicsAdapter.PhysicalDevice, &deviceCreateInfo, pAllocator: null, (IntPtr*)&device));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateDevice), vkCreateDevice(_graphicsAdapter.PhysicalDevice, &deviceCreateInfo, pAllocator: null, (IntPtr*)&device));
 
             return device;
         }
@@ -563,7 +563,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             for (var i = 0; i < fences.Length; i++)
             {
                 VkFence fence;
-                ThrowExternalExceptionIfFailed(nameof(vkCreateFence), vkCreateFence(Device, &fenceCreateInfo, pAllocator: null, (ulong*)&fence));
+                ThrowExternalExceptionIfNotSuccess(nameof(vkCreateFence), vkCreateFence(Device, &fenceCreateInfo, pAllocator: null, (ulong*)&fence));
                 fences[i] = fence;
             }
 
@@ -592,7 +592,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 attachments[0] = SwapChainImageViews[i];
 
                 VkFramebuffer frameBuffer;
-                ThrowExternalExceptionIfFailed(nameof(vkCreateFramebuffer), vkCreateFramebuffer(Device, &frameBufferCreateInfo, pAllocator: null, (ulong*)&frameBuffer));
+                ThrowExternalExceptionIfNotSuccess(nameof(vkCreateFramebuffer), vkCreateFramebuffer(Device, &frameBufferCreateInfo, pAllocator: null, (ulong*)&frameBuffer));
                 frameBuffers[i] = frameBuffer;
             }
 
@@ -608,7 +608,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 pNext = null,
                 flags = 0,
             };
-            ThrowExternalExceptionIfFailed(nameof(vkCreateSemaphore), vkCreateSemaphore(Device, &queueSubmitSemaphoreCreateInfo, pAllocator: null, (ulong*)&queueSubmitSemaphore));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateSemaphore), vkCreateSemaphore(Device, &queueSubmitSemaphoreCreateInfo, pAllocator: null, (ulong*)&queueSubmitSemaphore));
 
             return queueSubmitSemaphore;
         }
@@ -658,7 +658,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 dependencyCount = 0,
                 pDependencies = null,
             };
-            ThrowExternalExceptionIfFailed(nameof(vkCreateRenderPass), vkCreateRenderPass(Device, &renderPassCreateInfo, pAllocator: null, (ulong*)&renderPass));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateRenderPass), vkCreateRenderPass(Device, &renderPassCreateInfo, pAllocator: null, (ulong*)&renderPass));
 
             return renderPass;
         }
@@ -681,7 +681,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                         hwnd = _graphicsSurface.WindowHandle,
                     };
 
-                    ThrowExternalExceptionIfFailed(nameof(vkCreateWin32SurfaceKHR), vkCreateWin32SurfaceKHR(graphicsProvider.Instance, &surfaceCreateInfo, pAllocator: null, (ulong*)&surface));
+                    ThrowExternalExceptionIfNotSuccess(nameof(vkCreateWin32SurfaceKHR), vkCreateWin32SurfaceKHR(graphicsProvider.Instance, &surfaceCreateInfo, pAllocator: null, (ulong*)&surface));
                     break;
                 }
 
@@ -695,7 +695,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                         window = (UIntPtr)(void*)_graphicsSurface.WindowHandle,
                     };
 
-                    ThrowExternalExceptionIfFailed(nameof(vkCreateXlibSurfaceKHR), vkCreateXlibSurfaceKHR(graphicsProvider.Instance, &surfaceCreateInfo, pAllocator: null, (ulong*)&surface));
+                    ThrowExternalExceptionIfNotSuccess(nameof(vkCreateXlibSurfaceKHR), vkCreateXlibSurfaceKHR(graphicsProvider.Instance, &surfaceCreateInfo, pAllocator: null, (ulong*)&surface));
                     break;
                 }
 
@@ -708,7 +708,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             }
 
             uint supported;
-            ThrowExternalExceptionIfFailed(nameof(vkGetPhysicalDeviceSurfaceSupportKHR), vkGetPhysicalDeviceSurfaceSupportKHR(_graphicsAdapter.PhysicalDevice, GraphicsQueueFamilyIndex, surface, &supported));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfaceSupportKHR), vkGetPhysicalDeviceSurfaceSupportKHR(_graphicsAdapter.PhysicalDevice, GraphicsQueueFamilyIndex, surface, &supported));
 
             if (supported == VK_FALSE)
             {
@@ -722,13 +722,13 @@ namespace TerraFX.Graphics.Providers.Vulkan
             VkSwapchainKHR swapChain;
 
             VkSurfaceCapabilitiesKHR surfaceCapabilities;
-            ThrowExternalExceptionIfFailed(nameof(vkGetPhysicalDeviceSurfaceCapabilitiesKHR), vkGetPhysicalDeviceSurfaceCapabilitiesKHR(_graphicsAdapter.PhysicalDevice, Surface, &surfaceCapabilities));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfaceCapabilitiesKHR), vkGetPhysicalDeviceSurfaceCapabilitiesKHR(_graphicsAdapter.PhysicalDevice, Surface, &surfaceCapabilities));
 
             uint presentModeCount;
-            ThrowExternalExceptionIfFailed(nameof(vkGetPhysicalDeviceSurfacePresentModesKHR), vkGetPhysicalDeviceSurfacePresentModesKHR(_graphicsAdapter.PhysicalDevice, Surface, &presentModeCount, pPresentModes: null));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfacePresentModesKHR), vkGetPhysicalDeviceSurfacePresentModesKHR(_graphicsAdapter.PhysicalDevice, Surface, &presentModeCount, pPresentModes: null));
 
             var presentModes = stackalloc VkPresentModeKHR[(int)presentModeCount];
-            ThrowExternalExceptionIfFailed(nameof(vkGetPhysicalDeviceSurfacePresentModesKHR), vkGetPhysicalDeviceSurfacePresentModesKHR(_graphicsAdapter.PhysicalDevice, Surface, &presentModeCount, presentModes));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfacePresentModesKHR), vkGetPhysicalDeviceSurfacePresentModesKHR(_graphicsAdapter.PhysicalDevice, Surface, &presentModeCount, presentModes));
 
             if (((uint)_graphicsSurface.BufferCount < surfaceCapabilities.minImageCount) ||
                 ((surfaceCapabilities.maxImageCount != 0) && ((uint)_graphicsSurface.BufferCount > surfaceCapabilities.maxImageCount)))
@@ -766,10 +766,10 @@ namespace TerraFX.Graphics.Providers.Vulkan
             }
 
             uint surfaceFormatCount;
-            ThrowExternalExceptionIfFailed(nameof(vkGetPhysicalDeviceSurfaceFormatsKHR), vkGetPhysicalDeviceSurfaceFormatsKHR(_graphicsAdapter.PhysicalDevice, Surface, &surfaceFormatCount, pSurfaceFormats: null));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfaceFormatsKHR), vkGetPhysicalDeviceSurfaceFormatsKHR(_graphicsAdapter.PhysicalDevice, Surface, &surfaceFormatCount, pSurfaceFormats: null));
 
             var surfaceFormats = stackalloc VkSurfaceFormatKHR[(int)surfaceFormatCount];
-            ThrowExternalExceptionIfFailed(nameof(vkGetPhysicalDeviceSurfaceFormatsKHR), vkGetPhysicalDeviceSurfaceFormatsKHR(_graphicsAdapter.PhysicalDevice, Surface, &surfaceFormatCount, surfaceFormats));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfaceFormatsKHR), vkGetPhysicalDeviceSurfaceFormatsKHR(_graphicsAdapter.PhysicalDevice, Surface, &surfaceFormatCount, surfaceFormats));
 
             for (var i = 0u; i <surfaceFormatCount; i++)
             {
@@ -780,7 +780,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     break;
                 }
             }
-            ThrowExternalExceptionIfFailed(nameof(vkCreateSwapchainKHR), vkCreateSwapchainKHR(Device, &swapChainCreateInfo, pAllocator: null, (ulong*)&swapChain));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateSwapchainKHR), vkCreateSwapchainKHR(Device, &swapChainCreateInfo, pAllocator: null, (ulong*)&swapChain));
 
             _swapChainFormat = swapChainCreateInfo.imageFormat;
             return swapChain;
@@ -791,7 +791,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var swapChainImageCount = (uint)_graphicsSurface.BufferCount;
             var swapChainImages = stackalloc VkImage[(int)swapChainImageCount];
 
-            ThrowExternalExceptionIfFailed(nameof(vkGetSwapchainImagesKHR), vkGetSwapchainImagesKHR(Device, SwapChain, &swapChainImageCount, (ulong*)swapChainImages));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkGetSwapchainImagesKHR), vkGetSwapchainImagesKHR(Device, SwapChain, &swapChainImageCount, (ulong*)swapChainImages));
 
             var swapChainImageViews = new VkImageView[swapChainImageCount];
 
@@ -822,7 +822,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 swapChainImageViewCreateInfo.image = swapChainImages[i];
 
                 VkImageView swapChainImageView;
-                ThrowExternalExceptionIfFailed(nameof(vkCreateImageView), vkCreateImageView(Device, &swapChainImageViewCreateInfo, pAllocator: null, (ulong*)&swapChainImageView));
+                ThrowExternalExceptionIfNotSuccess(nameof(vkCreateImageView), vkCreateImageView(Device, &swapChainImageViewCreateInfo, pAllocator: null, (ulong*)&swapChainImageView));
 
                 swapChainImageViews[i] = swapChainImageView;
             }

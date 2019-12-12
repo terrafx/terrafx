@@ -6,18 +6,19 @@ using TerraFX.Interop;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.InteropUtilities;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
-    /// <summary>Represents a graphics adapter.</summary>
-    public sealed unsafe class GraphicsAdapter : IDisposable, IGraphicsAdapter
+    /// <inheritdoc cref="IGraphicsAdapter" />
+    public sealed unsafe class GraphicsAdapter : IGraphicsAdapter
     {
         private readonly GraphicsProvider _graphicsProvider;
         private readonly IDXGIAdapter1* _adapter;
-        private readonly string _deviceName;
-        private readonly uint _vendorId;
-        private readonly uint _deviceId;
+
+        private ValueLazy<DXGI_ADAPTER_DESC1> _adapterDesc;
+        private ValueLazy<string> _deviceName;
 
         private State _state;
 
@@ -26,24 +27,14 @@ namespace TerraFX.Graphics.Providers.D3D12
             _graphicsProvider = graphicsProvider;
             _adapter = adapter;
 
-            DXGI_ADAPTER_DESC1 desc;
-            ThrowExternalExceptionIfFailed(nameof(IDXGIAdapter1.GetDesc1), adapter->GetDesc1(&desc));
-
-            _deviceName = Marshal.PtrToStringUni((IntPtr)desc.Description)!;
-            _vendorId = desc.VendorId;
-            _deviceId = desc.DeviceId;
+            _adapterDesc = new ValueLazy<DXGI_ADAPTER_DESC1>(GetAdapterDesc);
+            _deviceName = new ValueLazy<string>(GetDeviceName);
 
             _ = _state.Transition(to: Initialized);
         }
 
-        /// <inheritdoc />
-        public uint DeviceId => _deviceId;
-
-        /// <inheritdoc />
-        public string DeviceName => _deviceName;
-
-        /// <summary>Gets the <see cref="IDXGIAdapter1" /> pointer the instance represents.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        /// <summary>Gets the the underlying <see cref="IDXGIAdapter1" />.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
         public IDXGIAdapter1* Adapter
         {
             get
@@ -53,14 +44,24 @@ namespace TerraFX.Graphics.Providers.D3D12
             }
         }
 
+        /// <summary>Gets the <see cref="DXGI_ADAPTER_DESC1" /> for <see cref="Adapter" />.</summary>
+        /// <exception cref="ExternalException">The call to <see cref="IDXGIAdapter1.GetDesc1(DXGI_ADAPTER_DESC1*)" /> failed.</exception>
+        /// <exception cref="ObjectDisposedException">The instance has been disposed and the value was not otherwise cached.</exception>
+        public ref readonly DXGI_ADAPTER_DESC1 AdapterDesc => ref _adapterDesc.RefValue;
+
+        /// <inheritdoc />
+        public uint DeviceId => AdapterDesc.DeviceId;
+
+        /// <inheritdoc />
+        public string DeviceName => _deviceName.Value;
+
         /// <inheritdoc />
         public IGraphicsProvider GraphicsProvider => _graphicsProvider;
 
         /// <inheritdoc />
-        public uint VendorId => _vendorId;
+        public uint VendorId => AdapterDesc.VendorId;
 
         /// <inheritdoc />
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public IGraphicsContext CreateGraphicsContext(IGraphicsSurface graphicsSurface)
         {
             _state.ThrowIfDisposedOrDisposing();
@@ -81,20 +82,21 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             if (priorState < Disposing)
             {
-                DisposeAdapter();
+                ReleaseIfNotNull(_adapter);
             }
 
             _state.EndDispose();
         }
 
-        private void DisposeAdapter()
+        private DXGI_ADAPTER_DESC1 GetAdapterDesc()
         {
-            _state.AssertDisposing();
+            _state.ThrowIfDisposedOrDisposing();
 
-            if (_adapter != null)
-            {
-                _ = _adapter->Release();
-            }
+            DXGI_ADAPTER_DESC1 desc;
+            ThrowExternalExceptionIfFailed(nameof(IDXGIAdapter1.GetDesc1), Adapter->GetDesc1(&desc));
+            return desc;
         }
+
+        private string GetDeviceName() => MarshalNullTerminatedStringUtf16(in AdapterDesc.Description[0], 128).AsString() ?? string.Empty;
     }
 }

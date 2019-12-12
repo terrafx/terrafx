@@ -22,6 +22,8 @@ namespace TerraFX.UI.Providers.Win32
     [Shared]
     public sealed unsafe class WindowProvider : IDisposable, IWindowProvider
     {
+        private const string VulkanRequiredExtensionNamesDataName = "TerraFX.Graphics.Providers.Vulkan.GraphicsProvider.RequiredExtensionNames";
+
         /// <summary>A <see cref="HINSTANCE" /> to the entry point module.</summary>
         public static readonly HINSTANCE EntryPointModule = GetModuleHandleW(lpModuleName: null);
 
@@ -38,6 +40,10 @@ namespace TerraFX.UI.Providers.Win32
         [ImportingConstructor]
         public WindowProvider()
         {
+            var vulkanRequiredExtensionNamesDataName = AppContext.GetData(VulkanRequiredExtensionNamesDataName) as string;
+            vulkanRequiredExtensionNamesDataName += ";VK_KHR_surface;VK_KHR_win32_surface";
+            AppDomain.CurrentDomain.SetData(VulkanRequiredExtensionNamesDataName, vulkanRequiredExtensionNamesDataName);
+
             _classAtom = new ValueLazy<ushort>(CreateClassAtom);
             _nativeHandle = new ValueLazy<GCHandle>(CreateNativeHandle);
 

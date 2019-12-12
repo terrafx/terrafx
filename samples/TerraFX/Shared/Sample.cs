@@ -9,8 +9,8 @@ namespace TerraFX.Samples
 {
     public abstract class Sample
     {
-        private static readonly Assembly s_win32Provider = Assembly.LoadFrom("TerraFX.Provider.Win32.dll");
-        private static readonly Assembly s_xlibProvider = Assembly.LoadFrom("TerraFX.Provider.Xlib.dll");
+        private static readonly Assembly s_uiProviderWin32 = Assembly.LoadFrom("TerraFX.UI.Providers.Win32.dll");
+        private static readonly Assembly s_uiProviderXlib = Assembly.LoadFrom("TerraFX.UI.Providers.Xlib.dll");
 
         private readonly string _name;
         private readonly Assembly[] _compositionAssemblies;
@@ -20,7 +20,7 @@ namespace TerraFX.Samples
             _name = name;
 
             _compositionAssemblies = new Assembly[compositionAssemblies.Length + 1];
-            _compositionAssemblies[0] = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? s_win32Provider : s_xlibProvider;
+            _compositionAssemblies[0] = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? s_uiProviderWin32 : s_uiProviderXlib;
 
             Array.Copy(compositionAssemblies, 0, _compositionAssemblies, 1, compositionAssemblies.Length);
         }

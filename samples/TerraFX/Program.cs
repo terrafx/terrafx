@@ -14,22 +14,22 @@ namespace TerraFX.Samples
 {
     public static unsafe class Program
     {
-        private static readonly Assembly s_d3d12Provider = Assembly.LoadFrom("TerraFX.Provider.D3D12.dll");
-        private static readonly Assembly s_vulkanProvider = Assembly.LoadFrom("TerraFX.Provider.Vulkan.dll");
+        private static readonly Assembly s_audioProviderPulseAudio = Assembly.LoadFrom("TerraFX.Audio.Providers.PulseAudio.dll");
 
-        private static readonly Assembly s_pulseAudioProvider = Assembly.LoadFrom("TerraFX.Provider.PulseAudio.dll");
+        private static readonly Assembly s_graphicsProviderD3D12 = Assembly.LoadFrom("TerraFX.Graphics.Providers.D3D12.dll");
+        private static readonly Assembly s_graphicsProviderVulkan = Assembly.LoadFrom("TerraFX.Graphics.Providers.Vulkan.dll");
 
         private static readonly Sample[] s_samples = {
-            new EnumerateGraphicsAdapters("D3D12.EnumerateGraphicsAdapters", s_d3d12Provider),
-            new EnumerateGraphicsAdapters("Vulkan.EnumerateGraphicsAdapters", s_vulkanProvider),
+            new EnumerateGraphicsAdapters("D3D12.EnumerateGraphicsAdapters", s_graphicsProviderD3D12),
+            new EnumerateGraphicsAdapters("Vulkan.EnumerateGraphicsAdapters", s_graphicsProviderVulkan),
 
-            new HelloWindow("D3D12.HelloWindow", s_d3d12Provider),
-            new HelloWindow("Vulkan.HelloWindow", s_vulkanProvider),
+            new HelloWindow("D3D12.HelloWindow", s_graphicsProviderD3D12),
+            new HelloWindow("Vulkan.HelloWindow", s_graphicsProviderVulkan),
 
-            new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Sync", false, s_pulseAudioProvider),
-            new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Async", true, s_pulseAudioProvider),
+            new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Sync", false, s_audioProviderPulseAudio),
+            new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Async", true, s_audioProviderPulseAudio),
 
-            new PlaySampleAudio("PulseAudio.PlaySampleAudio", s_pulseAudioProvider),
+            new PlaySampleAudio("PulseAudio.PlaySampleAudio", s_audioProviderPulseAudio),
         };
 
         public static void Main(string[] args)
@@ -52,11 +52,11 @@ namespace TerraFX.Samples
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                isSupported = !sample.CompositionAssemblies.Contains(s_pulseAudioProvider);
+                isSupported = !sample.CompositionAssemblies.Contains(s_audioProviderPulseAudio);
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                isSupported = !sample.CompositionAssemblies.Contains(s_d3d12Provider);
+                isSupported = !sample.CompositionAssemblies.Contains(s_graphicsProviderD3D12);
             }
             else
             {
