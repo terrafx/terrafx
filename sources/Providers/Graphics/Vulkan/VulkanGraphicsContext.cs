@@ -520,7 +520,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 ppEnabledExtensionNames = enabledExtensionNames,
                 pEnabledFeatures = &physicalDeviceFeatures,
             };
-            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateDevice), vkCreateDevice(((VulkanGraphicsAdapter)GraphicsAdapter).PhysicalDevice, &deviceCreateInfo, pAllocator: null, (IntPtr*)&device));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateDevice), vkCreateDevice(((VulkanGraphicsAdapter)GraphicsAdapter).VulkanPhysicalDevice, &deviceCreateInfo, pAllocator: null, (IntPtr*)&device));
 
             return device;
         }
@@ -690,7 +690,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             }
 
             uint supported;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfaceSupportKHR), vkGetPhysicalDeviceSurfaceSupportKHR(((VulkanGraphicsAdapter)GraphicsAdapter).PhysicalDevice, GraphicsQueueFamilyIndex, surface, &supported));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfaceSupportKHR), vkGetPhysicalDeviceSurfaceSupportKHR(((VulkanGraphicsAdapter)GraphicsAdapter).VulkanPhysicalDevice, GraphicsQueueFamilyIndex, surface, &supported));
 
             if (supported == VK_FALSE)
             {
@@ -704,13 +704,13 @@ namespace TerraFX.Graphics.Providers.Vulkan
             VkSwapchainKHR swapChain;
 
             VkSurfaceCapabilitiesKHR surfaceCapabilities;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfaceCapabilitiesKHR), vkGetPhysicalDeviceSurfaceCapabilitiesKHR(((VulkanGraphicsAdapter)GraphicsAdapter).PhysicalDevice, Surface, &surfaceCapabilities));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfaceCapabilitiesKHR), vkGetPhysicalDeviceSurfaceCapabilitiesKHR(((VulkanGraphicsAdapter)GraphicsAdapter).VulkanPhysicalDevice, Surface, &surfaceCapabilities));
 
             uint presentModeCount;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfacePresentModesKHR), vkGetPhysicalDeviceSurfacePresentModesKHR(((VulkanGraphicsAdapter)GraphicsAdapter).PhysicalDevice, Surface, &presentModeCount, pPresentModes: null));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfacePresentModesKHR), vkGetPhysicalDeviceSurfacePresentModesKHR(((VulkanGraphicsAdapter)GraphicsAdapter).VulkanPhysicalDevice, Surface, &presentModeCount, pPresentModes: null));
 
             var presentModes = stackalloc VkPresentModeKHR[(int)presentModeCount];
-            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfacePresentModesKHR), vkGetPhysicalDeviceSurfacePresentModesKHR(((VulkanGraphicsAdapter)GraphicsAdapter).PhysicalDevice, Surface, &presentModeCount, presentModes));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfacePresentModesKHR), vkGetPhysicalDeviceSurfacePresentModesKHR(((VulkanGraphicsAdapter)GraphicsAdapter).VulkanPhysicalDevice, Surface, &presentModeCount, presentModes));
 
             if (((uint)GraphicsSurface.BufferCount < surfaceCapabilities.minImageCount) ||
                 ((surfaceCapabilities.maxImageCount != 0) && ((uint)GraphicsSurface.BufferCount > surfaceCapabilities.maxImageCount)))
@@ -748,10 +748,10 @@ namespace TerraFX.Graphics.Providers.Vulkan
             }
 
             uint surfaceFormatCount;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfaceFormatsKHR), vkGetPhysicalDeviceSurfaceFormatsKHR(((VulkanGraphicsAdapter)GraphicsAdapter).PhysicalDevice, Surface, &surfaceFormatCount, pSurfaceFormats: null));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfaceFormatsKHR), vkGetPhysicalDeviceSurfaceFormatsKHR(((VulkanGraphicsAdapter)GraphicsAdapter).VulkanPhysicalDevice, Surface, &surfaceFormatCount, pSurfaceFormats: null));
 
             var surfaceFormats = stackalloc VkSurfaceFormatKHR[(int)surfaceFormatCount];
-            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfaceFormatsKHR), vkGetPhysicalDeviceSurfaceFormatsKHR(((VulkanGraphicsAdapter)GraphicsAdapter).PhysicalDevice, Surface, &surfaceFormatCount, surfaceFormats));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfaceFormatsKHR), vkGetPhysicalDeviceSurfaceFormatsKHR(((VulkanGraphicsAdapter)GraphicsAdapter).VulkanPhysicalDevice, Surface, &surfaceFormatCount, surfaceFormats));
 
             for (var i = 0u; i <surfaceFormatCount; i++)
             {
@@ -979,10 +979,10 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var queueFamilyIndex = uint.MaxValue;
 
             uint queueFamilyPropertyCount;
-            vkGetPhysicalDeviceQueueFamilyProperties(((VulkanGraphicsAdapter)GraphicsAdapter).PhysicalDevice, &queueFamilyPropertyCount, pQueueFamilyProperties: null);
+            vkGetPhysicalDeviceQueueFamilyProperties(((VulkanGraphicsAdapter)GraphicsAdapter).VulkanPhysicalDevice, &queueFamilyPropertyCount, pQueueFamilyProperties: null);
 
             var queueFamilyProperties = stackalloc VkQueueFamilyProperties[(int)queueFamilyPropertyCount];
-            vkGetPhysicalDeviceQueueFamilyProperties(((VulkanGraphicsAdapter)GraphicsAdapter).PhysicalDevice, &queueFamilyPropertyCount, queueFamilyProperties);
+            vkGetPhysicalDeviceQueueFamilyProperties(((VulkanGraphicsAdapter)GraphicsAdapter).VulkanPhysicalDevice, &queueFamilyPropertyCount, queueFamilyProperties);
 
             for (var i = 0u; i < queueFamilyPropertyCount; i++)
             {

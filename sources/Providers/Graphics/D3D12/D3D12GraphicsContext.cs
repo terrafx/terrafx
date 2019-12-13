@@ -316,7 +316,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             ID3D12Device* device;
 
             var iid = IID_ID3D12Device;
-            ThrowExternalExceptionIfFailed(nameof(D3D12CreateDevice), D3D12CreateDevice((IUnknown*)((D3D12GraphicsAdapter)GraphicsAdapter).Adapter, D3D_FEATURE_LEVEL_11_0, &iid, (void**)&device));
+            ThrowExternalExceptionIfFailed(nameof(D3D12CreateDevice), D3D12CreateDevice((IUnknown*)((D3D12GraphicsAdapter)GraphicsAdapter).DxgiAdapter, D3D_FEATURE_LEVEL_11_0, &iid, (void**)&device));
 
             return device;
         }
