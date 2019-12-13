@@ -17,12 +17,12 @@ using static TerraFX.Utilities.State;
 namespace TerraFX.UI.Providers.Xlib
 {
     /// <summary>Provides access to an X11 based dispatch subsystem.</summary>
-    public sealed unsafe class XlibDispatchProvider : IDisposable, IDispatchProvider
+    public sealed unsafe class XlibDispatchProvider : IDisposable, DispatchProvider
     {
         private static readonly NativeDelegate<XErrorHandler> s_errorHandler = new NativeDelegate<XErrorHandler>(HandleXlibError);
         private static ValueLazy<XlibDispatchProvider> s_instance = new ValueLazy<XlibDispatchProvider>(CreateDispatchProvider);
 
-        private readonly ConcurrentDictionary<Thread, IDispatcher> _dispatchers;
+        private readonly ConcurrentDictionary<Thread, Dispatcher> _dispatchers;
 
         private ValueLazy<UIntPtr> _dispatcherExitRequestedAtom;
         private ValueLazy<UIntPtr> _display;
@@ -36,7 +36,7 @@ namespace TerraFX.UI.Providers.Xlib
 
         private XlibDispatchProvider()
         {
-            _dispatchers = new ConcurrentDictionary<Thread, IDispatcher>();
+            _dispatchers = new ConcurrentDictionary<Thread, Dispatcher>();
 
             _dispatcherExitRequestedAtom = new ValueLazy<UIntPtr>(CreateDispatcherExitRequestedAtom);
             _display = new ValueLazy<UIntPtr>(CreateDisplay);
@@ -315,7 +315,7 @@ namespace TerraFX.UI.Providers.Xlib
         }
 
         /// <inheritdoc />
-        public IDispatcher DispatcherForCurrentThread => GetDispatcher(Thread.CurrentThread);
+        public Dispatcher DispatcherForCurrentThread => GetDispatcher(Thread.CurrentThread);
 
         /// <summary>Gets the <c>Display</c> that was created for the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
@@ -391,14 +391,14 @@ namespace TerraFX.UI.Providers.Xlib
         }
 
         /// <inheritdoc />
-        public IDispatcher GetDispatcher(Thread thread)
+        public Dispatcher GetDispatcher(Thread thread)
         {
             ThrowIfNull(thread, nameof(thread));
             return _dispatchers.GetOrAdd(thread, (parentThread) => new XlibDispatcher(this, parentThread));
         }
 
         /// <inheritdoc />
-        public bool TryGetDispatcher(Thread thread, [MaybeNullWhen(false)] out IDispatcher dispatcher)
+        public bool TryGetDispatcher(Thread thread, [MaybeNullWhen(false)] out Dispatcher dispatcher)
         {
             ThrowIfNull(thread, nameof(thread));
             return _dispatchers.TryGetValue(thread, out dispatcher!);

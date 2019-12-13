@@ -10,8 +10,8 @@ using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
-    /// <inheritdoc cref="IGraphicsAdapter" />
-    public sealed unsafe class VulkanGraphicsAdapter : IGraphicsAdapter
+    /// <inheritdoc cref="GraphicsAdapter" />
+    public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
     {
         private readonly VulkanGraphicsProvider _graphicsProvider;
         private readonly VkPhysicalDevice _physicalDevice;
@@ -39,7 +39,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         public string DeviceName => _deviceName.Value;
 
         /// <inheritdoc />
-        public IGraphicsProvider GraphicsProvider => _graphicsProvider;
+        public GraphicsProvider GraphicsProvider => _graphicsProvider;
 
         /// <summary>Gets the underlying <see cref="VkPhysicalDevice" />.</summary>
         /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
@@ -60,7 +60,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         public uint VendorId => PhysicalDeviceProperties.vendorID;
 
         /// <inheritdoc />
-        public IGraphicsContext CreateGraphicsContext(IGraphicsSurface graphicsSurface)
+        public GraphicsContext CreateGraphicsContext(IGraphicsSurface graphicsSurface)
         {
             _state.ThrowIfDisposedOrDisposing();
             ThrowIfNull(graphicsSurface, nameof(graphicsSurface));

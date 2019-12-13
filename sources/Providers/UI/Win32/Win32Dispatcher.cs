@@ -12,7 +12,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.UI.Providers.Win32
 {
     /// <summary>Provides a means of dispatching events for a thread.</summary>
-    public sealed unsafe class Win32Dispatcher : IDispatcher
+    public sealed unsafe class Win32Dispatcher : Dispatcher
     {
         private readonly Win32DispatchProvider _dispatchProvider;
         private readonly Thread _parentThread;
@@ -30,7 +30,7 @@ namespace TerraFX.UI.Providers.Win32
         public event EventHandler? ExitRequested;
 
         /// <inheritdoc />
-        public IDispatchProvider DispatchProvider => _dispatchProvider;
+        public DispatchProvider DispatchProvider => _dispatchProvider;
 
         /// <inheritdoc />
         public Thread ParentThread => _parentThread;

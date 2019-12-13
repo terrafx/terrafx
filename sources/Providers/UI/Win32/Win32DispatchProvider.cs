@@ -13,17 +13,17 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.UI.Providers.Win32
 {
     /// <summary>Provides access to a Win32 based dispatch subsystem.</summary>
-    public sealed unsafe class Win32DispatchProvider : IDispatchProvider
+    public sealed unsafe class Win32DispatchProvider : DispatchProvider
     {
         private static ValueLazy<Win32DispatchProvider> s_instance = new ValueLazy<Win32DispatchProvider>(CreateDispatchProvider);
 
         private readonly double _tickFrequency;
-        private readonly ConcurrentDictionary<Thread, IDispatcher> _dispatchers;
+        private readonly ConcurrentDictionary<Thread, Dispatcher> _dispatchers;
 
         private Win32DispatchProvider()
         {
             _tickFrequency = GetTickFrequency();
-            _dispatchers = new ConcurrentDictionary<Thread, IDispatcher>();
+            _dispatchers = new ConcurrentDictionary<Thread, Dispatcher>();
         }
 
         /// <summary>Gets the <see cref="Win32DispatchProvider" /> instance for the current program.</summary>
@@ -44,17 +44,17 @@ namespace TerraFX.UI.Providers.Win32
         }
 
         /// <inheritdoc />
-        public IDispatcher DispatcherForCurrentThread => GetDispatcher(Thread.CurrentThread);
+        public Dispatcher DispatcherForCurrentThread => GetDispatcher(Thread.CurrentThread);
 
         /// <inheritdoc />
-        public IDispatcher GetDispatcher(Thread thread)
+        public Dispatcher GetDispatcher(Thread thread)
         {
             ThrowIfNull(thread, nameof(thread));
             return _dispatchers.GetOrAdd(thread, (parentThread) => new Win32Dispatcher(this, parentThread));
         }
 
         /// <inheritdoc />
-        public bool TryGetDispatcher(Thread thread, [MaybeNullWhen(false)] out IDispatcher dispatcher)
+        public bool TryGetDispatcher(Thread thread, [MaybeNullWhen(false)] out Dispatcher dispatcher)
         {
             ThrowIfNull(thread, nameof(thread));
             return _dispatchers.TryGetValue(thread, out dispatcher!);

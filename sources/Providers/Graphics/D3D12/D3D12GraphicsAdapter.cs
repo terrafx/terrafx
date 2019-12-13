@@ -11,8 +11,8 @@ using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
-    /// <inheritdoc cref="IGraphicsAdapter" />
-    public sealed unsafe class D3D12GraphicsAdapter : IGraphicsAdapter
+    /// <inheritdoc cref="GraphicsAdapter" />
+    public sealed unsafe class D3D12GraphicsAdapter : GraphicsAdapter
     {
         private readonly D3D12GraphicsProvider _graphicsProvider;
         private readonly IDXGIAdapter1* _adapter;
@@ -56,13 +56,13 @@ namespace TerraFX.Graphics.Providers.D3D12
         public string DeviceName => _deviceName.Value;
 
         /// <inheritdoc />
-        public IGraphicsProvider GraphicsProvider => _graphicsProvider;
+        public GraphicsProvider GraphicsProvider => _graphicsProvider;
 
         /// <inheritdoc />
         public uint VendorId => AdapterDesc.VendorId;
 
         /// <inheritdoc />
-        public IGraphicsContext CreateGraphicsContext(IGraphicsSurface graphicsSurface)
+        public GraphicsContext CreateGraphicsContext(IGraphicsSurface graphicsSurface)
         {
             _state.ThrowIfDisposedOrDisposing();
             ThrowIfNull(graphicsSurface, nameof(graphicsSurface));

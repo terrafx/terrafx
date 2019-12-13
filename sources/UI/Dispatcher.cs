@@ -6,13 +6,13 @@ using System.Threading;
 namespace TerraFX.UI
 {
     /// <summary>Provides a means of dispatching events for a thread.</summary>
-    public interface IDispatcher
+    public interface Dispatcher
     {
         /// <summary>Occurs when an exit event is dispatched from the queue.</summary>
         event EventHandler ExitRequested;
 
-        /// <summary>Gets the <see cref="IDispatchProvider" /> for the instance.</summary>
-        IDispatchProvider DispatchProvider { get; }
+        /// <summary>Gets the <see cref="UI.DispatchProvider" /> for the instance.</summary>
+        DispatchProvider DispatchProvider { get; }
 
         /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
         Thread ParentThread { get; }

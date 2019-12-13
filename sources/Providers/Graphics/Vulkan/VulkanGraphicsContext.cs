@@ -37,7 +37,7 @@ using static TerraFX.Utilities.State;
 namespace TerraFX.Graphics.Providers.Vulkan
 {
     /// <summary>Represents a graphics context, which can be used for rendering images.</summary>
-    public sealed unsafe class VulkanGraphicsContext : IDisposable, IGraphicsContext
+    public sealed unsafe class VulkanGraphicsContext : IDisposable, GraphicsContext
     {
         private readonly VulkanGraphicsAdapter _graphicsAdapter;
         private readonly IGraphicsSurface _graphicsSurface;
@@ -171,7 +171,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         }
 
         /// <inheritdoc />
-        public IGraphicsAdapter GraphicsAdapter => _graphicsAdapter;
+        public GraphicsAdapter GraphicsAdapter => _graphicsAdapter;
 
         /// <summary>Gets the index of the graphics queue family for the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>

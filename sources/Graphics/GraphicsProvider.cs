@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace TerraFX.Graphics
 {
     /// <summary>Provides the base access required for interacting with a graphics subsystem.</summary>
-    public interface IGraphicsProvider : IDisposable
+    public interface GraphicsProvider : IDisposable
     {
         /// <summary>A name of a switch that controls whether <c>debug mode</c> should be enabled for the graphics provider.</summary>
         /// <remarks>
@@ -19,8 +19,8 @@ namespace TerraFX.Graphics
         /// <remarks>The exact behavior of <c>debug mode</c> may vary based on the implementation and configuration of the host machine.</remarks>
         public bool DebugModeEnabled { get; }
 
-        /// <summary>Gets the <see cref="IGraphicsAdapter" /> instances currently available.</summary>
+        /// <summary>Gets the <see cref="GraphicsAdapter" /> instances currently available.</summary>
         /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-        IEnumerable<IGraphicsAdapter> GraphicsAdapters { get; }
+        IEnumerable<GraphicsAdapter> GraphicsAdapters { get; }
     }
 }

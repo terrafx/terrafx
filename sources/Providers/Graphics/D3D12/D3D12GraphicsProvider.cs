@@ -7,7 +7,7 @@ using System.Composition;
 using System.Runtime.InteropServices;
 using TerraFX.Interop;
 using TerraFX.Utilities;
-using static TerraFX.Graphics.IGraphicsProvider;
+using static TerraFX.Graphics.GraphicsProvider;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.D3D12;
 using static TerraFX.Interop.DXGI;
@@ -20,10 +20,10 @@ using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
-    /// <inheritdoc cref="IGraphicsProvider" />
-    [Export(typeof(IGraphicsProvider))]
+    /// <inheritdoc cref="GraphicsProvider" />
+    [Export(typeof(GraphicsProvider))]
     [Shared]
-    public sealed unsafe class D3D12GraphicsProvider : IGraphicsProvider
+    public sealed unsafe class D3D12GraphicsProvider : GraphicsProvider
     {
         private readonly bool _debugModeEnabled;
 
@@ -60,7 +60,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="IDXGIFactory1.EnumAdapters1(uint, IDXGIAdapter1**)" /> failed.</exception>
-        public IEnumerable<IGraphicsAdapter> GraphicsAdapters
+        public IEnumerable<GraphicsAdapter> GraphicsAdapters
         {
             get
             {

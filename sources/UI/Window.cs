@@ -10,7 +10,7 @@ using TerraFX.Numerics;
 namespace TerraFX.UI
 {
     /// <summary>Defines a window.</summary>
-    public interface IWindow
+    public interface Window
     {
         /// <summary>Occurs when the <see cref="Location" /> property changes.</summary>
         event EventHandler<PropertyChangedEventArgs<Vector2>>? LocationChanged;
@@ -51,8 +51,8 @@ namespace TerraFX.UI
         /// <summary>Gets the title for the instance.</summary>
         string Title { get; }
 
-        /// <summary>Gets the <see cref="IWindowProvider" /> for the instance.</summary>
-        IWindowProvider WindowProvider { get; }
+        /// <summary>Gets the <see cref="UI.WindowProvider" /> for the instance.</summary>
+        WindowProvider WindowProvider { get; }
 
         /// <summary>Gets the <see cref="WindowState" /> for the instance.</summary>
         WindowState WindowState { get; }

@@ -6,16 +6,16 @@ using System.Threading;
 namespace TerraFX.UI
 {
     /// <summary>Provides access to a window subsystem.</summary>
-    public interface IWindowProvider
+    public interface WindowProvider
     {
-        /// <summary>Gets the <see cref="IDispatchProvider" /> for the instance.</summary>
-        IDispatchProvider DispatchProvider { get; }
+        /// <summary>Gets the <see cref="UI.DispatchProvider" /> for the instance.</summary>
+        DispatchProvider DispatchProvider { get; }
 
-        /// <summary>Gets the <see cref="IWindow" /> objects created by the instance which are associated with <see cref="Thread.CurrentThread" />.</summary>
-        IEnumerable<IWindow> WindowsForCurrentThread { get; }
+        /// <summary>Gets the <see cref="Window" /> objects created by the instance which are associated with <see cref="Thread.CurrentThread" />.</summary>
+        IEnumerable<Window> WindowsForCurrentThread { get; }
 
-        /// <summary>Create a new <see cref="IWindow" /> instance.</summary>
-        /// <returns>A new <see cref="IWindow" /> instance</returns>
-        IWindow CreateWindow();
+        /// <summary>Create a new <see cref="Window" /> instance.</summary>
+        /// <returns>A new <see cref="Window" /> instance</returns>
+        Window CreateWindow();
     }
 }

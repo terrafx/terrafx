@@ -11,7 +11,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.UI.Providers.Xlib
 {
     /// <summary>Provides a means of dispatching events for a thread.</summary>
-    public sealed unsafe class XlibDispatcher : IDispatcher
+    public sealed unsafe class XlibDispatcher : Dispatcher
     {
         private readonly XlibDispatchProvider _dispatchProvider;
         private readonly Thread _parentThread;
@@ -29,7 +29,7 @@ namespace TerraFX.UI.Providers.Xlib
         public event EventHandler? ExitRequested;
 
         /// <inheritdoc />
-        public IDispatchProvider DispatchProvider => _dispatchProvider;
+        public DispatchProvider DispatchProvider => _dispatchProvider;
 
         /// <inheritdoc />
         public Thread ParentThread => _parentThread;

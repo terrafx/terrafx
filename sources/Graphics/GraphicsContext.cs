@@ -3,12 +3,12 @@
 namespace TerraFX.Graphics
 {
     /// <summary>Represents a graphics context, which can be used for rendering images.</summary>
-    public interface IGraphicsContext
+    public interface GraphicsContext
     {
-        /// <summary>Gets the <see cref="IGraphicsAdapter" /> for the instance.</summary>
-        IGraphicsAdapter GraphicsAdapter { get; }
+        /// <summary>Gets the <see cref="Graphics.GraphicsAdapter" /> for the instance.</summary>
+        GraphicsAdapter GraphicsAdapter { get; }
 
-        /// <summary>Gets the <see cref="IGraphicsSurface" /> for the instance.</summary>
+        /// <summary>Gets the <see cref="Graphics.IGraphicsSurface" /> for the instance.</summary>
         IGraphicsSurface GraphicsSurface { get; }
 
         /// <summary>Begins a new frame for rendering.</summary>

@@ -20,7 +20,7 @@ using static TerraFX.Utilities.State;
 namespace TerraFX.UI.Providers.Win32
 {
     /// <summary>Defines a window.</summary>
-    public sealed unsafe class Win32Window : IDisposable, IWindow
+    public sealed unsafe class Win32Window : IDisposable, Window
     {
         private readonly Thread _parentThread;
         private readonly PropertySet _properties;
@@ -106,7 +106,7 @@ namespace TerraFX.UI.Providers.Win32
         public string Title => _title;
 
         /// <inheritdoc />
-        public IWindowProvider WindowProvider => _windowProvider;
+        public WindowProvider WindowProvider => _windowProvider;
 
         /// <inheritdoc />
         public WindowState WindowState => _windowState;
@@ -138,7 +138,7 @@ namespace TerraFX.UI.Providers.Win32
         }
 
         /// <inheritdoc />
-        public IGraphicsSurface CreateGraphicsSurface(int bufferCount)
+        public Graphics.IGraphicsSurface CreateGraphicsSurface(int bufferCount)
         {
             if (bufferCount <= 0)
             {

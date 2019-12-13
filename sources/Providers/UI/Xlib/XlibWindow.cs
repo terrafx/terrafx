@@ -18,7 +18,7 @@ using static TerraFX.Utilities.State;
 namespace TerraFX.UI.Providers.Xlib
 {
     /// <summary>Defines a window.</summary>
-    public sealed unsafe class XlibWindow : IDisposable, IWindow
+    public sealed unsafe class XlibWindow : IDisposable, Window
     {
         private readonly Thread _parentThread;
         private readonly PropertySet _properties;
@@ -105,7 +105,7 @@ namespace TerraFX.UI.Providers.Xlib
         public string Title => _title;
 
         /// <inheritdoc />
-        public IWindowProvider WindowProvider => _windowProvider;
+        public WindowProvider WindowProvider => _windowProvider;
 
         /// <inheritdoc />
         public WindowState WindowState => _windowState;

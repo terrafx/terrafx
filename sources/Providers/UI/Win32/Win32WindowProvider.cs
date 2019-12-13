@@ -18,9 +18,9 @@ using static TerraFX.Utilities.State;
 namespace TerraFX.UI.Providers.Win32
 {
     /// <summary>Provides access to a Win32 based window subsystem.</summary>
-    [Export(typeof(IWindowProvider))]
+    [Export(typeof(WindowProvider))]
     [Shared]
-    public sealed unsafe class Win32WindowProvider : IDisposable, IWindowProvider
+    public sealed unsafe class Win32WindowProvider : IDisposable, WindowProvider
     {
         private const string VulkanRequiredExtensionNamesDataName = "TerraFX.Graphics.Providers.Vulkan.GraphicsProvider.RequiredExtensionNames";
 
@@ -68,7 +68,7 @@ namespace TerraFX.UI.Providers.Win32
         }
 
         /// <inheritdoc />
-        public IDispatchProvider DispatchProvider => Win32.Win32DispatchProvider.Instance;
+        public DispatchProvider DispatchProvider => Win32.Win32DispatchProvider.Instance;
 
         /// <summary>Gets the <see cref="GCHandle" /> containing the native handle for the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
@@ -83,7 +83,7 @@ namespace TerraFX.UI.Providers.Win32
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public IEnumerable<IWindow> WindowsForCurrentThread
+        public IEnumerable<Window> WindowsForCurrentThread
         {
             get
             {
@@ -94,7 +94,7 @@ namespace TerraFX.UI.Providers.Win32
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public IWindow CreateWindow()
+        public Window CreateWindow()
         {
             _state.ThrowIfDisposedOrDisposing();
 

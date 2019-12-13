@@ -16,9 +16,9 @@ using static TerraFX.Utilities.State;
 namespace TerraFX.UI.Providers.Xlib
 {
     /// <summary>Provides access to an X11 based window subsystem.</summary>
-    [Export(typeof(IWindowProvider))]
+    [Export(typeof(WindowProvider))]
     [Shared]
-    public sealed unsafe class XlibWindowProvider : IDisposable, IWindowProvider
+    public sealed unsafe class XlibWindowProvider : IDisposable, WindowProvider
     {
         private const string VulkanRequiredExtensionNamesDataName = "TerraFX.Graphics.Providers.Vulkan.GraphicsProvider.RequiredExtensionNames";
 
@@ -47,7 +47,7 @@ namespace TerraFX.UI.Providers.Xlib
         }
 
         /// <inheritdoc />
-        public IDispatchProvider DispatchProvider => Xlib.XlibDispatchProvider.Instance;
+        public DispatchProvider DispatchProvider => Xlib.XlibDispatchProvider.Instance;
 
         /// <summary>Gets the <see cref="GCHandle" /> containing the native handle for the instance.</summary>
         public GCHandle NativeHandle
@@ -61,7 +61,7 @@ namespace TerraFX.UI.Providers.Xlib
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public IEnumerable<IWindow> WindowsForCurrentThread
+        public IEnumerable<Window> WindowsForCurrentThread
         {
             get
             {
@@ -79,7 +79,7 @@ namespace TerraFX.UI.Providers.Xlib
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public IWindow CreateWindow()
+        public Window CreateWindow()
         {
             _state.ThrowIfDisposedOrDisposing();
 

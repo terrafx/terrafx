@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using TerraFX.Interop;
 using TerraFX.Utilities;
-using static TerraFX.Graphics.IGraphicsProvider;
+using static TerraFX.Graphics.GraphicsProvider;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
 using static TerraFX.Interop.VkResult;
 using static TerraFX.Interop.VkStructureType;
@@ -24,10 +24,10 @@ using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
-    /// <inheritdoc cref="IGraphicsProvider" />
-    [Export(typeof(IGraphicsProvider))]
+    /// <inheritdoc cref="GraphicsProvider" />
+    [Export(typeof(GraphicsProvider))]
     [Shared]
-    public sealed unsafe class VulkanGraphicsProvider : IGraphicsProvider
+    public sealed unsafe class VulkanGraphicsProvider : GraphicsProvider
     {
         /// <summary>The default engine name used if <see cref="EngineNameDataName" /> was not set.</summary>
         public const string DefaultEngineName = "TerraFX";
@@ -164,7 +164,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="vkEnumeratePhysicalDevices(IntPtr, uint*, IntPtr*)" /> failed.</exception>
-        public IEnumerable<IGraphicsAdapter> GraphicsAdapters
+        public IEnumerable<GraphicsAdapter> GraphicsAdapters
         {
             get
             {

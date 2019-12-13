@@ -29,7 +29,7 @@ using static TerraFX.Utilities.State;
 namespace TerraFX.Graphics.Providers.D3D12
 {
     /// <summary>Represents a graphics context, which can be used for rendering images.</summary>
-    public sealed unsafe class D3D12GraphicsContext : IDisposable, IGraphicsContext
+    public sealed unsafe class D3D12GraphicsContext : IDisposable, GraphicsContext
     {
         private readonly D3D12GraphicsAdapter _graphicsAdapter;
         private readonly IGraphicsSurface _graphicsSurface;
@@ -146,7 +146,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         }
 
         /// <inheritdoc />
-        public IGraphicsAdapter GraphicsAdapter => _graphicsAdapter;
+        public GraphicsAdapter GraphicsAdapter => _graphicsAdapter;
 
         /// <summary>Gets an array of <see cref="ID3D12GraphicsCommandList" /> for the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
