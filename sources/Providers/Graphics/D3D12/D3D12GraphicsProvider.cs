@@ -23,18 +23,18 @@ namespace TerraFX.Graphics.Providers.D3D12
     /// <inheritdoc cref="IGraphicsProvider" />
     [Export(typeof(IGraphicsProvider))]
     [Shared]
-    public sealed unsafe class GraphicsProvider : IGraphicsProvider
+    public sealed unsafe class D3D12GraphicsProvider : IGraphicsProvider
     {
         private readonly bool _debugModeEnabled;
 
-        private ValueLazy<ImmutableArray<GraphicsAdapter>> _graphicsAdapters;
+        private ValueLazy<ImmutableArray<D3D12GraphicsAdapter>> _graphicsAdapters;
         private ValueLazy<Pointer<IDXGIFactory2>> _factory;
 
         private State _state;
 
-        /// <summary>Initializes a new instance of the <see cref="GraphicsProvider" /> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="D3D12GraphicsProvider" /> class.</summary>
         [ImportingConstructor]
-        public GraphicsProvider()
+        public D3D12GraphicsProvider()
         {
             if (!AppContext.TryGetSwitch(EnableDebugModeSwitchName, out _debugModeEnabled))
             {
@@ -43,14 +43,14 @@ namespace TerraFX.Graphics.Providers.D3D12
 #endif
             }
 
-            _graphicsAdapters = new ValueLazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters);
+            _graphicsAdapters = new ValueLazy<ImmutableArray<D3D12GraphicsAdapter>>(GetGraphicsAdapters);
             _factory = new ValueLazy<Pointer<IDXGIFactory2>>(CreateFactory);
 
             _ = _state.Transition(to: Initialized);
         }
 
-        /// <summary>Finalizes an instance of the <see cref="GraphicsProvider" /> class.</summary>
-        ~GraphicsProvider()
+        /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsProvider" /> class.</summary>
+        ~D3D12GraphicsProvider()
         {
             Dispose(isDisposing: false);
         }
@@ -176,12 +176,12 @@ namespace TerraFX.Graphics.Providers.D3D12
             }
         }
 
-        private ImmutableArray<GraphicsAdapter> GetGraphicsAdapters()
+        private ImmutableArray<D3D12GraphicsAdapter> GetGraphicsAdapters()
         {
             _state.AssertNotDisposedOrDisposing();
 
             IDXGIAdapter1* adapter = null;
-            var graphicsAdapters = ImmutableArray.CreateBuilder<GraphicsAdapter>();
+            var graphicsAdapters = ImmutableArray.CreateBuilder<D3D12GraphicsAdapter>();
 
             try
             {
@@ -201,7 +201,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                     }
                     else
                     {
-                        var graphicsAdapter = new GraphicsAdapter(this, adapter);
+                        var graphicsAdapter = new D3D12GraphicsAdapter(this, adapter);
                         graphicsAdapters.Add(graphicsAdapter);
 
                         adapter = null;

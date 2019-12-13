@@ -13,21 +13,21 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.UI.Providers.Win32
 {
     /// <summary>Provides access to a Win32 based dispatch subsystem.</summary>
-    public sealed unsafe class DispatchProvider : IDispatchProvider
+    public sealed unsafe class Win32DispatchProvider : IDispatchProvider
     {
-        private static ValueLazy<DispatchProvider> s_instance = new ValueLazy<DispatchProvider>(CreateDispatchProvider);
+        private static ValueLazy<Win32DispatchProvider> s_instance = new ValueLazy<Win32DispatchProvider>(CreateDispatchProvider);
 
         private readonly double _tickFrequency;
         private readonly ConcurrentDictionary<Thread, IDispatcher> _dispatchers;
 
-        private DispatchProvider()
+        private Win32DispatchProvider()
         {
             _tickFrequency = GetTickFrequency();
             _dispatchers = new ConcurrentDictionary<Thread, IDispatcher>();
         }
 
-        /// <summary>Gets the <see cref="DispatchProvider" /> instance for the current program.</summary>
-        public static DispatchProvider Instance => s_instance.Value;
+        /// <summary>Gets the <see cref="Win32DispatchProvider" /> instance for the current program.</summary>
+        public static Win32DispatchProvider Instance => s_instance.Value;
 
         /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="QueryPerformanceCounter(LARGE_INTEGER*)" /> failed.</exception>
@@ -50,7 +50,7 @@ namespace TerraFX.UI.Providers.Win32
         public IDispatcher GetDispatcher(Thread thread)
         {
             ThrowIfNull(thread, nameof(thread));
-            return _dispatchers.GetOrAdd(thread, (parentThread) => new Dispatcher(this, parentThread));
+            return _dispatchers.GetOrAdd(thread, (parentThread) => new Win32Dispatcher(this, parentThread));
         }
 
         /// <inheritdoc />
@@ -60,7 +60,7 @@ namespace TerraFX.UI.Providers.Win32
             return _dispatchers.TryGetValue(thread, out dispatcher!);
         }
 
-        private static DispatchProvider CreateDispatchProvider() => new DispatchProvider();
+        private static Win32DispatchProvider CreateDispatchProvider() => new Win32DispatchProvider();
 
         private static double GetTickFrequency()
         {

@@ -6,15 +6,15 @@ using TerraFX.Numerics;
 using TerraFX.Utilities;
 using static TerraFX.Utilities.AssertionUtilities;
 
-namespace TerraFX.UI.Providers.Xlib
+namespace TerraFX.UI.Providers.Win32
 {
     /// <summary>Represents a graphics surface.</summary>
-    public sealed unsafe class GraphicsSurface : IGraphicsSurface
+    public sealed unsafe class Win32GraphicsSurface : IGraphicsSurface
     {
-        private readonly Window _window;
+        private readonly Win32Window _window;
         private readonly int _bufferCount;
 
-        internal GraphicsSurface(Window window, int bufferCount)
+        internal Win32GraphicsSurface(Win32Window window, int bufferCount)
         {
             Assert(window != null, Resources.ArgumentNullExceptionMessage, nameof(bufferCount));
             Assert(bufferCount > 0, Resources.ArgumentOutOfRangeExceptionMessage, nameof(bufferCount), bufferCount);
@@ -41,15 +41,15 @@ namespace TerraFX.UI.Providers.Xlib
         public int BufferCount => _bufferCount;
 
         /// <inheritdoc />
-        public IntPtr DisplayHandle => (IntPtr)(void*)DispatchProvider.Instance.Display;
+        public IntPtr DisplayHandle => Win32WindowProvider.EntryPointModule;
 
         /// <inheritdoc />
-        public GraphicsSurfaceKind Kind => GraphicsSurfaceKind.Xlib;
+        public GraphicsSurfaceKind Kind => GraphicsSurfaceKind.Win32;
 
         /// <inheritdoc />
         public Vector2 Size => _window.Bounds.Size;
 
         /// <inheritdoc />
-        public IntPtr WindowHandle => (IntPtr)(void*)_window.Handle;
+        public IntPtr WindowHandle => _window.Handle;
     }
 }

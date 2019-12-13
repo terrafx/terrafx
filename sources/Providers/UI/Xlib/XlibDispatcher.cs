@@ -11,12 +11,12 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.UI.Providers.Xlib
 {
     /// <summary>Provides a means of dispatching events for a thread.</summary>
-    public sealed unsafe class Dispatcher : IDispatcher
+    public sealed unsafe class XlibDispatcher : IDispatcher
     {
-        private readonly DispatchProvider _dispatchProvider;
+        private readonly XlibDispatchProvider _dispatchProvider;
         private readonly Thread _parentThread;
 
-        internal Dispatcher(DispatchProvider dispatchProvider, Thread parentThread)
+        internal XlibDispatcher(XlibDispatchProvider dispatchProvider, Thread parentThread)
         {
             Assert(dispatchProvider != null, Resources.ArgumentNullExceptionMessage, nameof(dispatchProvider));
             Assert(parentThread != null, Resources.ArgumentNullExceptionMessage, nameof(parentThread));
@@ -49,7 +49,7 @@ namespace TerraFX.UI.Providers.Xlib
 
                 if (!isWmProtocolsEvent || (xevent.xclient.data.l[0] != (IntPtr)(void*)_dispatchProvider.DispatcherExitRequestedAtom))
                 {
-                    WindowProvider.ForwardWindowEvent(&xevent, isWmProtocolsEvent);
+                    XlibWindowProvider.ForwardWindowEvent(&xevent, isWmProtocolsEvent);
                 }
                 else
                 {

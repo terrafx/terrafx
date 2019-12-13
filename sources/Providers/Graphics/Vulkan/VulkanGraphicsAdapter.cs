@@ -11,9 +11,9 @@ using static TerraFX.Utilities.State;
 namespace TerraFX.Graphics.Providers.Vulkan
 {
     /// <inheritdoc cref="IGraphicsAdapter" />
-    public sealed unsafe class GraphicsAdapter : IGraphicsAdapter
+    public sealed unsafe class VulkanGraphicsAdapter : IGraphicsAdapter
     {
-        private readonly GraphicsProvider _graphicsProvider;
+        private readonly VulkanGraphicsProvider _graphicsProvider;
         private readonly VkPhysicalDevice _physicalDevice;
 
         private ValueLazy<VkPhysicalDeviceProperties> _physicalDeviceProperties;
@@ -21,7 +21,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private State _state;
 
-        internal GraphicsAdapter(GraphicsProvider graphicsProvider, VkPhysicalDevice physicalDevice)
+        internal VulkanGraphicsAdapter(VulkanGraphicsProvider graphicsProvider, VkPhysicalDevice physicalDevice)
         {
             _graphicsProvider = graphicsProvider;
             _physicalDevice = physicalDevice;
@@ -64,7 +64,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             _state.ThrowIfDisposedOrDisposing();
             ThrowIfNull(graphicsSurface, nameof(graphicsSurface));
-            return new GraphicsContext(this, graphicsSurface);
+            return new VulkanGraphicsContext(this, graphicsSurface);
         }
 
         /// <inheritdoc />

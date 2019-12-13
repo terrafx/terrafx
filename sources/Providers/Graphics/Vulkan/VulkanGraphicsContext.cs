@@ -37,9 +37,9 @@ using static TerraFX.Utilities.State;
 namespace TerraFX.Graphics.Providers.Vulkan
 {
     /// <summary>Represents a graphics context, which can be used for rendering images.</summary>
-    public sealed unsafe class GraphicsContext : IDisposable, IGraphicsContext
+    public sealed unsafe class VulkanGraphicsContext : IDisposable, IGraphicsContext
     {
-        private readonly GraphicsAdapter _graphicsAdapter;
+        private readonly VulkanGraphicsAdapter _graphicsAdapter;
         private readonly IGraphicsSurface _graphicsSurface;
 
         private ValueLazy<VkSemaphore> _acquireNextImageSemaphore;
@@ -60,7 +60,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private State _state;
         private VkFormat _swapChainFormat;
 
-        internal GraphicsContext(GraphicsAdapter graphicsAdapter, IGraphicsSurface graphicsSurface)
+        internal VulkanGraphicsContext(VulkanGraphicsAdapter graphicsAdapter, IGraphicsSurface graphicsSurface)
         {
             _graphicsAdapter = graphicsAdapter;
             _graphicsSurface = graphicsSurface;
@@ -87,8 +87,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
             _graphicsSurface.SizeChanged += HandleGraphicsSurfaceSizeChanged;
         }
 
-        /// <summary>Finalizes an instance of the <see cref="GraphicsContext" /> class.</summary>
-        ~GraphicsContext()
+        /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsContext" /> class.</summary>
+        ~VulkanGraphicsContext()
         {
             Dispose(isDisposing: false);
         }
@@ -667,7 +667,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             VkSurfaceKHR surface;
 
-            var graphicsProvider = (GraphicsProvider)_graphicsAdapter.GraphicsProvider;
+            var graphicsProvider = (VulkanGraphicsProvider)_graphicsAdapter.GraphicsProvider;
 
             switch (_graphicsSurface.Kind)
             {
@@ -958,7 +958,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             if (_surface.IsCreated)
             {
-                var graphicsProvider = (GraphicsProvider)_graphicsAdapter.GraphicsProvider;
+                var graphicsProvider = (VulkanGraphicsProvider)_graphicsAdapter.GraphicsProvider;
                 vkDestroySurfaceKHR(graphicsProvider.Instance, _surface.Value, pAllocator: null);
             }
         }

@@ -12,12 +12,12 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.UI.Providers.Win32
 {
     /// <summary>Provides a means of dispatching events for a thread.</summary>
-    public sealed unsafe class Dispatcher : IDispatcher
+    public sealed unsafe class Win32Dispatcher : IDispatcher
     {
-        private readonly DispatchProvider _dispatchProvider;
+        private readonly Win32DispatchProvider _dispatchProvider;
         private readonly Thread _parentThread;
 
-        internal Dispatcher(DispatchProvider dispatchProvider, Thread parentThread)
+        internal Win32Dispatcher(Win32DispatchProvider dispatchProvider, Thread parentThread)
         {
             Assert(dispatchProvider != null, Resources.ArgumentNullExceptionMessage, nameof(dispatchProvider));
             Assert(parentThread != null, Resources.ArgumentNullExceptionMessage, nameof(parentThread));

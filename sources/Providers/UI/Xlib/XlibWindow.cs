@@ -18,11 +18,11 @@ using static TerraFX.Utilities.State;
 namespace TerraFX.UI.Providers.Xlib
 {
     /// <summary>Defines a window.</summary>
-    public sealed unsafe class Window : IDisposable, IWindow
+    public sealed unsafe class XlibWindow : IDisposable, IWindow
     {
         private readonly Thread _parentThread;
         private readonly PropertySet _properties;
-        private readonly WindowProvider _windowProvider;
+        private readonly XlibWindowProvider _windowProvider;
         private readonly FlowDirection _flowDirection;
         private readonly ReadingDirection _readingDirection;
 
@@ -36,7 +36,7 @@ namespace TerraFX.UI.Providers.Xlib
         private bool _isEnabled;
         private bool _isVisible;
 
-        internal Window(WindowProvider windowProvider)
+        internal XlibWindow(XlibWindowProvider windowProvider)
         {
             Assert(windowProvider != null, Resources.ArgumentNullExceptionMessage, nameof(windowProvider));
 
@@ -44,7 +44,7 @@ namespace TerraFX.UI.Providers.Xlib
 
             _parentThread = Thread.CurrentThread;
             _properties = new PropertySet();
-            _title = typeof(Window).FullName!;
+            _title = typeof(XlibWindow).FullName!;
             _bounds = new Rectangle(float.NaN, float.NaN, float.NaN, float.NaN);
             _flowDirection = FlowDirection.TopToBottom;
             _readingDirection = ReadingDirection.LeftToRight;
@@ -54,8 +54,8 @@ namespace TerraFX.UI.Providers.Xlib
             _ = _state.Transition(to: Initialized);
         }
 
-        /// <summary>Finalizes an instance of the <see cref="Window" /> class.</summary>
-        ~Window()
+        /// <summary>Finalizes an instance of the <see cref="XlibWindow" /> class.</summary>
+        ~XlibWindow()
         {
             Dispose(isDisposing: false);
         }
@@ -133,7 +133,7 @@ namespace TerraFX.UI.Providers.Xlib
         {
             if (_handle.IsCreated)
             {
-                var dispatchProvider = DispatchProvider.Instance;
+                var dispatchProvider = XlibDispatchProvider.Instance;
                 SendClientMessage(
                     dispatchProvider.Display,
                     window: Handle,
@@ -151,7 +151,7 @@ namespace TerraFX.UI.Providers.Xlib
                 ThrowArgumentOutOfRangeException(nameof(bufferCount), bufferCount);
             }
 
-            return new GraphicsSurface(this, bufferCount);
+            return new XlibGraphicsSurface(this, bufferCount);
         }
 
         /// <inheritdoc />
@@ -165,7 +165,7 @@ namespace TerraFX.UI.Providers.Xlib
                     input = False
                 };
 
-                _ = XSetWMHints(DispatchProvider.Instance.Display, Handle, &wmHints);
+                _ = XSetWMHints(XlibDispatchProvider.Instance.Display, Handle, &wmHints);
                 _isEnabled = false;
             }
         }
@@ -189,7 +189,7 @@ namespace TerraFX.UI.Providers.Xlib
                     input = True
                 };
 
-                _ = XSetWMHints(DispatchProvider.Instance.Display, Handle, &wmHints);
+                _ = XSetWMHints(XlibDispatchProvider.Instance.Display, Handle, &wmHints);
                 _isEnabled = true;
             }
         }
@@ -200,7 +200,7 @@ namespace TerraFX.UI.Providers.Xlib
         {
             if (_isVisible)
             {
-                _ = XUnmapWindow(DispatchProvider.Instance.Display, Handle);
+                _ = XUnmapWindow(XlibDispatchProvider.Instance.Display, Handle);
             }
         }
 
@@ -211,7 +211,7 @@ namespace TerraFX.UI.Providers.Xlib
         {
             if (_windowState != WindowState.Maximized)
             {
-                var display = DispatchProvider.Instance.Display;
+                var display = XlibDispatchProvider.Instance.Display;
                 var handle = Handle;
 
                 XWindowAttributes windowAttributes;
@@ -235,7 +235,7 @@ namespace TerraFX.UI.Providers.Xlib
         {
             if (_windowState != WindowState.Minimized)
             {
-                var display = DispatchProvider.Instance.Display;
+                var display = XlibDispatchProvider.Instance.Display;
                 var handle = Handle;
 
                 XWindowAttributes windowAttributes;
@@ -257,7 +257,7 @@ namespace TerraFX.UI.Providers.Xlib
             {
                 if (_windowState == WindowState.Maximized)
                 {
-                    _ = XMoveResizeWindow(DispatchProvider.Instance.Display, Handle, (int)_restoredBounds.X, (int)_restoredBounds.Y, (uint)_restoredBounds.Width, (uint)_restoredBounds.Height);
+                    _ = XMoveResizeWindow(XlibDispatchProvider.Instance.Display, Handle, (int)_restoredBounds.X, (int)_restoredBounds.Y, (uint)_restoredBounds.Width, (uint)_restoredBounds.Height);
                 }
 
                 Show();
@@ -271,7 +271,7 @@ namespace TerraFX.UI.Providers.Xlib
         {
             if (_isVisible == false)
             {
-                _ = XMapWindow(DispatchProvider.Instance.Display, Handle);
+                _ = XMapWindow(XlibDispatchProvider.Instance.Display, Handle);
                 _ = TryActivate();
             }
         }
@@ -283,7 +283,7 @@ namespace TerraFX.UI.Providers.Xlib
         {
             if (_isActive == false)
             {
-                _ = XRaiseWindow(DispatchProvider.Instance.Display, Handle);
+                _ = XRaiseWindow(XlibDispatchProvider.Instance.Display, Handle);
             }
 
             return true;
@@ -331,7 +331,7 @@ namespace TerraFX.UI.Providers.Xlib
         {
             _state.AssertNotDisposedOrDisposing();
 
-            var dispatchProvider = DispatchProvider.Instance;
+            var dispatchProvider = XlibDispatchProvider.Instance;
             var display = dispatchProvider.Display;
 
             var defaultScreen = XDefaultScreenOfDisplay(display);
@@ -406,7 +406,7 @@ namespace TerraFX.UI.Providers.Xlib
 
             if (_handle.IsCreated)
             {
-                _ = XDestroyWindow(DispatchProvider.Instance.Display, _handle.Value);
+                _ = XDestroyWindow(XlibDispatchProvider.Instance.Display, _handle.Value);
             }
         }
 
@@ -414,7 +414,7 @@ namespace TerraFX.UI.Providers.Xlib
         {
             if (isWmProtocolsEvent)
             {
-                if (xclientMessage->data.l[0] == (IntPtr)(void*)DispatchProvider.Instance.WmDeleteWindowAtom)
+                if (xclientMessage->data.l[0] == (IntPtr)(void*)XlibDispatchProvider.Instance.WmDeleteWindowAtom)
                 {
                     // If we are already disposing, then Dispose is happening on some other thread
                     // and Close was called in order for us to continue disposal on the parent thread.

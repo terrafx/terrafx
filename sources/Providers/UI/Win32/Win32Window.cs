@@ -12,7 +12,7 @@ using TerraFX.Utilities;
 using static TerraFX.Interop.User32;
 using static TerraFX.Interop.Windows;
 using static TerraFX.UI.Providers.Win32.HelperUtilities;
-using static TerraFX.UI.Providers.Win32.WindowProvider;
+using static TerraFX.UI.Providers.Win32.Win32WindowProvider;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
@@ -20,11 +20,11 @@ using static TerraFX.Utilities.State;
 namespace TerraFX.UI.Providers.Win32
 {
     /// <summary>Defines a window.</summary>
-    public sealed unsafe class Window : IDisposable, IWindow
+    public sealed unsafe class Win32Window : IDisposable, IWindow
     {
         private readonly Thread _parentThread;
         private readonly PropertySet _properties;
-        private readonly WindowProvider _windowProvider;
+        private readonly Win32WindowProvider _windowProvider;
         private readonly FlowDirection _flowDirection;
         private readonly ReadingDirection _readingDirection;
 
@@ -37,7 +37,7 @@ namespace TerraFX.UI.Providers.Win32
         private bool _isEnabled;
         private bool _isVisible;
 
-        internal Window(WindowProvider windowProvider)
+        internal Win32Window(Win32WindowProvider windowProvider)
         {
             Assert(windowProvider != null, Resources.ArgumentNullExceptionMessage, nameof(windowProvider));
 
@@ -45,7 +45,7 @@ namespace TerraFX.UI.Providers.Win32
 
             _parentThread = Thread.CurrentThread;
             _properties = new PropertySet();
-            _title = typeof(Window).FullName!;
+            _title = typeof(Win32Window).FullName!;
             _bounds = new Rectangle(float.NaN, float.NaN, float.NaN, float.NaN);
             _flowDirection = FlowDirection.TopToBottom;
             _readingDirection = ReadingDirection.LeftToRight;
@@ -55,8 +55,8 @@ namespace TerraFX.UI.Providers.Win32
             _ = _state.Transition(to: Initialized);
         }
 
-        /// <summary>Finalizes an instance of the <see cref="Window" /> class.</summary>
-        ~Window()
+        /// <summary>Finalizes an instance of the <see cref="Win32Window" /> class.</summary>
+        ~Win32Window()
         {
             Dispose(isDisposing: false);
         }
@@ -145,7 +145,7 @@ namespace TerraFX.UI.Providers.Win32
                 ThrowArgumentOutOfRangeException(nameof(bufferCount), bufferCount);
             }
 
-            return new GraphicsSurface(this, bufferCount);
+            return new Win32GraphicsSurface(this, bufferCount);
         }
 
         /// <inheritdoc />

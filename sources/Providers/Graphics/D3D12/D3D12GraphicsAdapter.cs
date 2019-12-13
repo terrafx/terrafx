@@ -12,9 +12,9 @@ using static TerraFX.Utilities.State;
 namespace TerraFX.Graphics.Providers.D3D12
 {
     /// <inheritdoc cref="IGraphicsAdapter" />
-    public sealed unsafe class GraphicsAdapter : IGraphicsAdapter
+    public sealed unsafe class D3D12GraphicsAdapter : IGraphicsAdapter
     {
-        private readonly GraphicsProvider _graphicsProvider;
+        private readonly D3D12GraphicsProvider _graphicsProvider;
         private readonly IDXGIAdapter1* _adapter;
 
         private ValueLazy<DXGI_ADAPTER_DESC1> _adapterDesc;
@@ -22,7 +22,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private State _state;
 
-        internal GraphicsAdapter(GraphicsProvider graphicsProvider, IDXGIAdapter1* adapter)
+        internal D3D12GraphicsAdapter(D3D12GraphicsProvider graphicsProvider, IDXGIAdapter1* adapter)
         {
             _graphicsProvider = graphicsProvider;
             _adapter = adapter;
@@ -66,7 +66,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         {
             _state.ThrowIfDisposedOrDisposing();
             ThrowIfNull(graphicsSurface, nameof(graphicsSurface));
-            return new GraphicsContext(this, graphicsSurface);
+            return new D3D12GraphicsContext(this, graphicsSurface);
         }
 
         /// <inheritdoc />

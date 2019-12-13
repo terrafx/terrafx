@@ -29,9 +29,9 @@ using static TerraFX.Utilities.State;
 namespace TerraFX.Graphics.Providers.D3D12
 {
     /// <summary>Represents a graphics context, which can be used for rendering images.</summary>
-    public sealed unsafe class GraphicsContext : IDisposable, IGraphicsContext
+    public sealed unsafe class D3D12GraphicsContext : IDisposable, IGraphicsContext
     {
-        private readonly GraphicsAdapter _graphicsAdapter;
+        private readonly D3D12GraphicsAdapter _graphicsAdapter;
         private readonly IGraphicsSurface _graphicsSurface;
 
         private ValueLazy<ID3D12CommandAllocator*[]> _commandAllocators;
@@ -49,7 +49,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         private uint _frameIndex;
         private State _state;
 
-        internal GraphicsContext(GraphicsAdapter graphicsAdapter, IGraphicsSurface graphicsSurface)
+        internal D3D12GraphicsContext(D3D12GraphicsAdapter graphicsAdapter, IGraphicsSurface graphicsSurface)
         {
             _graphicsAdapter = graphicsAdapter;
             _graphicsSurface = graphicsSurface;
@@ -73,8 +73,8 @@ namespace TerraFX.Graphics.Providers.D3D12
             _graphicsSurface.SizeChanged += HandleGraphicsSurfaceSizeChanged;
         }
 
-        /// <summary>Finalizes an instance of the <see cref="GraphicsContext" /> class.</summary>
-        ~GraphicsContext()
+        /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsContext" /> class.</summary>
+        ~D3D12GraphicsContext()
         {
             Dispose(isDisposing: false);
         }
@@ -469,7 +469,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                 Flags = 0
             };
 
-            var graphicsProvider = (GraphicsProvider)_graphicsAdapter.GraphicsProvider;
+            var graphicsProvider = (D3D12GraphicsProvider)_graphicsAdapter.GraphicsProvider;
             var iid = IID_IDXGISwapChain3;
 
             switch (_graphicsSurface.Kind)

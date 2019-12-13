@@ -27,7 +27,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
     /// <inheritdoc cref="IGraphicsProvider" />
     [Export(typeof(IGraphicsProvider))]
     [Shared]
-    public sealed unsafe class GraphicsProvider : IGraphicsProvider
+    public sealed unsafe class VulkanGraphicsProvider : IGraphicsProvider
     {
         /// <summary>The default engine name used if <see cref="EngineNameDataName" /> was not set.</summary>
         public const string DefaultEngineName = "TerraFX";
@@ -80,15 +80,15 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private readonly string[] _optionalLayerNames;
         private readonly bool _debugModeEnabled;
 
-        private ValueLazy<ImmutableArray<GraphicsAdapter>> _graphicsAdapters;
+        private ValueLazy<ImmutableArray<VulkanGraphicsAdapter>> _graphicsAdapters;
         private ValueLazy<VkInstance> _instance;
 
         private VkDebugReportCallbackEXT _debugReportCallbackExt;
         private State _state;
 
-        /// <summary>Initializes a new instance of the <see cref="GraphicsProvider" /> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="VulkanGraphicsProvider" /> class.</summary>
         [ImportingConstructor]
-        public GraphicsProvider()
+        public VulkanGraphicsProvider()
         {
             _engineName = GetEngineName();
             _debugModeEnabled = GetDebugModeEnabled();
@@ -99,7 +99,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             _requiredLayerNames = GetNames(RequiredLayerNamesDataName);
             _optionalLayerNames = GetNames(OptionalLayerNamesDataName);
 
-            _graphicsAdapters = new ValueLazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters);
+            _graphicsAdapters = new ValueLazy<ImmutableArray<VulkanGraphicsAdapter>>(GetGraphicsAdapters);
             _instance = new ValueLazy<VkInstance>(CreateInstance);
 
             _ = _state.Transition(to: Initialized);
@@ -147,8 +147,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
             }
         }
 
-        /// <summary>Finalizes an instance of the <see cref="GraphicsProvider" /> class.</summary>
-        ~GraphicsProvider()
+        /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsProvider" /> class.</summary>
+        ~VulkanGraphicsProvider()
         {
             Dispose(isDisposing: false);
         }
@@ -473,7 +473,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             }
         }
 
-        private ImmutableArray<GraphicsAdapter> GetGraphicsAdapters()
+        private ImmutableArray<VulkanGraphicsAdapter> GetGraphicsAdapters()
         {
             _state.AssertNotDisposedOrDisposing();
 
@@ -485,11 +485,11 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var physicalDevices = stackalloc IntPtr[unchecked((int)physicalDeviceCount)];
             ThrowExternalExceptionIfNotSuccess(nameof(vkEnumeratePhysicalDevices), vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, physicalDevices));
 
-            var adapters = ImmutableArray.CreateBuilder<GraphicsAdapter>(unchecked((int)physicalDeviceCount));
+            var adapters = ImmutableArray.CreateBuilder<VulkanGraphicsAdapter>(unchecked((int)physicalDeviceCount));
 
             for (uint index = 0; index < physicalDeviceCount; index++)
             {
-                var adapter = new GraphicsAdapter(this, physicalDevices[index]);
+                var adapter = new VulkanGraphicsAdapter(this, physicalDevices[index]);
                 adapters.Add(adapter);
             }
 
