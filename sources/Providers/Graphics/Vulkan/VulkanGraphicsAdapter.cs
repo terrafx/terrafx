@@ -13,7 +13,6 @@ namespace TerraFX.Graphics.Providers.Vulkan
     /// <inheritdoc cref="GraphicsAdapter" />
     public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
     {
-        private readonly VulkanGraphicsProvider _graphicsProvider;
         private readonly VkPhysicalDevice _physicalDevice;
 
         private ValueLazy<VkPhysicalDeviceProperties> _physicalDeviceProperties;
@@ -22,8 +21,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private State _state;
 
         internal VulkanGraphicsAdapter(VulkanGraphicsProvider graphicsProvider, VkPhysicalDevice physicalDevice)
+            : base(graphicsProvider)
         {
-            _graphicsProvider = graphicsProvider;
             _physicalDevice = physicalDevice;
 
             _physicalDeviceProperties = new ValueLazy<VkPhysicalDeviceProperties>(GetPhysicalDeviceProperties);
@@ -33,13 +32,10 @@ namespace TerraFX.Graphics.Providers.Vulkan
         }
 
         /// <inheritdoc />
-        public uint DeviceId => PhysicalDeviceProperties.deviceID;
+        public override uint DeviceId => PhysicalDeviceProperties.deviceID;
 
         /// <inheritdoc />
-        public string DeviceName => _deviceName.Value;
-
-        /// <inheritdoc />
-        public GraphicsProvider GraphicsProvider => _graphicsProvider;
+        public override string DeviceName => _deviceName.Value;
 
         /// <summary>Gets the underlying <see cref="VkPhysicalDevice" />.</summary>
         /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
@@ -57,10 +53,10 @@ namespace TerraFX.Graphics.Providers.Vulkan
         public ref readonly VkPhysicalDeviceProperties PhysicalDeviceProperties => ref _physicalDeviceProperties.RefValue;
 
         /// <inheritdoc />
-        public uint VendorId => PhysicalDeviceProperties.vendorID;
+        public override uint VendorId => PhysicalDeviceProperties.vendorID;
 
         /// <inheritdoc />
-        public GraphicsContext CreateGraphicsContext(IGraphicsSurface graphicsSurface)
+        public override GraphicsContext CreateGraphicsContext(IGraphicsSurface graphicsSurface)
         {
             _state.ThrowIfDisposedOrDisposing();
             ThrowIfNull(graphicsSurface, nameof(graphicsSurface));
@@ -69,7 +65,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         /// <inheritdoc />
         /// <remarks>While there are no unmanaged resources to cleanup, we still want to mark the instance as disposed if the <see cref="GraphicsProvider" /> was disposed or if the adapter no longer exists.</remarks>
-        public void Dispose()
+        protected override void Dispose(bool isDisposing)
         {
             _ = _state.BeginDispose();
             _state.EndDispose();

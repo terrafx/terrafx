@@ -14,7 +14,6 @@ namespace TerraFX.Graphics.Providers.D3D12
     /// <inheritdoc cref="GraphicsAdapter" />
     public sealed unsafe class D3D12GraphicsAdapter : GraphicsAdapter
     {
-        private readonly D3D12GraphicsProvider _graphicsProvider;
         private readonly IDXGIAdapter1* _adapter;
 
         private ValueLazy<DXGI_ADAPTER_DESC1> _adapterDesc;
@@ -23,8 +22,8 @@ namespace TerraFX.Graphics.Providers.D3D12
         private State _state;
 
         internal D3D12GraphicsAdapter(D3D12GraphicsProvider graphicsProvider, IDXGIAdapter1* adapter)
+            : base(graphicsProvider)
         {
-            _graphicsProvider = graphicsProvider;
             _adapter = adapter;
 
             _adapterDesc = new ValueLazy<DXGI_ADAPTER_DESC1>(GetAdapterDesc);
@@ -50,19 +49,17 @@ namespace TerraFX.Graphics.Providers.D3D12
         public ref readonly DXGI_ADAPTER_DESC1 AdapterDesc => ref _adapterDesc.RefValue;
 
         /// <inheritdoc />
-        public uint DeviceId => AdapterDesc.DeviceId;
+        public override uint DeviceId => AdapterDesc.DeviceId;
 
         /// <inheritdoc />
-        public string DeviceName => _deviceName.Value;
+        public override string DeviceName => _deviceName.Value;
+
+        
+        /// <inheritdoc />
+        public override uint VendorId => AdapterDesc.VendorId;
 
         /// <inheritdoc />
-        public GraphicsProvider GraphicsProvider => _graphicsProvider;
-
-        /// <inheritdoc />
-        public uint VendorId => AdapterDesc.VendorId;
-
-        /// <inheritdoc />
-        public GraphicsContext CreateGraphicsContext(IGraphicsSurface graphicsSurface)
+        public override GraphicsContext CreateGraphicsContext(IGraphicsSurface graphicsSurface)
         {
             _state.ThrowIfDisposedOrDisposing();
             ThrowIfNull(graphicsSurface, nameof(graphicsSurface));
@@ -70,13 +67,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         }
 
         /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        private void Dispose(bool isDisposing)
+        protected override void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
 

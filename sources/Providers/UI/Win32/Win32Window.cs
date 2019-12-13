@@ -20,11 +20,9 @@ using static TerraFX.Utilities.State;
 namespace TerraFX.UI.Providers.Win32
 {
     /// <summary>Defines a window.</summary>
-    public sealed unsafe class Win32Window : IDisposable, Window
+    public sealed unsafe class Win32Window : Window
     {
-        private readonly Thread _parentThread;
         private readonly PropertySet _properties;
-        private readonly Win32WindowProvider _windowProvider;
         private readonly FlowDirection _flowDirection;
         private readonly ReadingDirection _readingDirection;
 
@@ -38,12 +36,10 @@ namespace TerraFX.UI.Providers.Win32
         private bool _isVisible;
 
         internal Win32Window(Win32WindowProvider windowProvider)
+            : base(windowProvider, Thread.CurrentThread)
         {
-            Assert(windowProvider != null, Resources.ArgumentNullExceptionMessage, nameof(windowProvider));
-
             _handle = new ValueLazy<HWND>(CreateWindowHandle);
 
-            _parentThread = Thread.CurrentThread;
             _properties = new PropertySet();
             _title = typeof(Win32Window).FullName!;
             _bounds = new Rectangle(float.NaN, float.NaN, float.NaN, float.NaN);
@@ -51,7 +47,6 @@ namespace TerraFX.UI.Providers.Win32
             _readingDirection = ReadingDirection.LeftToRight;
             _isEnabled = true;
 
-            _windowProvider = windowProvider;
             _ = _state.Transition(to: Initialized);
         }
 
@@ -62,16 +57,16 @@ namespace TerraFX.UI.Providers.Win32
         }
 
         /// <inheritdoc />
-        public event EventHandler<PropertyChangedEventArgs<Vector2>>? LocationChanged;
+        public override event EventHandler<PropertyChangedEventArgs<Vector2>>? LocationChanged;
 
         /// <inheritdoc />
-        public event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged;
+        public override event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged;
 
         /// <inheritdoc />
-        public Rectangle Bounds => _bounds;
+        public override Rectangle Bounds => _bounds;
 
         /// <inheritdoc />
-        public FlowDirection FlowDirection => _flowDirection;
+        public override FlowDirection FlowDirection => _flowDirection;
 
         /// <summary>Gets the handle for the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
@@ -85,35 +80,29 @@ namespace TerraFX.UI.Providers.Win32
         }
 
         /// <inheritdoc />
-        public bool IsActive => _isActive;
+        public override bool IsActive => _isActive;
 
         /// <inheritdoc />
-        public bool IsEnabled => _isEnabled;
+        public override bool IsEnabled => _isEnabled;
 
         /// <inheritdoc />
-        public bool IsVisible => _isVisible;
+        public override bool IsVisible => _isVisible;
 
         /// <inheritdoc />
-        public Thread ParentThread => _parentThread;
+        public override IPropertySet Properties => _properties;
 
         /// <inheritdoc />
-        public IPropertySet Properties => _properties;
+        public override ReadingDirection ReadingDirection => _readingDirection;
 
         /// <inheritdoc />
-        public ReadingDirection ReadingDirection => _readingDirection;
+        public override string Title => _title;
 
         /// <inheritdoc />
-        public string Title => _title;
-
-        /// <inheritdoc />
-        public WindowProvider WindowProvider => _windowProvider;
-
-        /// <inheritdoc />
-        public WindowState WindowState => _windowState;
+        public override WindowState WindowState => _windowState;
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="IsActive" /> was <c>false</c> but the instance has already been disposed.</exception>
-        public void Activate()
+        public override void Activate()
         {
             var succeeded = TryActivate();
 
@@ -129,7 +118,7 @@ namespace TerraFX.UI.Providers.Win32
         ///   <para>This method can be called from any thread.</para>
         ///   <para>This method does nothing if the underlying <c>HWND</c> has not been created.</para>
         /// </remarks>
-        public void Close()
+        public override void Close()
         {
             if (_handle.IsCreated)
             {
@@ -138,7 +127,7 @@ namespace TerraFX.UI.Providers.Win32
         }
 
         /// <inheritdoc />
-        public Graphics.IGraphicsSurface CreateGraphicsSurface(int bufferCount)
+        public override IGraphicsSurface CreateGraphicsSurface(int bufferCount)
         {
             if (bufferCount <= 0)
             {
@@ -150,7 +139,7 @@ namespace TerraFX.UI.Providers.Win32
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="IsEnabled" /> was <c>true</c> but the instance has already been disposed.</exception>
-        public void Disable()
+        public override void Disable()
         {
             if (_isEnabled)
             {
@@ -159,15 +148,8 @@ namespace TerraFX.UI.Providers.Win32
         }
 
         /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="IsEnabled" /> was <c>false</c> but the instance has already been disposed.</exception>
-        public void Enable()
+        public override void Enable()
         {
             if (_isEnabled == false)
             {
@@ -177,7 +159,7 @@ namespace TerraFX.UI.Providers.Win32
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="IsVisible" /> was <c>true</c> but the instance has already been disposed.</exception>
-        public void Hide()
+        public override void Hide()
         {
             if (_isVisible)
             {
@@ -187,7 +169,7 @@ namespace TerraFX.UI.Providers.Win32
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Maximized" /> but the instance has already been disposed.</exception>
-        public void Maximize()
+        public override void Maximize()
         {
             if (_windowState != WindowState.Maximized)
             {
@@ -197,7 +179,7 @@ namespace TerraFX.UI.Providers.Win32
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Minimized" /> but the instance has already been disposed.</exception>
-        public void Minimize()
+        public override void Minimize()
         {
             if (_windowState != WindowState.Minimized)
             {
@@ -207,7 +189,7 @@ namespace TerraFX.UI.Providers.Win32
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Restored" /> but the instance has already been disposed.</exception>
-        public void Restore()
+        public override void Restore()
         {
             if (_windowState != WindowState.Restored)
             {
@@ -217,7 +199,7 @@ namespace TerraFX.UI.Providers.Win32
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="IsVisible" /> was <c>false</c> but the instance has already been disposed.</exception>
-        public void Show()
+        public override void Show()
         {
             if (_isVisible == false)
             {
@@ -227,7 +209,7 @@ namespace TerraFX.UI.Providers.Win32
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="IsActive" /> was <c>false</c> but the instance has already been disposed.</exception>
-        public bool TryActivate()
+        public override bool TryActivate()
         {
             _state.ThrowIfDisposedOrDisposing();
 
@@ -236,7 +218,7 @@ namespace TerraFX.UI.Providers.Win32
 
         internal IntPtr ProcessWindowMessage(uint msg, UIntPtr wParam, IntPtr lParam)
         {
-            ThrowIfNotThread(_parentThread);
+            ThrowIfNotThread(ParentThread);
 
             switch (msg)
             {
@@ -297,7 +279,7 @@ namespace TerraFX.UI.Providers.Win32
             {
                 hWnd = CreateWindowExW(
                     WS_EX_OVERLAPPEDWINDOW,
-                    (ushort*)_windowProvider.ClassAtom,
+                    (ushort*)((Win32WindowProvider)WindowProvider).ClassAtom,
                     (ushort*)lpWindowName,
                     WS_OVERLAPPEDWINDOW,
                     X: float.IsNaN(Bounds.X) ? CW_USEDEFAULT : (int)Bounds.X,
@@ -307,7 +289,7 @@ namespace TerraFX.UI.Providers.Win32
                     hWndParent: default,
                     hMenu: default,
                     hInstance: EntryPointModule,
-                    lpParam: GCHandle.ToIntPtr(_windowProvider.NativeHandle).ToPointer()
+                    lpParam: GCHandle.ToIntPtr(((Win32WindowProvider)WindowProvider).NativeHandle).ToPointer()
                 );
             }
             ThrowExternalExceptionIfZero(nameof(CreateWindowExW), hWnd);
@@ -315,7 +297,8 @@ namespace TerraFX.UI.Providers.Win32
             return hWnd;
         }
 
-        private void Dispose(bool isDisposing)
+        /// <inheritdoc />
+        protected override void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
 
@@ -325,7 +308,7 @@ namespace TerraFX.UI.Providers.Win32
                 // thread. So, if we are on the wrong thread, we will close the window
                 // and call DisposeWindowHandle from the appropriate thread.
 
-                if (Thread.CurrentThread != _parentThread)
+                if (Thread.CurrentThread != ParentThread)
                 {
                     Close();
                 }
@@ -340,7 +323,7 @@ namespace TerraFX.UI.Providers.Win32
 
         private void DisposeWindowHandle()
         {
-            Assert(Thread.CurrentThread == _parentThread, Resources.InvalidOperationExceptionMessage, nameof(Thread.CurrentThread), Thread.CurrentThread);
+            Assert(Thread.CurrentThread == ParentThread, Resources.InvalidOperationExceptionMessage, nameof(Thread.CurrentThread), Thread.CurrentThread);
             _state.AssertDisposing();
 
             if (_handle.IsCreated)

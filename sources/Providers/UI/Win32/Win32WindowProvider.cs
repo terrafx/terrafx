@@ -20,7 +20,7 @@ namespace TerraFX.UI.Providers.Win32
     /// <summary>Provides access to a Win32 based window subsystem.</summary>
     [Export(typeof(WindowProvider))]
     [Shared]
-    public sealed unsafe class Win32WindowProvider : IDisposable, WindowProvider
+    public sealed unsafe class Win32WindowProvider : WindowProvider
     {
         private const string VulkanRequiredExtensionNamesDataName = "TerraFX.Graphics.Providers.Vulkan.GraphicsProvider.RequiredExtensionNames";
 
@@ -68,7 +68,7 @@ namespace TerraFX.UI.Providers.Win32
         }
 
         /// <inheritdoc />
-        public DispatchProvider DispatchProvider => Win32.Win32DispatchProvider.Instance;
+        public override DispatchProvider DispatchProvider => Win32DispatchProvider.Instance;
 
         /// <summary>Gets the <see cref="GCHandle" /> containing the native handle for the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
@@ -83,7 +83,7 @@ namespace TerraFX.UI.Providers.Win32
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public IEnumerable<Window> WindowsForCurrentThread
+        public override IEnumerable<Window> WindowsForCurrentThread
         {
             get
             {
@@ -94,7 +94,7 @@ namespace TerraFX.UI.Providers.Win32
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public Window CreateWindow()
+        public override Window CreateWindow()
         {
             _state.ThrowIfDisposedOrDisposing();
 
@@ -110,13 +110,6 @@ namespace TerraFX.UI.Providers.Win32
             _ = windows.TryAdd(window.Handle, window);
 
             return window;
-        }
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
         }
 
         private static IntPtr ForwardWindowMessage(IntPtr hWnd, uint msg, UIntPtr wParam, IntPtr lParam)
@@ -248,7 +241,8 @@ namespace TerraFX.UI.Providers.Win32
 
         private GCHandle CreateNativeHandle() => GCHandle.Alloc(this, GCHandleType.Normal);
 
-        private void Dispose(bool isDisposing)
+        /// <inheritdoc />
+        protected override void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
 

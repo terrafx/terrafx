@@ -31,7 +31,7 @@ namespace TerraFX.UI.Providers.Win32
 
         /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="QueryPerformanceCounter(LARGE_INTEGER*)" /> failed.</exception>
-        public Timestamp CurrentTimestamp
+        public override Timestamp CurrentTimestamp
         {
             get
             {
@@ -44,20 +44,25 @@ namespace TerraFX.UI.Providers.Win32
         }
 
         /// <inheritdoc />
-        public Dispatcher DispatcherForCurrentThread => GetDispatcher(Thread.CurrentThread);
+        public override Dispatcher DispatcherForCurrentThread => GetDispatcher(Thread.CurrentThread);
 
         /// <inheritdoc />
-        public Dispatcher GetDispatcher(Thread thread)
+        public override Dispatcher GetDispatcher(Thread thread)
         {
             ThrowIfNull(thread, nameof(thread));
             return _dispatchers.GetOrAdd(thread, (parentThread) => new Win32Dispatcher(this, parentThread));
         }
 
         /// <inheritdoc />
-        public bool TryGetDispatcher(Thread thread, [MaybeNullWhen(false)] out Dispatcher dispatcher)
+        public override bool TryGetDispatcher(Thread thread, [MaybeNullWhen(false)] out Dispatcher dispatcher)
         {
             ThrowIfNull(thread, nameof(thread));
             return _dispatchers.TryGetValue(thread, out dispatcher!);
+        }
+
+        /// <inheritdoc />
+        protected override void Dispose(bool isDisposing)
+        {
         }
 
         private static Win32DispatchProvider CreateDispatchProvider() => new Win32DispatchProvider();

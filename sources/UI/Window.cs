@@ -6,17 +6,35 @@ using TerraFX.Collections;
 using TerraFX.Graphics;
 using TerraFX.Graphics.Geometry2D;
 using TerraFX.Numerics;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.UI
 {
     /// <summary>Defines a window.</summary>
-    public interface Window
+    public abstract class Window : IDisposable
     {
+        private readonly WindowProvider _windowProvider;
+        private readonly Thread _parentThread;
+
+        /// <summary>Initializes a new instance of the <see cref="Window" /> class.</summary>
+        /// <param name="windowProvider">The window provider which created the window.</param>
+        /// <param name="parentThread">The thread on which window operates.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="windowProvider" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="parentThread" /> is <c>null</c>.</exception>
+        protected Window(WindowProvider windowProvider, Thread parentThread)
+        {
+            ThrowIfNull(windowProvider, nameof(windowProvider));
+            ThrowIfNull(parentThread, nameof(parentThread));
+
+            _windowProvider = windowProvider;
+            _parentThread = parentThread;
+        }
+
         /// <summary>Occurs when the <see cref="Location" /> property changes.</summary>
-        event EventHandler<PropertyChangedEventArgs<Vector2>>? LocationChanged;
+        public abstract event EventHandler<PropertyChangedEventArgs<Vector2>>? LocationChanged;
 
         /// <summary>Occurs when the <see cref="Size" /> property changes.</summary>
-        event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged;
+        public abstract event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged;
 
         /// <summary>Gets a <see cref="Vector2" /> that represents the location of the instance.</summary>
         public Vector2 Location => Bounds.Location;
@@ -25,73 +43,84 @@ namespace TerraFX.UI
         public Vector2 Size => Bounds.Size;
 
         /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
-        Rectangle Bounds { get; }
+        public abstract Rectangle Bounds { get; }
 
         /// <summary>Gets <see cref="FlowDirection" /> for the instance.</summary>
-        FlowDirection FlowDirection { get; }
+        public abstract FlowDirection FlowDirection { get; }
 
         /// <summary>Gets a value that indicates whether the instance is the active window.</summary>
-        bool IsActive { get; }
+        public abstract bool IsActive { get; }
 
         /// <summary>Gets a value that indicates whether the instance is enabled.</summary>
-        bool IsEnabled { get; }
+        public abstract bool IsEnabled { get; }
 
         /// <summary>Gets a value that indicates whether the instance is visible.</summary>
-        bool IsVisible { get; }
+        public abstract bool IsVisible { get; }
 
         /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
-        Thread ParentThread { get; }
+        public Thread ParentThread => _parentThread;
 
         /// <summary>Gets the <see cref="IPropertySet" /> for the instance.</summary>
-        IPropertySet Properties { get; }
+        public abstract IPropertySet Properties { get; }
 
         /// <summary>Gets the <see cref="ReadingDirection" /> for the instance.</summary>
-        ReadingDirection ReadingDirection { get; }
+        public abstract ReadingDirection ReadingDirection { get; }
 
         /// <summary>Gets the title for the instance.</summary>
-        string Title { get; }
+        public abstract string Title { get; }
 
         /// <summary>Gets the <see cref="UI.WindowProvider" /> for the instance.</summary>
-        WindowProvider WindowProvider { get; }
+        public WindowProvider WindowProvider => _windowProvider;
 
         /// <summary>Gets the <see cref="WindowState" /> for the instance.</summary>
-        WindowState WindowState { get; }
+        public abstract WindowState WindowState { get; }
 
         /// <summary>Activates the instance.</summary>
-        void Activate();
+        public abstract void Activate();
 
         /// <summary>Closes the instance.</summary>
-        void Close();
+        public abstract void Close();
 
         /// <summary>Creates a new <see cref="IGraphicsSurface" /> for the instance.</summary>
         /// <param name="bufferCount">The number of buffers created for the instance.</param>
         /// <returns>A new <see cref="IGraphicsSurface" /> for the instance.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="bufferCount" /> is less than or equal to zero.</exception>
-        IGraphicsSurface CreateGraphicsSurface(int bufferCount);
+        public abstract IGraphicsSurface CreateGraphicsSurface(int bufferCount);
 
         /// <summary>Disables the instance.</summary>
-        void Disable();
+        public abstract void Disable();
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
 
         /// <summary>Enables the instance.</summary>
-        void Enable();
+        public abstract void Enable();
 
         /// <summary>Hides the instance.</summary>
-        void Hide();
+        public abstract void Hide();
 
         /// <summary>Maximizes the instance.</summary>
-        void Maximize();
+        public abstract void Maximize();
 
         /// <summary>Minimizes the instance.</summary>
-        void Minimize();
+        public abstract void Minimize();
 
         /// <summary>Restores the instance.</summary>
-        void Restore();
+        public abstract void Restore();
 
         /// <summary>Shows the instance.</summary>
-        void Show();
+        public abstract void Show();
 
         /// <summary>Tries to activate the instance.</summary>
         /// <returns><c>true</c> if the instance was succesfully activated; otherwise, <c>false</c>.</returns>
-        bool TryActivate();
+        public abstract bool TryActivate();
+
+        /// <inheritdoc cref="Dispose()" />
+        /// <param name="isDisposing"><c>true</c> if the method was called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
+        protected abstract void Dispose(bool isDisposing);
     }
 }

@@ -17,7 +17,7 @@ using static TerraFX.Utilities.State;
 namespace TerraFX.UI.Providers.Xlib
 {
     /// <summary>Provides access to an X11 based dispatch subsystem.</summary>
-    public sealed unsafe class XlibDispatchProvider : IDisposable, DispatchProvider
+    public sealed unsafe class XlibDispatchProvider : DispatchProvider
     {
         private static readonly NativeDelegate<XErrorHandler> s_errorHandler = new NativeDelegate<XErrorHandler>(HandleXlibError);
         private static ValueLazy<XlibDispatchProvider> s_instance = new ValueLazy<XlibDispatchProvider>(CreateDispatchProvider);
@@ -278,7 +278,7 @@ namespace TerraFX.UI.Providers.Xlib
 
         /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="clock_gettime(int, timespec*)" /> failed.</exception>
-        public Timestamp CurrentTimestamp
+        public override Timestamp CurrentTimestamp
         {
             get
             {
@@ -315,7 +315,7 @@ namespace TerraFX.UI.Providers.Xlib
         }
 
         /// <inheritdoc />
-        public Dispatcher DispatcherForCurrentThread => GetDispatcher(Thread.CurrentThread);
+        public override Dispatcher DispatcherForCurrentThread => GetDispatcher(Thread.CurrentThread);
 
         /// <summary>Gets the <c>Display</c> that was created for the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
@@ -350,7 +350,7 @@ namespace TerraFX.UI.Providers.Xlib
             }
         }
 
-        /// <summary>Gets the atom created to track the <see cref="XlibWindow.WindowProvider" /> property.</summary>
+        /// <summary>Gets the atom created to track the <see cref="Window.WindowProvider" /> property.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public UIntPtr WindowWindowProviderAtom
         {
@@ -384,21 +384,14 @@ namespace TerraFX.UI.Providers.Xlib
         }
 
         /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <inheritdoc />
-        public Dispatcher GetDispatcher(Thread thread)
+        public override Dispatcher GetDispatcher(Thread thread)
         {
             ThrowIfNull(thread, nameof(thread));
             return _dispatchers.GetOrAdd(thread, (parentThread) => new XlibDispatcher(this, parentThread));
         }
 
         /// <inheritdoc />
-        public bool TryGetDispatcher(Thread thread, [MaybeNullWhen(false)] out Dispatcher dispatcher)
+        public override bool TryGetDispatcher(Thread thread, [MaybeNullWhen(false)] out Dispatcher dispatcher)
         {
             ThrowIfNull(thread, nameof(thread));
             return _dispatchers.TryGetValue(thread, out dispatcher!);
@@ -442,7 +435,8 @@ namespace TerraFX.UI.Providers.Xlib
 
         private UIntPtr CreateWmDeleteWindowAtom() => CreateAtom(Display, WmDeleteWindowAtomName);
 
-        private void Dispose(bool isDisposing)
+        /// <inheritdoc />
+        protected override void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
 

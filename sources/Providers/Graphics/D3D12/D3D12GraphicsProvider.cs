@@ -7,7 +7,6 @@ using System.Composition;
 using System.Runtime.InteropServices;
 using TerraFX.Interop;
 using TerraFX.Utilities;
-using static TerraFX.Graphics.GraphicsProvider;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.D3D12;
 using static TerraFX.Interop.DXGI;
@@ -25,8 +24,6 @@ namespace TerraFX.Graphics.Providers.D3D12
     [Shared]
     public sealed unsafe class D3D12GraphicsProvider : GraphicsProvider
     {
-        private readonly bool _debugModeEnabled;
-
         private ValueLazy<ImmutableArray<D3D12GraphicsAdapter>> _graphicsAdapters;
         private ValueLazy<Pointer<IDXGIFactory2>> _factory;
 
@@ -36,13 +33,6 @@ namespace TerraFX.Graphics.Providers.D3D12
         [ImportingConstructor]
         public D3D12GraphicsProvider()
         {
-            if (!AppContext.TryGetSwitch(EnableDebugModeSwitchName, out _debugModeEnabled))
-            {
-#if DEBUG
-                _debugModeEnabled = true;
-#endif
-            }
-
             _graphicsAdapters = new ValueLazy<ImmutableArray<D3D12GraphicsAdapter>>(GetGraphicsAdapters);
             _factory = new ValueLazy<Pointer<IDXGIFactory2>>(CreateFactory);
 
@@ -56,11 +46,8 @@ namespace TerraFX.Graphics.Providers.D3D12
         }
 
         /// <inheritdoc />
-        public bool DebugModeEnabled => _debugModeEnabled;
-
-        /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="IDXGIFactory1.EnumAdapters1(uint, IDXGIAdapter1**)" /> failed.</exception>
-        public IEnumerable<GraphicsAdapter> GraphicsAdapters
+        public override IEnumerable<GraphicsAdapter> GraphicsAdapters
         {
             get
             {
@@ -79,13 +66,6 @@ namespace TerraFX.Graphics.Providers.D3D12
                 _state.ThrowIfDisposedOrDisposing();
                 return _factory.Value;
             }
-        }
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
         }
 
         private Pointer<IDXGIFactory2> CreateFactory()
@@ -134,7 +114,8 @@ namespace TerraFX.Graphics.Providers.D3D12
             }
         }
 
-        private void Dispose(bool isDisposing)
+        /// <inheritdoc />
+        protected override void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
 

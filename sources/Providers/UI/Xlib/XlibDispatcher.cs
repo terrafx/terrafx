@@ -3,9 +3,7 @@
 using System;
 using System.Threading;
 using TerraFX.Interop;
-using TerraFX.Utilities;
 using static TerraFX.Interop.Xlib;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.UI.Providers.Xlib
@@ -13,41 +11,28 @@ namespace TerraFX.UI.Providers.Xlib
     /// <summary>Provides a means of dispatching events for a thread.</summary>
     public sealed unsafe class XlibDispatcher : Dispatcher
     {
-        private readonly XlibDispatchProvider _dispatchProvider;
-        private readonly Thread _parentThread;
-
         internal XlibDispatcher(XlibDispatchProvider dispatchProvider, Thread parentThread)
+            : base(dispatchProvider, parentThread)
         {
-            Assert(dispatchProvider != null, Resources.ArgumentNullExceptionMessage, nameof(dispatchProvider));
-            Assert(parentThread != null, Resources.ArgumentNullExceptionMessage, nameof(parentThread));
-
-            _dispatchProvider = dispatchProvider!;
-            _parentThread = parentThread!;
         }
 
         /// <inheritdoc />
-        public event EventHandler? ExitRequested;
+        public override event EventHandler? ExitRequested;
 
         /// <inheritdoc />
-        public DispatchProvider DispatchProvider => _dispatchProvider;
-
-        /// <inheritdoc />
-        public Thread ParentThread => _parentThread;
-
-        /// <inheritdoc />
-        public void DispatchPending()
+        public override void DispatchPending()
         {
-            ThrowIfNotThread(_parentThread);
+            ThrowIfNotThread(ParentThread);
 
-            var display = _dispatchProvider.Display;
+            var display = ((XlibDispatchProvider)DispatchProvider).Display;
             while (XPending(display) != 0)
             {
                 XEvent xevent;
                 _ = XNextEvent(display, &xevent);
 
-                var isWmProtocolsEvent = (xevent.type == ClientMessage) && (xevent.xclient.format == 32) && (xevent.xclient.message_type == _dispatchProvider.WmProtocolsAtom);
+                var isWmProtocolsEvent = (xevent.type == ClientMessage) && (xevent.xclient.format == 32) && (xevent.xclient.message_type == ((XlibDispatchProvider)DispatchProvider).WmProtocolsAtom);
 
-                if (!isWmProtocolsEvent || (xevent.xclient.data.l[0] != (IntPtr)(void*)_dispatchProvider.DispatcherExitRequestedAtom))
+                if (!isWmProtocolsEvent || (xevent.xclient.data.l[0] != (IntPtr)(void*)((XlibDispatchProvider)DispatchProvider).DispatcherExitRequestedAtom))
                 {
                     XlibWindowProvider.ForwardWindowEvent(&xevent, isWmProtocolsEvent);
                 }
@@ -59,5 +44,10 @@ namespace TerraFX.UI.Providers.Xlib
         }
 
         private void OnExitRequested() => ExitRequested?.Invoke(this, EventArgs.Empty);
+
+        /// <inheritdoc />
+        protected override void Dispose(bool isDisposing)
+        {
+        }
     }
 }

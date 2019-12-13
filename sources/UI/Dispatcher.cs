@@ -2,20 +2,37 @@
 
 using System;
 using System.Threading;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.UI
 {
     /// <summary>Provides a means of dispatching events for a thread.</summary>
-    public interface Dispatcher
+    public abstract class Dispatcher : IDisposable
     {
+        private readonly DispatchProvider _dispatchProvider;
+        private readonly Thread _parentThread;
+
+        /// <summary>Initializes a new instance of the <see cref="Dispatcher" /> class.</summary>
+        /// <param name="dispatchProvider">The dispatch provider which created the dispatcher.</param>
+        /// <param name="parentThread">The thread on which the dispatcher operates.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="dispatchProvider" /> is <c>null</c>.</exception>
+        protected Dispatcher(DispatchProvider dispatchProvider, Thread parentThread)
+        {
+            ThrowIfNull(dispatchProvider, nameof(dispatchProvider));
+            ThrowIfNull(parentThread, nameof(parentThread));
+
+            _dispatchProvider = dispatchProvider;
+            _parentThread = parentThread;
+        }
+
         /// <summary>Occurs when an exit event is dispatched from the queue.</summary>
-        event EventHandler ExitRequested;
+        public abstract event EventHandler ExitRequested;
 
         /// <summary>Gets the <see cref="UI.DispatchProvider" /> for the instance.</summary>
-        DispatchProvider DispatchProvider { get; }
+        public DispatchProvider DispatchProvider => _dispatchProvider;
 
         /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
-        Thread ParentThread { get; }
+        public Thread ParentThread => _parentThread;
 
         /// <summary>Dispatches all events currently pending in the queue.</summary>
         /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <see cref="ParentThread" />.</exception>
@@ -24,6 +41,17 @@ namespace TerraFX.UI
         ///   <para>This method does not performing any translation or pre-processing on the dispatched events.</para>
         ///   <para>This method will continue dispatching pending events even after the <see cref="ExitRequested" /> event is raised.</para>
         /// </remarks>
-        void DispatchPending();
+        public abstract void DispatchPending();
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <inheritdoc cref="Dispose()" />
+        /// <param name="isDisposing"><c>true</c> if the method was called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
+        protected abstract void Dispose(bool isDisposing);
     }
 }

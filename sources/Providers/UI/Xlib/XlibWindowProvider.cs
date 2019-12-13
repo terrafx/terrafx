@@ -18,7 +18,7 @@ namespace TerraFX.UI.Providers.Xlib
     /// <summary>Provides access to an X11 based window subsystem.</summary>
     [Export(typeof(WindowProvider))]
     [Shared]
-    public sealed unsafe class XlibWindowProvider : IDisposable, WindowProvider
+    public sealed unsafe class XlibWindowProvider : WindowProvider
     {
         private const string VulkanRequiredExtensionNamesDataName = "TerraFX.Graphics.Providers.Vulkan.GraphicsProvider.RequiredExtensionNames";
 
@@ -47,7 +47,7 @@ namespace TerraFX.UI.Providers.Xlib
         }
 
         /// <inheritdoc />
-        public DispatchProvider DispatchProvider => Xlib.XlibDispatchProvider.Instance;
+        public override DispatchProvider DispatchProvider => XlibDispatchProvider.Instance;
 
         /// <summary>Gets the <see cref="GCHandle" /> containing the native handle for the instance.</summary>
         public GCHandle NativeHandle
@@ -61,7 +61,7 @@ namespace TerraFX.UI.Providers.Xlib
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public IEnumerable<Window> WindowsForCurrentThread
+        public override IEnumerable<Window> WindowsForCurrentThread
         {
             get
             {
@@ -70,16 +70,9 @@ namespace TerraFX.UI.Providers.Xlib
             }
         }
 
-        /// <summary>Disposes of any unmanaged resources tracked by the instance.</summary>
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
-        }
-
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public Window CreateWindow()
+        public override Window CreateWindow()
         {
             _state.ThrowIfDisposedOrDisposing();
 
@@ -206,7 +199,8 @@ namespace TerraFX.UI.Providers.Xlib
             return window;
         }
 
-        private void Dispose(bool isDisposing)
+        /// <inheritdoc />
+        protected override void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
 
