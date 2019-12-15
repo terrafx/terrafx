@@ -24,8 +24,8 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private State _state;
 
-        internal D3D12GraphicsFence(GraphicsContext graphicsContext)
-            : base(graphicsContext)
+        internal D3D12GraphicsFence(D3D12GraphicsDevice graphicsDevice)
+            : base(graphicsDevice)
         {
             _d3d12Fence = new ValueLazy<Pointer<ID3D12Fence>>(CreateD3D12Fence);
             _d3d12FenceSignalEvent = new ValueLazy<HANDLE>(CreateEventHandle);
@@ -51,8 +51,8 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <exception cref="ObjectDisposedException">The fence has been disposed.</exception>
         public ulong D3D12FenceSignalValue => _d3d12FenceSignalValue;
 
-        /// <inheritdoc cref="GraphicsFence.GraphicsContext" />
-        public D3D12GraphicsContext D3D12GraphicsContext => (D3D12GraphicsContext)GraphicsContext;
+        /// <inheritdoc cref="GraphicsFence.GraphicsDevice" />
+        public D3D12GraphicsDevice D3D12GraphicsDevice => (D3D12GraphicsDevice)GraphicsDevice;
 
         /// <inheritdoc />
         public override bool IsSignalled => D3D12Fence->GetCompletedValue() >= D3D12FenceSignalValue;
@@ -69,8 +69,6 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <inheritdoc />
         public override bool TryWait(int millisecondsTimeout = -1)
         {
-            _state.ThrowIfDisposedOrDisposing();
-
             if (millisecondsTimeout < Timeout.Infinite)
             {
                 ThrowArgumentOutOfRangeException(nameof(millisecondsTimeout), millisecondsTimeout);
@@ -81,8 +79,6 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <inheritdoc />
         public override bool TryWait(TimeSpan timeout)
         {
-            _state.ThrowIfDisposedOrDisposing();
-
             var remainingMilliseconds = (long)timeout.TotalMilliseconds;
 
             if (remainingMilliseconds < Timeout.Infinite)
@@ -129,7 +125,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             ID3D12Fence* d3d12Fence;
 
             var iid = IID_ID3D12Fence;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateFence), D3D12GraphicsContext.Device->CreateFence(InitialValue: 0, D3D12_FENCE_FLAG_NONE, &iid, (void**)&d3d12Fence));
+            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateFence), D3D12GraphicsDevice.D3D12Device->CreateFence(InitialValue: 0, D3D12_FENCE_FLAG_NONE, &iid, (void**)&d3d12Fence));
 
             return d3d12Fence;
         }
@@ -160,8 +156,6 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private bool TryWait(uint millisecondsTimeout)
         {
-            _state.AssertNotDisposedOrDisposing();
-
             var fenceSignalled = IsSignalled;
 
             var fence = D3D12Fence;

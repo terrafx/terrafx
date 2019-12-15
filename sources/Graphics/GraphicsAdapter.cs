@@ -34,12 +34,12 @@ namespace TerraFX.Graphics
         /// <exception cref="ObjectDisposedException">The adapter has been disposed and the value was not otherwise cached.</exception>
         public abstract uint VendorId { get; }
 
-        /// <summary>Creates a new graphics context which utilizes the adapter to render to a graphics surface.</summary>
+        /// <summary>Creates a new graphics device which utilizes the adapter to render to a graphics surface.</summary>
         /// <param name="graphicsSurface">The graphics surface to which the context can render.</param>
-        /// <returns>A new graphics context which utilizes the the adapter to render to <paramref name="graphicsSurface" />.</returns>
+        /// <returns>A new graphics device which utilizes the the adapter to render to <paramref name="graphicsSurface" />.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="graphicsSurface" /> is <c>null</c>.</exception>
         /// <exception cref="ObjectDisposedException">The adapter has been disposed.</exception>
-        public abstract GraphicsContext CreateGraphicsContext(IGraphicsSurface graphicsSurface);
+        public abstract GraphicsDevice CreateGraphicsDevice(IGraphicsSurface graphicsSurface);
 
         /// <inheritdoc />
         public void Dispose()

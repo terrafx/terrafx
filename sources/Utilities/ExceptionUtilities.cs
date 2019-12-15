@@ -72,6 +72,19 @@ namespace TerraFX.Utilities
             throw new ExternalException(message, hresult);
         }
 
+        /// <summary>Throws a <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>negative</c>.</summary>
+        /// <param name="value">The value to be checked if <c>negative</c>.</param>
+        /// <param name="paramName">The name of the parameter being checked.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>negative</c>.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowIfNegative(int value, string paramName)
+        {
+            if (value < 0)
+            {
+                ThrowArgumentOutOfRangeException(paramName, value);
+            }
+        }
+
         /// <summary>Throws a <see cref="ArgumentNullException" /> if <paramref name="value" /> is <c>null</c>.</summary>
         /// <typeparam name="T">The type of <paramref name="value" />.</typeparam>
         /// <param name="value">The value to be checked for <c>null</c>.</param>

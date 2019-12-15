@@ -8,28 +8,32 @@ namespace TerraFX.Graphics
     /// <summary>Represents a graphics context, which can be used for rendering images.</summary>
     public abstract class GraphicsContext : IDisposable
     {
-        private readonly GraphicsAdapter _graphicsAdapter;
-        private readonly IGraphicsSurface _graphicsSurface;
+        private readonly GraphicsDevice _graphicsDevice;
+        private readonly int _index;
 
-        /// <summary>Initializes a new instance of the <see cref="GraphicsContext" /> class.</summary>
-        /// <param name="graphicsAdapter">The underlying graphics adapter for the context.</param>
-        /// <param name="graphicsSurface">The graphics surface on which the context can render.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="graphicsAdapter" /> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="graphicsSurface" /> is <c>null</c>.</exception>
-        protected GraphicsContext(GraphicsAdapter graphicsAdapter, IGraphicsSurface graphicsSurface)
+        /// <summary>Initializes a new instance of the <see cref="GraphicsDevice" /> class.</summary>
+        /// <param name="graphicsDevice">The graphics device for which the context was created.</param>
+        /// <param name="index">An index which can be used to lookup the context via <see cref="GraphicsDevice.GraphicsContexts" />.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="graphicsDevice" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is <c>negative</c>.</exception>
+        protected GraphicsContext(GraphicsDevice graphicsDevice, int index)
         {
-            ThrowIfNull(graphicsAdapter, nameof(graphicsAdapter));
-            ThrowIfNull(graphicsSurface, nameof(graphicsSurface));
+            ThrowIfNull(graphicsDevice, nameof(graphicsDevice));
+            ThrowIfNegative(index, nameof(index));
 
-            _graphicsAdapter = graphicsAdapter;
-            _graphicsSurface = graphicsSurface;
+            _graphicsDevice = graphicsDevice;
+            _index = index;
         }
 
-        /// <summary>Gets the <see cref="Graphics.GraphicsAdapter" /> for the instance.</summary>
-        public GraphicsAdapter GraphicsAdapter => _graphicsAdapter;
+        /// <summary>Gets the <see cref="GraphicsDevice" /> for the instance.</summary>
+        public GraphicsDevice GraphicsDevice => _graphicsDevice;
 
-        /// <summary>Gets the <see cref="IGraphicsSurface" /> for the instance.</summary>
-        public IGraphicsSurface GraphicsSurface => _graphicsSurface;
+        /// <summary>Gets the graphics fence used by the context for synchronization.</summary>
+        /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
+        public abstract GraphicsFence GraphicsFence { get; }
+
+        /// <summary>Gets an index which can be used to lookup the context via <see cref="GraphicsDevice.GraphicsContexts" />.</summary>
+        public int Index => _index;
 
         /// <summary>Begins a new frame for rendering.</summary>
         /// <param name="backgroundColor">A color to which the background should be cleared.</param>
@@ -46,10 +50,6 @@ namespace TerraFX.Graphics
         /// <summary>Ends the frame currently be rendered.</summary>
         /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
         public abstract void EndFrame();
-
-        /// <summary>Presents the last frame rendered.</summary>
-        /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
-        public abstract void PresentFrame();
 
         /// <inheritdoc cref="Dispose()" />
         /// <param name="isDisposing"><c>true</c> if the method was called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>

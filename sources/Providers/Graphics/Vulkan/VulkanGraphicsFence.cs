@@ -21,8 +21,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private State _state;
 
-        internal VulkanGraphicsFence(GraphicsContext graphicsContext)
-            : base(graphicsContext)
+        internal VulkanGraphicsFence(VulkanGraphicsDevice graphicsDevice)
+            : base(graphicsDevice)
         {
             _vulkanFence = new ValueLazy<VkFence>(CreateVulkanFence);
 
@@ -39,24 +39,22 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <exception cref="ObjectDisposedException">The fence has been disposed.</exception>
         public VkFence VulkanFence => _vulkanFence.Value;
 
-        /// <inheritdoc cref="GraphicsFence.GraphicsContext" />
-        public VulkanGraphicsContext VulkanGraphicsContext => (VulkanGraphicsContext)GraphicsContext;
+        /// <inheritdoc cref="GraphicsFence.GraphicsDevice" />
+        public VulkanGraphicsDevice VulkanGraphicsDevice => (VulkanGraphicsDevice)GraphicsDevice;
 
         /// <inheritdoc />
-        public override bool IsSignalled => vkGetFenceStatus(VulkanGraphicsContext.Device, VulkanFence) == VK_SUCCESS;
+        public override bool IsSignalled => vkGetFenceStatus(VulkanGraphicsDevice.VulkanDevice, VulkanFence) == VK_SUCCESS;
 
         /// <inheritdoc />
         public override void Reset()
         {
             var vulkanFence = VulkanFence;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkResetFences), vkResetFences(VulkanGraphicsContext.Device, fenceCount: 1, (ulong*)&vulkanFence));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkResetFences), vkResetFences(VulkanGraphicsDevice.VulkanDevice, fenceCount: 1, (ulong*)&vulkanFence));
         }
 
         /// <inheritdoc />
         public override bool TryWait(int millisecondsTimeout = -1)
         {
-            _state.ThrowIfDisposedOrDisposing();
-
             if (millisecondsTimeout < Timeout.Infinite)
             {
                 ThrowArgumentOutOfRangeException(nameof(millisecondsTimeout), millisecondsTimeout);
@@ -67,8 +65,6 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <inheritdoc />
         public override bool TryWait(TimeSpan timeout)
         {
-            _state.ThrowIfDisposedOrDisposing();
-
             var millisecondsTimeout = (long)timeout.TotalMilliseconds;
 
             if (millisecondsTimeout < Timeout.Infinite)
@@ -96,14 +92,15 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             _state.ThrowIfDisposedOrDisposing();
 
+            VkFence vulkanFence;
+
             var fenceCreateInfo = new VkFenceCreateInfo {
                 sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
                 pNext = null,
                 flags = (uint)VK_FENCE_CREATE_SIGNALED_BIT,
             };
+            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateFence), vkCreateFence(VulkanGraphicsDevice.VulkanDevice, &fenceCreateInfo, pAllocator: null, (ulong*)&vulkanFence));
 
-            VkFence vulkanFence;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateFence), vkCreateFence(VulkanGraphicsContext.Device, &fenceCreateInfo, pAllocator: null, (ulong*)&vulkanFence));
             return vulkanFence;
         }
 
@@ -113,20 +110,18 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             if (vulkanFence != VK_NULL_HANDLE)
             {
-                vkDestroyFence(VulkanGraphicsContext.Device, vulkanFence, pAllocator: null);
+                vkDestroyFence(VulkanGraphicsDevice.VulkanDevice, vulkanFence, pAllocator: null);
             }
         }
 
         private bool TryWait(ulong millisecondsTimeout)
         {
-            _state.AssertNotDisposedOrDisposing();
-
             var fenceSignalled = IsSignalled;
 
             if (!fenceSignalled)
             {
                 var vulkanFence = VulkanFence;
-                var result = vkWaitForFences(VulkanGraphicsContext.Device, fenceCount: 1, (ulong*)&vulkanFence, waitAll: VK_TRUE, millisecondsTimeout);
+                var result = vkWaitForFences(VulkanGraphicsDevice.VulkanDevice, fenceCount: 1, (ulong*)&vulkanFence, waitAll: VK_TRUE, millisecondsTimeout);
 
                 if (result == VK_SUCCESS)
                 {

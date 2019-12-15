@@ -5,83 +5,43 @@ using TerraFX.Interop;
 using TerraFX.Numerics;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
-using static TerraFX.Interop.D3D_FEATURE_LEVEL;
 using static TerraFX.Interop.D3D12;
 using static TerraFX.Interop.D3D12_COMMAND_LIST_TYPE;
-using static TerraFX.Interop.D3D12_COMMAND_QUEUE_FLAGS;
-using static TerraFX.Interop.D3D12_DESCRIPTOR_HEAP_FLAGS;
 using static TerraFX.Interop.D3D12_DESCRIPTOR_HEAP_TYPE;
-using static TerraFX.Interop.D3D12_RESOURCE_BARRIER_TYPE;
-using static TerraFX.Interop.D3D12_RESOURCE_BARRIER_FLAGS;
 using static TerraFX.Interop.D3D12_RESOURCE_STATES;
 using static TerraFX.Interop.D3D12_RTV_DIMENSION;
-using static TerraFX.Interop.DXGI;
-using static TerraFX.Interop.DXGI_ALPHA_MODE;
 using static TerraFX.Interop.DXGI_FORMAT;
-using static TerraFX.Interop.DXGI_SCALING;
-using static TerraFX.Interop.DXGI_SWAP_EFFECT;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Utilities.DisposeUtilities;
-using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
-    /// <summary>Represents a graphics context, which can be used for rendering images.</summary>
+    /// <inheritdoc />
     public sealed unsafe class D3D12GraphicsContext : GraphicsContext
     {
-        private readonly D3D12GraphicsFence _waitForIdleGraphicsFence;
+        private readonly D3D12GraphicsFence _graphicsFence;
+        private readonly D3D12GraphicsFence _waitForExecuteCompletionGraphicsFence;
 
-        private ValueLazy<ID3D12CommandAllocator*[]> _commandAllocators;
-        private ValueLazy<Pointer<ID3D12CommandQueue>> _commandQueue;
-        private ValueLazy<Pointer<ID3D12Device>> _device;
-        private ValueLazy<ID3D12GraphicsCommandList*[]> _graphicsCommandLists;
-        private ValueLazy<Pointer<ID3D12DescriptorHeap>> _renderTargetsHeap;
-        private ValueLazy<ID3D12Resource*[]> _renderTargets;
-        private ValueLazy<Pointer<IDXGISwapChain3>> _swapChain;
-
-        private D3D12GraphicsFence[] _graphicsFences;
-
-        private uint _frameIndex;
+        private ValueLazy<Pointer<ID3D12CommandAllocator>> _d3d12CommandAllocator;
+        private ValueLazy<Pointer<ID3D12GraphicsCommandList>> _d3d12GraphicsCommandList;
+        private ValueLazy<Pointer<ID3D12Resource>> _d3d12RenderTargetResource;
+        private ValueLazy<D3D12_CPU_DESCRIPTOR_HANDLE> _d3d12RenderTargetView;
 
         private State _state;
 
-        internal D3D12GraphicsContext(D3D12GraphicsAdapter graphicsAdapter, IGraphicsSurface graphicsSurface)
-            : base(graphicsAdapter, graphicsSurface)
+        internal D3D12GraphicsContext(D3D12GraphicsDevice graphicsDevice, int index)
+            : base(graphicsDevice, index)
         {
-            _waitForIdleGraphicsFence = new D3D12GraphicsFence(this);
+            _graphicsFence = new D3D12GraphicsFence(graphicsDevice);
+            _waitForExecuteCompletionGraphicsFence = new D3D12GraphicsFence(graphicsDevice);
 
-            _commandAllocators = new ValueLazy<ID3D12CommandAllocator*[]>(CreateCommandAllocators);
-            _commandQueue = new ValueLazy<Pointer<ID3D12CommandQueue>>(CreateCommandQueue);
-            _device = new ValueLazy<Pointer<ID3D12Device>>(CreateDevice);
-            _graphicsCommandLists = new ValueLazy<ID3D12GraphicsCommandList*[]>(CreateGraphicsCommandLists);
-            _renderTargets = new ValueLazy<ID3D12Resource*[]>(CreateRenderTargets);
-            _renderTargetsHeap = new ValueLazy<Pointer<ID3D12DescriptorHeap>>(CreateRenderTargetsHeap);
-            _swapChain = new ValueLazy<Pointer<IDXGISwapChain3>>(CreateSwapChain);
-
-            _graphicsFences = CreateGraphicsFences(this, graphicsSurface);
+            _d3d12CommandAllocator = new ValueLazy<Pointer<ID3D12CommandAllocator>>(CreateD3D12CommandAllocator);
+            _d3d12GraphicsCommandList = new ValueLazy<Pointer<ID3D12GraphicsCommandList>>(CreateD3D12GraphicsCommandList);
+            _d3d12RenderTargetView = new ValueLazy<D3D12_CPU_DESCRIPTOR_HANDLE>(CreateD3D12RenderTargetDescriptor);
+            _d3d12RenderTargetResource = new ValueLazy<Pointer<ID3D12Resource>>(CreateD3D12RenderTargetResource);
 
             _ = _state.Transition(to: Initialized);
-
-            // We want to ensure the idle fence is created up front so disposal can cleanup nicely
-            WaitForIdleGraphicsFence.Reset();
-
-            // Do event hookups after we are in the initialized state, since an event could
-            // technically fire while the constructor is still running.
-
-            graphicsSurface.SizeChanged += HandleGraphicsSurfaceSizeChanged;
-
-            static D3D12GraphicsFence[] CreateGraphicsFences(D3D12GraphicsContext graphicsContext, IGraphicsSurface graphicsSurface)
-            {
-                var graphicsFences = new D3D12GraphicsFence[graphicsSurface.BufferCount];
-
-                for (var i = 0; i < graphicsFences.Length; i++)
-                {
-                    graphicsFences[i] = new D3D12GraphicsFence(graphicsContext);
-                }
-
-                return graphicsFences;
-            }
         }
 
         /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsContext" /> class.</summary>
@@ -90,354 +50,93 @@ namespace TerraFX.Graphics.Providers.D3D12
             Dispose(isDisposing: false);
         }
 
-        /// <summary>Gets an array of <see cref="ID3D12CommandAllocator" /> for the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public ID3D12CommandAllocator*[] CommandAllocators
-        {
-            get
-            {
-                _state.ThrowIfDisposedOrDisposing();
-                return _commandAllocators.Value;
-            }
-        }
+        /// <summary>Gets the <see cref="ID3D12CommandAllocator" /> used by the context.</summary>
+        /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
+        public ID3D12CommandAllocator* D3D12CommandAllocator => _d3d12CommandAllocator.Value;
 
-        /// <summary>Gets the <see cref="ID3D12CommandQueue" /> for the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public ID3D12CommandQueue* CommandQueue
-        {
-            get
-            {
-                _state.ThrowIfDisposedOrDisposing();
-                return _commandQueue.Value;
-            }
-        }
+        /// <summary>Gets the <see cref="ID3D12GraphicsCommandList" /> used by the context.</summary>
+        /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
+        public ID3D12GraphicsCommandList* D3D12GraphicsCommandList => _d3d12GraphicsCommandList.Value;
 
-        /// <summary>Gets an array of <see cref="GraphicsFence" /> for the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public D3D12GraphicsFence[] D3D12GraphicsFences
-        {
-            get
-            {
-                _state.ThrowIfDisposedOrDisposing();
-                return _graphicsFences;
-            }
-        }
+        /// <inheritdoc cref="GraphicsContext.GraphicsDevice" />
+        public D3D12GraphicsDevice D3D12GraphicsDevice => (D3D12GraphicsDevice)GraphicsDevice;
 
-        /// <summary>Gets the <see cref="ID3D12Device" /> for the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public ID3D12Device* Device
-        {
-            get
-            {
-                _state.ThrowIfDisposedOrDisposing();
-                return _device.Value;
-            }
-        }
+        /// <inheritdoc cref="GraphicsFence" />
+        public D3D12GraphicsFence D3D12GraphicsFence => _graphicsFence;
 
-        /// <summary>Gets an array of <see cref="ID3D12GraphicsCommandList" /> for the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public ID3D12GraphicsCommandList*[] GraphicsCommandLists
-        {
-            get
-            {
-                _state.ThrowIfDisposedOrDisposing();
-                return _graphicsCommandLists.Value;
-            }
-        }
+        /// <summary>Gets the <see cref="ID3D12Resource" /> for the render target used by the context.</summary>
+        /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
+        public ID3D12Resource* D3D12RenderTargetResource => _d3d12RenderTargetResource.Value;
 
+        /// <summary>Gets the <see cref="D3D12_CPU_DESCRIPTOR_HANDLE" /> for the render target used by the context.</summary>
+        /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
+        public D3D12_CPU_DESCRIPTOR_HANDLE D3D12RenderTargetView => _d3d12RenderTargetView.Value;
 
+        /// <inheritdoc />
+        public override GraphicsFence GraphicsFence => D3D12GraphicsFence;
 
-        /// <summary>Gets an array of <see cref="ID3D12Resource" /> representing the render targets for the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public ID3D12Resource*[] RenderTargets
-        {
-            get
-            {
-                _state.ThrowIfDisposedOrDisposing();
-                return _renderTargets.Value;
-            }
-        }
-
-        /// <summary>Gets the <see cref="ID3D12DescriptorHeap" /> for the <see cref="RenderTargets" />.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public ID3D12DescriptorHeap* RenderTargetsHeap
-        {
-            get
-            {
-                _state.ThrowIfDisposedOrDisposing();
-                return _renderTargetsHeap.Value;
-            }
-        }
-
-        /// <summary>Gets the <see cref="IDXGISwapChain3" /> for the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public IDXGISwapChain3* SwapChain
-        {
-            get
-            {
-                _state.ThrowIfDisposedOrDisposing();
-                return _swapChain.Value;
-            }
-        }
-
-        /// <summary>Gets a graphics fence that is used to wait for the context to become idle.</summary>
-        public D3D12GraphicsFence WaitForIdleGraphicsFence
-        {
-            get
-            {
-                _state.ThrowIfDisposedOrDisposing();
-                return _waitForIdleGraphicsFence;
-            }
-        }
+        /// <summary>Gets a graphics fence that is used to wait for the context to finish execution.</summary>
+        public D3D12GraphicsFence WaitForExecuteCompletionGraphicsFence => _waitForExecuteCompletionGraphicsFence;
 
         /// <inheritdoc />
         public override void BeginFrame(ColorRgba backgroundColor)
         {
-            var frameIndex = SwapChain->GetCurrentBackBufferIndex();
-            _frameIndex = frameIndex;
-
-            var graphicsFence = D3D12GraphicsFences[frameIndex];
+            var graphicsFence = D3D12GraphicsFence;
 
             graphicsFence.Wait();
             graphicsFence.Reset();
 
-            var commandAllocator = CommandAllocators[frameIndex];
+            var commandAllocator = D3D12CommandAllocator;
             ThrowExternalExceptionIfFailed(nameof(ID3D12CommandAllocator.Reset), commandAllocator->Reset());
 
-            var graphicsCommandList = GraphicsCommandLists[frameIndex];
+            var graphicsCommandList = D3D12GraphicsCommandList;
             ThrowExternalExceptionIfFailed(nameof(ID3D12GraphicsCommandList.Reset), graphicsCommandList->Reset(commandAllocator, pInitialState: null));
 
-            var renderTargetDescriptorSize = Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-            var renderTargetHandle = RenderTargetsHeap->GetCPUDescriptorHandleForHeapStart();
+            var renderTargetResourceBarrier = D3D12_RESOURCE_BARRIER.InitTransition(D3D12RenderTargetResource, D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+            graphicsCommandList->ResourceBarrier(1, &renderTargetResourceBarrier);
 
-            _ = renderTargetHandle.Offset((int)frameIndex, renderTargetDescriptorSize);
-            graphicsCommandList->OMSetRenderTargets(1, &renderTargetHandle, RTsSingleHandleToDescriptorRange: TRUE, pDepthStencilDescriptor: null);
+            var renderTargetView = D3D12RenderTargetView;
+            graphicsCommandList->OMSetRenderTargets(1, &renderTargetView, RTsSingleHandleToDescriptorRange: TRUE, pDepthStencilDescriptor: null);
+
+            var graphicsSurface = D3D12GraphicsDevice.GraphicsSurface;
+
+            var graphicsSurfaceWidth = graphicsSurface.Width;
+            var graphicsSurfaceHeight = graphicsSurface.Height;
 
             var viewport = new D3D12_VIEWPORT {
-                TopLeftX = 0.0f,
-                TopLeftY = 0.0f,
-                Width = GraphicsSurface.Width,
-                Height = GraphicsSurface.Height,
-                MinDepth = 0.0f,
-                MaxDepth = 1.0f,
+                Width = graphicsSurfaceWidth,
+                Height = graphicsSurfaceHeight,
+                MinDepth = D3D12_MIN_DEPTH,
+                MaxDepth = D3D12_MAX_DEPTH,
             };
             graphicsCommandList->RSSetViewports(1, &viewport);
 
             var scissorRect = new RECT {
-                left = 0,
-                top = 0,
-                right = (int)GraphicsSurface.Width,
-                bottom = (int)GraphicsSurface.Height,
+                right = (int)graphicsSurfaceWidth,
+                bottom = (int)graphicsSurfaceHeight,
             };
             graphicsCommandList->RSSetScissorRects(1, &scissorRect);
 
-            var barrier = new D3D12_RESOURCE_BARRIER {
-                Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION,
-                Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE,
-                Anonymous = new D3D12_RESOURCE_BARRIER._Anonymous_e__Union {
-                    Transition = new D3D12_RESOURCE_TRANSITION_BARRIER {
-                        pResource = RenderTargets[frameIndex],
-                        Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES,
-                        StateBefore = D3D12_RESOURCE_STATE_PRESENT,
-                        StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET,
-                    },
-                },
-            };
-            graphicsCommandList->ResourceBarrier(1, &barrier);
-
-            graphicsCommandList->ClearRenderTargetView(renderTargetHandle, (float*)&backgroundColor, NumRects: 0, pRects: null);
+            graphicsCommandList->ClearRenderTargetView(renderTargetView, (float*)&backgroundColor, NumRects: 0, pRects: null);
         }
 
         /// <inheritdoc />
         public override void EndFrame()
         {
-            var frameIndex = _frameIndex;
+            var graphicsCommandList = D3D12GraphicsCommandList;
 
-            var barrier = new D3D12_RESOURCE_BARRIER {
-                Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION,
-                Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE,
-                Anonymous = new D3D12_RESOURCE_BARRIER._Anonymous_e__Union {
-                    Transition = new D3D12_RESOURCE_TRANSITION_BARRIER {
-                        pResource = RenderTargets[frameIndex],
-                        Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES,
-                        StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET,
-                        StateAfter = D3D12_RESOURCE_STATE_PRESENT,
-                    },
-                },
-            };
+            var renderTargetResourceBarrier = D3D12_RESOURCE_BARRIER.InitTransition(D3D12RenderTargetResource, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+            graphicsCommandList->ResourceBarrier(1, &renderTargetResourceBarrier);
 
-            var graphicsCommandList = GraphicsCommandLists[frameIndex];
-            graphicsCommandList->ResourceBarrier(1, &barrier);
-
+            var commandQueue = D3D12GraphicsDevice.D3D12CommandQueue;
             ThrowExternalExceptionIfFailed(nameof(ID3D12GraphicsCommandList.Close), graphicsCommandList->Close());
-            CommandQueue->ExecuteCommandLists(1, (ID3D12CommandList**)&graphicsCommandList);
-        }
+            commandQueue->ExecuteCommandLists(1, (ID3D12CommandList**)&graphicsCommandList);
 
-        /// <inheritdoc />
-        public override void PresentFrame()
-        {
-            var frameIndex = _frameIndex;
-            ThrowExternalExceptionIfFailed(nameof(IDXGISwapChain.Present), SwapChain->Present(1, 0));
+            var executeGraphicsFence = WaitForExecuteCompletionGraphicsFence;
+            ThrowExternalExceptionIfFailed(nameof(ID3D12CommandQueue.Signal), commandQueue->Signal(executeGraphicsFence.D3D12Fence, executeGraphicsFence.D3D12FenceSignalValue));
 
-            var graphicsFence = D3D12GraphicsFences[frameIndex];
-            ThrowExternalExceptionIfFailed(nameof(ID3D12CommandQueue.Signal), CommandQueue->Signal(graphicsFence.D3D12Fence, graphicsFence.D3D12FenceSignalValue));
-        }
-
-        private ID3D12CommandAllocator*[] CreateCommandAllocators()
-        {
-            var commandAllocators = new ID3D12CommandAllocator*[GraphicsSurface.BufferCount];
-            var iid = IID_ID3D12CommandAllocator;
-
-            for (var i = 0; i < commandAllocators.Length; i++)
-            {
-                ID3D12CommandAllocator* commandAllocator;
-                ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateCommandAllocator), Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, &iid, (void**)&commandAllocator));
-                commandAllocators[i] = commandAllocator;
-            }
-
-            return commandAllocators;
-        }
-
-        private Pointer<ID3D12CommandQueue> CreateCommandQueue()
-        {
-            ID3D12CommandQueue* commandQueue;
-
-            var commandQueueDesc = new D3D12_COMMAND_QUEUE_DESC {
-                Type = D3D12_COMMAND_LIST_TYPE_DIRECT,
-                Priority = 0,
-                Flags = D3D12_COMMAND_QUEUE_FLAG_NONE,
-                NodeMask = 0,
-            };
-
-            var iid = IID_ID3D12CommandQueue;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateCommandQueue), Device->CreateCommandQueue(&commandQueueDesc, &iid, (void**)&commandQueue));
-
-            return commandQueue;
-        }
-
-        private Pointer<ID3D12Device> CreateDevice()
-        {
-            ID3D12Device* device;
-
-            var iid = IID_ID3D12Device;
-            ThrowExternalExceptionIfFailed(nameof(D3D12CreateDevice), D3D12CreateDevice((IUnknown*)((D3D12GraphicsAdapter)GraphicsAdapter).DxgiAdapter, D3D_FEATURE_LEVEL_11_0, &iid, (void**)&device));
-
-            return device;
-        }
-
-        private ID3D12GraphicsCommandList*[] CreateGraphicsCommandLists()
-        {
-            var graphicsCommandLists = new ID3D12GraphicsCommandList*[GraphicsSurface.BufferCount];
-            var iid = IID_ID3D12GraphicsCommandList;
-
-            for (var i = 0; i < graphicsCommandLists.Length; i++)
-            {
-                ID3D12GraphicsCommandList* graphicsCommandList;
-                ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateCommandList), Device->CreateCommandList(nodeMask: 0, D3D12_COMMAND_LIST_TYPE_DIRECT, CommandAllocators[i], pInitialState: null, &iid, (void**)&graphicsCommandList));
-
-                // Command lists are created in the recording state, but there is nothing
-                // to record yet. The main loop expects it to be closed, so close it now.
-                ThrowExternalExceptionIfFailed(nameof(ID3D12GraphicsCommandList.Close), graphicsCommandList->Close());
-
-                graphicsCommandLists[i] = graphicsCommandList;
-            }
-
-            return graphicsCommandLists;
-        }
-
-        private ID3D12Resource*[] CreateRenderTargets()
-        {
-            var renderTargets = new ID3D12Resource*[GraphicsSurface.BufferCount];
-            var iid = IID_ID3D12Resource;
-
-            var renderTargetDescriptorSize = Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-            var renderTargetHandle = RenderTargetsHeap->GetCPUDescriptorHandleForHeapStart();
-
-            var renderTargetViewDesc = new D3D12_RENDER_TARGET_VIEW_DESC {
-                Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
-                ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D,
-                Anonymous = new D3D12_RENDER_TARGET_VIEW_DESC._Anonymous_e__Union {
-                    Texture2D = new D3D12_TEX2D_RTV {
-                        MipSlice = 0,
-                        PlaneSlice = 0,
-                    },
-                },
-            };
-
-            for (var i = 0; i < renderTargets.Length; i++)
-            {
-                ID3D12Resource* renderTarget;
-                ThrowExternalExceptionIfFailed(nameof(IDXGISwapChain.GetBuffer), SwapChain->GetBuffer((uint)i, &iid, (void**)&renderTarget));
-                renderTargets[i] = renderTarget;
-
-                Device->CreateRenderTargetView(renderTarget, &renderTargetViewDesc, renderTargetHandle);
-                _ = renderTargetHandle.Offset((int)renderTargetDescriptorSize);
-            }
-
-            return renderTargets;
-        }
-
-        private Pointer<ID3D12DescriptorHeap> CreateRenderTargetsHeap()
-        {
-            ID3D12DescriptorHeap* renderTargetDescriptorHeap;
-
-            var renderTargetDescriptorHeapDesc = new D3D12_DESCRIPTOR_HEAP_DESC {
-                Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV,
-                NumDescriptors = (uint)GraphicsSurface.BufferCount,
-                Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE,
-                NodeMask = 0,
-            };
-
-            var iid = IID_ID3D12DescriptorHeap;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateDescriptorHeap), Device->CreateDescriptorHeap(&renderTargetDescriptorHeapDesc, &iid, (void**)&renderTargetDescriptorHeap));
-
-            return renderTargetDescriptorHeap;
-        }
-
-        private Pointer<IDXGISwapChain3> CreateSwapChain()
-        {
-            IDXGISwapChain3* swapChain;
-
-            var swapChainDesc = new DXGI_SWAP_CHAIN_DESC1 {
-                Width = (uint)GraphicsSurface.Width,
-                Height = (uint)GraphicsSurface.Height,
-                Format = DXGI_FORMAT_R8G8B8A8_UNORM,
-                Stereo = FALSE,
-                SampleDesc = new DXGI_SAMPLE_DESC {
-                    Count = 1,
-                    Quality = 0,
-                },
-                BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT,
-                BufferCount = (uint)GraphicsSurface.BufferCount,
-                Scaling = DXGI_SCALING_NONE,                
-                SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL,
-                AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED,
-                Flags = 0
-            };
-
-            var graphicsProvider = (D3D12GraphicsProvider)GraphicsAdapter.GraphicsProvider;
-            var iid = IID_IDXGISwapChain3;
-
-            switch (GraphicsSurface.Kind)
-            {
-                case GraphicsSurfaceKind.Win32:
-                {
-                    ThrowExternalExceptionIfFailed(nameof(IDXGIFactory2.CreateSwapChainForHwnd), graphicsProvider.DxgiFactory->CreateSwapChainForHwnd((IUnknown*)CommandQueue, GraphicsSurface.WindowHandle, &swapChainDesc, pFullscreenDesc: null, pRestrictToOutput: null, (IDXGISwapChain1**)&swapChain));
-                    break;
-                }
-
-                default:
-                {
-                    ThrowInvalidOperationException(nameof(GraphicsSurface), GraphicsSurface);
-                    swapChain = null;
-                    break;
-                }
-            }
-
-            // Fullscreen transitions are not currently supported
-            ThrowExternalExceptionIfFailed(nameof(IDXGIFactory.MakeWindowAssociation), graphicsProvider.DxgiFactory->MakeWindowAssociation(GraphicsSurface.WindowHandle, DXGI_MWA_NO_ALT_ENTER));
-
-            return swapChain;
+            executeGraphicsFence.Wait();
+            executeGraphicsFence.Reset();
         }
 
         /// <inheritdoc />
@@ -447,156 +146,92 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             if (priorState < Disposing)
             {
-                WaitForIdle();
-                DisposeIfNotNull(_waitForIdleGraphicsFence);
-                DisposeGraphicsCommandLists();
-                DisposeCommandAllocators();
-                DisposeRenderTargetsHeap();
-                DisposeRenderTargets();
-                DisposeIfNotNull(_graphicsFences);
-                DisposeSwapChain();
-                DisposeCommandQueue();
-                DisposeDevice();
+                _d3d12GraphicsCommandList.Dispose(ReleaseIfNotNull);
+                _d3d12CommandAllocator.Dispose(ReleaseIfNotNull);
+                _d3d12RenderTargetView.Dispose();
+                _d3d12RenderTargetResource.Dispose(ReleaseIfNotNull);
+
+                DisposeIfNotNull(_waitForExecuteCompletionGraphicsFence);
+                DisposeIfNotNull(_graphicsFence);
             }
 
             _state.EndDispose();
         }
 
-        private void DisposeCommandAllocators()
+        internal void OnGraphicsSurfaceSizeChanged(object? sender, PropertyChangedEventArgs<Vector2> eventArgs)
         {
-            _state.AssertDisposing();
-
-            if (_commandAllocators.IsCreated)
+            if (_d3d12RenderTargetView.IsCreated)
             {
-                var commandAllocators = _commandAllocators.Value;
-
-                foreach (var commandAllocator in commandAllocators)
-                {
-                    if (commandAllocator != null)
-                    {
-                        _ = commandAllocator->Release();
-                    }
-                }
+                ReleaseIfNotNull(_d3d12RenderTargetResource.Value);
+                _d3d12RenderTargetResource.Reset(CreateD3D12RenderTargetResource);
             }
         }
 
-        private void DisposeCommandQueue()
+        private Pointer<ID3D12CommandAllocator> CreateD3D12CommandAllocator()
         {
-            _state.AssertDisposing();
+            _state.ThrowIfDisposedOrDisposing();
 
-            if (_commandQueue.IsCreated)
-            {
-                var commandQueue = (ID3D12CommandQueue*)_commandQueue.Value;
-                _ = commandQueue->Release();
-            }
+            ID3D12CommandAllocator* d3d12CommandAllocator;
+
+            var iid = IID_ID3D12CommandAllocator;
+            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateCommandAllocator), D3D12GraphicsDevice.D3D12Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, &iid, (void**)&d3d12CommandAllocator));
+
+            return d3d12CommandAllocator;
         }
 
-        private void DisposeDevice()
+        private Pointer<ID3D12GraphicsCommandList> CreateD3D12GraphicsCommandList()
         {
-            _state.AssertDisposing();
+            _state.ThrowIfDisposedOrDisposing();
 
-            if (_device.IsCreated)
-            {
-                var device = (ID3D12Device*)_device.Value;
-                _ = device->Release();
-            }
+            ID3D12GraphicsCommandList* d3d12GraphicsCommandList;
+
+            var iid = IID_ID3D12GraphicsCommandList;
+            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateCommandList), D3D12GraphicsDevice.D3D12Device->CreateCommandList(nodeMask: 0, D3D12_COMMAND_LIST_TYPE_DIRECT, D3D12CommandAllocator, pInitialState: null, &iid, (void**)&d3d12GraphicsCommandList));
+
+            // Command lists are created in the recording state, but there is nothing
+            // to record yet. The main loop expects it to be closed, so close it now.
+            ThrowExternalExceptionIfFailed(nameof(ID3D12GraphicsCommandList.Close), d3d12GraphicsCommandList->Close());
+
+            return d3d12GraphicsCommandList;
         }
 
-        private void DisposeGraphicsCommandLists()
+        private Pointer<ID3D12Resource> CreateD3D12RenderTargetResource()
         {
-            _state.AssertDisposing();
+            _state.ThrowIfDisposedOrDisposing();
 
-            if (_graphicsCommandLists.IsCreated)
-            {
-                var graphicsCommandLists = _graphicsCommandLists.Value;
+            ID3D12Resource* renderTargetResource;
 
-                foreach (var graphicsCommandList in graphicsCommandLists)
-                {
-                    if (graphicsCommandList != null)
-                    {
-                        _ = graphicsCommandList->Release();
-                    }
-                }
-            }
+            var iid = IID_ID3D12Resource;
+            ThrowExternalExceptionIfFailed(nameof(IDXGISwapChain.GetBuffer), D3D12GraphicsDevice.DxgiSwapChain->GetBuffer(unchecked((uint)Index), &iid, (void**)&renderTargetResource));
+
+            return renderTargetResource;
         }
 
-        private void DisposeRenderTargetsHeap()
+        private D3D12_CPU_DESCRIPTOR_HANDLE CreateD3D12RenderTargetDescriptor()
         {
-            _state.AssertDisposing();
+            _state.ThrowIfDisposedOrDisposing();
 
-            if (_renderTargetsHeap.IsCreated)
-            {
-                var renderTargetsHeap = (ID3D12DescriptorHeap*)_renderTargetsHeap.Value;
-                _ = renderTargetsHeap->Release();
-            }
-        }
+            D3D12_CPU_DESCRIPTOR_HANDLE renderTargetViewHandle;
 
-        private void DisposeRenderTargets()
-        {
-            _state.AssertDisposing();
+            var graphicsDevice = D3D12GraphicsDevice;
+            var d3d12Device = graphicsDevice.D3D12Device;
 
-            if (_renderTargets.IsCreated)
-            {
-                var renderTargets = _renderTargets.Value;
+            var renderTargetViewDesc = new D3D12_RENDER_TARGET_VIEW_DESC {
+                Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
+                ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D,
+                Anonymous = new D3D12_RENDER_TARGET_VIEW_DESC._Anonymous_e__Union {
+                    Texture2D = new D3D12_TEX2D_RTV(),
+                },
+            };
 
-                foreach (var renderTarget in renderTargets)
-                {
-                    if (renderTarget != null)
-                    {
-                        _ = renderTarget->Release();
-                    }
-                }
-            }
-        }
+            var renderTargetDescriptorIncrementSize = d3d12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
-        private void DisposeSwapChain()
-        {
-            _state.AssertDisposing();
+            renderTargetViewHandle = graphicsDevice.D3D12RenderTargetDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+            _ = renderTargetViewHandle.Offset(Index, renderTargetDescriptorIncrementSize);
 
-            if (_swapChain.IsCreated)
-            {
-                var swapChain = (IDXGISwapChain3*)_swapChain.Value;
-                _ = swapChain->Release();
-            }
-        }
+            d3d12Device->CreateRenderTargetView(D3D12RenderTargetResource, &renderTargetViewDesc, renderTargetViewHandle);
 
-        private void HandleGraphicsSurfaceSizeChanged(object? sender, PropertyChangedEventArgs<Vector2> e)
-        {
-            WaitForIdle();
-
-            if (_renderTargets.IsCreated)
-            {
-                var renderTargets = _renderTargets.Value;
-
-                foreach (var renderTarget in renderTargets)
-                {
-                    if (renderTarget != null)
-                    {
-                        _ = renderTarget->Release();
-                    }
-                }
-
-                _renderTargets.Reset(CreateRenderTargets);
-            }
-
-            if (_swapChain.IsCreated)
-            {
-                ThrowExternalExceptionIfFailed(nameof(IDXGISwapChain.ResizeBuffers), SwapChain->ResizeBuffers((uint)GraphicsSurface.BufferCount, (uint)GraphicsSurface.Width, (uint)GraphicsSurface.Height, DXGI_FORMAT_R8G8B8A8_UNORM, SwapChainFlags: 0));
-            }
-        }
-
-        private void WaitForIdle()
-        {
-            if (_commandQueue.IsCreated)
-            {
-                ID3D12CommandQueue* commandQueue = _commandQueue.Value;
-                var waitForIdleGraphicsFence = _waitForIdleGraphicsFence;
-
-                ThrowExternalExceptionIfFailed(nameof(ID3D12CommandQueue.Signal), commandQueue->Signal(waitForIdleGraphicsFence.D3D12Fence, waitForIdleGraphicsFence.D3D12FenceSignalValue));
-
-                waitForIdleGraphicsFence.Wait();
-                waitForIdleGraphicsFence.Reset();
-            }
+            return renderTargetViewHandle;
         }
     }
 }
