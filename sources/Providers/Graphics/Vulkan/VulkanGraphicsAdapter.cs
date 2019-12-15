@@ -61,13 +61,13 @@ namespace TerraFX.Graphics.Providers.Vulkan
         public ref readonly VkPhysicalDeviceProperties VulkanPhysicalDeviceProperties => ref _vulkanPhysicalDeviceProperties.RefValue;
 
         /// <inheritdoc />
-        public override GraphicsDevice CreateGraphicsDevice(IGraphicsSurface graphicsSurface) => CreateVulkanGraphicsDevice(graphicsSurface);
+        public override GraphicsDevice CreateGraphicsDevice(IGraphicsSurface graphicsSurface, int graphicsContextCount) => CreateVulkanGraphicsDevice(graphicsSurface, graphicsContextCount);
 
-        /// <inheritdoc cref="CreateGraphicsDevice(IGraphicsSurface)" />
-        public VulkanGraphicsDevice CreateVulkanGraphicsDevice(IGraphicsSurface graphicsSurface)
+        /// <inheritdoc cref="CreateGraphicsDevice(IGraphicsSurface, int)" />
+        public VulkanGraphicsDevice CreateVulkanGraphicsDevice(IGraphicsSurface graphicsSurface, int graphicsContextCount)
         {
             _state.ThrowIfDisposedOrDisposing();
-            return new VulkanGraphicsDevice(this, graphicsSurface);
+            return new VulkanGraphicsDevice(this, graphicsSurface, graphicsContextCount);
         }
 
         /// <inheritdoc />

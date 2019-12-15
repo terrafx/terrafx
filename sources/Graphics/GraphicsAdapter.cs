@@ -36,10 +36,11 @@ namespace TerraFX.Graphics
 
         /// <summary>Creates a new graphics device which utilizes the adapter to render to a graphics surface.</summary>
         /// <param name="graphicsSurface">The graphics surface to which the context can render.</param>
+        /// <param name="graphicsContextCount">The number of graphics contexts the device should maintain.</param>
         /// <returns>A new graphics device which utilizes the the adapter to render to <paramref name="graphicsSurface" />.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="graphicsSurface" /> is <c>null</c>.</exception>
         /// <exception cref="ObjectDisposedException">The adapter has been disposed.</exception>
-        public abstract GraphicsDevice CreateGraphicsDevice(IGraphicsSurface graphicsSurface);
+        public abstract GraphicsDevice CreateGraphicsDevice(IGraphicsSurface graphicsSurface, int graphicsContextCount);
 
         /// <inheritdoc />
         public void Dispose()

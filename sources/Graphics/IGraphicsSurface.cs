@@ -5,31 +5,30 @@ using TerraFX.Numerics;
 
 namespace TerraFX.Graphics
 {
-    /// <summary>Represents a graphics surface.</summary>
-    public interface IGraphicsSurface
+    /// <summary>A graphics surface which can be rendered on by a graphics device.</summary>
+    public interface IGraphicsSurface : IDisposable
     {
         /// <summary>Occurs when the <see cref="Size" /> property changes.</summary>
         event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged;
 
-        /// <summary>Gets the height of the instance.</summary>
+        /// <summary>Gets the height of the surface.</summary>
         public float Height => Size.Y;
 
-        /// <summary>Gets the width of the instance.</summary>
+        /// <summary>Gets the width of the surface.</summary>
         public float Width => Size.X;
 
-        /// <summary>Gets the number of buffers for the instance.</summary>
-        int BufferCount { get; }
-
-        /// <summary>Gets the display handle for the instance.</summary>
-        IntPtr DisplayHandle { get; }
-
-        /// <summary>Gets the kind of surface represented by the instance.</summary>
-        GraphicsSurfaceKind Kind { get; }
-
-        /// <summary>Gets the size of the instance.</summary>
+        /// <summary>Gets the size of the surface.</summary>
         Vector2 Size { get; }
 
-        /// <summary>Gets the window handle for the instance.</summary>
-        IntPtr WindowHandle { get; }
+        /// <summary>Gets a context handle for the surface.</summary>
+        /// <exception cref="ObjectDisposedException">The surface has been disposed.</exception>
+        IntPtr SurfaceContextHandle { get; }
+
+        /// <summary>Gets a handle for the surface.</summary>
+        /// <exception cref="ObjectDisposedException">The surface has been disposed.</exception>
+        IntPtr SurfaceHandle { get; }
+
+        /// <summary>Gets the surface kind.</summary>
+        GraphicsSurfaceKind SurfaceKind { get; }
     }
 }

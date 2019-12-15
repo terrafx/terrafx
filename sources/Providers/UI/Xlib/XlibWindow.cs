@@ -69,14 +69,7 @@ namespace TerraFX.UI.Providers.Xlib
 
         /// <summary>Gets the handle for the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public UIntPtr Handle
-        {
-            get
-            {
-                _state.ThrowIfDisposedOrDisposing();
-                return _handle.Value;
-            }
-        }
+        public UIntPtr Handle => _handle.Value;
 
         /// <inheritdoc />
         public override bool IsActive => _isActive;
@@ -92,6 +85,15 @@ namespace TerraFX.UI.Providers.Xlib
 
         /// <inheritdoc />
         public override ReadingDirection ReadingDirection => _readingDirection;
+
+        /// <inheritdoc />
+        public override IntPtr SurfaceContextHandle => (IntPtr)(void*)XlibDispatchProvider.Instance.Display;
+
+        /// <inheritdoc />
+        public override IntPtr SurfaceHandle => (IntPtr)(void*)Handle;
+
+        /// <inheritdoc />
+        public override GraphicsSurfaceKind SurfaceKind => GraphicsSurfaceKind.Xlib;
 
         /// <inheritdoc />
         public override string Title => _title;
@@ -130,17 +132,6 @@ namespace TerraFX.UI.Providers.Xlib
                     message: dispatchProvider.WmDeleteWindowAtom
                 );
             }
-        }
-
-        /// <inheritdoc />
-        public override IGraphicsSurface CreateGraphicsSurface(int bufferCount)
-        {
-            if (bufferCount <= 0)
-            {
-                ThrowArgumentOutOfRangeException(nameof(bufferCount), bufferCount);
-            }
-
-            return new XlibGraphicsSurface(this, bufferCount);
         }
 
         /// <inheritdoc />
