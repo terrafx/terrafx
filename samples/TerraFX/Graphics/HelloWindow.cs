@@ -12,8 +12,8 @@ namespace TerraFX.Samples.Graphics
 {
     public sealed class HelloWindow : Sample
     {
-        private IGraphicsContext _graphicsContext = null!;
-        private IWindow _window = null!;
+        private GraphicsContext _graphicsContext = null!;
+        private Window _window = null!;
         private TimeSpan _elapsedTime;
 
         public HelloWindow(string name, params Assembly[] compositionAssemblies)
@@ -40,11 +40,11 @@ namespace TerraFX.Samples.Graphics
         {
             ExceptionUtilities.ThrowIfNull(application, nameof(application));
 
-            var windowProvider = application.GetService<IWindowProvider>();
+            var windowProvider = application.GetService<WindowProvider>();
             _window = windowProvider.CreateWindow();
             _window.Show();
 
-            var graphicsProvider = application.GetService<IGraphicsProvider>();
+            var graphicsProvider = application.GetService<GraphicsProvider>();
             var graphicsAdapter = graphicsProvider.GraphicsAdapters.First();
 
             var graphicsSurface = _window.CreateGraphicsSurface(bufferCount: 2);

@@ -37,11 +37,8 @@ using static TerraFX.Utilities.State;
 namespace TerraFX.Graphics.Providers.Vulkan
 {
     /// <summary>Represents a graphics context, which can be used for rendering images.</summary>
-    public sealed unsafe class GraphicsContext : IDisposable, IGraphicsContext
+    public sealed unsafe class VulkanGraphicsContext : GraphicsContext
     {
-        private readonly GraphicsAdapter _graphicsAdapter;
-        private readonly IGraphicsSurface _graphicsSurface;
-
         private ValueLazy<VkSemaphore> _acquireNextImageSemaphore;
         private ValueLazy<VkCommandBuffer[]> _commandBuffers;
         private ValueLazy<VkCommandPool> _commandPool;
@@ -60,11 +57,9 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private State _state;
         private VkFormat _swapChainFormat;
 
-        internal GraphicsContext(GraphicsAdapter graphicsAdapter, IGraphicsSurface graphicsSurface)
+        internal VulkanGraphicsContext(VulkanGraphicsAdapter graphicsAdapter, IGraphicsSurface graphicsSurface)
+            : base(graphicsAdapter, graphicsSurface)
         {
-            _graphicsAdapter = graphicsAdapter;
-            _graphicsSurface = graphicsSurface;
-
             _acquireNextImageSemaphore = new ValueLazy<VkSemaphore>(CreateAcquireNextImageSemaphore);
             _commandBuffers = new ValueLazy<VkCommandBuffer[]>(CreateCommandBuffers);
             _commandPool = new ValueLazy<VkCommandPool>(CreateCommandPool);
@@ -84,11 +79,11 @@ namespace TerraFX.Graphics.Providers.Vulkan
             // Do event hookups after we are in the initialized state, since an event could
             // technically fire while the constructor is still running.
 
-            _graphicsSurface.SizeChanged += HandleGraphicsSurfaceSizeChanged;
+            graphicsSurface.SizeChanged += HandleGraphicsSurfaceSizeChanged;
         }
 
-        /// <summary>Finalizes an instance of the <see cref="GraphicsContext" /> class.</summary>
-        ~GraphicsContext()
+        /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsContext" /> class.</summary>
+        ~VulkanGraphicsContext()
         {
             Dispose(isDisposing: false);
         }
@@ -170,9 +165,6 @@ namespace TerraFX.Graphics.Providers.Vulkan
             }
         }
 
-        /// <inheritdoc />
-        public IGraphicsAdapter GraphicsAdapter => _graphicsAdapter;
-
         /// <summary>Gets the index of the graphics queue family for the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public uint GraphicsQueueFamilyIndex
@@ -183,9 +175,6 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 return _graphicsQueueFamilyIndex.Value;
             }
         }
-
-        /// <inheritdoc />
-        public IGraphicsSurface GraphicsSurface => _graphicsSurface;
 
         /// <summary>Gets a <c>vkSemaphore</c> for the <see cref="vkQueueSubmit(IntPtr, uint, VkSubmitInfo*, ulong)" /> method.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
@@ -243,7 +232,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         }
 
         /// <inheritdoc />
-        public void BeginFrame(ColorRgba backgroundColor)
+        public override void BeginFrame(ColorRgba backgroundColor)
         {
             uint frameIndex;
             ThrowExternalExceptionIfNotSuccess(nameof(vkAcquireNextImageKHR), vkAcquireNextImageKHR(Device, SwapChain, timeout: ulong.MaxValue, AcquireNextImageSemaphore, fence: VK_NULL_HANDLE, &frameIndex));
@@ -286,8 +275,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
                         y = 0,
                     },
                     extent = new VkExtent2D {
-                        width = (uint)_graphicsSurface.Width,
-                        height = (uint)_graphicsSurface.Height,
+                        width = (uint)GraphicsSurface.Width,
+                        height = (uint)GraphicsSurface.Height,
                     },
                 },
                 clearValueCount = 1,
@@ -299,8 +288,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var viewport = new VkViewport {
                 x = 0.0f,
                 y = 0.0f,
-                width = _graphicsSurface.Width,
-                height = _graphicsSurface.Height,
+                width = GraphicsSurface.Width,
+                height = GraphicsSurface.Height,
                 minDepth = 0.0f,
                 maxDepth = 1.0f,
             };
@@ -312,22 +301,15 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     y = 0,
                 },
                 extent = new VkExtent2D {
-                    width = (uint)_graphicsSurface.Width,
-                    height = (uint)_graphicsSurface.Height,
+                    width = (uint)GraphicsSurface.Width,
+                    height = (uint)GraphicsSurface.Height,
                 },
             };
             vkCmdSetScissor(commandBuffer, firstScissor: 0, scissorCount: 1, &scissorRect);
         }
 
         /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <inheritdoc />
-        public void EndFrame()
+        public override void EndFrame()
         {
             var frameIndex = _frameIndex;
 
@@ -366,7 +348,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         }
 
         /// <inheritdoc />
-        public void PresentFrame()
+        public override void PresentFrame()
         {
             var frameIndex = _frameIndex;
             var waitSemaphore = QueueSubmitSemaphore;
@@ -415,14 +397,14 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private VkCommandBuffer[] CreateCommandBuffers()
         {
-            var commandBuffers = new VkCommandBuffer[(uint)_graphicsSurface.BufferCount];
+            var commandBuffers = new VkCommandBuffer[(uint)GraphicsSurface.BufferCount];
 
             var commandBufferAllocateInfo = new VkCommandBufferAllocateInfo {
                 sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
                 pNext = null,
                 commandPool = CommandPool,
                 level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
-                commandBufferCount = (uint)_graphicsSurface.BufferCount,
+                commandBufferCount = (uint)GraphicsSurface.BufferCount,
             };
 
             fixed (VkCommandBuffer* pCommandBuffers = commandBuffers)
@@ -538,7 +520,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 ppEnabledExtensionNames = enabledExtensionNames,
                 pEnabledFeatures = &physicalDeviceFeatures,
             };
-            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateDevice), vkCreateDevice(_graphicsAdapter.PhysicalDevice, &deviceCreateInfo, pAllocator: null, (IntPtr*)&device));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateDevice), vkCreateDevice(((VulkanGraphicsAdapter)GraphicsAdapter).PhysicalDevice, &deviceCreateInfo, pAllocator: null, (IntPtr*)&device));
 
             return device;
         }
@@ -552,7 +534,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private VkFence[] CreateFences()
         {
-            var fences = new VkFence[(uint)_graphicsSurface.BufferCount];
+            var fences = new VkFence[(uint)GraphicsSurface.BufferCount];
 
             var fenceCreateInfo = new VkFenceCreateInfo {
                 sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
@@ -572,7 +554,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private VkFramebuffer[] CreateFrameBuffers()
         {
-            var frameBuffers = new VkFramebuffer[(uint)_graphicsSurface.BufferCount];
+            var frameBuffers = new VkFramebuffer[(uint)GraphicsSurface.BufferCount];
             var attachments = stackalloc ulong[1];
 
             var frameBufferCreateInfo = new VkFramebufferCreateInfo {
@@ -582,8 +564,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 renderPass = RenderPass,
                 attachmentCount = 1,
                 pAttachments = attachments,
-                width = (uint)_graphicsSurface.Width,
-                height = (uint)_graphicsSurface.Height,
+                width = (uint)GraphicsSurface.Width,
+                height = (uint)GraphicsSurface.Height,
                 layers = 1,
             };
 
@@ -667,9 +649,9 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             VkSurfaceKHR surface;
 
-            var graphicsProvider = (GraphicsProvider)_graphicsAdapter.GraphicsProvider;
+            var graphicsProvider = (VulkanGraphicsProvider)GraphicsAdapter.GraphicsProvider;
 
-            switch (_graphicsSurface.Kind)
+            switch (GraphicsSurface.Kind)
             {
                 case GraphicsSurfaceKind.Win32:
                 {
@@ -677,8 +659,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
                         sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
                         pNext = null,
                         flags = 0,
-                        hinstance = _graphicsSurface.DisplayHandle,
-                        hwnd = _graphicsSurface.WindowHandle,
+                        hinstance = GraphicsSurface.DisplayHandle,
+                        hwnd = GraphicsSurface.WindowHandle,
                     };
 
                     ThrowExternalExceptionIfNotSuccess(nameof(vkCreateWin32SurfaceKHR), vkCreateWin32SurfaceKHR(graphicsProvider.Instance, &surfaceCreateInfo, pAllocator: null, (ulong*)&surface));
@@ -691,8 +673,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
                         sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
                         pNext = null,
                         flags = 0,
-                        dpy = (UIntPtr)(void*)_graphicsSurface.DisplayHandle,
-                        window = (UIntPtr)(void*)_graphicsSurface.WindowHandle,
+                        dpy = (UIntPtr)(void*)GraphicsSurface.DisplayHandle,
+                        window = (UIntPtr)(void*)GraphicsSurface.WindowHandle,
                     };
 
                     ThrowExternalExceptionIfNotSuccess(nameof(vkCreateXlibSurfaceKHR), vkCreateXlibSurfaceKHR(graphicsProvider.Instance, &surfaceCreateInfo, pAllocator: null, (ulong*)&surface));
@@ -701,18 +683,18 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
                 default:
                 {
-                    ThrowArgumentOutOfRangeException(nameof(_graphicsSurface), _graphicsSurface);
+                    ThrowArgumentOutOfRangeException(nameof(GraphicsSurface), GraphicsSurface);
                     surface = VK_NULL_HANDLE;
                     break;
                 }
             }
 
             uint supported;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfaceSupportKHR), vkGetPhysicalDeviceSurfaceSupportKHR(_graphicsAdapter.PhysicalDevice, GraphicsQueueFamilyIndex, surface, &supported));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfaceSupportKHR), vkGetPhysicalDeviceSurfaceSupportKHR(((VulkanGraphicsAdapter)GraphicsAdapter).PhysicalDevice, GraphicsQueueFamilyIndex, surface, &supported));
 
             if (supported == VK_FALSE)
             {
-                ThrowArgumentOutOfRangeException(nameof(_graphicsSurface), _graphicsSurface);
+                ThrowArgumentOutOfRangeException(nameof(GraphicsSurface), GraphicsSurface);
             }
             return surface;
         }
@@ -722,18 +704,18 @@ namespace TerraFX.Graphics.Providers.Vulkan
             VkSwapchainKHR swapChain;
 
             VkSurfaceCapabilitiesKHR surfaceCapabilities;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfaceCapabilitiesKHR), vkGetPhysicalDeviceSurfaceCapabilitiesKHR(_graphicsAdapter.PhysicalDevice, Surface, &surfaceCapabilities));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfaceCapabilitiesKHR), vkGetPhysicalDeviceSurfaceCapabilitiesKHR(((VulkanGraphicsAdapter)GraphicsAdapter).PhysicalDevice, Surface, &surfaceCapabilities));
 
             uint presentModeCount;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfacePresentModesKHR), vkGetPhysicalDeviceSurfacePresentModesKHR(_graphicsAdapter.PhysicalDevice, Surface, &presentModeCount, pPresentModes: null));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfacePresentModesKHR), vkGetPhysicalDeviceSurfacePresentModesKHR(((VulkanGraphicsAdapter)GraphicsAdapter).PhysicalDevice, Surface, &presentModeCount, pPresentModes: null));
 
             var presentModes = stackalloc VkPresentModeKHR[(int)presentModeCount];
-            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfacePresentModesKHR), vkGetPhysicalDeviceSurfacePresentModesKHR(_graphicsAdapter.PhysicalDevice, Surface, &presentModeCount, presentModes));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfacePresentModesKHR), vkGetPhysicalDeviceSurfacePresentModesKHR(((VulkanGraphicsAdapter)GraphicsAdapter).PhysicalDevice, Surface, &presentModeCount, presentModes));
 
-            if (((uint)_graphicsSurface.BufferCount < surfaceCapabilities.minImageCount) ||
-                ((surfaceCapabilities.maxImageCount != 0) && ((uint)_graphicsSurface.BufferCount > surfaceCapabilities.maxImageCount)))
+            if (((uint)GraphicsSurface.BufferCount < surfaceCapabilities.minImageCount) ||
+                ((surfaceCapabilities.maxImageCount != 0) && ((uint)GraphicsSurface.BufferCount > surfaceCapabilities.maxImageCount)))
             {
-                ThrowArgumentOutOfRangeException(nameof(_graphicsSurface), _graphicsSurface);
+                ThrowArgumentOutOfRangeException(nameof(GraphicsSurface), GraphicsSurface);
             }
 
             var swapChainCreateInfo = new VkSwapchainCreateInfoKHR {
@@ -741,12 +723,12 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 pNext = null,
                 flags = 0,
                 surface = Surface,
-                minImageCount = (uint)_graphicsSurface.BufferCount,
+                minImageCount = (uint)GraphicsSurface.BufferCount,
                 imageFormat = VK_FORMAT_UNDEFINED,
                 imageColorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR,
                 imageExtent = new VkExtent2D {
-                    width = (uint)_graphicsSurface.Width,
-                    height = (uint)_graphicsSurface.Height,
+                    width = (uint)GraphicsSurface.Width,
+                    height = (uint)GraphicsSurface.Height,
                 },
                 imageArrayLayers = 1,
                 imageUsage = (uint)(VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT),
@@ -766,10 +748,10 @@ namespace TerraFX.Graphics.Providers.Vulkan
             }
 
             uint surfaceFormatCount;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfaceFormatsKHR), vkGetPhysicalDeviceSurfaceFormatsKHR(_graphicsAdapter.PhysicalDevice, Surface, &surfaceFormatCount, pSurfaceFormats: null));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfaceFormatsKHR), vkGetPhysicalDeviceSurfaceFormatsKHR(((VulkanGraphicsAdapter)GraphicsAdapter).PhysicalDevice, Surface, &surfaceFormatCount, pSurfaceFormats: null));
 
             var surfaceFormats = stackalloc VkSurfaceFormatKHR[(int)surfaceFormatCount];
-            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfaceFormatsKHR), vkGetPhysicalDeviceSurfaceFormatsKHR(_graphicsAdapter.PhysicalDevice, Surface, &surfaceFormatCount, surfaceFormats));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfaceFormatsKHR), vkGetPhysicalDeviceSurfaceFormatsKHR(((VulkanGraphicsAdapter)GraphicsAdapter).PhysicalDevice, Surface, &surfaceFormatCount, surfaceFormats));
 
             for (var i = 0u; i <surfaceFormatCount; i++)
             {
@@ -788,7 +770,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private VkImageView[] CreateSwapChainImageViews()
         {
-            var swapChainImageCount = (uint)_graphicsSurface.BufferCount;
+            var swapChainImageCount = (uint)GraphicsSurface.BufferCount;
             var swapChainImages = stackalloc VkImage[(int)swapChainImageCount];
 
             ThrowExternalExceptionIfNotSuccess(nameof(vkGetSwapchainImagesKHR), vkGetSwapchainImagesKHR(Device, SwapChain, &swapChainImageCount, (ulong*)swapChainImages));
@@ -830,7 +812,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
             return swapChainImageViews;
         }
 
-        private void Dispose(bool isDisposing)
+        /// <inheritdoc />
+        protected override void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
 
@@ -871,7 +854,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             {
                 fixed (VkCommandBuffer* commandBuffers = _commandBuffers.Value)
                 {
-                    vkFreeCommandBuffers(_device.Value, _commandPool.Value, (uint)_graphicsSurface.BufferCount, (IntPtr*)commandBuffers);
+                    vkFreeCommandBuffers(_device.Value, _commandPool.Value, (uint)GraphicsSurface.BufferCount, (IntPtr*)commandBuffers);
                 }
             }
         }
@@ -958,7 +941,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             if (_surface.IsCreated)
             {
-                var graphicsProvider = (GraphicsProvider)_graphicsAdapter.GraphicsProvider;
+                var graphicsProvider = (VulkanGraphicsProvider)GraphicsAdapter.GraphicsProvider;
                 vkDestroySurfaceKHR(graphicsProvider.Instance, _surface.Value, pAllocator: null);
             }
         }
@@ -996,10 +979,10 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var queueFamilyIndex = uint.MaxValue;
 
             uint queueFamilyPropertyCount;
-            vkGetPhysicalDeviceQueueFamilyProperties(_graphicsAdapter.PhysicalDevice, &queueFamilyPropertyCount, pQueueFamilyProperties: null);
+            vkGetPhysicalDeviceQueueFamilyProperties(((VulkanGraphicsAdapter)GraphicsAdapter).PhysicalDevice, &queueFamilyPropertyCount, pQueueFamilyProperties: null);
 
             var queueFamilyProperties = stackalloc VkQueueFamilyProperties[(int)queueFamilyPropertyCount];
-            vkGetPhysicalDeviceQueueFamilyProperties(_graphicsAdapter.PhysicalDevice, &queueFamilyPropertyCount, queueFamilyProperties);
+            vkGetPhysicalDeviceQueueFamilyProperties(((VulkanGraphicsAdapter)GraphicsAdapter).PhysicalDevice, &queueFamilyPropertyCount, queueFamilyProperties);
 
             for (var i = 0u; i < queueFamilyPropertyCount; i++)
             {

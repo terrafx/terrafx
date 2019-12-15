@@ -6,28 +6,24 @@ using System.Collections.Immutable;
 using System.Composition;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using TerraFX.Interop;
 using TerraFX.Utilities;
-using static TerraFX.Graphics.IGraphicsProvider;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
-using static TerraFX.Interop.VkResult;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.VkDebugReportFlagBitsEXT;
 using static TerraFX.Interop.Vulkan;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.InteropUtilities;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
-    /// <inheritdoc cref="IGraphicsProvider" />
-    [Export(typeof(IGraphicsProvider))]
+    /// <inheritdoc cref="GraphicsProvider" />
+    [Export(typeof(GraphicsProvider))]
     [Shared]
-    public sealed unsafe class GraphicsProvider : IGraphicsProvider
+    public sealed unsafe class VulkanGraphicsProvider : GraphicsProvider
     {
         /// <summary>The default engine name used if <see cref="EngineNameDataName" /> was not set.</summary>
         public const string DefaultEngineName = "TerraFX";
@@ -36,6 +32,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <remarks>
         ///     <para>This name is meant to be used with <see cref="AppDomain.SetData(string, object)" />.</para>
         ///     <para>Setting this data value after a graphics provider instance has been created has no affect.</para>
+        ///     <para>This data value is interpreted as a string.</para>
         /// </remarks>
         public const string EngineNameDataName = "TerraFX.Graphics.Providers.Vulkan.GraphicsProvider.EngineName";
 
@@ -78,20 +75,30 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private readonly string[] _optionalExtensionNames;
         private readonly string[] _requiredLayerNames;
         private readonly string[] _optionalLayerNames;
-        private readonly bool _debugModeEnabled;
 
-        private ValueLazy<ImmutableArray<GraphicsAdapter>> _graphicsAdapters;
+        private ValueLazy<ImmutableArray<VulkanGraphicsAdapter>> _graphicsAdapters;
         private ValueLazy<VkInstance> _instance;
 
         private VkDebugReportCallbackEXT _debugReportCallbackExt;
+
         private State _state;
 
-        /// <summary>Initializes a new instance of the <see cref="GraphicsProvider" /> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="VulkanGraphicsProvider" /> class.</summary>
         [ImportingConstructor]
-        public GraphicsProvider()
+        public VulkanGraphicsProvider()
         {
+            if (DebugModeEnabled)
+            {
+                var optionalExtensionNamesData = AppContext.GetData(OptionalExtensionNamesDataName) as string;
+                optionalExtensionNamesData += ";VK_EXT_debug_report";
+                AppDomain.CurrentDomain.SetData(OptionalExtensionNamesDataName, optionalExtensionNamesData);
+
+                var optionalLayerNamesData = AppContext.GetData(OptionalLayerNamesDataName) as string;
+                optionalLayerNamesData += ";VK_LAYER_LUNARG_standard_validation";
+                AppDomain.CurrentDomain.SetData(OptionalLayerNamesDataName, optionalLayerNamesData);
+            }
+
             _engineName = GetEngineName();
-            _debugModeEnabled = GetDebugModeEnabled();
 
             _requiredExtensionNames = GetNames(RequiredExtensionNamesDataName);
             _optionalExtensionNames = GetNames(OptionalExtensionNamesDataName);
@@ -99,33 +106,10 @@ namespace TerraFX.Graphics.Providers.Vulkan
             _requiredLayerNames = GetNames(RequiredLayerNamesDataName);
             _optionalLayerNames = GetNames(OptionalLayerNamesDataName);
 
-            _graphicsAdapters = new ValueLazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters);
+            _graphicsAdapters = new ValueLazy<ImmutableArray<VulkanGraphicsAdapter>>(GetGraphicsAdapters);
             _instance = new ValueLazy<VkInstance>(CreateInstance);
 
             _ = _state.Transition(to: Initialized);
-
-            static bool GetDebugModeEnabled()
-            {
-                if (!AppContext.TryGetSwitch(EnableDebugModeSwitchName, out var debugModeEnabled))
-                {
-#if DEBUG
-                    debugModeEnabled = true;
-#endif
-                }
-
-                if (debugModeEnabled)
-                {
-                    var optionalExtensionPropertyNames = AppContext.GetData(OptionalExtensionNamesDataName) as string;
-                    optionalExtensionPropertyNames += ";VK_EXT_debug_report";
-                    AppDomain.CurrentDomain.SetData(OptionalExtensionNamesDataName, optionalExtensionPropertyNames);
-
-                    var optionalLayerPropertyNames = AppContext.GetData(OptionalLayerNamesDataName) as string;
-                    optionalLayerPropertyNames += ";VK_LAYER_LUNARG_standard_validation";
-                    AppDomain.CurrentDomain.SetData(OptionalLayerNamesDataName, optionalLayerPropertyNames);
-                }
-
-                return debugModeEnabled;
-            }
 
             static string GetEngineName()
             {
@@ -134,6 +118,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 if (string.IsNullOrWhiteSpace(engineName))
                 {
                     engineName = DefaultEngineName;
+                    AppDomain.CurrentDomain.SetData(EngineNameDataName, engineName);
                 }
 
                 return engineName;
@@ -147,8 +132,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
             }
         }
 
-        /// <summary>Finalizes an instance of the <see cref="GraphicsProvider" /> class.</summary>
-        ~GraphicsProvider()
+        /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsProvider" /> class.</summary>
+        ~VulkanGraphicsProvider()
         {
             Dispose(isDisposing: false);
         }
@@ -160,11 +145,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private static ReadOnlySpan<sbyte> VKDESTROYDEBUGREPORTCALLBACKEXT_FUNCTION_NAME => new sbyte[] { 0x76, 0x6B, 0x44, 0x65, 0x73, 0x74, 0x72, 0x6F, 0x79, 0x44, 0x65, 0x62, 0x75, 0x67, 0x52, 0x65, 0x70, 0x6F, 0x72, 0x74, 0x43, 0x61, 0x6C, 0x6C, 0x62, 0x61, 0x63, 0x6B, 0x45, 0x58, 0x54, 0x00 };
 
         /// <inheritdoc />
-        public bool DebugModeEnabled => _debugModeEnabled;
-
-        /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="vkEnumeratePhysicalDevices(IntPtr, uint*, IntPtr*)" /> failed.</exception>
-        public IEnumerable<IGraphicsAdapter> GraphicsAdapters
+        public override IEnumerable<GraphicsAdapter> GraphicsAdapters
         {
             get
             {
@@ -190,13 +172,6 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var message = MarshalUtf8ToReadOnlySpan(pMessage).AsString();
             Debug.WriteLine(message);
             return VK_FALSE;
-        }
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
         }
 
         private VkInstance CreateInstance()
@@ -443,7 +418,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
             }
         }
 
-        private void Dispose(bool isDisposing)
+        /// <inheritdoc />
+        protected override void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
 
@@ -473,7 +449,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             }
         }
 
-        private ImmutableArray<GraphicsAdapter> GetGraphicsAdapters()
+        private ImmutableArray<VulkanGraphicsAdapter> GetGraphicsAdapters()
         {
             _state.AssertNotDisposedOrDisposing();
 
@@ -485,11 +461,11 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var physicalDevices = stackalloc IntPtr[unchecked((int)physicalDeviceCount)];
             ThrowExternalExceptionIfNotSuccess(nameof(vkEnumeratePhysicalDevices), vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, physicalDevices));
 
-            var adapters = ImmutableArray.CreateBuilder<GraphicsAdapter>(unchecked((int)physicalDeviceCount));
+            var adapters = ImmutableArray.CreateBuilder<VulkanGraphicsAdapter>(unchecked((int)physicalDeviceCount));
 
             for (uint index = 0; index < physicalDeviceCount; index++)
             {
-                var adapter = new GraphicsAdapter(this, physicalDevices[index]);
+                var adapter = new VulkanGraphicsAdapter(this, physicalDevices[index]);
                 adapters.Add(adapter);
             }
 

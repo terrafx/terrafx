@@ -21,7 +21,7 @@ namespace TerraFX.Samples.Graphics
 
             var application = (Application)sender;
             {
-                var graphicsProvider = application.GetService<IGraphicsProvider>();
+                var graphicsProvider = application.GetService<GraphicsProvider>();
 
                 foreach (var graphicsAdapter in graphicsProvider.GraphicsAdapters)
                 {

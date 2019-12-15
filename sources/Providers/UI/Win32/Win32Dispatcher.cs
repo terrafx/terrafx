@@ -3,42 +3,27 @@
 using System;
 using System.Threading;
 using TerraFX.Interop;
-using TerraFX.Utilities;
 using static TerraFX.Interop.User32;
 using static TerraFX.Interop.Windows;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.UI.Providers.Win32
 {
     /// <summary>Provides a means of dispatching events for a thread.</summary>
-    public sealed unsafe class Dispatcher : IDispatcher
+    public sealed unsafe class Win32Dispatcher : Dispatcher
     {
-        private readonly DispatchProvider _dispatchProvider;
-        private readonly Thread _parentThread;
-
-        internal Dispatcher(DispatchProvider dispatchProvider, Thread parentThread)
+        internal Win32Dispatcher(Win32DispatchProvider dispatchProvider, Thread parentThread)
+            : base(dispatchProvider, parentThread)
         {
-            Assert(dispatchProvider != null, Resources.ArgumentNullExceptionMessage, nameof(dispatchProvider));
-            Assert(parentThread != null, Resources.ArgumentNullExceptionMessage, nameof(parentThread));
-
-            _dispatchProvider = dispatchProvider!;
-            _parentThread = parentThread!;
         }
 
         /// <inheritdoc />
-        public event EventHandler? ExitRequested;
+        public override event EventHandler? ExitRequested;
 
         /// <inheritdoc />
-        public IDispatchProvider DispatchProvider => _dispatchProvider;
-
-        /// <inheritdoc />
-        public Thread ParentThread => _parentThread;
-
-        /// <inheritdoc />
-        public void DispatchPending()
+        public override void DispatchPending()
         {
-            ThrowIfNotThread(_parentThread);
+            ThrowIfNotThread(ParentThread);
 
             MSG msg;
             while (PeekMessageW(&msg, hWnd: IntPtr.Zero, wMsgFilterMin: WM_NULL, wMsgFilterMax: WM_NULL, wRemoveMsg: PM_REMOVE) != FALSE)
@@ -52,6 +37,11 @@ namespace TerraFX.UI.Providers.Win32
                     OnExitRequested();
                 }
             }
+        }
+
+        /// <inheritdoc />
+        protected override void Dispose(bool isDisposing)
+        {
         }
 
         private void OnExitRequested() => ExitRequested?.Invoke(this, EventArgs.Empty);

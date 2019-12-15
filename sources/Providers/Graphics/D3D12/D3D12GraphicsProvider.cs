@@ -7,7 +7,6 @@ using System.Composition;
 using System.Runtime.InteropServices;
 using TerraFX.Interop;
 using TerraFX.Utilities;
-using static TerraFX.Graphics.IGraphicsProvider;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.D3D12;
 using static TerraFX.Interop.DXGI;
@@ -20,47 +19,35 @@ using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
-    /// <inheritdoc cref="IGraphicsProvider" />
-    [Export(typeof(IGraphicsProvider))]
+    /// <inheritdoc cref="GraphicsProvider" />
+    [Export(typeof(GraphicsProvider))]
     [Shared]
-    public sealed unsafe class GraphicsProvider : IGraphicsProvider
+    public sealed unsafe class D3D12GraphicsProvider : GraphicsProvider
     {
-        private readonly bool _debugModeEnabled;
-
-        private ValueLazy<ImmutableArray<GraphicsAdapter>> _graphicsAdapters;
+        private ValueLazy<ImmutableArray<D3D12GraphicsAdapter>> _graphicsAdapters;
         private ValueLazy<Pointer<IDXGIFactory2>> _factory;
 
         private State _state;
 
-        /// <summary>Initializes a new instance of the <see cref="GraphicsProvider" /> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="D3D12GraphicsProvider" /> class.</summary>
         [ImportingConstructor]
-        public GraphicsProvider()
+        public D3D12GraphicsProvider()
         {
-            if (!AppContext.TryGetSwitch(EnableDebugModeSwitchName, out _debugModeEnabled))
-            {
-#if DEBUG
-                _debugModeEnabled = true;
-#endif
-            }
-
-            _graphicsAdapters = new ValueLazy<ImmutableArray<GraphicsAdapter>>(GetGraphicsAdapters);
+            _graphicsAdapters = new ValueLazy<ImmutableArray<D3D12GraphicsAdapter>>(GetGraphicsAdapters);
             _factory = new ValueLazy<Pointer<IDXGIFactory2>>(CreateFactory);
 
             _ = _state.Transition(to: Initialized);
         }
 
-        /// <summary>Finalizes an instance of the <see cref="GraphicsProvider" /> class.</summary>
-        ~GraphicsProvider()
+        /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsProvider" /> class.</summary>
+        ~D3D12GraphicsProvider()
         {
             Dispose(isDisposing: false);
         }
 
         /// <inheritdoc />
-        public bool DebugModeEnabled => _debugModeEnabled;
-
-        /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="IDXGIFactory1.EnumAdapters1(uint, IDXGIAdapter1**)" /> failed.</exception>
-        public IEnumerable<IGraphicsAdapter> GraphicsAdapters
+        public override IEnumerable<GraphicsAdapter> GraphicsAdapters
         {
             get
             {
@@ -79,13 +66,6 @@ namespace TerraFX.Graphics.Providers.D3D12
                 _state.ThrowIfDisposedOrDisposing();
                 return _factory.Value;
             }
-        }
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
         }
 
         private Pointer<IDXGIFactory2> CreateFactory()
@@ -134,7 +114,8 @@ namespace TerraFX.Graphics.Providers.D3D12
             }
         }
 
-        private void Dispose(bool isDisposing)
+        /// <inheritdoc />
+        protected override void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
 
@@ -176,12 +157,12 @@ namespace TerraFX.Graphics.Providers.D3D12
             }
         }
 
-        private ImmutableArray<GraphicsAdapter> GetGraphicsAdapters()
+        private ImmutableArray<D3D12GraphicsAdapter> GetGraphicsAdapters()
         {
             _state.AssertNotDisposedOrDisposing();
 
             IDXGIAdapter1* adapter = null;
-            var graphicsAdapters = ImmutableArray.CreateBuilder<GraphicsAdapter>();
+            var graphicsAdapters = ImmutableArray.CreateBuilder<D3D12GraphicsAdapter>();
 
             try
             {
@@ -201,7 +182,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                     }
                     else
                     {
-                        var graphicsAdapter = new GraphicsAdapter(this, adapter);
+                        var graphicsAdapter = new D3D12GraphicsAdapter(this, adapter);
                         graphicsAdapters.Add(graphicsAdapter);
 
                         adapter = null;

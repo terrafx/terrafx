@@ -18,9 +18,9 @@ using static TerraFX.Utilities.State;
 namespace TerraFX.UI.Providers.Win32
 {
     /// <summary>Provides access to a Win32 based window subsystem.</summary>
-    [Export(typeof(IWindowProvider))]
+    [Export(typeof(WindowProvider))]
     [Shared]
-    public sealed unsafe class WindowProvider : IDisposable, IWindowProvider
+    public sealed unsafe class Win32WindowProvider : WindowProvider
     {
         private const string VulkanRequiredExtensionNamesDataName = "TerraFX.Graphics.Providers.Vulkan.GraphicsProvider.RequiredExtensionNames";
 
@@ -29,16 +29,16 @@ namespace TerraFX.UI.Providers.Win32
 
         private static readonly NativeDelegate<WNDPROC> s_forwardWndProc = new NativeDelegate<WNDPROC>(ForwardWindowMessage);
 
-        private readonly ThreadLocal<Dictionary<HWND, Window>> _windows;
+        private readonly ThreadLocal<Dictionary<HWND, Win32Window>> _windows;
 
         private ValueLazy<ushort> _classAtom;
         private ValueLazy<GCHandle> _nativeHandle;
 
         private State _state;
 
-        /// <summary>Initializes a new instance of the <see cref="WindowProvider" /> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="Win32WindowProvider" /> class.</summary>
         [ImportingConstructor]
-        public WindowProvider()
+        public Win32WindowProvider()
         {
             var vulkanRequiredExtensionNamesDataName = AppContext.GetData(VulkanRequiredExtensionNamesDataName) as string;
             vulkanRequiredExtensionNamesDataName += ";VK_KHR_surface;VK_KHR_win32_surface";
@@ -47,12 +47,12 @@ namespace TerraFX.UI.Providers.Win32
             _classAtom = new ValueLazy<ushort>(CreateClassAtom);
             _nativeHandle = new ValueLazy<GCHandle>(CreateNativeHandle);
 
-            _windows = new ThreadLocal<Dictionary<HWND, Window>>(trackAllValues: true);
+            _windows = new ThreadLocal<Dictionary<HWND, Win32Window>>(trackAllValues: true);
             _ = _state.Transition(to: Initialized);
         }
 
-        /// <summary>Finalizes an instance of the <see cref="WindowProvider" /> class.</summary>
-        ~WindowProvider()
+        /// <summary>Finalizes an instance of the <see cref="Win32WindowProvider" /> class.</summary>
+        ~Win32WindowProvider()
         {
             Dispose(isDisposing: false);
         }
@@ -68,7 +68,7 @@ namespace TerraFX.UI.Providers.Win32
         }
 
         /// <inheritdoc />
-        public IDispatchProvider DispatchProvider => Win32.DispatchProvider.Instance;
+        public override DispatchProvider DispatchProvider => Win32DispatchProvider.Instance;
 
         /// <summary>Gets the <see cref="GCHandle" /> containing the native handle for the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
@@ -83,18 +83,18 @@ namespace TerraFX.UI.Providers.Win32
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public IEnumerable<IWindow> WindowsForCurrentThread
+        public override IEnumerable<Window> WindowsForCurrentThread
         {
             get
             {
                 _state.ThrowIfDisposedOrDisposing();
-                return _windows.Value?.Values ?? Enumerable.Empty<Window>();
+                return _windows.Value?.Values ?? Enumerable.Empty<Win32Window>();
             }
         }
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public IWindow CreateWindow()
+        public override Window CreateWindow()
         {
             _state.ThrowIfDisposedOrDisposing();
 
@@ -102,21 +102,14 @@ namespace TerraFX.UI.Providers.Win32
 
             if (windows is null)
             {
-                windows = new Dictionary<HWND, Window>(capacity: 4);
+                windows = new Dictionary<HWND, Win32Window>(capacity: 4);
                 _windows.Value = windows;
             }
 
-            var window = new Window(this);
+            var window = new Win32Window(this);
             _ = windows.TryAdd(window.Handle, window);
 
             return window;
-        }
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(isDisposing: true);
-            GC.SuppressFinalize(this);
         }
 
         private static IntPtr ForwardWindowMessage(IntPtr hWnd, uint msg, UIntPtr wParam, IntPtr lParam)
@@ -142,14 +135,14 @@ namespace TerraFX.UI.Providers.Win32
                     userData = GetWindowLongPtrW(hWnd, GWLP_USERDATA);
                 }
 
-                WindowProvider windowProvider = null!;
-                Dictionary<HWND, Window>? windows = null;
+                Win32WindowProvider windowProvider = null!;
+                Dictionary<HWND, Win32Window>? windows = null;
                 var forwardMessage = false;
-                Window? window = null;
+                Win32Window? window = null;
 
                 if (userData != IntPtr.Zero)
                 {
-                    windowProvider = (WindowProvider)GCHandle.FromIntPtr(userData).Target!;
+                    windowProvider = (Win32WindowProvider)GCHandle.FromIntPtr(userData).Target!;
                     windows = windowProvider._windows.Value;
                     forwardMessage = (windows?.TryGetValue(hWnd, out window)).GetValueOrDefault();
                 }
@@ -179,7 +172,7 @@ namespace TerraFX.UI.Providers.Win32
             }
         }
 
-        private static Window RemoveWindow(Dictionary<HWND, Window> windows, HWND hWnd)
+        private static Win32Window RemoveWindow(Dictionary<HWND, Win32Window> windows, HWND hWnd)
         {
             _ = windows.Remove(hWnd, out var window);
             Assert(window != null, Resources.ArgumentNullExceptionMessage, nameof(window));
@@ -248,7 +241,8 @@ namespace TerraFX.UI.Providers.Win32
 
         private GCHandle CreateNativeHandle() => GCHandle.Alloc(this, GCHandleType.Normal);
 
-        private void Dispose(bool isDisposing)
+        /// <inheritdoc />
+        protected override void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
 
@@ -300,7 +294,7 @@ namespace TerraFX.UI.Providers.Win32
 
                         foreach (var hWnd in hWnds)
                         {
-                            var dispatchProvider = Win32.DispatchProvider.Instance;
+                            var dispatchProvider = Win32.Win32DispatchProvider.Instance;
                             var window = RemoveWindow(windows, hWnd);
                             window.Dispose();
                         }

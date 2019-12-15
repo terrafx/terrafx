@@ -74,7 +74,7 @@ namespace TerraFX.ApplicationModel
 
             _state.Transition(from: Stopped, to: Running);
             {
-                var windowProvider = _compositionHost.Value.GetExport<IWindowProvider>();
+                var windowProvider = _compositionHost.Value.GetExport<WindowProvider>();
 
                 var dispatchProvider = windowProvider.DispatchProvider;
                 var dispatcher = dispatchProvider.DispatcherForCurrentThread;
