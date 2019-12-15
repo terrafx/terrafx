@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace TerraFX.Utilities
 {
     /// <summary>Provides a set of methods for asserting conditions.</summary>
-    public static class AssertionUtilities
+    public static unsafe class AssertionUtilities
     {
         /// <summary>Asserts that a condition is <c>true</c>.</summary>
         /// <param name="condition">The condition to assert.</param>
@@ -92,5 +92,11 @@ namespace TerraFX.Utilities
         [Conditional("DEBUG")]
         public static void AssertNotNull<T>([NotNull] T? value, string paramName)
             where T : class => Assert(value != null, Resources.ArgumentNullExceptionMessage, paramName);
+
+        /// <summary>Asserts that <paramref name="value" /> is not <c>null</c>.</summary>
+        /// <param name="value">The value to assert is not <c>null</c>.</param>
+        /// <param name="paramName">The name of the parameter being asserted.</param>
+        [Conditional("DEBUG")]
+        public static void AssertNotNull(void* value, string paramName) => Assert(value != null, Resources.ArgumentNullExceptionMessage, paramName);
     }
 }
