@@ -8,10 +8,10 @@ namespace TerraFX.Graphics
     /// <summary>Provides the base access required for interacting with a graphics subsystem.</summary>
     public abstract class GraphicsProvider : IDisposable
     {
-        /// <summary>A name of a switch that controls whether <c>debug mode</c> should be enabled for the graphics provider.</summary>
+        /// <summary>The name of a switch that controls whether debug mode should be enabled for the provider.</summary>
         /// <remarks>
         ///     <para>This name is meant to be used with <see cref="AppContext.SetSwitch(string, bool)" />.</para>
-        ///     <para>Setting this switch after a graphics provider instance has been created has no affect.</para>
+        ///     <para>Setting this switch has no affect on providers that have already been created.</para>
         /// </remarks>
         public const string EnableDebugModeSwitchName = "TerraFX.Graphics.GraphicsProvider.EnableDebugMode";
 
@@ -36,12 +36,12 @@ namespace TerraFX.Graphics
             }
         }
 
-        /// <summary>Gets the value of the <see cref="EnableDebugModeSwitchName" /> switch when the instance was created.</summary>
-        /// <remarks>The exact behavior of <c>debug mode</c> may vary based on the implementation and configuration of the host machine.</remarks>
+        /// <summary>Gets the value of the <see cref="EnableDebugModeSwitchName" /> switch from when the provider was created.</summary>
+        /// <remarks>The exact behavior of debug mode may vary based on the provider and configuration of the host machine.</remarks>
         public bool DebugModeEnabled => _debugModeEnabled;
 
-        /// <summary>Gets the <see cref="GraphicsAdapter" /> instances currently available.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+        /// <summary>Gets the graphics adapters available to the provider.</summary>
+        /// <exception cref="ObjectDisposedException">The provider has been disposed.</exception>
         public abstract IEnumerable<GraphicsAdapter> GraphicsAdapters { get; }
 
         /// <inheritdoc />

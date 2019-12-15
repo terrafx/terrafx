@@ -19,13 +19,13 @@ using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
-    /// <inheritdoc cref="GraphicsProvider" />
+    /// <inheritdoc />
     [Export(typeof(GraphicsProvider))]
     [Shared]
     public sealed unsafe class D3D12GraphicsProvider : GraphicsProvider
     {
+        private ValueLazy<Pointer<IDXGIFactory2>> _dxgiFactory;
         private ValueLazy<ImmutableArray<D3D12GraphicsAdapter>> _graphicsAdapters;
-        private ValueLazy<Pointer<IDXGIFactory2>> _factory;
 
         private State _state;
 
@@ -33,8 +33,8 @@ namespace TerraFX.Graphics.Providers.D3D12
         [ImportingConstructor]
         public D3D12GraphicsProvider()
         {
+            _dxgiFactory = new ValueLazy<Pointer<IDXGIFactory2>>(CreateDxgiFactory);
             _graphicsAdapters = new ValueLazy<ImmutableArray<D3D12GraphicsAdapter>>(GetGraphicsAdapters);
-            _factory = new ValueLazy<Pointer<IDXGIFactory2>>(CreateFactory);
 
             _ = _state.Transition(to: Initialized);
         }
@@ -45,74 +45,17 @@ namespace TerraFX.Graphics.Providers.D3D12
             Dispose(isDisposing: false);
         }
 
+        /// <inheritdoc cref="GraphicsAdapters" />
+        public IEnumerable<D3D12GraphicsAdapter> D3D12GraphicsAdapters => _graphicsAdapters.Value;
+
+        /// <summary>Gets the underlying <see cref="IDXGIFactory2" /> for the provider.</summary>
+        /// <exception cref="ExternalException">The call to <see cref="CreateDXGIFactory2" /> failed.</exception>
+        /// <exception cref="ObjectDisposedException">The provider has been disposed.</exception>
+        public IDXGIFactory2* DxgiFactory => _dxgiFactory.Value;
+
         /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="IDXGIFactory1.EnumAdapters1(uint, IDXGIAdapter1**)" /> failed.</exception>
-        public override IEnumerable<GraphicsAdapter> GraphicsAdapters
-        {
-            get
-            {
-                _state.ThrowIfDisposedOrDisposing();
-                return _graphicsAdapters.Value;
-            }
-        }
-
-        /// <summary>Gets the underlying <see cref="IDXGIFactory2" />.</summary>
-        /// <exception cref="ExternalException">The call to <see cref="CreateDXGIFactory2" /> failed.</exception>
-        /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-        public IDXGIFactory2* Factory
-        {
-            get
-            {
-                _state.ThrowIfDisposedOrDisposing();
-                return _factory.Value;
-            }
-        }
-
-        private Pointer<IDXGIFactory2> CreateFactory()
-        {
-            _state.AssertNotDisposedOrDisposing();
-
-            IDXGIFactory2* factory;
-
-            var createFactoryFlags = (DebugModeEnabled && TryEnableDebugMode()) ? DXGI_CREATE_FACTORY_DEBUG : 0;
-            var iid = IID_IDXGIFactory2;
-            ThrowExternalExceptionIfFailed(nameof(CreateDXGIFactory2), CreateDXGIFactory2(createFactoryFlags, &iid, (void**)&factory));
-
-            return factory;
-
-            static bool TryEnableDebugMode()
-            {
-                ID3D12Debug* debug = null;
-                ID3D12Debug1* debug1 = null;
-                var succesfullyEnabled = false;
-
-                try
-                {
-                    var iid = IID_ID3D12Debug;
-
-                    if (SUCCEEDED(D3D12GetDebugInterface(&iid, (void**)&debug)))
-                    {
-                        // We don't want to throw if the debug interface fails to be created
-                        debug->EnableDebugLayer();
-
-                        iid = IID_ID3D12Debug1;
-                        if (SUCCEEDED(debug->QueryInterface(&iid, (void**)&debug1)))
-                        {
-                            debug1->SetEnableGPUBasedValidation(TRUE);
-                            debug1->SetEnableSynchronizedCommandQueueValidation(TRUE);
-                        }
-                        succesfullyEnabled = true;
-                    }
-                }
-                finally
-                {
-                    ReleaseIfNotNull(debug1);
-                    ReleaseIfNotNull(debug);
-                }
-
-                return succesfullyEnabled;
-            }
-        }
+        public override IEnumerable<GraphicsAdapter> GraphicsAdapters => D3D12GraphicsAdapters;
 
         /// <inheritdoc />
         protected override void Dispose(bool isDisposing)
@@ -121,12 +64,8 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             if (priorState < Disposing)
             {
-                if (isDisposing)
-                {
-                    DisposeIfCreated(_graphicsAdapters);
-                }
-
-                ReleaseIfCreated(_factory);
+                _graphicsAdapters.Dispose(DisposeIfNotDefault);
+                _dxgiFactory.Dispose(ReleaseIfNotNull);
 
                 if (DebugModeEnabled)
                 {
@@ -157,12 +96,61 @@ namespace TerraFX.Graphics.Providers.D3D12
             }
         }
 
+        private Pointer<IDXGIFactory2> CreateDxgiFactory()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            IDXGIFactory2* dxgiFactory;
+
+            var createFlags = (DebugModeEnabled && TryEnableDebugMode()) ? DXGI_CREATE_FACTORY_DEBUG : 0;
+            var iid = IID_IDXGIFactory2;
+            ThrowExternalExceptionIfFailed(nameof(CreateDXGIFactory2), CreateDXGIFactory2(createFlags, &iid, (void**)&dxgiFactory));
+
+            return dxgiFactory;
+
+            static bool TryEnableDebugMode()
+            {
+                var succesfullyEnabled = false;
+
+                ID3D12Debug* dxgiDebug = null;
+                ID3D12Debug1* dxgiDebug1 = null;
+                
+                try
+                {
+                    var iid = IID_ID3D12Debug;
+
+                    if (SUCCEEDED(D3D12GetDebugInterface(&iid, (void**)&dxgiDebug)))
+                    {
+                        // We don't want to throw if the debug interface fails to be created
+                        dxgiDebug->EnableDebugLayer();
+
+                        iid = IID_ID3D12Debug1;
+                        if (SUCCEEDED(dxgiDebug->QueryInterface(&iid, (void**)&dxgiDebug1)))
+                        {
+                            dxgiDebug1->SetEnableGPUBasedValidation(TRUE);
+                            dxgiDebug1->SetEnableSynchronizedCommandQueueValidation(TRUE);
+                        }
+                        succesfullyEnabled = true;
+                    }
+                }
+                finally
+                {
+                    ReleaseIfNotNull(dxgiDebug1);
+                    ReleaseIfNotNull(dxgiDebug);
+                }
+
+                return succesfullyEnabled;
+            }
+        }
+
         private ImmutableArray<D3D12GraphicsAdapter> GetGraphicsAdapters()
         {
-            _state.AssertNotDisposedOrDisposing();
+            _state.ThrowIfDisposedOrDisposing();
 
-            IDXGIAdapter1* adapter = null;
             var graphicsAdapters = ImmutableArray.CreateBuilder<D3D12GraphicsAdapter>();
+
+            var dxgiFactory = DxgiFactory;
+            IDXGIAdapter1* dxgiAdapter = null;
 
             try
             {
@@ -170,22 +158,22 @@ namespace TerraFX.Graphics.Providers.D3D12
 
                 do
                 {
-                    var hr = Factory->EnumAdapters1(index, &adapter);
+                    var result = dxgiFactory->EnumAdapters1(index, &dxgiAdapter);
 
-                    if (FAILED(hr))
+                    if (FAILED(result))
                     {
-                        if (hr != DXGI_ERROR_NOT_FOUND)
+                        if (result != DXGI_ERROR_NOT_FOUND)
                         {
-                            ThrowExternalException(nameof(IDXGIFactory1.EnumAdapters1), hr);
+                            ThrowExternalException(nameof(IDXGIFactory1.EnumAdapters1), result);
                         }
                         index = 0;
                     }
                     else
                     {
-                        var graphicsAdapter = new D3D12GraphicsAdapter(this, adapter);
+                        var graphicsAdapter = new D3D12GraphicsAdapter(this, dxgiAdapter);
                         graphicsAdapters.Add(graphicsAdapter);
 
-                        adapter = null;
+                        dxgiAdapter = null;
                         index++;
                     }
                 }
@@ -195,7 +183,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             {
                 // We explicitly set adapter to null in the enumeration above so that we only
                 // release in the case of an exception being thrown.
-                ReleaseIfNotNull(adapter);
+                ReleaseIfNotNull(dxgiAdapter);
             }
 
             return graphicsAdapters.ToImmutable();

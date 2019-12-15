@@ -20,7 +20,7 @@ using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
-    /// <inheritdoc cref="GraphicsProvider" />
+    /// <inheritdoc />
     [Export(typeof(GraphicsProvider))]
     [Shared]
     public sealed unsafe class VulkanGraphicsProvider : GraphicsProvider
@@ -28,47 +28,47 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <summary>The default engine name used if <see cref="EngineNameDataName" /> was not set.</summary>
         public const string DefaultEngineName = "TerraFX";
 
-        /// <summary>The name of a data value that controls the engine name for <see cref="Instance" />.</summary>
+        /// <summary>The name of a data value that controls the engine name for <see cref="VulkanInstance" />.</summary>
         /// <remarks>
         ///     <para>This name is meant to be used with <see cref="AppDomain.SetData(string, object)" />.</para>
-        ///     <para>Setting this data value after a graphics provider instance has been created has no affect.</para>
+        ///     <para>Setting this data value has no affect on providers that have already been created.</para>
         ///     <para>This data value is interpreted as a string.</para>
         /// </remarks>
         public const string EngineNameDataName = "TerraFX.Graphics.Providers.Vulkan.GraphicsProvider.EngineName";
 
-        /// <summary>The name of a data value that controls the optional extensions for <see cref="Instance" />.</summary>
+        /// <summary>The name of a data value that controls the optional extensions for <see cref="VulkanInstance" />.</summary>
         /// <remarks>
         ///     <para>This name is meant to be used with <see cref="AppDomain.SetData(string, object)" />.</para>
-        ///     <para>Setting this data value after a graphics provider instance has been created has no affect.</para>
-        ///     <para>This data value is interpreted as a list of semicolon separated values.</para>
+        ///     <para>Setting this data value has no affect on providers that have already been created.</para>
+        ///     <para>This data value is interpreted as a string of semicolon separated values.</para>
         /// </remarks>
         public const string OptionalExtensionNamesDataName = "TerraFX.Graphics.Providers.Vulkan.GraphicsProvider.OptionalExtensionNames";
 
-        /// <summary>The name of a data value that controls the optional layers for <see cref="Instance" />.</summary>
+        /// <summary>The name of a data value that controls the optional layers for <see cref="VulkanInstance" />.</summary>
         /// <remarks>
         ///     <para>This name is meant to be used with <see cref="AppDomain.SetData(string, object)" />.</para>
-        ///     <para>Setting this data value after a graphics provider instance has been created has no affect.</para>
-        ///     <para>This data value is interpreted as a list of semicolon separated values.</para>
+        ///     <para>Setting this data value has no affect on providers that have already been created.</para>
+        ///     <para>This data value is interpreted as a string of semicolon separated values.</para>
         /// </remarks>
         public const string OptionalLayerNamesDataName = "TerraFX.Graphics.Providers.Vulkan.GraphicsProvider.OptionalLayerNames";
 
-        /// <summary>The name of a data value that controls the required extensions for <see cref="Instance" />.</summary>
+        /// <summary>The name of a data value that controls the required extensions for <see cref="VulkanInstance" />.</summary>
         /// <remarks>
         ///     <para>This name is meant to be used with <see cref="AppDomain.SetData(string, object)" />.</para>
-        ///     <para>Setting this data value after a graphics provider instance has been created has no affect.</para>
-        ///     <para>This data value is interpreted as a list of semicolon separated values.</para>
+        ///     <para>Setting this data value has no affect on providers that have already been created.</para>
+        ///     <para>This data value is interpreted as a string of semicolon separated values.</para>
         /// </remarks>
         public const string RequiredExtensionNamesDataName = "TerraFX.Graphics.Providers.Vulkan.GraphicsProvider.RequiredExtensionNames";
 
-        /// <summary>The name of a data value that controls the required layers for <see cref="Instance" />.</summary>
+        /// <summary>The name of a data value that controls the required layers for <see cref="VulkanInstance" />.</summary>
         /// <remarks>
         ///     <para>This name is meant to be used with <see cref="AppDomain.SetData(string, object)" />.</para>
-        ///     <para>Setting this data value after a graphics provider instance has been created has no affect.</para>
-        ///     <para>This data value is interpreted as a list of semicolon separated values.</para>
+        ///     <para>Setting this data value has no affect on providers that have already been created.</para>
+        ///     <para>This data value is interpreted as a string of semicolon separated values.</para>
         /// </remarks>
         public const string RequiredLayerNamesDataName = "TerraFX.Graphics.Providers.Vulkan.GraphicsProvider.RequiredLayerNames";
 
-        private static readonly NativeDelegate<PFN_vkDebugReportCallbackEXT> s_debugReportCallback = new NativeDelegate<PFN_vkDebugReportCallbackEXT>(DebugReportCallback);
+        private static readonly NativeDelegate<PFN_vkDebugReportCallbackEXT> s_vulkanDebugReportCallback = new NativeDelegate<PFN_vkDebugReportCallbackEXT>(VulkanDebugReportCallback);
 
         private readonly string _engineName;
         private readonly string[] _requiredExtensionNames;
@@ -76,10 +76,10 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private readonly string[] _requiredLayerNames;
         private readonly string[] _optionalLayerNames;
 
+        private ValueLazy<VkInstance> _vulkanInstance;
         private ValueLazy<ImmutableArray<VulkanGraphicsAdapter>> _graphicsAdapters;
-        private ValueLazy<VkInstance> _instance;
 
-        private VkDebugReportCallbackEXT _debugReportCallbackExt;
+        private VkDebugReportCallbackEXT _vulkanDebugReportCallbackExt;
 
         private State _state;
 
@@ -106,29 +106,29 @@ namespace TerraFX.Graphics.Providers.Vulkan
             _requiredLayerNames = GetNames(RequiredLayerNamesDataName);
             _optionalLayerNames = GetNames(OptionalLayerNamesDataName);
 
+            _vulkanInstance = new ValueLazy<VkInstance>(CreateVulkanInstance);
             _graphicsAdapters = new ValueLazy<ImmutableArray<VulkanGraphicsAdapter>>(GetGraphicsAdapters);
-            _instance = new ValueLazy<VkInstance>(CreateInstance);
 
             _ = _state.Transition(to: Initialized);
 
             static string GetEngineName()
             {
-                var engineName = AppContext.GetData(EngineNameDataName) as string;
+                var engineNameData = AppContext.GetData(EngineNameDataName) as string;
 
-                if (string.IsNullOrWhiteSpace(engineName))
+                if (string.IsNullOrWhiteSpace(engineNameData))
                 {
-                    engineName = DefaultEngineName;
-                    AppDomain.CurrentDomain.SetData(EngineNameDataName, engineName);
+                    engineNameData = DefaultEngineName;
+                    AppDomain.CurrentDomain.SetData(EngineNameDataName, engineNameData);
                 }
 
-                return engineName;
+                return engineNameData;
             }
 
             static string[] GetNames(string dataName)
             {
-                var extensionPropertyNamesDataValue = AppContext.GetData(dataName) as string ?? string.Empty;
-                var extensionPropertyNames = extensionPropertyNamesDataValue.Split(';', StringSplitOptions.RemoveEmptyEntries);
-                return extensionPropertyNames.Distinct().ToArray();
+                var namesData = AppContext.GetData(dataName) as string ?? string.Empty;
+                var names = namesData.Split(';', StringSplitOptions.RemoveEmptyEntries);
+                return names.Distinct().ToArray();
             }
         }
 
@@ -146,37 +146,39 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="vkEnumeratePhysicalDevices(IntPtr, uint*, IntPtr*)" /> failed.</exception>
-        public override IEnumerable<GraphicsAdapter> GraphicsAdapters
-        {
-            get
-            {
-                _state.ThrowIfDisposedOrDisposing();
-                return _graphicsAdapters.Value;
-            }
-        }
+        public override IEnumerable<GraphicsAdapter> GraphicsAdapters => VulkanGraphicsAdapters;
 
-        /// <summary>Gets the underlying <see cref="VkInstance" />.</summary>
+        /// <inheritdoc cref="GraphicsAdapters" />
+        public IEnumerable<VulkanGraphicsAdapter> VulkanGraphicsAdapters => _graphicsAdapters.Value;
+
+        /// <summary>Gets the underlying <see cref="VkInstance" /> for the provider.</summary>
         /// <exception cref="ExternalException">The call to <see cref="vkCreateInstance(VkInstanceCreateInfo*, VkAllocationCallbacks*, IntPtr*)" /> failed.</exception>
-        /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-        public VkInstance Instance
-        {
-            get
-            {
-                _state.ThrowIfDisposedOrDisposing();
-                return _instance.Value;
-            }
-        }
+        /// <exception cref="ObjectDisposedException">The provider has been disposed.</exception>
+        public VkInstance VulkanInstance => _vulkanInstance.Value;
 
-        private static uint DebugReportCallback(uint flags, VkDebugReportObjectTypeEXT objectType, ulong @object, UIntPtr location, int messageCode, sbyte* pLayerPrefix, sbyte* pMessage, void* pUserData)
+        private static uint VulkanDebugReportCallback(uint flags, VkDebugReportObjectTypeEXT objectType, ulong @object, UIntPtr location, int messageCode, sbyte* pLayerPrefix, sbyte* pMessage, void* pUserData)
         {
             var message = MarshalUtf8ToReadOnlySpan(pMessage).AsString();
             Debug.WriteLine(message);
             return VK_FALSE;
         }
 
-        private VkInstance CreateInstance()
+        /// <inheritdoc />
+        protected override void Dispose(bool isDisposing)
         {
-            _state.AssertNotDisposedOrDisposing();
+            var priorState = _state.BeginDispose();
+
+            if (priorState < Disposing)
+            {
+                _vulkanInstance.Dispose(DisposeInstance);
+            }
+
+            _state.EndDispose();
+        }
+
+        private VkInstance CreateVulkanInstance()
+        {
+            _state.ThrowIfDisposedOrDisposing();
 
             sbyte* requiredExtensionNamesBuffer = null;
             sbyte* optionalExtensionNamesBuffer = null;
@@ -188,10 +190,23 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             try
             {
-                VkInstance instance;
+                VkInstance vulkanInstance;
 
-                var enabledExtensionCount = EnableExtensionProperties(_requiredExtensionNames, _optionalExtensionNames, out requiredExtensionNamesBuffer, out optionalExtensionNamesBuffer, out enabledExtensionNames);
-                var enabledLayerCount = EnableLayerProperties(_requiredLayerNames, _optionalLayerNames, out requiredLayerNamesBuffer, out optionalLayerNamesBuffer, out enabledLayerNames);
+                uint enabledExtensionCount;
+                var extensionProperties = GetExtensionProperties();
+
+                fixed (VkExtensionProperties* pExtensionProperties = extensionProperties)
+                {
+                    enabledExtensionCount = EnableProperties((sbyte*)pExtensionProperties, extensionProperties.Length, sizeof(VkExtensionProperties), _requiredExtensionNames, _optionalExtensionNames, out requiredExtensionNamesBuffer, out optionalExtensionNamesBuffer, out enabledExtensionNames);
+                }
+
+                uint enabledLayerCount;
+                var layerProperties = GetLayerProperties();
+
+                fixed (VkLayerProperties* pLayerProperties = layerProperties)
+                {
+                    enabledLayerCount = EnableProperties((sbyte*)pLayerProperties, layerProperties.Length, sizeof(VkLayerProperties), _requiredLayerNames, _optionalLayerNames, out requiredLayerNamesBuffer, out optionalLayerNamesBuffer, out enabledLayerNames);
+                }
 
                 fixed (sbyte* engineName = MarshalStringToUtf8(_engineName))
                 {
@@ -203,7 +218,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                         apiVersion = VK_API_VERSION_1_0,
                     };
 
-                    var createInfo = new VkInstanceCreateInfo {
+                    var instanceCreateInfo = new VkInstanceCreateInfo {
                         sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
                         pApplicationInfo = &applicationInfo,
                         enabledLayerCount = enabledLayerCount,
@@ -212,15 +227,15 @@ namespace TerraFX.Graphics.Providers.Vulkan
                         ppEnabledExtensionNames = enabledExtensionNames,
                     };
 
-                    ThrowExternalExceptionIfNotSuccess(nameof(vkCreateInstance), vkCreateInstance(&createInfo, pAllocator: null, (IntPtr*)&instance));
+                    ThrowExternalExceptionIfNotSuccess(nameof(vkCreateInstance), vkCreateInstance(&instanceCreateInfo, pAllocator: null, (IntPtr*)&vulkanInstance));
                 }
 
                 if (DebugModeEnabled)
                 {
-                    _debugReportCallbackExt = TryCreateDebugReportCallbackExt(instance);
+                    _vulkanDebugReportCallbackExt = TryCreateVulkanDebugReportCallbackExt(vulkanInstance);
                 }
 
-                return instance;
+                return vulkanInstance;
             }
             finally
             {
@@ -255,136 +270,92 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 }
             }
 
-            static uint EnableExtensionProperties(string[] requiredExtensionNames, string[] optionalExtensionNames, out sbyte* requiredExtensionNamesBuffer, out sbyte* optionalExtensionNamesBuffer, out sbyte** enabledExtensionNames)
+            static uint EnableProperties(sbyte* propertyNames, int propertyNamesCount, int propertySize, string[] requiredNames, string[] optionalNames, out sbyte* requiredNamesBuffer, out sbyte* optionalNamesBuffer, out sbyte** enabledNames)
             {
-                var requiredExtensionNamesCount = MarshalNames(requiredExtensionNames, out requiredExtensionNamesBuffer);
-                var optionalExtensionNamesCount = MarshalNames(optionalExtensionNames, out optionalExtensionNamesBuffer);
+                var requiredNamesCount = MarshalNames(requiredNames, out requiredNamesBuffer);
+                var optionalNamesCount = MarshalNames(optionalNames, out optionalNamesBuffer);
 
-                enabledExtensionNames = (sbyte**)Marshal.AllocHGlobal((requiredExtensionNamesCount + optionalExtensionNamesCount) * sizeof(sbyte*));
-                var extensionProperties = GetExtensionProperties();
+                enabledNames = (sbyte**)Marshal.AllocHGlobal((requiredNamesCount + optionalNamesCount) * sizeof(sbyte*));
 
-                var enabledExtensionCount = EnableExtensionNames(extensionProperties, requiredExtensionNamesBuffer, requiredExtensionNamesCount, enabledExtensionNames);
+                var enabledPropertyCount = EnablePropertiesByName(propertyNames, propertyNamesCount, propertySize, requiredNamesBuffer, requiredNamesCount, enabledNames);
 
-                if (enabledExtensionCount != requiredExtensionNamesCount)
+                if (enabledPropertyCount != requiredNamesCount)
                 {
                     ThrowNotSupportedExceptionForMissingFeature(nameof(VkExtensionProperties));
                 }
-                enabledExtensionCount += EnableExtensionNames(extensionProperties, optionalExtensionNamesBuffer, optionalExtensionNamesCount, enabledExtensionNames + enabledExtensionCount);
+                enabledPropertyCount += EnablePropertiesByName(propertyNames, propertyNamesCount, propertySize, optionalNamesBuffer, optionalNamesCount, enabledNames + enabledPropertyCount);
 
-                return enabledExtensionCount;
-
-                static uint EnableExtensionNames(VkExtensionProperties[] extensionProperties, sbyte* extensionNames, int extensionNamesCount, sbyte** enabledExtensionNames)
-                {
-                    uint enabledExtensionCount = 0;
-                    var pCurrent = extensionNames;
-
-                    for (var i = 0; i < extensionNamesCount; i++)
-                    {
-                        var extensionNameLength = *(int*)pCurrent;
-                        pCurrent += IntPtr.Size;
-                        var extensionName = new ReadOnlySpan<sbyte>(pCurrent, extensionNameLength + 1);
-
-                        for (var n = 0; n < extensionProperties.Length; n++)
-                        {
-                            var extensionPropertyName = MemoryMarshal.CreateReadOnlySpan(ref extensionProperties[n].extensionName[0], extensionNameLength + 1);
-
-                            if (extensionPropertyName.SequenceEqual(extensionName))
-                            {
-                                enabledExtensionNames[enabledExtensionCount] = pCurrent;
-                                enabledExtensionCount += 1;
-                                break;
-                            }
-                        }
-                        pCurrent += VK_MAX_EXTENSION_NAME_SIZE;
-                    }
-
-                    return enabledExtensionCount;
-                }
-
-                static VkExtensionProperties[] GetExtensionProperties()
-                {
-                    uint propertyCount = 0;
-                    ThrowExternalExceptionIfNotSuccess(nameof(vkEnumerateInstanceExtensionProperties), vkEnumerateInstanceExtensionProperties(pLayerName: null, &propertyCount, pProperties: null));
-
-                    var extensionProperties = new VkExtensionProperties[propertyCount];
-
-                    fixed (VkExtensionProperties* pExtensionProperties = extensionProperties)
-                    {
-                        ThrowExternalExceptionIfNotSuccess(nameof(vkEnumerateInstanceExtensionProperties), vkEnumerateInstanceExtensionProperties(pLayerName: null, &propertyCount, pExtensionProperties));
-                    }
-
-                    return extensionProperties;
-                }
+                return enabledPropertyCount;
             }
 
-            static uint EnableLayerProperties(string[] requiredLayerNames, string[] optionalLayerNames, out sbyte* requiredLayerNamesBuffer, out sbyte* optionalLayerNamesBuffer, out sbyte** enabledLayerNames)
+            static uint EnablePropertiesByName(sbyte* propertyNames, int propertyNamesCount, int propertySize, sbyte* targetNames, int targetNamesCount, sbyte** enabledNames)
             {
-                var requiredLayerNamesCount = MarshalNames(requiredLayerNames, out requiredLayerNamesBuffer);
-                var optionalLayerNamesCount = MarshalNames(optionalLayerNames, out optionalLayerNamesBuffer);
+                uint enabledPropertyCount = 0;
 
-                enabledLayerNames = (sbyte**)Marshal.AllocHGlobal((requiredLayerNamesCount + optionalLayerNamesCount) * sizeof(sbyte*));
-                var layerProperties = GetLayerProperties();
+                var pPropertyName = propertyNames;
+                var pTargetName = targetNames;
 
-                var enabledLayerCount = EnableLayerNames(layerProperties, requiredLayerNamesBuffer, requiredLayerNamesCount, enabledLayerNames);
-
-                if (enabledLayerCount != requiredLayerNamesCount)
+                for (var i = 0; i < targetNamesCount; i++)
                 {
-                    ThrowNotSupportedExceptionForMissingFeature(nameof(VkLayerProperties));
-                }
-                enabledLayerCount += EnableLayerNames(layerProperties, optionalLayerNamesBuffer, optionalLayerNamesCount, enabledLayerNames + enabledLayerCount);
+                    var targetNameLength = *(int*)pTargetName;
+                    pTargetName += IntPtr.Size;
+                    var targetName = new ReadOnlySpan<sbyte>(pTargetName, targetNameLength + 1);
 
-                return enabledLayerCount;
-
-                static uint EnableLayerNames(VkLayerProperties[] layerProperties, sbyte* layerNames, int layerNamesCount, sbyte** enabledLayerNames)
-                {
-                    uint enabledLayerCount = 0;
-                    var pCurrent = layerNames;
-
-                    for (var i = 0; i < layerNamesCount; i++)
+                    for (var n = 0; n < propertyNamesCount; n++)
                     {
-                        var layerNameLength = *(int*)pCurrent;
-                        pCurrent += IntPtr.Size;
-                        var layerName = new ReadOnlySpan<sbyte>(pCurrent, layerNameLength + 1);
+                        var propertyName = new ReadOnlySpan<sbyte>(pPropertyName, targetNameLength + 1);
 
-                        for (var n = 0; n < layerProperties.Length; n++)
+                        if (propertyName.SequenceEqual(targetName))
                         {
-                            var layerPropertyName = MemoryMarshal.CreateReadOnlySpan(ref layerProperties[n].layerName[0], layerNameLength + 1);
-
-                            if (layerPropertyName.SequenceEqual(layerName))
-                            {
-                                enabledLayerNames[enabledLayerCount] = pCurrent;
-                                enabledLayerCount += 1;
-                                break;
-                            }
+                            enabledNames[enabledPropertyCount] = pTargetName;
+                            enabledPropertyCount += 1;
+                            break;
                         }
-                        pCurrent += VK_MAX_EXTENSION_NAME_SIZE;
-                    }
 
-                    return enabledLayerCount;
+                        pPropertyName += propertySize;
+                    }
+                    pTargetName += VK_MAX_EXTENSION_NAME_SIZE;
                 }
 
-                static VkLayerProperties[] GetLayerProperties()
-                {
-                    uint propertyCount = 0;
-                    ThrowExternalExceptionIfNotSuccess(nameof(vkEnumerateInstanceLayerProperties), vkEnumerateInstanceLayerProperties(&propertyCount, pProperties: null));
-
-                    var layerProperties = new VkLayerProperties[propertyCount];
-
-                    fixed (VkLayerProperties* pLayerProperties = layerProperties)
-                    {
-                        ThrowExternalExceptionIfNotSuccess(nameof(vkEnumerateInstanceLayerProperties), vkEnumerateInstanceLayerProperties(&propertyCount, pLayerProperties));
-                    }
-
-                    return layerProperties;
-                }
+                return enabledPropertyCount;
             }
 
-            static int MarshalNames(string[] names, out sbyte* marshaledNames)
+            static VkExtensionProperties[] GetExtensionProperties()
+            {
+                uint extensionPropertiesCount = 0;
+                ThrowExternalExceptionIfNotSuccess(nameof(vkEnumerateInstanceExtensionProperties), vkEnumerateInstanceExtensionProperties(pLayerName: null, &extensionPropertiesCount, pProperties: null));
+
+                var extensionProperties = new VkExtensionProperties[extensionPropertiesCount];
+
+                fixed (VkExtensionProperties* pExtensionProperties = extensionProperties)
+                {
+                    ThrowExternalExceptionIfNotSuccess(nameof(vkEnumerateInstanceExtensionProperties), vkEnumerateInstanceExtensionProperties(pLayerName: null, &extensionPropertiesCount, pExtensionProperties));
+                }
+
+                return extensionProperties;
+            }
+
+            static VkLayerProperties[] GetLayerProperties()
+            {
+                uint layerPropertiesCount = 0;
+                ThrowExternalExceptionIfNotSuccess(nameof(vkEnumerateInstanceLayerProperties), vkEnumerateInstanceLayerProperties(&layerPropertiesCount, pProperties: null));
+
+                var layerProperties = new VkLayerProperties[layerPropertiesCount];
+
+                fixed (VkLayerProperties* pLayerProperties = layerProperties)
+                {
+                    ThrowExternalExceptionIfNotSuccess(nameof(vkEnumerateInstanceLayerProperties), vkEnumerateInstanceLayerProperties(&layerPropertiesCount, pLayerProperties));
+                }
+
+                return layerProperties;
+            }
+
+            static int MarshalNames(string[] names, out sbyte* namesBuffer)
             {
                 var sizePerEntry = IntPtr.Size + VK_MAX_EXTENSION_NAME_SIZE;
-                marshaledNames = (sbyte*)Marshal.AllocHGlobal(names.Length * sizePerEntry);
+                namesBuffer = (sbyte*)Marshal.AllocHGlobal(names.Length * sizePerEntry);
 
-                var pCurrent = marshaledNames;
+                var pCurrent = namesBuffer;
 
                 for (var i = 0; i < names.Length; i++)
                 {
@@ -400,76 +371,58 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 return names.Length;
             }
 
-            static VkDebugReportCallbackEXT TryCreateDebugReportCallbackExt(VkInstance instance)
+            static VkDebugReportCallbackEXT TryCreateVulkanDebugReportCallbackExt(VkInstance instance)
             {
-                VkDebugReportCallbackEXT debugReportCallbackExt;
+                VkDebugReportCallbackEXT vulkanDebugReportCallbackExt;
 
                 var debugReportCallbackCreateInfo = new VkDebugReportCallbackCreateInfoEXT {
                     sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT,
                     flags = (uint)(VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT | VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT),
-                    pfnCallback = s_debugReportCallback,
+                    pfnCallback = s_vulkanDebugReportCallback,
                 };
 
                 // We don't want to fail if creating the debug report callback failed
                 var vkCreateDebugReportCallbackEXT = vkGetInstanceProcAddr(instance, VKCREATEDEBUGREPORTCALLBACKEXT_FUNCTION_NAME.AsPointer());
-                _ = MarshalFunctionPointer<PFN_vkCreateDebugReportCallbackEXT>(vkCreateDebugReportCallbackEXT)(instance, &debugReportCallbackCreateInfo, pAllocator: null, (ulong*)&debugReportCallbackExt);
+                _ = MarshalFunctionPointer<PFN_vkCreateDebugReportCallbackEXT>(vkCreateDebugReportCallbackEXT)(instance, &debugReportCallbackCreateInfo, pAllocator: null, (ulong*)&vulkanDebugReportCallbackExt);
 
-                return debugReportCallbackExt;
+                return vulkanDebugReportCallbackExt;
             }
         }
 
-        /// <inheritdoc />
-        protected override void Dispose(bool isDisposing)
-        {
-            var priorState = _state.BeginDispose();
-
-            if (priorState < Disposing)
-            {
-                DisposeInstance();
-            }
-
-            _state.EndDispose();
-        }
-
-        private void DisposeInstance()
+        private void DisposeInstance(VkInstance vulkanInstance)
         {
             _state.AssertDisposing();
 
-            if (_instance.IsCreated)
+            if (_vulkanDebugReportCallbackExt != VK_NULL_HANDLE)
             {
-                var instance = _instance.Value;
-
-                if (_debugReportCallbackExt != VK_NULL_HANDLE)
-                {
-                    var vkDestroyDebugReportCallbackEXT = vkGetInstanceProcAddr(instance, VKDESTROYDEBUGREPORTCALLBACKEXT_FUNCTION_NAME.AsPointer());
-                    MarshalFunctionPointer<PFN_vkDestroyDebugReportCallbackEXT>(vkDestroyDebugReportCallbackEXT)(instance, _debugReportCallbackExt, pAllocator: null);
-                }
-
-                vkDestroyInstance(instance, pAllocator: null);
+                var vkDestroyDebugReportCallbackEXT = vkGetInstanceProcAddr(vulkanInstance, VKDESTROYDEBUGREPORTCALLBACKEXT_FUNCTION_NAME.AsPointer());
+                MarshalFunctionPointer<PFN_vkDestroyDebugReportCallbackEXT>(vkDestroyDebugReportCallbackEXT)(vulkanInstance, _vulkanDebugReportCallbackExt, pAllocator: null);
             }
+
+            vkDestroyInstance(vulkanInstance, pAllocator: null);
         }
 
         private ImmutableArray<VulkanGraphicsAdapter> GetGraphicsAdapters()
         {
-            _state.AssertNotDisposedOrDisposing();
+            _state.ThrowIfDisposedOrDisposing();
 
-            var instance = _instance.Value;
+            var instance = VulkanInstance;
 
             uint physicalDeviceCount;
             ThrowExternalExceptionIfNotSuccess(nameof(vkEnumeratePhysicalDevices), vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, pPhysicalDevices: null));
 
-            var physicalDevices = stackalloc IntPtr[unchecked((int)physicalDeviceCount)];
-            ThrowExternalExceptionIfNotSuccess(nameof(vkEnumeratePhysicalDevices), vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, physicalDevices));
+            var physicalDevices = stackalloc VkPhysicalDevice[unchecked((int)physicalDeviceCount)];
+            ThrowExternalExceptionIfNotSuccess(nameof(vkEnumeratePhysicalDevices), vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, (IntPtr*)physicalDevices));
 
-            var adapters = ImmutableArray.CreateBuilder<VulkanGraphicsAdapter>(unchecked((int)physicalDeviceCount));
+            var graphicsAdapters = ImmutableArray.CreateBuilder<VulkanGraphicsAdapter>(unchecked((int)physicalDeviceCount));
 
             for (uint index = 0; index < physicalDeviceCount; index++)
             {
-                var adapter = new VulkanGraphicsAdapter(this, physicalDevices[index]);
-                adapters.Add(adapter);
+                var graphicsAdapter = new VulkanGraphicsAdapter(this, physicalDevices[index]);
+                graphicsAdapters.Add(graphicsAdapter);
             }
 
-            return adapters.ToImmutable();
+            return graphicsAdapters.ToImmutable();
         }
     }
 }

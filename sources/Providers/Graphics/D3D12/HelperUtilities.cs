@@ -9,14 +9,8 @@ namespace TerraFX.Graphics.Providers.D3D12
 {
     internal static unsafe partial class HelperUtilities
     {
-        public static void ReleaseIfCreated<TUnknown>(ValueLazy<Pointer<TUnknown>> unknown)
-            where TUnknown : unmanaged
-        {
-            if (unknown.IsCreated)
-            {
-                ReleaseIfNotNull<TUnknown>(unknown.Value);
-            }
-        }
+        public static void ReleaseIfNotNull<TUnknown>(Pointer<TUnknown> unknown)
+            where TUnknown : unmanaged => ReleaseIfNotNull(unknown.Value);
 
         public static void ReleaseIfNotNull<TUnknown>(TUnknown* unknown)
             where TUnknown : unmanaged

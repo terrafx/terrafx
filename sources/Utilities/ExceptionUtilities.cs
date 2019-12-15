@@ -72,6 +72,19 @@ namespace TerraFX.Utilities
             throw new ExternalException(message, hresult);
         }
 
+        /// <summary>Throws a <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>negative</c>.</summary>
+        /// <param name="value">The value to be checked if <c>negative</c>.</param>
+        /// <param name="paramName">The name of the parameter being checked.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>negative</c>.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowIfNegative(int value, string paramName)
+        {
+            if (value < 0)
+            {
+                ThrowArgumentOutOfRangeException(paramName, value);
+            }
+        }
+
         /// <summary>Throws a <see cref="ArgumentNullException" /> if <paramref name="value" /> is <c>null</c>.</summary>
         /// <typeparam name="T">The type of <paramref name="value" />.</typeparam>
         /// <param name="value">The value to be checked for <c>null</c>.</param>
@@ -160,6 +173,17 @@ namespace TerraFX.Utilities
         {
             var message = string.Format(Resources.ObjectDisposedExceptionMessage, objectName);
             throw new ObjectDisposedException(objectName, message);
+        }
+
+        /// <summary>Throws an instance of the <see cref="TimeoutException" /> class.</summary>
+        /// <param name="timeout">The timeout that was reached.</param>
+        /// <exception cref="TimeoutException">The timeout of <paramref name="timeout" /> was reached before the operation could be completed.</exception>
+        [DoesNotReturn]
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void ThrowTimeoutException(TimeSpan timeout)
+        {
+            var message = string.Format(Resources.TimeoutExceptionMessage, timeout);
+            throw new TimeoutException(message);
         }
 
         [DoesNotReturn]

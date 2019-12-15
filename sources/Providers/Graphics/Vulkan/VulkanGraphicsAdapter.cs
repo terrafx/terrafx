@@ -4,82 +4,93 @@ using System;
 using TerraFX.Interop;
 using TerraFX.Utilities;
 using static TerraFX.Interop.Vulkan;
-using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.InteropUtilities;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
-    /// <inheritdoc cref="GraphicsAdapter" />
+    /// <inheritdoc />
     public sealed unsafe class VulkanGraphicsAdapter : GraphicsAdapter
     {
-        private readonly VkPhysicalDevice _physicalDevice;
+        private readonly VkPhysicalDevice _vulkanPhysicalDevice;
 
-        private ValueLazy<VkPhysicalDeviceProperties> _physicalDeviceProperties;
-        private ValueLazy<string> _deviceName;
+        private ValueLazy<VkPhysicalDeviceProperties> _vulkanPhysicalDeviceProperties;
+        private ValueLazy<string> _name;
 
         private State _state;
 
-        internal VulkanGraphicsAdapter(VulkanGraphicsProvider graphicsProvider, VkPhysicalDevice physicalDevice)
+        internal VulkanGraphicsAdapter(VulkanGraphicsProvider graphicsProvider, VkPhysicalDevice vulkanPhysicalDevice)
             : base(graphicsProvider)
         {
-            _physicalDevice = physicalDevice;
+            AssertNotNull(vulkanPhysicalDevice, nameof(vulkanPhysicalDevice));
 
-            _physicalDeviceProperties = new ValueLazy<VkPhysicalDeviceProperties>(GetPhysicalDeviceProperties);
-            _deviceName = new ValueLazy<string>(GetDeviceName);
+            _vulkanPhysicalDevice = vulkanPhysicalDevice;
+
+            _vulkanPhysicalDeviceProperties = new ValueLazy<VkPhysicalDeviceProperties>(GetVulkanPhysicalDeviceProperties);
+            _name = new ValueLazy<string>(GetName);
 
             _ = _state.Transition(to: Initialized);
         }
 
         /// <inheritdoc />
-        public override uint DeviceId => PhysicalDeviceProperties.deviceID;
+        public override uint DeviceId => VulkanPhysicalDeviceProperties.deviceID;
 
         /// <inheritdoc />
-        public override string DeviceName => _deviceName.Value;
+        public override string Name => _name.Value;
 
-        /// <summary>Gets the underlying <see cref="VkPhysicalDevice" />.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-        public VkPhysicalDevice PhysicalDevice
+        /// <inheritdoc />
+        public override uint VendorId => VulkanPhysicalDeviceProperties.vendorID;
+
+        /// <inheritdoc cref="GraphicsAdapter.GraphicsProvider" />
+        public VulkanGraphicsProvider VulkanGraphicsProvider => (VulkanGraphicsProvider)GraphicsProvider;
+
+        /// <summary>Gets the underlying <see cref="VkPhysicalDevice" /> for the adapter.</summary>
+        /// <exception cref="ObjectDisposedException">The adapter has been disposed.</exception>
+        public VkPhysicalDevice VulkanPhysicalDevice
         {
             get
             {
                 _state.ThrowIfDisposedOrDisposing();
-                return _physicalDevice;
+                return _vulkanPhysicalDevice;
             }
         }
 
-        /// <summary>Gets the <see cref="VkPhysicalDeviceProperties" /> for <see cref="PhysicalDevice" />.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has been disposed and the value was not otherwise cached.</exception>
-        public ref readonly VkPhysicalDeviceProperties PhysicalDeviceProperties => ref _physicalDeviceProperties.RefValue;
+        /// <summary>Gets the <see cref="VkPhysicalDeviceProperties" /> for <see cref="VulkanPhysicalDevice" />.</summary>
+        /// <exception cref="ObjectDisposedException">The adapter has been disposed and the value was not otherwise cached.</exception>
+        public ref readonly VkPhysicalDeviceProperties VulkanPhysicalDeviceProperties => ref _vulkanPhysicalDeviceProperties.RefValue;
 
         /// <inheritdoc />
-        public override uint VendorId => PhysicalDeviceProperties.vendorID;
+        public override GraphicsDevice CreateGraphicsDevice(IGraphicsSurface graphicsSurface) => CreateVulkanGraphicsDevice(graphicsSurface);
 
-        /// <inheritdoc />
-        public override GraphicsContext CreateGraphicsContext(IGraphicsSurface graphicsSurface)
+        /// <inheritdoc cref="CreateGraphicsDevice(IGraphicsSurface)" />
+        public VulkanGraphicsDevice CreateVulkanGraphicsDevice(IGraphicsSurface graphicsSurface)
         {
             _state.ThrowIfDisposedOrDisposing();
-            ThrowIfNull(graphicsSurface, nameof(graphicsSurface));
-            return new VulkanGraphicsContext(this, graphicsSurface);
+            return new VulkanGraphicsDevice(this, graphicsSurface);
         }
 
         /// <inheritdoc />
-        /// <remarks>While there are no unmanaged resources to cleanup, we still want to mark the instance as disposed if the <see cref="GraphicsProvider" /> was disposed or if the adapter no longer exists.</remarks>
+        /// <remarks>While there are no unmanaged resources to cleanup, we still want to mark the instance as disposed if, for example, <see cref="GraphicsAdapter.GraphicsProvider" /> was disposed.</remarks>
         protected override void Dispose(bool isDisposing)
         {
             _ = _state.BeginDispose();
             _state.EndDispose();
         }
 
-        private VkPhysicalDeviceProperties GetPhysicalDeviceProperties()
+        private string GetName()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+            return MarshalUtf8ToReadOnlySpan(in VulkanPhysicalDeviceProperties.deviceName[0], 256).AsString() ?? string.Empty;
+        }
+
+        private VkPhysicalDeviceProperties GetVulkanPhysicalDeviceProperties()
         {
             _state.ThrowIfDisposedOrDisposing();
 
             VkPhysicalDeviceProperties physicalDeviceProperties;
-            vkGetPhysicalDeviceProperties(PhysicalDevice, &physicalDeviceProperties);
+            vkGetPhysicalDeviceProperties(VulkanPhysicalDevice, &physicalDeviceProperties);
             return physicalDeviceProperties;
         }
-
-        private string GetDeviceName() => MarshalUtf8ToReadOnlySpan(in PhysicalDeviceProperties.deviceName[0], 256).AsString() ?? string.Empty;
     }
 }

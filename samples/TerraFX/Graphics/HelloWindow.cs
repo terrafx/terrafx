@@ -12,7 +12,7 @@ namespace TerraFX.Samples.Graphics
 {
     public sealed class HelloWindow : Sample
     {
-        private GraphicsContext _graphicsContext = null!;
+        private GraphicsDevice _graphicsDevice = null!;
         private Window _window = null!;
         private TimeSpan _elapsedTime;
 
@@ -23,15 +23,8 @@ namespace TerraFX.Samples.Graphics
 
         public override void Cleanup()
         {
-            if (_graphicsContext is IDisposable graphicsContext)
-            {
-                graphicsContext.Dispose();
-            }
-
-            if (_window is IDisposable window)
-            {
-                window.Dispose();
-            }
+            _graphicsDevice?.Dispose();
+            _window?.Dispose();
 
             base.Cleanup();
         }
@@ -48,7 +41,7 @@ namespace TerraFX.Samples.Graphics
             var graphicsAdapter = graphicsProvider.GraphicsAdapters.First();
 
             var graphicsSurface = _window.CreateGraphicsSurface(bufferCount: 2);
-            _graphicsContext = graphicsAdapter.CreateGraphicsContext(graphicsSurface);
+            _graphicsDevice = graphicsAdapter.CreateGraphicsDevice(graphicsSurface);
 
             base.Initialize(application);
         }
@@ -67,11 +60,14 @@ namespace TerraFX.Samples.Graphics
 
             if (_window.IsVisible)
             {
-                var backgroundColor = new ColorRgba(red: 100.0f / 255.0f, green: 149.0f / 255.0f, blue: 237.0f / 255.0f, alpha: 1.0f);
-                _graphicsContext.BeginFrame(backgroundColor);
+                var graphicsDevice = _graphicsDevice;
+                var graphicsContext = graphicsDevice.GraphicsContexts[graphicsDevice.GraphicsContextIndex];
 
-                _graphicsContext.EndFrame();
-                _graphicsContext.PresentFrame();
+                var backgroundColor = new ColorRgba(red: 100.0f / 255.0f, green: 149.0f / 255.0f, blue: 237.0f / 255.0f, alpha: 1.0f);
+                graphicsContext.BeginFrame(backgroundColor);
+
+                graphicsContext.EndFrame();
+                graphicsDevice.PresentFrame();
             }
         }
     }

@@ -19,27 +19,27 @@ namespace TerraFX.Graphics
             _graphicsProvider = graphicsProvider;
         }
 
-        /// <summary>Gets the PCI ID of the device.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has been disposed and the value was not otherwise cached.</exception>
+        /// <summary>Gets the PCI Device ID (DID) for the adapter.</summary>
+        /// <exception cref="ObjectDisposedException">The adapter has been disposed and the value was not otherwise cached.</exception>
         public abstract uint DeviceId { get; }
 
-        /// <summary>Gets the name of the device.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has been disposed and the value was not otherwise cached.</exception>
-        public abstract string DeviceName { get; }
-
-        /// <summary>Gets the <see cref="Graphics.GraphicsProvider" /> for the instance.</summary>
+        /// <summary>Gets the graphics provider which enumerated the adapter.</summary>
         public GraphicsProvider GraphicsProvider => _graphicsProvider;
 
-        /// <summary>Gets the PCI ID of the vendor.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has been disposed and the value was not otherwise cached.</exception>
+        /// <summary>Gets the name of the adapter.</summary>
+        /// <exception cref="ObjectDisposedException">The adapter has been disposed and the value was not otherwise cached.</exception>
+        public abstract string Name { get; }
+
+        /// <summary>Gets the PCI Vendor ID (VID) for the adapter.</summary>
+        /// <exception cref="ObjectDisposedException">The adapter has been disposed and the value was not otherwise cached.</exception>
         public abstract uint VendorId { get; }
 
-        /// <summary>Creates a new <see cref="GraphicsContext" />.</summary>
-        /// <param name="graphicsSurface">The <see cref="IGraphicsSurface" /> on which the graphics context can draw.</param>
-        /// <returns>A new <see cref="GraphicsContext" /> which utilizes the current instance and which can draw on <paramref name="graphicsSurface" />.</returns>
+        /// <summary>Creates a new graphics device which utilizes the adapter to render to a graphics surface.</summary>
+        /// <param name="graphicsSurface">The graphics surface to which the context can render.</param>
+        /// <returns>A new graphics device which utilizes the the adapter to render to <paramref name="graphicsSurface" />.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="graphicsSurface" /> is <c>null</c>.</exception>
-        /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-        public abstract GraphicsContext CreateGraphicsContext(IGraphicsSurface graphicsSurface);
+        /// <exception cref="ObjectDisposedException">The adapter has been disposed.</exception>
+        public abstract GraphicsDevice CreateGraphicsDevice(IGraphicsSurface graphicsSurface);
 
         /// <inheritdoc />
         public void Dispose()
