@@ -11,7 +11,6 @@ using static TerraFX.Interop.D3D12_COMMAND_LIST_TYPE;
 using static TerraFX.Interop.D3D12_COMMAND_QUEUE_FLAGS;
 using static TerraFX.Interop.D3D12_DESCRIPTOR_HEAP_FLAGS;
 using static TerraFX.Interop.D3D12_DESCRIPTOR_HEAP_TYPE;
-using static TerraFX.Interop.D3D12_FENCE_FLAGS;
 using static TerraFX.Interop.D3D12_RESOURCE_BARRIER_TYPE;
 using static TerraFX.Interop.D3D12_RESOURCE_BARRIER_FLAGS;
 using static TerraFX.Interop.D3D12_RESOURCE_STATES;
@@ -21,8 +20,8 @@ using static TerraFX.Interop.DXGI_ALPHA_MODE;
 using static TerraFX.Interop.DXGI_FORMAT;
 using static TerraFX.Interop.DXGI_SCALING;
 using static TerraFX.Interop.DXGI_SWAP_EFFECT;
-using static TerraFX.Interop.Kernel32;
 using static TerraFX.Interop.Windows;
+using static TerraFX.Utilities.DisposeUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
@@ -31,18 +30,18 @@ namespace TerraFX.Graphics.Providers.D3D12
     /// <summary>Represents a graphics context, which can be used for rendering images.</summary>
     public sealed unsafe class D3D12GraphicsContext : GraphicsContext
     {
+        private readonly D3D12GraphicsFence _waitForIdleGraphicsFence;
+
         private ValueLazy<ID3D12CommandAllocator*[]> _commandAllocators;
         private ValueLazy<Pointer<ID3D12CommandQueue>> _commandQueue;
         private ValueLazy<Pointer<ID3D12Device>> _device;
-        private ValueLazy<ID3D12Fence*[]> _fences;
-        private ValueLazy<HANDLE[]> _fenceEvents;
-        private ValueLazy<ulong[]> _fenceValues;
         private ValueLazy<ID3D12GraphicsCommandList*[]> _graphicsCommandLists;
         private ValueLazy<Pointer<ID3D12DescriptorHeap>> _renderTargetsHeap;
         private ValueLazy<ID3D12Resource*[]> _renderTargets;
         private ValueLazy<Pointer<IDXGISwapChain3>> _swapChain;
 
-        private ulong _fenceValue;
+        private D3D12GraphicsFence[] _graphicsFences;
+
         private uint _frameIndex;
 
         private State _state;
@@ -50,23 +49,39 @@ namespace TerraFX.Graphics.Providers.D3D12
         internal D3D12GraphicsContext(D3D12GraphicsAdapter graphicsAdapter, IGraphicsSurface graphicsSurface)
             : base(graphicsAdapter, graphicsSurface)
         {
+            _waitForIdleGraphicsFence = new D3D12GraphicsFence(this);
+
             _commandAllocators = new ValueLazy<ID3D12CommandAllocator*[]>(CreateCommandAllocators);
             _commandQueue = new ValueLazy<Pointer<ID3D12CommandQueue>>(CreateCommandQueue);
             _device = new ValueLazy<Pointer<ID3D12Device>>(CreateDevice);
-            _fences = new ValueLazy<ID3D12Fence*[]>(CreateFences);
-            _fenceEvents = new ValueLazy<HANDLE[]>(CreateFenceEvents);
-            _fenceValues = new ValueLazy<ulong[]>(CreateFenceValues);
             _graphicsCommandLists = new ValueLazy<ID3D12GraphicsCommandList*[]>(CreateGraphicsCommandLists);
             _renderTargets = new ValueLazy<ID3D12Resource*[]>(CreateRenderTargets);
             _renderTargetsHeap = new ValueLazy<Pointer<ID3D12DescriptorHeap>>(CreateRenderTargetsHeap);
             _swapChain = new ValueLazy<Pointer<IDXGISwapChain3>>(CreateSwapChain);
 
+            _graphicsFences = CreateGraphicsFences(this, graphicsSurface);
+
             _ = _state.Transition(to: Initialized);
+
+            // We want to ensure the idle fence is created up front so disposal can cleanup nicely
+            WaitForIdleGraphicsFence.Reset();
 
             // Do event hookups after we are in the initialized state, since an event could
             // technically fire while the constructor is still running.
 
             graphicsSurface.SizeChanged += HandleGraphicsSurfaceSizeChanged;
+
+            static D3D12GraphicsFence[] CreateGraphicsFences(D3D12GraphicsContext graphicsContext, IGraphicsSurface graphicsSurface)
+            {
+                var graphicsFences = new D3D12GraphicsFence[graphicsSurface.BufferCount];
+
+                for (var i = 0; i < graphicsFences.Length; i++)
+                {
+                    graphicsFences[i] = new D3D12GraphicsFence(graphicsContext);
+                }
+
+                return graphicsFences;
+            }
         }
 
         /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsContext" /> class.</summary>
@@ -97,6 +112,17 @@ namespace TerraFX.Graphics.Providers.D3D12
             }
         }
 
+        /// <summary>Gets an array of <see cref="GraphicsFence" /> for the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public D3D12GraphicsFence[] D3D12GraphicsFences
+        {
+            get
+            {
+                _state.ThrowIfDisposedOrDisposing();
+                return _graphicsFences;
+            }
+        }
+
         /// <summary>Gets the <see cref="ID3D12Device" /> for the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public ID3D12Device* Device
@@ -105,39 +131,6 @@ namespace TerraFX.Graphics.Providers.D3D12
             {
                 _state.ThrowIfDisposedOrDisposing();
                 return _device.Value;
-            }
-        }
-
-        /// <summary>Gets an array of <see cref="ID3D12Fence" /> for protecting resources for any given <see cref="RenderTargets" />.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public ID3D12Fence*[] Fences
-        {
-            get
-            {
-                _state.ThrowIfDisposedOrDisposing();
-                return _fences.Value;
-            }
-        }
-
-        /// <summary>Gets an array of fence event handles for protecting resources for any given <see cref="RenderTargets" />.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public HANDLE[] FenceEvents
-        {
-            get
-            {
-                _state.ThrowIfDisposedOrDisposing();
-                return _fenceEvents.Value;
-            }
-        }
-
-        /// <summary>Gets an array of <see cref="ulong" /> for protecting resources for any given <see cref="RenderTargets" />.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public ulong[] FenceValues
-        {
-            get
-            {
-                _state.ThrowIfDisposedOrDisposing();
-                return _fenceValues.Value;
             }
         }
 
@@ -151,6 +144,8 @@ namespace TerraFX.Graphics.Providers.D3D12
                 return _graphicsCommandLists.Value;
             }
         }
+
+
 
         /// <summary>Gets an array of <see cref="ID3D12Resource" /> representing the render targets for the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
@@ -185,12 +180,26 @@ namespace TerraFX.Graphics.Providers.D3D12
             }
         }
 
+        /// <summary>Gets a graphics fence that is used to wait for the context to become idle.</summary>
+        public D3D12GraphicsFence WaitForIdleGraphicsFence
+        {
+            get
+            {
+                _state.ThrowIfDisposedOrDisposing();
+                return _waitForIdleGraphicsFence;
+            }
+        }
+
         /// <inheritdoc />
         public override void BeginFrame(ColorRgba backgroundColor)
         {
             var frameIndex = SwapChain->GetCurrentBackBufferIndex();
             _frameIndex = frameIndex;
-            WaitForFence(Fences[frameIndex], FenceEvents[frameIndex], FenceValues[frameIndex]);
+
+            var graphicsFence = D3D12GraphicsFences[frameIndex];
+
+            graphicsFence.Wait();
+            graphicsFence.Reset();
 
             var commandAllocator = CommandAllocators[frameIndex];
             ThrowExternalExceptionIfFailed(nameof(ID3D12CommandAllocator.Reset), commandAllocator->Reset());
@@ -270,13 +279,8 @@ namespace TerraFX.Graphics.Providers.D3D12
             var frameIndex = _frameIndex;
             ThrowExternalExceptionIfFailed(nameof(IDXGISwapChain.Present), SwapChain->Present(1, 0));
 
-            var fenceValue = _fenceValue;
-
-            var fence = Fences[frameIndex];
-            ThrowExternalExceptionIfFailed(nameof(ID3D12CommandQueue.Signal), CommandQueue->Signal(fence, fenceValue));
-            FenceValues[frameIndex] = fenceValue;
-
-            _fenceValue++;
+            var graphicsFence = D3D12GraphicsFences[frameIndex];
+            ThrowExternalExceptionIfFailed(nameof(ID3D12CommandQueue.Signal), CommandQueue->Signal(graphicsFence.D3D12Fence, graphicsFence.D3D12FenceSignalValue));
         }
 
         private ID3D12CommandAllocator*[] CreateCommandAllocators()
@@ -319,47 +323,6 @@ namespace TerraFX.Graphics.Providers.D3D12
             ThrowExternalExceptionIfFailed(nameof(D3D12CreateDevice), D3D12CreateDevice((IUnknown*)((D3D12GraphicsAdapter)GraphicsAdapter).DxgiAdapter, D3D_FEATURE_LEVEL_11_0, &iid, (void**)&device));
 
             return device;
-        }
-
-        private ID3D12Fence*[] CreateFences()
-        {
-            var fences = new ID3D12Fence*[GraphicsSurface.BufferCount];
-            var iid = IID_ID3D12Fence;
-
-            for (var i = 0; i < fences.Length; i++)
-            {
-                ID3D12Fence* fence;
-                ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateFence), Device->CreateFence(InitialValue: 0, D3D12_FENCE_FLAG_NONE, &iid, (void**)&fence));
-                fences[i] = fence;
-            }
-            
-            return fences;
-        }
-
-        private HANDLE[] CreateFenceEvents()
-        {
-            var fenceEvents = new HANDLE[GraphicsSurface.BufferCount];
-
-            for (var i = 0; i < fenceEvents.Length; i++)
-            {
-                HANDLE fenceEvent = CreateEventW(lpEventAttributes: null, bManualReset: FALSE, bInitialState: FALSE, lpName: null);
-
-                if (fenceEvent == null)
-                {
-                    ThrowExternalExceptionForLastHRESULT(nameof(CreateEventW));
-                }
-
-                fenceEvents[i] = fenceEvent;
-            }
-
-            return fenceEvents;
-        }
-
-        private ulong[] CreateFenceValues()
-        {
-            var fenceValues = new ulong[GraphicsSurface.BufferCount];
-            _fenceValue = 1;
-            return fenceValues;
         }
 
         private ID3D12GraphicsCommandList*[] CreateGraphicsCommandLists()
@@ -485,12 +448,12 @@ namespace TerraFX.Graphics.Providers.D3D12
             if (priorState < Disposing)
             {
                 WaitForIdle();
+                DisposeIfNotNull(_waitForIdleGraphicsFence);
                 DisposeGraphicsCommandLists();
                 DisposeCommandAllocators();
                 DisposeRenderTargetsHeap();
                 DisposeRenderTargets();
-                DisposeFences();
-                DisposeFenceEvents();
+                DisposeIfNotNull(_graphicsFences);
                 DisposeSwapChain();
                 DisposeCommandQueue();
                 DisposeDevice();
@@ -536,42 +499,6 @@ namespace TerraFX.Graphics.Providers.D3D12
             {
                 var device = (ID3D12Device*)_device.Value;
                 _ = device->Release();
-            }
-        }
-
-        private void DisposeFences()
-        {
-            _state.AssertDisposing();
-
-            if (_fences.IsCreated)
-            {
-                var fences = _fences.Value;
-
-                foreach (var fence in fences)
-                {
-                    if (fence != null)
-                    {
-                        _ = fence->Release();
-                    }
-                }
-            }
-        }
-
-        private void DisposeFenceEvents()
-        {
-            _state.AssertDisposing();
-
-            if (_fenceEvents.IsCreated)
-            {
-                var fenceEvents = _fenceEvents.Value;
-
-                foreach (var fenceEvent in fenceEvents)
-                {
-                    if (fenceEvent != null)
-                    {
-                        _ = CloseHandle(fenceEvent);
-                    }
-                }
             }
         }
 
@@ -662,36 +589,13 @@ namespace TerraFX.Graphics.Providers.D3D12
         {
             if (_commandQueue.IsCreated)
             {
-                var device = (ID3D12Device*)_device.Value;
-                var commandQueue = (ID3D12CommandQueue*)_commandQueue.Value;
+                ID3D12CommandQueue* commandQueue = _commandQueue.Value;
+                var waitForIdleGraphicsFence = _waitForIdleGraphicsFence;
 
-                ID3D12Fence* fence;
+                ThrowExternalExceptionIfFailed(nameof(ID3D12CommandQueue.Signal), commandQueue->Signal(waitForIdleGraphicsFence.D3D12Fence, waitForIdleGraphicsFence.D3D12FenceSignalValue));
 
-                var iid = IID_ID3D12Fence;
-                ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateFence), device->CreateFence(InitialValue: 0, D3D12_FENCE_FLAG_NONE, &iid, (void**)&fence));
-
-                ThrowExternalExceptionIfFailed(nameof(ID3D12CommandQueue.Signal), commandQueue->Signal(fence, Value: 1));
-
-                HANDLE fenceEvent = CreateEventW(lpEventAttributes: null, bManualReset: FALSE, bInitialState: FALSE, lpName: null);
-
-                if (fenceEvent == null)
-                {
-                    ThrowExternalExceptionForLastHRESULT(nameof(CreateEventW));
-                }
-
-                WaitForFence(fence, fenceEvent, fenceValue: 1);
-
-                _ = CloseHandle(fenceEvent);
-                _ = fence->Release();
-            }
-        }
-
-        private static void WaitForFence(ID3D12Fence* fence, HANDLE fenceEvent, ulong fenceValue)
-        {
-            if (fence->GetCompletedValue() < fenceValue)
-            {
-                _ = fence->SetEventOnCompletion(fenceValue, fenceEvent);
-                _ = WaitForSingleObject(fenceEvent, INFINITE);
+                waitForIdleGraphicsFence.Wait();
+                waitForIdleGraphicsFence.Reset();
             }
         }
     }

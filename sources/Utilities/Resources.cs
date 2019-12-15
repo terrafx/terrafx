@@ -53,6 +53,9 @@ namespace TerraFX.Utilities
         /// <summary>Gets a localized <see cref="string" /> similar to <c>{0} is disposed</c>.</summary>
         public static string ObjectDisposedExceptionMessage => ResourceManager.GetString(nameof(ObjectDisposedExceptionMessage), Culture)!;
 
+        /// <summary>Gets a localized <see cref="string" /> similar to <c>The timeout of {0}  was reached before the operation could be completed</c>.</summary>
+        public static string TimeoutExceptionMessage => ResourceManager.GetString(nameof(ObjectDisposedExceptionMessage), Culture)!;
+
         /// <summary>Gets a localized <see cref="string" /> similar to <c>Invalid sample format</c>.</summary>
         public static string InvalidSampleFormatMessage => ResourceManager.GetString(nameof(InvalidSampleFormatMessage), Culture)!;
 

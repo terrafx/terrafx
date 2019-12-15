@@ -14,7 +14,6 @@ using static TerraFX.Interop.VkCommandBufferLevel;
 using static TerraFX.Interop.VkCommandPoolCreateFlagBits;
 using static TerraFX.Interop.VkComponentSwizzle;
 using static TerraFX.Interop.VkCompositeAlphaFlagBitsKHR;
-using static TerraFX.Interop.VkFenceCreateFlagBits;
 using static TerraFX.Interop.VkFormat;
 using static TerraFX.Interop.VkImageAspectFlagBits;
 using static TerraFX.Interop.VkImageLayout;
@@ -31,6 +30,7 @@ using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.VkSubpassContents;
 using static TerraFX.Interop.VkSurfaceTransformFlagBitsKHR;
 using static TerraFX.Interop.Vulkan;
+using static TerraFX.Utilities.DisposeUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
@@ -44,7 +44,6 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private ValueLazy<VkCommandPool> _commandPool;
         private ValueLazy<VkDevice> _device;
         private ValueLazy<VkQueue> _deviceQueue;
-        private ValueLazy<VkFence[]> _fences;
         private ValueLazy<VkFramebuffer[]> _frameBuffers;
         private ValueLazy<uint> _graphicsQueueFamilyIndex;
         private ValueLazy<VkSemaphore> _queueSubmitSemaphore;
@@ -53,9 +52,11 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private ValueLazy<VkSwapchainKHR> _swapChain;
         private ValueLazy<VkImageView[]> _swapChainImageViews;
 
+        private VulkanGraphicsFence[] _graphicsFences;
         private uint _frameIndex;
-        private State _state;
         private VkFormat _swapChainFormat;
+
+        private State _state;
 
         internal VulkanGraphicsContext(VulkanGraphicsAdapter graphicsAdapter, IGraphicsSurface graphicsSurface)
             : base(graphicsAdapter, graphicsSurface)
@@ -65,7 +66,6 @@ namespace TerraFX.Graphics.Providers.Vulkan
             _commandPool = new ValueLazy<VkCommandPool>(CreateCommandPool);
             _device = new ValueLazy<VkDevice>(CreateDevice);
             _deviceQueue = new ValueLazy<VkQueue>(CreateDeviceQueue);
-            _fences = new ValueLazy<VkFence[]>(CreateFences);
             _frameBuffers = new ValueLazy<VkFramebuffer[]>(CreateFrameBuffers);
             _graphicsQueueFamilyIndex = new ValueLazy<uint>(FindGraphicsQueueFamilyIndex);
             _queueSubmitSemaphore = new ValueLazy<VkSemaphore>(CreateQueueSubmitSemaphore);
@@ -74,12 +74,26 @@ namespace TerraFX.Graphics.Providers.Vulkan
             _swapChain = new ValueLazy<VkSwapchainKHR>(CreateSwapChain);
             _swapChainImageViews = new ValueLazy<VkImageView[]>(CreateSwapChainImageViews);
 
+            _graphicsFences = CreateGraphicsFences(this, graphicsSurface);
+
             _ = _state.Transition(to: Initialized);
 
             // Do event hookups after we are in the initialized state, since an event could
             // technically fire while the constructor is still running.
 
             graphicsSurface.SizeChanged += HandleGraphicsSurfaceSizeChanged;
+
+            static VulkanGraphicsFence[] CreateGraphicsFences(VulkanGraphicsContext graphicsContext, IGraphicsSurface graphicsSurface)
+            {
+                var graphicsFences = new VulkanGraphicsFence[graphicsSurface.BufferCount];
+
+                for (var i = 0; i < graphicsFences.Length; i++)
+                {
+                    graphicsFences[i] = new VulkanGraphicsFence(graphicsContext);
+                }
+
+                return graphicsFences;
+            }
         }
 
         /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsContext" /> class.</summary>
@@ -140,17 +154,6 @@ namespace TerraFX.Graphics.Providers.Vulkan
             {
                 _state.ThrowIfDisposedOrDisposing();
                 return _deviceQueue.Value;
-            }
-        }
-
-        /// <summary>Gets an array of <c>VkFence</c> for the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public VkFence[] Fences
-        {
-            get
-            {
-                _state.ThrowIfDisposedOrDisposing();
-                return _fences.Value;
             }
         }
 
@@ -231,6 +234,17 @@ namespace TerraFX.Graphics.Providers.Vulkan
             }
         }
 
+        /// <summary>Gets an array of <see cref="GraphicsFence" /> for the instance.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public VulkanGraphicsFence[] VulkanGraphicsFences
+        {
+            get
+            {
+                _state.ThrowIfDisposedOrDisposing();
+                return _graphicsFences;
+            }
+        }
+
         /// <inheritdoc />
         public override void BeginFrame(ColorRgba backgroundColor)
         {
@@ -238,9 +252,10 @@ namespace TerraFX.Graphics.Providers.Vulkan
             ThrowExternalExceptionIfNotSuccess(nameof(vkAcquireNextImageKHR), vkAcquireNextImageKHR(Device, SwapChain, timeout: ulong.MaxValue, AcquireNextImageSemaphore, fence: VK_NULL_HANDLE, &frameIndex));
             _frameIndex = frameIndex;
 
-            var fence = Fences[frameIndex];
-            ThrowExternalExceptionIfNotSuccess(nameof(vkWaitForFences), vkWaitForFences(Device, fenceCount: 1, (ulong*)&fence, waitAll: VK_TRUE, timeout: ulong.MaxValue));
-            ThrowExternalExceptionIfNotSuccess(nameof(vkResetFences), vkResetFences(Device, 1, (ulong*)&fence));
+            var graphicsFence = VulkanGraphicsFences[frameIndex];
+
+            graphicsFence.Wait();
+            graphicsFence.Reset();
 
             var commandBufferBeginInfo = new VkCommandBufferBeginInfo {
                 sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
@@ -373,7 +388,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 ThrowExternalException(nameof(vkQueuePresentKHR), (int)result);
             }
 
-            result = vkQueueSubmit(DeviceQueue, submitCount: 0, pSubmits: null, Fences[frameIndex]);
+            var graphicsFence = VulkanGraphicsFences[frameIndex];
+            result = vkQueueSubmit(DeviceQueue, submitCount: 0, pSubmits: null, graphicsFence.VulkanFence);
 
             if (result != VK_SUCCESS)
             {
@@ -530,26 +546,6 @@ namespace TerraFX.Graphics.Providers.Vulkan
             VkQueue deviceQueue;
             vkGetDeviceQueue(Device, GraphicsQueueFamilyIndex, queueIndex: 0, (IntPtr*)&deviceQueue);
             return deviceQueue;
-        }
-
-        private VkFence[] CreateFences()
-        {
-            var fences = new VkFence[(uint)GraphicsSurface.BufferCount];
-
-            var fenceCreateInfo = new VkFenceCreateInfo {
-                sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
-                pNext = null,
-                flags = (uint)VK_FENCE_CREATE_SIGNALED_BIT,
-            };
-
-            for (var i = 0; i < fences.Length; i++)
-            {
-                VkFence fence;
-                ThrowExternalExceptionIfNotSuccess(nameof(vkCreateFence), vkCreateFence(Device, &fenceCreateInfo, pAllocator: null, (ulong*)&fence));
-                fences[i] = fence;
-            }
-
-            return fences;
         }
 
         private VkFramebuffer[] CreateFrameBuffers()
@@ -822,7 +818,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 WaitForIdle();
                 DisposeQueueSubmitSemaphore();
                 DisposeAcquireNextImageSemaphore();
-                DisposeFences();
+                DisposeIfNotNull(_graphicsFences);
                 DisposeCommandBuffers();
                 DisposeCommandPool();
                 DisposeFrameBuffers();
@@ -876,24 +872,6 @@ namespace TerraFX.Graphics.Providers.Vulkan
             if (_device.IsCreated)
             {
                 vkDestroyDevice(_device.Value, pAllocator: null);
-            }
-        }
-
-        private void DisposeFences()
-        {
-            _state.AssertDisposing();
-
-            if (_fences.IsCreated)
-            {
-                var fences = _fences.Value;
-
-                foreach (var fence in fences)
-                {
-                    if (fence != VK_NULL_HANDLE)
-                    {
-                        vkDestroyFence(_device.Value, fence, pAllocator: null);
-                    }
-                }
             }
         }
 

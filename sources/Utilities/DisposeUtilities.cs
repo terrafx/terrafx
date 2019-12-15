@@ -20,6 +20,21 @@ namespace TerraFX.Utilities
             }
         }
 
+        /// <summary>Disposes of a each element in a <typeparamref name="T" /> array if that element is not <c>null</c>.</summary>
+        /// <typeparam name="T">The type of elements in <paramref name="values" />.</typeparam>
+        /// <param name="values">The <typeparamref name="T" /> array to dispose.</param>
+        public static void DisposeIfNotNull<T>(T[] values)
+            where T : IDisposable
+        {
+            if (values != null)
+            {
+                foreach (var value in values)
+                {
+                    DisposeIfNotNull(value);
+                }
+            }
+        }
+
         /// <summary>Disposes of a each element in an <see cref="ImmutableArray{T}" /> if that element is not <c>null</c>.</summary>
         /// <typeparam name="T">The type of elements in <paramref name="values" />.</typeparam>
         /// <param name="values">The <see cref="ImmutableArray{T}" /> containing the values to dispose.</param>

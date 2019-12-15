@@ -162,6 +162,17 @@ namespace TerraFX.Utilities
             throw new ObjectDisposedException(objectName, message);
         }
 
+        /// <summary>Throws an instance of the <see cref="TimeoutException" /> class.</summary>
+        /// <param name="timeout">The timeout that was reached.</param>
+        /// <exception cref="TimeoutException">The timeout of <paramref name="timeout" /> was reached before the operation could be completed.</exception>
+        [DoesNotReturn]
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void ThrowTimeoutException(TimeSpan timeout)
+        {
+            var message = string.Format(Resources.TimeoutExceptionMessage, timeout);
+            throw new TimeoutException(message);
+        }
+
         [DoesNotReturn]
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void ThrowArgumentNullException(string paramName)

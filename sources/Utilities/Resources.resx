@@ -144,6 +144,9 @@
   <data name="ObjectDisposedExceptionMessage" xml:space="preserve">
     <value>{0} is disposed</value>
   </data>
+  <data name="TimeoutExceptionMessage" xml:space="preserve">
+    <value>The timeout of {0} was reached before the operation could be completed</value>
+  </data>
   <data name="InvalidSampleFormatMessage" xml:space="preserve">
     <value>Invalid sample format</value>
   </data>
