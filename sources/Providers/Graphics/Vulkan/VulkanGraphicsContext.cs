@@ -663,7 +663,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                         hwnd = GraphicsSurface.WindowHandle,
                     };
 
-                    ThrowExternalExceptionIfNotSuccess(nameof(vkCreateWin32SurfaceKHR), vkCreateWin32SurfaceKHR(graphicsProvider.Instance, &surfaceCreateInfo, pAllocator: null, (ulong*)&surface));
+                    ThrowExternalExceptionIfNotSuccess(nameof(vkCreateWin32SurfaceKHR), vkCreateWin32SurfaceKHR(graphicsProvider.VulkanInstance, &surfaceCreateInfo, pAllocator: null, (ulong*)&surface));
                     break;
                 }
 
@@ -677,7 +677,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                         window = (UIntPtr)(void*)GraphicsSurface.WindowHandle,
                     };
 
-                    ThrowExternalExceptionIfNotSuccess(nameof(vkCreateXlibSurfaceKHR), vkCreateXlibSurfaceKHR(graphicsProvider.Instance, &surfaceCreateInfo, pAllocator: null, (ulong*)&surface));
+                    ThrowExternalExceptionIfNotSuccess(nameof(vkCreateXlibSurfaceKHR), vkCreateXlibSurfaceKHR(graphicsProvider.VulkanInstance, &surfaceCreateInfo, pAllocator: null, (ulong*)&surface));
                     break;
                 }
 
@@ -942,7 +942,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             if (_surface.IsCreated)
             {
                 var graphicsProvider = (VulkanGraphicsProvider)GraphicsAdapter.GraphicsProvider;
-                vkDestroySurfaceKHR(graphicsProvider.Instance, _surface.Value, pAllocator: null);
+                vkDestroySurfaceKHR(graphicsProvider.VulkanInstance, _surface.Value, pAllocator: null);
             }
         }
 

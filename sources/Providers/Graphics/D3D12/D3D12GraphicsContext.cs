@@ -459,7 +459,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             {
                 case GraphicsSurfaceKind.Win32:
                 {
-                    ThrowExternalExceptionIfFailed(nameof(IDXGIFactory2.CreateSwapChainForHwnd), graphicsProvider.Factory->CreateSwapChainForHwnd((IUnknown*)CommandQueue, GraphicsSurface.WindowHandle, &swapChainDesc, pFullscreenDesc: null, pRestrictToOutput: null, (IDXGISwapChain1**)&swapChain));
+                    ThrowExternalExceptionIfFailed(nameof(IDXGIFactory2.CreateSwapChainForHwnd), graphicsProvider.DxgiFactory->CreateSwapChainForHwnd((IUnknown*)CommandQueue, GraphicsSurface.WindowHandle, &swapChainDesc, pFullscreenDesc: null, pRestrictToOutput: null, (IDXGISwapChain1**)&swapChain));
                     break;
                 }
 
@@ -472,7 +472,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             }
 
             // Fullscreen transitions are not currently supported
-            ThrowExternalExceptionIfFailed(nameof(IDXGIFactory.MakeWindowAssociation), graphicsProvider.Factory->MakeWindowAssociation(GraphicsSurface.WindowHandle, DXGI_MWA_NO_ALT_ENTER));
+            ThrowExternalExceptionIfFailed(nameof(IDXGIFactory.MakeWindowAssociation), graphicsProvider.DxgiFactory->MakeWindowAssociation(GraphicsSurface.WindowHandle, DXGI_MWA_NO_ALT_ENTER));
 
             return swapChain;
         }
