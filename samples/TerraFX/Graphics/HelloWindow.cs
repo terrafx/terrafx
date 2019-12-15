@@ -40,8 +40,7 @@ namespace TerraFX.Samples.Graphics
             var graphicsProvider = application.GetService<GraphicsProvider>();
             var graphicsAdapter = graphicsProvider.GraphicsAdapters.First();
 
-            var graphicsSurface = _window.CreateGraphicsSurface(bufferCount: 2);
-            _graphicsDevice = graphicsAdapter.CreateGraphicsDevice(graphicsSurface);
+            _graphicsDevice = graphicsAdapter.CreateGraphicsDevice(_window, graphicsContextCount: 2);
 
             base.Initialize(application);
         }

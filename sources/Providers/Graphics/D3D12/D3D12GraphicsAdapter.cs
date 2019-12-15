@@ -62,15 +62,15 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <inheritdoc />
         public override uint VendorId => DxgiAdapterDesc.VendorId;
 
-        /// <inheritdoc cref="CreateGraphicsDevice(IGraphicsSurface)" />
-        public D3D12GraphicsDevice CreateD3D12GraphicsDevice(IGraphicsSurface graphicsSurface)
+        /// <inheritdoc cref="CreateGraphicsDevice(IGraphicsSurface, int)" />
+        public D3D12GraphicsDevice CreateD3D12GraphicsDevice(IGraphicsSurface graphicsSurface, int graphicsContextCount)
         {
             _state.ThrowIfDisposedOrDisposing();
-            return new D3D12GraphicsDevice(this, graphicsSurface);
+            return new D3D12GraphicsDevice(this, graphicsSurface, graphicsContextCount);
         }
 
         /// <inheritdoc />
-        public override GraphicsDevice CreateGraphicsDevice(IGraphicsSurface graphicsSurface) => CreateD3D12GraphicsDevice(graphicsSurface);
+        public override GraphicsDevice CreateGraphicsDevice(IGraphicsSurface graphicsSurface, int graphicsContextCount) => CreateD3D12GraphicsDevice(graphicsSurface, graphicsContextCount);
 
         /// <inheritdoc />
         protected override void Dispose(bool isDisposing)

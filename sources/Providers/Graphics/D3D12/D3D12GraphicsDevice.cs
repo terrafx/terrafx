@@ -32,7 +32,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private State _state;
 
-        internal D3D12GraphicsDevice(D3D12GraphicsAdapter graphicsAdapter, IGraphicsSurface graphicsSurface)
+        internal D3D12GraphicsDevice(D3D12GraphicsAdapter graphicsAdapter, IGraphicsSurface graphicsSurface, int graphicsContextCount)
             : base(graphicsAdapter, graphicsSurface)
         {
             _idleGraphicsFence = new D3D12GraphicsFence(this);
@@ -42,16 +42,16 @@ namespace TerraFX.Graphics.Providers.D3D12
             _d3d12RenderTargetDescriptorHeap = new ValueLazy<Pointer<ID3D12DescriptorHeap>>(CreateD3D12RenderTargetDescriptorHeap);
             _dxgiSwapChain = new ValueLazy<Pointer<IDXGISwapChain3>>(CreateDxgiSwapChain);
 
-            _graphicsContexts = CreateGraphicsContexts(this, graphicsSurface);
+            _graphicsContexts = CreateGraphicsContexts(this, graphicsContextCount);
 
             _ = _state.Transition(to: Initialized);
 
             WaitForIdleGraphicsFence.Reset();
             graphicsSurface.SizeChanged += OnGraphicsSurfaceSizeChanged;
 
-            static D3D12GraphicsContext[] CreateGraphicsContexts(D3D12GraphicsDevice graphicsDevice, IGraphicsSurface graphicsSurface)
+            static D3D12GraphicsContext[] CreateGraphicsContexts(D3D12GraphicsDevice graphicsDevice, int graphicsContextCount)
             {
-                var graphicsContexts = new D3D12GraphicsContext[graphicsSurface.BufferCount];
+                var graphicsContexts = new D3D12GraphicsContext[graphicsContextCount];
 
                 for (var index = 0; index < graphicsContexts.Length; index++)
                 {
@@ -180,7 +180,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             var renderTargetDescriptorHeapDesc = new D3D12_DESCRIPTOR_HEAP_DESC {
                 Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV,
-                NumDescriptors = (uint)GraphicsSurface.BufferCount,
+                NumDescriptors = (uint)D3D12GraphicsContexts.Length,
             };
 
             var iid = IID_ID3D12DescriptorHeap;
@@ -195,37 +195,40 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             IDXGISwapChain3* dxgiSwapChain;
 
+            var graphicsSurface = GraphicsSurface;
+            var graphicsSurfaceHandle = graphicsSurface.SurfaceHandle;
+
             var swapChainDesc = new DXGI_SWAP_CHAIN_DESC1 {
-                Width = (uint)GraphicsSurface.Width,
-                Height = (uint)GraphicsSurface.Height,
+                Width = (uint)graphicsSurface.Width,
+                Height = (uint)graphicsSurface.Height,
                 Format = DXGI_FORMAT_R8G8B8A8_UNORM,
                 SampleDesc = new DXGI_SAMPLE_DESC(count: 1, quality: 0),
                 BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT,
-                BufferCount = (uint)GraphicsSurface.BufferCount,
+                BufferCount = (uint)D3D12GraphicsContexts.Length,
                 SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL,
             };
 
             var graphicsProvider = D3D12GraphicsAdapter.D3D12GraphicsProvider;
             var iid = IID_IDXGISwapChain3;
 
-            switch (GraphicsSurface.Kind)
+            switch (graphicsSurface.SurfaceKind)
             {
                 case GraphicsSurfaceKind.Win32:
                 {
-                    ThrowExternalExceptionIfFailed(nameof(IDXGIFactory2.CreateSwapChainForHwnd), graphicsProvider.DxgiFactory->CreateSwapChainForHwnd((IUnknown*)D3D12CommandQueue, GraphicsSurface.WindowHandle, &swapChainDesc, pFullscreenDesc: null, pRestrictToOutput: null, (IDXGISwapChain1**)&dxgiSwapChain));
+                    ThrowExternalExceptionIfFailed(nameof(IDXGIFactory2.CreateSwapChainForHwnd), graphicsProvider.DxgiFactory->CreateSwapChainForHwnd((IUnknown*)D3D12CommandQueue, graphicsSurfaceHandle, &swapChainDesc, pFullscreenDesc: null, pRestrictToOutput: null, (IDXGISwapChain1**)&dxgiSwapChain));
                     break;
                 }
 
                 default:
                 {
-                    ThrowInvalidOperationException(nameof(GraphicsSurface), GraphicsSurface);
+                    ThrowInvalidOperationException(nameof(graphicsSurface), graphicsSurface);
                     dxgiSwapChain = null;
                     break;
                 }
             }
 
             // Fullscreen transitions are not currently supported
-            ThrowExternalExceptionIfFailed(nameof(IDXGIFactory.MakeWindowAssociation), graphicsProvider.DxgiFactory->MakeWindowAssociation(GraphicsSurface.WindowHandle, DXGI_MWA_NO_ALT_ENTER));
+            ThrowExternalExceptionIfFailed(nameof(IDXGIFactory.MakeWindowAssociation), graphicsProvider.DxgiFactory->MakeWindowAssociation(graphicsSurfaceHandle, DXGI_MWA_NO_ALT_ENTER));
 
             return dxgiSwapChain;
         }
@@ -243,7 +246,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             if (_dxgiSwapChain.IsCreated)
             {
                 var graphicsSurface = GraphicsSurface;
-                ThrowExternalExceptionIfFailed(nameof(IDXGISwapChain.ResizeBuffers), DxgiSwapChain->ResizeBuffers((uint)graphicsSurface.BufferCount, (uint)graphicsSurface.Width, (uint)graphicsSurface.Height, DXGI_FORMAT_R8G8B8A8_UNORM, SwapChainFlags: 0));
+                ThrowExternalExceptionIfFailed(nameof(IDXGISwapChain.ResizeBuffers), DxgiSwapChain->ResizeBuffers((uint)D3D12GraphicsContexts.Length, (uint)graphicsSurface.Width, (uint)graphicsSurface.Height, DXGI_FORMAT_R8G8B8A8_UNORM, SwapChainFlags: 0));
             }
         }
     }

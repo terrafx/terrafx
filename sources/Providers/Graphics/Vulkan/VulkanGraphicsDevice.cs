@@ -55,7 +55,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private State _state;
 
-        internal VulkanGraphicsDevice(VulkanGraphicsAdapter graphicsAdapter, IGraphicsSurface graphicsSurface)
+        internal VulkanGraphicsDevice(VulkanGraphicsAdapter graphicsAdapter, IGraphicsSurface graphicsSurface, int graphicsContextCount)
             : base(graphicsAdapter, graphicsSurface)
         {
             _presentCompletionGraphicsFence = new VulkanGraphicsFence(this);
@@ -68,16 +68,16 @@ namespace TerraFX.Graphics.Providers.Vulkan
             _vulkanSwapchain = new ValueLazy<VkSwapchainKHR>(CreateVulkanSwapchain);
             _vulkanSwapchainImages = new ValueLazy<VkImage[]>(GetVulkanSwapchainImages);
 
-            _graphicsContexts = CreateGraphicsContexts(this, graphicsSurface);
+            _graphicsContexts = CreateGraphicsContexts(this, graphicsContextCount);
 
             _ = _state.Transition(to: Initialized);
 
             PresentCompletionGraphicsFence.Reset();
             graphicsSurface.SizeChanged += OnGraphicsSurfaceSizeChanged;
 
-            static VulkanGraphicsContext[] CreateGraphicsContexts(VulkanGraphicsDevice graphicsDevice, IGraphicsSurface graphicsSurface)
+            static VulkanGraphicsContext[] CreateGraphicsContexts(VulkanGraphicsDevice graphicsDevice, int graphicsContextCount)
             {
-                var graphicsContexts = new VulkanGraphicsContext[graphicsSurface.BufferCount];
+                var graphicsContexts = new VulkanGraphicsContext[graphicsContextCount];
 
                 for (var index = 0; index < graphicsContexts.Length; index++)
                 {
@@ -275,14 +275,14 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var graphicsAdapter = VulkanGraphicsAdapter;
             var vulkanInstance = graphicsAdapter.VulkanGraphicsProvider.VulkanInstance;
 
-            switch (GraphicsSurface.Kind)
+            switch (GraphicsSurface.SurfaceKind)
             {
                 case GraphicsSurfaceKind.Win32:
                 {
                     var surfaceCreateInfo = new VkWin32SurfaceCreateInfoKHR {
                         sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
-                        hinstance = GraphicsSurface.DisplayHandle,
-                        hwnd = GraphicsSurface.WindowHandle,
+                        hinstance = GraphicsSurface.SurfaceContextHandle,
+                        hwnd = GraphicsSurface.SurfaceHandle,
                     };
 
                     ThrowExternalExceptionIfNotSuccess(nameof(vkCreateWin32SurfaceKHR), vkCreateWin32SurfaceKHR(vulkanInstance, &surfaceCreateInfo, pAllocator: null, (ulong*)&vulkanSurface));
@@ -293,8 +293,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 {
                     var surfaceCreateInfo = new VkXlibSurfaceCreateInfoKHR {
                         sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
-                        dpy = (UIntPtr)(void*)GraphicsSurface.DisplayHandle,
-                        window = (UIntPtr)(void*)GraphicsSurface.WindowHandle,
+                        dpy = (UIntPtr)(void*)GraphicsSurface.SurfaceContextHandle,
+                        window = (UIntPtr)(void*)GraphicsSurface.SurfaceHandle,
                     };
 
                     ThrowExternalExceptionIfNotSuccess(nameof(vkCreateXlibSurfaceKHR), vkCreateXlibSurfaceKHR(vulkanInstance, &surfaceCreateInfo, pAllocator: null, (ulong*)&vulkanSurface));
@@ -336,17 +336,17 @@ namespace TerraFX.Graphics.Providers.Vulkan
             ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfacePresentModesKHR), vkGetPhysicalDeviceSurfacePresentModesKHR(vulkanPhysicalDevice, vulkanSurface, &presentModeCount, presentModes));
 
             var graphicsSurface = GraphicsSurface;
-            var graphicsSurfaceBufferCount = unchecked((uint)graphicsSurface.BufferCount);
+            var graphicsContextsCount = unchecked((uint)VulkanGraphicsContexts.Length);
 
-            if ((graphicsSurfaceBufferCount < surfaceCapabilities.minImageCount) || ((surfaceCapabilities.maxImageCount != 0) && (graphicsSurfaceBufferCount > surfaceCapabilities.maxImageCount)))
+            if ((graphicsContextsCount < surfaceCapabilities.minImageCount) || ((surfaceCapabilities.maxImageCount != 0) && (graphicsContextsCount > surfaceCapabilities.maxImageCount)))
             {
-                ThrowArgumentOutOfRangeException(nameof(GraphicsSurface), GraphicsSurface);
+                ThrowArgumentOutOfRangeException(nameof(graphicsContextsCount), graphicsContextsCount);
             }
 
             var swapChainCreateInfo = new VkSwapchainCreateInfoKHR {
                 sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
                 surface = vulkanSurface,
-                minImageCount = graphicsSurfaceBufferCount,
+                minImageCount = graphicsContextsCount,
                 imageExtent = new VkExtent2D {
                     width = (uint)graphicsSurface.Width,
                     height = (uint)graphicsSurface.Height,

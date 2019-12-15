@@ -107,7 +107,7 @@ namespace TerraFX.UI.Providers.Win32
             }
 
             var window = new Win32Window(this);
-            _ = windows.TryAdd(window.Handle, window);
+            _ = windows.TryAdd(window.SurfaceHandle, window);
 
             return window;
         }

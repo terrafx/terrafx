@@ -11,7 +11,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 namespace TerraFX.UI
 {
     /// <summary>Defines a window.</summary>
-    public abstract class Window : IDisposable
+    public abstract class Window : IGraphicsSurface
     {
         private readonly WindowProvider _windowProvider;
         private readonly Thread _parentThread;
@@ -33,14 +33,8 @@ namespace TerraFX.UI
         /// <summary>Occurs when the <see cref="Location" /> property changes.</summary>
         public abstract event EventHandler<PropertyChangedEventArgs<Vector2>>? LocationChanged;
 
-        /// <summary>Occurs when the <see cref="Size" /> property changes.</summary>
+        /// <inheritdoc />
         public abstract event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged;
-
-        /// <summary>Gets a <see cref="Vector2" /> that represents the location of the instance.</summary>
-        public Vector2 Location => Bounds.Location;
-
-        /// <summary>Gets a <see cref="Vector2" /> that represents the size of the instance.</summary>
-        public Vector2 Size => Bounds.Size;
 
         /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
         public abstract Rectangle Bounds { get; }
@@ -57,6 +51,9 @@ namespace TerraFX.UI
         /// <summary>Gets a value that indicates whether the instance is visible.</summary>
         public abstract bool IsVisible { get; }
 
+        /// <summary>Gets a <see cref="Vector2" /> that represents the location of the instance.</summary>
+        public Vector2 Location => Bounds.Location;
+
         /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
         public Thread ParentThread => _parentThread;
 
@@ -65,6 +62,18 @@ namespace TerraFX.UI
 
         /// <summary>Gets the <see cref="ReadingDirection" /> for the instance.</summary>
         public abstract ReadingDirection ReadingDirection { get; }
+
+        /// <inheritdoc />
+        public Vector2 Size => Bounds.Size;
+
+        /// <inheritdoc />
+        public abstract IntPtr SurfaceContextHandle { get; }
+
+        /// <inheritdoc />
+        public abstract IntPtr SurfaceHandle { get; }
+
+        /// <inheritdoc />
+        public abstract GraphicsSurfaceKind SurfaceKind { get; }
 
         /// <summary>Gets the title for the instance.</summary>
         public abstract string Title { get; }
@@ -80,12 +89,6 @@ namespace TerraFX.UI
 
         /// <summary>Closes the instance.</summary>
         public abstract void Close();
-
-        /// <summary>Creates a new <see cref="IGraphicsSurface" /> for the instance.</summary>
-        /// <param name="bufferCount">The number of buffers created for the instance.</param>
-        /// <returns>A new <see cref="IGraphicsSurface" /> for the instance.</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="bufferCount" /> is less than or equal to zero.</exception>
-        public abstract IGraphicsSurface CreateGraphicsSurface(int bufferCount);
 
         /// <summary>Disables the instance.</summary>
         public abstract void Disable();

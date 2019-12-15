@@ -68,17 +68,6 @@ namespace TerraFX.UI.Providers.Win32
         /// <inheritdoc />
         public override FlowDirection FlowDirection => _flowDirection;
 
-        /// <summary>Gets the handle for the instance.</summary>
-        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public HWND Handle
-        {
-            get
-            {
-                _state.ThrowIfDisposedOrDisposing();
-                return _handle.Value;
-            }
-        }
-
         /// <inheritdoc />
         public override bool IsActive => _isActive;
 
@@ -93,6 +82,15 @@ namespace TerraFX.UI.Providers.Win32
 
         /// <inheritdoc />
         public override ReadingDirection ReadingDirection => _readingDirection;
+
+        /// <inheritdoc />
+        public override IntPtr SurfaceContextHandle => EntryPointModule;
+
+        /// <inheritdoc />
+        public override IntPtr SurfaceHandle => _handle.Value;
+
+        /// <inheritdoc />
+        public override GraphicsSurfaceKind SurfaceKind => GraphicsSurfaceKind.Win32;
 
         /// <inheritdoc />
         public override string Title => _title;
@@ -122,19 +120,8 @@ namespace TerraFX.UI.Providers.Win32
         {
             if (_handle.IsCreated)
             {
-                _ = SendMessageW(Handle, WM_CLOSE, wParam: UIntPtr.Zero, lParam: IntPtr.Zero);
+                _ = SendMessageW(SurfaceHandle, WM_CLOSE, wParam: UIntPtr.Zero, lParam: IntPtr.Zero);
             }
-        }
-
-        /// <inheritdoc />
-        public override IGraphicsSurface CreateGraphicsSurface(int bufferCount)
-        {
-            if (bufferCount <= 0)
-            {
-                ThrowArgumentOutOfRangeException(nameof(bufferCount), bufferCount);
-            }
-
-            return new Win32GraphicsSurface(this, bufferCount);
         }
 
         /// <inheritdoc />
@@ -143,7 +130,7 @@ namespace TerraFX.UI.Providers.Win32
         {
             if (_isEnabled)
             {
-                _ = EnableWindow(Handle, FALSE);
+                _ = EnableWindow(SurfaceHandle, FALSE);
             }
         }
 
@@ -153,7 +140,7 @@ namespace TerraFX.UI.Providers.Win32
         {
             if (_isEnabled == false)
             {
-                _ = EnableWindow(Handle, TRUE);
+                _ = EnableWindow(SurfaceHandle, TRUE);
             }
         }
 
@@ -163,7 +150,7 @@ namespace TerraFX.UI.Providers.Win32
         {
             if (_isVisible)
             {
-                _ = ShowWindow(Handle, SW_HIDE);
+                _ = ShowWindow(SurfaceHandle, SW_HIDE);
             }
         }
 
@@ -173,7 +160,7 @@ namespace TerraFX.UI.Providers.Win32
         {
             if (_windowState != WindowState.Maximized)
             {
-                _ = ShowWindow(Handle, SW_MAXIMIZE);
+                _ = ShowWindow(SurfaceHandle, SW_MAXIMIZE);
             }
         }
 
@@ -183,7 +170,7 @@ namespace TerraFX.UI.Providers.Win32
         {
             if (_windowState != WindowState.Minimized)
             {
-                _ = ShowWindow(Handle, SW_MINIMIZE);
+                _ = ShowWindow(SurfaceHandle, SW_MINIMIZE);
             }
         }
 
@@ -193,7 +180,7 @@ namespace TerraFX.UI.Providers.Win32
         {
             if (_windowState != WindowState.Restored)
             {
-                _ = ShowWindow(Handle, SW_RESTORE);
+                _ = ShowWindow(SurfaceHandle, SW_RESTORE);
             }
         }
 
@@ -203,7 +190,7 @@ namespace TerraFX.UI.Providers.Win32
         {
             if (_isVisible == false)
             {
-                _ = ShowWindow(Handle, SW_SHOW);
+                _ = ShowWindow(SurfaceHandle, SW_SHOW);
             }
         }
 
@@ -213,7 +200,7 @@ namespace TerraFX.UI.Providers.Win32
         {
             _state.ThrowIfDisposedOrDisposing();
 
-            return _isActive || (SetForegroundWindow(Handle) != FALSE);
+            return _isActive || (SetForegroundWindow(SurfaceHandle) != FALSE);
         }
 
         internal IntPtr ProcessWindowMessage(uint msg, UIntPtr wParam, IntPtr lParam)
@@ -390,7 +377,7 @@ namespace TerraFX.UI.Providers.Win32
 
         private IntPtr HandleWmSetText(UIntPtr wParam, IntPtr lParam)
         {
-            var result = DefWindowProcW(Handle, WM_SETTEXT, wParam, lParam);
+            var result = DefWindowProcW(SurfaceHandle, WM_SETTEXT, wParam, lParam);
 
             if (result == (IntPtr)TRUE)
             {
