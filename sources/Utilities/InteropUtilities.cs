@@ -11,6 +11,11 @@ namespace TerraFX.Utilities
     /// <summary>Provides a set of methods for simplifying interop code.</summary>
     public static unsafe class InteropUtilities
     {
+        /// <summary>Allocates a chunk of unmanaged memory.</summary>
+        /// <param name="size">The size, in bytes, of the allocation.</param>
+        /// <returns>An allocated chunk of memory that is <paramref name="size" /> bytes in length.</returns>
+        public static void* Allocate(int size) => (void*)Marshal.AllocHGlobal(size);
+
         /// <summary>Gets the underlying pointer for a <typeparamref name="T" /> reference.</summary>
         /// <typeparam name="T">The type of <paramref name="source" />.</typeparam>
         /// <param name="source">The reference for which to get the underlying pointer.</param>
@@ -107,6 +112,10 @@ namespace TerraFX.Utilities
 
             return result;
         }
+
+        /// <summary>Frees a chunk of unmanaged memory.</summary>
+        /// <param name="memory">The memory to free</param>
+        public static void Free(void* memory) => Marshal.FreeHGlobal((IntPtr)memory);
 
         /// <summary>Marshals a managed delegate to get a function pointer which will invoke it.</summary>
         /// <typeparam name="TDelegate">The type of the managed delegate.</typeparam>

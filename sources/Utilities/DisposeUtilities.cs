@@ -12,7 +12,7 @@ namespace TerraFX.Utilities
         /// <typeparam name="T">The type of <paramref name="value" />.</typeparam>
         /// <param name="value">The <typeparamref name="T" /> to dispose.</param>
         public static void DisposeIfNotNull<T>(T value)
-            where T : IDisposable
+            where T : IDisposable?
         {
             if (value != null)
             {

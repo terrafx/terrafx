@@ -5,6 +5,7 @@ using TerraFX.Interop;
 using TerraFX.Numerics;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
+using static TerraFX.Interop.D3D_PRIMITIVE_TOPOLOGY;
 using static TerraFX.Interop.D3D12;
 using static TerraFX.Interop.D3D12_COMMAND_LIST_TYPE;
 using static TerraFX.Interop.D3D12_DESCRIPTOR_HEAP_TYPE;
@@ -13,6 +14,7 @@ using static TerraFX.Interop.D3D12_RTV_DIMENSION;
 using static TerraFX.Interop.DXGI_FORMAT;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Utilities.DisposeUtilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.D3D12
@@ -118,7 +120,33 @@ namespace TerraFX.Graphics.Providers.D3D12
             graphicsCommandList->RSSetScissorRects(1, &scissorRect);
 
             graphicsCommandList->ClearRenderTargetView(renderTargetView, (float*)&backgroundColor, NumRects: 0, pRects: null);
+            graphicsCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
         }
+
+        /// <inheritdoc cref="Draw(GraphicsPrimitive)" />
+        public void Draw(D3D12GraphicsPrimitive graphicsPrimitive)
+        {
+            ThrowIfNull(graphicsPrimitive, nameof(graphicsPrimitive));
+
+            var graphicsCommandList = D3D12GraphicsCommandList;
+            var graphicsPipeline = graphicsPrimitive.D3D12GraphicsPipeline;
+            var vertexBuffer = graphicsPrimitive.D3D12VertexBuffer;
+
+            var vertexBufferView = new D3D12_VERTEX_BUFFER_VIEW {
+                BufferLocation = vertexBuffer.D3D12Resource->GetGPUVirtualAddress(),
+                StrideInBytes = (uint)vertexBuffer.Stride,
+                SizeInBytes = (uint)vertexBuffer.Size,
+            };
+
+            graphicsCommandList->SetGraphicsRootSignature(graphicsPipeline.D3D12RootSignature);
+            graphicsCommandList->SetPipelineState(graphicsPipeline.D3D12PipelineState);
+
+            graphicsCommandList->IASetVertexBuffers(StartSlot: 0, NumViews: 1, &vertexBufferView);
+            graphicsCommandList->DrawInstanced(VertexCountPerInstance: (uint)(vertexBuffer.Size / vertexBuffer.Stride), InstanceCount: 1, StartVertexLocation: 0, StartInstanceLocation: 0);
+        }
+
+        /// <inheritdoc />
+        public override void Draw(GraphicsPrimitive graphicsPrimitive) => Draw((D3D12GraphicsPrimitive)graphicsPrimitive);
 
         /// <inheritdoc />
         public override void EndFrame()
