@@ -130,11 +130,11 @@ namespace TerraFX.Graphics.Providers.Vulkan
             return new VulkanGraphicsBuffer(this, kind, size, stride);
         }
 
-        /// <inheritdoc cref="CreateGraphicsPipeline(GraphicsShader, GraphicsShader)" />
-        public VulkanGraphicsPipeline CreateVulkanGraphicsPipeline(VulkanGraphicsShader? vertexShader = null, VulkanGraphicsShader? pixelShader = null)
+        /// <inheritdoc cref="CreateGraphicsPipeline(GraphicsShader?, ReadOnlySpan{GraphicsPipelineInputElement}, GraphicsShader?)" />
+        public VulkanGraphicsPipeline CreateVulkanGraphicsPipeline(VulkanGraphicsShader? vertexShader = null, ReadOnlySpan<GraphicsPipelineInputElement> inputElements = default, VulkanGraphicsShader? pixelShader = null)
         {
             _state.ThrowIfDisposedOrDisposing();
-            return new VulkanGraphicsPipeline(this, vertexShader, pixelShader);
+            return new VulkanGraphicsPipeline(this, vertexShader, inputElements, pixelShader);
         }
 
         /// <inheritdoc cref="CreateGraphicsPrimitive(GraphicsPipeline, GraphicsBuffer, GraphicsBuffer)" />
@@ -155,7 +155,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         public override GraphicsBuffer CreateGraphicsBuffer(GraphicsBufferKind kind, ulong size, ulong stride) => CreateVulkanGraphicsBuffer(kind, size, stride);
 
         /// <inheritdoc />
-        public override GraphicsPipeline CreateGraphicsPipeline(GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null) => CreateVulkanGraphicsPipeline((VulkanGraphicsShader?)vertexShader, (VulkanGraphicsShader?)pixelShader);
+        public override GraphicsPipeline CreateGraphicsPipeline(GraphicsShader? vertexShader = null, ReadOnlySpan<GraphicsPipelineInputElement> inputElements = default, GraphicsShader? pixelShader = null) => CreateVulkanGraphicsPipeline((VulkanGraphicsShader?)vertexShader, inputElements, (VulkanGraphicsShader?)pixelShader);
 
         /// <inheritdoc />
         public override GraphicsPrimitive CreateGraphicsPrimitive(GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer, GraphicsBuffer? indexBuffer = null) => CreateVulkanGraphicsPrimitive((VulkanGraphicsPipeline)graphicsPipeline, (VulkanGraphicsBuffer)vertexBuffer, (VulkanGraphicsBuffer?)indexBuffer);

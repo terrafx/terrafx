@@ -48,14 +48,16 @@ namespace TerraFX.Graphics
 
         /// <summary>Creates a new graphics pipeline for the device.</summary>
         /// <param name="vertexShader">The vertex shader for the graphics pipeline or <c>null</c> if none exists.</param>
+        /// <param name="inputElements">The input elements describing the inputs to <paramref name="vertexShader" /> or <c>null</c> if none exist.</param>
         /// <param name="pixelShader">The pixel shader for the graphics pipeline or <c>null</c> if none exists.</param>
         /// <returns>A new graphics pipeline created for the device.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="vertexShader" /> is <c>null</c> and <paramref name="inputElements" /> is not empty.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexShader" /> is not <see cref="GraphicsShaderKind.Vertex"/>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexShader" /> was not created for this device.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="pixelShader" /> is not <see cref="GraphicsShaderKind.Pixel"/>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="pixelShader" /> was not created for this device.</exception>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-        public abstract GraphicsPipeline CreateGraphicsPipeline(GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null);
+        public abstract GraphicsPipeline CreateGraphicsPipeline(GraphicsShader? vertexShader = null, ReadOnlySpan<GraphicsPipelineInputElement> inputElements = default, GraphicsShader? pixelShader = null);
 
         /// <summary>Creates a new graphics primitive for the device.</summary>
         /// <param name="graphicsPipeline">The graphics pipeline used for rendering the graphics primitive.</param>

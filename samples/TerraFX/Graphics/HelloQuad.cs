@@ -133,7 +133,13 @@ namespace TerraFX.Samples.Graphics
             {
                 var vertexShader = CompileShader(graphicsDevice, GraphicsShaderKind.Vertex, "Identity", "main");
                 var pixelShader = CompileShader(graphicsDevice, GraphicsShaderKind.Pixel, "Identity", "main");
-                return graphicsDevice.CreateGraphicsPipeline(vertexShader, pixelShader);
+
+                var inputElements = new GraphicsPipelineInputElement[2] {
+                    new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
+                    new GraphicsPipelineInputElement(typeof(Vector4), GraphicsPipelineInputElementKind.Color, size: 16),
+                };
+
+                return graphicsDevice.CreateGraphicsPipeline(vertexShader, inputElements, pixelShader);
             }
         }
     }
