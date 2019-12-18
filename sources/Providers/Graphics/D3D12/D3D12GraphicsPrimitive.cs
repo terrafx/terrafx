@@ -11,8 +11,8 @@ namespace TerraFX.Graphics.Providers.D3D12
     {
         private State _state;
 
-        internal D3D12GraphicsPrimitive(D3D12GraphicsDevice graphicsDevice, D3D12GraphicsPipeline graphicsPipeline, D3D12GraphicsBuffer vertexBuffer)
-            : base(graphicsDevice, graphicsPipeline, vertexBuffer)
+        internal D3D12GraphicsPrimitive(D3D12GraphicsDevice graphicsDevice, D3D12GraphicsPipeline graphicsPipeline, D3D12GraphicsBuffer vertexBuffer, D3D12GraphicsBuffer? indexBuffer)
+            : base(graphicsDevice, graphicsPipeline, vertexBuffer, indexBuffer)
         {
             _ = _state.Transition(to: Initialized);
         }
@@ -29,6 +29,9 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <inheritdoc cref="GraphicsPrimitive.GraphicsPipeline" />
         public D3D12GraphicsPipeline D3D12GraphicsPipeline => (D3D12GraphicsPipeline)GraphicsPipeline;
 
+        /// <inheritdoc cref="GraphicsPrimitive.IndexBuffer" />
+        public D3D12GraphicsBuffer? D3D12IndexBuffer => (D3D12GraphicsBuffer?)IndexBuffer;
+
         /// <inheritdoc cref="GraphicsPrimitive.VertexBuffer" />
         public D3D12GraphicsBuffer D3D12VertexBuffer => (D3D12GraphicsBuffer)VertexBuffer;
 
@@ -41,6 +44,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             {
                 DisposeIfNotNull(GraphicsPipeline);
                 DisposeIfNotNull(VertexBuffer);
+                DisposeIfNotNull(IndexBuffer);
             }
 
             _state.EndDispose();

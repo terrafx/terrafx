@@ -9,10 +9,12 @@ using static TerraFX.Interop.VkCommandPoolCreateFlagBits;
 using static TerraFX.Interop.VkComponentSwizzle;
 using static TerraFX.Interop.VkImageAspectFlagBits;
 using static TerraFX.Interop.VkImageViewType;
+using static TerraFX.Interop.VkIndexType;
 using static TerraFX.Interop.VkPipelineBindPoint;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.VkSubpassContents;
 using static TerraFX.Interop.Vulkan;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.DisposeUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
@@ -156,7 +158,27 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             vkCmdBindPipeline(graphicsCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline);
             vkCmdBindVertexBuffers(graphicsCommandBuffer, firstBinding: 0, bindingCount: 1, (ulong*)&vulkanVertexBuffer, &vulkanVertexBufferOffset);
-            vkCmdDraw(graphicsCommandBuffer, vertexCount: (uint)(vertexBuffer.Size / vertexBuffer.Stride), instanceCount: 1, firstVertex: 0, firstInstance: 0);
+
+            var indexBuffer = graphicsPrimitive.VulkanIndexBuffer;
+
+            if (indexBuffer != null)
+            {
+                var indexBufferStride = indexBuffer.Stride;
+                var indexType = VK_INDEX_TYPE_UINT16;
+
+                if (indexBufferStride != 2)
+                {
+                    Assert(indexBufferStride == 4, "Index Buffer has an unsupported stride.");
+                    indexType = VK_INDEX_TYPE_UINT32;
+                }
+                vkCmdBindIndexBuffer(graphicsCommandBuffer, indexBuffer.VulkanBuffer, offset: 0, indexType);
+
+                vkCmdDrawIndexed(graphicsCommandBuffer, indexCount: (uint)(indexBuffer.Size / indexBufferStride), instanceCount: 1, firstIndex: 0, vertexOffset: 0, firstInstance: 0);
+            }
+            else
+            {
+                vkCmdDraw(graphicsCommandBuffer, vertexCount: (uint)(vertexBuffer.Size / vertexBuffer.Stride), instanceCount: 1, firstVertex: 0, firstInstance: 0);
+            }
         }
 
         /// <inheritdoc />
