@@ -137,11 +137,11 @@ namespace TerraFX.Graphics.Providers.Vulkan
             return new VulkanGraphicsPipeline(this, vertexShader, pixelShader);
         }
 
-        /// <inheritdoc cref="CreateGraphicsPrimitive(GraphicsPipeline, GraphicsBuffer)" />
-        public VulkanGraphicsPrimitive CreateVulkanGraphicsPrimitive(VulkanGraphicsPipeline graphicsPipeline, VulkanGraphicsBuffer vertexBuffer)
+        /// <inheritdoc cref="CreateGraphicsPrimitive(GraphicsPipeline, GraphicsBuffer, GraphicsBuffer)" />
+        public VulkanGraphicsPrimitive CreateVulkanGraphicsPrimitive(VulkanGraphicsPipeline graphicsPipeline, VulkanGraphicsBuffer vertexBuffer, VulkanGraphicsBuffer? indexBuffer = null)
         {
             _state.ThrowIfDisposedOrDisposing();
-            return new VulkanGraphicsPrimitive(this, graphicsPipeline, vertexBuffer);
+            return new VulkanGraphicsPrimitive(this, graphicsPipeline, vertexBuffer, indexBuffer);
         }
 
         /// <inheritdoc cref="CreateGraphicsShader(GraphicsShaderKind, ReadOnlySpan{byte}, string)" />
@@ -158,7 +158,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         public override GraphicsPipeline CreateGraphicsPipeline(GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null) => CreateVulkanGraphicsPipeline((VulkanGraphicsShader?)vertexShader, (VulkanGraphicsShader?)pixelShader);
 
         /// <inheritdoc />
-        public override GraphicsPrimitive CreateGraphicsPrimitive(GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer) => CreateVulkanGraphicsPrimitive((VulkanGraphicsPipeline)graphicsPipeline, (VulkanGraphicsBuffer)vertexBuffer);
+        public override GraphicsPrimitive CreateGraphicsPrimitive(GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer, GraphicsBuffer? indexBuffer = null) => CreateVulkanGraphicsPrimitive((VulkanGraphicsPipeline)graphicsPipeline, (VulkanGraphicsBuffer)vertexBuffer, (VulkanGraphicsBuffer?)indexBuffer);
 
         /// <inheritdoc />
         public override GraphicsShader CreateGraphicsShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName) => CreateVulkanGraphicsShader(kind, bytecode, entryPointName);

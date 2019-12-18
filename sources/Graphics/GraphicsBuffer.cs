@@ -19,9 +19,15 @@ namespace TerraFX.Graphics
         /// <param name="size">The size, in bytes, of the buffer.</param>
         /// <param name="stride">The size, in bytes, of the buffer elements.</param>
         /// <exception cref="ArgumentNullException"><paramref name="graphicsDevice" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="kind" /> is <see cref="GraphicsBufferKind.Index" /> and <paramref name="stride" /> is not <c>2</c> or <c>4</c>.</exception>
         protected GraphicsBuffer(GraphicsDevice graphicsDevice, GraphicsBufferKind kind, ulong size, ulong stride)
         {
             ThrowIfNull(graphicsDevice, nameof(graphicsDevice));
+
+            if ((kind == GraphicsBufferKind.Index) && (stride != 2) && (stride != 4))
+            {
+                ThrowArgumentOutOfRangeException(nameof(stride), stride);
+            }
 
             _size = size;
             _stride = stride;

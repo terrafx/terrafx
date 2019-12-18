@@ -11,7 +11,9 @@ using static TerraFX.Interop.D3D12_COMMAND_LIST_TYPE;
 using static TerraFX.Interop.D3D12_DESCRIPTOR_HEAP_TYPE;
 using static TerraFX.Interop.D3D12_RESOURCE_STATES;
 using static TerraFX.Interop.D3D12_RTV_DIMENSION;
+using static TerraFX.Interop.DXGI_FORMAT;
 using static TerraFX.Interop.Windows;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.DisposeUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
@@ -131,17 +133,42 @@ namespace TerraFX.Graphics.Providers.D3D12
             var graphicsPipeline = graphicsPrimitive.D3D12GraphicsPipeline;
             var vertexBuffer = graphicsPrimitive.D3D12VertexBuffer;
 
+            graphicsCommandList->SetGraphicsRootSignature(graphicsPipeline.D3D12RootSignature);
+            graphicsCommandList->SetPipelineState(graphicsPipeline.D3D12PipelineState);
+
             var vertexBufferView = new D3D12_VERTEX_BUFFER_VIEW {
                 BufferLocation = vertexBuffer.D3D12Resource->GetGPUVirtualAddress(),
                 StrideInBytes = (uint)vertexBuffer.Stride,
                 SizeInBytes = (uint)vertexBuffer.Size,
             };
-
-            graphicsCommandList->SetGraphicsRootSignature(graphicsPipeline.D3D12RootSignature);
-            graphicsCommandList->SetPipelineState(graphicsPipeline.D3D12PipelineState);
-
             graphicsCommandList->IASetVertexBuffers(StartSlot: 0, NumViews: 1, &vertexBufferView);
-            graphicsCommandList->DrawInstanced(VertexCountPerInstance: (uint)(vertexBuffer.Size / vertexBuffer.Stride), InstanceCount: 1, StartVertexLocation: 0, StartInstanceLocation: 0);
+
+            var indexBuffer = graphicsPrimitive.D3D12IndexBuffer;
+
+            if (indexBuffer != null)
+            {
+                var indexBufferStride = indexBuffer.Stride;
+                var indexFormat = DXGI_FORMAT_R16_UINT;
+
+                if (indexBufferStride != 2)
+                {
+                    Assert(indexBufferStride == 4, "Index Buffer has an unsupported stride.");
+                    indexFormat = DXGI_FORMAT_R32_UINT;
+                }
+
+                var indexBufferView = new D3D12_INDEX_BUFFER_VIEW {
+                    BufferLocation = indexBuffer.D3D12Resource->GetGPUVirtualAddress(),
+                    SizeInBytes = (uint)indexBuffer.Size,
+                    Format = indexFormat,
+                };
+                graphicsCommandList->IASetIndexBuffer(&indexBufferView);
+
+                graphicsCommandList->DrawIndexedInstanced(IndexCountPerInstance: (uint)(indexBuffer.Size / indexBufferStride), InstanceCount: 1, StartIndexLocation: 0, BaseVertexLocation: 0, StartInstanceLocation: 0);
+            }
+            else
+            {
+                graphicsCommandList->DrawInstanced(VertexCountPerInstance: (uint)(vertexBuffer.Size / vertexBuffer.Stride), InstanceCount: 1, StartVertexLocation: 0, StartInstanceLocation: 0);
+            }
         }
 
         /// <inheritdoc />

@@ -29,6 +29,9 @@ namespace TerraFX.Samples
             new HelloTriangle("D3D12.HelloTriangle", s_graphicsProviderD3D12),
             new HelloTriangle("Vulkan.HelloTriangle", s_graphicsProviderVulkan),
 
+            new HelloQuad("D3D12.HelloQuad", s_graphicsProviderD3D12),
+            new HelloQuad("Vulkan.HelloQuad", s_graphicsProviderVulkan),
+
             new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Sync", false, s_audioProviderPulseAudio),
             new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Async", true, s_audioProviderPulseAudio),
 

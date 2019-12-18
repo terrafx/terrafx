@@ -10,5 +10,8 @@ namespace TerraFX.Graphics
 
         /// <summary>Defines a vertex buffer.</summary>
         Vertex,
+
+        /// <summary>Defines an index buffer.</summary>
+        Index,
     }
 }

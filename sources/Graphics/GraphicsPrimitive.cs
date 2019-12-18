@@ -11,17 +11,20 @@ namespace TerraFX.Graphics
         private readonly GraphicsDevice _graphicsDevice;
         private readonly GraphicsPipeline _graphicsPipeline;
         private readonly GraphicsBuffer _vertexBuffer;
+        private readonly GraphicsBuffer? _indexBuffer;
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsPrimitive" /> class.</summary>
         /// <param name="graphicsDevice">The graphics device for which the primitive was created.</param>
         /// <param name="graphicsPipeline">The graphics pipeline used for rendering the primitive.</param>
         /// <param name="vertexBuffer">The graphics buffer which holds the vertices for the primitive.</param>
+        /// <param name="indexBuffer">The graphics buffer which holds the indices for the primitive or <c>null</c> if none exists.</param>
         /// <exception cref="ArgumentNullException"><paramref name="graphicsDevice" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="graphicsPipeline" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="vertexBuffer" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="graphicsPipeline" /> was not created for <paramref name="graphicsDevice" />.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexBuffer" /> was not created for <paramref name="graphicsDevice" />.</exception>
-        protected GraphicsPrimitive(GraphicsDevice graphicsDevice, GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer)
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexBuffer" /> was not created for <paramref name="graphicsDevice" />.</exception>
+        protected GraphicsPrimitive(GraphicsDevice graphicsDevice, GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer, GraphicsBuffer? indexBuffer)
         {
             ThrowIfNull(graphicsPipeline, nameof(graphicsPipeline));
             ThrowIfNull(vertexBuffer, nameof(vertexBuffer));
@@ -36,9 +39,16 @@ namespace TerraFX.Graphics
                 ThrowArgumentOutOfRangeException(nameof(vertexBuffer), vertexBuffer);
             }
 
+            if ((indexBuffer != null) && (indexBuffer.GraphicsDevice != graphicsDevice))
+            {
+                ThrowArgumentOutOfRangeException(nameof(indexBuffer), indexBuffer);
+            }
+
             _graphicsDevice = graphicsDevice;
             _graphicsPipeline = graphicsPipeline;
+
             _vertexBuffer = vertexBuffer;
+            _indexBuffer = indexBuffer;
         }
 
         /// <summary>Gets the graphics device for which the pipeline was created.</summary>
@@ -46,6 +56,9 @@ namespace TerraFX.Graphics
 
         /// <summary>Gets the graphics pipeline used for rendering the primitive.</summary>
         public GraphicsPipeline GraphicsPipeline => _graphicsPipeline;
+
+        /// <summary>Gets the graphics buffer which holds the indices for the primitive or <c>null</c> if none exists.</summary>
+        public GraphicsBuffer? IndexBuffer => _indexBuffer;
 
         /// <summary>Gets the graphics buffer which holds the vertices for the primitive.</summary>
         public GraphicsBuffer VertexBuffer => _vertexBuffer;
