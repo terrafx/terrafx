@@ -11,7 +11,6 @@ using static TerraFX.Interop.D3D12_COMMAND_LIST_TYPE;
 using static TerraFX.Interop.D3D12_DESCRIPTOR_HEAP_TYPE;
 using static TerraFX.Interop.D3D12_RESOURCE_STATES;
 using static TerraFX.Interop.D3D12_RTV_DIMENSION;
-using static TerraFX.Interop.DXGI_FORMAT;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Utilities.DisposeUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -245,7 +244,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             var d3d12Device = graphicsDevice.D3D12Device;
 
             var renderTargetViewDesc = new D3D12_RENDER_TARGET_VIEW_DESC {
-                Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
+                Format = graphicsDevice.DxgiSwapChainFormat,
                 ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D,
                 Anonymous = new D3D12_RENDER_TARGET_VIEW_DESC._Anonymous_e__Union {
                     Texture2D = new D3D12_TEX2D_RTV(),

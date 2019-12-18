@@ -1,33 +1,22 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using TerraFX.Interop;
 using TerraFX.Numerics;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
 using static TerraFX.Interop.VkAttachmentLoadOp;
 using static TerraFX.Interop.VkAttachmentStoreOp;
-using static TerraFX.Interop.VkColorSpaceKHR;
-using static TerraFX.Interop.VkCommandBufferLevel;
-using static TerraFX.Interop.VkCommandPoolCreateFlagBits;
-using static TerraFX.Interop.VkComponentSwizzle;
 using static TerraFX.Interop.VkCompositeAlphaFlagBitsKHR;
 using static TerraFX.Interop.VkFormat;
-using static TerraFX.Interop.VkImageAspectFlagBits;
 using static TerraFX.Interop.VkImageLayout;
 using static TerraFX.Interop.VkImageUsageFlagBits;
-using static TerraFX.Interop.VkImageViewType;
 using static TerraFX.Interop.VkPipelineBindPoint;
-using static TerraFX.Interop.VkPipelineStageFlagBits;
 using static TerraFX.Interop.VkPresentModeKHR;
 using static TerraFX.Interop.VkQueueFlagBits;
 using static TerraFX.Interop.VkResult;
 using static TerraFX.Interop.VkSampleCountFlagBits;
-using static TerraFX.Interop.VkSharingMode;
 using static TerraFX.Interop.VkStructureType;
-using static TerraFX.Interop.VkSubpassContents;
 using static TerraFX.Interop.VkSurfaceTransformFlagBitsKHR;
 using static TerraFX.Interop.Vulkan;
 using static TerraFX.Utilities.DisposeUtilities;

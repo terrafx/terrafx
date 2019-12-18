@@ -29,6 +29,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private D3D12GraphicsContext[] _graphicsContexts;
         private int _graphicsContextIndex;
+        private DXGI_FORMAT _dxgiSwapChainFormat;
 
         private State _state;
 
@@ -89,6 +90,9 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <summary>Gets the <see cref="IDXGISwapChain3" /> for the device.</summary>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
         public IDXGISwapChain3* DxgiSwapChain => _dxgiSwapChain.Value;
+
+        /// <summary>Gets the <see cref="DXGI_FORMAT" /> used by <see cref="DxgiSwapChain" />.</summary>
+        public DXGI_FORMAT DxgiSwapChainFormat => _dxgiSwapChainFormat;
 
         /// <inheritdoc />
         public override ReadOnlySpan<GraphicsContext> GraphicsContexts => _graphicsContexts;
@@ -270,6 +274,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             // Fullscreen transitions are not currently supported
             ThrowExternalExceptionIfFailed(nameof(IDXGIFactory.MakeWindowAssociation), graphicsProvider.DxgiFactory->MakeWindowAssociation(graphicsSurfaceHandle, DXGI_MWA_NO_ALT_ENTER));
 
+            _dxgiSwapChainFormat = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
             return dxgiSwapChain;
         }
 

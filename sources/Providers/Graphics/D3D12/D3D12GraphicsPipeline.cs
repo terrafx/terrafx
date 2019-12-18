@@ -95,7 +95,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                 SampleDesc = new DXGI_SAMPLE_DESC(count: 1, quality: 0),
             };
             graphicsPipelineStateDesc.DepthStencilState.DepthEnable = FALSE;
-            graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+            graphicsPipelineStateDesc.RTVFormats[0] = D3D12GraphicsDevice.DxgiSwapChainFormat;
 
             var vertexShader = D3D12VertexShader;
 
