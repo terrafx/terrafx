@@ -16,6 +16,7 @@ using static TerraFX.Interop.Vulkan;
 using static TerraFX.Utilities.DisposeUtilities;
 using static TerraFX.Utilities.InteropUtilities;
 using static TerraFX.Utilities.State;
+using TerraFX.Numerics;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
@@ -27,8 +28,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private State _state;
 
-        internal VulkanGraphicsPipeline(VulkanGraphicsDevice graphicsDevice, VulkanGraphicsShader? vertexShader, VulkanGraphicsShader? pixelShader)
-            : base(graphicsDevice, vertexShader, pixelShader)
+        internal VulkanGraphicsPipeline(VulkanGraphicsDevice graphicsDevice, VulkanGraphicsShader? vertexShader, ReadOnlySpan<GraphicsPipelineInputElement> inputElements, VulkanGraphicsShader? pixelShader)
+            : base(graphicsDevice, vertexShader, inputElements, pixelShader)
         {
             _vulkanPipeline = new ValueLazy<VkPipeline>(CreateVulkanGraphicsPipeline);
             _vulkanPipelineLayout = new ValueLazy<VkPipelineLayout>(CreateVulkanPipelineLayout);
@@ -172,23 +173,42 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
                 if (vertexShader != null)
                 {
-                    var index = pipelineShaderStageCreateInfosCount++;
+                    var shaderIndex = pipelineShaderStageCreateInfosCount++;
 
                     var entryPointName = MarshalStringToUtf8(vertexShader.EntryPointName);
                     var entryPointNameLength = entryPointName.Length + 1;
 
-                    pipelineShaderStageCreateInfos[index] = new VkPipelineShaderStageCreateInfo {
+                    pipelineShaderStageCreateInfos[shaderIndex] = new VkPipelineShaderStageCreateInfo {
                         sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
                         stage = VK_SHADER_STAGE_VERTEX_BIT,
                         module = vertexShader.VulkanShaderModule,
                         pName = (sbyte*)Allocate(entryPointNameLength),
                     };
 
-                    var destination = new Span<sbyte>(pipelineShaderStageCreateInfos[index].pName, entryPointNameLength);
+                    var destination = new Span<sbyte>(pipelineShaderStageCreateInfos[shaderIndex].pName, entryPointNameLength);
                     entryPointName.CopyTo(destination);
                     destination[entryPointName.Length] = 0x00;
 
-                    vertexInputBindingDescription.stride = sizeof(float) * 7;
+                    var inputElements = InputElements;
+                    var inputElementsLength = inputElements.Length;
+
+                    uint inputBindingStride = 0;
+                    vertexInputAttributeDescriptions = new VkVertexInputAttributeDescription[inputElementsLength];
+
+                    for (var index = 0; index < inputElementsLength; index++)
+                    {
+                        var inputElement = inputElements[index];
+
+                        vertexInputAttributeDescriptions[index] = new VkVertexInputAttributeDescription {
+                            location = unchecked((uint)index),
+                            format = GetInputElementFormat(inputElement.Type),
+                            offset = inputBindingStride,
+                        };
+
+                        inputBindingStride += inputElement.Size;
+                    };
+                    vertexInputBindingDescription.stride = inputBindingStride;
+
                     vertexInputAttributeDescriptions = new VkVertexInputAttributeDescription[2] {
                         new VkVertexInputAttributeDescription {
                             format = VK_FORMAT_R32G32B32_SFLOAT,
@@ -208,19 +228,19 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
                 if (pixelShader != null)
                 {
-                    var index = pipelineShaderStageCreateInfosCount++;
+                    var shaderIndex = pipelineShaderStageCreateInfosCount++;
 
                     var entryPointName = MarshalStringToUtf8(pixelShader.EntryPointName);
                     var entryPointNameLength = entryPointName.Length + 1;
 
-                    pipelineShaderStageCreateInfos[index] = new VkPipelineShaderStageCreateInfo {
+                    pipelineShaderStageCreateInfos[shaderIndex] = new VkPipelineShaderStageCreateInfo {
                         sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
                         stage = VK_SHADER_STAGE_FRAGMENT_BIT,
                         module = pixelShader.VulkanShaderModule,
                         pName = (sbyte*)Allocate(entryPointNameLength),
                     };
 
-                    var destination = new Span<sbyte>(pipelineShaderStageCreateInfos[index].pName, entryPointNameLength);
+                    var destination = new Span<sbyte>(pipelineShaderStageCreateInfos[shaderIndex].pName, entryPointNameLength);
                     entryPointName.CopyTo(destination);
                     destination[entryPointName.Length] = 0x00;
                 }
@@ -281,6 +301,26 @@ namespace TerraFX.Graphics.Providers.Vulkan
             {
                 vkDestroyPipelineLayout(VulkanGraphicsDevice.VulkanDevice, vulkanPipelineLayout, pAllocator: null);
             }
+        }
+
+        private VkFormat GetInputElementFormat(Type type)
+        {
+            var inputElementFormat = VK_FORMAT_UNDEFINED;
+
+            if (type == typeof(Vector2))
+            {
+                inputElementFormat = VK_FORMAT_R32G32_SFLOAT;
+            }
+            else if (type == typeof(Vector3))
+            {
+                inputElementFormat = VK_FORMAT_R32G32B32_SFLOAT;
+            }
+            else if (type == typeof(Vector4))
+            {
+                inputElementFormat = VK_FORMAT_R32G32B32A32_SFLOAT;
+            }
+
+            return inputElementFormat;
         }
     }
 }

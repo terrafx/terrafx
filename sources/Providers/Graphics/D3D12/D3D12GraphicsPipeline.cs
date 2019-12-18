@@ -2,6 +2,7 @@
 
 using System;
 using TerraFX.Interop;
+using TerraFX.Numerics;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.D3D_ROOT_SIGNATURE_VERSION;
@@ -23,8 +24,8 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private State _state;
 
-        internal D3D12GraphicsPipeline(D3D12GraphicsDevice graphicsDevice, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader)
-            : base(graphicsDevice, vertexShader, pixelShader)
+        internal D3D12GraphicsPipeline(D3D12GraphicsDevice graphicsDevice, D3D12GraphicsShader? vertexShader, ReadOnlySpan<GraphicsPipelineInputElement> inputElements, D3D12GraphicsShader? pixelShader)
+            : base(graphicsDevice, vertexShader, inputElements, pixelShader)
         {
             _d3d12PipelineState = new ValueLazy<Pointer<ID3D12PipelineState>>(CreateD3D12GraphicsPipelineState);
             _d3d12RootSignature = new ValueLazy<Pointer<ID3D12RootSignature>>(CreateD3D12RootSignature);
@@ -101,16 +102,23 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             if (vertexShader != null)
             {
-                inputElementDescs = new D3D12_INPUT_ELEMENT_DESC[2] {
-                    new D3D12_INPUT_ELEMENT_DESC {
-                        SemanticName = POSITION_SEMANTIC_NAME.AsPointer(),
-                        Format = DXGI_FORMAT_R32G32B32_FLOAT,
-                    },
-                    new D3D12_INPUT_ELEMENT_DESC {
-                        SemanticName = COLOR_SEMANTIC_NAME.AsPointer(),
-                        Format = DXGI_FORMAT_R32G32B32A32_FLOAT,
-                        AlignedByteOffset = sizeof(float) * 3,
-                    }
+                var inputElements = InputElements;
+                var inputElementsLength = inputElements.Length;
+
+                uint inputLayoutStride = 0;
+                inputElementDescs = new D3D12_INPUT_ELEMENT_DESC[inputElementsLength];
+
+                for (var index = 0; index < inputElementsLength; index++)
+                {
+                    var inputElement = inputElements[index];
+
+                    inputElementDescs[index] = new D3D12_INPUT_ELEMENT_DESC {
+                        SemanticName = GetInputElementSemanticName(inputElement.Kind).AsPointer(),
+                        Format = GetInputElementFormat(inputElement.Type),
+                        AlignedByteOffset = inputLayoutStride,
+                    };
+
+                    inputLayoutStride += inputElement.Size;
                 };
 
                 graphicsPipelineStateDesc.VS = vertexShader.D3D12ShaderBytecode;
@@ -162,6 +170,54 @@ namespace TerraFX.Graphics.Providers.D3D12
                 ReleaseIfNotNull(rootSignatureErrorBlob);
                 ReleaseIfNotNull(rootSignatureBlob);
             }
+        }
+
+        private DXGI_FORMAT GetInputElementFormat(Type type)
+        {
+            var inputElementFormat = DXGI_FORMAT_UNKNOWN;
+
+            if (type == typeof(Vector2))
+            {
+                inputElementFormat = DXGI_FORMAT_R32G32_FLOAT;
+            }
+            else if (type == typeof(Vector3))
+            {
+                inputElementFormat = DXGI_FORMAT_R32G32B32_FLOAT;
+            }
+            else if (type == typeof(Vector4))
+            {
+                inputElementFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
+            }
+
+            return inputElementFormat;
+        }
+
+        private ReadOnlySpan<sbyte> GetInputElementSemanticName(GraphicsPipelineInputElementKind inputElementKind)
+        {
+            ReadOnlySpan<sbyte> inputElementSemanticName;
+
+            switch (inputElementKind)
+            {
+                case GraphicsPipelineInputElementKind.Position:
+                {
+                    inputElementSemanticName = POSITION_SEMANTIC_NAME;
+                    break;
+                }
+
+                case GraphicsPipelineInputElementKind.Color:
+                {
+                    inputElementSemanticName = COLOR_SEMANTIC_NAME;
+                    break;
+                }
+
+                default:
+                {
+                    inputElementSemanticName = default;
+                    break;
+                }
+            }
+
+            return inputElementSemanticName;
         }
     }
 }

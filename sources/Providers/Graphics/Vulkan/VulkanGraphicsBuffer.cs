@@ -100,7 +100,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var bufferCreateInfo = new VkBufferCreateInfo {
                 sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
                 size = Size,
-                usage = (uint)VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+                usage = GetVulkanBufferUsageKind(Kind),
             };
             ThrowExternalExceptionIfNotSuccess(nameof(vkCreateBuffer), vkCreateBuffer(VulkanGraphicsDevice.VulkanDevice, &bufferCreateInfo, pAllocator: null, (ulong*)&vulkanBuffer));
 
@@ -151,6 +151,34 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 }
                 return memoryTypeIndex;
             }
+        }
+
+        private uint GetVulkanBufferUsageKind(GraphicsBufferKind kind)
+        {
+            VkBufferUsageFlagBits vulkanBufferUsageKind;
+
+            switch (kind)
+            {
+                case GraphicsBufferKind.Vertex:
+                {
+                    vulkanBufferUsageKind = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+                    break;
+                }
+
+                case GraphicsBufferKind.Index:
+                {
+                    vulkanBufferUsageKind = VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
+                    break;
+                }
+
+                default:
+                {
+                    vulkanBufferUsageKind = 0;
+                    break;
+                }
+            }
+
+            return (uint)vulkanBufferUsageKind;
         }
 
         private void DisposeVulkanBuffer(VkBuffer vulkanBuffer)

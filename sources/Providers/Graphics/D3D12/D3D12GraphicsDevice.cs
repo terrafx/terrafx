@@ -111,11 +111,11 @@ namespace TerraFX.Graphics.Providers.D3D12
             return new D3D12GraphicsBuffer(this, kind, size, stride);
         }
 
-        /// <inheritdoc cref="CreateGraphicsPipeline(GraphicsShader, GraphicsShader)" />
-        public D3D12GraphicsPipeline CreateD3D12GraphicsPipeline(D3D12GraphicsShader? vertexShader = null, D3D12GraphicsShader? pixelShader = null)
+        /// <inheritdoc cref="CreateGraphicsPipeline(GraphicsShader?, ReadOnlySpan{GraphicsPipelineInputElement}, GraphicsShader?)" />
+        public D3D12GraphicsPipeline CreateD3D12GraphicsPipeline(D3D12GraphicsShader? vertexShader = null, ReadOnlySpan<GraphicsPipelineInputElement> inputElements = default, D3D12GraphicsShader? pixelShader = null)
         {
             _state.ThrowIfDisposedOrDisposing();
-            return new D3D12GraphicsPipeline(this, vertexShader, pixelShader);
+            return new D3D12GraphicsPipeline(this, vertexShader, inputElements, pixelShader);
         }
 
         /// <inheritdoc cref="CreateGraphicsPrimitive(GraphicsPipeline, GraphicsBuffer, GraphicsBuffer)" />
@@ -136,7 +136,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         public override GraphicsBuffer CreateGraphicsBuffer(GraphicsBufferKind kind, ulong size, ulong stride) => CreateD3D12GraphicsBuffer(kind, size, stride);
 
         /// <inheritdoc />
-        public override GraphicsPipeline CreateGraphicsPipeline(GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null) => CreateD3D12GraphicsPipeline((D3D12GraphicsShader?)vertexShader, (D3D12GraphicsShader?)pixelShader);
+        public override GraphicsPipeline CreateGraphicsPipeline(GraphicsShader? vertexShader = null, ReadOnlySpan<GraphicsPipelineInputElement> inputElements = default, GraphicsShader? pixelShader = null) => CreateD3D12GraphicsPipeline((D3D12GraphicsShader?)vertexShader, inputElements, (D3D12GraphicsShader?)pixelShader);
 
         /// <inheritdoc />
         public override GraphicsPrimitive CreateGraphicsPrimitive(GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer, GraphicsBuffer? indexBuffer = null) => CreateD3D12GraphicsPrimitive((D3D12GraphicsPipeline)graphicsPipeline, (D3D12GraphicsBuffer)vertexBuffer, (D3D12GraphicsBuffer?)indexBuffer);
