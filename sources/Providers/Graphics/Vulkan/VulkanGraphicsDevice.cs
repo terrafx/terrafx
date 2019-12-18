@@ -134,6 +134,46 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <summary>Gets a readonly span of the <see cref="VkImage" /> used by <see cref="VulkanSwapchain" />.</summary>
         public ReadOnlySpan<VkImage> VulkanSwapchainImages => _vulkanSwapchainImages.Value;
 
+        /// <inheritdoc cref="CreateGraphicsBuffer(GraphicsBufferKind, ulong, ulong)" />
+        public VulkanGraphicsBuffer CreateVulkanGraphicsBuffer(GraphicsBufferKind kind, ulong size, ulong stride)
+        {
+            _state.ThrowIfDisposedOrDisposing();
+            return new VulkanGraphicsBuffer(this, kind, size, stride);
+        }
+
+        /// <inheritdoc cref="CreateGraphicsPipeline(GraphicsShader, GraphicsShader)" />
+        public VulkanGraphicsPipeline CreateVulkanGraphicsPipeline(VulkanGraphicsShader? vertexShader = null, VulkanGraphicsShader? pixelShader = null)
+        {
+            _state.ThrowIfDisposedOrDisposing();
+            return new VulkanGraphicsPipeline(this, vertexShader, pixelShader);
+        }
+
+        /// <inheritdoc cref="CreateGraphicsPrimitive(GraphicsPipeline, GraphicsBuffer)" />
+        public VulkanGraphicsPrimitive CreateVulkanGraphicsPrimitive(VulkanGraphicsPipeline graphicsPipeline, VulkanGraphicsBuffer vertexBuffer)
+        {
+            _state.ThrowIfDisposedOrDisposing();
+            return new VulkanGraphicsPrimitive(this, graphicsPipeline, vertexBuffer);
+        }
+
+        /// <inheritdoc cref="CreateGraphicsShader(GraphicsShaderKind, ReadOnlySpan{byte}, string)" />
+        public VulkanGraphicsShader CreateVulkanGraphicsShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
+        {
+            _state.ThrowIfDisposedOrDisposing();
+            return new VulkanGraphicsShader(this, kind, bytecode, entryPointName);
+        }
+
+        /// <inheritdoc />
+        public override GraphicsBuffer CreateGraphicsBuffer(GraphicsBufferKind kind, ulong size, ulong stride) => CreateVulkanGraphicsBuffer(kind, size, stride);
+
+        /// <inheritdoc />
+        public override GraphicsPipeline CreateGraphicsPipeline(GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null) => CreateVulkanGraphicsPipeline((VulkanGraphicsShader?)vertexShader, (VulkanGraphicsShader?)pixelShader);
+
+        /// <inheritdoc />
+        public override GraphicsPrimitive CreateGraphicsPrimitive(GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer) => CreateVulkanGraphicsPrimitive((VulkanGraphicsPipeline)graphicsPipeline, (VulkanGraphicsBuffer)vertexBuffer);
+
+        /// <inheritdoc />
+        public override GraphicsShader CreateGraphicsShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName) => CreateVulkanGraphicsShader(kind, bytecode, entryPointName);
+
         /// <inheritdoc />
         public override void PresentFrame()
         {

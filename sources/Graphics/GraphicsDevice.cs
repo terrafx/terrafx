@@ -34,8 +34,48 @@ namespace TerraFX.Graphics
         /// <summary>Gets an index which can be used to lookup the current graphics context.</summary>
         public abstract int GraphicsContextIndex { get; }
 
-        /// <summary>Gets the <see cref="IGraphicsSurface" /> for the instance.</summary>
+        /// <summary>Gets the graphics surface on which the device can render.</summary>
         public IGraphicsSurface GraphicsSurface => _graphicsSurface;
+
+        /// <summary>Creates a new graphics buffer for the device.</summary>
+        /// <param name="kind">The kind of graphics buffer to create.</param>
+        /// <param name="size">The size, in bytes, of the graphics buffer.</param>
+        /// <param name="stride">The size, in bytes, of the graphics buffer elements.</param>
+        /// <returns>A new graphics buffer created for the device.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="kind" /> is unsupported.</exception>
+        /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
+        public abstract GraphicsBuffer CreateGraphicsBuffer(GraphicsBufferKind kind, ulong size, ulong stride);
+
+        /// <summary>Creates a new graphics pipeline for the device.</summary>
+        /// <param name="vertexShader">The vertex shader for the graphics pipeline or <c>null</c> if none exists.</param>
+        /// <param name="pixelShader">The pixel shader for the graphics pipeline or <c>null</c> if none exists.</param>
+        /// <returns>A new graphics pipeline created for the device.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexShader" /> is not <see cref="GraphicsShaderKind.Vertex"/>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexShader" /> was not created for this device.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="pixelShader" /> is not <see cref="GraphicsShaderKind.Pixel"/>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="pixelShader" /> was not created for this device.</exception>
+        /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
+        public abstract GraphicsPipeline CreateGraphicsPipeline(GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null);
+
+        /// <summary>Creates a new graphics primitive for the device.</summary>
+        /// <param name="graphicsPipeline">The graphics pipeline used for rendering the graphics primitive.</param>
+        /// <param name="vertexBuffer">The graphics buffer which holds the vertices for the graphics primitive.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="graphicsPipeline" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="vertexBuffer" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="graphicsPipeline" /> was not created for this device.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexBuffer" /> was not created for this device.</exception>
+        /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
+        public abstract GraphicsPrimitive CreateGraphicsPrimitive(GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer);
+
+        /// <summary>Creates a new graphics shader for the device.</summary>
+        /// <param name="kind">The kind of graphics shader to create.</param>
+        /// <param name="bytecode">The underlying bytecode for the graphics shader.</param>
+        /// <param name="entryPointName">The name of the entry point for the graphics shader.</param>
+        /// <returns>A new graphics shader created for the device.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="entryPointName" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="kind" /> is unsupported.</exception>
+        /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
+        public abstract GraphicsShader CreateGraphicsShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName);
 
         /// <inheritdoc />
         public void Dispose()

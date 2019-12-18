@@ -25,7 +25,7 @@ namespace TerraFX.Graphics
             _index = index;
         }
 
-        /// <summary>Gets the <see cref="GraphicsDevice" /> for the instance.</summary>
+        /// <summary>Gets the <see cref="GraphicsDevice" /> for the context.</summary>
         public GraphicsDevice GraphicsDevice => _graphicsDevice;
 
         /// <summary>Gets the graphics fence used by the context for synchronization.</summary>
@@ -46,6 +46,12 @@ namespace TerraFX.Graphics
             Dispose(isDisposing: true);
             GC.SuppressFinalize(this);
         }
+
+        /// <summary>Draws a graphics primitive to the render surface.</summary>
+        /// <param name="graphicsPrimitive">The graphics primitive to draw.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="graphicsPrimitive" /> is <c>null</c>.</exception>
+        /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
+        public abstract void Draw(GraphicsPrimitive graphicsPrimitive);
 
         /// <summary>Ends the frame currently be rendered.</summary>
         /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>

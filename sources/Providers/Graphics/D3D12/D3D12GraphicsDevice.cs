@@ -100,6 +100,46 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
         public D3D12GraphicsFence WaitForIdleGraphicsFence => _idleGraphicsFence;
 
+        /// <inheritdoc cref="CreateGraphicsBuffer(GraphicsBufferKind, ulong, ulong)" />
+        public D3D12GraphicsBuffer CreateD3D12GraphicsBuffer(GraphicsBufferKind kind, ulong size, ulong stride)
+        {
+            _state.ThrowIfDisposedOrDisposing();
+            return new D3D12GraphicsBuffer(this, kind, size, stride);
+        }
+
+        /// <inheritdoc cref="CreateGraphicsPipeline(GraphicsShader, GraphicsShader)" />
+        public D3D12GraphicsPipeline CreateD3D12GraphicsPipeline(D3D12GraphicsShader? vertexShader = null, D3D12GraphicsShader? pixelShader = null)
+        {
+            _state.ThrowIfDisposedOrDisposing();
+            return new D3D12GraphicsPipeline(this, vertexShader, pixelShader);
+        }
+
+        /// <inheritdoc cref="CreateGraphicsPrimitive(GraphicsPipeline, GraphicsBuffer)" />
+        public D3D12GraphicsPrimitive CreateD3D12GraphicsPrimitive(D3D12GraphicsPipeline graphicsPipeline, D3D12GraphicsBuffer vertexBuffer)
+        {
+            _state.ThrowIfDisposedOrDisposing();
+            return new D3D12GraphicsPrimitive(this, graphicsPipeline, vertexBuffer);
+        }
+
+        /// <inheritdoc cref="CreateGraphicsShader(GraphicsShaderKind, ReadOnlySpan{byte}, string)" />
+        public D3D12GraphicsShader CreateD3D12GraphicsShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
+        {
+            _state.ThrowIfDisposedOrDisposing();
+            return new D3D12GraphicsShader(this, kind, bytecode, entryPointName);
+        }
+
+        /// <inheritdoc />
+        public override GraphicsBuffer CreateGraphicsBuffer(GraphicsBufferKind kind, ulong size, ulong stride) => CreateD3D12GraphicsBuffer(kind, size, stride);
+
+        /// <inheritdoc />
+        public override GraphicsPipeline CreateGraphicsPipeline(GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null) => CreateD3D12GraphicsPipeline((D3D12GraphicsShader?)vertexShader, (D3D12GraphicsShader?)pixelShader);
+
+        /// <inheritdoc />
+        public override GraphicsPrimitive CreateGraphicsPrimitive(GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer) => CreateD3D12GraphicsPrimitive((D3D12GraphicsPipeline)graphicsPipeline, (D3D12GraphicsBuffer)vertexBuffer);
+
+        /// <inheritdoc />
+        public override GraphicsShader CreateGraphicsShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName) => CreateD3D12GraphicsShader(kind, bytecode, entryPointName);
+
         /// <inheritdoc />
         public override void PresentFrame()
         {

@@ -9,10 +9,12 @@ using static TerraFX.Interop.VkCommandPoolCreateFlagBits;
 using static TerraFX.Interop.VkComponentSwizzle;
 using static TerraFX.Interop.VkImageAspectFlagBits;
 using static TerraFX.Interop.VkImageViewType;
+using static TerraFX.Interop.VkPipelineBindPoint;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.VkSubpassContents;
 using static TerraFX.Interop.Vulkan;
 using static TerraFX.Utilities.DisposeUtilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.Vulkan
@@ -70,7 +72,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <inheritdoc cref="GraphicsContext.GraphicsDevice" />
         public VulkanGraphicsDevice VulkanGraphicsDevice => (VulkanGraphicsDevice)GraphicsDevice;
 
-        /// <inheritdoc cref="GraphicsFence" />
+        /// <inheritdoc cref="VulkanGraphicsContext.GraphicsFence" />
         public VulkanGraphicsFence VulkanGraphicsFence => _graphicsFence;
 
         /// <summary>Gets the <see cref="VkImageView" /> used by the context.</summary>
@@ -140,6 +142,25 @@ namespace TerraFX.Graphics.Providers.Vulkan
             };
             vkCmdSetScissor(commandBuffer, firstScissor: 0, scissorCount: 1, &scissorRect);
         }
+
+        /// <inheritdoc cref="Draw(GraphicsPrimitive)" />
+        public void Draw(VulkanGraphicsPrimitive graphicsPrimitive)
+        {
+            ThrowIfNull(graphicsPrimitive, nameof(graphicsPrimitive));
+
+            var graphicsCommandBuffer = VulkanCommandBuffer;
+            var vulkanPipeline = graphicsPrimitive.VulkanGraphicsPipeline.VulkanPipeline;
+            var vertexBuffer = graphicsPrimitive.VulkanVertexBuffer;
+            var vulkanVertexBuffer = vertexBuffer.VulkanBuffer;
+            var vulkanVertexBufferOffset = 0ul;
+
+            vkCmdBindPipeline(graphicsCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline);
+            vkCmdBindVertexBuffers(graphicsCommandBuffer, firstBinding: 0, bindingCount: 1, (ulong*)&vulkanVertexBuffer, &vulkanVertexBufferOffset);
+            vkCmdDraw(graphicsCommandBuffer, vertexCount: (uint)(vertexBuffer.Size / vertexBuffer.Stride), instanceCount: 1, firstVertex: 0, firstInstance: 0);
+        }
+
+        /// <inheritdoc />
+        public override void Draw(GraphicsPrimitive graphicsPrimitive) => Draw((VulkanGraphicsPrimitive)graphicsPrimitive);
 
         /// <inheritdoc />
         public override void EndFrame()
