@@ -24,15 +24,13 @@ namespace TerraFX.Graphics.Providers.Vulkan
     public sealed unsafe class VulkanGraphicsPipeline : GraphicsPipeline
     {
         private ValueLazy<VkPipeline> _vulkanPipeline;
-        private ValueLazy<VkPipelineLayout> _vulkanPipelineLayout;
 
         private State _state;
 
-        internal VulkanGraphicsPipeline(VulkanGraphicsDevice graphicsDevice, VulkanGraphicsShader? vertexShader, ReadOnlySpan<GraphicsPipelineInputElement> inputElements, VulkanGraphicsShader? pixelShader)
-            : base(graphicsDevice, vertexShader, inputElements, pixelShader)
+        internal VulkanGraphicsPipeline(VulkanGraphicsDevice graphicsDevice, VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader, VulkanGraphicsShader? pixelShader)
+            : base(graphicsDevice, signature, vertexShader, pixelShader)
         {
             _vulkanPipeline = new ValueLazy<VkPipeline>(CreateVulkanGraphicsPipeline);
-            _vulkanPipelineLayout = new ValueLazy<VkPipelineLayout>(CreateVulkanPipelineLayout);
 
             _ = _state.Transition(to: Initialized);
         }
@@ -49,11 +47,11 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <summary>Gets the underlying <see cref="VkPipeline" /> for the pipeline.</summary>
         public VkPipeline VulkanPipeline => _vulkanPipeline.Value;
 
-        /// <summary>Gets the underlying <see cref="VkPipelineLayout" /> for the pipeline.</summary>
-        public VkPipelineLayout VulkanPipelineLayout => _vulkanPipelineLayout.Value;
-
         /// <inheritdoc cref="GraphicsPipeline.PixelShader" />
         public VulkanGraphicsShader? VulkanPixelShader => (VulkanGraphicsShader?)PixelShader;
+
+        /// <inheritdoc cref="GraphicsPipeline.Signature" />
+        public VulkanGraphicsPipelineSignature VulkanSignature => (VulkanGraphicsPipelineSignature)Signature;
 
         /// <inheritdoc cref="GraphicsPipeline.VertexShader" />
         public VulkanGraphicsShader? VulkanVertexShader => (VulkanGraphicsShader?)VertexShader;
@@ -66,8 +64,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
             if (priorState < Disposing)
             {
                 _vulkanPipeline.Dispose(DisposeVulkanPipeline);
-                _vulkanPipelineLayout.Dispose(DisposeVulkanPipelineLayout);
 
+                DisposeIfNotNull(Signature);
                 DisposeIfNotNull(PixelShader);
                 DisposeIfNotNull(VertexShader);
             }
@@ -165,7 +163,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     pMultisampleState = &pipelineMultisampleStateCreateInfo,
                     pDepthStencilState = &pipelineDepthStencilStateCreateInfo,
                     pColorBlendState = &pipelineColorBlendStateCreateInfo,
-                    layout = VulkanPipelineLayout,
+                    layout = VulkanSignature.VulkanPipelineLayout,
                     renderPass = graphicsDevice.VulkanRenderPass,
                 };
 
@@ -189,36 +187,43 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     entryPointName.CopyTo(destination);
                     destination[entryPointName.Length] = 0x00;
 
-                    var inputElements = InputElements;
-                    var inputElementsLength = inputElements.Length;
+                    var inputs = VulkanSignature.Inputs;
+                    var inputsLength = inputs.Length;
 
-                    uint inputBindingStride = 0;
-                    vertexInputAttributeDescriptions = new VkVertexInputAttributeDescription[inputElementsLength];
+                    var inputElementsCount = GetInputElementsCount(inputs);
+                    var inputElementsIndex = 0;
 
-                    for (var index = 0; index < inputElementsLength; index++)
+                    if (inputElementsCount != 0)
                     {
-                        var inputElement = inputElements[index];
+                        vertexInputAttributeDescriptions = new VkVertexInputAttributeDescription[inputElementsCount];
 
-                        vertexInputAttributeDescriptions[index] = new VkVertexInputAttributeDescription {
-                            location = unchecked((uint)index),
-                            format = GetInputElementFormat(inputElement.Type),
-                            offset = inputBindingStride,
-                        };
+                        for (var inputIndex = 0; inputIndex < inputsLength; inputIndex++)
+                        {
+                            var input = inputs[inputIndex];
 
-                        inputBindingStride += inputElement.Size;
-                    };
-                    vertexInputBindingDescription.stride = inputBindingStride;
+                            var inputElements = input.Elements;
+                            var inputElementsLength = inputElements.Length;
 
-                    vertexInputAttributeDescriptions = new VkVertexInputAttributeDescription[2] {
-                        new VkVertexInputAttributeDescription {
-                            format = VK_FORMAT_R32G32B32_SFLOAT,
-                        },
-                        new VkVertexInputAttributeDescription {
-                            location = 1,
-                            format = VK_FORMAT_R32G32B32A32_SFLOAT,
-                            offset = sizeof(float) * 3
-                        },
-                    };
+                            uint inputBindingStride = 0;
+
+                            for (var inputElementIndex = 0; inputElementIndex < inputElementsLength; inputElementIndex++)
+                            {
+                                var inputElement = inputElements[inputElementIndex];
+
+                                vertexInputAttributeDescriptions[inputElementsIndex] = new VkVertexInputAttributeDescription {
+                                    location = unchecked((uint)inputElementIndex),
+                                    binding = unchecked((uint)inputIndex),
+                                    format = GetInputElementFormat(inputElement.Type),
+                                    offset = inputBindingStride,
+                                };
+
+                                inputBindingStride += inputElement.Size;
+                                inputElementsIndex++;
+                            }
+
+                            vertexInputBindingDescription.stride = inputBindingStride;
+                        }
+                    }
 
                     graphicsPipelineCreateInfo.pVertexInputState = &pipelineVertexInputStateCreateInfo;
                     graphicsPipelineCreateInfo.pInputAssemblyState = &pipelineInputAssemblyStateCreateInfo;
@@ -273,18 +278,18 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     }
                 }
             }
-        }
 
-        private VkPipelineLayout CreateVulkanPipelineLayout()
-        {
-            VkPipelineLayout vulkanPipelineLayout;
+            static int GetInputElementsCount(ReadOnlySpan<GraphicsPipelineInput> inputs)
+            {
+                var inputElementsCount = 0;
 
-            var pipelineLayoutCreateInfo = new VkPipelineLayoutCreateInfo {
-                sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO
-            };
-            ThrowExternalExceptionIfNotSuccess(nameof(vkCreatePipelineLayout), vkCreatePipelineLayout(VulkanGraphicsDevice.VulkanDevice, &pipelineLayoutCreateInfo, pAllocator: null, (ulong*)&vulkanPipelineLayout));
+                foreach (var input in inputs)
+                {
+                    inputElementsCount += input.Elements.Length;
+                }
 
-            return vulkanPipelineLayout;
+                return inputElementsCount;
+            }
         }
 
         private void DisposeVulkanPipeline(VkPipeline vulkanPipeline)
@@ -292,14 +297,6 @@ namespace TerraFX.Graphics.Providers.Vulkan
             if (vulkanPipeline != VK_NULL_HANDLE)
             {
                 vkDestroyPipeline(VulkanGraphicsDevice.VulkanDevice, vulkanPipeline, pAllocator: null);
-            }
-        }
-
-        private void DisposeVulkanPipelineLayout(VkPipelineLayout vulkanPipelineLayout)
-        {
-            if (vulkanPipelineLayout != VK_NULL_HANDLE)
-            {
-                vkDestroyPipelineLayout(VulkanGraphicsDevice.VulkanDevice, vulkanPipelineLayout, pAllocator: null);
             }
         }
 

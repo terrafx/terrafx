@@ -82,7 +82,7 @@ namespace TerraFX.Samples.Graphics
             var graphicsDevice = _graphicsDevice;
             var graphicsSurface = graphicsDevice.GraphicsSurface;
 
-            var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Identity", "VSMain", "PSMain");
+            var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Identity", "main", "main");
 
             var vertexBuffer = CreateVertexBuffer(graphicsDevice, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
             var indexBuffer = CreateIndexBuffer(graphicsDevice);
@@ -131,15 +131,25 @@ namespace TerraFX.Samples.Graphics
 
             GraphicsPipeline CreateGraphicsPipeline(GraphicsDevice graphicsDevice, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)
             {
-                var vertexShader = CompileShader(graphicsDevice, GraphicsShaderKind.Vertex, "Identity", "main");
-                var pixelShader = CompileShader(graphicsDevice, GraphicsShaderKind.Pixel, "Identity", "main");
+                var signature = CreateGraphicsPipelineSignature(graphicsDevice);
+                var vertexShader = CompileShader(graphicsDevice, GraphicsShaderKind.Vertex, shaderName, vertexShaderEntryPoint);
+                var pixelShader = CompileShader(graphicsDevice, GraphicsShaderKind.Pixel, shaderName, pixelShaderEntryPoint);
 
-                var inputElements = new GraphicsPipelineInputElement[2] {
-                    new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
-                    new GraphicsPipelineInputElement(typeof(Vector4), GraphicsPipelineInputElementKind.Color, size: 16),
+                return graphicsDevice.CreateGraphicsPipeline(signature, vertexShader, pixelShader);
+            }
+
+            GraphicsPipelineSignature CreateGraphicsPipelineSignature(GraphicsDevice graphicsDevice)
+            {
+                var inputs = new GraphicsPipelineInput[1] {
+                    new GraphicsPipelineInput(
+                        new GraphicsPipelineInputElement[2] {
+                            new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
+                            new GraphicsPipelineInputElement(typeof(Vector4), GraphicsPipelineInputElementKind.Color, size: 16),
+                        }
+                    ),
                 };
 
-                return graphicsDevice.CreateGraphicsPipeline(vertexShader, inputElements, pixelShader);
+                return graphicsDevice.CreateGraphicsPipelineSignature(inputs);
             }
         }
     }

@@ -12,14 +12,16 @@ using TerraFX.Utilities;
 
 namespace TerraFX.Samples.Graphics
 {
-    public sealed class HelloTriangle : Sample
+    public sealed class HelloConstantBuffer : Sample
     {
         private GraphicsDevice _graphicsDevice = null!;
         private GraphicsPrimitive _trianglePrimitive = null!;
         private Window _window = null!;
-        private TimeSpan _elapsedTime;
 
-        public HelloTriangle(string name, params Assembly[] compositionAssemblies)
+        private TimeSpan _elapsedTime;
+        private float _trianglePrimitiveTranslationX;
+
+        public HelloConstantBuffer(string name, params Assembly[] compositionAssemblies)
             : base(name, compositionAssemblies)
         {
         }
@@ -46,7 +48,7 @@ namespace TerraFX.Samples.Graphics
 
             _graphicsDevice = graphicsAdapter.CreateGraphicsDevice(_window, graphicsContextCount: 2);
             _trianglePrimitive = CreateTrianglePrimitive();
-            
+
             base.Initialize(application);
         }
 
@@ -64,16 +66,9 @@ namespace TerraFX.Samples.Graphics
 
             if (_window.IsVisible)
             {
-                var graphicsDevice = _graphicsDevice;
-                var graphicsContext = graphicsDevice.GraphicsContexts[graphicsDevice.GraphicsContextIndex];
-
-                var backgroundColor = new ColorRgba(red: 100.0f / 255.0f, green: 149.0f / 255.0f, blue: 237.0f / 255.0f, alpha: 1.0f);
-                graphicsContext.BeginFrame(backgroundColor);
-
-                graphicsContext.Draw(_trianglePrimitive);
-
-                graphicsContext.EndFrame();
-                graphicsDevice.PresentFrame();
+                Update(eventArgs.Delta);
+                Render();
+                Present();
             }
         }
 
@@ -82,10 +77,26 @@ namespace TerraFX.Samples.Graphics
             var graphicsDevice = _graphicsDevice;
             var graphicsSurface = graphicsDevice.GraphicsSurface;
 
-            var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Identity", "main", "main");
+            var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Transform", "main", "main");
             var vertexBuffer = CreateVertexBuffer(graphicsDevice, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
 
-            return graphicsDevice.CreateGraphicsPrimitive(graphicsPipeline, vertexBuffer);
+            var inputBuffers = new GraphicsBuffer[2] {
+                CreateConstantBuffer(graphicsDevice),
+                CreateConstantBuffer(graphicsDevice),
+            };
+            return graphicsDevice.CreateGraphicsPrimitive(graphicsPipeline, vertexBuffer, inputBuffers: inputBuffers);
+
+            static GraphicsBuffer CreateConstantBuffer(GraphicsDevice graphicsDevice)
+            {
+                var constantBuffer = graphicsDevice.CreateGraphicsBuffer(GraphicsBufferKind.Constant, 256, 64);
+
+                ReadOnlySpan<Matrix4x4> value = stackalloc Matrix4x4[1] {
+                    Matrix4x4.Identity,
+                };
+
+                constantBuffer.Write(MemoryMarshal.AsBytes(value));
+                return constantBuffer;
+            }
 
             static GraphicsBuffer CreateVertexBuffer(GraphicsDevice graphicsDevice, float aspectRatio)
             {
@@ -130,8 +141,57 @@ namespace TerraFX.Samples.Graphics
                     ),
                 };
 
-                return graphicsDevice.CreateGraphicsPipelineSignature(inputs);
+                var resources = new GraphicsPipelineResource[2] {
+                    new GraphicsPipelineResource(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
+                    new GraphicsPipelineResource(GraphicsPipelineResourceKind.ConstantBuffer, GraphicsShaderVisibility.Vertex),
+                };
+
+                return graphicsDevice.CreateGraphicsPipelineSignature(inputs, resources);
             }
+        }
+
+        private void Present()
+        {
+            _graphicsDevice.PresentFrame();
+        }
+
+        private void Render()
+        {
+            var graphicsDevice = _graphicsDevice;
+            var graphicsContext = graphicsDevice.GraphicsContexts[graphicsDevice.GraphicsContextIndex];
+
+            var backgroundColor = new ColorRgba(red: 100.0f / 255.0f, green: 149.0f / 255.0f, blue: 237.0f / 255.0f, alpha: 1.0f);
+            graphicsContext.BeginFrame(backgroundColor);
+
+            graphicsContext.Draw(_trianglePrimitive);
+
+            graphicsContext.EndFrame();
+        }
+
+        private void Update(TimeSpan delta)
+        {
+            const float translationSpeed = 1.0f;
+            const float offsetBounds = 1.25f;
+
+            var trianglePrimitiveTranslationX = _trianglePrimitiveTranslationX;
+            {
+                trianglePrimitiveTranslationX += (float)(translationSpeed * delta.TotalSeconds);
+
+                if (trianglePrimitiveTranslationX > offsetBounds)
+                {
+                    trianglePrimitiveTranslationX = -offsetBounds;
+                }
+            }
+            _trianglePrimitiveTranslationX = trianglePrimitiveTranslationX;
+
+            // Shaders take transposed matrices, so we want to set X.W
+            ReadOnlySpan<Matrix4x4> value = stackalloc Matrix4x4[1] {
+                Matrix4x4.Identity.WithX(
+                    new Vector4(1.0f, 0.0f, 0.0f, trianglePrimitiveTranslationX)
+                ),
+            };
+
+            _trianglePrimitive.ConstantBuffers[0].Write(MemoryMarshal.AsBytes(value));
         }
     }
 }

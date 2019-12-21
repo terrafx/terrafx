@@ -1,5 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+using System;
 using TerraFX.Utilities;
 using static TerraFX.Utilities.DisposeUtilities;
 using static TerraFX.Utilities.State;
@@ -11,8 +12,8 @@ namespace TerraFX.Graphics.Providers.D3D12
     {
         private State _state;
 
-        internal D3D12GraphicsPrimitive(D3D12GraphicsDevice graphicsDevice, D3D12GraphicsPipeline graphicsPipeline, D3D12GraphicsBuffer vertexBuffer, D3D12GraphicsBuffer? indexBuffer)
-            : base(graphicsDevice, graphicsPipeline, vertexBuffer, indexBuffer)
+        internal D3D12GraphicsPrimitive(D3D12GraphicsDevice graphicsDevice, D3D12GraphicsPipeline graphicsPipeline, D3D12GraphicsBuffer vertexBuffer, D3D12GraphicsBuffer? indexBuffer, ReadOnlySpan<GraphicsBuffer> constantBuffers)
+            : base(graphicsDevice, graphicsPipeline, vertexBuffer, indexBuffer, constantBuffers)
         {
             _ = _state.Transition(to: Initialized);
         }
@@ -45,6 +46,11 @@ namespace TerraFX.Graphics.Providers.D3D12
                 DisposeIfNotNull(GraphicsPipeline);
                 DisposeIfNotNull(VertexBuffer);
                 DisposeIfNotNull(IndexBuffer);
+
+                foreach (var inputBuffer in ConstantBuffers)
+                {
+                    DisposeIfNotNull(inputBuffer);
+                }
             }
 
             _state.EndDispose();

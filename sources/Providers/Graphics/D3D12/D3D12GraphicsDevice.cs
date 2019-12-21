@@ -111,18 +111,18 @@ namespace TerraFX.Graphics.Providers.D3D12
             return new D3D12GraphicsBuffer(this, kind, size, stride);
         }
 
-        /// <inheritdoc cref="CreateGraphicsPipeline(GraphicsShader?, ReadOnlySpan{GraphicsPipelineInputElement}, GraphicsShader?)" />
-        public D3D12GraphicsPipeline CreateD3D12GraphicsPipeline(D3D12GraphicsShader? vertexShader = null, ReadOnlySpan<GraphicsPipelineInputElement> inputElements = default, D3D12GraphicsShader? pixelShader = null)
+        /// <inheritdoc cref="CreateGraphicsPipeline(GraphicsPipelineSignature, GraphicsShader?, GraphicsShader?)" />
+        public D3D12GraphicsPipeline CreateD3D12GraphicsPipeline(D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader ? vertexShader = null, D3D12GraphicsShader? pixelShader = null)
         {
             _state.ThrowIfDisposedOrDisposing();
-            return new D3D12GraphicsPipeline(this, vertexShader, inputElements, pixelShader);
+            return new D3D12GraphicsPipeline(this, signature, vertexShader, pixelShader);
         }
 
-        /// <inheritdoc cref="CreateGraphicsPrimitive(GraphicsPipeline, GraphicsBuffer, GraphicsBuffer)" />
-        public D3D12GraphicsPrimitive CreateD3D12GraphicsPrimitive(D3D12GraphicsPipeline graphicsPipeline, D3D12GraphicsBuffer vertexBuffer, D3D12GraphicsBuffer? indexBuffer = null)
+        /// <inheritdoc cref="CreateGraphicsPrimitive(GraphicsPipeline, GraphicsBuffer, GraphicsBuffer, ReadOnlySpan{GraphicsBuffer})" />
+        public D3D12GraphicsPrimitive CreateD3D12GraphicsPrimitive(D3D12GraphicsPipeline graphicsPipeline, D3D12GraphicsBuffer vertexBuffer, D3D12GraphicsBuffer? indexBuffer = null, ReadOnlySpan<GraphicsBuffer> inputBuffers = default)
         {
             _state.ThrowIfDisposedOrDisposing();
-            return new D3D12GraphicsPrimitive(this, graphicsPipeline, vertexBuffer, indexBuffer);
+            return new D3D12GraphicsPrimitive(this, graphicsPipeline, vertexBuffer, indexBuffer, inputBuffers);
         }
 
         /// <inheritdoc cref="CreateGraphicsShader(GraphicsShaderKind, ReadOnlySpan{byte}, string)" />
@@ -136,10 +136,17 @@ namespace TerraFX.Graphics.Providers.D3D12
         public override GraphicsBuffer CreateGraphicsBuffer(GraphicsBufferKind kind, ulong size, ulong stride) => CreateD3D12GraphicsBuffer(kind, size, stride);
 
         /// <inheritdoc />
-        public override GraphicsPipeline CreateGraphicsPipeline(GraphicsShader? vertexShader = null, ReadOnlySpan<GraphicsPipelineInputElement> inputElements = default, GraphicsShader? pixelShader = null) => CreateD3D12GraphicsPipeline((D3D12GraphicsShader?)vertexShader, inputElements, (D3D12GraphicsShader?)pixelShader);
+        public override GraphicsPipeline CreateGraphicsPipeline(GraphicsPipelineSignature signature, GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null) => CreateD3D12GraphicsPipeline((D3D12GraphicsPipelineSignature)signature, (D3D12GraphicsShader?)vertexShader, (D3D12GraphicsShader?)pixelShader);
 
         /// <inheritdoc />
-        public override GraphicsPrimitive CreateGraphicsPrimitive(GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer, GraphicsBuffer? indexBuffer = null) => CreateD3D12GraphicsPrimitive((D3D12GraphicsPipeline)graphicsPipeline, (D3D12GraphicsBuffer)vertexBuffer, (D3D12GraphicsBuffer?)indexBuffer);
+        public override GraphicsPipelineSignature CreateGraphicsPipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResource> resources = default)
+        {
+            _state.ThrowIfDisposedOrDisposing();
+            return new D3D12GraphicsPipelineSignature(this, inputs, resources);
+        }
+
+        /// <inheritdoc />
+        public override GraphicsPrimitive CreateGraphicsPrimitive(GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer, GraphicsBuffer? indexBuffer = null, ReadOnlySpan<GraphicsBuffer> inputBuffers = default) => CreateD3D12GraphicsPrimitive((D3D12GraphicsPipeline)graphicsPipeline, (D3D12GraphicsBuffer)vertexBuffer, (D3D12GraphicsBuffer?)indexBuffer, inputBuffers);
 
         /// <inheritdoc />
         public override GraphicsShader CreateGraphicsShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName) => CreateD3D12GraphicsShader(kind, bytecode, entryPointName);
