@@ -26,14 +26,14 @@
     <PackageReference Update="NUnit3TestAdapter" Version="3.15.1" />
     <PackageReference Update="System.Composition" Version="1.4.0" />
     <PackageReference Update="System.IO.Pipelines" Version="4.7.0" />
-    <PackageReference Update="TerraFX.Interop.D3D12" Version="10.0.18362-alpha-20191212.1" />
-    <PackageReference Update="TerraFX.Interop.DXGIDebug" Version="10.0.18362-alpha-20191212.1" />
-    <PackageReference Update="TerraFX.Interop.Kernel32" Version="10.0.18362-alpha-20191212.1" />
-    <PackageReference Update="TerraFX.Interop.Libc" Version="1.2017.0-alpha-20191206.1" />
-    <PackageReference Update="TerraFX.Interop.PulseAudio" Version="12.2.0-alpha-20191206.1" />
-    <PackageReference Update="TerraFX.Interop.User32" Version="10.0.18362-alpha-20191212.1" />
-    <PackageReference Update="TerraFX.Interop.Vulkan" Version="1.1.126-alpha-20191209.1" />
-    <PackageReference Update="TerraFX.Interop.Xlib" Version="6.3.0-alpha-20191206.1" />
+    <PackageReference Update="TerraFX.Interop.D3D12" Version="10.0.18362-alpha-20191220.1" />
+    <PackageReference Update="TerraFX.Interop.DXGIDebug" Version="10.0.18362-alpha-20191220.1" />
+    <PackageReference Update="TerraFX.Interop.Kernel32" Version="10.0.18362-alpha-20191220.1" />
+    <PackageReference Update="TerraFX.Interop.Libc" Version="1.2017.0-alpha-20191220.1" />
+    <PackageReference Update="TerraFX.Interop.PulseAudio" Version="12.2.0-alpha-20191220.1" />
+    <PackageReference Update="TerraFX.Interop.User32" Version="10.0.18362-alpha-20191220.1" />
+    <PackageReference Update="TerraFX.Interop.Vulkan" Version="1.1.126-alpha-20191220.1" />
+    <PackageReference Update="TerraFX.Interop.Xlib" Version="6.3.0-alpha-20191220.1" />
   </ItemGroup>
 
 </Project>
