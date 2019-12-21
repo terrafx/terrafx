@@ -1,5 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+using System;
 using TerraFX.Utilities;
 using static TerraFX.Utilities.DisposeUtilities;
 using static TerraFX.Utilities.State;
@@ -11,8 +12,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
     {
         private State _state;
 
-        internal VulkanGraphicsPrimitive(VulkanGraphicsDevice graphicsDevice, VulkanGraphicsPipeline graphicsPipeline, VulkanGraphicsBuffer vertexBuffer, VulkanGraphicsBuffer? indexBuffer)
-            : base(graphicsDevice, graphicsPipeline, vertexBuffer, indexBuffer)
+        internal VulkanGraphicsPrimitive(VulkanGraphicsDevice graphicsDevice, VulkanGraphicsPipeline graphicsPipeline, VulkanGraphicsBuffer vertexBuffer, VulkanGraphicsBuffer? indexBuffer, ReadOnlySpan<GraphicsBuffer> inputBuffers = default)
+            : base(graphicsDevice, graphicsPipeline, vertexBuffer, indexBuffer, inputBuffers)
         {
             _ = _state.Transition(to: Initialized);
         }

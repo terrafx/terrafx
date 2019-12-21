@@ -47,29 +47,37 @@ namespace TerraFX.Graphics
         public abstract GraphicsBuffer CreateGraphicsBuffer(GraphicsBufferKind kind, ulong size, ulong stride);
 
         /// <summary>Creates a new graphics pipeline for the device.</summary>
+        /// <param name="signature">The signature which details the inputs given and resources available to the graphics pipeline.</param>
         /// <param name="vertexShader">The vertex shader for the graphics pipeline or <c>null</c> if none exists.</param>
-        /// <param name="inputElements">The input elements describing the inputs to <paramref name="vertexShader" /> or <c>null</c> if none exist.</param>
         /// <param name="pixelShader">The pixel shader for the graphics pipeline or <c>null</c> if none exists.</param>
         /// <returns>A new graphics pipeline created for the device.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="vertexShader" /> is <c>null</c> and <paramref name="inputElements" /> is not empty.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="signature" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexShader" /> is not <see cref="GraphicsShaderKind.Vertex"/>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexShader" /> was not created for this device.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="pixelShader" /> is not <see cref="GraphicsShaderKind.Pixel"/>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="pixelShader" /> was not created for this device.</exception>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-        public abstract GraphicsPipeline CreateGraphicsPipeline(GraphicsShader? vertexShader = null, ReadOnlySpan<GraphicsPipelineInputElement> inputElements = default, GraphicsShader? pixelShader = null);
+        public abstract GraphicsPipeline CreateGraphicsPipeline(GraphicsPipelineSignature signature, GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null);
+
+        /// <summary>Creates a new graphics pipeline signature for the device.</summary>
+        /// <param name="inputs">The inputs given to the graphics pipeline or <see cref="ReadOnlySpan{T}.Empty" /> if none exist.</param>
+        /// <param name="resources">The resources available to the graphics pipeline or <see cref="ReadOnlySpan{T}.Empty" /> if none exist.</param>
+        /// <returns>A new graphics pipeline signature created for the device.</returns>
+        /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
+        public abstract GraphicsPipelineSignature CreateGraphicsPipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResource> resources = default);
 
         /// <summary>Creates a new graphics primitive for the device.</summary>
         /// <param name="graphicsPipeline">The graphics pipeline used for rendering the graphics primitive.</param>
         /// <param name="vertexBuffer">The graphics buffer which holds the vertices for the graphics primitive.</param>
         /// <param name="indexBuffer">The graphics buffer which holds the indices for the graphics primitive or <c>null</c> if none exists.</param>
+        /// <param name="inputBuffers"></param>
         /// <exception cref="ArgumentNullException"><paramref name="graphicsPipeline" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="vertexBuffer" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="graphicsPipeline" /> was not created for this device.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexBuffer" /> was not created for this device.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexBuffer" /> was not created for this device.</exception>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-        public abstract GraphicsPrimitive CreateGraphicsPrimitive(GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer, GraphicsBuffer? indexBuffer = null);
+        public abstract GraphicsPrimitive CreateGraphicsPrimitive(GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer, GraphicsBuffer? indexBuffer = null, ReadOnlySpan<GraphicsBuffer> inputBuffers = default);
 
         /// <summary>Creates a new graphics shader for the device.</summary>
         /// <param name="kind">The kind of graphics shader to create.</param>

@@ -7,6 +7,7 @@ using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
 using static TerraFX.Interop.VkCommandPoolCreateFlagBits;
 using static TerraFX.Interop.VkComponentSwizzle;
+using static TerraFX.Interop.VkDescriptorType;
 using static TerraFX.Interop.VkImageAspectFlagBits;
 using static TerraFX.Interop.VkImageViewType;
 using static TerraFX.Interop.VkIndexType;
@@ -151,13 +152,46 @@ namespace TerraFX.Graphics.Providers.Vulkan
             ThrowIfNull(graphicsPrimitive, nameof(graphicsPrimitive));
 
             var graphicsCommandBuffer = VulkanCommandBuffer;
-            var vulkanPipeline = graphicsPrimitive.VulkanGraphicsPipeline.VulkanPipeline;
+            var graphicsPipeline = graphicsPrimitive.VulkanGraphicsPipeline;
+            var graphicsPipelineSignature = graphicsPipeline.VulkanSignature;
+            var vulkanPipeline = graphicsPipeline.VulkanPipeline;
             var vertexBuffer = graphicsPrimitive.VulkanVertexBuffer;
             var vulkanVertexBuffer = vertexBuffer.VulkanBuffer;
             var vulkanVertexBufferOffset = 0ul;
 
             vkCmdBindPipeline(graphicsCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline);
             vkCmdBindVertexBuffers(graphicsCommandBuffer, firstBinding: 0, bindingCount: 1, (ulong*)&vulkanVertexBuffer, &vulkanVertexBufferOffset);
+
+            var vulkanDescriptorSet = graphicsPipelineSignature.VulkanDescriptorSet;
+
+            if (vulkanDescriptorSet != VK_NULL_HANDLE)
+            {
+                var constantBuffers = graphicsPrimitive.ConstantBuffers;
+                var constantBuffersLength = constantBuffers.Length;
+
+                for (var index = 0; index < constantBuffersLength; index++)
+                {
+                    var constantBuffer = (VulkanGraphicsBuffer)constantBuffers[index];
+
+                    var descriptorBufferInfo = new VkDescriptorBufferInfo {
+                        buffer = constantBuffer.VulkanBuffer,
+                        offset = 0,
+                        range = constantBuffer.Size,
+                    };
+
+                    var writeDescriptorSet = new VkWriteDescriptorSet {
+                        sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+                        dstSet = vulkanDescriptorSet,
+                        dstBinding = unchecked((uint)index),
+                        descriptorCount = 1,
+                        descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                        pBufferInfo = &descriptorBufferInfo,
+                    };
+                    vkUpdateDescriptorSets(VulkanGraphicsDevice.VulkanDevice, 1, &writeDescriptorSet, 0, pDescriptorCopies: null);
+                }
+
+                vkCmdBindDescriptorSets(graphicsCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipelineSignature.VulkanPipelineLayout, firstSet: 0, 1, (ulong*)&vulkanDescriptorSet, dynamicOffsetCount: 0, pDynamicOffsets: null);
+            }
 
             var indexBuffer = graphicsPrimitive.VulkanIndexBuffer;
 

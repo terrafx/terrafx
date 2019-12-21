@@ -5,10 +5,8 @@ using TerraFX.Interop;
 using TerraFX.Numerics;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
-using static TerraFX.Interop.D3D_ROOT_SIGNATURE_VERSION;
 using static TerraFX.Interop.D3D12;
 using static TerraFX.Interop.D3D12_PRIMITIVE_TOPOLOGY_TYPE;
-using static TerraFX.Interop.D3D12_ROOT_SIGNATURE_FLAGS;
 using static TerraFX.Interop.DXGI_FORMAT;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Utilities.DisposeUtilities;
@@ -20,15 +18,13 @@ namespace TerraFX.Graphics.Providers.D3D12
     public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
     {
         private ValueLazy<Pointer<ID3D12PipelineState>> _d3d12PipelineState;
-        private ValueLazy<Pointer<ID3D12RootSignature>> _d3d12RootSignature;
 
         private State _state;
 
-        internal D3D12GraphicsPipeline(D3D12GraphicsDevice graphicsDevice, D3D12GraphicsShader? vertexShader, ReadOnlySpan<GraphicsPipelineInputElement> inputElements, D3D12GraphicsShader? pixelShader)
-            : base(graphicsDevice, vertexShader, inputElements, pixelShader)
+        internal D3D12GraphicsPipeline(D3D12GraphicsDevice graphicsDevice, D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader)
+            : base(graphicsDevice, signature, vertexShader, pixelShader)
         {
             _d3d12PipelineState = new ValueLazy<Pointer<ID3D12PipelineState>>(CreateD3D12GraphicsPipelineState);
-            _d3d12RootSignature = new ValueLazy<Pointer<ID3D12RootSignature>>(CreateD3D12RootSignature);
 
             _ = _state.Transition(to: Initialized);
         }
@@ -54,8 +50,8 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <inheritdoc cref="GraphicsPipeline.PixelShader" />
         public D3D12GraphicsShader? D3D12PixelShader => (D3D12GraphicsShader?)PixelShader;
 
-        /// <summary>Gets the underlying <see cref="ID3D12RootSignature" /> for the pipeline.</summary>
-        public ID3D12RootSignature* D3D12RootSignature => _d3d12RootSignature.Value;
+        /// <inheritdoc cref="GraphicsPipeline.Signature" />
+        public D3D12GraphicsPipelineSignature D3D12Signature => (D3D12GraphicsPipelineSignature)Signature;
 
         /// <inheritdoc cref="GraphicsPipeline.VertexShader" />
         public D3D12GraphicsShader? D3D12VertexShader => (D3D12GraphicsShader?)VertexShader;
@@ -68,8 +64,8 @@ namespace TerraFX.Graphics.Providers.D3D12
             if (priorState < Disposing)
             {
                 _d3d12PipelineState.Dispose(ReleaseIfNotNull);
-                _d3d12RootSignature.Dispose(ReleaseIfNotNull);
 
+                DisposeIfNotNull(Signature);
                 DisposeIfNotNull(PixelShader);
                 DisposeIfNotNull(VertexShader);
             }
@@ -86,7 +82,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             var inputElementDescs = Array.Empty<D3D12_INPUT_ELEMENT_DESC>();
 
             var graphicsPipelineStateDesc = new D3D12_GRAPHICS_PIPELINE_STATE_DESC {
-                pRootSignature = D3D12RootSignature,
+                pRootSignature = D3D12Signature.D3D12RootSignature,
                 RasterizerState = D3D12_RASTERIZER_DESC.DEFAULT,
                 BlendState = D3D12_BLEND_DESC.DEFAULT,
                 DepthStencilState = D3D12_DEPTH_STENCIL_DESC.DEFAULT,
@@ -102,24 +98,44 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             if (vertexShader != null)
             {
-                var inputElements = InputElements;
-                var inputElementsLength = inputElements.Length;
+                var inputs = D3D12Signature.Inputs;
+                var inputsLength = inputs.Length;
 
-                uint inputLayoutStride = 0;
-                inputElementDescs = new D3D12_INPUT_ELEMENT_DESC[inputElementsLength];
+                var inputElementsCount = GetInputElementsCount(inputs);
+                var inputElementsIndex = 0;
 
-                for (var index = 0; index < inputElementsLength; index++)
+                var inputSlotIndex = 0;
+
+                if (inputElementsCount != 0)
                 {
-                    var inputElement = inputElements[index];
+                    inputElementDescs = new D3D12_INPUT_ELEMENT_DESC[inputElementsCount];
 
-                    inputElementDescs[index] = new D3D12_INPUT_ELEMENT_DESC {
-                        SemanticName = GetInputElementSemanticName(inputElement.Kind).AsPointer(),
-                        Format = GetInputElementFormat(inputElement.Type),
-                        AlignedByteOffset = inputLayoutStride,
-                    };
+                    for (var inputIndex = 0; inputIndex < inputsLength; inputIndex++)
+                    {
+                        var input = inputs[inputIndex];
 
-                    inputLayoutStride += inputElement.Size;
-                };
+                        var inputElements = input.Elements;
+                        var inputElementsLength = inputElements.Length;
+
+                        uint inputLayoutStride = 0;
+
+                        for (var inputElementIndex = 0; inputElementIndex < inputElementsLength; inputElementIndex++)
+                        {
+                            var inputElement = inputElements[inputElementIndex];
+
+                            inputElementDescs[inputElementsIndex] = new D3D12_INPUT_ELEMENT_DESC {
+                                SemanticName = GetInputElementSemanticName(inputElement.Kind).AsPointer(),
+                                Format = GetInputElementFormat(inputElement.Type),
+                                InputSlot = unchecked((uint)inputSlotIndex),
+                                AlignedByteOffset = inputLayoutStride,
+                            };
+
+                            inputLayoutStride += inputElement.Size;
+                            inputElementsIndex++;
+                        }
+                        inputSlotIndex++;
+                    }
+                }
 
                 graphicsPipelineStateDesc.VS = vertexShader.D3D12ShaderBytecode;
             }
@@ -142,33 +158,17 @@ namespace TerraFX.Graphics.Providers.D3D12
                 ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateGraphicsPipelineState), D3D12GraphicsDevice.D3D12Device->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, &iid, (void**)&d3d12GraphicsPipelineState));
             }
             return d3d12GraphicsPipelineState;
-        }
 
-        private Pointer<ID3D12RootSignature> CreateD3D12RootSignature()
-        {
-            _state.ThrowIfDisposedOrDisposing();
-
-            ID3DBlob* rootSignatureBlob = null;
-            ID3DBlob* rootSignatureErrorBlob = null;
-
-            try
+            static int GetInputElementsCount(ReadOnlySpan<GraphicsPipelineInput> inputs)
             {
-                ID3D12RootSignature* d3d12RootSignature;
+                var inputElementsCount = 0;
 
-                var rootSignatureDesc = new D3D12_ROOT_SIGNATURE_DESC {
-                    Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT,
-                };
-                ThrowExternalExceptionIfFailed(nameof(D3D12SerializeRootSignature), D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &rootSignatureBlob, &rootSignatureErrorBlob));
+                foreach (var input in inputs)
+                {
+                    inputElementsCount += input.Elements.Length;
+                }
 
-                var iid = IID_ID3D12RootSignature;
-                ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateRootSignature), D3D12GraphicsDevice.D3D12Device->CreateRootSignature(0, rootSignatureBlob->GetBufferPointer(), rootSignatureBlob->GetBufferSize(), &iid, (void**)&d3d12RootSignature));
-
-                return d3d12RootSignature;
-            }
-            finally
-            {
-                ReleaseIfNotNull(rootSignatureErrorBlob);
-                ReleaseIfNotNull(rootSignatureBlob);
+                return inputElementsCount;
             }
         }
 

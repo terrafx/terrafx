@@ -171,6 +171,12 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     break;
                 }
 
+                case GraphicsBufferKind.Constant:
+                {
+                    vulkanBufferUsageKind = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+                    break;
+                }
+
                 default:
                 {
                     vulkanBufferUsageKind = 0;

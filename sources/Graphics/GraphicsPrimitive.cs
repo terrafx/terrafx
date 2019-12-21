@@ -12,19 +12,21 @@ namespace TerraFX.Graphics
         private readonly GraphicsPipeline _graphicsPipeline;
         private readonly GraphicsBuffer _vertexBuffer;
         private readonly GraphicsBuffer? _indexBuffer;
+        private readonly GraphicsBuffer[] _constantBuffers;
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsPrimitive" /> class.</summary>
         /// <param name="graphicsDevice">The graphics device for which the primitive was created.</param>
         /// <param name="graphicsPipeline">The graphics pipeline used for rendering the primitive.</param>
         /// <param name="vertexBuffer">The graphics buffer which holds the vertices for the primitive.</param>
         /// <param name="indexBuffer">The graphics buffer which holds the indices for the primitive or <c>null</c> if none exists.</param>
+        /// <param name="constantBuffers">The constant buffers which hold the constant data for the primitive or an empty span if none exist.</param>
         /// <exception cref="ArgumentNullException"><paramref name="graphicsDevice" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="graphicsPipeline" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="vertexBuffer" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="graphicsPipeline" /> was not created for <paramref name="graphicsDevice" />.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexBuffer" /> was not created for <paramref name="graphicsDevice" />.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexBuffer" /> was not created for <paramref name="graphicsDevice" />.</exception>
-        protected GraphicsPrimitive(GraphicsDevice graphicsDevice, GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer, GraphicsBuffer? indexBuffer)
+        protected GraphicsPrimitive(GraphicsDevice graphicsDevice, GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer, GraphicsBuffer? indexBuffer, ReadOnlySpan<GraphicsBuffer> constantBuffers)
         {
             ThrowIfNull(graphicsPipeline, nameof(graphicsPipeline));
             ThrowIfNull(vertexBuffer, nameof(vertexBuffer));
@@ -49,7 +51,11 @@ namespace TerraFX.Graphics
 
             _vertexBuffer = vertexBuffer;
             _indexBuffer = indexBuffer;
+            _constantBuffers = constantBuffers.ToArray();
         }
+
+        /// <summary>Gets the constant buffers which hold the constant data for the primitive or <see cref="ReadOnlySpan{T}.Empty" /> if none exist.</summary>
+        public ReadOnlySpan<GraphicsBuffer> ConstantBuffers => _constantBuffers;
 
         /// <summary>Gets the graphics device for which the pipeline was created.</summary>
         public GraphicsDevice GraphicsDevice => _graphicsDevice;

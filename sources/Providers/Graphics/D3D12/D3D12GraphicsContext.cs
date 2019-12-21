@@ -133,7 +133,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             var graphicsPipeline = graphicsPrimitive.D3D12GraphicsPipeline;
             var vertexBuffer = graphicsPrimitive.D3D12VertexBuffer;
 
-            graphicsCommandList->SetGraphicsRootSignature(graphicsPipeline.D3D12RootSignature);
+            graphicsCommandList->SetGraphicsRootSignature(graphicsPipeline.D3D12Signature.D3D12RootSignature);
             graphicsCommandList->SetPipelineState(graphicsPipeline.D3D12PipelineState);
 
             var vertexBufferView = new D3D12_VERTEX_BUFFER_VIEW {
@@ -142,6 +142,15 @@ namespace TerraFX.Graphics.Providers.D3D12
                 SizeInBytes = (uint)vertexBuffer.Size,
             };
             graphicsCommandList->IASetVertexBuffers(StartSlot: 0, NumViews: 1, &vertexBufferView);
+
+            var constantBuffers = graphicsPrimitive.ConstantBuffers;
+            var constantBuffersLength = constantBuffers.Length;
+
+            for (var index = 0; index < constantBuffersLength; index++)
+            {
+                var constantBuffer = (D3D12GraphicsBuffer)constantBuffers[index];
+                graphicsCommandList->SetGraphicsRootConstantBufferView(unchecked((uint)index), constantBuffer.D3D12Resource->GetGPUVirtualAddress());
+            }
 
             var indexBuffer = graphicsPrimitive.D3D12IndexBuffer;
 

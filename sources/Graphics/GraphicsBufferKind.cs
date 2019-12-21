@@ -13,5 +13,8 @@ namespace TerraFX.Graphics
 
         /// <summary>Defines an index buffer.</summary>
         Index,
+
+        /// <summary>Defines a constant buffer.</summary>
+        Constant,
     }
 }
