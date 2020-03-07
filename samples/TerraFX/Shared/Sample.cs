@@ -110,9 +110,9 @@ namespace TerraFX.Samples
                 var glslcProcessStartInfo = new ProcessStartInfo {
                     Arguments = $"-fshader-stage={GetVulkanShaderStage(kind)} -o \"{assetOutput}\" -std=450core --target-env=vulkan1.0 --target-spv=spv1.0 -x glsl{additionalArgs} {assetPath}",
                     FileName = "glslc.exe",
-                    WorkingDirectory = Path.GetDirectoryName(assetPath),
+                    WorkingDirectory = Path.GetDirectoryName(assetPath)!,
                 };
-                Process.Start(glslcProcessStartInfo).WaitForExit();
+                Process.Start(glslcProcessStartInfo)!.WaitForExit();
 
                 using var fileReader = File.OpenRead(assetOutput);
 

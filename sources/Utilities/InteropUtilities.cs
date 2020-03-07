@@ -232,15 +232,12 @@ namespace TerraFX.Utilities
         /// <typeparam name="T">The type for which to get the size.</typeparam>
         /// <returns>The size of <typeparamref name="T" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint SizeOf<T>() => unchecked((uint)Marshal.SizeOf<T>());
+        public static uint SizeOf<T>() => unchecked((uint)Unsafe.SizeOf<T>());
 
         /// <summary>Bypasses definite assignment rules by taking advantage of <c>out</c> semantics.</summary>
         /// <typeparam name="T">The type of <paramref name="value" />.</typeparam>
         /// <param name="value">The value for which to skip initialization.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SkipInit<T>([MaybeNull] out T value)
-        {
-            value = default!;
-        }
+        public static void SkipInit<T>([MaybeNull] out T value) => Unsafe.SkipInit(out value);
     }
 }
