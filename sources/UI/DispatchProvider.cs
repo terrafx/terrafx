@@ -1,6 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
 namespace TerraFX.UI
@@ -39,7 +40,7 @@ namespace TerraFX.UI
         /// <param name="dispatcher">The <see cref="Dispatcher" /> instance associated with <paramref name="thread" />.</param>
         /// <returns><c>true</c> if a <see cref="Dispatcher" /> instance was found for <paramref name="thread" />; otherwise, <c>false</c>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="thread" /> is <c>null</c>.</exception>
-        public abstract bool TryGetDispatcher(Thread thread, out Dispatcher dispatcher);
+        public abstract bool TryGetDispatcher(Thread thread, [MaybeNullWhen(false)] out Dispatcher dispatcher);
 
         /// <inheritdoc cref="Dispose()" />
         /// <param name="isDisposing"><c>true</c> if the method was called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>

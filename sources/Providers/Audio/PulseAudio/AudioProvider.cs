@@ -255,7 +255,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
 
             var handle = GCHandle.Alloc(new AudioDeviceEnumeratorHelper());
             var userdata = (void*)GCHandle.ToIntPtr(handle);
-            ref var helper = ref Unsafe.Unbox<AudioDeviceEnumeratorHelper>(handle.Target);
+            ref var helper = ref Unsafe.Unbox<AudioDeviceEnumeratorHelper>(handle.Target!);
 
             helper.Enumerable = new PulseAudioAdapterEnumerable(_mainLoopThread!, AddSourceDevice, AddSinkDevice);
             helper.SourceOp = pa_context_get_source_info_list(Context, helper.Enumerable.SourceCallback, userdata);
@@ -291,7 +291,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
 
             static void AddAdapter(IAudioAdapter? adapter, int eol, GCHandle handle)
             {
-                ref var helper = ref Unsafe.Unbox<AudioDeviceEnumeratorHelper>(handle.Target);
+                ref var helper = ref Unsafe.Unbox<AudioDeviceEnumeratorHelper>(handle.Target!);
 
                 if (adapter != null)
                 {
