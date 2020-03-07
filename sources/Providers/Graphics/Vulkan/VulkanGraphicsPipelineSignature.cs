@@ -82,8 +82,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private VkDescriptorPool CreateVulkanDescriptorPool()
         {
-            VkDescriptorPool vulkanDescriptorPool;
-
+            VkDescriptorPool vulkanDescriptorPool = VK_NULL_HANDLE;
             var vulkanDescriptorPoolSizes = Array.Empty<VkDescriptorPoolSize>();
 
             var descriptorPoolCreateInfo = new VkDescriptorPoolCreateInfo {
@@ -134,14 +133,14 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     };
                     vulkanDescriptorPoolSizesIndex++;
                 }
-            }
 
-            fixed (VkDescriptorPoolSize* pVulkanDescriptorPoolSizes = vulkanDescriptorPoolSizes)
-            {
-                descriptorPoolCreateInfo.poolSizeCount = unchecked((uint)vulkanDescriptorPoolSizes.Length);
-                descriptorPoolCreateInfo.pPoolSizes = pVulkanDescriptorPoolSizes;
+                fixed (VkDescriptorPoolSize* pVulkanDescriptorPoolSizes = vulkanDescriptorPoolSizes)
+                {
+                    descriptorPoolCreateInfo.poolSizeCount = unchecked((uint)vulkanDescriptorPoolSizes.Length);
+                    descriptorPoolCreateInfo.pPoolSizes = pVulkanDescriptorPoolSizes;
 
-                ThrowExternalExceptionIfNotSuccess(nameof(vkCreateDescriptorPool), vkCreateDescriptorPool(VulkanGraphicsDevice.VulkanDevice, &descriptorPoolCreateInfo, pAllocator: null, (ulong*)&vulkanDescriptorPool));
+                    ThrowExternalExceptionIfNotSuccess(nameof(vkCreateDescriptorPool), vkCreateDescriptorPool(VulkanGraphicsDevice.VulkanDevice, &descriptorPoolCreateInfo, pAllocator: null, (ulong*)&vulkanDescriptorPool));
+                }
             }
 
             return vulkanDescriptorPool;
@@ -149,17 +148,22 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private VkDescriptorSet CreateVulkanDescriptorSet()
         {
-            VkDescriptorSet vulkanDescriptorSet;
+            VkDescriptorSet vulkanDescriptorSet = VK_NULL_HANDLE;
+            var vulkanDescriptorPool = VulkanDescriptorPool;
 
-            var vulkanDescriptorSetLayout = VulkanDescriptorSetLayout;
+            if (vulkanDescriptorPool != VK_NULL_HANDLE)
+            {
 
-            var descriptorSetAllocateInfo = new VkDescriptorSetAllocateInfo {
-                sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
-                descriptorPool = VulkanDescriptorPool,
-                descriptorSetCount = 1,
-                pSetLayouts = (ulong*)&vulkanDescriptorSetLayout,
-            };
-            ThrowExternalExceptionIfNotSuccess(nameof(vkAllocateDescriptorSets), vkAllocateDescriptorSets(VulkanGraphicsDevice.VulkanDevice, &descriptorSetAllocateInfo, (ulong*)&vulkanDescriptorSet));
+                var vulkanDescriptorSetLayout = VulkanDescriptorSetLayout;
+
+                var descriptorSetAllocateInfo = new VkDescriptorSetAllocateInfo {
+                    sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
+                    descriptorPool = vulkanDescriptorPool,
+                    descriptorSetCount = 1,
+                    pSetLayouts = (ulong*)&vulkanDescriptorSetLayout,
+                };
+                ThrowExternalExceptionIfNotSuccess(nameof(vkAllocateDescriptorSets), vkAllocateDescriptorSets(VulkanGraphicsDevice.VulkanDevice, &descriptorSetAllocateInfo, (ulong*)&vulkanDescriptorSet));
+            }
 
             return vulkanDescriptorSet;
         }
