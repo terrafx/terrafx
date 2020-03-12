@@ -39,12 +39,12 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         /// <summary>Gets the underlying <see cref="VkBuffer" /> for the buffer.</summary>
         /// <exception cref="ExternalException">The call to <see cref="vkCreateBuffer(IntPtr, VkBufferCreateInfo*, VkAllocationCallbacks*, ulong*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkBindBufferMemory(IntPtr, ulong, ulong, ulong)" /> failed.</exception>
         /// <exception cref="ObjectDisposedException">The buffer has been disposed.</exception>
         public VkBuffer VulkanBuffer => _vulkanBuffer.Value;
 
         /// <summary>Gets the underlying <see cref="VkDeviceMemory" /> for the buffer.</summary>
         /// <exception cref="ExternalException">The call to <see cref="vkAllocateMemory(IntPtr, VkMemoryAllocateInfo*, VkAllocationCallbacks*, ulong*)" /> failed.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="vkBindBufferMemory(IntPtr, ulong, ulong, ulong)" /> failed.</exception>
         /// <exception cref="ObjectDisposedException">The buffer has been disposed.</exception>
         public VkDeviceMemory VulkanDeviceMemory => _vulkanDeviceMemory.Value;
 
@@ -101,8 +101,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             if (priorState < Disposing)
             {
-                _vulkanDeviceMemory.Dispose(DisposeVulkanDeviceMemory);
                 _vulkanBuffer.Dispose(DisposeVulkanBuffer);
+                _vulkanDeviceMemory.Dispose(DisposeVulkanDeviceMemory);
             }
 
             _state.EndDispose();
@@ -119,7 +119,10 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 size = Size,
                 usage = GetVulkanBufferUsageKind(Kind),
             };
-            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateBuffer), vkCreateBuffer(VulkanGraphicsDevice.VulkanDevice, &bufferCreateInfo, pAllocator: null, (ulong*)&vulkanBuffer));
+            var vulkanDevice = VulkanGraphicsDevice.VulkanDevice;
+
+            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateBuffer), vkCreateBuffer(vulkanDevice, &bufferCreateInfo, pAllocator: null, (ulong*)&vulkanBuffer));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkBindBufferMemory), vkBindBufferMemory(vulkanDevice, vulkanBuffer, VulkanDeviceMemory, memoryOffset: 0));
 
             return vulkanBuffer;
         }
@@ -135,17 +138,14 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 allocationSize = Size,
                 memoryTypeIndex = GetMemoryTypeIndex(VulkanGraphicsDevice.VulkanGraphicsAdapter.VulkanPhysicalDevice),
             };
-            var vulkanDevice = VulkanGraphicsDevice.VulkanDevice;
-
-            ThrowExternalExceptionIfNotSuccess(nameof(vkAllocateMemory), vkAllocateMemory(vulkanDevice, &memoryAllocateInfo, pAllocator: null, (ulong*)&vulkanDeviceMemory));
-            ThrowExternalExceptionIfNotSuccess(nameof(vkBindBufferMemory), vkBindBufferMemory(vulkanDevice, VulkanBuffer, vulkanDeviceMemory, memoryOffset: 0));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkAllocateMemory), vkAllocateMemory(VulkanGraphicsDevice.VulkanDevice, &memoryAllocateInfo, pAllocator: null, (ulong*)&vulkanDeviceMemory));
 
             return vulkanDeviceMemory;
 
 
             static uint GetMemoryTypeIndex(VkPhysicalDevice vulkanPhysicalDevice)
             {
-                uint memoryTypeIndex = uint.MaxValue;
+                var memoryTypeIndex = uint.MaxValue;
 
                 VkPhysicalDeviceMemoryProperties physicalDeviceMemoryProperties;
                 vkGetPhysicalDeviceMemoryProperties(vulkanPhysicalDevice, &physicalDeviceMemoryProperties);
@@ -188,7 +188,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     break;
                 }
 
-                case GraphicsBufferKind.Constant:
+                case GraphicsBufferKind.Uniform:
                 {
                     vulkanBufferUsageKind = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
                     break;

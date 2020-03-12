@@ -17,6 +17,7 @@ namespace TerraFX.Graphics.Providers.D3D12
     public sealed unsafe class D3D12GraphicsBuffer : GraphicsBuffer
     {
         private ValueLazy<Pointer<ID3D12Resource>> _d3d12Resource;
+        private ValueLazy<Pointer<ID3D12Heap>> _d3d12Heap;
 
         private State _state;
 
@@ -24,14 +25,26 @@ namespace TerraFX.Graphics.Providers.D3D12
             : base(kind, graphicsDevice, size, stride)
         {
             _d3d12Resource = new ValueLazy<Pointer<ID3D12Resource>>(CreateD3D12Resource);
+            _d3d12Heap = new ValueLazy<Pointer<ID3D12Heap>>(CreateD3D12Heap);
 
             _ = _state.Transition(to: Initialized);
+        }
+
+        /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsBuffer" /> class.</summary>
+        ~D3D12GraphicsBuffer()
+        {
+            Dispose(isDisposing: true);
         }
 
         /// <inheritdoc cref="GraphicsResource.GraphicsDevice" />
         public D3D12GraphicsDevice D3D12GraphicsDevice => (D3D12GraphicsDevice)GraphicsDevice;
 
-        /// <summary>Gets the underlying <see cref="ID3D12Resource" /> where the buffer exists.</summary>
+        /// <summary>Gets the underlying <see cref="ID3D12Heap" /> for the buffer.</summary>
+        /// <exception cref="ExternalException">The call to <see cref="ID3D12Device.CreateHeap(D3D12_HEAP_DESC*, Guid*, void**)" /> failed.</exception>
+        /// <exception cref="ObjectDisposedException">The buffer has been disposed.</exception>
+        public ID3D12Heap* D3D12Heap => _d3d12Heap.Value;
+
+        /// <summary>Gets the underlying <see cref="ID3D12Resource" /> for the buffer.</summary>
         /// <exception cref="ExternalException">The call to <see cref="ID3D12Device.CreateCommittedResource(D3D12_HEAP_PROPERTIES*, D3D12_HEAP_FLAGS, D3D12_RESOURCE_DESC*, D3D12_RESOURCE_STATES, D3D12_CLEAR_VALUE*, Guid*, void**)" /> failed.</exception>
         /// <exception cref="ObjectDisposedException">The buffer has been disposed.</exception>
         public ID3D12Resource* D3D12Resource => _d3d12Resource.Value;
@@ -70,6 +83,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             if (priorState < Disposing)
             {
                 _d3d12Resource.Dispose(ReleaseIfNotNull);
+                _d3d12Heap.Dispose(ReleaseIfNotNull);
             }
 
             _state.EndDispose();
@@ -81,13 +95,12 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             ID3D12Resource* d3d12Resource;
 
-            var heapProperties = new D3D12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
             var bufferDesc = D3D12_RESOURCE_DESC.Buffer(width: Size);
-            
             var iid = IID_ID3D12Resource;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateCommittedResource), D3D12GraphicsDevice.D3D12Device->CreateCommittedResource(
-                &heapProperties,
-                D3D12_HEAP_FLAG_NONE,
+
+            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreatePlacedResource), D3D12GraphicsDevice.D3D12Device->CreatePlacedResource(
+                D3D12Heap,
+                HeapOffset: 0,
                 &bufferDesc,
                 D3D12_RESOURCE_STATE_GENERIC_READ,
                 pOptimizedClearValue: null,
@@ -96,6 +109,24 @@ namespace TerraFX.Graphics.Providers.D3D12
             ));
 
             return d3d12Resource;
+        }
+
+        private Pointer<ID3D12Heap> CreateD3D12Heap()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            ID3D12Heap* d3d12Heap;
+
+            var heapDesc = new D3D12_HEAP_DESC(Size, D3D12_HEAP_TYPE_UPLOAD);
+            var iid = IID_ID3D12Heap;
+
+            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateHeap), D3D12GraphicsDevice.D3D12Device->CreateHeap(
+                &heapDesc,
+                &iid,
+                (void**)&d3d12Heap
+            ));
+
+            return d3d12Heap;
         }
     }
 }
