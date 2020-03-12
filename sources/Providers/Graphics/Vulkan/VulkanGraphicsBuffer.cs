@@ -22,8 +22,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private State _state;
 
-        internal VulkanGraphicsBuffer(VulkanGraphicsDevice graphicsDevice, GraphicsBufferKind kind, ulong size, ulong stride)
-            : base(graphicsDevice, kind, size, stride)
+        internal VulkanGraphicsBuffer(GraphicsBufferKind kind, VulkanGraphicsDevice graphicsDevice, ulong size, ulong stride)
+            : base(kind, graphicsDevice, size, stride)
         {
             _vulkanBuffer = new ValueLazy<VkBuffer>(CreateVulkanBuffer);
             _vulkanDeviceMemory = new ValueLazy<VkDeviceMemory>(CreateVulkanDeviceMemory);
@@ -48,32 +48,49 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <exception cref="ObjectDisposedException">The buffer has been disposed.</exception>
         public VkDeviceMemory VulkanDeviceMemory => _vulkanDeviceMemory.Value;
 
-        /// <inheritdoc cref="GraphicsBuffer.GraphicsDevice" />
+        /// <inheritdoc cref="GraphicsResource.GraphicsDevice" />
         public VulkanGraphicsDevice VulkanGraphicsDevice => (VulkanGraphicsDevice)GraphicsDevice;
 
         /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(IntPtr, ulong, ulong, ulong, uint, void**)" /> failed.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(IntPtr, uint, VkMappedMemoryRange*)" /> failed.</exception>
-        public override void Write(ReadOnlySpan<byte> bytes)
+        public override T* Map<T>(UIntPtr readRangeOffset, UIntPtr readRangeLength)
         {
             var vulkanDevice = VulkanGraphicsDevice.VulkanDevice;
             var vulkanDeviceMemory = VulkanDeviceMemory;
-            var bytesWritten = bytes.Length;
 
             void* pDestination;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkMapMemory), vkMapMemory(vulkanDevice, vulkanDeviceMemory, offset: 0, size: unchecked((ulong)bytesWritten), flags: 0, &pDestination));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkMapMemory), vkMapMemory(vulkanDevice, vulkanDeviceMemory, offset: 0, size: VK_WHOLE_SIZE, flags: 0, &pDestination));
 
-            var destination = new Span<byte>(pDestination, bytesWritten);
-            bytes.CopyTo(destination);
+            if (readRangeLength != UIntPtr.Zero)
+            {
+                var mappedMemoryRange = new VkMappedMemoryRange {
+                    sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
+                    memory = vulkanDeviceMemory,
+                    offset = (ulong)readRangeOffset,
+                    size = (ulong)readRangeLength,
+                };
+                ThrowExternalExceptionIfNotSuccess(nameof(vkInvalidateMappedMemoryRanges), vkInvalidateMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange));
+            }
+            return (T*)pDestination;
+        }
 
-            var mappedMemoryRange = new VkMappedMemoryRange {
-                sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
-                memory = vulkanDeviceMemory,
-                offset = 0,
-                size = VK_WHOLE_SIZE,
-            };
-            ThrowExternalExceptionIfNotSuccess(nameof(vkFlushMappedMemoryRanges), vkFlushMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange));
+        /// <inheritdoc />
+        /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(IntPtr, uint, VkMappedMemoryRange*)" /> failed.</exception>
+        public override void Unmap(UIntPtr writtenRangeOffset, UIntPtr writtenRangeLength)
+        {
+            var vulkanDevice = VulkanGraphicsDevice.VulkanDevice;
+            var vulkanDeviceMemory = VulkanDeviceMemory;
 
+            if (writtenRangeLength != UIntPtr.Zero)
+            {
+                var mappedMemoryRange = new VkMappedMemoryRange {
+                    sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
+                    memory = vulkanDeviceMemory,
+                    offset = (ulong)writtenRangeOffset,
+                    size = (ulong)writtenRangeLength,
+                };
+                ThrowExternalExceptionIfNotSuccess(nameof(vkFlushMappedMemoryRanges), vkFlushMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange));
+            }
             vkUnmapMemory(vulkanDevice, vulkanDeviceMemory);
         }
 

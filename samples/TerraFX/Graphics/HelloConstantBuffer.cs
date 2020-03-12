@@ -90,34 +90,34 @@ namespace TerraFX.Samples.Graphics
             {
                 var constantBuffer = graphicsDevice.CreateGraphicsBuffer(GraphicsBufferKind.Constant, 256, 64);
 
-                ReadOnlySpan<Matrix4x4> value = stackalloc Matrix4x4[1] {
-                    Matrix4x4.Identity,
-                };
+                var pConstantBuffer = constantBuffer.Map<Matrix4x4>();
+                pConstantBuffer[0] = Matrix4x4.Identity;
+                constantBuffer.Unmap(0..sizeof(Matrix4x4));
 
-                constantBuffer.Write(MemoryMarshal.AsBytes(value));
                 return constantBuffer;
             }
 
             static GraphicsBuffer CreateVertexBuffer(GraphicsDevice graphicsDevice, float aspectRatio)
             {
                 var vertexBuffer = graphicsDevice.CreateGraphicsBuffer(GraphicsBufferKind.Vertex, (ulong)(sizeof(IdentityVertex) * 3), (ulong)sizeof(IdentityVertex));
+                var pVertexBuffer = vertexBuffer.Map<IdentityVertex>();
 
-                ReadOnlySpan<IdentityVertex> vertices = stackalloc IdentityVertex[3] {
-                    new IdentityVertex {
-                        Position = new Vector3(0.0f, 0.25f * aspectRatio, 0.0f),
-                        Color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f)
-                    },
-                    new IdentityVertex {
-                        Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),
-                        Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f)
-                    },
-                    new IdentityVertex {
-                        Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
-                        Color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f)
-                    },
+                pVertexBuffer[0] = new IdentityVertex {
+                    Position = new Vector3(0.0f, 0.25f * aspectRatio, 0.0f),
+                    Color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f)
                 };
 
-                vertexBuffer.Write(MemoryMarshal.AsBytes(vertices));
+                pVertexBuffer[1] = new IdentityVertex {
+                    Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),
+                    Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f)
+                };
+
+                pVertexBuffer[2] = new IdentityVertex {
+                    Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
+                    Color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f)
+                };
+
+                vertexBuffer.Unmap(0..(sizeof(IdentityVertex) * 3));
                 return vertexBuffer;
             }
 
@@ -168,7 +168,7 @@ namespace TerraFX.Samples.Graphics
             graphicsContext.EndFrame();
         }
 
-        private void Update(TimeSpan delta)
+        private unsafe void Update(TimeSpan delta)
         {
             const float translationSpeed = 1.0f;
             const float offsetBounds = 1.25f;
@@ -191,7 +191,14 @@ namespace TerraFX.Samples.Graphics
                 ),
             };
 
-            _trianglePrimitive.ConstantBuffers[0].Write(MemoryMarshal.AsBytes(value));
+            var constantBuffer = _trianglePrimitive.ConstantBuffers[0];
+            var pConstantBuffer = constantBuffer.Map<Matrix4x4>();
+
+            pConstantBuffer[0] = Matrix4x4.Identity.WithX(
+                new Vector4(1.0f, 0.0f, 0.0f, trianglePrimitiveTranslationX)
+            );
+
+            constantBuffer.Unmap(0..sizeof(Matrix4x4));
         }
     }
 }

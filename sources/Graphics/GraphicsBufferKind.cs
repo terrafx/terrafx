@@ -15,6 +15,11 @@ namespace TerraFX.Graphics
         Index,
 
         /// <summary>Defines a constant buffer.</summary>
+        /// <remarks>This is an alternative name for <see cref="Uniform" />.</remarks>
         Constant,
+
+        /// <summary>Defines a uniform buffer.</summary>
+        /// <remarks>This is an alternative name for <see cref="Constant" />.</remarks>
+        Uniform = Constant,
     }
 }

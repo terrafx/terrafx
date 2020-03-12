@@ -92,40 +92,46 @@ namespace TerraFX.Samples.Graphics
             static GraphicsBuffer CreateVertexBuffer(GraphicsDevice graphicsDevice, float aspectRatio)
             {
                 var vertexBuffer = graphicsDevice.CreateGraphicsBuffer(GraphicsBufferKind.Vertex, (ulong)(sizeof(IdentityVertex) * 4), (ulong)sizeof(IdentityVertex));
+                var pVertexBuffer = vertexBuffer.Map<IdentityVertex>();
 
-                ReadOnlySpan<IdentityVertex> vertices = stackalloc IdentityVertex[4] {
-                    new IdentityVertex {
-                        Position = new Vector3(0.25f, 0.25f * aspectRatio, 0.0f),
-                        Color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f),
-                    },
-                    new IdentityVertex {
-                        Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),
-                        Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f),
-                    },
-                    new IdentityVertex {
-                        Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
-                        Color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f),
-                    },
-                    new IdentityVertex {
-                        Position = new Vector3(-0.25f, 0.25f * aspectRatio, 0.0f),
-                        Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f),
-                    },
+                pVertexBuffer[0] = new IdentityVertex {
+                    Position = new Vector3(0.25f, 0.25f * aspectRatio, 0.0f),
+                    Color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f),
                 };
 
-                vertexBuffer.Write(MemoryMarshal.AsBytes(vertices));
+                pVertexBuffer[1] = new IdentityVertex {
+                    Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),
+                    Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f),
+                };
+
+                pVertexBuffer[2] = new IdentityVertex {
+                    Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
+                    Color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f),
+                };
+
+                pVertexBuffer[3] = new IdentityVertex {
+                    Position = new Vector3(-0.25f, 0.25f * aspectRatio, 0.0f),
+                    Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f),
+                };
+
+                vertexBuffer.Unmap(0..(sizeof(IdentityVertex) * 4));
                 return vertexBuffer;
             }
 
             static GraphicsBuffer CreateIndexBuffer(GraphicsDevice graphicsDevice)
             {
                 var indexBuffer = graphicsDevice.CreateGraphicsBuffer(GraphicsBufferKind.Index, sizeof(ushort) * 6, sizeof(ushort));
+                var pIndexBuffer = indexBuffer.Map<ushort>();
 
-                ReadOnlySpan<ushort> indices = stackalloc ushort[6] {
-                    0, 1, 2,
-                    0, 2, 3,
-                };
+                pIndexBuffer[0] = 0;
+                pIndexBuffer[1] = 1;
+                pIndexBuffer[2] = 2;
 
-                indexBuffer.Write(MemoryMarshal.AsBytes(indices));
+                pIndexBuffer[3] = 0;
+                pIndexBuffer[4] = 2;
+                pIndexBuffer[5] = 3;
+
+                indexBuffer.Unmap(0..(sizeof(ushort) * 6));
                 return indexBuffer;
             }
 

@@ -127,7 +127,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         public VulkanGraphicsBuffer CreateVulkanGraphicsBuffer(GraphicsBufferKind kind, ulong size, ulong stride)
         {
             _state.ThrowIfDisposedOrDisposing();
-            return new VulkanGraphicsBuffer(this, kind, size, stride);
+            return new VulkanGraphicsBuffer(kind, this, size, stride);
         }
 
         /// <inheritdoc cref="CreateGraphicsPipeline(GraphicsPipelineSignature, GraphicsShader?, GraphicsShader?)" />

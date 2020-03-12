@@ -108,7 +108,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         public D3D12GraphicsBuffer CreateD3D12GraphicsBuffer(GraphicsBufferKind kind, ulong size, ulong stride)
         {
             _state.ThrowIfDisposedOrDisposing();
-            return new D3D12GraphicsBuffer(this, kind, size, stride);
+            return new D3D12GraphicsBuffer(kind, this, size, stride);
         }
 
         /// <inheritdoc cref="CreateGraphicsPipeline(GraphicsPipelineSignature, GraphicsShader?, GraphicsShader?)" />

@@ -7,16 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="Assets\Shaders\IdentityTypes.hlsl" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="Assets\Shaders\IdentityPixel.glsl" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="Assets\Shaders\IdentityPixel.hlsl" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="Assets\Shaders\IdentityVertex.glsl" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="Assets\Shaders\IdentityVertex.hlsl" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="Assets\Shaders\TransformPixel.glsl" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="Assets\Shaders\TransformPixel.hlsl" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="Assets\Shaders\TransformTypes.hlsl" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="Assets\Shaders\TransformVertex.glsl" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="Assets\Shaders\TransformVertex.hlsl" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="Assets\Shaders\*.hlsl" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="Assets\Shaders\*.glsl" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

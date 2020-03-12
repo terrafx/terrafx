@@ -20,15 +20,15 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private State _state;
 
-        internal D3D12GraphicsBuffer(D3D12GraphicsDevice graphicsDevice, GraphicsBufferKind kind, ulong size, ulong stride)
-            : base(graphicsDevice, kind, size, stride)
+        internal D3D12GraphicsBuffer(GraphicsBufferKind kind, D3D12GraphicsDevice graphicsDevice, ulong size, ulong stride)
+            : base(kind, graphicsDevice, size, stride)
         {
             _d3d12Resource = new ValueLazy<Pointer<ID3D12Resource>>(CreateD3D12Resource);
 
             _ = _state.Transition(to: Initialized);
         }
 
-        /// <inheritdoc cref="GraphicsBuffer.GraphicsDevice" />
+        /// <inheritdoc cref="GraphicsResource.GraphicsDevice" />
         public D3D12GraphicsDevice D3D12GraphicsDevice => (D3D12GraphicsDevice)GraphicsDevice;
 
         /// <summary>Gets the underlying <see cref="ID3D12Resource" /> where the buffer exists.</summary>
@@ -38,21 +38,28 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="ID3D12Resource.Map(uint, D3D12_RANGE*, void**)" /> failed.</exception>
-        public override void Write(ReadOnlySpan<byte> bytes)
+        public override T* Map<T>(UIntPtr readRangeOffset, UIntPtr readRangeLength)
         {
-            var d3d12Resource = D3D12Resource;
-            var bytesWritten = bytes.Length;
-
-            var readRange = new D3D12_RANGE();
-            var writtenRange = new D3D12_RANGE(UIntPtr.Zero, (UIntPtr)bytesWritten);
+            var readRange = new D3D12_RANGE {
+                Begin = readRangeOffset,
+                End = (UIntPtr)((ulong)readRangeOffset + (ulong)readRangeLength),
+            };
 
             void* pDestination;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12Resource.Map), d3d12Resource->Map(Subresource: 0, &readRange, &pDestination));
+            ThrowExternalExceptionIfFailed(nameof(ID3D12Resource.Map), D3D12Resource->Map(Subresource: 0, &readRange, &pDestination));
 
-            var destination = new Span<byte>(pDestination, bytesWritten);
-            bytes.CopyTo(destination);
+            return (T*)pDestination;
+        }
 
-            d3d12Resource->Unmap(Subresource: 0, &writtenRange);
+        /// <inheritdoc />
+        public override void Unmap(UIntPtr writtenRangeOffset, UIntPtr writtenRangeLength)
+        {
+            var writtenRange = new D3D12_RANGE {
+                Begin = writtenRangeOffset,
+                End = (UIntPtr)((ulong)writtenRangeOffset + (ulong)writtenRangeLength),
+            };
+
+            D3D12Resource->Unmap(Subresource: 0, &writtenRange);
         }
 
         /// <inheritdoc />

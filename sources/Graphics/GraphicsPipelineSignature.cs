@@ -14,9 +14,9 @@ namespace TerraFX.Graphics
 
         /// <summary>Creates a new instance of the <see cref="GraphicsPipelineSignature" /> class.</summary>
         /// <param name="graphicsDevice">The graphics device for which the pipeline signature was created.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="graphicsDevice" /> is <c>null</c>.</exception>
         /// <param name="inputs">The inputs given to the graphics pipeline or <see cref="ReadOnlySpan{T}.Empty" /> if none exist.</param>
         /// <param name="resources">The resources available to the graphics pipeline or <see cref="ReadOnlySpan{T}.Empty" /> if none exist.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="graphicsDevice" /> is <c>null</c>.</exception>
         protected GraphicsPipelineSignature(GraphicsDevice graphicsDevice, ReadOnlySpan<GraphicsPipelineInput> inputs, ReadOnlySpan<GraphicsPipelineResource> resources)
         {
             ThrowIfNull(graphicsDevice, nameof(graphicsDevice));
