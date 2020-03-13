@@ -13,13 +13,14 @@ namespace TerraFX.Graphics
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsBuffer" /> class.</summary>
         /// <param name="kind">The buffer kind.</param>
-        /// <param name="graphicsDevice">The graphics device for which the buffer was created.</param>
+        /// <param name="graphicsHeap">The graphics heap on which the buffer was created.</param>
+        /// <param name="offset">The offset, in bytes, of the buffer in relation to <paramref name="graphicsHeap" />.</param>
         /// <param name="size">The size, in bytes, of the buffer.</param>
-        /// <param name="stride">The size, in bytes, of the buffer elements.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="graphicsDevice" /> is <c>null</c>.</exception>
+        /// <param name="stride">The size, in bytes, of the elements contained by the buffer.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="graphicsHeap" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="kind" /> is <see cref="GraphicsBufferKind.Index" /> and <paramref name="stride" /> is not <c>2</c> or <c>4</c>.</exception>
-        protected GraphicsBuffer(GraphicsBufferKind kind, GraphicsDevice graphicsDevice, ulong size, ulong stride)
-            : base(graphicsDevice, size)
+        protected GraphicsBuffer(GraphicsBufferKind kind, GraphicsHeap graphicsHeap, ulong offset, ulong size, ulong stride)
+            : base(graphicsHeap, offset, size)
         {
             if ((kind == GraphicsBufferKind.Index) && (stride != 2) && (stride != 4))
             {

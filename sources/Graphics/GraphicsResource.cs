@@ -8,23 +8,29 @@ namespace TerraFX.Graphics
     /// <summary>A graphics resource bound to a graphics device.</summary>
     public abstract unsafe class GraphicsResource : IDisposable
     {
+        private readonly ulong _offset;
         private readonly ulong _size;
-        private readonly GraphicsDevice _graphicsDevice;
+        private readonly GraphicsHeap _graphicsHeap;
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsResource" /> class.</summary>
-        /// <param name="graphicsDevice">The graphics device for which the resource was created.</param>
+        /// <param name="graphicsHeap">The graphics heap on which the resource was created.</param>
+        /// <param name="offset">The offset, in bytes, of the resource in relation to <paramref name="graphicsHeap" />.</param>
         /// <param name="size">The size, in bytes, of the resource.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="graphicsDevice" /> is <c>null</c>.</exception>
-        private protected GraphicsResource(GraphicsDevice graphicsDevice, ulong size)
+        /// <exception cref="ArgumentNullException"><paramref name="graphicsHeap" /> is <c>null</c>.</exception>
+        private protected GraphicsResource(GraphicsHeap graphicsHeap, ulong offset, ulong size)
         {
-            ThrowIfNull(graphicsDevice, nameof(graphicsDevice));
+            ThrowIfNull(graphicsHeap, nameof(graphicsHeap));
 
-            _graphicsDevice = graphicsDevice;
+            _graphicsHeap = graphicsHeap;
+            _offset = offset;
             _size = size;
         }
 
-        /// <summary>Gets the graphics device to which the resource is bound.</summary>
-        public GraphicsDevice GraphicsDevice => _graphicsDevice;
+        /// <summary>Gets the graphics heap on which the resource was created.</summary>
+        public GraphicsHeap GraphicsHeap => _graphicsHeap;
+
+        /// <summary>Gets the offset, in bytes, of the resource in relation to <see cref="GraphicsHeap" />.</summary>
+        public ulong Offset => _offset;
 
         /// <summary>Gets the size, in bytes, of the resource.</summary>
         public ulong Size => _size;

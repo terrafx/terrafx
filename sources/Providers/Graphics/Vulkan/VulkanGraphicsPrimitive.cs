@@ -48,6 +48,11 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 DisposeIfNotNull(IndexBuffer);
             }
 
+            foreach (var inputBuffer in ConstantBuffers)
+            {
+                DisposeIfNotNull(inputBuffer);
+            }
+
             _state.EndDispose();
         }
     }

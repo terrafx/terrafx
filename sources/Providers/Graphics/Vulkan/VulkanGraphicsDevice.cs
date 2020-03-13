@@ -77,6 +77,12 @@ namespace TerraFX.Graphics.Providers.Vulkan
             }
         }
 
+        /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsDevice" /> class.</summary>
+        ~VulkanGraphicsDevice()
+        {
+            Dispose(isDisposing: true);
+        }
+
         /// <inheritdoc />
         public override ReadOnlySpan<GraphicsContext> GraphicsContexts => _graphicsContexts;
 
@@ -123,11 +129,11 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <summary>Gets a readonly span of the <see cref="VkImage" /> used by <see cref="VulkanSwapchain" />.</summary>
         public ReadOnlySpan<VkImage> VulkanSwapchainImages => _vulkanSwapchainImages.Value;
 
-        /// <inheritdoc cref="CreateGraphicsBuffer(GraphicsBufferKind, ulong, ulong)" />
-        public VulkanGraphicsBuffer CreateVulkanGraphicsBuffer(GraphicsBufferKind kind, ulong size, ulong stride)
+        /// <inheritdoc cref="CreateGraphicsHeap(ulong)" />
+        public VulkanGraphicsHeap CreateVulkanGraphicsHeap(ulong size)
         {
             _state.ThrowIfDisposedOrDisposing();
-            return new VulkanGraphicsBuffer(kind, this, size, stride);
+            return new VulkanGraphicsHeap(this, size);
         }
 
         /// <inheritdoc cref="CreateGraphicsPipeline(GraphicsPipelineSignature, GraphicsShader?, GraphicsShader?)" />
@@ -152,7 +158,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         }
 
         /// <inheritdoc />
-        public override GraphicsBuffer CreateGraphicsBuffer(GraphicsBufferKind kind, ulong size, ulong stride) => CreateVulkanGraphicsBuffer(kind, size, stride);
+        public override GraphicsHeap CreateGraphicsHeap(ulong size) => CreateVulkanGraphicsHeap(size);
 
         /// <inheritdoc />
         public override GraphicsPipeline CreateGraphicsPipeline(GraphicsPipelineSignature signature, GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null) => CreateVulkanGraphicsPipeline((VulkanGraphicsPipelineSignature)signature, (VulkanGraphicsShader?)vertexShader, (VulkanGraphicsShader?)pixelShader);
@@ -189,7 +195,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             var presentCompletionGraphicsFence = PresentCompletionGraphicsFence;
             ThrowExternalExceptionIfNotSuccess(nameof(vkAcquireNextImageKHR), vkAcquireNextImageKHR(VulkanDevice, vulkanSwapchain, timeout: ulong.MaxValue, semaphore: VK_NULL_HANDLE, presentCompletionGraphicsFence.VulkanFence, (uint*)&graphicsContextIndex));
-            
+
             presentCompletionGraphicsFence.Wait();
             presentCompletionGraphicsFence.Reset();
 

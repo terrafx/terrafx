@@ -3,7 +3,6 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
 using TerraFX.Numerics;
@@ -15,6 +14,7 @@ namespace TerraFX.Samples.Graphics
     public sealed class HelloTriangle : Sample
     {
         private GraphicsDevice _graphicsDevice = null!;
+        private GraphicsHeap _graphicsHeap = null!;
         private GraphicsPrimitive _trianglePrimitive = null!;
         private Window _window = null!;
         private TimeSpan _elapsedTime;
@@ -27,6 +27,7 @@ namespace TerraFX.Samples.Graphics
         public override void Cleanup()
         {
             _trianglePrimitive?.Dispose();
+            _graphicsHeap?.Dispose();
             _graphicsDevice?.Dispose();
             _window?.Dispose();
 
@@ -45,8 +46,9 @@ namespace TerraFX.Samples.Graphics
             var graphicsAdapter = graphicsProvider.GraphicsAdapters.First();
 
             _graphicsDevice = graphicsAdapter.CreateGraphicsDevice(_window, graphicsContextCount: 2);
+            _graphicsHeap = _graphicsDevice.CreateGraphicsHeap(64 * 1024);
             _trianglePrimitive = CreateTrianglePrimitive();
-            
+
             base.Initialize(application);
         }
 
@@ -80,16 +82,17 @@ namespace TerraFX.Samples.Graphics
         private unsafe GraphicsPrimitive CreateTrianglePrimitive()
         {
             var graphicsDevice = _graphicsDevice;
+            var graphicsHeap = _graphicsHeap;
             var graphicsSurface = graphicsDevice.GraphicsSurface;
 
             var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Identity", "main", "main");
-            var vertexBuffer = CreateVertexBuffer(graphicsDevice, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
+            var vertexBuffer = CreateVertexBuffer(graphicsHeap, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
 
             return graphicsDevice.CreateGraphicsPrimitive(graphicsPipeline, vertexBuffer);
 
-            static GraphicsBuffer CreateVertexBuffer(GraphicsDevice graphicsDevice, float aspectRatio)
+            static GraphicsBuffer CreateVertexBuffer(GraphicsHeap graphicsHeap, float aspectRatio)
             {
-                var vertexBuffer = graphicsDevice.CreateGraphicsBuffer(GraphicsBufferKind.Vertex, (ulong)(sizeof(IdentityVertex) * 3), (ulong)sizeof(IdentityVertex));
+                var vertexBuffer = graphicsHeap.CreateGraphicsBuffer(GraphicsBufferKind.Vertex, (ulong)(sizeof(IdentityVertex) * 3), (ulong)sizeof(IdentityVertex));
                 var pVertexBuffer = vertexBuffer.Map<IdentityVertex>();
 
                 pVertexBuffer[0] = new IdentityVertex {

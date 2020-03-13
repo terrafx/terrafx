@@ -37,14 +37,10 @@ namespace TerraFX.Graphics
         /// <summary>Gets the graphics surface on which the device can render.</summary>
         public IGraphicsSurface GraphicsSurface => _graphicsSurface;
 
-        /// <summary>Creates a new graphics buffer for the device.</summary>
-        /// <param name="kind">The kind of graphics buffer to create.</param>
-        /// <param name="size">The size, in bytes, of the graphics buffer.</param>
-        /// <param name="stride">The size, in bytes, of the graphics buffer elements.</param>
-        /// <returns>A new graphics buffer created for the device.</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="kind" /> is unsupported.</exception>
-        /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-        public abstract GraphicsBuffer CreateGraphicsBuffer(GraphicsBufferKind kind, ulong size, ulong stride);
+        /// <summary>Creates a new graphics heap for the device.</summary>
+        /// <param name="size">The size, in bytes, of the graphics heap.</param>
+        /// <returns>A new graphics heap created for the device.</returns>
+        public abstract GraphicsHeap CreateGraphicsHeap(ulong size);
 
         /// <summary>Creates a new graphics pipeline for the device.</summary>
         /// <param name="signature">The signature which details the inputs given and resources available to the graphics pipeline.</param>

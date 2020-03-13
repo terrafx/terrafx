@@ -104,11 +104,11 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
         public D3D12GraphicsFence WaitForIdleGraphicsFence => _idleGraphicsFence;
 
-        /// <inheritdoc cref="CreateGraphicsBuffer(GraphicsBufferKind, ulong, ulong)" />
-        public D3D12GraphicsBuffer CreateD3D12GraphicsBuffer(GraphicsBufferKind kind, ulong size, ulong stride)
+        /// <inheritdoc cref="CreateGraphicsHeap(ulong)" />
+        public D3D12GraphicsHeap CreateD3D12GraphicsHeap(ulong size)
         {
             _state.ThrowIfDisposedOrDisposing();
-            return new D3D12GraphicsBuffer(kind, this, size, stride);
+            return new D3D12GraphicsHeap(this, size);
         }
 
         /// <inheritdoc cref="CreateGraphicsPipeline(GraphicsPipelineSignature, GraphicsShader?, GraphicsShader?)" />
@@ -133,7 +133,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         }
 
         /// <inheritdoc />
-        public override GraphicsBuffer CreateGraphicsBuffer(GraphicsBufferKind kind, ulong size, ulong stride) => CreateD3D12GraphicsBuffer(kind, size, stride);
+        public override GraphicsHeap CreateGraphicsHeap(ulong size) => CreateD3D12GraphicsHeap(size);
 
         /// <inheritdoc />
         public override GraphicsPipeline CreateGraphicsPipeline(GraphicsPipelineSignature signature, GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null) => CreateD3D12GraphicsPipeline((D3D12GraphicsPipelineSignature)signature, (D3D12GraphicsShader?)vertexShader, (D3D12GraphicsShader?)pixelShader);

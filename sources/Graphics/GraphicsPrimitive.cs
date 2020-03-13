@@ -36,12 +36,12 @@ namespace TerraFX.Graphics
                 ThrowArgumentOutOfRangeException(nameof(graphicsPipeline), graphicsPipeline);
             }
 
-            if (vertexBuffer.GraphicsDevice != graphicsDevice)
+            if (vertexBuffer.GraphicsHeap.GraphicsDevice != graphicsDevice)
             {
                 ThrowArgumentOutOfRangeException(nameof(vertexBuffer), vertexBuffer);
             }
 
-            if ((indexBuffer != null) && (indexBuffer.GraphicsDevice != graphicsDevice))
+            if ((indexBuffer != null) && (indexBuffer.GraphicsHeap.GraphicsDevice != graphicsDevice))
             {
                 ThrowArgumentOutOfRangeException(nameof(indexBuffer), indexBuffer);
             }
