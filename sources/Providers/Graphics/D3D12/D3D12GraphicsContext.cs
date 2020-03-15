@@ -64,7 +64,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <inheritdoc cref="GraphicsContext.GraphicsDevice" />
         public D3D12GraphicsDevice D3D12GraphicsDevice => (D3D12GraphicsDevice)GraphicsDevice;
 
-        /// <inheritdoc cref="GraphicsFence" />
+        /// <inheritdoc cref="D3D12GraphicsContext.GraphicsFence" />
         public D3D12GraphicsFence D3D12GraphicsFence => _graphicsFence;
 
         /// <summary>Gets the <see cref="ID3D12Resource" /> for the render target used by the context.</summary>
@@ -82,18 +82,9 @@ namespace TerraFX.Graphics.Providers.D3D12
         public D3D12GraphicsFence WaitForExecuteCompletionGraphicsFence => _waitForExecuteCompletionGraphicsFence;
 
         /// <inheritdoc />
-        public override void BeginFrame(ColorRgba backgroundColor)
+        public override void BeginDrawing(ColorRgba backgroundColor)
         {
-            var graphicsFence = D3D12GraphicsFence;
-
-            graphicsFence.Wait();
-            graphicsFence.Reset();
-
-            var commandAllocator = D3D12CommandAllocator;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12CommandAllocator.Reset), commandAllocator->Reset());
-
             var graphicsCommandList = D3D12GraphicsCommandList;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12GraphicsCommandList.Reset), graphicsCommandList->Reset(commandAllocator, pInitialState: null));
 
             var renderTargetResourceBarrier = D3D12_RESOURCE_BARRIER.InitTransition(D3D12RenderTargetResource, D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
             graphicsCommandList->ResourceBarrier(1, &renderTargetResourceBarrier);
@@ -123,6 +114,109 @@ namespace TerraFX.Graphics.Providers.D3D12
             graphicsCommandList->ClearRenderTargetView(renderTargetView, (float*)&backgroundColor, NumRects: 0, pRects: null);
             graphicsCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
         }
+
+        /// <inheritdoc />
+        public override void BeginFrame()
+        {
+            var graphicsFence = D3D12GraphicsFence;
+
+            graphicsFence.Wait();
+            graphicsFence.Reset();
+
+            var commandAllocator = D3D12CommandAllocator;
+
+            ThrowExternalExceptionIfFailed(nameof(ID3D12CommandAllocator.Reset), commandAllocator->Reset());
+            ThrowExternalExceptionIfFailed(nameof(ID3D12GraphicsCommandList.Reset), D3D12GraphicsCommandList->Reset(commandAllocator, pInitialState: null));
+        }
+
+        /// <inheritdoc cref="Copy(GraphicsBuffer, GraphicsBuffer)" />
+        public void Copy(D3D12GraphicsBuffer destination, D3D12GraphicsBuffer source)
+        {
+            ThrowIfNull(destination, nameof(destination));
+            ThrowIfNull(source, nameof(source));
+
+            var graphicsCommandList = D3D12GraphicsCommandList;
+
+            var destinationCpuAccess = destination.GraphicsHeap.CpuAccess;
+            var sourceCpuAccess = source.GraphicsHeap.CpuAccess;
+
+            var d3d12DestinationResource = destination.D3D12Resource;
+            var d3d12SourceResource = source.D3D12Resource;
+
+            var d3d12DestinationResourceState = destination.D3D12ResourceState;
+            var d3d12SourceResourceState = source.D3D12ResourceState;
+
+            BeginCopy();
+
+            graphicsCommandList->CopyResource(d3d12DestinationResource, d3d12SourceResource);
+
+            EndCopy();
+
+            void BeginCopy()
+            {
+                var resourceBarriers = stackalloc D3D12_RESOURCE_BARRIER[2];
+                var numResourceBarriers = 0u;
+
+                if (destinationCpuAccess == GraphicsHeapCpuAccess.None)
+                {
+                    resourceBarriers[numResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
+                        d3d12DestinationResource,
+                        stateBefore: d3d12DestinationResourceState,
+                        stateAfter: D3D12_RESOURCE_STATE_COPY_DEST
+                    );
+                    numResourceBarriers++;
+                }
+
+                if (sourceCpuAccess == GraphicsHeapCpuAccess.None)
+                {
+                    resourceBarriers[numResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
+                        d3d12SourceResource,
+                        stateBefore: d3d12SourceResourceState,
+                        stateAfter: D3D12_RESOURCE_STATE_COPY_SOURCE
+                    );
+                    numResourceBarriers++;
+                }
+
+                if (numResourceBarriers != 0)
+                {
+                    graphicsCommandList->ResourceBarrier(numResourceBarriers, resourceBarriers);
+                }
+            }
+
+            void EndCopy()
+            {
+                var resourceBarriers = stackalloc D3D12_RESOURCE_BARRIER[2];
+                var numResourceBarriers = 0u;
+
+                if (sourceCpuAccess == GraphicsHeapCpuAccess.None)
+                {
+                    resourceBarriers[numResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
+                        d3d12SourceResource,
+                        stateBefore: D3D12_RESOURCE_STATE_COPY_SOURCE,
+                        stateAfter: d3d12SourceResourceState
+                    );
+                    numResourceBarriers++;
+                }
+
+                if (destinationCpuAccess == GraphicsHeapCpuAccess.None)
+                {
+                    resourceBarriers[numResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
+                        d3d12DestinationResource,
+                        stateBefore: D3D12_RESOURCE_STATE_COPY_DEST,
+                        stateAfter: d3d12DestinationResourceState
+                    );
+                    numResourceBarriers++;
+                }
+
+                if (numResourceBarriers != 0)
+                {
+                    graphicsCommandList->ResourceBarrier(numResourceBarriers, resourceBarriers);
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public override void Copy(GraphicsBuffer destination, GraphicsBuffer source) => Copy((D3D12GraphicsBuffer)destination, (D3D12GraphicsBuffer)source);
 
         /// <inheritdoc cref="Draw(GraphicsPrimitive)" />
         public void Draw(D3D12GraphicsPrimitive graphicsPrimitive)
@@ -184,12 +278,16 @@ namespace TerraFX.Graphics.Providers.D3D12
         public override void Draw(GraphicsPrimitive graphicsPrimitive) => Draw((D3D12GraphicsPrimitive)graphicsPrimitive);
 
         /// <inheritdoc />
+        public override void EndDrawing()
+        {
+            var renderTargetResourceBarrier = D3D12_RESOURCE_BARRIER.InitTransition(D3D12RenderTargetResource, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+            D3D12GraphicsCommandList->ResourceBarrier(1, &renderTargetResourceBarrier);
+        }
+
+        /// <inheritdoc />
         public override void EndFrame()
         {
             var graphicsCommandList = D3D12GraphicsCommandList;
-
-            var renderTargetResourceBarrier = D3D12_RESOURCE_BARRIER.InitTransition(D3D12RenderTargetResource, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
-            graphicsCommandList->ResourceBarrier(1, &renderTargetResourceBarrier);
 
             var commandQueue = D3D12GraphicsDevice.D3D12CommandQueue;
             ThrowExternalExceptionIfFailed(nameof(ID3D12GraphicsCommandList.Close), graphicsCommandList->Close());

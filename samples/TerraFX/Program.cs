@@ -147,7 +147,7 @@ namespace TerraFX.Samples
         {
             Console.WriteLine($"Running: {sample.Name}");
             var thread = new Thread(() => Run(sample));
-
+            
             thread.Start();
             thread.Join();
         }

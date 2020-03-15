@@ -10,18 +10,24 @@ namespace TerraFX.Graphics
     {
         private readonly ulong _size;
         private readonly GraphicsDevice _graphicsDevice;
+        private readonly GraphicsHeapCpuAccess _cpuAccess;
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsHeap" /> class.</summary>
         /// <param name="graphicsDevice">The graphics device for which the heap was created.</param>
         /// <param name="size">The size, in bytes, of the heap.</param>
+        /// <param name="cpuAccess">The CPU access capabilities of the heap.</param>
         /// <exception cref="ArgumentNullException"><paramref name="graphicsDevice" /> is <c>null</c>.</exception>
-        protected GraphicsHeap(GraphicsDevice graphicsDevice, ulong size)
+        protected GraphicsHeap(GraphicsDevice graphicsDevice, ulong size, GraphicsHeapCpuAccess cpuAccess)
         {
             ThrowIfNull(graphicsDevice, nameof(graphicsDevice));
 
             _graphicsDevice = graphicsDevice;
             _size = size;
+            _cpuAccess = cpuAccess;
         }
+
+        /// <summary>Gets the CPU access capabilities of the heap.</summary>
+        public GraphicsHeapCpuAccess CpuAccess => _cpuAccess;
 
         /// <summary>Gets the graphics device to which the resource is bound.</summary>
         public GraphicsDevice GraphicsDevice => _graphicsDevice;

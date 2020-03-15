@@ -19,12 +19,29 @@ namespace TerraFX.Graphics
         /// <param name="stride">The size, in bytes, of the elements contained by the buffer.</param>
         /// <exception cref="ArgumentNullException"><paramref name="graphicsHeap" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="kind" /> is <see cref="GraphicsBufferKind.Index" /> and <paramref name="stride" /> is not <c>2</c> or <c>4</c>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="kind" /> is <see cref="GraphicsBufferKind.Staging" /> and <paramref name="graphicsHeap" /> is not <see cref="GraphicsHeapCpuAccess.Write" />.</exception>
         protected GraphicsBuffer(GraphicsBufferKind kind, GraphicsHeap graphicsHeap, ulong offset, ulong size, ulong stride)
             : base(graphicsHeap, offset, size)
         {
-            if ((kind == GraphicsBufferKind.Index) && (stride != 2) && (stride != 4))
+            switch (kind)
             {
-                ThrowArgumentOutOfRangeException(nameof(stride), stride);
+                case GraphicsBufferKind.Index:
+                {
+                    if ((stride != 2) && (stride != 4))
+                    {
+                        ThrowArgumentOutOfRangeException(nameof(stride), stride);
+                    }
+                    break;
+                }
+
+                case GraphicsBufferKind.Staging:
+                {
+                    if (graphicsHeap.CpuAccess != GraphicsHeapCpuAccess.Write)
+                    {
+                        ThrowArgumentOutOfRangeException(nameof(graphicsHeap), graphicsHeap);
+                    }
+                    break;
+                }
             }
 
             _stride = stride;

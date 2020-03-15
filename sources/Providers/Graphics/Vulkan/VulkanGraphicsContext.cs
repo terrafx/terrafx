@@ -86,20 +86,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
         public VulkanGraphicsFence WaitForExecuteCompletionGraphicsFence => _waitForExecuteCompletionGraphicsFence;
 
         /// <inheritdoc />
-        public override void BeginFrame(ColorRgba backgroundColor)
+        public override void BeginDrawing(ColorRgba backgroundColor)
         {
-            var graphicsFence = VulkanGraphicsFence;
-
-            graphicsFence.Wait();
-            graphicsFence.Reset();
-
-            var commandBufferBeginInfo = new VkCommandBufferBeginInfo {
-                sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
-            };
-
-            var commandBuffer = VulkanCommandBuffer;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkBeginCommandBuffer), vkBeginCommandBuffer(commandBuffer, &commandBufferBeginInfo));
-
             var clearValue = new VkClearValue();
 
             clearValue.color.float32[0] = backgroundColor.Red;
@@ -127,6 +115,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 pClearValues = &clearValue,
             };
 
+            var commandBuffer = VulkanCommandBuffer;
             vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
             var viewport = new VkViewport {
@@ -145,6 +134,38 @@ namespace TerraFX.Graphics.Providers.Vulkan
             };
             vkCmdSetScissor(commandBuffer, firstScissor: 0, scissorCount: 1, &scissorRect);
         }
+
+        /// <inheritdoc />
+        public override void BeginFrame()
+        {
+            var graphicsFence = VulkanGraphicsFence;
+
+            graphicsFence.Wait();
+            graphicsFence.Reset();
+
+            var commandBufferBeginInfo = new VkCommandBufferBeginInfo {
+                sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+            };
+
+            ThrowExternalExceptionIfNotSuccess(nameof(vkBeginCommandBuffer), vkBeginCommandBuffer(VulkanCommandBuffer, &commandBufferBeginInfo));
+        }
+
+        /// <inheritdoc cref="Copy(GraphicsBuffer, GraphicsBuffer)" />
+        public void Copy(VulkanGraphicsBuffer destination, VulkanGraphicsBuffer source)
+        {
+            ThrowIfNull(destination, nameof(destination));
+            ThrowIfNull(source, nameof(source));
+
+            var vulkanBufferCopy = new VkBufferCopy {
+                srcOffset = 0,
+                dstOffset = 0,
+                size = Math.Min(destination.Size, source.Size),
+            };
+            vkCmdCopyBuffer(VulkanCommandBuffer, source.VulkanBuffer, destination.VulkanBuffer, 1, &vulkanBufferCopy);
+        }
+
+        /// <inheritdoc />
+        public override void Copy(GraphicsBuffer destination, GraphicsBuffer source) => Copy((VulkanGraphicsBuffer)destination, (VulkanGraphicsBuffer)source);
 
         /// <inheritdoc cref="Draw(GraphicsPrimitive)" />
         public void Draw(VulkanGraphicsPrimitive graphicsPrimitive)
@@ -219,11 +240,12 @@ namespace TerraFX.Graphics.Providers.Vulkan
         public override void Draw(GraphicsPrimitive graphicsPrimitive) => Draw((VulkanGraphicsPrimitive)graphicsPrimitive);
 
         /// <inheritdoc />
+        public override void EndDrawing() => vkCmdEndRenderPass(VulkanCommandBuffer);
+
+        /// <inheritdoc />
         public override void EndFrame()
         {
             var commandBuffer = VulkanCommandBuffer;
-            vkCmdEndRenderPass(commandBuffer);
-
             ThrowExternalExceptionIfNotSuccess(nameof(vkEndCommandBuffer), vkEndCommandBuffer(commandBuffer));
 
             var submitInfo = new VkSubmitInfo {

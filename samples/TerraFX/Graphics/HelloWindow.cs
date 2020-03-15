@@ -59,15 +59,32 @@ namespace TerraFX.Samples.Graphics
 
             if (_window.IsVisible)
             {
-                var graphicsDevice = _graphicsDevice;
-                var graphicsContext = graphicsDevice.GraphicsContexts[graphicsDevice.GraphicsContextIndex];
+                var currentGraphicsContext = _graphicsDevice.CurrentGraphicsContext;
+                currentGraphicsContext.BeginFrame();
 
-                var backgroundColor = new ColorRgba(red: 100.0f / 255.0f, green: 149.0f / 255.0f, blue: 237.0f / 255.0f, alpha: 1.0f);
-                graphicsContext.BeginFrame(backgroundColor);
+                Update(eventArgs.Delta);
+                Render();
 
-                graphicsContext.EndFrame();
-                graphicsDevice.PresentFrame();
+                currentGraphicsContext.EndFrame();
+                Present();
             }
+        }
+
+        private void Present() => _graphicsDevice.PresentFrame();
+
+        private void Render()
+        {
+            var graphicsDevice = _graphicsDevice;
+            var graphicsContext = graphicsDevice.CurrentGraphicsContext;
+
+            var backgroundColor = new ColorRgba(red: 100.0f / 255.0f, green: 149.0f / 255.0f, blue: 237.0f / 255.0f, alpha: 1.0f);
+
+            graphicsContext.BeginDrawing(backgroundColor);
+            graphicsContext.EndDrawing();
+        }
+
+        private unsafe void Update(TimeSpan delta)
+        {
         }
     }
 }

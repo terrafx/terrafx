@@ -21,5 +21,8 @@ namespace TerraFX.Graphics
         /// <summary>Defines a uniform buffer.</summary>
         /// <remarks>This is an alternative name for <see cref="Constant" />.</remarks>
         Uniform = Constant,
+
+        /// <summary>Defines a staging buffer.</summary>
+        Staging,
     }
 }

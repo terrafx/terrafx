@@ -120,52 +120,39 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             VkBuffer vulkanBuffer;
 
-            var bufferCreateInfo = new VkBufferCreateInfo {
-                sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
-                size = Size,
-                usage = GetVulkanBufferUsageKind(Kind),
-            };
-
             var vulkanGraphicsHeap = VulkanGraphicsHeap;
             var vulkanDeviceMemory = vulkanGraphicsHeap.VulkanDeviceMemory;
 
             var vulkanGraphicsDevice = vulkanGraphicsHeap.VulkanGraphicsDevice;
             var vulkanDevice = vulkanGraphicsDevice.VulkanDevice;
 
+            var bufferCreateInfo = new VkBufferCreateInfo {
+                sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+                size = Size,
+                usage = GetVulkanBufferUsageKind(vulkanGraphicsHeap.CpuAccess, Kind),
+            };
+
             ThrowExternalExceptionIfNotSuccess(nameof(vkCreateBuffer), vkCreateBuffer(vulkanDevice, &bufferCreateInfo, pAllocator: null, (ulong*)&vulkanBuffer));
             ThrowExternalExceptionIfNotSuccess(nameof(vkBindBufferMemory), vkBindBufferMemory(vulkanDevice, vulkanBuffer, vulkanDeviceMemory, Offset));
 
             return vulkanBuffer;
 
-            static uint GetVulkanBufferUsageKind(GraphicsBufferKind kind)
+            static uint GetVulkanBufferUsageKind(GraphicsHeapCpuAccess cpuAccess, GraphicsBufferKind kind)
             {
-                VkBufferUsageFlagBits vulkanBufferUsageKind;
+                var vulkanBufferUsageKind = cpuAccess switch {
+                    GraphicsHeapCpuAccess.Read => VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                    GraphicsHeapCpuAccess.Write => VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                    _ => VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                };
 
-                switch (kind)
+                if (cpuAccess != GraphicsHeapCpuAccess.Read)
                 {
-                    case GraphicsBufferKind.Vertex:
-                    {
-                        vulkanBufferUsageKind = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-                        break;
-                    }
-
-                    case GraphicsBufferKind.Index:
-                    {
-                        vulkanBufferUsageKind = VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
-                        break;
-                    }
-
-                    case GraphicsBufferKind.Uniform:
-                    {
-                        vulkanBufferUsageKind = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
-                        break;
-                    }
-
-                    default:
-                    {
-                        vulkanBufferUsageKind = 0;
-                        break;
-                    }
+                    vulkanBufferUsageKind |= kind switch {
+                        GraphicsBufferKind.Vertex => VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+                        GraphicsBufferKind.Index => VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+                        GraphicsBufferKind.Constant => VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                        _ => default,
+                    };
                 }
 
                 return (uint)vulkanBufferUsageKind;

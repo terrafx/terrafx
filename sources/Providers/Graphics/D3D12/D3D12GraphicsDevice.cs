@@ -73,6 +73,9 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
         public ID3D12CommandQueue* D3D12CommandQueue => _d3d12CommandQueue.Value;
 
+        /// <inheritdoc cref="GraphicsDevice.CurrentGraphicsContext" />
+        public D3D12GraphicsContext D3D12CurrentGraphicsContext => (D3D12GraphicsContext)CurrentGraphicsContext;
+
         /// <summary>Gets the underlying <see cref="ID3D12Device" /> for the device.</summary>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
         public ID3D12Device* D3D12Device => _d3d12Device.Value;
@@ -104,11 +107,11 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
         public D3D12GraphicsFence WaitForIdleGraphicsFence => _idleGraphicsFence;
 
-        /// <inheritdoc cref="CreateGraphicsHeap(ulong)" />
-        public D3D12GraphicsHeap CreateD3D12GraphicsHeap(ulong size)
+        /// <inheritdoc cref="CreateGraphicsHeap(ulong, GraphicsHeapCpuAccess)" />
+        public D3D12GraphicsHeap CreateD3D12GraphicsHeap(ulong size, GraphicsHeapCpuAccess cpuAccess)
         {
             _state.ThrowIfDisposedOrDisposing();
-            return new D3D12GraphicsHeap(this, size);
+            return new D3D12GraphicsHeap(this, size, cpuAccess);
         }
 
         /// <inheritdoc cref="CreateGraphicsPipeline(GraphicsPipelineSignature, GraphicsShader?, GraphicsShader?)" />
@@ -133,7 +136,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         }
 
         /// <inheritdoc />
-        public override GraphicsHeap CreateGraphicsHeap(ulong size) => CreateD3D12GraphicsHeap(size);
+        public override GraphicsHeap CreateGraphicsHeap(ulong size, GraphicsHeapCpuAccess cpuAccess) => CreateD3D12GraphicsHeap(size, cpuAccess);
 
         /// <inheritdoc />
         public override GraphicsPipeline CreateGraphicsPipeline(GraphicsPipelineSignature signature, GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null) => CreateD3D12GraphicsPipeline((D3D12GraphicsPipelineSignature)signature, (D3D12GraphicsShader?)vertexShader, (D3D12GraphicsShader?)pixelShader);
@@ -156,11 +159,16 @@ namespace TerraFX.Graphics.Providers.D3D12
         {
             ThrowExternalExceptionIfFailed(nameof(IDXGISwapChain.Present), DxgiSwapChain->Present(1, 0));
 
-            var graphicsFence = D3D12GraphicsContexts[GraphicsContextIndex].D3D12GraphicsFence;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12CommandQueue.Signal), D3D12CommandQueue->Signal(graphicsFence.D3D12Fence, graphicsFence.D3D12FenceSignalValue));
-
+            Signal(D3D12CurrentGraphicsContext.D3D12GraphicsFence);
             _graphicsContextIndex = unchecked((int)DxgiSwapChain->GetCurrentBackBufferIndex());
         }
+
+        /// <inheritdoc cref="Signal(GraphicsFence)" />
+        public void Signal(D3D12GraphicsFence graphicsFence)
+            => ThrowExternalExceptionIfFailed(nameof(ID3D12CommandQueue.Signal), D3D12CommandQueue->Signal(graphicsFence.D3D12Fence, graphicsFence.D3D12FenceSignalValue));
+
+        /// <inheritdoc />
+        public override void Signal(GraphicsFence graphicsFence) => Signal((D3D12GraphicsFence)graphicsFence);
 
         /// <inheritdoc />
         public override void WaitForIdle()

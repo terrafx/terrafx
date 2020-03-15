@@ -18,8 +18,8 @@ namespace TerraFX.Graphics.Providers.D3D12
         private ValueLazy<Pointer<ID3D12Heap>> _d3d12Heap;
         private State _state;
 
-        internal D3D12GraphicsHeap(D3D12GraphicsDevice graphicsDevice, ulong size)
-            : base(graphicsDevice, size)
+        internal D3D12GraphicsHeap(D3D12GraphicsDevice graphicsDevice, ulong size, GraphicsHeapCpuAccess cpuAccess)
+            : base(graphicsDevice, size, cpuAccess)
         {
             _d3d12Heap = new ValueLazy<Pointer<ID3D12Heap>>(CreateD3D12Heap);
         }
@@ -72,7 +72,13 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             ID3D12Heap* d3d12Heap;
 
-            var heapDesc = new D3D12_HEAP_DESC(Size, D3D12_HEAP_TYPE_UPLOAD);
+            var heapType = CpuAccess switch {
+                GraphicsHeapCpuAccess.Read => D3D12_HEAP_TYPE_READBACK,
+                GraphicsHeapCpuAccess.Write => D3D12_HEAP_TYPE_UPLOAD,
+                _ => D3D12_HEAP_TYPE_DEFAULT,
+            };
+            
+            var heapDesc = new D3D12_HEAP_DESC(Size, heapType);
             var iid = IID_ID3D12Heap;
 
             ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateHeap), D3D12GraphicsDevice.D3D12Device->CreateHeap(

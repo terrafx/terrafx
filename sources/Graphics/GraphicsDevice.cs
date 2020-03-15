@@ -25,6 +25,9 @@ namespace TerraFX.Graphics
             _graphicsSurface = graphicsSurface;
         }
 
+        /// <summary>Gets the current graphics context.</summary>
+        public GraphicsContext CurrentGraphicsContext => GraphicsContexts[GraphicsContextIndex];
+
         /// <summary>Gets the <see cref="Graphics.GraphicsAdapter" /> for the instance.</summary>
         public GraphicsAdapter GraphicsAdapter => _graphicsAdapter;
 
@@ -39,8 +42,9 @@ namespace TerraFX.Graphics
 
         /// <summary>Creates a new graphics heap for the device.</summary>
         /// <param name="size">The size, in bytes, of the graphics heap.</param>
+        /// <param name="cpuAccess">The CPU access capabilities of the graphics heap.</param>
         /// <returns>A new graphics heap created for the device.</returns>
-        public abstract GraphicsHeap CreateGraphicsHeap(ulong size);
+        public abstract GraphicsHeap CreateGraphicsHeap(ulong size, GraphicsHeapCpuAccess cpuAccess = GraphicsHeapCpuAccess.None);
 
         /// <summary>Creates a new graphics pipeline for the device.</summary>
         /// <param name="signature">The signature which details the inputs given and resources available to the graphics pipeline.</param>
@@ -95,6 +99,11 @@ namespace TerraFX.Graphics
         /// <summary>Presents the last frame rendered.</summary>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
         public abstract void PresentFrame();
+
+        /// <summary>Signals a graphics fence.</summary>
+        /// <param name="graphicsFence">The graphics fence to be signaled</param>
+        /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
+        public abstract void Signal(GraphicsFence graphicsFence);
 
         /// <summary>Waits for the device to become idle.</summary>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>

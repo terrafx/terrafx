@@ -14,7 +14,8 @@ namespace TerraFX.Samples.Graphics
     public sealed class HelloConstantBuffer : Sample
     {
         private GraphicsDevice _graphicsDevice = null!;
-        private GraphicsHeap _graphicsHeap = null!;
+        private GraphicsHeap _graphicsBufferHeap = null!;
+        private GraphicsHeap _graphicsConstantBufferHeap = null!;
         private GraphicsPrimitive _trianglePrimitive = null!;
         private Window _window = null!;
 
@@ -29,7 +30,8 @@ namespace TerraFX.Samples.Graphics
         public override void Cleanup()
         {
             _trianglePrimitive?.Dispose();
-            _graphicsHeap?.Dispose();
+            _graphicsConstantBufferHeap?.Dispose();
+            _graphicsBufferHeap?.Dispose();
             _graphicsDevice?.Dispose();
             _window?.Dispose();
 
@@ -47,9 +49,25 @@ namespace TerraFX.Samples.Graphics
             var graphicsProvider = application.GetService<GraphicsProvider>();
             var graphicsAdapter = graphicsProvider.GraphicsAdapters.First();
 
-            _graphicsDevice = graphicsAdapter.CreateGraphicsDevice(_window, graphicsContextCount: 2);
-            _graphicsHeap = _graphicsDevice.CreateGraphicsHeap(64 * 1024 * 3);
-            _trianglePrimitive = CreateTrianglePrimitive();
+            var graphicsDevice = graphicsAdapter.CreateGraphicsDevice(_window, graphicsContextCount: 2);
+
+            _graphicsDevice = graphicsDevice;
+            _graphicsBufferHeap = graphicsDevice.CreateGraphicsHeap(64 * 1024 , GraphicsHeapCpuAccess.None);
+            _graphicsConstantBufferHeap = graphicsDevice.CreateGraphicsHeap(64 * 1024 * 2, GraphicsHeapCpuAccess.Write);
+
+            using (var graphicsStagingHeap = graphicsDevice.CreateGraphicsHeap(64 * 1024, GraphicsHeapCpuAccess.Write))
+            using (var vertexStagingBuffer = graphicsStagingHeap.CreateGraphicsBuffer(GraphicsBufferKind.Staging, 64 * 1024, sizeof(byte)))
+            {
+                var currentGraphicsContext = graphicsDevice.CurrentGraphicsContext;
+                currentGraphicsContext.BeginFrame();
+
+                _trianglePrimitive = CreateTrianglePrimitive(currentGraphicsContext, vertexStagingBuffer);
+
+                currentGraphicsContext.EndFrame();
+
+                graphicsDevice.Signal(currentGraphicsContext.GraphicsFence);
+                graphicsDevice.WaitForIdle();
+            }
 
             base.Initialize(application);
         }
@@ -68,24 +86,31 @@ namespace TerraFX.Samples.Graphics
 
             if (_window.IsVisible)
             {
+                var currentGraphicsContext = _graphicsDevice.CurrentGraphicsContext;
+                currentGraphicsContext.BeginFrame();
+
                 Update(eventArgs.Delta);
                 Render();
+
+                currentGraphicsContext.EndFrame();
                 Present();
             }
         }
 
-        private unsafe GraphicsPrimitive CreateTrianglePrimitive()
+        private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer)
         {
             var graphicsDevice = _graphicsDevice;
-            var graphicsHeap = _graphicsHeap;
             var graphicsSurface = graphicsDevice.GraphicsSurface;
 
+            var graphicsBufferHeap = _graphicsBufferHeap;
+            var graphicsConstantBufferHeap = _graphicsConstantBufferHeap;
+
             var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Transform", "main", "main");
-            var vertexBuffer = CreateVertexBuffer(graphicsHeap, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
+            var vertexBuffer = CreateVertexBuffer(graphicsContext, graphicsBufferHeap, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
 
             var inputBuffers = new GraphicsBuffer[2] {
-                CreateConstantBuffer(graphicsHeap),
-                CreateConstantBuffer(graphicsHeap),
+                CreateConstantBuffer(graphicsConstantBufferHeap),
+                CreateConstantBuffer(graphicsConstantBufferHeap),
             };
             return graphicsDevice.CreateGraphicsPrimitive(graphicsPipeline, vertexBuffer, inputBuffers: inputBuffers);
 
@@ -100,10 +125,10 @@ namespace TerraFX.Samples.Graphics
                 return constantBuffer;
             }
 
-            static GraphicsBuffer CreateVertexBuffer(GraphicsHeap graphicsHeap, float aspectRatio)
+            static GraphicsBuffer CreateVertexBuffer(GraphicsContext graphicsContext, GraphicsHeap graphicsHeap, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
             {
                 var vertexBuffer = graphicsHeap.CreateGraphicsBuffer(GraphicsBufferKind.Vertex, (ulong)(sizeof(IdentityVertex) * 3), (ulong)sizeof(IdentityVertex));
-                var pVertexBuffer = vertexBuffer.Map<IdentityVertex>();
+                var pVertexBuffer = vertexStagingBuffer.Map<IdentityVertex>();
 
                 pVertexBuffer[0] = new IdentityVertex {
                     Position = new Vector3(0.0f, 0.25f * aspectRatio, 0.0f),
@@ -120,7 +145,9 @@ namespace TerraFX.Samples.Graphics
                     Color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f)
                 };
 
-                vertexBuffer.Unmap(0..(sizeof(IdentityVertex) * 3));
+                vertexStagingBuffer.Unmap(0..(sizeof(IdentityVertex) * 3));
+                graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
+
                 return vertexBuffer;
             }
 
@@ -133,7 +160,7 @@ namespace TerraFX.Samples.Graphics
                 return graphicsDevice.CreateGraphicsPipeline(signature, vertexShader, pixelShader);
             }
 
-            GraphicsPipelineSignature CreateGraphicsPipelineSignature(GraphicsDevice graphicsDevice)
+            static GraphicsPipelineSignature CreateGraphicsPipelineSignature(GraphicsDevice graphicsDevice)
             {
                 var inputs = new GraphicsPipelineInput[1] {
                     new GraphicsPipelineInput(
@@ -153,22 +180,18 @@ namespace TerraFX.Samples.Graphics
             }
         }
 
-        private void Present()
-        {
-            _graphicsDevice.PresentFrame();
-        }
+        private void Present() => _graphicsDevice.PresentFrame();
 
         private void Render()
         {
             var graphicsDevice = _graphicsDevice;
-            var graphicsContext = graphicsDevice.GraphicsContexts[graphicsDevice.GraphicsContextIndex];
+            var graphicsContext = graphicsDevice.CurrentGraphicsContext;
 
             var backgroundColor = new ColorRgba(red: 100.0f / 255.0f, green: 149.0f / 255.0f, blue: 237.0f / 255.0f, alpha: 1.0f);
-            graphicsContext.BeginFrame(backgroundColor);
 
+            graphicsContext.BeginDrawing(backgroundColor);
             graphicsContext.Draw(_trianglePrimitive);
-
-            graphicsContext.EndFrame();
+            graphicsContext.EndDrawing();
         }
 
         private unsafe void Update(TimeSpan delta)

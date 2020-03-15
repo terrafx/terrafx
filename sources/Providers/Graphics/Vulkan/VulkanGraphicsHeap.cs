@@ -20,8 +20,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private ValueLazy<VkDeviceMemory> _vulkanDeviceMemory;
         private State _state;
 
-        internal VulkanGraphicsHeap(VulkanGraphicsDevice graphicsDevice, ulong size)
-            : base(graphicsDevice, size)
+        internal VulkanGraphicsHeap(VulkanGraphicsDevice graphicsDevice, ulong size, GraphicsHeapCpuAccess cpuAccess)
+            : base(graphicsDevice, size, cpuAccess)
         {
             _vulkanDeviceMemory = new ValueLazy<VkDeviceMemory>(CreateVulkanDeviceMemory);
             _ = _state.Transition(to: Initialized);
@@ -81,16 +81,18 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var memoryAllocateInfo = new VkMemoryAllocateInfo {
                 sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
                 allocationSize = Size,
-                memoryTypeIndex = GetMemoryTypeIndex(VulkanGraphicsDevice.VulkanGraphicsAdapter.VulkanPhysicalDevice),
+                memoryTypeIndex = GetMemoryTypeIndex(VulkanGraphicsDevice.VulkanGraphicsAdapter.VulkanPhysicalDevice, CpuAccess),
             };
             ThrowExternalExceptionIfNotSuccess(nameof(vkAllocateMemory), vkAllocateMemory(VulkanGraphicsDevice.VulkanDevice, &memoryAllocateInfo, pAllocator: null, (ulong*)&vulkanDeviceMemory));
 
             return vulkanDeviceMemory;
 
 
-            static uint GetMemoryTypeIndex(VkPhysicalDevice vulkanPhysicalDevice)
+            static uint GetMemoryTypeIndex(VkPhysicalDevice vulkanPhysicalDevice, GraphicsHeapCpuAccess cpuAccess)
             {
                 var memoryTypeIndex = uint.MaxValue;
+                var memoryTypeHasDesiredFlag = false;
+                var memoryTypeHasUndesiredFlag = false;
 
                 VkPhysicalDeviceMemoryProperties physicalDeviceMemoryProperties;
                 vkGetPhysicalDeviceMemoryProperties(vulkanPhysicalDevice, &physicalDeviceMemoryProperties);
@@ -98,12 +100,55 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 var memoryTypesCount = physicalDeviceMemoryProperties.memoryTypeCount;
                 var memoryTypes = physicalDeviceMemoryProperties.memoryTypes;
 
+                var (requiredFlag, desiredFlag, undesiredFlag) = cpuAccess switch {
+                    GraphicsHeapCpuAccess.Read => (VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, VK_MEMORY_PROPERTY_HOST_CACHED_BIT, default(VkMemoryPropertyFlagBits)),
+                    GraphicsHeapCpuAccess.Write => (VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, default(VkMemoryPropertyFlagBits), VK_MEMORY_PROPERTY_HOST_COHERENT_BIT),
+                    _ => (default(VkMemoryPropertyFlagBits), VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT),
+                };
+
                 for (uint index = 0; index < memoryTypesCount; index++)
                 {
-                    if ((memoryTypes[unchecked((int)index)].propertyFlags & (uint)VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) != 0)
+                    var propertyFlags = (VkMemoryPropertyFlagBits)memoryTypes[unchecked((int)index)].propertyFlags;
+
+                    var hasRequiredFlag = (propertyFlags & requiredFlag) == requiredFlag;
+                    var hasDesiredFlag = (propertyFlags & desiredFlag) == desiredFlag;
+                    var hasUndesiredFlag = (propertyFlags & undesiredFlag) == undesiredFlag;
+
+                    if (hasRequiredFlag)
                     {
-                        memoryTypeIndex = index;
-                        break;
+                        if (hasDesiredFlag)
+                        {
+                            if (!hasUndesiredFlag)
+                            {
+                                // We have the required flag, the desired flag, and do not
+                                // have the undesired flag; so we've found the best match.
+
+                                memoryTypeIndex = index;
+                                break;
+                            }
+
+                            if (!memoryTypeHasDesiredFlag)
+                            {
+                                // We have the required flag and the desired flag, but also the
+                                // undesired flag. But, the last match did not have the desired
+                                // flag, so we'll treat this as a better match.
+
+                                memoryTypeIndex = index;
+                                memoryTypeHasDesiredFlag = true;
+                                memoryTypeHasUndesiredFlag = true;
+                            }
+                        }
+                        else if (!memoryTypeHasDesiredFlag && ((!hasUndesiredFlag && memoryTypeHasUndesiredFlag) || (memoryTypeIndex == uint.MaxValue)))
+                        {
+                            // We have the required flag and do not have the desired flag, but
+                            // the last match didn't have the desired flag either. So, if the last
+                            // match had the undesired flag but we don't, then we'll treat this
+                            // as a better match. We'll likewise treat this as a better match if
+                            // we haven't found a match yet.
+
+                            memoryTypeIndex = index;
+                            memoryTypeHasUndesiredFlag = hasUndesiredFlag;
+                        }
                     }
                 }
 
