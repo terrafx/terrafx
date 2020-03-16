@@ -77,6 +77,12 @@ namespace TerraFX.Graphics.Providers.Vulkan
             }
         }
 
+        /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsDevice" /> class.</summary>
+        ~VulkanGraphicsDevice()
+        {
+            Dispose(isDisposing: true);
+        }
+
         /// <inheritdoc />
         public override ReadOnlySpan<GraphicsContext> GraphicsContexts => _graphicsContexts;
 
@@ -94,6 +100,9 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <summary>Gets the index of the queue family for <see cref="VulkanCommandQueue" />.</summary>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
         public uint VulkanCommandQueueFamilyIndex => _vulkanCommandQueueFamilyIndex.Value;
+
+        /// <inheritdoc cref="GraphicsDevice.CurrentGraphicsContext" />
+        public VulkanGraphicsContext VulkanCurrentGraphicsContext => (VulkanGraphicsContext)CurrentGraphicsContext;
 
         /// <summary>Gets the underlying <see cref="VkDevice"/> for the device.</summary>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
@@ -123,11 +132,11 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <summary>Gets a readonly span of the <see cref="VkImage" /> used by <see cref="VulkanSwapchain" />.</summary>
         public ReadOnlySpan<VkImage> VulkanSwapchainImages => _vulkanSwapchainImages.Value;
 
-        /// <inheritdoc cref="CreateGraphicsBuffer(GraphicsBufferKind, ulong, ulong)" />
-        public VulkanGraphicsBuffer CreateVulkanGraphicsBuffer(GraphicsBufferKind kind, ulong size, ulong stride)
+        /// <inheritdoc cref="CreateGraphicsHeap(ulong, GraphicsHeapCpuAccess)" />
+        public VulkanGraphicsHeap CreateVulkanGraphicsHeap(ulong size, GraphicsHeapCpuAccess cpuAccess)
         {
             _state.ThrowIfDisposedOrDisposing();
-            return new VulkanGraphicsBuffer(this, kind, size, stride);
+            return new VulkanGraphicsHeap(this, size, cpuAccess);
         }
 
         /// <inheritdoc cref="CreateGraphicsPipeline(GraphicsPipelineSignature, GraphicsShader?, GraphicsShader?)" />
@@ -137,11 +146,11 @@ namespace TerraFX.Graphics.Providers.Vulkan
             return new VulkanGraphicsPipeline(this, signature, vertexShader, pixelShader);
         }
 
-        /// <inheritdoc cref="CreateGraphicsPrimitive(GraphicsPipeline, GraphicsBuffer, GraphicsBuffer, ReadOnlySpan{GraphicsBuffer})" />
-        public VulkanGraphicsPrimitive CreateVulkanGraphicsPrimitive(VulkanGraphicsPipeline graphicsPipeline, VulkanGraphicsBuffer vertexBuffer, VulkanGraphicsBuffer? indexBuffer = null, ReadOnlySpan<GraphicsBuffer> inputBuffers = default)
+        /// <inheritdoc cref="CreateGraphicsPrimitive(GraphicsPipeline, GraphicsBuffer, GraphicsBuffer, ReadOnlySpan{GraphicsResource})" />
+        public VulkanGraphicsPrimitive CreateVulkanGraphicsPrimitive(VulkanGraphicsPipeline graphicsPipeline, VulkanGraphicsBuffer vertexBuffer, VulkanGraphicsBuffer? indexBuffer = null, ReadOnlySpan<GraphicsResource> inputResource = default)
         {
             _state.ThrowIfDisposedOrDisposing();
-            return new VulkanGraphicsPrimitive(this, graphicsPipeline, vertexBuffer, indexBuffer, inputBuffers);
+            return new VulkanGraphicsPrimitive(this, graphicsPipeline, vertexBuffer, indexBuffer, inputResource);
         }
 
         /// <inheritdoc cref="CreateGraphicsShader(GraphicsShaderKind, ReadOnlySpan{byte}, string)" />
@@ -152,7 +161,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         }
 
         /// <inheritdoc />
-        public override GraphicsBuffer CreateGraphicsBuffer(GraphicsBufferKind kind, ulong size, ulong stride) => CreateVulkanGraphicsBuffer(kind, size, stride);
+        public override GraphicsHeap CreateGraphicsHeap(ulong size, GraphicsHeapCpuAccess cpuAccess) => CreateVulkanGraphicsHeap(size, cpuAccess);
 
         /// <inheritdoc />
         public override GraphicsPipeline CreateGraphicsPipeline(GraphicsPipelineSignature signature, GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null) => CreateVulkanGraphicsPipeline((VulkanGraphicsPipelineSignature)signature, (VulkanGraphicsShader?)vertexShader, (VulkanGraphicsShader?)pixelShader);
@@ -165,7 +174,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         }
 
         /// <inheritdoc />
-        public override GraphicsPrimitive CreateGraphicsPrimitive(GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer, GraphicsBuffer? indexBuffer = null, ReadOnlySpan<GraphicsBuffer> inputBuffers = default) => CreateVulkanGraphicsPrimitive((VulkanGraphicsPipeline)graphicsPipeline, (VulkanGraphicsBuffer)vertexBuffer, (VulkanGraphicsBuffer?)indexBuffer, inputBuffers);
+        public override GraphicsPrimitive CreateGraphicsPrimitive(GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer, GraphicsBuffer? indexBuffer = null, ReadOnlySpan<GraphicsResource> inputResources = default) => CreateVulkanGraphicsPrimitive((VulkanGraphicsPipeline)graphicsPipeline, (VulkanGraphicsBuffer)vertexBuffer, (VulkanGraphicsBuffer?)indexBuffer, inputResources);
 
         /// <inheritdoc />
         public override GraphicsShader CreateGraphicsShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName) => CreateVulkanGraphicsShader(kind, bytecode, entryPointName);
@@ -184,17 +193,23 @@ namespace TerraFX.Graphics.Providers.Vulkan
             };
             ThrowExternalExceptionIfNotSuccess(nameof(vkQueuePresentKHR), vkQueuePresentKHR(VulkanCommandQueue, &presentInfo));
 
-            var graphicsFence = VulkanGraphicsContexts[graphicsContextIndex].VulkanGraphicsFence;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkQueueSubmit), vkQueueSubmit(VulkanCommandQueue, submitCount: 0, pSubmits: null, graphicsFence.VulkanFence));
+            Signal(VulkanCurrentGraphicsContext.VulkanGraphicsFence);
 
             var presentCompletionGraphicsFence = PresentCompletionGraphicsFence;
             ThrowExternalExceptionIfNotSuccess(nameof(vkAcquireNextImageKHR), vkAcquireNextImageKHR(VulkanDevice, vulkanSwapchain, timeout: ulong.MaxValue, semaphore: VK_NULL_HANDLE, presentCompletionGraphicsFence.VulkanFence, (uint*)&graphicsContextIndex));
-            
+
             presentCompletionGraphicsFence.Wait();
             presentCompletionGraphicsFence.Reset();
 
             _graphicsContextIndex = graphicsContextIndex;
         }
+
+        /// <inheritdoc cref="Signal(GraphicsFence)" />
+        public void Signal(VulkanGraphicsFence graphicsFence)
+            => ThrowExternalExceptionIfNotSuccess(nameof(vkQueueSubmit), vkQueueSubmit(VulkanCommandQueue, submitCount: 0, pSubmits: null, graphicsFence.VulkanFence));
+
+        /// <inheritdoc />
+        public override void Signal(GraphicsFence graphicsFence) => Signal((VulkanGraphicsFence)graphicsFence);
 
         /// <inheritdoc />
         public override void WaitForIdle()

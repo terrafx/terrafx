@@ -9,5 +9,5 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\sources\Providers\UI\Xlib\TerraFX.UI.Providers.Xlib.csproj" />
   </ItemGroup>
-  
+
 </Project>

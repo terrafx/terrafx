@@ -77,7 +77,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             return vulkanShaderModule;
         }
-        
+
         private void DisposeVulkanShaderModule(VkShaderModule vulkanShaderModule)
         {
             if (vulkanShaderModule != VK_NULL_HANDLE)

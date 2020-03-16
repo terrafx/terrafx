@@ -34,6 +34,12 @@ namespace TerraFX.Graphics.Providers.D3D12
             _ = _state.Transition(to: Initialized);
         }
 
+        /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsAdapter" /> class.</summary>
+        ~D3D12GraphicsAdapter()
+        {
+            Dispose(isDisposing: true);
+        }
+
         /// <inheritdoc cref="GraphicsAdapter.GraphicsProvider" />
         public D3D12GraphicsProvider D3D12GraphicsProvider => (D3D12GraphicsProvider)GraphicsProvider;
 

@@ -7,6 +7,7 @@ using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.D3D_FEATURE_LEVEL;
 using static TerraFX.Interop.D3D12;
+using static TerraFX.Interop.D3D12_DESCRIPTOR_HEAP_FLAGS;
 using static TerraFX.Interop.D3D12_DESCRIPTOR_HEAP_TYPE;
 using static TerraFX.Interop.DXGI;
 using static TerraFX.Interop.DXGI_FORMAT;
@@ -25,6 +26,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         private ValueLazy<Pointer<ID3D12CommandQueue>> _d3d12CommandQueue;
         private ValueLazy<Pointer<ID3D12Device>> _d3d12Device;
         private ValueLazy<Pointer<ID3D12DescriptorHeap>> _d3d12RenderTargetDescriptorHeap;
+        private ValueLazy<Pointer<ID3D12DescriptorHeap>> _d3d12ShaderResourceDescriptorHeap;
         private ValueLazy<Pointer<IDXGISwapChain3>> _dxgiSwapChain;
 
         private D3D12GraphicsContext[] _graphicsContexts;
@@ -41,6 +43,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             _d3d12CommandQueue = new ValueLazy<Pointer<ID3D12CommandQueue>>(CreateD3D12CommandQueue);
             _d3d12Device = new ValueLazy<Pointer<ID3D12Device>>(CreateD3D12Device);
             _d3d12RenderTargetDescriptorHeap = new ValueLazy<Pointer<ID3D12DescriptorHeap>>(CreateD3D12RenderTargetDescriptorHeap);
+            _d3d12ShaderResourceDescriptorHeap = new ValueLazy<Pointer<ID3D12DescriptorHeap>>(CreateD3D12ShaderResourceDescriptorHeap);
             _dxgiSwapChain = new ValueLazy<Pointer<IDXGISwapChain3>>(CreateDxgiSwapChain);
 
             _graphicsContexts = CreateGraphicsContexts(this, graphicsContextCount);
@@ -73,6 +76,9 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
         public ID3D12CommandQueue* D3D12CommandQueue => _d3d12CommandQueue.Value;
 
+        /// <inheritdoc cref="GraphicsDevice.CurrentGraphicsContext" />
+        public D3D12GraphicsContext D3D12CurrentGraphicsContext => (D3D12GraphicsContext)CurrentGraphicsContext;
+
         /// <summary>Gets the underlying <see cref="ID3D12Device" /> for the device.</summary>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
         public ID3D12Device* D3D12Device => _d3d12Device.Value;
@@ -86,6 +92,10 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <summary>Gets the <see cref="ID3D12DescriptorHeap" /> used by the device for render target resources.</summary>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
         public ID3D12DescriptorHeap* D3D12RenderTargetDescriptorHeap => _d3d12RenderTargetDescriptorHeap.Value;
+
+        /// <summary>Gets the <see cref="ID3D12DescriptorHeap" /> used by the device for shader resources.</summary>
+        /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
+        public ID3D12DescriptorHeap* D3D12ShaderResourceDescriptorHeap => _d3d12ShaderResourceDescriptorHeap.Value;
 
         /// <summary>Gets the <see cref="IDXGISwapChain3" /> for the device.</summary>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
@@ -104,11 +114,11 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
         public D3D12GraphicsFence WaitForIdleGraphicsFence => _idleGraphicsFence;
 
-        /// <inheritdoc cref="CreateGraphicsBuffer(GraphicsBufferKind, ulong, ulong)" />
-        public D3D12GraphicsBuffer CreateD3D12GraphicsBuffer(GraphicsBufferKind kind, ulong size, ulong stride)
+        /// <inheritdoc cref="CreateGraphicsHeap(ulong, GraphicsHeapCpuAccess)" />
+        public D3D12GraphicsHeap CreateD3D12GraphicsHeap(ulong size, GraphicsHeapCpuAccess cpuAccess)
         {
             _state.ThrowIfDisposedOrDisposing();
-            return new D3D12GraphicsBuffer(this, kind, size, stride);
+            return new D3D12GraphicsHeap(this, size, cpuAccess);
         }
 
         /// <inheritdoc cref="CreateGraphicsPipeline(GraphicsPipelineSignature, GraphicsShader?, GraphicsShader?)" />
@@ -118,11 +128,11 @@ namespace TerraFX.Graphics.Providers.D3D12
             return new D3D12GraphicsPipeline(this, signature, vertexShader, pixelShader);
         }
 
-        /// <inheritdoc cref="CreateGraphicsPrimitive(GraphicsPipeline, GraphicsBuffer, GraphicsBuffer, ReadOnlySpan{GraphicsBuffer})" />
-        public D3D12GraphicsPrimitive CreateD3D12GraphicsPrimitive(D3D12GraphicsPipeline graphicsPipeline, D3D12GraphicsBuffer vertexBuffer, D3D12GraphicsBuffer? indexBuffer = null, ReadOnlySpan<GraphicsBuffer> inputBuffers = default)
+        /// <inheritdoc cref="CreateGraphicsPrimitive(GraphicsPipeline, GraphicsBuffer, GraphicsBuffer, ReadOnlySpan{GraphicsResource})" />
+        public D3D12GraphicsPrimitive CreateD3D12GraphicsPrimitive(D3D12GraphicsPipeline graphicsPipeline, D3D12GraphicsBuffer vertexBuffer, D3D12GraphicsBuffer? indexBuffer = null, ReadOnlySpan<GraphicsResource> inputResources = default)
         {
             _state.ThrowIfDisposedOrDisposing();
-            return new D3D12GraphicsPrimitive(this, graphicsPipeline, vertexBuffer, indexBuffer, inputBuffers);
+            return new D3D12GraphicsPrimitive(this, graphicsPipeline, vertexBuffer, indexBuffer, inputResources);
         }
 
         /// <inheritdoc cref="CreateGraphicsShader(GraphicsShaderKind, ReadOnlySpan{byte}, string)" />
@@ -133,7 +143,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         }
 
         /// <inheritdoc />
-        public override GraphicsBuffer CreateGraphicsBuffer(GraphicsBufferKind kind, ulong size, ulong stride) => CreateD3D12GraphicsBuffer(kind, size, stride);
+        public override GraphicsHeap CreateGraphicsHeap(ulong size, GraphicsHeapCpuAccess cpuAccess) => CreateD3D12GraphicsHeap(size, cpuAccess);
 
         /// <inheritdoc />
         public override GraphicsPipeline CreateGraphicsPipeline(GraphicsPipelineSignature signature, GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null) => CreateD3D12GraphicsPipeline((D3D12GraphicsPipelineSignature)signature, (D3D12GraphicsShader?)vertexShader, (D3D12GraphicsShader?)pixelShader);
@@ -146,7 +156,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         }
 
         /// <inheritdoc />
-        public override GraphicsPrimitive CreateGraphicsPrimitive(GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer, GraphicsBuffer? indexBuffer = null, ReadOnlySpan<GraphicsBuffer> inputBuffers = default) => CreateD3D12GraphicsPrimitive((D3D12GraphicsPipeline)graphicsPipeline, (D3D12GraphicsBuffer)vertexBuffer, (D3D12GraphicsBuffer?)indexBuffer, inputBuffers);
+        public override GraphicsPrimitive CreateGraphicsPrimitive(GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer, GraphicsBuffer? indexBuffer = null, ReadOnlySpan<GraphicsResource> inputResources = default) => CreateD3D12GraphicsPrimitive((D3D12GraphicsPipeline)graphicsPipeline, (D3D12GraphicsBuffer)vertexBuffer, (D3D12GraphicsBuffer?)indexBuffer, inputResources);
 
         /// <inheritdoc />
         public override GraphicsShader CreateGraphicsShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName) => CreateD3D12GraphicsShader(kind, bytecode, entryPointName);
@@ -156,11 +166,16 @@ namespace TerraFX.Graphics.Providers.D3D12
         {
             ThrowExternalExceptionIfFailed(nameof(IDXGISwapChain.Present), DxgiSwapChain->Present(1, 0));
 
-            var graphicsFence = D3D12GraphicsContexts[GraphicsContextIndex].D3D12GraphicsFence;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12CommandQueue.Signal), D3D12CommandQueue->Signal(graphicsFence.D3D12Fence, graphicsFence.D3D12FenceSignalValue));
-
+            Signal(D3D12CurrentGraphicsContext.D3D12GraphicsFence);
             _graphicsContextIndex = unchecked((int)DxgiSwapChain->GetCurrentBackBufferIndex());
         }
+
+        /// <inheritdoc cref="Signal(GraphicsFence)" />
+        public void Signal(D3D12GraphicsFence graphicsFence)
+            => ThrowExternalExceptionIfFailed(nameof(ID3D12CommandQueue.Signal), D3D12CommandQueue->Signal(graphicsFence.D3D12Fence, graphicsFence.D3D12FenceSignalValue));
+
+        /// <inheritdoc />
+        public override void Signal(GraphicsFence graphicsFence) => Signal((D3D12GraphicsFence)graphicsFence);
 
         /// <inheritdoc />
         public override void WaitForIdle()
@@ -186,6 +201,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                 WaitForIdle();
                 DisposeIfNotNull(_graphicsContexts);
 
+                _d3d12ShaderResourceDescriptorHeap.Dispose(ReleaseIfNotNull);
                 _d3d12RenderTargetDescriptorHeap.Dispose(ReleaseIfNotNull);
                 _dxgiSwapChain.Dispose(ReleaseIfNotNull);
                 _d3d12CommandQueue.Dispose(ReleaseIfNotNull);
@@ -238,6 +254,24 @@ namespace TerraFX.Graphics.Providers.D3D12
             ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateDescriptorHeap), D3D12Device->CreateDescriptorHeap(&renderTargetDescriptorHeapDesc, &iid, (void**)&renderTargetDescriptorHeap));
 
             return renderTargetDescriptorHeap;
+        }
+
+        private Pointer<ID3D12DescriptorHeap> CreateD3D12ShaderResourceDescriptorHeap()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            ID3D12DescriptorHeap* shaderResourceDescriptorHeap;
+
+            var shaderResourceDescriptorHeapDesc = new D3D12_DESCRIPTOR_HEAP_DESC {
+                Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
+                NumDescriptors = 1,
+                Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE,
+            };
+
+            var iid = IID_ID3D12DescriptorHeap;
+            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateDescriptorHeap), D3D12Device->CreateDescriptorHeap(&shaderResourceDescriptorHeapDesc, &iid, (void**)&shaderResourceDescriptorHeap));
+
+            return shaderResourceDescriptorHeap;
         }
 
         private Pointer<IDXGISwapChain3> CreateDxgiSwapChain()

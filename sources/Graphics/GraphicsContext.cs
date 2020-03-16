@@ -35,10 +35,14 @@ namespace TerraFX.Graphics
         /// <summary>Gets an index which can be used to lookup the context via <see cref="GraphicsDevice.GraphicsContexts" />.</summary>
         public int Index => _index;
 
-        /// <summary>Begins a new frame for rendering.</summary>
+        /// <summary>Begins the drawing stage.</summary>
         /// <param name="backgroundColor">A color to which the background should be cleared.</param>
         /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
-        public abstract void BeginFrame(ColorRgba backgroundColor);
+        public abstract void BeginDrawing(ColorRgba backgroundColor);
+
+        /// <summary>Begins a new frame.</summary>
+        /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
+        public abstract void BeginFrame();
 
         /// <inheritdoc />
         public void Dispose()
@@ -47,13 +51,33 @@ namespace TerraFX.Graphics
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>Copies the contents of a graphics buffer to a separate graphics buffer.</summary>
+        /// <param name="destination">The destination graphics buffer.</param>
+        /// <param name="source">The source graphics buffer.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="source" /> is <c>null</c>.</exception>
+        /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
+        public abstract void Copy(GraphicsBuffer destination, GraphicsBuffer source);
+
+        /// <summary>Copies the contents of a graphics buffer to a two-dimensional graphics texture.</summary>
+        /// <param name="destination">The destination two-dimensional graphics texture.</param>
+        /// <param name="source">The source graphics buffer.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="source" /> is <c>null</c>.</exception>
+        /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
+        public abstract void Copy(GraphicsTexture destination, GraphicsBuffer source);
+
         /// <summary>Draws a graphics primitive to the render surface.</summary>
         /// <param name="graphicsPrimitive">The graphics primitive to draw.</param>
         /// <exception cref="ArgumentNullException"><paramref name="graphicsPrimitive" /> is <c>null</c>.</exception>
         /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
         public abstract void Draw(GraphicsPrimitive graphicsPrimitive);
 
-        /// <summary>Ends the frame currently be rendered.</summary>
+        /// <summary>Ends the drawing stage.</summary>
+        /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
+        public abstract void EndDrawing();
+
+        /// <summary>Ends the frame.</summary>
         /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
         public abstract void EndFrame();
 

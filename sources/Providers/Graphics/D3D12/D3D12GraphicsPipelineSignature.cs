@@ -2,17 +2,13 @@
 
 using System;
 using TerraFX.Interop;
-using TerraFX.Numerics;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.D3D_ROOT_SIGNATURE_VERSION;
 using static TerraFX.Interop.D3D12;
-using static TerraFX.Interop.D3D12_PRIMITIVE_TOPOLOGY_TYPE;
+using static TerraFX.Interop.D3D12_DESCRIPTOR_RANGE_TYPE;
 using static TerraFX.Interop.D3D12_ROOT_SIGNATURE_FLAGS;
 using static TerraFX.Interop.D3D12_SHADER_VISIBILITY;
-using static TerraFX.Interop.DXGI_FORMAT;
-using static TerraFX.Interop.Windows;
-using static TerraFX.Utilities.DisposeUtilities;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.D3D12
@@ -69,6 +65,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                 ID3D12RootSignature* d3d12RootSignature;
 
                 var rootParameters = Array.Empty<D3D12_ROOT_PARAMETER>();
+                var staticSamplers = Array.Empty<D3D12_STATIC_SAMPLER_DESC>();
 
                 var rootSignatureDesc = new D3D12_ROOT_SIGNATURE_DESC {
                     Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT,
@@ -77,12 +74,28 @@ namespace TerraFX.Graphics.Providers.D3D12
                 var resources = Resources;
                 var resourcesLength = resources.Length;
 
+                var rootParametersLength = 0;
+                var staticSamplersLength = 0;
+
                 var rootParametersIndex = 0;
                 var constantShaderRegister = 0;
+                var textureShaderRegister = 0;
+                var staticSamplersIndex = 0;
 
                 if (resourcesLength != 0)
                 {
-                    rootParameters = new D3D12_ROOT_PARAMETER[resourcesLength];
+                    for (var inputIndex = 0; inputIndex < resourcesLength; inputIndex++)
+                    {
+                        rootParametersLength++;
+
+                        if (resources[inputIndex].Kind == GraphicsPipelineResourceKind.Texture)
+                        {
+                            staticSamplersLength++;
+                        }
+                    }
+
+                    rootParameters = new D3D12_ROOT_PARAMETER[rootParametersLength];
+                    staticSamplers = new D3D12_STATIC_SAMPLER_DESC[staticSamplersLength];
 
                     for (var inputIndex = 0; inputIndex < resourcesLength; inputIndex++)
                     {
@@ -100,6 +113,23 @@ namespace TerraFX.Graphics.Providers.D3D12
                                 break;
                             }
 
+                            case GraphicsPipelineResourceKind.Texture:
+                            {
+                                var descriptorRange = new D3D12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, numDescriptors: 1, baseShaderRegister: unchecked((uint)textureShaderRegister));
+                                var shaderVisibility = GetD3D12ShaderVisiblity(input.ShaderVisibility);
+
+                                rootParameters[rootParametersIndex].InitAsDescriptorTable(1, &descriptorRange, shaderVisibility);
+                                staticSamplers[staticSamplersIndex] = new D3D12_STATIC_SAMPLER_DESC(
+                                    shaderRegister: unchecked((uint)staticSamplersIndex),
+                                    shaderVisibility: shaderVisibility
+                                );
+
+                                textureShaderRegister++;
+                                rootParametersIndex++;
+                                staticSamplersIndex++;
+                                break;
+                            }
+
                             default:
                             {
                                 break;
@@ -109,9 +139,13 @@ namespace TerraFX.Graphics.Providers.D3D12
                 }
 
                 fixed (D3D12_ROOT_PARAMETER* pRootParameters = rootParameters)
+                fixed (D3D12_STATIC_SAMPLER_DESC* pStaticSamplers = staticSamplers)
                 {
-                    rootSignatureDesc.NumParameters = unchecked((uint)rootParameters.Length);
+                    rootSignatureDesc.NumParameters = unchecked((uint)rootParametersLength);
                     rootSignatureDesc.pParameters = pRootParameters;
+
+                    rootSignatureDesc.NumStaticSamplers = unchecked((uint)staticSamplersLength);
+                    rootSignatureDesc.pStaticSamplers = pStaticSamplers;
 
                     ThrowExternalExceptionIfFailed(nameof(D3D12SerializeRootSignature), D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &rootSignatureBlob, &rootSignatureErrorBlob));
                 }

@@ -6,10 +6,8 @@ using TerraFX.Interop;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
 using static TerraFX.Interop.VkBufferUsageFlagBits;
-using static TerraFX.Interop.VkMemoryPropertyFlagBits;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
-using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.Vulkan
@@ -18,16 +16,12 @@ namespace TerraFX.Graphics.Providers.Vulkan
     public sealed unsafe class VulkanGraphicsBuffer : GraphicsBuffer
     {
         private ValueLazy<VkBuffer> _vulkanBuffer;
-        private ValueLazy<VkDeviceMemory> _vulkanDeviceMemory;
-
         private State _state;
 
-        internal VulkanGraphicsBuffer(VulkanGraphicsDevice graphicsDevice, GraphicsBufferKind kind, ulong size, ulong stride)
-            : base(graphicsDevice, kind, size, stride)
+        internal VulkanGraphicsBuffer(GraphicsBufferKind kind, VulkanGraphicsHeap graphicsHeap, ulong offset, ulong size, ulong stride)
+            : base(kind, graphicsHeap, offset, size, stride)
         {
             _vulkanBuffer = new ValueLazy<VkBuffer>(CreateVulkanBuffer);
-            _vulkanDeviceMemory = new ValueLazy<VkDeviceMemory>(CreateVulkanDeviceMemory);
-
             _ = _state.Transition(to: Initialized);
         }
 
@@ -39,41 +33,71 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         /// <summary>Gets the underlying <see cref="VkBuffer" /> for the buffer.</summary>
         /// <exception cref="ExternalException">The call to <see cref="vkCreateBuffer(IntPtr, VkBufferCreateInfo*, VkAllocationCallbacks*, ulong*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="vkBindBufferMemory(IntPtr, ulong, ulong, ulong)" /> failed.</exception>
         /// <exception cref="ObjectDisposedException">The buffer has been disposed.</exception>
         public VkBuffer VulkanBuffer => _vulkanBuffer.Value;
 
-        /// <summary>Gets the underlying <see cref="VkDeviceMemory" /> for the buffer.</summary>
-        /// <exception cref="ExternalException">The call to <see cref="vkAllocateMemory(IntPtr, VkMemoryAllocateInfo*, VkAllocationCallbacks*, ulong*)" /> failed.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="vkBindBufferMemory(IntPtr, ulong, ulong, ulong)" /> failed.</exception>
-        /// <exception cref="ObjectDisposedException">The buffer has been disposed.</exception>
-        public VkDeviceMemory VulkanDeviceMemory => _vulkanDeviceMemory.Value;
-
-        /// <inheritdoc cref="GraphicsBuffer.GraphicsDevice" />
-        public VulkanGraphicsDevice VulkanGraphicsDevice => (VulkanGraphicsDevice)GraphicsDevice;
+        /// <inheritdoc cref="GraphicsResource.GraphicsHeap" />
+        public VulkanGraphicsHeap VulkanGraphicsHeap => (VulkanGraphicsHeap)GraphicsHeap;
 
         /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(IntPtr, ulong, ulong, ulong, uint, void**)" /> failed.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(IntPtr, uint, VkMappedMemoryRange*)" /> failed.</exception>
-        public override void Write(ReadOnlySpan<byte> bytes)
+        public override T* Map<T>(UIntPtr readRangeOffset, UIntPtr readRangeLength)
         {
-            var vulkanDevice = VulkanGraphicsDevice.VulkanDevice;
-            var vulkanDeviceMemory = VulkanDeviceMemory;
-            var bytesWritten = bytes.Length;
+            var vulkanGraphicsHeap = VulkanGraphicsHeap;
+            var vulkanDeviceMemory = vulkanGraphicsHeap.VulkanDeviceMemory;
+
+            var vulkanGraphicsDevice = vulkanGraphicsHeap.VulkanGraphicsDevice;
+            var vulkanDevice = vulkanGraphicsDevice.VulkanDevice;
 
             void* pDestination;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkMapMemory), vkMapMemory(vulkanDevice, vulkanDeviceMemory, offset: 0, size: unchecked((ulong)bytesWritten), flags: 0, &pDestination));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkMapMemory), vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, &pDestination));
 
-            var destination = new Span<byte>(pDestination, bytesWritten);
-            bytes.CopyTo(destination);
+            if (readRangeLength != UIntPtr.Zero)
+            {
+                var vulkanGraphicsAdapter = vulkanGraphicsDevice.VulkanGraphicsAdapter;
+                var nonCoherentAtomSize = vulkanGraphicsAdapter.VulkanPhysicalDeviceProperties.limits.nonCoherentAtomSize;
 
-            var mappedMemoryRange = new VkMappedMemoryRange {
-                sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
-                memory = vulkanDeviceMemory,
-                offset = 0,
-                size = VK_WHOLE_SIZE,
-            };
-            ThrowExternalExceptionIfNotSuccess(nameof(vkFlushMappedMemoryRanges), vkFlushMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange));
+                var offset = Offset + (ulong)readRangeOffset;
+                var size = ((ulong)readRangeLength + nonCoherentAtomSize - 1) & ~(nonCoherentAtomSize - 1);
 
+                var mappedMemoryRange = new VkMappedMemoryRange {
+                    sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
+                    memory = vulkanDeviceMemory,
+                    offset = offset,
+                    size = size,
+                };
+                ThrowExternalExceptionIfNotSuccess(nameof(vkInvalidateMappedMemoryRanges), vkInvalidateMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange));
+            }
+            return (T*)pDestination;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(IntPtr, uint, VkMappedMemoryRange*)" /> failed.</exception>
+        public override void Unmap(UIntPtr writtenRangeOffset, UIntPtr writtenRangeLength)
+        {
+            var vulkanGraphicsHeap = VulkanGraphicsHeap;
+            var vulkanDeviceMemory = vulkanGraphicsHeap.VulkanDeviceMemory;
+
+            var vulkanGraphicsDevice = vulkanGraphicsHeap.VulkanGraphicsDevice;
+            var vulkanDevice = vulkanGraphicsDevice.VulkanDevice;
+
+            if (writtenRangeLength != UIntPtr.Zero)
+            {
+                var vulkanGraphicsAdapter = vulkanGraphicsDevice.VulkanGraphicsAdapter;
+                var nonCoherentAtomSize = vulkanGraphicsAdapter.VulkanPhysicalDeviceProperties.limits.nonCoherentAtomSize;
+
+                var offset = Offset + (ulong)writtenRangeOffset;
+                var size = ((ulong)writtenRangeLength + nonCoherentAtomSize - 1) & ~(nonCoherentAtomSize - 1);
+
+                var mappedMemoryRange = new VkMappedMemoryRange {
+                    sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
+                    memory = vulkanDeviceMemory,
+                    offset = offset,
+                    size = size,
+                };
+                ThrowExternalExceptionIfNotSuccess(nameof(vkFlushMappedMemoryRanges), vkFlushMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange));
+            }
             vkUnmapMemory(vulkanDevice, vulkanDeviceMemory);
         }
 
@@ -84,7 +108,6 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             if (priorState < Disposing)
             {
-                _vulkanDeviceMemory.Dispose(DisposeVulkanDeviceMemory);
                 _vulkanBuffer.Dispose(DisposeVulkanBuffer);
             }
 
@@ -97,109 +120,50 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             VkBuffer vulkanBuffer;
 
+            var vulkanGraphicsHeap = VulkanGraphicsHeap;
+            var vulkanDeviceMemory = vulkanGraphicsHeap.VulkanDeviceMemory;
+
+            var vulkanGraphicsDevice = vulkanGraphicsHeap.VulkanGraphicsDevice;
+            var vulkanDevice = vulkanGraphicsDevice.VulkanDevice;
+
             var bufferCreateInfo = new VkBufferCreateInfo {
                 sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
                 size = Size,
-                usage = GetVulkanBufferUsageKind(Kind),
+                usage = GetVulkanBufferUsageKind(vulkanGraphicsHeap.CpuAccess, Kind),
             };
-            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateBuffer), vkCreateBuffer(VulkanGraphicsDevice.VulkanDevice, &bufferCreateInfo, pAllocator: null, (ulong*)&vulkanBuffer));
+
+            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateBuffer), vkCreateBuffer(vulkanDevice, &bufferCreateInfo, pAllocator: null, (ulong*)&vulkanBuffer));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkBindBufferMemory), vkBindBufferMemory(vulkanDevice, vulkanBuffer, vulkanDeviceMemory, Offset));
 
             return vulkanBuffer;
-        }
 
-        private VkDeviceMemory CreateVulkanDeviceMemory()
-        {
-            _state.ThrowIfDisposedOrDisposing();
-
-            VkDeviceMemory vulkanDeviceMemory;
-
-            var memoryAllocateInfo = new VkMemoryAllocateInfo {
-                sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-                allocationSize = Size,
-                memoryTypeIndex = GetMemoryTypeIndex(VulkanGraphicsDevice.VulkanGraphicsAdapter.VulkanPhysicalDevice),
-            };
-            var vulkanDevice = VulkanGraphicsDevice.VulkanDevice;
-
-            ThrowExternalExceptionIfNotSuccess(nameof(vkAllocateMemory), vkAllocateMemory(vulkanDevice, &memoryAllocateInfo, pAllocator: null, (ulong*)&vulkanDeviceMemory));
-            ThrowExternalExceptionIfNotSuccess(nameof(vkBindBufferMemory), vkBindBufferMemory(vulkanDevice, VulkanBuffer, vulkanDeviceMemory, memoryOffset: 0));
-
-            return vulkanDeviceMemory;
-
-
-            static uint GetMemoryTypeIndex(VkPhysicalDevice vulkanPhysicalDevice)
+            static uint GetVulkanBufferUsageKind(GraphicsHeapCpuAccess cpuAccess, GraphicsBufferKind kind)
             {
-                uint memoryTypeIndex = uint.MaxValue;
+                var vulkanBufferUsageKind = cpuAccess switch {
+                    GraphicsHeapCpuAccess.Read => VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                    GraphicsHeapCpuAccess.Write => VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                    _ => VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                };
 
-                VkPhysicalDeviceMemoryProperties physicalDeviceMemoryProperties;
-                vkGetPhysicalDeviceMemoryProperties(vulkanPhysicalDevice, &physicalDeviceMemoryProperties);
-
-                var memoryTypesCount = physicalDeviceMemoryProperties.memoryTypeCount;
-                var memoryTypes = physicalDeviceMemoryProperties.memoryTypes;
-
-                for (uint index = 0; index < memoryTypesCount; index++)
+                if (cpuAccess != GraphicsHeapCpuAccess.Read)
                 {
-                    if ((memoryTypes[unchecked((int)index)].propertyFlags & (uint)VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) != 0)
-                    {
-                        memoryTypeIndex = index;
-                        break;
-                    }
+                    vulkanBufferUsageKind |= kind switch {
+                        GraphicsBufferKind.Vertex => VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+                        GraphicsBufferKind.Index => VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+                        GraphicsBufferKind.Constant => VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                        _ => default,
+                    };
                 }
 
-                if (memoryTypeIndex == uint.MaxValue)
-                {
-                    ThrowInvalidOperationException(nameof(memoryTypeIndex), memoryTypeIndex);
-                }
-                return memoryTypeIndex;
+                return (uint)vulkanBufferUsageKind;
             }
-        }
-
-        private uint GetVulkanBufferUsageKind(GraphicsBufferKind kind)
-        {
-            VkBufferUsageFlagBits vulkanBufferUsageKind;
-
-            switch (kind)
-            {
-                case GraphicsBufferKind.Vertex:
-                {
-                    vulkanBufferUsageKind = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-                    break;
-                }
-
-                case GraphicsBufferKind.Index:
-                {
-                    vulkanBufferUsageKind = VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
-                    break;
-                }
-
-                case GraphicsBufferKind.Constant:
-                {
-                    vulkanBufferUsageKind = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
-                    break;
-                }
-
-                default:
-                {
-                    vulkanBufferUsageKind = 0;
-                    break;
-                }
-            }
-
-            return (uint)vulkanBufferUsageKind;
         }
 
         private void DisposeVulkanBuffer(VkBuffer vulkanBuffer)
         {
             if (vulkanBuffer != VK_NULL_HANDLE)
             {
-                vkDestroyBuffer(VulkanGraphicsDevice.VulkanDevice, vulkanBuffer, pAllocator: null);
-            }
-        }
-
-        private void DisposeVulkanDeviceMemory(VkDeviceMemory vulkanDeviceMemory)
-        {
-            if (vulkanDeviceMemory != VK_NULL_HANDLE)
-            {
-                vkFreeMemory(VulkanGraphicsDevice.VulkanDevice, vulkanDeviceMemory, pAllocator: null);
+                vkDestroyBuffer(VulkanGraphicsHeap.VulkanGraphicsDevice.VulkanDevice, vulkanBuffer, pAllocator: null);
             }
         }
     }

@@ -17,6 +17,6 @@ namespace TerraFX.Graphics
         }
 
         /// <summary>Gets the elements that make up the pipeline input.</summary>
-        public ReadOnlySpan<GraphicsPipelineInputElement> Elements => _elements;       
+        public ReadOnlySpan<GraphicsPipelineInputElement> Elements => _elements;
     }
 }

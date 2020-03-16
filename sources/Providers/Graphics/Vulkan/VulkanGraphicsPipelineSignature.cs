@@ -4,19 +4,12 @@ using System;
 using TerraFX.Interop;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
-using static TerraFX.Interop.VkCompareOp;
 using static TerraFX.Interop.VkDescriptorPoolCreateFlagBits;
 using static TerraFX.Interop.VkDescriptorType;
-using static TerraFX.Interop.VkFrontFace;
 using static TerraFX.Interop.VkFormat;
-using static TerraFX.Interop.VkPrimitiveTopology;
-using static TerraFX.Interop.VkSampleCountFlagBits;
 using static TerraFX.Interop.VkShaderStageFlagBits;
 using static TerraFX.Interop.VkStructureType;
-using static TerraFX.Interop.VkVertexInputRate;
 using static TerraFX.Interop.Vulkan;
-using static TerraFX.Utilities.DisposeUtilities;
-using static TerraFX.Utilities.InteropUtilities;
 using static TerraFX.Utilities.State;
 using TerraFX.Numerics;
 
@@ -98,6 +91,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             {
                 var vulkanDescriptorPoolSizesCount = 0;
                 var constantBufferCount = 0;
+                var textureCount = 0;
 
                 for (var resourceIndex = 0; resourceIndex < resourcesLength; resourceIndex++)
                 {
@@ -112,6 +106,16 @@ namespace TerraFX.Graphics.Providers.Vulkan
                                 vulkanDescriptorPoolSizesCount++;
                             }
                             constantBufferCount++;
+                            break;
+                        }
+
+                        case GraphicsPipelineResourceKind.Texture:
+                        {
+                            if (textureCount == 0)
+                            {
+                                vulkanDescriptorPoolSizesCount++;
+                            }
+                            textureCount++;
                             break;
                         }
 
@@ -130,6 +134,15 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     vulkanDescriptorPoolSizes[vulkanDescriptorPoolSizesIndex] = new VkDescriptorPoolSize {
                         type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
                         descriptorCount = unchecked((uint)constantBufferCount),
+                    };
+                    vulkanDescriptorPoolSizesIndex++;
+                }
+
+                if (textureCount != 0)
+                {
+                    vulkanDescriptorPoolSizes[vulkanDescriptorPoolSizesIndex] = new VkDescriptorPoolSize {
+                        type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+                        descriptorCount = unchecked((uint)textureCount),
                     };
                     vulkanDescriptorPoolSizesIndex++;
                 }
@@ -153,7 +166,6 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             if (vulkanDescriptorPool != VK_NULL_HANDLE)
             {
-
                 var vulkanDescriptorSetLayout = VulkanDescriptorSetLayout;
 
                 var descriptorSetAllocateInfo = new VkDescriptorSetAllocateInfo {
@@ -200,6 +212,21 @@ namespace TerraFX.Graphics.Providers.Vulkan
                             descriptorSetLayoutBindings[descriptorSetLayoutBindingsIndex] = new VkDescriptorSetLayoutBinding {
                                 binding = unchecked((uint)descriptorSetLayoutBindingsIndex),
                                 descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                                descriptorCount = 1,
+                                stageFlags = stageFlags,
+                            };
+
+                            descriptorSetLayoutBindingsIndex++;
+                            break;
+                        }
+
+                        case GraphicsPipelineResourceKind.Texture:
+                        {
+                            var stageFlags = GetVulkanShaderStageFlags(resource.ShaderVisibility);
+
+                            descriptorSetLayoutBindings[descriptorSetLayoutBindingsIndex] = new VkDescriptorSetLayoutBinding {
+                                binding = unchecked((uint)descriptorSetLayoutBindingsIndex),
+                                descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
                                 descriptorCount = 1,
                                 stageFlags = stageFlags,
                             };

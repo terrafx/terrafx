@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="TerraFX.Interop.D3D12" />
-    <PackageReference Include="TerraFX.Interop.DXGIDebug" Condition="'$(Configuration)' == 'Debug'" />
+    <PackageReference Include="TerraFX.Interop.DXGIDebug" />
   </ItemGroup>
 
   <ItemGroup>

@@ -114,7 +114,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
                 ID3D12Debug* dxgiDebug = null;
                 ID3D12Debug1* dxgiDebug1 = null;
-                
+
                 try
                 {
                     var iid = IID_ID3D12Debug;
