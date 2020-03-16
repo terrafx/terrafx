@@ -113,6 +113,11 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             graphicsCommandList->ClearRenderTargetView(renderTargetView, (float*)&backgroundColor, NumRects: 0, pRects: null);
             graphicsCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+            var descriptorHeaps = stackalloc ID3D12DescriptorHeap*[1] {
+                D3D12GraphicsDevice.D3D12ShaderResourceDescriptorHeap,
+            };
+            graphicsCommandList->SetDescriptorHeaps(1, descriptorHeaps);
         }
 
         /// <inheritdoc />
@@ -215,8 +220,106 @@ namespace TerraFX.Graphics.Providers.D3D12
             }
         }
 
+        /// <inheritdoc cref="Copy(GraphicsTexture, GraphicsBuffer)" />
+        public void Copy(D3D12GraphicsTexture destination, D3D12GraphicsBuffer source)
+        {
+            ThrowIfNull(destination, nameof(destination));
+            ThrowIfNull(source, nameof(source));
+
+            var graphicsDevice = D3D12GraphicsDevice.D3D12Device;
+            var graphicsCommandList = D3D12GraphicsCommandList;
+
+            var destinationCpuAccess = destination.GraphicsHeap.CpuAccess;
+            var sourceCpuAccess = source.GraphicsHeap.CpuAccess;
+
+            var d3d12DestinationResource = destination.D3D12Resource;
+            var d3d12SourceResource = source.D3D12Resource;
+
+            var d3d12DestinationResourceState = destination.D3D12ResourceState;
+            var d3d12SourceResourceState = source.D3D12ResourceState;
+
+            BeginCopy();
+
+            D3D12_PLACED_SUBRESOURCE_FOOTPRINT sourceFootprint;
+
+            var destinationDesc = d3d12DestinationResource->GetDesc();
+            graphicsDevice->GetCopyableFootprints(&destinationDesc, FirstSubresource: 0, NumSubresources: 1, BaseOffset: 0, &sourceFootprint, pNumRows: null, pRowSizeInBytes: null, pTotalBytes: null);
+
+            var d3d12DestinationTextureCopyLocation = new D3D12_TEXTURE_COPY_LOCATION(d3d12DestinationResource, Sub: 0);
+            var d3d12SourceTextureCopyLocation = new D3D12_TEXTURE_COPY_LOCATION(d3d12SourceResource, in sourceFootprint);
+
+            graphicsCommandList->CopyTextureRegion(&d3d12DestinationTextureCopyLocation, DstX: 0, DstY: 0, DstZ: 0, &d3d12SourceTextureCopyLocation, pSrcBox: null);
+
+            EndCopy();
+
+            void BeginCopy()
+            {
+                var resourceBarriers = stackalloc D3D12_RESOURCE_BARRIER[2];
+                var numResourceBarriers = 0u;
+
+                if (destinationCpuAccess == GraphicsHeapCpuAccess.None)
+                {
+                    resourceBarriers[numResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
+                        d3d12DestinationResource,
+                        stateBefore: d3d12DestinationResourceState,
+                        stateAfter: D3D12_RESOURCE_STATE_COPY_DEST
+                    );
+                    numResourceBarriers++;
+                }
+
+                if (sourceCpuAccess == GraphicsHeapCpuAccess.None)
+                {
+                    resourceBarriers[numResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
+                        d3d12SourceResource,
+                        stateBefore: d3d12SourceResourceState,
+                        stateAfter: D3D12_RESOURCE_STATE_COPY_SOURCE
+                    );
+                    numResourceBarriers++;
+                }
+
+                if (numResourceBarriers != 0)
+                {
+                    graphicsCommandList->ResourceBarrier(numResourceBarriers, resourceBarriers);
+                }
+            }
+
+            void EndCopy()
+            {
+                var resourceBarriers = stackalloc D3D12_RESOURCE_BARRIER[2];
+                var numResourceBarriers = 0u;
+
+                if (sourceCpuAccess == GraphicsHeapCpuAccess.None)
+                {
+                    resourceBarriers[numResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
+                        d3d12SourceResource,
+                        stateBefore: D3D12_RESOURCE_STATE_COPY_SOURCE,
+                        stateAfter: d3d12SourceResourceState
+                    );
+                    numResourceBarriers++;
+                }
+
+                if (destinationCpuAccess == GraphicsHeapCpuAccess.None)
+                {
+                    resourceBarriers[numResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
+                        d3d12DestinationResource,
+                        stateBefore: D3D12_RESOURCE_STATE_COPY_DEST,
+                        stateAfter: d3d12DestinationResourceState
+                    );
+                    numResourceBarriers++;
+                }
+
+                if (numResourceBarriers != 0)
+                {
+                    graphicsCommandList->ResourceBarrier(numResourceBarriers, resourceBarriers);
+                }
+            }
+        }
+
         /// <inheritdoc />
         public override void Copy(GraphicsBuffer destination, GraphicsBuffer source) => Copy((D3D12GraphicsBuffer)destination, (D3D12GraphicsBuffer)source);
+
+        /// <inheritdoc />
+        public override void Copy(GraphicsTexture destination, GraphicsBuffer source) => Copy((D3D12GraphicsTexture)destination, (D3D12GraphicsBuffer)source);
 
         /// <inheritdoc cref="Draw(GraphicsPrimitive)" />
         public void Draw(D3D12GraphicsPrimitive graphicsPrimitive)
@@ -237,13 +340,21 @@ namespace TerraFX.Graphics.Providers.D3D12
             };
             graphicsCommandList->IASetVertexBuffers(StartSlot: 0, NumViews: 1, &vertexBufferView);
 
-            var constantBuffers = graphicsPrimitive.ConstantBuffers;
-            var constantBuffersLength = constantBuffers.Length;
+            var inputResources = graphicsPrimitive.InputResources;
+            var inputResourcesLength = inputResources.Length;
 
-            for (var index = 0; index < constantBuffersLength; index++)
+            for (var index = 0; index < inputResourcesLength; index++)
             {
-                var constantBuffer = (D3D12GraphicsBuffer)constantBuffers[index];
-                graphicsCommandList->SetGraphicsRootConstantBufferView(unchecked((uint)index), constantBuffer.D3D12Resource->GetGPUVirtualAddress());
+                var inputResource = inputResources[index];
+
+                if (inputResource is D3D12GraphicsBuffer d3d12GraphicsBuffer)
+                {
+                    graphicsCommandList->SetGraphicsRootConstantBufferView(unchecked((uint)index), d3d12GraphicsBuffer.D3D12Resource->GetGPUVirtualAddress());
+                }
+                else if (inputResource is D3D12GraphicsTexture d3d12GraphicsTexture)
+                {
+                    graphicsCommandList->SetGraphicsRootDescriptorTable(unchecked((uint)index), D3D12GraphicsDevice.D3D12ShaderResourceDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+                }
             }
 
             var indexBuffer = graphicsPrimitive.D3D12IndexBuffer;

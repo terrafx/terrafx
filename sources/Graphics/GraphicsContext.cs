@@ -59,6 +59,14 @@ namespace TerraFX.Graphics
         /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
         public abstract void Copy(GraphicsBuffer destination, GraphicsBuffer source);
 
+        /// <summary>Copies the contents of a graphics buffer to a two-dimensional graphics texture.</summary>
+        /// <param name="destination">The destination two-dimensional graphics texture.</param>
+        /// <param name="source">The source graphics buffer.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="source" /> is <c>null</c>.</exception>
+        /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
+        public abstract void Copy(GraphicsTexture destination, GraphicsBuffer source);
+
         /// <summary>Draws a graphics primitive to the render surface.</summary>
         /// <param name="graphicsPrimitive">The graphics primitive to draw.</param>
         /// <exception cref="ArgumentNullException"><paramref name="graphicsPrimitive" /> is <c>null</c>.</exception>

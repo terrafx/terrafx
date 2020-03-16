@@ -12,8 +12,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
     {
         private State _state;
 
-        internal VulkanGraphicsPrimitive(VulkanGraphicsDevice graphicsDevice, VulkanGraphicsPipeline graphicsPipeline, VulkanGraphicsBuffer vertexBuffer, VulkanGraphicsBuffer? indexBuffer, ReadOnlySpan<GraphicsBuffer> inputBuffers = default)
-            : base(graphicsDevice, graphicsPipeline, vertexBuffer, indexBuffer, inputBuffers)
+        internal VulkanGraphicsPrimitive(VulkanGraphicsDevice graphicsDevice, VulkanGraphicsPipeline graphicsPipeline, VulkanGraphicsBuffer vertexBuffer, VulkanGraphicsBuffer? indexBuffer, ReadOnlySpan<GraphicsResource> inputResources = default)
+            : base(graphicsDevice, graphicsPipeline, vertexBuffer, indexBuffer, inputResources)
         {
             _ = _state.Transition(to: Initialized);
         }
@@ -48,9 +48,9 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 DisposeIfNotNull(IndexBuffer);
             }
 
-            foreach (var inputBuffer in ConstantBuffers)
+            foreach (var inputResource in InputResources)
             {
-                DisposeIfNotNull(inputBuffer);
+                DisposeIfNotNull(inputResource);
             }
 
             _state.EndDispose();

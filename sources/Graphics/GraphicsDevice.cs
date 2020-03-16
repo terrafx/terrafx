@@ -70,14 +70,14 @@ namespace TerraFX.Graphics
         /// <param name="graphicsPipeline">The graphics pipeline used for rendering the graphics primitive.</param>
         /// <param name="vertexBuffer">The graphics buffer which holds the vertices for the graphics primitive.</param>
         /// <param name="indexBuffer">The graphics buffer which holds the indices for the graphics primitive or <c>null</c> if none exists.</param>
-        /// <param name="inputBuffers"></param>
+        /// <param name="inputResources">The graphics resources which hold the input data for the graphics primitive or an empty span if none exist.</param>
         /// <exception cref="ArgumentNullException"><paramref name="graphicsPipeline" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="vertexBuffer" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="graphicsPipeline" /> was not created for this device.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexBuffer" /> was not created for this device.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexBuffer" /> was not created for this device.</exception>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-        public abstract GraphicsPrimitive CreateGraphicsPrimitive(GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer, GraphicsBuffer? indexBuffer = null, ReadOnlySpan<GraphicsBuffer> inputBuffers = default);
+        public abstract GraphicsPrimitive CreateGraphicsPrimitive(GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer, GraphicsBuffer? indexBuffer = null, ReadOnlySpan<GraphicsResource> inputResources = default);
 
         /// <summary>Creates a new graphics shader for the device.</summary>
         /// <param name="kind">The kind of graphics shader to create.</param>

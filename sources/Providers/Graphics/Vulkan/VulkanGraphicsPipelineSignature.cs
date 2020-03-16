@@ -91,6 +91,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             {
                 var vulkanDescriptorPoolSizesCount = 0;
                 var constantBufferCount = 0;
+                var textureCount = 0;
 
                 for (var resourceIndex = 0; resourceIndex < resourcesLength; resourceIndex++)
                 {
@@ -105,6 +106,16 @@ namespace TerraFX.Graphics.Providers.Vulkan
                                 vulkanDescriptorPoolSizesCount++;
                             }
                             constantBufferCount++;
+                            break;
+                        }
+
+                        case GraphicsPipelineResourceKind.Texture:
+                        {
+                            if (textureCount == 0)
+                            {
+                                vulkanDescriptorPoolSizesCount++;
+                            }
+                            textureCount++;
                             break;
                         }
 
@@ -123,6 +134,15 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     vulkanDescriptorPoolSizes[vulkanDescriptorPoolSizesIndex] = new VkDescriptorPoolSize {
                         type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
                         descriptorCount = unchecked((uint)constantBufferCount),
+                    };
+                    vulkanDescriptorPoolSizesIndex++;
+                }
+
+                if (textureCount != 0)
+                {
+                    vulkanDescriptorPoolSizes[vulkanDescriptorPoolSizesIndex] = new VkDescriptorPoolSize {
+                        type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+                        descriptorCount = unchecked((uint)textureCount),
                     };
                     vulkanDescriptorPoolSizesIndex++;
                 }
@@ -146,7 +166,6 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             if (vulkanDescriptorPool != VK_NULL_HANDLE)
             {
-
                 var vulkanDescriptorSetLayout = VulkanDescriptorSetLayout;
 
                 var descriptorSetAllocateInfo = new VkDescriptorSetAllocateInfo {
@@ -193,6 +212,21 @@ namespace TerraFX.Graphics.Providers.Vulkan
                             descriptorSetLayoutBindings[descriptorSetLayoutBindingsIndex] = new VkDescriptorSetLayoutBinding {
                                 binding = unchecked((uint)descriptorSetLayoutBindingsIndex),
                                 descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                                descriptorCount = 1,
+                                stageFlags = stageFlags,
+                            };
+
+                            descriptorSetLayoutBindingsIndex++;
+                            break;
+                        }
+
+                        case GraphicsPipelineResourceKind.Texture:
+                        {
+                            var stageFlags = GetVulkanShaderStageFlags(resource.ShaderVisibility);
+
+                            descriptorSetLayoutBindings[descriptorSetLayoutBindingsIndex] = new VkDescriptorSetLayoutBinding {
+                                binding = unchecked((uint)descriptorSetLayoutBindingsIndex),
+                                descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
                                 descriptorCount = 1,
                                 stageFlags = stageFlags,
                             };

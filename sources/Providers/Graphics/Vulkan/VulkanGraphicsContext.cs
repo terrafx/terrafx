@@ -5,13 +5,16 @@ using TerraFX.Interop;
 using TerraFX.Numerics;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
+using static TerraFX.Interop.VkAccessFlagBits;
 using static TerraFX.Interop.VkCommandPoolCreateFlagBits;
 using static TerraFX.Interop.VkComponentSwizzle;
 using static TerraFX.Interop.VkDescriptorType;
 using static TerraFX.Interop.VkImageAspectFlagBits;
+using static TerraFX.Interop.VkImageLayout;
 using static TerraFX.Interop.VkImageViewType;
 using static TerraFX.Interop.VkIndexType;
 using static TerraFX.Interop.VkPipelineBindPoint;
+using static TerraFX.Interop.VkPipelineStageFlagBits;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.VkSubpassContents;
 using static TerraFX.Interop.Vulkan;
@@ -164,8 +167,76 @@ namespace TerraFX.Graphics.Providers.Vulkan
             vkCmdCopyBuffer(VulkanCommandBuffer, source.VulkanBuffer, destination.VulkanBuffer, 1, &vulkanBufferCopy);
         }
 
+        /// <inheritdoc cref="Copy(GraphicsTexture, GraphicsBuffer)" />
+        public void Copy(VulkanGraphicsTexture destination, VulkanGraphicsBuffer source)
+        {
+            ThrowIfNull(destination, nameof(destination));
+            ThrowIfNull(source, nameof(source));
+
+            var vulkanCommandBuffer = VulkanCommandBuffer;
+            var vulkanImage = destination.VulkanImage;
+
+            BeginCopy();
+
+            var vulkanBufferImageCopy = new VkBufferImageCopy {
+                imageSubresource = new VkImageSubresourceLayers {
+                    aspectMask = (uint)VK_IMAGE_ASPECT_COLOR_BIT,
+                    layerCount = 1,
+                },
+                imageExtent = new VkExtent3D {
+                    width = (uint)destination.Width,
+                    height = destination.Height,
+                    depth = destination.Depth,
+                },
+            };
+
+            vkCmdCopyBufferToImage(vulkanCommandBuffer, source.VulkanBuffer, vulkanImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &vulkanBufferImageCopy);
+
+            EndCopy();
+
+            void BeginCopy()
+            {
+                var vulkanImageMemoryBarrier = new VkImageMemoryBarrier {
+                    sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+                    dstAccessMask = (uint)VK_ACCESS_TRANSFER_WRITE_BIT,
+                    oldLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+                    newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                    image = vulkanImage,
+                    subresourceRange = new VkImageSubresourceRange {
+                        aspectMask = (uint)VK_IMAGE_ASPECT_COLOR_BIT,
+                        levelCount = 1,
+                        layerCount = 1,
+                    },
+                };
+
+                vkCmdPipelineBarrier(vulkanCommandBuffer, (uint)VK_PIPELINE_STAGE_HOST_BIT, (uint)VK_PIPELINE_STAGE_TRANSFER_BIT, dependencyFlags: 0, memoryBarrierCount: 0, pMemoryBarriers: null, bufferMemoryBarrierCount: 0, pBufferMemoryBarriers: null, imageMemoryBarrierCount: 1, &vulkanImageMemoryBarrier);
+            }
+
+            void EndCopy()
+            {
+                var vulkanImageMemoryBarrier = new VkImageMemoryBarrier {
+                    sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+                    srcAccessMask = (uint)VK_ACCESS_TRANSFER_WRITE_BIT,
+                    dstAccessMask = (uint)VK_ACCESS_SHADER_READ_BIT,
+                    oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                    newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                    image = vulkanImage,
+                    subresourceRange = new VkImageSubresourceRange {
+                        aspectMask = (uint)VK_IMAGE_ASPECT_COLOR_BIT,
+                        levelCount = 1,
+                        layerCount = 1,
+                    },
+                };
+
+                vkCmdPipelineBarrier(vulkanCommandBuffer, (uint)VK_PIPELINE_STAGE_TRANSFER_BIT, (uint)VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, dependencyFlags: 0, memoryBarrierCount: 0, pMemoryBarriers: null, bufferMemoryBarrierCount: 0, pBufferMemoryBarriers: null, imageMemoryBarrierCount: 1, &vulkanImageMemoryBarrier);
+            }
+        }
+
         /// <inheritdoc />
         public override void Copy(GraphicsBuffer destination, GraphicsBuffer source) => Copy((VulkanGraphicsBuffer)destination, (VulkanGraphicsBuffer)source);
+
+        /// <inheritdoc />
+        public override void Copy(GraphicsTexture destination, GraphicsBuffer source) => Copy((VulkanGraphicsTexture)destination, (VulkanGraphicsBuffer)source);
 
         /// <inheritdoc cref="Draw(GraphicsPrimitive)" />
         public void Draw(VulkanGraphicsPrimitive graphicsPrimitive)
@@ -187,27 +258,50 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             if (vulkanDescriptorSet != VK_NULL_HANDLE)
             {
-                var constantBuffers = graphicsPrimitive.ConstantBuffers;
-                var constantBuffersLength = constantBuffers.Length;
+                var inputResources = graphicsPrimitive.InputResources;
+                var inputResourcesLength = inputResources.Length;
 
-                for (var index = 0; index < constantBuffersLength; index++)
+                for (var index = 0; index < inputResourcesLength; index++)
                 {
-                    var constantBuffer = (VulkanGraphicsBuffer)constantBuffers[index];
+                    var inputResource = inputResources[index];
 
-                    var descriptorBufferInfo = new VkDescriptorBufferInfo {
-                        buffer = constantBuffer.VulkanBuffer,
-                        offset = 0,
-                        range = constantBuffer.Size,
-                    };
+                    VkWriteDescriptorSet writeDescriptorSet;
 
-                    var writeDescriptorSet = new VkWriteDescriptorSet {
-                        sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-                        dstSet = vulkanDescriptorSet,
-                        dstBinding = unchecked((uint)index),
-                        descriptorCount = 1,
-                        descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-                        pBufferInfo = &descriptorBufferInfo,
-                    };
+                    if (inputResource is VulkanGraphicsBuffer vulkanGraphicsBuffer)
+                    {
+                        var descriptorBufferInfo = new VkDescriptorBufferInfo {
+                            buffer = vulkanGraphicsBuffer.VulkanBuffer,
+                            offset = vulkanGraphicsBuffer.Offset,
+                            range = vulkanGraphicsBuffer.Size,
+                        };
+
+                        writeDescriptorSet = new VkWriteDescriptorSet {
+                            sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+                            dstSet = vulkanDescriptorSet,
+                            dstBinding = unchecked((uint)index),
+                            descriptorCount = 1,
+                            descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                            pBufferInfo = &descriptorBufferInfo,
+                        };
+                    }
+                    else if (inputResource is VulkanGraphicsTexture vulkanGraphicsTexture)
+                    {
+                        var descriptorImageInfo = new VkDescriptorImageInfo {
+                            sampler = vulkanGraphicsTexture.VulkanSampler,
+                            imageView = vulkanGraphicsTexture.VulkanImageView,
+                            imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                        };
+
+                        writeDescriptorSet = new VkWriteDescriptorSet {
+                            sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+                            dstSet = vulkanDescriptorSet,
+                            dstBinding = unchecked((uint)index),
+                            descriptorCount = 1,
+                            descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+                            pImageInfo = &descriptorImageInfo,
+                        };
+                    }
+
                     vkUpdateDescriptorSets(VulkanGraphicsDevice.VulkanDevice, 1, &writeDescriptorSet, 0, pDescriptorCopies: null);
                 }
 

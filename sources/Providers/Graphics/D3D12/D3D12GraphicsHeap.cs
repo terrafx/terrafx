@@ -50,8 +50,25 @@ namespace TerraFX.Graphics.Providers.D3D12
             return new D3D12GraphicsBuffer(kind, this, offset, size, stride);
         }
 
+        /// <inheritdoc cref="CreateGraphicsTexture(GraphicsTextureKind, ulong, uint, ushort)" />
+        public D3D12GraphicsTexture CreateD3D12GraphicsTexture(GraphicsTextureKind kind, ulong width, uint height, ushort depth)
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            var size = width * height * depth * sizeof(uint);
+            var offset = _offset;
+
+            size = (size + D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT - 1) & ~(D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT - 1);
+            _offset = offset + size;
+
+            return new D3D12GraphicsTexture(kind, this, offset, size, width, height, depth);
+        }
+
         /// <inheritdoc />
         public override GraphicsBuffer CreateGraphicsBuffer(GraphicsBufferKind kind, ulong size, ulong stride) => CreateD3D12GraphicsBuffer(kind, size, stride);
+
+        /// <inheritdoc />
+        public override GraphicsTexture CreateGraphicsTexture(GraphicsTextureKind kind, ulong width, uint height, ushort depth) => CreateD3D12GraphicsTexture(kind, width, height, depth);
 
         /// <inheritdoc />
         protected override void Dispose(bool isDisposing)

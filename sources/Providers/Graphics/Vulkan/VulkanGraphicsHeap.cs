@@ -47,7 +47,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             _state.ThrowIfDisposedOrDisposing();
 
             var vulkanGraphicsAdapter = VulkanGraphicsDevice.VulkanGraphicsAdapter;
-            var nonCoherentAtomSize = vulkanGraphicsAdapter.VulkanPhysicalDeviceProperties.limits.nonCoherentAtomSize;
+            var nonCoherentAtomSize = 64 * 1024ul;
 
             var offset = _offset;
             size = (size + nonCoherentAtomSize - 1) & ~(nonCoherentAtomSize - 1);
@@ -56,8 +56,28 @@ namespace TerraFX.Graphics.Providers.Vulkan
             return new VulkanGraphicsBuffer(kind, this, offset, size, stride);
         }
 
+        /// <inheritdoc cref="CreateGraphicsTexture(GraphicsTextureKind, ulong, uint, ushort)" />
+        public VulkanGraphicsTexture CreateVulkanGraphicsTexture(GraphicsTextureKind kind, ulong width, uint height, ushort depth)
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            var vulkanGraphicsAdapter = VulkanGraphicsDevice.VulkanGraphicsAdapter;
+            var nonCoherentAtomSize = 64 * 1024ul;
+
+            var size = width * height * depth * sizeof(uint);
+            var offset = _offset;
+
+            size = (size + nonCoherentAtomSize - 1) & ~(nonCoherentAtomSize - 1);
+            _offset = offset + size;
+
+            return new VulkanGraphicsTexture(kind, this, offset, size, width, height, depth);
+        }
+
         /// <inheritdoc />
         public override GraphicsBuffer CreateGraphicsBuffer(GraphicsBufferKind kind, ulong size, ulong stride) => CreateVulkanGraphicsBuffer(kind, size, stride);
+
+        /// <inheritdoc />
+        public override GraphicsTexture CreateGraphicsTexture(GraphicsTextureKind kind, ulong width, uint height, ushort depth) => CreateVulkanGraphicsTexture(kind, width, height, depth);
 
         /// <inheritdoc />
         protected override void Dispose(bool isDisposing)

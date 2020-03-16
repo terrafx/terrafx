@@ -12,8 +12,8 @@ namespace TerraFX.Graphics.Providers.D3D12
     {
         private State _state;
 
-        internal D3D12GraphicsPrimitive(D3D12GraphicsDevice graphicsDevice, D3D12GraphicsPipeline graphicsPipeline, D3D12GraphicsBuffer vertexBuffer, D3D12GraphicsBuffer? indexBuffer, ReadOnlySpan<GraphicsBuffer> constantBuffers)
-            : base(graphicsDevice, graphicsPipeline, vertexBuffer, indexBuffer, constantBuffers)
+        internal D3D12GraphicsPrimitive(D3D12GraphicsDevice graphicsDevice, D3D12GraphicsPipeline graphicsPipeline, D3D12GraphicsBuffer vertexBuffer, D3D12GraphicsBuffer? indexBuffer, ReadOnlySpan<GraphicsResource> inputResources)
+            : base(graphicsDevice, graphicsPipeline, vertexBuffer, indexBuffer, inputResources)
         {
             _ = _state.Transition(to: Initialized);
         }
@@ -47,9 +47,9 @@ namespace TerraFX.Graphics.Providers.D3D12
                 DisposeIfNotNull(VertexBuffer);
                 DisposeIfNotNull(IndexBuffer);
 
-                foreach (var inputBuffer in ConstantBuffers)
+                foreach (var inputResource in InputResources)
                 {
-                    DisposeIfNotNull(inputBuffer);
+                    DisposeIfNotNull(inputResource);
                 }
             }
 

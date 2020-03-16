@@ -10,5 +10,8 @@ namespace TerraFX.Graphics
 
         /// <summary>Defines a constant buffer graphics pipeline resource.</summary>
         ConstantBuffer,
+
+        /// <summary>Defines a texture graphics pipeline resource.</summary>
+        Texture,
     }
 }

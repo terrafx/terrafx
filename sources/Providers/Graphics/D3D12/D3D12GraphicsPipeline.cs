@@ -41,6 +41,9 @@ namespace TerraFX.Graphics.Providers.D3D12
         // POSITION
         private static ReadOnlySpan<sbyte> POSITION_SEMANTIC_NAME => new sbyte[] { 0x50, 0x4F, 0x53, 0x49, 0x54, 0x49, 0x4F, 0x4E, 0x00 };
 
+        // TEXCOORD
+        private static ReadOnlySpan<sbyte> TEXCOORD_SEMANTIC_NAME => new sbyte[] { 0x54, 0x45, 0x58, 0x43, 0x4F, 0x4F, 0x52, 0x44, 0x00 };
+
         /// <inheritdoc cref="GraphicsPipeline.GraphicsDevice" />
         public D3D12GraphicsDevice D3D12GraphicsDevice => (D3D12GraphicsDevice)GraphicsDevice;
 
@@ -207,6 +210,12 @@ namespace TerraFX.Graphics.Providers.D3D12
                 case GraphicsPipelineInputElementKind.Color:
                 {
                     inputElementSemanticName = COLOR_SEMANTIC_NAME;
+                    break;
+                }
+
+                case GraphicsPipelineInputElementKind.TextureCoordinate:
+                {
+                    inputElementSemanticName = TEXCOORD_SEMANTIC_NAME;
                     break;
                 }
 

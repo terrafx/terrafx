@@ -44,6 +44,15 @@ namespace TerraFX.Graphics
         /// <exception cref="ObjectDisposedException">The heap has been disposed.</exception>
         public abstract GraphicsBuffer CreateGraphicsBuffer(GraphicsBufferKind kind, ulong size, ulong stride);
 
+        /// <summary>Creates a new graphics texture for the heap.</summary>
+        /// <param name="kind">The kind of graphics texture to create.</param>
+        /// <param name="width">The width, in pixels, of the graphics texture.</param>
+        /// <param name="height">The height, in pixels, of the graphics texture.</param>
+        /// <param name="depth">The depth, in pixels, of the graphics texture.</param>
+        /// <returns>A new graphics texture created for the heap.</returns>
+        /// <exception cref="ObjectDisposedException">The heap has been disposed.</exception>
+        public abstract GraphicsTexture CreateGraphicsTexture(GraphicsTextureKind kind, ulong width, uint height = 1, ushort depth = 1);
+
         /// <inheritdoc />
         public void Dispose()
         {
