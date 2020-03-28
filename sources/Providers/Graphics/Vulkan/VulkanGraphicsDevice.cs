@@ -423,7 +423,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             for (uint i = 0; i < surfaceFormatCount; i++)
             {
-                if (surfaceFormats[i].format == VK_FORMAT_R8G8B8A8_SRGB)
+                if (surfaceFormats[i].format == VK_FORMAT_R8G8B8A8_UNORM)
                 {
                     swapChainCreateInfo.imageFormat = surfaceFormats[i].format;
                     swapChainCreateInfo.imageColorSpace = surfaceFormats[i].colorSpace;
