@@ -19,13 +19,13 @@
 
   <!-- Package versions for package references across all projects -->
   <ItemGroup>
-    <PackageReference Update="Microsoft.Net.Compilers.Toolset" Version="3.6.0-2.20155.9" />
+    <PackageReference Update="Microsoft.Net.Compilers.Toolset" Version="3.6.0-2.final" />
     <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.0.0" />
     <PackageReference Update="NUnit" Version="3.12.0" />
-    <PackageReference Update="NUnit3TestAdapter" Version="3.15.1" />
-    <PackageReference Update="System.Composition" Version="1.4.0" />
-    <PackageReference Update="System.IO.Pipelines" Version="4.7.0" />
+    <PackageReference Update="NUnit3TestAdapter" Version="3.16.1" />
+    <PackageReference Update="System.Composition" Version="5.0.0-preview.1.20120.5" />
+    <PackageReference Update="System.IO.Pipelines" Version="5.0.0-preview.1.20120.5" />
     <PackageReference Update="TerraFX.Interop.D3D12" Version="10.0.18362-alpha-20200307.1" />
     <PackageReference Update="TerraFX.Interop.DXGIDebug" Version="10.0.18362-alpha-20200307.1" />
     <PackageReference Update="TerraFX.Interop.Kernel32" Version="10.0.18362-alpha-20200307.1" />
