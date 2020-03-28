@@ -271,7 +271,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     {
                         var descriptorBufferInfo = new VkDescriptorBufferInfo {
                             buffer = vulkanGraphicsBuffer.VulkanBuffer,
-                            offset = vulkanGraphicsBuffer.Offset,
+                            offset = 0,
                             range = vulkanGraphicsBuffer.Size,
                         };
 
