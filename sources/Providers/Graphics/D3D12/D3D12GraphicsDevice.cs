@@ -315,7 +315,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             // Fullscreen transitions are not currently supported
             ThrowExternalExceptionIfFailed(nameof(IDXGIFactory.MakeWindowAssociation), graphicsProvider.DxgiFactory->MakeWindowAssociation(graphicsSurfaceHandle, DXGI_MWA_NO_ALT_ENTER));
 
-            _dxgiSwapChainFormat = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+            _dxgiSwapChainFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
             return dxgiSwapChain;
         }
 
