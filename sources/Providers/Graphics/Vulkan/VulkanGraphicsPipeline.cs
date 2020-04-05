@@ -5,6 +5,7 @@ using TerraFX.Interop;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
 using static TerraFX.Interop.VkCompareOp;
+using static TerraFX.Interop.VkDynamicState;
 using static TerraFX.Interop.VkFrontFace;
 using static TerraFX.Interop.VkFormat;
 using static TerraFX.Interop.VkPrimitiveTopology;
@@ -102,26 +103,10 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
                 };
 
-                var viewport = new VkViewport {
-                    width = graphicsSurface.Width,
-                    height = graphicsSurface.Height,
-                    minDepth = 0.0f,
-                    maxDepth = 1.0f,
-                };
-
-                var scissorRect2D = new VkRect2D {
-                    extent = new VkExtent2D {
-                        width = (uint)viewport.width,
-                        height = (uint)viewport.height,
-                    },
-                };
-
                 var pipelineViewportStateCreateInfo = new VkPipelineViewportStateCreateInfo {
                     sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
                     viewportCount = 1,
-                    pViewports = &viewport,
                     scissorCount = 1,
-                    pScissors = &scissorRect2D,
                 };
 
                 var pipelineRasterizationStateCreateInfo = new VkPipelineRasterizationStateCreateInfo {
@@ -156,6 +141,17 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     pAttachments = &pipelineColorBlendAttachmentState,
                 };
 
+                var dynamicStates = stackalloc VkDynamicState[2] {
+                    VK_DYNAMIC_STATE_VIEWPORT,
+                    VK_DYNAMIC_STATE_SCISSOR,
+                };
+
+                var pipelineDynamicStateCreateInfo = new VkPipelineDynamicStateCreateInfo {
+                    sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO,
+                    dynamicStateCount = 2,
+                    pDynamicStates = dynamicStates,
+                };
+
                 var graphicsPipelineCreateInfo = new VkGraphicsPipelineCreateInfo {
                     sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
                     pViewportState = &pipelineViewportStateCreateInfo,
@@ -163,6 +159,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     pMultisampleState = &pipelineMultisampleStateCreateInfo,
                     pDepthStencilState = &pipelineDepthStencilStateCreateInfo,
                     pColorBlendState = &pipelineColorBlendStateCreateInfo,
+                    pDynamicState = &pipelineDynamicStateCreateInfo,
                     layout = VulkanSignature.VulkanPipelineLayout,
                     renderPass = graphicsDevice.VulkanRenderPass,
                 };

@@ -122,8 +122,10 @@ namespace TerraFX.Graphics.Providers.Vulkan
             vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
             var viewport = new VkViewport {
+                x = 0,
+                y = graphicsSurface.Height,
                 width = graphicsSurface.Width,
-                height = graphicsSurface.Height,
+                height = -graphicsSurface.Height,
                 minDepth = 0.0f,
                 maxDepth = 1.0f,
             };
