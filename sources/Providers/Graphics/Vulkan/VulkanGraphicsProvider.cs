@@ -215,7 +215,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                         applicationVersion = 1,
                         pEngineName = engineName,
                         engineVersion = VK_MAKE_VERSION(0, 1, 0),
-                        apiVersion = VK_API_VERSION_1_0,
+                        apiVersion = VK_API_VERSION_1_1,
                     };
 
                     var instanceCreateInfo = new VkInstanceCreateInfo {
