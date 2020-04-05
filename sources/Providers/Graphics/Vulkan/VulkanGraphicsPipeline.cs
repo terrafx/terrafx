@@ -5,6 +5,7 @@ using TerraFX.Interop;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
 using static TerraFX.Interop.VkCompareOp;
+using static TerraFX.Interop.VkCullModeFlagBits;
 using static TerraFX.Interop.VkDynamicState;
 using static TerraFX.Interop.VkFrontFace;
 using static TerraFX.Interop.VkFormat;
@@ -112,6 +113,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 var pipelineRasterizationStateCreateInfo = new VkPipelineRasterizationStateCreateInfo {
                     sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
                     frontFace = VK_FRONT_FACE_CLOCKWISE,
+                    cullMode = (uint)VK_CULL_MODE_BACK_BIT,
                     lineWidth = 1.0f,
                 };
 
