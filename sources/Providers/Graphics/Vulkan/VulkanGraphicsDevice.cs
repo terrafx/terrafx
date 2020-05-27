@@ -542,15 +542,20 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             WaitForIdle();
 
-            foreach (var graphicsContext in VulkanGraphicsContexts)
+            if (_vulkanSwapchainImages.IsCreated)
             {
-                graphicsContext.OnGraphicsSurfaceSizeChanged(sender, eventArgs);
+                _vulkanSwapchainImages.Reset(GetVulkanSwapchainImages);
             }
 
             if (_vulkanSwapchain.IsCreated)
             {
                 vkDestroySwapchainKHR(_vulkanDevice.Value, _vulkanSwapchain.Value, pAllocator: null);
                 _vulkanSwapchain.Reset(CreateVulkanSwapchain);
+            }
+
+            foreach (var graphicsContext in VulkanGraphicsContexts)
+            {
+                graphicsContext.OnGraphicsSurfaceSizeChanged(sender, eventArgs);
             }
         }
     }
