@@ -434,6 +434,8 @@ namespace TerraFX.Graphics.Providers.D3D12
         {
             if (_d3d12RenderTargetView.IsCreated)
             {
+                _d3d12RenderTargetView.Reset(CreateD3D12RenderTargetDescriptor);
+
                 ReleaseIfNotNull(_d3d12RenderTargetResource.Value);
                 _d3d12RenderTargetResource.Reset(CreateD3D12RenderTargetResource);
             }

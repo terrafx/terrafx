@@ -315,7 +315,9 @@ namespace TerraFX.Graphics.Providers.D3D12
             // Fullscreen transitions are not currently supported
             ThrowExternalExceptionIfFailed(nameof(IDXGIFactory.MakeWindowAssociation), graphicsProvider.DxgiFactory->MakeWindowAssociation(graphicsSurfaceHandle, DXGI_MWA_NO_ALT_ENTER));
 
-            _dxgiSwapChainFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+            _dxgiSwapChainFormat = swapChainDesc.Format;
+            _graphicsContextIndex = unchecked((int)dxgiSwapChain->GetCurrentBackBufferIndex());
+
             return dxgiSwapChain;
         }
 
@@ -333,6 +335,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             {
                 var graphicsSurface = GraphicsSurface;
                 ThrowExternalExceptionIfFailed(nameof(IDXGISwapChain.ResizeBuffers), DxgiSwapChain->ResizeBuffers((uint)D3D12GraphicsContexts.Length, (uint)graphicsSurface.Width, (uint)graphicsSurface.Height, DXGI_FORMAT_R8G8B8A8_UNORM, SwapChainFlags: 0));
+                _graphicsContextIndex = unchecked((int)DxgiSwapChain->GetCurrentBackBufferIndex());
             }
         }
     }
