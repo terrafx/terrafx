@@ -9,7 +9,6 @@ using System.Runtime.InteropServices;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
 using TerraFX.Interop;
-using static TerraFX.Interop.D3DCompiler;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.InteropUtilities;

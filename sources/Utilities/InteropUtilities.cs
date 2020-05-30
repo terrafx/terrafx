@@ -14,7 +14,7 @@ namespace TerraFX.Utilities
         /// <summary>Allocates a chunk of unmanaged memory.</summary>
         /// <param name="size">The size, in bytes, of the allocation.</param>
         /// <returns>An allocated chunk of memory that is <paramref name="size" /> bytes in length.</returns>
-        public static void* Allocate(int size) => (void*)Marshal.AllocHGlobal(size);
+        public static void* Allocate(nuint size) => (void*)Marshal.AllocHGlobal((nint)size);
 
         /// <summary>Gets the underlying pointer for a <typeparamref name="T" /> reference.</summary>
         /// <typeparam name="T">The type of <paramref name="source" />.</typeparam>

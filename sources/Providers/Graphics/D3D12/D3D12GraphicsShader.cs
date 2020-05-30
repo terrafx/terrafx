@@ -18,12 +18,12 @@ namespace TerraFX.Graphics.Providers.D3D12
         internal D3D12GraphicsShader(D3D12GraphicsDevice graphicsDevice, GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
             : base(graphicsDevice, kind, entryPointName)
         {
-            var bytecodeLength = bytecode.Length;
+            var bytecodeLength = (nuint)bytecode.Length;
 
             _d3d12ShaderBytecode.pShaderBytecode = Allocate(bytecodeLength);
-            _d3d12ShaderBytecode.BytecodeLength = (UIntPtr)bytecodeLength;
+            _d3d12ShaderBytecode.BytecodeLength = bytecodeLength;
 
-            var destination = new Span<byte>(_d3d12ShaderBytecode.pShaderBytecode, bytecodeLength);
+            var destination = new Span<byte>(_d3d12ShaderBytecode.pShaderBytecode, (int)bytecodeLength);
             bytecode.CopyTo(destination);
 
             _ = _state.Transition(to: Initialized);

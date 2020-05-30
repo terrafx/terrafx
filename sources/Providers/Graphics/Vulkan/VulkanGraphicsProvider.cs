@@ -156,7 +156,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <exception cref="ObjectDisposedException">The provider has been disposed.</exception>
         public VkInstance VulkanInstance => _vulkanInstance.Value;
 
-        private static uint VulkanDebugReportCallback(uint flags, VkDebugReportObjectTypeEXT objectType, ulong @object, UIntPtr location, int messageCode, sbyte* pLayerPrefix, sbyte* pMessage, void* pUserData)
+        private static uint VulkanDebugReportCallback(uint flags, VkDebugReportObjectTypeEXT objectType, ulong @object, nuint location, int messageCode, sbyte* pLayerPrefix, sbyte* pMessage, void* pUserData)
         {
             var message = MarshalUtf8ToReadOnlySpan(pMessage).AsString();
             Debug.WriteLine(message);
@@ -241,32 +241,32 @@ namespace TerraFX.Graphics.Providers.Vulkan
             {
                 if (enabledLayerNames != null)
                 {
-                    Marshal.FreeHGlobal((IntPtr)enabledLayerNames);
+                    Free(enabledLayerNames);
                 }
 
                 if (optionalLayerNamesBuffer != null)
                 {
-                    Marshal.FreeHGlobal((IntPtr)optionalLayerNamesBuffer);
+                    Free(optionalLayerNamesBuffer);
                 }
 
                 if (requiredLayerNamesBuffer != null)
                 {
-                    Marshal.FreeHGlobal((IntPtr)requiredLayerNamesBuffer);
+                    Free(requiredLayerNamesBuffer);
                 }
 
                 if (enabledExtensionNames != null)
                 {
-                    Marshal.FreeHGlobal((IntPtr)enabledExtensionNames);
+                    Free(enabledExtensionNames);
                 }
 
                 if (optionalExtensionNamesBuffer != null)
                 {
-                    Marshal.FreeHGlobal((IntPtr)optionalExtensionNamesBuffer);
+                    Free(optionalExtensionNamesBuffer);
                 }
 
                 if (requiredExtensionNamesBuffer != null)
                 {
-                    Marshal.FreeHGlobal((IntPtr)requiredExtensionNamesBuffer);
+                    Free(requiredExtensionNamesBuffer);
                 }
             }
 
@@ -275,7 +275,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 var requiredNamesCount = MarshalNames(requiredNames, out requiredNamesBuffer);
                 var optionalNamesCount = MarshalNames(optionalNames, out optionalNamesBuffer);
 
-                enabledNames = (sbyte**)Marshal.AllocHGlobal((requiredNamesCount + optionalNamesCount) * sizeof(sbyte*));
+                enabledNames = (sbyte**)Allocate((nuint)((requiredNamesCount + optionalNamesCount) * sizeof(sbyte*)));
 
                 var enabledPropertyCount = EnablePropertiesByName(propertyNames, propertyNamesCount, propertySize, requiredNamesBuffer, requiredNamesCount, enabledNames);
 
@@ -298,7 +298,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 for (var i = 0; i < targetNamesCount; i++)
                 {
                     var targetNameLength = *(int*)pTargetName;
-                    pTargetName += IntPtr.Size;
+                    pTargetName += sizeof(nuint);
                     var targetName = new ReadOnlySpan<sbyte>(pTargetName, targetNameLength + 1);
 
                     for (var n = 0; n < propertyNamesCount; n++)
@@ -352,17 +352,17 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             static int MarshalNames(string[] names, out sbyte* namesBuffer)
             {
-                var sizePerEntry = IntPtr.Size + VK_MAX_EXTENSION_NAME_SIZE;
-                namesBuffer = (sbyte*)Marshal.AllocHGlobal(names.Length * sizePerEntry);
+                var sizePerEntry = (nuint)sizeof(nuint) + VK_MAX_EXTENSION_NAME_SIZE;
+                namesBuffer = (sbyte*)Allocate((nuint)names.Length * sizePerEntry);
 
                 var pCurrent = namesBuffer;
 
                 for (var i = 0; i < names.Length; i++)
                 {
-                    var destination = new Span<byte>(pCurrent + IntPtr.Size, VK_MAX_EXTENSION_NAME_SIZE);
+                    var destination = new Span<byte>(pCurrent + sizeof(nint), (int)VK_MAX_EXTENSION_NAME_SIZE);
                     var length = Encoding.UTF8.GetBytes(names[i], destination);
 
-                    pCurrent[IntPtr.Size + length] = (sbyte)'\0';
+                    pCurrent[sizeof(nuint) + length] = (sbyte)'\0';
 
                     *(int*)pCurrent = length;
                     pCurrent += sizePerEntry;

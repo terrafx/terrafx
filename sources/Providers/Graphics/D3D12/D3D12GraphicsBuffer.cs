@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 using TerraFX.Interop;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
-using static TerraFX.Interop.D3D12;
 using static TerraFX.Interop.D3D12_RESOURCE_STATES;
+using static TerraFX.Interop.Windows;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.D3D12
@@ -45,11 +45,11 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="ID3D12Resource.Map(uint, D3D12_RANGE*, void**)" /> failed.</exception>
-        public override T* Map<T>(UIntPtr readRangeOffset, UIntPtr readRangeLength)
+        public override T* Map<T>(nuint readRangeOffset, nuint readRangeLength)
         {
             var readRange = new D3D12_RANGE {
                 Begin = readRangeOffset,
-                End = (UIntPtr)((ulong)readRangeOffset + (ulong)readRangeLength),
+                End = readRangeOffset + readRangeLength,
             };
 
             void* pDestination;
@@ -59,11 +59,11 @@ namespace TerraFX.Graphics.Providers.D3D12
         }
 
         /// <inheritdoc />
-        public override void Unmap(UIntPtr writtenRangeOffset, UIntPtr writtenRangeLength)
+        public override void Unmap(nuint writtenRangeOffset, nuint writtenRangeLength)
         {
             var writtenRange = new D3D12_RANGE {
                 Begin = writtenRangeOffset,
-                End = (UIntPtr)((ulong)writtenRangeOffset + (ulong)writtenRangeLength),
+                End = writtenRangeOffset + writtenRangeLength,
             };
 
             D3D12Resource->Unmap(Subresource: 0, &writtenRange);
