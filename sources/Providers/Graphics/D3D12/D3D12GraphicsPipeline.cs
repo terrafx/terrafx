@@ -5,7 +5,6 @@ using TerraFX.Interop;
 using TerraFX.Numerics;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
-using static TerraFX.Interop.D3D12;
 using static TerraFX.Interop.D3D12_PRIMITIVE_TOPOLOGY_TYPE;
 using static TerraFX.Interop.DXGI_FORMAT;
 using static TerraFX.Interop.Windows;

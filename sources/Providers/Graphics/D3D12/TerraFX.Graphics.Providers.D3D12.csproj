@@ -7,8 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TerraFX.Interop.D3D12" />
-    <PackageReference Include="TerraFX.Interop.DXGIDebug" />
+    <PackageReference Include="TerraFX.Interop.Windows" />
   </ItemGroup>
 
   <ItemGroup>

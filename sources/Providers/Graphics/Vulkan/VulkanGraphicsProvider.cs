@@ -352,17 +352,17 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             static int MarshalNames(string[] names, out sbyte* namesBuffer)
             {
-                var sizePerEntry = IntPtr.Size + VK_MAX_EXTENSION_NAME_SIZE;
-                namesBuffer = (sbyte*)Marshal.AllocHGlobal(names.Length * sizePerEntry);
+                var sizePerEntry = (nuint)sizeof(nuint) + VK_MAX_EXTENSION_NAME_SIZE;
+                namesBuffer = (sbyte*)Marshal.AllocHGlobal(names.Length * (nint)sizePerEntry);
 
                 var pCurrent = namesBuffer;
 
                 for (var i = 0; i < names.Length; i++)
                 {
-                    var destination = new Span<byte>(pCurrent + IntPtr.Size, VK_MAX_EXTENSION_NAME_SIZE);
+                    var destination = new Span<byte>(pCurrent + sizeof(nint), (int)VK_MAX_EXTENSION_NAME_SIZE);
                     var length = Encoding.UTF8.GetBytes(names[i], destination);
 
-                    pCurrent[IntPtr.Size + length] = (sbyte)'\0';
+                    pCurrent[sizeof(nuint) + length] = (sbyte)'\0';
 
                     *(int*)pCurrent = length;
                     pCurrent += sizePerEntry;

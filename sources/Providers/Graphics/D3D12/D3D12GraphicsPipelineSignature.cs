@@ -5,10 +5,10 @@ using TerraFX.Interop;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.D3D_ROOT_SIGNATURE_VERSION;
-using static TerraFX.Interop.D3D12;
 using static TerraFX.Interop.D3D12_DESCRIPTOR_RANGE_TYPE;
 using static TerraFX.Interop.D3D12_ROOT_SIGNATURE_FLAGS;
 using static TerraFX.Interop.D3D12_SHADER_VISIBILITY;
+using static TerraFX.Interop.Windows;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.D3D12

@@ -9,7 +9,6 @@ using TerraFX.Graphics.Geometry2D;
 using TerraFX.Interop;
 using TerraFX.Numerics;
 using TerraFX.Utilities;
-using static TerraFX.Interop.User32;
 using static TerraFX.Interop.Windows;
 using static TerraFX.UI.Providers.Win32.HelperUtilities;
 using static TerraFX.UI.Providers.Win32.Win32WindowProvider;
