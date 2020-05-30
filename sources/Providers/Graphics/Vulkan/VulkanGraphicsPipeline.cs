@@ -173,7 +173,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     var shaderIndex = pipelineShaderStageCreateInfosCount++;
 
                     var entryPointName = MarshalStringToUtf8(vertexShader.EntryPointName);
-                    var entryPointNameLength = entryPointName.Length + 1;
+                    var entryPointNameLength = (nuint)entryPointName.Length + 1;
 
                     pipelineShaderStageCreateInfos[shaderIndex] = new VkPipelineShaderStageCreateInfo {
                         sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
@@ -182,7 +182,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                         pName = (sbyte*)Allocate(entryPointNameLength),
                     };
 
-                    var destination = new Span<sbyte>(pipelineShaderStageCreateInfos[shaderIndex].pName, entryPointNameLength);
+                    var destination = new Span<sbyte>(pipelineShaderStageCreateInfos[shaderIndex].pName, (int)entryPointNameLength);
                     entryPointName.CopyTo(destination);
                     destination[entryPointName.Length] = 0x00;
 
@@ -235,7 +235,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     var shaderIndex = pipelineShaderStageCreateInfosCount++;
 
                     var entryPointName = MarshalStringToUtf8(pixelShader.EntryPointName);
-                    var entryPointNameLength = entryPointName.Length + 1;
+                    var entryPointNameLength = (nuint)entryPointName.Length + 1;
 
                     pipelineShaderStageCreateInfos[shaderIndex] = new VkPipelineShaderStageCreateInfo {
                         sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
@@ -244,7 +244,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                         pName = (sbyte*)Allocate(entryPointNameLength),
                     };
 
-                    var destination = new Span<sbyte>(pipelineShaderStageCreateInfos[shaderIndex].pName, entryPointNameLength);
+                    var destination = new Span<sbyte>(pipelineShaderStageCreateInfos[shaderIndex].pName, (int)entryPointNameLength);
                     entryPointName.CopyTo(destination);
                     destination[entryPointName.Length] = 0x00;
                 }

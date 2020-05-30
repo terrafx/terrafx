@@ -59,7 +59,7 @@ namespace TerraFX.Graphics
         /// <returns>A pointer to the mapped resource.</returns>
         /// <remarks>This overload should be used when no memory will be read.</remarks>
         public T* Map<T>()
-            where T : unmanaged => Map<T>(UIntPtr.Zero, UIntPtr.Zero);
+            where T : unmanaged => Map<T>(0, 0);
 
         /// <summary>Maps the resource into CPU memory.</summary>
         /// <typeparam name="T">The type of data contained by the resource.</typeparam>
@@ -70,7 +70,7 @@ namespace TerraFX.Graphics
         {
             var size = (Size < int.MaxValue) ? (int)Size : int.MaxValue;
             var (readRangeOffset, readRangeLength) = readRange.GetOffsetAndLength(size);
-            return Map<T>((UIntPtr)readRangeOffset, (UIntPtr)readRangeLength);
+            return Map<T>((nuint)readRangeOffset, (nuint)readRangeLength);
         }
 
         /// <summary>Maps the resource into CPU memory.</summary>
@@ -78,12 +78,12 @@ namespace TerraFX.Graphics
         /// <param name="readRangeOffset">The offset into the resource at which memory will start being read.</param>
         /// <param name="readRangeLength">The amount of memory which will be read.</param>
         /// <returns>A pointer to the mapped resource.</returns>
-        public abstract T* Map<T>(UIntPtr readRangeOffset, UIntPtr readRangeLength)
+        public abstract T* Map<T>(nuint readRangeOffset, nuint readRangeLength)
             where T : unmanaged;
 
         /// <summary>Unmaps the resource from CPU memory.</summary>
         /// <remarks>This overload should be used when no memory was written.</remarks>
-        public void Unmap() => Unmap(UIntPtr.Zero, UIntPtr.Zero);
+        public void Unmap() => Unmap(0, 0);
 
         /// <summary>Unmaps the resource from CPU memory.</summary>
         /// <param name="writtenRange">The range of memory which was written.</param>
@@ -91,12 +91,12 @@ namespace TerraFX.Graphics
         {
             var size = (Size < int.MaxValue) ? (int)Size : int.MaxValue;
             var (writtenRangeOffset, writtenRangeLength) = writtenRange.GetOffsetAndLength(size);
-            Unmap((UIntPtr)writtenRangeOffset, (UIntPtr)writtenRangeLength);
+            Unmap((nuint)writtenRangeOffset, (nuint)writtenRangeLength);
         }
 
         /// <summary>Unmaps the resource from CPU memory.</summary>
         /// <param name="writtenRangeOffset">The offset into the resource at which memory started being written.</param>
         /// <param name="writtenRangeLength">The amount of memory which was written.</param>
-        public abstract void Unmap(UIntPtr writtenRangeOffset, UIntPtr writtenRangeLength);
+        public abstract void Unmap(nuint writtenRangeOffset, nuint writtenRangeLength);
     }
 }

@@ -119,7 +119,7 @@ namespace TerraFX.UI.Providers.Win32
         {
             if (_handle.IsCreated)
             {
-                _ = SendMessageW(SurfaceHandle, WM_CLOSE, wParam: UIntPtr.Zero, lParam: IntPtr.Zero);
+                _ = SendMessageW(SurfaceHandle, WM_CLOSE, wParam: 0, lParam: 0);
             }
         }
 
@@ -202,7 +202,7 @@ namespace TerraFX.UI.Providers.Win32
             return _isActive || (SetForegroundWindow(SurfaceHandle) != FALSE);
         }
 
-        internal IntPtr ProcessWindowMessage(uint msg, UIntPtr wParam, IntPtr lParam)
+        internal nint ProcessWindowMessage(uint msg, nuint wParam, nint lParam)
         {
             ThrowIfNotThread(ParentThread);
 
@@ -318,13 +318,13 @@ namespace TerraFX.UI.Providers.Win32
             }
         }
 
-        private IntPtr HandleWmActivate(UIntPtr wParam)
+        private nint HandleWmActivate(nuint wParam)
         {
             _isActive = LOWORD((uint)wParam) != WA_INACTIVE;
-            return IntPtr.Zero;
+            return 0;
         }
 
-        private IntPtr HandleWmClose()
+        private nint HandleWmClose()
         {
             // If we are already disposing, then Dispose is happening on some other thread
             // and Close was called in order for us to continue disposal on the parent thread.
@@ -339,10 +339,10 @@ namespace TerraFX.UI.Providers.Win32
             {
                 Dispose();
             }
-            return IntPtr.Zero;
+            return 0;
         }
 
-        private IntPtr HandleWmDestroy()
+        private nint HandleWmDestroy()
         {
             // We handle this here to ensure we transition to the appropriate state in the case
             // an end-user called DestroyWindow themselves. The assumption here is that this was
@@ -354,16 +354,16 @@ namespace TerraFX.UI.Providers.Win32
             {
                 _ = _state.Transition(to: Disposed);
             }
-            return IntPtr.Zero;
+            return 0;
         }
 
-        private IntPtr HandleWmEnable(UIntPtr wParam)
+        private nint HandleWmEnable(nuint wParam)
         {
-            _isEnabled = wParam != (UIntPtr)FALSE;
-            return IntPtr.Zero;
+            _isEnabled = wParam != FALSE;
+            return 0;
         }
 
-        private IntPtr HandleWmMove(IntPtr lParam)
+        private nint HandleWmMove(nint lParam)
         {
             var previousLocation = _bounds.Location;
             var currentLocation = new Vector2(x: LOWORD((uint)lParam), y: HIWORD((uint)lParam));
@@ -371,14 +371,14 @@ namespace TerraFX.UI.Providers.Win32
             _bounds = _bounds.WithLocation(currentLocation);
             OnLocationChanged(previousLocation, currentLocation);
 
-            return IntPtr.Zero;
+            return 0;
         }
 
-        private IntPtr HandleWmSetText(UIntPtr wParam, IntPtr lParam)
+        private nint HandleWmSetText(nuint wParam, nint lParam)
         {
             var result = DefWindowProcW(SurfaceHandle, WM_SETTEXT, wParam, lParam);
 
-            if (result == (IntPtr)TRUE)
+            if (result == TRUE)
             {
                 // We only need to update the title if the text was set
                 _title = Marshal.PtrToStringUni(lParam)!;
@@ -387,13 +387,13 @@ namespace TerraFX.UI.Providers.Win32
             return result;
         }
 
-        private IntPtr HandleWmShowWindow(UIntPtr wParam)
+        private nint HandleWmShowWindow(nuint wParam)
         {
             _isVisible = LOWORD((uint)wParam) != FALSE;
-            return IntPtr.Zero;
+            return 0;
         }
 
-        private IntPtr HandleWmSize(UIntPtr wParam, IntPtr lParam)
+        private nint HandleWmSize(nuint wParam, nint lParam)
         {
             _windowState = (WindowState)(uint)wParam;
             Assert(Enum.IsDefined(typeof(WindowState), _windowState), Resources.ArgumentOutOfRangeExceptionMessage, nameof(wParam), wParam);
@@ -404,7 +404,7 @@ namespace TerraFX.UI.Providers.Win32
             _bounds = _bounds.WithSize(currentSize);
             OnSizeChanged(previousSize, currentSize);
 
-            return IntPtr.Zero;
+            return 0;
         }
 
         private void OnLocationChanged(Vector2 previousLocation, Vector2 currentLocation)

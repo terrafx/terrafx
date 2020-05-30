@@ -23,13 +23,13 @@ namespace TerraFX.Graphics.Providers.Vulkan
         internal VulkanGraphicsShader(VulkanGraphicsDevice graphicsDevice, GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
             : base(graphicsDevice, kind, entryPointName)
         {
-            var bytecodeLength = bytecode.Length;
+            var bytecodeLength = (nuint)bytecode.Length;
 
             _vulkanShaderModuleCreateInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-            _vulkanShaderModuleCreateInfo.codeSize = (UIntPtr)bytecodeLength;
+            _vulkanShaderModuleCreateInfo.codeSize = bytecodeLength;
             _vulkanShaderModuleCreateInfo.pCode = (uint*)Allocate(bytecodeLength);
 
-            var destination = new Span<byte>(_vulkanShaderModuleCreateInfo.pCode, bytecodeLength);
+            var destination = new Span<byte>(_vulkanShaderModuleCreateInfo.pCode, (int)bytecodeLength);
             bytecode.CopyTo(destination);
 
             _vulkanShaderModule = new ValueLazy<VkShaderModule>(CreateVulkanShaderModule);

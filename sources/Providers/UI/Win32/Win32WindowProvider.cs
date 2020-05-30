@@ -111,13 +111,13 @@ namespace TerraFX.UI.Providers.Win32
             return window;
         }
 
-        private static IntPtr ForwardWindowMessage(IntPtr hWnd, uint msg, UIntPtr wParam, IntPtr lParam)
+        private static nint ForwardWindowMessage(IntPtr hWnd, uint msg, nuint wParam, nint lParam)
         {
             return Impl(hWnd, msg, wParam, lParam);
 
-            static IntPtr Impl(HWND hWnd, uint msg, UIntPtr wParam, IntPtr lParam)
+            static nint Impl(HWND hWnd, uint msg, nuint wParam, nint lParam)
             {
-                IntPtr result, userData;
+                nint result, userData;
 
                 if (msg == WM_CREATE)
                 {
@@ -126,7 +126,7 @@ namespace TerraFX.UI.Providers.Win32
                     // of the fields in Window are lazy.
 
                     var createStruct = (CREATESTRUCTW*)lParam;
-                    userData = (IntPtr)createStruct->lpCreateParams;
+                    userData = (nint)createStruct->lpCreateParams;
                     _ = SetWindowLongPtrW(hWnd, GWLP_USERDATA, userData);
                 }
                 else
@@ -139,7 +139,7 @@ namespace TerraFX.UI.Providers.Win32
                 var forwardMessage = false;
                 Win32Window? window = null;
 
-                if (userData != IntPtr.Zero)
+                if (userData != 0)
                 {
                     windowProvider = (Win32WindowProvider)GCHandle.FromIntPtr(userData).Target!;
                     windows = windowProvider._windows.Value;

@@ -198,11 +198,11 @@ namespace TerraFX.Audio.Providers.PulseAudio
             unsafe bool TryPrepareBlock(ReadOnlySequence<byte> data, int length, out Span<byte> block)
             {
                 void* writeLocation = null;
-                var bytesAvailable = new UIntPtr((uint)length);
+                var bytesAvailable = (nuint)length;
                 Assert(pa_stream_begin_write(Stream, &writeLocation, &bytesAvailable) == 0, "pa_stream_begin_write returned != 0");
                 Assert(writeLocation != null, "writeLocation == null");
 
-                var destination = new Span<byte>(writeLocation, (int)bytesAvailable.ToUInt32());
+                var destination = new Span<byte>(writeLocation, (int)bytesAvailable);
                 data.Slice(0, destination.Length).CopyTo(destination);
                 block = destination;
 
@@ -213,7 +213,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
             {
                 fixed(byte* location = block)
                 {
-                    Assert(pa_stream_write(Stream, (void*)location, new UIntPtr((uint)block.Length), IntPtr.Zero, IntPtr.Zero, pa_seek_mode.PA_SEEK_RELATIVE) == 0, "pa_stream_write returned != 0");
+                    Assert(pa_stream_write(Stream, (void*)location, (nuint)block.Length, (nint)0, (nint)0, pa_seek_mode.PA_SEEK_RELATIVE) == 0, "pa_stream_write returned != 0");
                 }
 
                 return true;

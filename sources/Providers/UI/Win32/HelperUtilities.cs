@@ -24,9 +24,9 @@ namespace TerraFX.UI.Providers.Win32
             }
         }
 
-        public static void ThrowExternalExceptionIfZero(string methodName, IntPtr value)
+        public static void ThrowExternalExceptionIfZero(string methodName, nint value)
         {
-            if (value == IntPtr.Zero)
+            if (value == 0)
             {
                 ThrowExternalExceptionForLastError(methodName);
             }

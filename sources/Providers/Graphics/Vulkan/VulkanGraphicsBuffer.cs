@@ -42,7 +42,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(IntPtr, ulong, ulong, ulong, uint, void**)" /> failed.</exception>
-        public override T* Map<T>(UIntPtr readRangeOffset, UIntPtr readRangeLength)
+        public override T* Map<T>(nuint readRangeOffset, nuint readRangeLength)
         {
             var vulkanGraphicsHeap = VulkanGraphicsHeap;
             var vulkanDeviceMemory = vulkanGraphicsHeap.VulkanDeviceMemory;
@@ -53,13 +53,13 @@ namespace TerraFX.Graphics.Providers.Vulkan
             void* pDestination;
             ThrowExternalExceptionIfNotSuccess(nameof(vkMapMemory), vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, &pDestination));
 
-            if (readRangeLength != UIntPtr.Zero)
+            if (readRangeLength != 0)
             {
                 var vulkanGraphicsAdapter = vulkanGraphicsDevice.VulkanGraphicsAdapter;
                 var nonCoherentAtomSize = vulkanGraphicsAdapter.VulkanPhysicalDeviceProperties.limits.nonCoherentAtomSize;
 
-                var offset = Offset + (ulong)readRangeOffset;
-                var size = ((ulong)readRangeLength + nonCoherentAtomSize - 1) & ~(nonCoherentAtomSize - 1);
+                var offset = Offset + readRangeOffset;
+                var size = (readRangeLength + nonCoherentAtomSize - 1) & ~(nonCoherentAtomSize - 1);
 
                 var mappedMemoryRange = new VkMappedMemoryRange {
                     sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
@@ -74,7 +74,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(IntPtr, uint, VkMappedMemoryRange*)" /> failed.</exception>
-        public override void Unmap(UIntPtr writtenRangeOffset, UIntPtr writtenRangeLength)
+        public override void Unmap(nuint writtenRangeOffset, nuint writtenRangeLength)
         {
             var vulkanGraphicsHeap = VulkanGraphicsHeap;
             var vulkanDeviceMemory = vulkanGraphicsHeap.VulkanDeviceMemory;
@@ -82,13 +82,13 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var vulkanGraphicsDevice = vulkanGraphicsHeap.VulkanGraphicsDevice;
             var vulkanDevice = vulkanGraphicsDevice.VulkanDevice;
 
-            if (writtenRangeLength != UIntPtr.Zero)
+            if (writtenRangeLength != 0)
             {
                 var vulkanGraphicsAdapter = vulkanGraphicsDevice.VulkanGraphicsAdapter;
                 var nonCoherentAtomSize = vulkanGraphicsAdapter.VulkanPhysicalDeviceProperties.limits.nonCoherentAtomSize;
 
-                var offset = Offset + (ulong)writtenRangeOffset;
-                var size = ((ulong)writtenRangeLength + nonCoherentAtomSize - 1) & ~(nonCoherentAtomSize - 1);
+                var offset = Offset + writtenRangeOffset;
+                var size = (writtenRangeLength + nonCoherentAtomSize - 1) & ~(nonCoherentAtomSize - 1);
 
                 var mappedMemoryRange = new VkMappedMemoryRange {
                     sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
