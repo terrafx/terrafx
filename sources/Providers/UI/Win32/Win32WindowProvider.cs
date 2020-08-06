@@ -26,8 +26,6 @@ namespace TerraFX.UI.Providers.Win32
         /// <summary>A <see cref="HINSTANCE" /> to the entry point module.</summary>
         public static readonly HINSTANCE EntryPointModule = GetModuleHandleW(lpModuleName: null);
 
-        private static readonly NativeDelegate<WNDPROC> s_forwardWndProc = new NativeDelegate<WNDPROC>(ForwardWindowMessage);
-
         private readonly ThreadLocal<Dictionary<HWND, Win32Window>> _windows;
 
         private ValueLazy<ushort> _classAtom;
@@ -111,6 +109,7 @@ namespace TerraFX.UI.Providers.Win32
             return window;
         }
 
+        [UnmanagedCallersOnly]
         private static nint ForwardWindowMessage(IntPtr hWnd, uint msg, nuint wParam, nint lParam)
         {
             return Impl(hWnd, msg, wParam, lParam);
@@ -216,10 +215,13 @@ namespace TerraFX.UI.Providers.Win32
 
                 fixed (char* lpszClassName = className)
                 {
+                    // Requires an explicit cast until C# handles UnmanagedCallersOnly
+                    var wndProc = (delegate* stdcall<IntPtr, uint, nuint, nint, nint>)(delegate* managed<IntPtr, uint, nuint, nint, nint>)&ForwardWindowMessage;
+
                     var wndClassEx = new WNDCLASSEXW {
                         cbSize = SizeOf<WNDCLASSEXW>(),
                         style = CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS,
-                        lpfnWndProc = s_forwardWndProc,
+                        lpfnWndProc = wndProc,
                         cbClsExtra = 0,
                         cbWndExtra = 0,
                         hInstance = EntryPointModule,
