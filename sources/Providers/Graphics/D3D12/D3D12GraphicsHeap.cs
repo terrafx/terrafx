@@ -44,7 +44,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             _state.ThrowIfDisposedOrDisposing();
 
             var offset = _offset;
-            size = (size + D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT - 1) & ~(D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT - 1);
+            size = (size + D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT - 1) & ~(D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT - 1u);
             _offset = offset + size;
 
             return new D3D12GraphicsBuffer(kind, this, offset, size, stride);
@@ -58,7 +58,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             var size = width * height * depth * sizeof(uint);
             var offset = _offset;
 
-            size = (size + D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT - 1) & ~(D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT - 1);
+            size = (size + D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT - 1) & ~(D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT - 1u);
             _offset = offset + size;
 
             return new D3D12GraphicsTexture(kind, this, offset, size, width, height, depth);

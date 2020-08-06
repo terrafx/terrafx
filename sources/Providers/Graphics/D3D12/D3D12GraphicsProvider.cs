@@ -99,7 +99,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             IDXGIFactory2* dxgiFactory;
 
-            var createFlags = (DebugModeEnabled && TryEnableDebugMode()) ? DXGI_CREATE_FACTORY_DEBUG : 0;
+            var createFlags = (DebugModeEnabled && TryEnableDebugMode()) ? DXGI_CREATE_FACTORY_DEBUG : 0u;
             var iid = IID_IDXGIFactory2;
             ThrowExternalExceptionIfFailed(nameof(CreateDXGIFactory2), CreateDXGIFactory2(createFlags, &iid, (void**)&dxgiFactory));
 
