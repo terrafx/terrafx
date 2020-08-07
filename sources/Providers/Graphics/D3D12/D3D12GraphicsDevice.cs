@@ -8,11 +8,14 @@ using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.D3D_FEATURE_LEVEL;
 using static TerraFX.Interop.D3D12_DESCRIPTOR_HEAP_FLAGS;
 using static TerraFX.Interop.D3D12_DESCRIPTOR_HEAP_TYPE;
+using static TerraFX.Interop.D3D12_FEATURE;
+using static TerraFX.Interop.D3D12_RESOURCE_HEAP_TIER;
 using static TerraFX.Interop.DXGI_FORMAT;
 using static TerraFX.Interop.DXGI_SWAP_EFFECT;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Utilities.DisposeUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.InteropUtilities;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.D3D12
@@ -235,6 +238,13 @@ namespace TerraFX.Graphics.Providers.D3D12
             var iid = IID_ID3D12Device;
             ThrowExternalExceptionIfFailed(nameof(D3D12CreateDevice), D3D12CreateDevice((IUnknown*)D3D12GraphicsAdapter.DxgiAdapter, D3D_FEATURE_LEVEL_11_0, &iid, (void**)&d3d12Device));
 
+            D3D12_FEATURE_DATA_D3D12_OPTIONS d3d12Options;
+            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CheckFeatureSupport), d3d12Device->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &d3d12Options, SizeOf<D3D12_FEATURE_DATA_D3D12_OPTIONS>());
+
+            if (d3d12Options.ResourceHeapTier != D3D12_RESOURCE_HEAP_TIER_2)
+            {
+                throw new NotSupportedException("TerraFX currently requires a device that supports Resource Heap Tier 2");
+            }
             return d3d12Device;
         }
 
