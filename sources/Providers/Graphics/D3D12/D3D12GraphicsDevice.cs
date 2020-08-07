@@ -239,7 +239,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             ThrowExternalExceptionIfFailed(nameof(D3D12CreateDevice), D3D12CreateDevice((IUnknown*)D3D12GraphicsAdapter.DxgiAdapter, D3D_FEATURE_LEVEL_11_0, &iid, (void**)&d3d12Device));
 
             D3D12_FEATURE_DATA_D3D12_OPTIONS d3d12Options;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CheckFeatureSupport), d3d12Device->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &d3d12Options, SizeOf<D3D12_FEATURE_DATA_D3D12_OPTIONS>());
+            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CheckFeatureSupport), d3d12Device->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &d3d12Options, SizeOf<D3D12_FEATURE_DATA_D3D12_OPTIONS>()));
 
             if (d3d12Options.ResourceHeapTier != D3D12_RESOURCE_HEAP_TIER_2)
             {
