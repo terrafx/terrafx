@@ -78,4 +78,4 @@ jobs:
         source-url: https://nuget.pkg.github.com/terrafx/index.json
       env:
         NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - run: dotnet nuget push ./artifacts/pkg/Release/*.nupkg
+    - run: dotnet nuget push "./artifacts/pkg/Release/*.nupkg"
