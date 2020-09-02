@@ -14,22 +14,27 @@
   <PropertyGroup>
     <DefineConstants>$(DefineConstants);$(OS)</DefineConstants>
     <NoWarn>$(NoWarn);NU5105</NoWarn>
-    <PackageVersion Condition="'$(GITHUB_RUN_ID)' != ''">$(Version)-$(GITHUB_RUN_ID)</PackageVersion>
+  </PropertyGroup>
+
+  <!-- Settings that are only set for CI builds -->
+  <PropertyGroup Condition="'$(GITHUB_RUN_ID)' != ''">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <PackageVersion>$(Version)-$(GITHUB_RUN_ID)</PackageVersion>
   </PropertyGroup>
 
   <!-- Package versions for package references across all projects -->
   <ItemGroup>
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.6.1" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.8.0-preview-20200812-03" />
     <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.0.0" />
     <PackageReference Update="NUnit" Version="3.12.0" />
-    <PackageReference Update="NUnit3TestAdapter" Version="3.16.1" />
-    <PackageReference Update="System.Composition" Version="5.0.0-preview.7.20364.11" />
-    <PackageReference Update="System.IO.Pipelines" Version="5.0.0-preview.7.20364.11" />
-    <PackageReference Update="TerraFX.Interop.Libc" Version="1.2017.0-alpha-197187770" />
-    <PackageReference Update="TerraFX.Interop.PulseAudio" Version="12.2.0-alpha-197187792" />
-    <PackageReference Update="TerraFX.Interop.Vulkan" Version="1.2.135-alpha-197187812" />
-    <PackageReference Update="TerraFX.Interop.Windows" Version="10.0.19041-alpha-197178039" />
-    <PackageReference Update="TerraFX.Interop.Xlib" Version="6.3.0-alpha-197187925" />
+    <PackageReference Update="NUnit3TestAdapter" Version="3.17.0" />
+    <PackageReference Update="System.Composition" Version="5.0.0-preview.8.20407.11" />
+    <PackageReference Update="System.IO.Pipelines" Version="5.0.0-preview.8.20407.11" />
+    <PackageReference Update="TerraFX.Interop.Libc" Version="1.2017.0-alpha-235193088" />
+    <PackageReference Update="TerraFX.Interop.PulseAudio" Version="12.2.0-alpha-235191302" />
+    <PackageReference Update="TerraFX.Interop.Vulkan" Version="1.2.135-alpha-235193542" />
+    <PackageReference Update="TerraFX.Interop.Windows" Version="10.0.19041-alpha-235164644" />
+    <PackageReference Update="TerraFX.Interop.Xlib" Version="6.3.0-alpha-235192848" />
   </ItemGroup>
 
 </Project>
