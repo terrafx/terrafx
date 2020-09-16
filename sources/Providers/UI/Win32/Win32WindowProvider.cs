@@ -216,7 +216,7 @@ namespace TerraFX.UI.Providers.Win32
                 fixed (char* lpszClassName = className)
                 {
                     // Requires an explicit cast until C# handles UnmanagedCallersOnly
-                    var wndProc = (delegate* stdcall<IntPtr, uint, nuint, nint, nint>)(delegate* managed<IntPtr, uint, nuint, nint, nint>)&ForwardWindowMessage;
+                    var wndProc = (delegate* unmanaged<IntPtr, uint, nuint, nint, nint>)(delegate*<IntPtr, uint, nuint, nint, nint>)&ForwardWindowMessage;
 
                     var wndClassEx = new WNDCLASSEXW {
                         cbSize = SizeOf<WNDCLASSEXW>(),

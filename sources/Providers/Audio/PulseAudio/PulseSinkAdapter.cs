@@ -4,7 +4,6 @@ using System;
 using System.Runtime.InteropServices;
 using TerraFX.Interop;
 using TerraFX.Utilities;
-
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Audio.Providers.PulseAudio

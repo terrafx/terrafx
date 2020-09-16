@@ -25,18 +25,12 @@ namespace TerraFX.Audio.Providers.PulseAudio
 
         private readonly List<IAudioAdapter> _backingCollection;
         private readonly Thread _eventLoopThread;
-
-        // WORKAROUND: https://github.com/dotnet/roslyn/issues/38143
-        // 'static' local functions might not be emitted as static
-        private readonly pa_source_info_cb_t _sourceCallback;
-        private readonly pa_sink_info_cb_t _sinkCallback;
+        private readonly unsafe delegate* unmanaged<IntPtr, pa_source_info*, int, void*, void> _sourceCallback;
+        private readonly unsafe delegate* unmanaged<IntPtr, pa_sink_info*, int, void*, void> _sinkCallback;
 
         private TaskCompletionSource<bool> _completeSignal;
 
-        internal IntPtr SourceCallback { get; }
-        internal IntPtr SinkCallback { get; }
-
-        internal PulseAudioAdapterEnumerable(Thread eventLoopThread, pa_source_info_cb_t sourceCallback, pa_sink_info_cb_t sinkCallback)
+        internal unsafe PulseAudioAdapterEnumerable(Thread eventLoopThread, delegate* unmanaged<IntPtr, pa_source_info*, int, void*, void> sourceCallback, delegate* unmanaged<IntPtr, pa_sink_info*, int, void*, void> sinkCallback)
         {
             _backingCollection = new List<IAudioAdapter>(DefaultAudioAdapterCount);
             _eventLoopThread = eventLoopThread;
@@ -44,10 +38,11 @@ namespace TerraFX.Audio.Providers.PulseAudio
             _sinkCallback = sinkCallback;
             // Run continuations asynchronously so that we do not block the event loop thread and potentially deadlock
             _completeSignal = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-
-            SourceCallback = Marshal.GetFunctionPointerForDelegate(_sourceCallback);
-            SinkCallback = Marshal.GetFunctionPointerForDelegate(_sinkCallback);
         }
+
+        internal unsafe delegate* unmanaged<IntPtr, pa_source_info*, int, void*, void> SourceCallback => _sourceCallback;
+
+        internal unsafe delegate* unmanaged<IntPtr, pa_sink_info*, int, void*, void> SinkCallback => _sinkCallback;
 
         private void SetCompleteSignal(bool value)
         {

@@ -30,11 +30,11 @@
     <PackageReference Update="NUnit3TestAdapter" Version="3.17.0" />
     <PackageReference Update="System.Composition" Version="5.0.0-preview.8.20407.11" />
     <PackageReference Update="System.IO.Pipelines" Version="5.0.0-preview.8.20407.11" />
-    <PackageReference Update="TerraFX.Interop.Libc" Version="1.2017.0-alpha-235193088" />
-    <PackageReference Update="TerraFX.Interop.PulseAudio" Version="12.2.0-alpha-235191302" />
-    <PackageReference Update="TerraFX.Interop.Vulkan" Version="1.2.135-alpha-235193542" />
-    <PackageReference Update="TerraFX.Interop.Windows" Version="10.0.19041-alpha-235164644" />
-    <PackageReference Update="TerraFX.Interop.Xlib" Version="6.3.0-alpha-235192848" />
+    <PackageReference Update="TerraFX.Interop.Libc" Version="1.2017.0-alpha-258283270" />
+    <PackageReference Update="TerraFX.Interop.PulseAudio" Version="13.0.0-alpha-258313922" />
+    <PackageReference Update="TerraFX.Interop.Vulkan" Version="1.2.135-alpha-257883922" />
+    <PackageReference Update="TerraFX.Interop.Windows" Version="10.0.19041-alpha-257883804" />
+    <PackageReference Update="TerraFX.Interop.Xlib" Version="6.3.0-alpha-258281612" />
   </ItemGroup>
 
 </Project>

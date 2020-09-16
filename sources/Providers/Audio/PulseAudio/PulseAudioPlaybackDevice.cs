@@ -9,7 +9,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using TerraFX.Interop;
 using TerraFX.Utilities;
-
+using static TerraFX.Interop.pa_sample_format;
+using static TerraFX.Interop.pa_seek_mode;
+using static TerraFX.Interop.pa_stream_flags;
 using static TerraFX.Interop.Pulse;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -26,27 +28,29 @@ namespace TerraFX.Audio.Providers.PulseAudio
 
         private static readonly byte[] PlaybackName = Encoding.UTF8.GetBytes("Playback");
 
-        private readonly unsafe pa_context* _context;
+        private readonly IntPtr _context;
         private readonly Pipe _sampleDataPipe;
         private readonly Lazy<IntPtr> _stream;
-        private readonly Lazy<GCHandle> _writeDelegateHandle;
-        private readonly NativeDelegate<pa_stream_request_cb_t> _writeDelegate;
+        private readonly ValueLazy<GCHandle> _writeDelegateHandle;
+        private readonly unsafe delegate* unmanaged<IntPtr, nuint, void*, void> _writeDelegate;
         private readonly ManualResetValueTaskSource<int> _writeRequest;
 
         private State _state;
 
         /// <inheritdoc />
         public IAudioAdapter Adapter { get; }
+
         /// <inheritdoc />
         public PipeWriter Writer => _sampleDataPipe.Writer;
 
         private GCHandle WriteDelegateHandle => _writeDelegateHandle.Value;
-        private unsafe pa_stream* Stream => (pa_stream*)_stream.Value;
+
+        private IntPtr Stream => _stream.Value;
 
         /// <summary>Initializes a new instance of the <see cref="PulseAudioPlaybackDevice" /> class.</summary>
-        internal unsafe PulseAudioPlaybackDevice(IAudioAdapter adapter, pa_context* context)
+        internal unsafe PulseAudioPlaybackDevice(IAudioAdapter adapter, IntPtr context)
         {
-            Assert(context != null, "pa_context passed was null");
+            Assert(context != IntPtr.Zero, "pa_context passed was IntPtr.Zero");
 
             if (adapter.DeviceType != AudioDeviceType.Playback)
             {
@@ -56,10 +60,9 @@ namespace TerraFX.Audio.Providers.PulseAudio
             _context = context;
             _sampleDataPipe = new Pipe();
             _stream = new Lazy<IntPtr>(CreateStream, isThreadSafe: true);
-            _writeDelegateHandle = new Lazy<GCHandle>(CreateHandle, isThreadSafe: true);
-            _writeDelegate = new NativeDelegate<pa_stream_request_cb_t>(WriteCallback);
-            _writeRequest = new ManualResetValueTaskSource<int>()
-            {
+            _writeDelegateHandle = new ValueLazy<GCHandle>(CreateHandle);
+            _writeDelegate = (delegate* unmanaged<IntPtr, nuint, void*, void>)(delegate*<IntPtr, nuint, void*, void>)&WriteCallback;
+            _writeRequest = new ManualResetValueTaskSource<int>() {
                 RunContinuationsAsynchronously = true
             };
 
@@ -69,10 +72,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
         }
 
         /// <summary>Finalizes an instance of the <see cref="PulseAudioPlaybackDevice" /> class.</summary>
-        ~PulseAudioPlaybackDevice()
-        {
-            Dispose(false);
-        }
+        ~PulseAudioPlaybackDevice() => Dispose(false);
 
         private GCHandle CreateHandle() => GCHandle.Alloc(this);
 
@@ -84,30 +84,32 @@ namespace TerraFX.Audio.Providers.PulseAudio
             spec.format = GetSampleFormat(Adapter);
             spec.rate = (uint)Adapter.SampleRate;
 
-            pa_stream* stream;
+            IntPtr stream;
             fixed(byte* streamName = PlaybackName)
             {
                 stream = pa_stream_new(_context, (sbyte*)streamName, &spec, null);
             }
 
-            Assert(stream != null, "pa_stream_new failed");
+            Assert(stream != IntPtr.Zero, "pa_stream_new failed");
 
             var userdata = (void*)GCHandle.ToIntPtr(WriteDelegateHandle);
             pa_stream_set_write_callback(stream, _writeDelegate, userdata);
 
-            return (IntPtr)stream;
+            return stream;
 
             static pa_sample_format GetSampleFormat(IAudioAdapter adapter)
             {
                 // TODO: make this return some appropriate value
-                return pa_sample_format.PA_SAMPLE_S16LE;
+                return PA_SAMPLE_S16LE;
             }
         }
 
         // Called from the event loop thread when it wants audio data.
         // This happens infrequently, so in theory using a valuetask-based event should be fine
         private short _lastToken = -1; // cache the previous token used so we can detect cases where we're called twice
-        private static unsafe void WriteCallback(pa_stream* stream, UIntPtr length, void* userdata)
+
+        [UnmanagedCallersOnly]
+        private static unsafe void WriteCallback(IntPtr stream, nuint length, void* userdata)
         {
             var handle = GCHandle.FromIntPtr((IntPtr)userdata);
             var device = (PulseAudioPlaybackDevice)handle.Target!;
@@ -127,11 +129,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
                 ThrowInvalidOperationException(Resources.DeviceNotCompletedMessage);
             }
 
-            unsafe
-            {
-                Assert(pa_stream_disconnect(Stream) == 0, "pa_stream_disconnect returned != 0");
-            }
-
+            Assert(pa_stream_disconnect(Stream) == 0, "pa_stream_disconnect returned != 0");
             _sampleDataPipe.Reset();
         }
 
@@ -145,7 +143,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
 
             unsafe
             {
-                if (pa_stream_connect_playback(Stream, null, null, pa_stream_flags.PA_STREAM_NOFLAGS, null, null) != 0)
+                if (pa_stream_connect_playback(Stream, null, null, PA_STREAM_NOFLAGS, null, IntPtr.Zero) != 0)
                 {
                     ThrowInvalidOperationException(Resources.CouldNotConnectPlaybackStreamMessage);
                 }
@@ -200,7 +198,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
                 void* writeLocation = null;
                 var bytesAvailable = (nuint)length;
                 Assert(pa_stream_begin_write(Stream, &writeLocation, &bytesAvailable) == 0, "pa_stream_begin_write returned != 0");
-                Assert(writeLocation != null, "writeLocation == null");
+                Assert(writeLocation is not null, "writeLocation is null");
 
                 var destination = new Span<byte>(writeLocation, (int)bytesAvailable);
                 data.Slice(0, destination.Length).CopyTo(destination);
@@ -213,7 +211,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
             {
                 fixed(byte* location = block)
                 {
-                    Assert(pa_stream_write(Stream, (void*)location, (nuint)block.Length, (nint)0, (nint)0, pa_seek_mode.PA_SEEK_RELATIVE) == 0, "pa_stream_write returned != 0");
+                    Assert(pa_stream_write(Stream, location, (nuint)block.Length, null, 0, PA_SEEK_RELATIVE) == 0, "pa_stream_write returned != 0");
                 }
 
                 return true;
@@ -227,7 +225,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
             GC.SuppressFinalize(this);
         }
 
-        private unsafe void Dispose(bool isDisposing)
+        private void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
 
@@ -235,10 +233,10 @@ namespace TerraFX.Audio.Providers.PulseAudio
             {
                 if (_stream.IsValueCreated)
                 {
-                    pa_stream_unref((pa_stream*)_stream.Value);
+                    pa_stream_unref(_stream.Value);
                 }
 
-                if (_writeDelegateHandle.IsValueCreated)
+                if (_writeDelegateHandle.IsCreated)
                 {
                     _writeDelegateHandle.Value.Free();
                 }
