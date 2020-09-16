@@ -19,7 +19,6 @@ using static TerraFX.Interop.VkSampleCountFlagBits;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.VkSurfaceTransformFlagBitsKHR;
 using static TerraFX.Interop.Vulkan;
-using static TerraFX.Utilities.DisposeUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
@@ -28,7 +27,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
     /// <inheritdoc />
     public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
     {
-        private readonly VulkanGraphicsFence _presentCompletionGraphicsFence;
+        private readonly VulkanGraphicsFence _presentCompletionFence;
 
         private ValueLazy<VkQueue> _vulkanCommandQueue;
         private ValueLazy<uint> _vulkanCommandQueueFamilyIndex;
@@ -37,17 +36,18 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private ValueLazy<VkSurfaceKHR> _vulkanSurface;
         private ValueLazy<VkSwapchainKHR> _vulkanSwapchain;
         private ValueLazy<VkImage[]> _vulkanSwapchainImages;
+        private ValueLazy<VulkanGraphicsMemoryAllocator> _memoryAllocator;
 
-        private VulkanGraphicsContext[] _graphicsContexts;
-        private int _graphicsContextIndex;
+        private VulkanGraphicsContext[] _contexts;
+        private int _contextIndex;
         private VkFormat _vulkanSwapchainFormat;
 
         private State _state;
 
-        internal VulkanGraphicsDevice(VulkanGraphicsAdapter graphicsAdapter, IGraphicsSurface graphicsSurface, int graphicsContextCount)
-            : base(graphicsAdapter, graphicsSurface)
+        internal VulkanGraphicsDevice(VulkanGraphicsAdapter adapter, IGraphicsSurface surface, int contextCount)
+            : base(adapter, surface)
         {
-            _presentCompletionGraphicsFence = new VulkanGraphicsFence(this);
+            _presentCompletionFence = new VulkanGraphicsFence(this);
 
             _vulkanCommandQueue = new ValueLazy<VkQueue>(GetVulkanCommandQueue);
             _vulkanCommandQueueFamilyIndex = new ValueLazy<uint>(GetVulkanCommandQueueFamilyIndex);
@@ -56,42 +56,49 @@ namespace TerraFX.Graphics.Providers.Vulkan
             _vulkanSurface = new ValueLazy<VkSurfaceKHR>(CreateVulkanSurface);
             _vulkanSwapchain = new ValueLazy<VkSwapchainKHR>(CreateVulkanSwapchain);
             _vulkanSwapchainImages = new ValueLazy<VkImage[]>(GetVulkanSwapchainImages);
+            _memoryAllocator = new ValueLazy<VulkanGraphicsMemoryAllocator>(CreateMemoryAllocator);
 
-            _graphicsContexts = CreateGraphicsContexts(this, graphicsContextCount);
+            _contexts = CreateGraphicsContexts(this, contextCount);
 
             _ = _state.Transition(to: Initialized);
 
-            PresentCompletionGraphicsFence.Reset();
-            graphicsSurface.SizeChanged += OnGraphicsSurfaceSizeChanged;
+            PresentCompletionFence.Reset();
+            surface.SizeChanged += OnGraphicsSurfaceSizeChanged;
 
-            static VulkanGraphicsContext[] CreateGraphicsContexts(VulkanGraphicsDevice graphicsDevice, int graphicsContextCount)
+            static VulkanGraphicsContext[] CreateGraphicsContexts(VulkanGraphicsDevice device, int contextCount)
             {
-                var graphicsContexts = new VulkanGraphicsContext[graphicsContextCount];
+                var contexts = new VulkanGraphicsContext[contextCount];
 
-                for (var index = 0; index < graphicsContexts.Length; index++)
+                for (var index = 0; index < contexts.Length; index++)
                 {
-                    graphicsContexts[index] = new VulkanGraphicsContext(graphicsDevice, index);
+                    contexts[index] = new VulkanGraphicsContext(device, index);
                 }
 
-                return graphicsContexts;
+                return contexts;
             }
         }
 
         /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsDevice" /> class.</summary>
-        ~VulkanGraphicsDevice()
-        {
-            Dispose(isDisposing: true);
-        }
+        ~VulkanGraphicsDevice() => Dispose(isDisposing: true);
+
+        /// <inheritdoc cref="GraphicsDevice.Adapter" />
+        public new VulkanGraphicsAdapter Adapter => (VulkanGraphicsAdapter)base.Adapter;
 
         /// <inheritdoc />
-        public override ReadOnlySpan<GraphicsContext> GraphicsContexts => _graphicsContexts;
+        public override ReadOnlySpan<GraphicsContext> Contexts => _contexts;
+
+        /// <inheritdoc cref="GraphicsDevice.CurrentContext" />
+        public new VulkanGraphicsContext CurrentContext => (VulkanGraphicsContext)base.CurrentContext;
 
         /// <inheritdoc />
-        public override int GraphicsContextIndex => _graphicsContextIndex;
+        public override int ContextIndex => _contextIndex;
 
-        /// <summary>Gets a graphics fence that is used to wait for <see cref="PresentFrame" /> to complete.</summary>
+        /// <inheritdoc />
+        public override VulkanGraphicsMemoryAllocator MemoryAllocator => _memoryAllocator.Value;
+
+        /// <summary>Gets a fence that is used to wait for <see cref="PresentFrame" /> to complete.</summary>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-        public VulkanGraphicsFence PresentCompletionGraphicsFence => _presentCompletionGraphicsFence;
+        public VulkanGraphicsFence PresentCompletionFence => _presentCompletionFence;
 
         /// <summary>Gets the <see cref="VkQueue" /> used by the device.</summary>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
@@ -101,18 +108,9 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
         public uint VulkanCommandQueueFamilyIndex => _vulkanCommandQueueFamilyIndex.Value;
 
-        /// <inheritdoc cref="GraphicsDevice.CurrentGraphicsContext" />
-        public VulkanGraphicsContext VulkanCurrentGraphicsContext => (VulkanGraphicsContext)CurrentGraphicsContext;
-
         /// <summary>Gets the underlying <see cref="VkDevice"/> for the device.</summary>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
         public VkDevice VulkanDevice => _vulkanDevice.Value;
-
-        /// <inheritdoc cref="GraphicsDevice.GraphicsAdapter" />
-        public VulkanGraphicsAdapter VulkanGraphicsAdapter => (VulkanGraphicsAdapter)GraphicsAdapter;
-
-        /// <inheritdoc cref="GraphicsContexts" />
-        public ReadOnlySpan<VulkanGraphicsContext> VulkanGraphicsContexts => _graphicsContexts;
 
         /// <summary>Gets the <see cref="VkRenderPass" /> used by the device.</summary>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
@@ -132,84 +130,74 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <summary>Gets a readonly span of the <see cref="VkImage" /> used by <see cref="VulkanSwapchain" />.</summary>
         public ReadOnlySpan<VkImage> VulkanSwapchainImages => _vulkanSwapchainImages.Value;
 
-        /// <inheritdoc cref="CreateGraphicsHeap(ulong, GraphicsHeapCpuAccess)" />
-        public VulkanGraphicsHeap CreateVulkanGraphicsHeap(ulong size, GraphicsHeapCpuAccess cpuAccess)
-        {
-            _state.ThrowIfDisposedOrDisposing();
-            return new VulkanGraphicsHeap(this, size, cpuAccess);
-        }
+        /// <inheritdoc />
+        public override VulkanGraphicsPipeline CreatePipeline(GraphicsPipelineSignature signature, GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null)
+            => CreatePipeline((VulkanGraphicsPipelineSignature)signature, (VulkanGraphicsShader?)vertexShader, (VulkanGraphicsShader?)pixelShader);
 
-        /// <inheritdoc cref="CreateGraphicsPipeline(GraphicsPipelineSignature, GraphicsShader?, GraphicsShader?)" />
-        public VulkanGraphicsPipeline CreateVulkanGraphicsPipeline(VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader = null, VulkanGraphicsShader? pixelShader = null)
+        /// <inheritdoc cref="CreatePipeline(GraphicsPipelineSignature, GraphicsShader?, GraphicsShader?)" />
+        public VulkanGraphicsPipeline CreatePipeline(VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader = null, VulkanGraphicsShader? pixelShader = null)
         {
             _state.ThrowIfDisposedOrDisposing();
             return new VulkanGraphicsPipeline(this, signature, vertexShader, pixelShader);
         }
 
-        /// <inheritdoc cref="CreateGraphicsPrimitive(GraphicsPipeline, GraphicsBuffer, GraphicsBuffer, ReadOnlySpan{GraphicsResource})" />
-        public VulkanGraphicsPrimitive CreateVulkanGraphicsPrimitive(VulkanGraphicsPipeline graphicsPipeline, VulkanGraphicsBuffer vertexBuffer, VulkanGraphicsBuffer? indexBuffer = null, ReadOnlySpan<GraphicsResource> inputResource = default)
-        {
-            _state.ThrowIfDisposedOrDisposing();
-            return new VulkanGraphicsPrimitive(this, graphicsPipeline, vertexBuffer, indexBuffer, inputResource);
-        }
-
-        /// <inheritdoc cref="CreateGraphicsShader(GraphicsShaderKind, ReadOnlySpan{byte}, string)" />
-        public VulkanGraphicsShader CreateVulkanGraphicsShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
-        {
-            _state.ThrowIfDisposedOrDisposing();
-            return new VulkanGraphicsShader(this, kind, bytecode, entryPointName);
-        }
-
         /// <inheritdoc />
-        public override GraphicsHeap CreateGraphicsHeap(ulong size, GraphicsHeapCpuAccess cpuAccess) => CreateVulkanGraphicsHeap(size, cpuAccess);
-
-        /// <inheritdoc />
-        public override GraphicsPipeline CreateGraphicsPipeline(GraphicsPipelineSignature signature, GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null) => CreateVulkanGraphicsPipeline((VulkanGraphicsPipelineSignature)signature, (VulkanGraphicsShader?)vertexShader, (VulkanGraphicsShader?)pixelShader);
-
-        /// <inheritdoc />
-        public override GraphicsPipelineSignature CreateGraphicsPipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResource> resources = default)
+        public override GraphicsPipelineSignature CreatePipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResource> resources = default)
         {
             _state.ThrowIfDisposedOrDisposing();
             return new VulkanGraphicsPipelineSignature(this, inputs, resources);
         }
 
         /// <inheritdoc />
-        public override GraphicsPrimitive CreateGraphicsPrimitive(GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer, GraphicsBuffer? indexBuffer = null, ReadOnlySpan<GraphicsResource> inputResources = default) => CreateVulkanGraphicsPrimitive((VulkanGraphicsPipeline)graphicsPipeline, (VulkanGraphicsBuffer)vertexBuffer, (VulkanGraphicsBuffer?)indexBuffer, inputResources);
+        public override VulkanGraphicsPrimitive CreatePrimitive(GraphicsPipeline pipeline, in GraphicsBufferView vertexBufferView, in GraphicsBufferView indexBufferView = default, ReadOnlySpan<GraphicsResource> inputResources = default)
+            => CreatePrimitive((VulkanGraphicsPipeline)pipeline, in vertexBufferView, in indexBufferView, inputResources);
+
+        /// <inheritdoc cref="CreatePrimitive(GraphicsPipeline, in GraphicsBufferView, in GraphicsBufferView, ReadOnlySpan{GraphicsResource})" />
+        public VulkanGraphicsPrimitive CreatePrimitive(VulkanGraphicsPipeline pipeline, in GraphicsBufferView vertexBufferView, in GraphicsBufferView indexBufferView, ReadOnlySpan<GraphicsResource> inputResources)
+        {
+            _state.ThrowIfDisposedOrDisposing();
+            return new VulkanGraphicsPrimitive(this, pipeline, in vertexBufferView, in indexBufferView, inputResources);
+        }
 
         /// <inheritdoc />
-        public override GraphicsShader CreateGraphicsShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName) => CreateVulkanGraphicsShader(kind, bytecode, entryPointName);
+        public override VulkanGraphicsShader CreateShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
+        {
+            _state.ThrowIfDisposedOrDisposing();
+            return new VulkanGraphicsShader(this, kind, bytecode, entryPointName);
+        }
 
         /// <inheritdoc />
         public override void PresentFrame()
         {
-            var graphicsContextIndex = GraphicsContextIndex;
+            var contextIndex = ContextIndex;
             var vulkanSwapchain = VulkanSwapchain;
 
             var presentInfo = new VkPresentInfoKHR {
                 sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
                 swapchainCount = 1,
                 pSwapchains = (ulong*)&vulkanSwapchain,
-                pImageIndices = (uint*)&graphicsContextIndex,
+                pImageIndices = (uint*)&contextIndex,
             };
             ThrowExternalExceptionIfNotSuccess(nameof(vkQueuePresentKHR), vkQueuePresentKHR(VulkanCommandQueue, &presentInfo));
 
-            Signal(VulkanCurrentGraphicsContext.VulkanGraphicsFence);
+            Signal(CurrentContext.Fence);
 
-            var presentCompletionGraphicsFence = PresentCompletionGraphicsFence;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkAcquireNextImageKHR), vkAcquireNextImageKHR(VulkanDevice, vulkanSwapchain, timeout: ulong.MaxValue, semaphore: VK_NULL_HANDLE, presentCompletionGraphicsFence.VulkanFence, (uint*)&graphicsContextIndex));
+            var presentCompletionGraphicsFence = PresentCompletionFence;
+            ThrowExternalExceptionIfNotSuccess(nameof(vkAcquireNextImageKHR), vkAcquireNextImageKHR(VulkanDevice, vulkanSwapchain, timeout: ulong.MaxValue, semaphore: VK_NULL_HANDLE, presentCompletionGraphicsFence.VulkanFence, (uint*)&contextIndex));
 
             presentCompletionGraphicsFence.Wait();
             presentCompletionGraphicsFence.Reset();
 
-            _graphicsContextIndex = graphicsContextIndex;
+            _contextIndex = contextIndex;
         }
 
-        /// <inheritdoc cref="Signal(GraphicsFence)" />
-        public void Signal(VulkanGraphicsFence graphicsFence)
-            => ThrowExternalExceptionIfNotSuccess(nameof(vkQueueSubmit), vkQueueSubmit(VulkanCommandQueue, submitCount: 0, pSubmits: null, graphicsFence.VulkanFence));
-
         /// <inheritdoc />
-        public override void Signal(GraphicsFence graphicsFence) => Signal((VulkanGraphicsFence)graphicsFence);
+        public override void Signal(GraphicsFence fence)
+            => Signal((VulkanGraphicsFence)fence);
+
+        /// <inheritdoc cref="Signal(GraphicsFence)" />
+        public void Signal(VulkanGraphicsFence fence)
+            => ThrowExternalExceptionIfNotSuccess(nameof(vkQueueSubmit), vkQueueSubmit(VulkanCommandQueue, submitCount: 0, pSubmits: null, fence.VulkanFence));
 
         /// <inheritdoc />
         public override void WaitForIdle()
@@ -233,19 +221,26 @@ namespace TerraFX.Graphics.Providers.Vulkan
             if (priorState < Disposing)
             {
                 WaitForIdle();
-                DisposeIfNotNull(_graphicsContexts);
+
+                foreach (var context in _contexts)
+                {
+                    context?.Dispose();
+                }
 
                 _vulkanRenderPass.Dispose(DisposeVulkanRenderPass);
                 _vulkanSwapchain.Dispose(DisposeVulkanSwapchain);
                 _vulkanSurface.Dispose(DisposeVulkanSurface);
 
-                DisposeIfNotNull(_presentCompletionGraphicsFence);
+                _presentCompletionFence?.Dispose();
 
                 _vulkanDevice.Dispose(DisposeVulkanDevice);
             }
 
             _state.EndDispose();
         }
+
+        private VulkanGraphicsMemoryAllocator CreateMemoryAllocator()
+            => new VulkanGraphicsMemoryAllocator(this, blockPreferredSize: 0);
 
         private VkDevice CreateVulkanDevice()
         {
@@ -276,7 +271,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 ppEnabledExtensionNames = enabledExtensionNames,
                 pEnabledFeatures = &physicalDeviceFeatures,
             };
-            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateDevice), vkCreateDevice(VulkanGraphicsAdapter.VulkanPhysicalDevice, &deviceCreateInfo, pAllocator: null, (IntPtr*)&vulkanDevice));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateDevice), vkCreateDevice(Adapter.VulkanPhysicalDevice, &deviceCreateInfo, pAllocator: null, (IntPtr*)&vulkanDevice));
 
             return vulkanDevice;
         }
@@ -323,17 +318,17 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             VkSurfaceKHR vulkanSurface;
 
-            var graphicsAdapter = VulkanGraphicsAdapter;
-            var vulkanInstance = graphicsAdapter.VulkanGraphicsProvider.VulkanInstance;
+            var adapter = Adapter;
+            var vulkanInstance = adapter.Provider.VulkanInstance;
 
-            switch (GraphicsSurface.SurfaceKind)
+            switch (Surface.SurfaceKind)
             {
                 case GraphicsSurfaceKind.Win32:
                 {
                     var surfaceCreateInfo = new VkWin32SurfaceCreateInfoKHR {
                         sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
-                        hinstance = GraphicsSurface.SurfaceContextHandle,
-                        hwnd = GraphicsSurface.SurfaceHandle,
+                        hinstance = Surface.SurfaceContextHandle,
+                        hwnd = Surface.SurfaceHandle,
                     };
 
                     ThrowExternalExceptionIfNotSuccess(nameof(vkCreateWin32SurfaceKHR), vkCreateWin32SurfaceKHR(vulkanInstance, &surfaceCreateInfo, pAllocator: null, (ulong*)&vulkanSurface));
@@ -344,8 +339,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 {
                     var surfaceCreateInfo = new VkXlibSurfaceCreateInfoKHR {
                         sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
-                        dpy = GraphicsSurface.SurfaceContextHandle,
-                        window = (nuint)(nint)GraphicsSurface.SurfaceHandle,
+                        dpy = Surface.SurfaceContextHandle,
+                        window = (nuint)(nint)Surface.SurfaceHandle,
                     };
 
                     ThrowExternalExceptionIfNotSuccess(nameof(vkCreateXlibSurfaceKHR), vkCreateXlibSurfaceKHR(vulkanInstance, &surfaceCreateInfo, pAllocator: null, (ulong*)&vulkanSurface));
@@ -354,18 +349,18 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
                 default:
                 {
-                    ThrowArgumentOutOfRangeException(nameof(GraphicsSurface), GraphicsSurface);
+                    ThrowArgumentOutOfRangeException(nameof(Surface), Surface);
                     vulkanSurface = VK_NULL_HANDLE;
                     break;
                 }
             }
 
             uint supported;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfaceSupportKHR), vkGetPhysicalDeviceSurfaceSupportKHR(graphicsAdapter.VulkanPhysicalDevice, VulkanCommandQueueFamilyIndex, vulkanSurface, &supported));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfaceSupportKHR), vkGetPhysicalDeviceSurfaceSupportKHR(adapter.VulkanPhysicalDevice, VulkanCommandQueueFamilyIndex, vulkanSurface, &supported));
 
             if (supported == VK_FALSE)
             {
-                ThrowArgumentOutOfRangeException(nameof(GraphicsSurface), GraphicsSurface);
+                ThrowArgumentOutOfRangeException(nameof(Surface), Surface);
             }
             return vulkanSurface;
         }
@@ -374,7 +369,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             VkSwapchainKHR vulkanSwapchain;
 
-            var vulkanPhysicalDevice = VulkanGraphicsAdapter.VulkanPhysicalDevice;
+            var vulkanPhysicalDevice = Adapter.VulkanPhysicalDevice;
             var vulkanSurface = VulkanSurface;
 
             VkSurfaceCapabilitiesKHR surfaceCapabilities;
@@ -386,21 +381,21 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var presentModes = stackalloc VkPresentModeKHR[(int)presentModeCount];
             ThrowExternalExceptionIfNotSuccess(nameof(vkGetPhysicalDeviceSurfacePresentModesKHR), vkGetPhysicalDeviceSurfacePresentModesKHR(vulkanPhysicalDevice, vulkanSurface, &presentModeCount, presentModes));
 
-            var graphicsSurface = GraphicsSurface;
-            var graphicsContextsCount = unchecked((uint)VulkanGraphicsContexts.Length);
+            var surface = Surface;
+            var contextsCount = unchecked((uint)Contexts.Length);
 
-            if ((graphicsContextsCount < surfaceCapabilities.minImageCount) || ((surfaceCapabilities.maxImageCount != 0) && (graphicsContextsCount > surfaceCapabilities.maxImageCount)))
+            if ((contextsCount < surfaceCapabilities.minImageCount) || ((surfaceCapabilities.maxImageCount != 0) && (contextsCount > surfaceCapabilities.maxImageCount)))
             {
-                ThrowArgumentOutOfRangeException(nameof(graphicsContextsCount), graphicsContextsCount);
+                ThrowArgumentOutOfRangeException(nameof(contextsCount), contextsCount);
             }
 
             var swapChainCreateInfo = new VkSwapchainCreateInfoKHR {
                 sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
                 surface = vulkanSurface,
-                minImageCount = graphicsContextsCount,
+                minImageCount = contextsCount,
                 imageExtent = new VkExtent2D {
-                    width = (uint)graphicsSurface.Width,
-                    height = (uint)graphicsSurface.Height,
+                    width = (uint)surface.Width,
+                    height = (uint)surface.Height,
                 },
                 imageArrayLayers = 1,
                 imageUsage = (uint)(VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT),
@@ -462,7 +457,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             if (vulkanSurface != VK_NULL_HANDLE)
             {
-                vkDestroySurfaceKHR(VulkanGraphicsAdapter.VulkanGraphicsProvider.VulkanInstance, vulkanSurface, pAllocator: null);
+                vkDestroySurfaceKHR(Adapter.Provider.VulkanInstance, vulkanSurface, pAllocator: null);
             }
         }
 
@@ -487,7 +482,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             var vulkanCommandQueueFamilyIndex = uint.MaxValue;
 
-            var vulkanPhysicalDevice = VulkanGraphicsAdapter.VulkanPhysicalDevice;
+            var vulkanPhysicalDevice = Adapter.VulkanPhysicalDevice;
 
             uint queueFamilyPropertyCount;
             vkGetPhysicalDeviceQueueFamilyProperties(vulkanPhysicalDevice, &queueFamilyPropertyCount, pQueueFamilyProperties: null);
@@ -526,11 +521,11 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 ThrowExternalExceptionIfNotSuccess(nameof(vkGetSwapchainImagesKHR), vkGetSwapchainImagesKHR(vulkanDevice, vulkanSwapchain, &swapchainImageCount, (ulong*)pVulkanSwapchainImages));
             }
 
-            var presentCompletionGraphicsFence = PresentCompletionGraphicsFence;
+            var presentCompletionGraphicsFence = PresentCompletionFence;
 
-            int graphicsContextIndex;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkAcquireNextImageKHR), vkAcquireNextImageKHR(VulkanDevice, vulkanSwapchain, timeout: ulong.MaxValue, semaphore: VK_NULL_HANDLE, presentCompletionGraphicsFence.VulkanFence, (uint*)&graphicsContextIndex));
-            _graphicsContextIndex = graphicsContextIndex;
+            int contextIndex;
+            ThrowExternalExceptionIfNotSuccess(nameof(vkAcquireNextImageKHR), vkAcquireNextImageKHR(VulkanDevice, vulkanSwapchain, timeout: ulong.MaxValue, semaphore: VK_NULL_HANDLE, presentCompletionGraphicsFence.VulkanFence, (uint*)&contextIndex));
+            _contextIndex = contextIndex;
 
             presentCompletionGraphicsFence.Wait();
             presentCompletionGraphicsFence.Reset();
@@ -553,9 +548,9 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 _vulkanSwapchain.Reset(CreateVulkanSwapchain);
             }
 
-            foreach (var graphicsContext in VulkanGraphicsContexts)
+            foreach (var context in Contexts)
             {
-                graphicsContext.OnGraphicsSurfaceSizeChanged(sender, eventArgs);
+                ((VulkanGraphicsContext)context).OnGraphicsSurfaceSizeChanged(sender, eventArgs);
             }
         }
     }

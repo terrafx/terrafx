@@ -15,8 +15,8 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private State _state;
 
-        internal D3D12GraphicsShader(D3D12GraphicsDevice graphicsDevice, GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
-            : base(graphicsDevice, kind, entryPointName)
+        internal D3D12GraphicsShader(D3D12GraphicsDevice device, GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
+            : base(device, kind, entryPointName)
         {
             var bytecodeLength = (nuint)bytecode.Length;
 
@@ -30,19 +30,16 @@ namespace TerraFX.Graphics.Providers.D3D12
         }
 
         /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsShader" /> class.</summary>
-        ~D3D12GraphicsShader()
-        {
-            Dispose(isDisposing: false);
-        }
+        ~D3D12GraphicsShader() => Dispose(isDisposing: false);
 
         /// <inheritdoc />
         public override ReadOnlySpan<byte> Bytecode => new ReadOnlySpan<byte>(_d3d12ShaderBytecode.pShaderBytecode, (int)_d3d12ShaderBytecode.BytecodeLength);
 
-        /// <inheritdoc cref="GraphicsShader.GraphicsDevice" />
-        public D3D12GraphicsDevice D3D12GraphicsDevice => (D3D12GraphicsDevice)GraphicsDevice;
-
         /// <summary>Gets the underlying <see cref="D3D12_SHADER_BYTECODE" /> for the shader.</summary>
         public ref readonly D3D12_SHADER_BYTECODE D3D12ShaderBytecode => ref _d3d12ShaderBytecode;
+
+        /// <inheritdoc cref="GraphicsShader.Device" />
+        public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
 
         /// <inheritdoc />
         protected override void Dispose(bool isDisposing)
@@ -61,7 +58,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         {
             var shaderBytecode = _d3d12ShaderBytecode.pShaderBytecode;
 
-            if (shaderBytecode != null)
+            if (shaderBytecode is not null)
             {
                 Free(shaderBytecode);
             }

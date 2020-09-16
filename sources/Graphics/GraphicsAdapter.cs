@@ -8,39 +8,39 @@ namespace TerraFX.Graphics
     /// <summary>A graphics adapter which can be used for computational or graphical operations.</summary>
     public abstract class GraphicsAdapter : IDisposable
     {
-        private readonly GraphicsProvider _graphicsProvider;
+        private readonly GraphicsProvider _provider;
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsAdapter" /> class.</summary>
-        /// <param name="graphicsProvider">The graphics provider which enumerated the adapter.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="graphicsProvider" /> is <c>null</c>.</exception>
-        protected GraphicsAdapter(GraphicsProvider graphicsProvider)
+        /// <param name="provider">The provider which enumerated the adapter.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="provider" /> is <c>null</c>.</exception>
+        protected GraphicsAdapter(GraphicsProvider provider)
         {
-            ThrowIfNull(graphicsProvider, nameof(graphicsProvider));
-            _graphicsProvider = graphicsProvider;
+            ThrowIfNull(provider, nameof(provider));
+            _provider = provider;
         }
 
         /// <summary>Gets the PCI Device ID (DID) for the adapter.</summary>
         /// <exception cref="ObjectDisposedException">The adapter has been disposed and the value was not otherwise cached.</exception>
         public abstract uint DeviceId { get; }
 
-        /// <summary>Gets the graphics provider which enumerated the adapter.</summary>
-        public GraphicsProvider GraphicsProvider => _graphicsProvider;
-
         /// <summary>Gets the name of the adapter.</summary>
         /// <exception cref="ObjectDisposedException">The adapter has been disposed and the value was not otherwise cached.</exception>
         public abstract string Name { get; }
+
+        /// <summary>Gets the provider which enumerated the adapter.</summary>
+        public GraphicsProvider Provider => _provider;
 
         /// <summary>Gets the PCI Vendor ID (VID) for the adapter.</summary>
         /// <exception cref="ObjectDisposedException">The adapter has been disposed and the value was not otherwise cached.</exception>
         public abstract uint VendorId { get; }
 
-        /// <summary>Creates a new graphics device which utilizes the adapter to render to a graphics surface.</summary>
-        /// <param name="graphicsSurface">The graphics surface to which the context can render.</param>
-        /// <param name="graphicsContextCount">The number of graphics contexts the device should maintain.</param>
-        /// <returns>A new graphics device which utilizes the the adapter to render to <paramref name="graphicsSurface" />.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="graphicsSurface" /> is <c>null</c>.</exception>
+        /// <summary>Creates a new graphics device which utilizes the adapter to render to a surface.</summary>
+        /// <param name="surface">The surface to which the context can render.</param>
+        /// <param name="contextCount">The number of contexts the device should maintain.</param>
+        /// <returns>A new graphics device which utilizes the the adapter to render to <paramref name="surface" />.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="surface" /> is <c>null</c>.</exception>
         /// <exception cref="ObjectDisposedException">The adapter has been disposed.</exception>
-        public abstract GraphicsDevice CreateGraphicsDevice(IGraphicsSurface graphicsSurface, int graphicsContextCount);
+        public abstract GraphicsDevice CreateDevice(IGraphicsSurface surface, int contextCount);
 
         /// <inheritdoc />
         public void Dispose()

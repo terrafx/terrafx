@@ -2,7 +2,6 @@
 
 using System;
 using TerraFX.Utilities;
-using static TerraFX.Utilities.DisposeUtilities;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.Vulkan
@@ -12,29 +11,20 @@ namespace TerraFX.Graphics.Providers.Vulkan
     {
         private State _state;
 
-        internal VulkanGraphicsPrimitive(VulkanGraphicsDevice graphicsDevice, VulkanGraphicsPipeline graphicsPipeline, VulkanGraphicsBuffer vertexBuffer, VulkanGraphicsBuffer? indexBuffer, ReadOnlySpan<GraphicsResource> inputResources = default)
-            : base(graphicsDevice, graphicsPipeline, vertexBuffer, indexBuffer, inputResources)
+        internal VulkanGraphicsPrimitive(VulkanGraphicsDevice device, VulkanGraphicsPipeline pipeline, in GraphicsBufferView vertexBufferView, in GraphicsBufferView indexBufferView, ReadOnlySpan<GraphicsResource> inputResources = default)
+            : base(device, pipeline, in vertexBufferView, in indexBufferView, inputResources)
         {
             _ = _state.Transition(to: Initialized);
         }
 
         /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsPrimitive" /> class.</summary>
-        ~VulkanGraphicsPrimitive()
-        {
-            Dispose(isDisposing: true);
-        }
+        ~VulkanGraphicsPrimitive() => Dispose(isDisposing: true);
 
-        /// <inheritdoc cref="GraphicsPrimitive.GraphicsDevice" />
-        public VulkanGraphicsDevice VulkanGraphicsDevice => (VulkanGraphicsDevice)GraphicsDevice;
+        /// <inheritdoc cref="GraphicsPrimitive.Device" />
+        public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
 
-        /// <inheritdoc cref="GraphicsPrimitive.GraphicsPipeline" />
-        public VulkanGraphicsPipeline VulkanGraphicsPipeline => (VulkanGraphicsPipeline)GraphicsPipeline;
-
-        /// <inheritdoc cref="GraphicsPrimitive.IndexBuffer" />
-        public VulkanGraphicsBuffer? VulkanIndexBuffer => (VulkanGraphicsBuffer?)IndexBuffer;
-
-        /// <inheritdoc cref="GraphicsPrimitive.VertexBuffer" />
-        public VulkanGraphicsBuffer VulkanVertexBuffer => (VulkanGraphicsBuffer)VertexBuffer;
+        /// <inheritdoc cref="GraphicsPrimitive.Pipeline" />
+        public new VulkanGraphicsPipeline Pipeline => (VulkanGraphicsPipeline)base.Pipeline;
 
         /// <inheritdoc />
         protected override void Dispose(bool isDisposing)
@@ -43,14 +33,12 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             if (priorState < Disposing)
             {
-                DisposeIfNotNull(GraphicsPipeline);
-                DisposeIfNotNull(VertexBuffer);
-                DisposeIfNotNull(IndexBuffer);
-            }
+                Pipeline?.Dispose();
 
-            foreach (var inputResource in InputResources)
-            {
-                DisposeIfNotNull(inputResource);
+                foreach (var inputResource in InputResources)
+                {
+                    inputResource?.Dispose();
+                }
             }
 
             _state.EndDispose();

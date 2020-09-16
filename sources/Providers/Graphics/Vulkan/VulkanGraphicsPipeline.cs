@@ -15,7 +15,6 @@ using static TerraFX.Interop.VkShaderStageFlagBits;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.VkVertexInputRate;
 using static TerraFX.Interop.Vulkan;
-using static TerraFX.Utilities.DisposeUtilities;
 using static TerraFX.Utilities.InteropUtilities;
 using static TerraFX.Utilities.State;
 using TerraFX.Numerics;
@@ -29,34 +28,31 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private State _state;
 
-        internal VulkanGraphicsPipeline(VulkanGraphicsDevice graphicsDevice, VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader, VulkanGraphicsShader? pixelShader)
-            : base(graphicsDevice, signature, vertexShader, pixelShader)
+        internal VulkanGraphicsPipeline(VulkanGraphicsDevice device, VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader, VulkanGraphicsShader? pixelShader)
+            : base(device, signature, vertexShader, pixelShader)
         {
-            _vulkanPipeline = new ValueLazy<VkPipeline>(CreateVulkanGraphicsPipeline);
+            _vulkanPipeline = new ValueLazy<VkPipeline>(CreateVulkanPipeline);
 
             _ = _state.Transition(to: Initialized);
         }
 
         /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsPipeline" /> class.</summary>
-        ~VulkanGraphicsPipeline()
-        {
-            Dispose(isDisposing: true);
-        }
+        ~VulkanGraphicsPipeline() => Dispose(isDisposing: true);
 
-        /// <inheritdoc cref="GraphicsPipeline.GraphicsDevice" />
-        public VulkanGraphicsDevice VulkanGraphicsDevice => (VulkanGraphicsDevice)GraphicsDevice;
+        /// <inheritdoc cref="GraphicsPipeline.Device" />
+        public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
+
+        /// <inheritdoc cref="GraphicsPipeline.PixelShader" />
+        public new VulkanGraphicsShader? PixelShader => (VulkanGraphicsShader?)base.PixelShader;
+
+        /// <inheritdoc cref="GraphicsPipeline.Signature" />
+        public new VulkanGraphicsPipelineSignature Signature => (VulkanGraphicsPipelineSignature)base.Signature;
+
+        /// <inheritdoc cref="GraphicsPipeline.VertexShader" />
+        public new VulkanGraphicsShader? VertexShader => (VulkanGraphicsShader?)base.VertexShader;
 
         /// <summary>Gets the underlying <see cref="VkPipeline" /> for the pipeline.</summary>
         public VkPipeline VulkanPipeline => _vulkanPipeline.Value;
-
-        /// <inheritdoc cref="GraphicsPipeline.PixelShader" />
-        public VulkanGraphicsShader? VulkanPixelShader => (VulkanGraphicsShader?)PixelShader;
-
-        /// <inheritdoc cref="GraphicsPipeline.Signature" />
-        public VulkanGraphicsPipelineSignature VulkanSignature => (VulkanGraphicsPipelineSignature)Signature;
-
-        /// <inheritdoc cref="GraphicsPipeline.VertexShader" />
-        public VulkanGraphicsShader? VulkanVertexShader => (VulkanGraphicsShader?)VertexShader;
 
         /// <inheritdoc />
         protected override void Dispose(bool isDisposing)
@@ -67,15 +63,15 @@ namespace TerraFX.Graphics.Providers.Vulkan
             {
                 _vulkanPipeline.Dispose(DisposeVulkanPipeline);
 
-                DisposeIfNotNull(Signature);
-                DisposeIfNotNull(PixelShader);
-                DisposeIfNotNull(VertexShader);
+                Signature?.Dispose();
+                PixelShader?.Dispose();
+                VertexShader?.Dispose();
             }
 
             _state.EndDispose();
         }
 
-        private VkPipeline CreateVulkanGraphicsPipeline()
+        private VkPipeline CreateVulkanPipeline()
         {
             var pipelineShaderStageCreateInfos = stackalloc VkPipelineShaderStageCreateInfo[2];
             uint pipelineShaderStageCreateInfosCount = 0;
@@ -84,8 +80,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
             {
                 VkPipeline vulkanPipeline;
 
-                var graphicsDevice = VulkanGraphicsDevice;
-                var graphicsSurface = graphicsDevice.GraphicsSurface;
+                var device = Device;
+                var surface = device.Surface;
 
                 var vertexInputBindingDescription = new VkVertexInputBindingDescription {
                     inputRate = VK_VERTEX_INPUT_RATE_VERTEX,
@@ -154,7 +150,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     pDynamicStates = dynamicStates,
                 };
 
-                var graphicsPipelineCreateInfo = new VkGraphicsPipelineCreateInfo {
+                var pipelineCreateInfo = new VkGraphicsPipelineCreateInfo {
                     sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
                     pViewportState = &pipelineViewportStateCreateInfo,
                     pRasterizationState = &pipelineRasterizationStateCreateInfo,
@@ -162,11 +158,11 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     pDepthStencilState = &pipelineDepthStencilStateCreateInfo,
                     pColorBlendState = &pipelineColorBlendStateCreateInfo,
                     pDynamicState = &pipelineDynamicStateCreateInfo,
-                    layout = VulkanSignature.VulkanPipelineLayout,
-                    renderPass = graphicsDevice.VulkanRenderPass,
+                    layout = Signature.VulkanPipelineLayout,
+                    renderPass = device.VulkanRenderPass,
                 };
 
-                var vertexShader = VulkanVertexShader;
+                var vertexShader = VertexShader;
 
                 if (vertexShader != null)
                 {
@@ -186,7 +182,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     entryPointName.CopyTo(destination);
                     destination[entryPointName.Length] = 0x00;
 
-                    var inputs = VulkanSignature.Inputs;
+                    var inputs = Signature.Inputs;
                     var inputsLength = inputs.Length;
 
                     var inputElementsCount = GetInputElementsCount(inputs);
@@ -224,11 +220,11 @@ namespace TerraFX.Graphics.Providers.Vulkan
                         }
                     }
 
-                    graphicsPipelineCreateInfo.pVertexInputState = &pipelineVertexInputStateCreateInfo;
-                    graphicsPipelineCreateInfo.pInputAssemblyState = &pipelineInputAssemblyStateCreateInfo;
+                    pipelineCreateInfo.pVertexInputState = &pipelineVertexInputStateCreateInfo;
+                    pipelineCreateInfo.pInputAssemblyState = &pipelineInputAssemblyStateCreateInfo;
                 }
 
-                var pixelShader = VulkanPixelShader;
+                var pixelShader = PixelShader;
 
                 if (pixelShader != null)
                 {
@@ -251,8 +247,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
                 if (pipelineShaderStageCreateInfosCount != 0)
                 {
-                    graphicsPipelineCreateInfo.stageCount = pipelineShaderStageCreateInfosCount;
-                    graphicsPipelineCreateInfo.pStages = pipelineShaderStageCreateInfos;
+                    pipelineCreateInfo.stageCount = pipelineShaderStageCreateInfosCount;
+                    pipelineCreateInfo.pStages = pipelineShaderStageCreateInfos;
                 }
 
                 fixed (VkVertexInputAttributeDescription* pVertexInputAttributeDescriptions = vertexInputAttributeDescriptions)
@@ -260,7 +256,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     pipelineVertexInputStateCreateInfo.vertexAttributeDescriptionCount = unchecked((uint)vertexInputAttributeDescriptions.Length);
                     pipelineVertexInputStateCreateInfo.pVertexAttributeDescriptions = pVertexInputAttributeDescriptions;
 
-                    ThrowExternalExceptionIfNotSuccess(nameof(vkCreateGraphicsPipelines), vkCreateGraphicsPipelines(graphicsDevice.VulkanDevice, pipelineCache: VK_NULL_HANDLE, 1, &graphicsPipelineCreateInfo, pAllocator: null, (ulong*)&vulkanPipeline));
+                    ThrowExternalExceptionIfNotSuccess(nameof(vkCreateGraphicsPipelines), vkCreateGraphicsPipelines(device.VulkanDevice, pipelineCache: VK_NULL_HANDLE, 1, &pipelineCreateInfo, pAllocator: null, (ulong*)&vulkanPipeline));
                 }
 
                 return vulkanPipeline;
@@ -295,7 +291,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             if (vulkanPipeline != VK_NULL_HANDLE)
             {
-                vkDestroyPipeline(VulkanGraphicsDevice.VulkanDevice, vulkanPipeline, pAllocator: null);
+                vkDestroyPipeline(Device.VulkanDevice, vulkanPipeline, pAllocator: null);
             }
         }
 

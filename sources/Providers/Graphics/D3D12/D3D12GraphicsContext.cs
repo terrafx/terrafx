@@ -13,7 +13,6 @@ using static TerraFX.Interop.D3D12_RTV_DIMENSION;
 using static TerraFX.Interop.DXGI_FORMAT;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Utilities.AssertionUtilities;
-using static TerraFX.Utilities.DisposeUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
@@ -22,8 +21,8 @@ namespace TerraFX.Graphics.Providers.D3D12
     /// <inheritdoc />
     public sealed unsafe class D3D12GraphicsContext : GraphicsContext
     {
-        private readonly D3D12GraphicsFence _graphicsFence;
-        private readonly D3D12GraphicsFence _waitForExecuteCompletionGraphicsFence;
+        private readonly D3D12GraphicsFence _fence;
+        private readonly D3D12GraphicsFence _waitForExecuteCompletionFence;
 
         private ValueLazy<Pointer<ID3D12CommandAllocator>> _d3d12CommandAllocator;
         private ValueLazy<Pointer<ID3D12GraphicsCommandList>> _d3d12GraphicsCommandList;
@@ -32,11 +31,11 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private State _state;
 
-        internal D3D12GraphicsContext(D3D12GraphicsDevice graphicsDevice, int index)
-            : base(graphicsDevice, index)
+        internal D3D12GraphicsContext(D3D12GraphicsDevice device, int index)
+            : base(device, index)
         {
-            _graphicsFence = new D3D12GraphicsFence(graphicsDevice);
-            _waitForExecuteCompletionGraphicsFence = new D3D12GraphicsFence(graphicsDevice);
+            _fence = new D3D12GraphicsFence(device);
+            _waitForExecuteCompletionFence = new D3D12GraphicsFence(device);
 
             _d3d12CommandAllocator = new ValueLazy<Pointer<ID3D12CommandAllocator>>(CreateD3D12CommandAllocator);
             _d3d12GraphicsCommandList = new ValueLazy<Pointer<ID3D12GraphicsCommandList>>(CreateD3D12GraphicsCommandList);
@@ -47,10 +46,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         }
 
         /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsContext" /> class.</summary>
-        ~D3D12GraphicsContext()
-        {
-            Dispose(isDisposing: false);
-        }
+        ~D3D12GraphicsContext() => Dispose(isDisposing: false);
 
         /// <summary>Gets the <see cref="ID3D12CommandAllocator" /> used by the context.</summary>
         /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
@@ -60,12 +56,6 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
         public ID3D12GraphicsCommandList* D3D12GraphicsCommandList => _d3d12GraphicsCommandList.Value;
 
-        /// <inheritdoc cref="GraphicsContext.GraphicsDevice" />
-        public D3D12GraphicsDevice D3D12GraphicsDevice => (D3D12GraphicsDevice)GraphicsDevice;
-
-        /// <inheritdoc cref="D3D12GraphicsContext.GraphicsFence" />
-        public D3D12GraphicsFence D3D12GraphicsFence => _graphicsFence;
-
         /// <summary>Gets the <see cref="ID3D12Resource" /> for the render target used by the context.</summary>
         /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
         public ID3D12Resource* D3D12RenderTargetResource => _d3d12RenderTargetResource.Value;
@@ -74,64 +64,75 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
         public D3D12_CPU_DESCRIPTOR_HANDLE D3D12RenderTargetView => _d3d12RenderTargetView.Value;
 
-        /// <inheritdoc />
-        public override GraphicsFence GraphicsFence => D3D12GraphicsFence;
+        /// <inheritdoc cref="GraphicsContext.Device" />
+        public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
 
-        /// <summary>Gets a graphics fence that is used to wait for the context to finish execution.</summary>
-        public D3D12GraphicsFence WaitForExecuteCompletionGraphicsFence => _waitForExecuteCompletionGraphicsFence;
+        /// <inheritdoc />
+        public override D3D12GraphicsFence Fence => _fence;
+
+        /// <summary>Gets a fence that is used to wait for the context to finish execution.</summary>
+        public D3D12GraphicsFence WaitForExecuteCompletionFence => _waitForExecuteCompletionFence;
 
         /// <inheritdoc />
         public override void BeginDrawing(ColorRgba backgroundColor)
         {
-            var graphicsCommandList = D3D12GraphicsCommandList;
+            var commandList = D3D12GraphicsCommandList;
 
             var renderTargetResourceBarrier = D3D12_RESOURCE_BARRIER.InitTransition(D3D12RenderTargetResource, D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
-            graphicsCommandList->ResourceBarrier(1, &renderTargetResourceBarrier);
+            commandList->ResourceBarrier(1, &renderTargetResourceBarrier);
 
             var renderTargetView = D3D12RenderTargetView;
-            graphicsCommandList->OMSetRenderTargets(1, &renderTargetView, RTsSingleHandleToDescriptorRange: TRUE, pDepthStencilDescriptor: null);
+            commandList->OMSetRenderTargets(1, &renderTargetView, RTsSingleHandleToDescriptorRange: TRUE, pDepthStencilDescriptor: null);
 
-            var graphicsSurface = D3D12GraphicsDevice.GraphicsSurface;
+            var surface = Device.Surface;
 
-            var graphicsSurfaceWidth = graphicsSurface.Width;
-            var graphicsSurfaceHeight = graphicsSurface.Height;
+            var surfaceWidth = surface.Width;
+            var surfaceHeight = surface.Height;
 
             var viewport = new D3D12_VIEWPORT {
-                Width = graphicsSurfaceWidth,
-                Height = graphicsSurfaceHeight,
+                Width = surfaceWidth,
+                Height = surfaceHeight,
                 MinDepth = D3D12_MIN_DEPTH,
                 MaxDepth = D3D12_MAX_DEPTH,
             };
-            graphicsCommandList->RSSetViewports(1, &viewport);
+            commandList->RSSetViewports(1, &viewport);
 
             var scissorRect = new RECT {
-                right = (int)graphicsSurfaceWidth,
-                bottom = (int)graphicsSurfaceHeight,
+                right = (int)surfaceWidth,
+                bottom = (int)surfaceHeight,
             };
-            graphicsCommandList->RSSetScissorRects(1, &scissorRect);
+            commandList->RSSetScissorRects(1, &scissorRect);
 
-            graphicsCommandList->ClearRenderTargetView(renderTargetView, (float*)&backgroundColor, NumRects: 0, pRects: null);
-            graphicsCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+            commandList->ClearRenderTargetView(renderTargetView, (float*)&backgroundColor, NumRects: 0, pRects: null);
+            commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
             var descriptorHeaps = stackalloc ID3D12DescriptorHeap*[1] {
-                D3D12GraphicsDevice.D3D12ShaderResourceDescriptorHeap,
+                Device.D3D12ShaderResourceDescriptorHeap,
             };
-            graphicsCommandList->SetDescriptorHeaps(1, descriptorHeaps);
+            commandList->SetDescriptorHeaps(1, descriptorHeaps);
         }
 
         /// <inheritdoc />
         public override void BeginFrame()
         {
-            var graphicsFence = D3D12GraphicsFence;
+            var fence = Fence;
 
-            graphicsFence.Wait();
-            graphicsFence.Reset();
+            fence.Wait();
+            fence.Reset();
 
-            var commandAllocator = D3D12CommandAllocator;
+            var d3d12CommandAllocator = D3D12CommandAllocator;
 
-            ThrowExternalExceptionIfFailed(nameof(ID3D12CommandAllocator.Reset), commandAllocator->Reset());
-            ThrowExternalExceptionIfFailed(nameof(ID3D12GraphicsCommandList.Reset), D3D12GraphicsCommandList->Reset(commandAllocator, pInitialState: null));
+            ThrowExternalExceptionIfFailed(nameof(ID3D12CommandAllocator.Reset), d3d12CommandAllocator->Reset());
+            ThrowExternalExceptionIfFailed(nameof(ID3D12GraphicsCommandList.Reset), D3D12GraphicsCommandList->Reset(d3d12CommandAllocator, pInitialState: null));
         }
+
+        /// <inheritdoc />
+        public override void Copy(GraphicsBuffer destination, GraphicsBuffer source)
+        => Copy((D3D12GraphicsBuffer)destination, (D3D12GraphicsBuffer)source);
+
+        /// <inheritdoc />
+        public override void Copy(GraphicsTexture destination, GraphicsBuffer source)
+            => Copy((D3D12GraphicsTexture)destination, (D3D12GraphicsBuffer)source);
 
         /// <inheritdoc cref="Copy(GraphicsBuffer, GraphicsBuffer)" />
         public void Copy(D3D12GraphicsBuffer destination, D3D12GraphicsBuffer source)
@@ -139,10 +140,10 @@ namespace TerraFX.Graphics.Providers.D3D12
             ThrowIfNull(destination, nameof(destination));
             ThrowIfNull(source, nameof(source));
 
-            var graphicsCommandList = D3D12GraphicsCommandList;
+            var commandList = D3D12GraphicsCommandList;
 
-            var destinationCpuAccess = destination.GraphicsHeap.CpuAccess;
-            var sourceCpuAccess = source.GraphicsHeap.CpuAccess;
+            var destinationCpuAccess = destination.CpuAccess;
+            var sourceCpuAccess = source.CpuAccess;
 
             var d3d12DestinationResource = destination.D3D12Resource;
             var d3d12SourceResource = source.D3D12Resource;
@@ -152,7 +153,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             BeginCopy();
 
-            graphicsCommandList->CopyResource(d3d12DestinationResource, d3d12SourceResource);
+            commandList->CopyResource(d3d12DestinationResource, d3d12SourceResource);
 
             EndCopy();
 
@@ -161,7 +162,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                 var resourceBarriers = stackalloc D3D12_RESOURCE_BARRIER[2];
                 var numResourceBarriers = 0u;
 
-                if (destinationCpuAccess == GraphicsHeapCpuAccess.None)
+                if (destinationCpuAccess == GraphicsResourceCpuAccess.None)
                 {
                     resourceBarriers[numResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
                         d3d12DestinationResource,
@@ -171,7 +172,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                     numResourceBarriers++;
                 }
 
-                if (sourceCpuAccess == GraphicsHeapCpuAccess.None)
+                if (sourceCpuAccess == GraphicsResourceCpuAccess.None)
                 {
                     resourceBarriers[numResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
                         d3d12SourceResource,
@@ -183,7 +184,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
                 if (numResourceBarriers != 0)
                 {
-                    graphicsCommandList->ResourceBarrier(numResourceBarriers, resourceBarriers);
+                    commandList->ResourceBarrier(numResourceBarriers, resourceBarriers);
                 }
             }
 
@@ -192,7 +193,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                 var resourceBarriers = stackalloc D3D12_RESOURCE_BARRIER[2];
                 var numResourceBarriers = 0u;
 
-                if (sourceCpuAccess == GraphicsHeapCpuAccess.None)
+                if (sourceCpuAccess == GraphicsResourceCpuAccess.None)
                 {
                     resourceBarriers[numResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
                         d3d12SourceResource,
@@ -202,7 +203,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                     numResourceBarriers++;
                 }
 
-                if (destinationCpuAccess == GraphicsHeapCpuAccess.None)
+                if (destinationCpuAccess == GraphicsResourceCpuAccess.None)
                 {
                     resourceBarriers[numResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
                         d3d12DestinationResource,
@@ -214,7 +215,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
                 if (numResourceBarriers != 0)
                 {
-                    graphicsCommandList->ResourceBarrier(numResourceBarriers, resourceBarriers);
+                    commandList->ResourceBarrier(numResourceBarriers, resourceBarriers);
                 }
             }
         }
@@ -225,11 +226,11 @@ namespace TerraFX.Graphics.Providers.D3D12
             ThrowIfNull(destination, nameof(destination));
             ThrowIfNull(source, nameof(source));
 
-            var graphicsDevice = D3D12GraphicsDevice.D3D12Device;
-            var graphicsCommandList = D3D12GraphicsCommandList;
+            var device = Device.D3D12Device;
+            var commandList = D3D12GraphicsCommandList;
 
-            var destinationCpuAccess = destination.GraphicsHeap.CpuAccess;
-            var sourceCpuAccess = source.GraphicsHeap.CpuAccess;
+            var destinationCpuAccess = destination.CpuAccess;
+            var sourceCpuAccess = source.CpuAccess;
 
             var d3d12DestinationResource = destination.D3D12Resource;
             var d3d12SourceResource = source.D3D12Resource;
@@ -242,12 +243,12 @@ namespace TerraFX.Graphics.Providers.D3D12
             D3D12_PLACED_SUBRESOURCE_FOOTPRINT sourceFootprint;
 
             var destinationDesc = d3d12DestinationResource->GetDesc();
-            graphicsDevice->GetCopyableFootprints(&destinationDesc, FirstSubresource: 0, NumSubresources: 1, BaseOffset: 0, &sourceFootprint, pNumRows: null, pRowSizeInBytes: null, pTotalBytes: null);
+            device->GetCopyableFootprints(&destinationDesc, FirstSubresource: 0, NumSubresources: 1, BaseOffset: 0, &sourceFootprint, pNumRows: null, pRowSizeInBytes: null, pTotalBytes: null);
 
             var d3d12DestinationTextureCopyLocation = new D3D12_TEXTURE_COPY_LOCATION(d3d12DestinationResource, Sub: 0);
             var d3d12SourceTextureCopyLocation = new D3D12_TEXTURE_COPY_LOCATION(d3d12SourceResource, in sourceFootprint);
 
-            graphicsCommandList->CopyTextureRegion(&d3d12DestinationTextureCopyLocation, DstX: 0, DstY: 0, DstZ: 0, &d3d12SourceTextureCopyLocation, pSrcBox: null);
+            commandList->CopyTextureRegion(&d3d12DestinationTextureCopyLocation, DstX: 0, DstY: 0, DstZ: 0, &d3d12SourceTextureCopyLocation, pSrcBox: null);
 
             EndCopy();
 
@@ -256,7 +257,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                 var resourceBarriers = stackalloc D3D12_RESOURCE_BARRIER[2];
                 var numResourceBarriers = 0u;
 
-                if (destinationCpuAccess == GraphicsHeapCpuAccess.None)
+                if (destinationCpuAccess == GraphicsResourceCpuAccess.None)
                 {
                     resourceBarriers[numResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
                         d3d12DestinationResource,
@@ -266,7 +267,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                     numResourceBarriers++;
                 }
 
-                if (sourceCpuAccess == GraphicsHeapCpuAccess.None)
+                if (sourceCpuAccess == GraphicsResourceCpuAccess.None)
                 {
                     resourceBarriers[numResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
                         d3d12SourceResource,
@@ -278,7 +279,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
                 if (numResourceBarriers != 0)
                 {
-                    graphicsCommandList->ResourceBarrier(numResourceBarriers, resourceBarriers);
+                    commandList->ResourceBarrier(numResourceBarriers, resourceBarriers);
                 }
             }
 
@@ -287,7 +288,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                 var resourceBarriers = stackalloc D3D12_RESOURCE_BARRIER[2];
                 var numResourceBarriers = 0u;
 
-                if (sourceCpuAccess == GraphicsHeapCpuAccess.None)
+                if (sourceCpuAccess == GraphicsResourceCpuAccess.None)
                 {
                     resourceBarriers[numResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
                         d3d12SourceResource,
@@ -297,7 +298,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                     numResourceBarriers++;
                 }
 
-                if (destinationCpuAccess == GraphicsHeapCpuAccess.None)
+                if (destinationCpuAccess == GraphicsResourceCpuAccess.None)
                 {
                     resourceBarriers[numResourceBarriers] = D3D12_RESOURCE_BARRIER.InitTransition(
                         d3d12DestinationResource,
@@ -309,37 +310,35 @@ namespace TerraFX.Graphics.Providers.D3D12
 
                 if (numResourceBarriers != 0)
                 {
-                    graphicsCommandList->ResourceBarrier(numResourceBarriers, resourceBarriers);
+                    commandList->ResourceBarrier(numResourceBarriers, resourceBarriers);
                 }
             }
         }
 
         /// <inheritdoc />
-        public override void Copy(GraphicsBuffer destination, GraphicsBuffer source) => Copy((D3D12GraphicsBuffer)destination, (D3D12GraphicsBuffer)source);
-
-        /// <inheritdoc />
-        public override void Copy(GraphicsTexture destination, GraphicsBuffer source) => Copy((D3D12GraphicsTexture)destination, (D3D12GraphicsBuffer)source);
+        public override void Draw(GraphicsPrimitive primitive)
+            => Draw((D3D12GraphicsPrimitive)primitive);
 
         /// <inheritdoc cref="Draw(GraphicsPrimitive)" />
-        public void Draw(D3D12GraphicsPrimitive graphicsPrimitive)
+        public void Draw(D3D12GraphicsPrimitive primitive)
         {
-            ThrowIfNull(graphicsPrimitive, nameof(graphicsPrimitive));
+            ThrowIfNull(primitive, nameof(primitive));
 
-            var graphicsCommandList = D3D12GraphicsCommandList;
-            var graphicsPipeline = graphicsPrimitive.D3D12GraphicsPipeline;
-            var vertexBuffer = graphicsPrimitive.D3D12VertexBuffer;
+            var commandList = D3D12GraphicsCommandList;
+            var pipeline = primitive.Pipeline;
+            ref readonly var vertexBufferView = ref primitive.VertexBufferView;
 
-            graphicsCommandList->SetGraphicsRootSignature(graphicsPipeline.D3D12Signature.D3D12RootSignature);
-            graphicsCommandList->SetPipelineState(graphicsPipeline.D3D12PipelineState);
+            commandList->SetGraphicsRootSignature(pipeline.Signature.D3D12RootSignature);
+            commandList->SetPipelineState(pipeline.D3D12PipelineState);
 
-            var vertexBufferView = new D3D12_VERTEX_BUFFER_VIEW {
-                BufferLocation = vertexBuffer.D3D12Resource->GetGPUVirtualAddress(),
-                StrideInBytes = (uint)vertexBuffer.Stride,
-                SizeInBytes = (uint)vertexBuffer.Size,
+            var d3d12VertexBufferView = new D3D12_VERTEX_BUFFER_VIEW {
+                BufferLocation = ((D3D12GraphicsBuffer)vertexBufferView.Buffer).D3D12Resource->GetGPUVirtualAddress(),
+                StrideInBytes = vertexBufferView.Stride,
+                SizeInBytes = (uint)vertexBufferView.Size,
             };
-            graphicsCommandList->IASetVertexBuffers(StartSlot: 0, NumViews: 1, &vertexBufferView);
+            commandList->IASetVertexBuffers(StartSlot: 0, NumViews: 1, &d3d12VertexBufferView);
 
-            var inputResources = graphicsPrimitive.InputResources;
+            var inputResources = primitive.InputResources;
             var inputResourcesLength = inputResources.Length;
 
             for (var index = 0; index < inputResourcesLength; index++)
@@ -348,19 +347,19 @@ namespace TerraFX.Graphics.Providers.D3D12
 
                 if (inputResource is D3D12GraphicsBuffer d3d12GraphicsBuffer)
                 {
-                    graphicsCommandList->SetGraphicsRootConstantBufferView(unchecked((uint)index), d3d12GraphicsBuffer.D3D12Resource->GetGPUVirtualAddress());
+                    commandList->SetGraphicsRootConstantBufferView(unchecked((uint)index), d3d12GraphicsBuffer.D3D12Resource->GetGPUVirtualAddress());
                 }
                 else if (inputResource is D3D12GraphicsTexture d3d12GraphicsTexture)
                 {
-                    graphicsCommandList->SetGraphicsRootDescriptorTable(unchecked((uint)index), D3D12GraphicsDevice.D3D12ShaderResourceDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+                    commandList->SetGraphicsRootDescriptorTable(unchecked((uint)index), Device.D3D12ShaderResourceDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
                 }
             }
 
-            var indexBuffer = graphicsPrimitive.D3D12IndexBuffer;
+            ref readonly var indexBufferView = ref primitive.IndexBufferView;
 
-            if (indexBuffer != null)
+            if (indexBufferView.Buffer is not null)
             {
-                var indexBufferStride = indexBuffer.Stride;
+                var indexBufferStride = indexBufferView.Stride;
                 var indexFormat = DXGI_FORMAT_R16_UINT;
 
                 if (indexBufferStride != 2)
@@ -369,23 +368,20 @@ namespace TerraFX.Graphics.Providers.D3D12
                     indexFormat = DXGI_FORMAT_R32_UINT;
                 }
 
-                var indexBufferView = new D3D12_INDEX_BUFFER_VIEW {
-                    BufferLocation = indexBuffer.D3D12Resource->GetGPUVirtualAddress(),
-                    SizeInBytes = (uint)indexBuffer.Size,
+                var d3d12IndexBufferView = new D3D12_INDEX_BUFFER_VIEW {
+                    BufferLocation = ((D3D12GraphicsBuffer)indexBufferView.Buffer).D3D12Resource->GetGPUVirtualAddress(),
+                    SizeInBytes = (uint)indexBufferView.Size,
                     Format = indexFormat,
                 };
-                graphicsCommandList->IASetIndexBuffer(&indexBufferView);
+                commandList->IASetIndexBuffer(&d3d12IndexBufferView);
 
-                graphicsCommandList->DrawIndexedInstanced(IndexCountPerInstance: (uint)(indexBuffer.Size / indexBufferStride), InstanceCount: 1, StartIndexLocation: 0, BaseVertexLocation: 0, StartInstanceLocation: 0);
+                commandList->DrawIndexedInstanced(IndexCountPerInstance: (uint)(indexBufferView.Size / indexBufferStride), InstanceCount: 1, StartIndexLocation: 0, BaseVertexLocation: 0, StartInstanceLocation: 0);
             }
             else
             {
-                graphicsCommandList->DrawInstanced(VertexCountPerInstance: (uint)(vertexBuffer.Size / vertexBuffer.Stride), InstanceCount: 1, StartVertexLocation: 0, StartInstanceLocation: 0);
+                commandList->DrawInstanced(VertexCountPerInstance: (uint)(vertexBufferView.Size / vertexBufferView.Stride), InstanceCount: 1, StartVertexLocation: 0, StartInstanceLocation: 0);
             }
         }
-
-        /// <inheritdoc />
-        public override void Draw(GraphicsPrimitive graphicsPrimitive) => Draw((D3D12GraphicsPrimitive)graphicsPrimitive);
 
         /// <inheritdoc />
         public override void EndDrawing()
@@ -397,13 +393,13 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <inheritdoc />
         public override void EndFrame()
         {
-            var graphicsCommandList = D3D12GraphicsCommandList;
+            var commandList = D3D12GraphicsCommandList;
 
-            var commandQueue = D3D12GraphicsDevice.D3D12CommandQueue;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12GraphicsCommandList.Close), graphicsCommandList->Close());
-            commandQueue->ExecuteCommandLists(1, (ID3D12CommandList**)&graphicsCommandList);
+            var commandQueue = Device.D3D12CommandQueue;
+            ThrowExternalExceptionIfFailed(nameof(ID3D12GraphicsCommandList.Close), commandList->Close());
+            commandQueue->ExecuteCommandLists(1, (ID3D12CommandList**)&commandList);
 
-            var executeGraphicsFence = WaitForExecuteCompletionGraphicsFence;
+            var executeGraphicsFence = WaitForExecuteCompletionFence;
             ThrowExternalExceptionIfFailed(nameof(ID3D12CommandQueue.Signal), commandQueue->Signal(executeGraphicsFence.D3D12Fence, executeGraphicsFence.D3D12FenceSignalValue));
 
             executeGraphicsFence.Wait();
@@ -422,8 +418,8 @@ namespace TerraFX.Graphics.Providers.D3D12
                 _d3d12RenderTargetView.Dispose();
                 _d3d12RenderTargetResource.Dispose(ReleaseIfNotNull);
 
-                DisposeIfNotNull(_waitForExecuteCompletionGraphicsFence);
-                DisposeIfNotNull(_graphicsFence);
+                _waitForExecuteCompletionFence?.Dispose();
+                _fence?.Dispose();
             }
 
             _state.EndDispose();
@@ -447,7 +443,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             ID3D12CommandAllocator* d3d12CommandAllocator;
 
             var iid = IID_ID3D12CommandAllocator;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateCommandAllocator), D3D12GraphicsDevice.D3D12Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, &iid, (void**)&d3d12CommandAllocator));
+            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateCommandAllocator), Device.D3D12Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, &iid, (void**)&d3d12CommandAllocator));
 
             return d3d12CommandAllocator;
         }
@@ -459,7 +455,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             ID3D12GraphicsCommandList* d3d12GraphicsCommandList;
 
             var iid = IID_ID3D12GraphicsCommandList;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateCommandList), D3D12GraphicsDevice.D3D12Device->CreateCommandList(nodeMask: 0, D3D12_COMMAND_LIST_TYPE_DIRECT, D3D12CommandAllocator, pInitialState: null, &iid, (void**)&d3d12GraphicsCommandList));
+            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateCommandList), Device.D3D12Device->CreateCommandList(nodeMask: 0, D3D12_COMMAND_LIST_TYPE_DIRECT, D3D12CommandAllocator, pInitialState: null, &iid, (void**)&d3d12GraphicsCommandList));
 
             // Command lists are created in the recording state, but there is nothing
             // to record yet. The main loop expects it to be closed, so close it now.
@@ -475,7 +471,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             ID3D12Resource* renderTargetResource;
 
             var iid = IID_ID3D12Resource;
-            ThrowExternalExceptionIfFailed(nameof(IDXGISwapChain.GetBuffer), D3D12GraphicsDevice.DxgiSwapChain->GetBuffer(unchecked((uint)Index), &iid, (void**)&renderTargetResource));
+            ThrowExternalExceptionIfFailed(nameof(IDXGISwapChain.GetBuffer), Device.DxgiSwapChain->GetBuffer(unchecked((uint)Index), &iid, (void**)&renderTargetResource));
 
             return renderTargetResource;
         }
@@ -486,11 +482,11 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             D3D12_CPU_DESCRIPTOR_HANDLE renderTargetViewHandle;
 
-            var graphicsDevice = D3D12GraphicsDevice;
-            var d3d12Device = graphicsDevice.D3D12Device;
+            var device = Device;
+            var d3d12Device = device.D3D12Device;
 
             var renderTargetViewDesc = new D3D12_RENDER_TARGET_VIEW_DESC {
-                Format = graphicsDevice.DxgiSwapChainFormat,
+                Format = device.SwapChainFormat,
                 ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D,
                 Anonymous = new D3D12_RENDER_TARGET_VIEW_DESC._Anonymous_e__Union {
                     Texture2D = new D3D12_TEX2D_RTV(),
@@ -499,7 +495,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             var renderTargetDescriptorIncrementSize = d3d12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
-            renderTargetViewHandle = graphicsDevice.D3D12RenderTargetDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+            renderTargetViewHandle = device.D3D12RenderTargetDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
             _ = renderTargetViewHandle.Offset(Index, renderTargetDescriptorIncrementSize);
 
             d3d12Device->CreateRenderTargetView(D3D12RenderTargetResource, &renderTargetViewDesc, renderTargetViewHandle);

@@ -25,8 +25,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private State _state;
 
-        internal VulkanGraphicsPipelineSignature(VulkanGraphicsDevice graphicsDevice, ReadOnlySpan<GraphicsPipelineInput> inputs, ReadOnlySpan<GraphicsPipelineResource> resources)
-            : base(graphicsDevice, inputs, resources)
+        internal VulkanGraphicsPipelineSignature(VulkanGraphicsDevice device, ReadOnlySpan<GraphicsPipelineInput> inputs, ReadOnlySpan<GraphicsPipelineResource> resources)
+            : base(device, inputs, resources)
         {
             _vulkanDescriptorPool = new ValueLazy<VkDescriptorPool>(CreateVulkanDescriptorPool);
             _vulkanDescriptorSet = new ValueLazy<VkDescriptorSet>(CreateVulkanDescriptorSet);
@@ -37,10 +37,10 @@ namespace TerraFX.Graphics.Providers.Vulkan
         }
 
         /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsPipelineSignature" /> class.</summary>
-        ~VulkanGraphicsPipelineSignature()
-        {
-            Dispose(isDisposing: true);
-        }
+        ~VulkanGraphicsPipelineSignature() => Dispose(isDisposing: true);
+
+        /// <inheritdoc cref="GraphicsPipeline.Device" />
+        public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
 
         /// <summary>Gets the <see cref="VkDescriptorPool" /> for the pipeline.</summary>
         public VkDescriptorPool VulkanDescriptorPool => _vulkanDescriptorPool.Value;
@@ -50,9 +50,6 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         /// <summary>Gets the underlying <see cref="VkDescriptorSetLayout" /> for the pipeline.</summary>
         public VkDescriptorSetLayout VulkanDescriptorSetLayout => _vulkanDescriptorSetLayout.Value;
-
-        /// <inheritdoc cref="GraphicsPipeline.GraphicsDevice" />
-        public VulkanGraphicsDevice VulkanGraphicsDevice => (VulkanGraphicsDevice)GraphicsDevice;
 
         /// <summary>Gets the underlying <see cref="VkPipelineLayout" /> for the pipeline.</summary>
         public VkPipelineLayout VulkanPipelineLayout => _vulkanPipelineLayout.Value;
@@ -152,7 +149,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     descriptorPoolCreateInfo.poolSizeCount = unchecked((uint)vulkanDescriptorPoolSizes.Length);
                     descriptorPoolCreateInfo.pPoolSizes = pVulkanDescriptorPoolSizes;
 
-                    ThrowExternalExceptionIfNotSuccess(nameof(vkCreateDescriptorPool), vkCreateDescriptorPool(VulkanGraphicsDevice.VulkanDevice, &descriptorPoolCreateInfo, pAllocator: null, (ulong*)&vulkanDescriptorPool));
+                    ThrowExternalExceptionIfNotSuccess(nameof(vkCreateDescriptorPool), vkCreateDescriptorPool(Device.VulkanDevice, &descriptorPoolCreateInfo, pAllocator: null, (ulong*)&vulkanDescriptorPool));
                 }
             }
 
@@ -174,7 +171,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     descriptorSetCount = 1,
                     pSetLayouts = (ulong*)&vulkanDescriptorSetLayout,
                 };
-                ThrowExternalExceptionIfNotSuccess(nameof(vkAllocateDescriptorSets), vkAllocateDescriptorSets(VulkanGraphicsDevice.VulkanDevice, &descriptorSetAllocateInfo, (ulong*)&vulkanDescriptorSet));
+                ThrowExternalExceptionIfNotSuccess(nameof(vkAllocateDescriptorSets), vkAllocateDescriptorSets(Device.VulkanDevice, &descriptorSetAllocateInfo, (ulong*)&vulkanDescriptorSet));
             }
 
             return vulkanDescriptorSet;
@@ -247,7 +244,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     descriptorSetLayoutCreateInfo.bindingCount = unchecked((uint)descriptorSetLayoutBindings.Length);
                     descriptorSetLayoutCreateInfo.pBindings = pDescriptorSetLayoutBindings;
 
-                    ThrowExternalExceptionIfNotSuccess(nameof(vkCreateDescriptorSetLayout), vkCreateDescriptorSetLayout(VulkanGraphicsDevice.VulkanDevice, &descriptorSetLayoutCreateInfo, pAllocator: null, (ulong*)&vulkanDescriptorSetLayout));
+                    ThrowExternalExceptionIfNotSuccess(nameof(vkCreateDescriptorSetLayout), vkCreateDescriptorSetLayout(Device.VulkanDevice, &descriptorSetLayoutCreateInfo, pAllocator: null, (ulong*)&vulkanDescriptorSetLayout));
                 }
             }
             else
@@ -294,7 +291,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 pipelineLayoutCreateInfo.pSetLayouts = (ulong*)&descriptorSetLayout;
             }
 
-            ThrowExternalExceptionIfNotSuccess(nameof(vkCreatePipelineLayout), vkCreatePipelineLayout(VulkanGraphicsDevice.VulkanDevice, &pipelineLayoutCreateInfo, pAllocator: null, (ulong*)&vulkanPipelineLayout));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkCreatePipelineLayout), vkCreatePipelineLayout(Device.VulkanDevice, &pipelineLayoutCreateInfo, pAllocator: null, (ulong*)&vulkanPipelineLayout));
 
             return vulkanPipelineLayout;
         }
@@ -303,7 +300,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             if (vulkanDescriptorPool != VK_NULL_HANDLE)
             {
-                vkDestroyDescriptorPool(VulkanGraphicsDevice.VulkanDevice, vulkanDescriptorPool, pAllocator: null);
+                vkDestroyDescriptorPool(Device.VulkanDevice, vulkanDescriptorPool, pAllocator: null);
             }
         }
 
@@ -311,7 +308,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             if (vulkanDescriptorSet != VK_NULL_HANDLE)
             {
-                _ = vkFreeDescriptorSets(VulkanGraphicsDevice.VulkanDevice, VulkanDescriptorPool, 1, (ulong*)&vulkanDescriptorSet);
+                _ = vkFreeDescriptorSets(Device.VulkanDevice, VulkanDescriptorPool, 1, (ulong*)&vulkanDescriptorSet);
             }
         }
 
@@ -319,7 +316,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             if (vulkanDescriptorSetLayout != VK_NULL_HANDLE)
             {
-                vkDestroyDescriptorSetLayout(VulkanGraphicsDevice.VulkanDevice, vulkanDescriptorSetLayout, pAllocator: null);
+                vkDestroyDescriptorSetLayout(Device.VulkanDevice, vulkanDescriptorSetLayout, pAllocator: null);
             }
         }
 
@@ -327,7 +324,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             if (vulkanPipelineLayout != VK_NULL_HANDLE)
             {
-                vkDestroyPipelineLayout(VulkanGraphicsDevice.VulkanDevice, vulkanPipelineLayout, pAllocator: null);
+                vkDestroyPipelineLayout(Device.VulkanDevice, vulkanPipelineLayout, pAllocator: null);
             }
         }
 

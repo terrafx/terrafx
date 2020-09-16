@@ -14,7 +14,6 @@ namespace TerraFX.Samples.Graphics
     public sealed class HelloTexture : Sample
     {
         private GraphicsDevice _graphicsDevice = null!;
-        private GraphicsHeap _graphicsDeviceHeap = null!;
         private GraphicsPrimitive _trianglePrimitive = null!;
         private Window _window = null!;
         private TimeSpan _elapsedTime;
@@ -27,7 +26,6 @@ namespace TerraFX.Samples.Graphics
         public override void Cleanup()
         {
             _trianglePrimitive?.Dispose();
-            _graphicsDeviceHeap?.Dispose();
             _graphicsDevice?.Dispose();
             _window?.Dispose();
 
@@ -43,25 +41,23 @@ namespace TerraFX.Samples.Graphics
             _window.Show();
 
             var graphicsProvider = application.GetService<GraphicsProvider>();
-            var graphicsAdapter = graphicsProvider.GraphicsAdapters.First();
+            var graphicsAdapter = graphicsProvider.Adapters.First();
 
-            var graphicsDevice = graphicsAdapter.CreateGraphicsDevice(_window, graphicsContextCount: 2);
+            var graphicsDevice = graphicsAdapter.CreateDevice(_window, contextCount: 2);
 
             _graphicsDevice = graphicsDevice;
-            _graphicsDeviceHeap = graphicsDevice.CreateGraphicsHeap(64 * 1024 * 5, GraphicsHeapCpuAccess.None);
 
-            using (var graphicsStagingHeap = graphicsDevice.CreateGraphicsHeap(64 * 1024 * 5, GraphicsHeapCpuAccess.Write))
-            using (var vertexStagingBuffer = graphicsStagingHeap.CreateGraphicsBuffer(GraphicsBufferKind.Staging, 64 * 1024, sizeof(byte)))
-            using (var textureStagingBuffer = graphicsStagingHeap.CreateGraphicsBuffer(GraphicsBufferKind.Staging, 64 * 1024 * 4, sizeof(byte)))
+            using (var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024))
+            using (var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024 * 4))
             {
-                var currentGraphicsContext = graphicsDevice.CurrentGraphicsContext;
+                var currentGraphicsContext = graphicsDevice.CurrentContext;
                 currentGraphicsContext.BeginFrame();
 
                 _trianglePrimitive = CreateTrianglePrimitive(currentGraphicsContext, vertexStagingBuffer, textureStagingBuffer);
 
                 currentGraphicsContext.EndFrame();
 
-                graphicsDevice.Signal(currentGraphicsContext.GraphicsFence);
+                graphicsDevice.Signal(currentGraphicsContext.Fence);
                 graphicsDevice.WaitForIdle();
             }
 
@@ -82,7 +78,7 @@ namespace TerraFX.Samples.Graphics
 
             if (_window.IsVisible)
             {
-                var currentGraphicsContext = _graphicsDevice.CurrentGraphicsContext;
+                var currentGraphicsContext = _graphicsDevice.CurrentContext;
                 currentGraphicsContext.BeginFrame();
 
                 Update(eventArgs.Delta);
@@ -96,30 +92,29 @@ namespace TerraFX.Samples.Graphics
         private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer textureStagingBuffer)
         {
             var graphicsDevice = _graphicsDevice;
-            var graphicsSurface = graphicsDevice.GraphicsSurface;
-
-            var graphicsBufferHeap = _graphicsDeviceHeap;
+            var graphicsSurface = graphicsDevice.Surface;
 
             var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Texture", "main", "main");
-            var vertexBuffer = CreateVertexBuffer(graphicsContext, graphicsBufferHeap, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
+            var vertexBuffer = CreateVertexBuffer(graphicsContext, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
 
             var inputResources = new GraphicsResource[1] {
-                CreateTexture2D(graphicsContext, graphicsBufferHeap, textureStagingBuffer),
+                CreateTexture2D(graphicsContext, textureStagingBuffer),
             };
-            return graphicsDevice.CreateGraphicsPrimitive(graphicsPipeline, vertexBuffer, indexBuffer: null, inputResources);
+            return graphicsDevice.CreatePrimitive(graphicsPipeline, new GraphicsBufferView(vertexBuffer, vertexBuffer.Size, (uint)sizeof(TextureVertex)), indexBufferView: default, inputResources);
 
-            static GraphicsTexture CreateTexture2D(GraphicsContext graphicsContext, GraphicsHeap graphicsHeap, GraphicsBuffer textureStagingBuffer)
+            static GraphicsTexture CreateTexture2D(GraphicsContext graphicsContext, GraphicsBuffer textureStagingBuffer)
             {
                 const uint TextureWidth = 256;
                 const uint TextureHeight = 256;
-                const uint TextureSize = TextureWidth * TextureHeight;
+                const uint TexturePixels = TextureWidth * TextureHeight;
+                const uint TextureSize = TexturePixels * 4;
                 const uint CellWidth = TextureWidth / 8;
                 const uint CellHeight = TextureHeight / 8;
 
-                var texture2D = graphicsHeap.CreateGraphicsTexture(GraphicsTextureKind.TwoDimensional, TextureWidth, TextureHeight);
+                var texture2D = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.TwoDimensional, GraphicsResourceCpuAccess.None, TextureWidth, TextureHeight);
                 var pTextureData = textureStagingBuffer.Map<uint>();
 
-                for (uint n = 0; n < TextureSize; n++)
+                for (uint n = 0; n < TexturePixels; n++)
                 {
                     var x = n % TextureWidth;
                     var y = n / TextureWidth;
@@ -140,9 +135,9 @@ namespace TerraFX.Samples.Graphics
                 return texture2D;
             }
 
-            static GraphicsBuffer CreateVertexBuffer(GraphicsContext graphicsContext, GraphicsHeap graphicsHeap, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
+            static GraphicsBuffer CreateVertexBuffer(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
             {
-                var vertexBuffer = graphicsHeap.CreateGraphicsBuffer(GraphicsBufferKind.Vertex, (ulong)(sizeof(TextureVertex) * 3), (ulong)sizeof(TextureVertex));
+                var vertexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.None, (ulong)(sizeof(TextureVertex) * 3));
                 var pVertexBuffer = vertexStagingBuffer.Map<TextureVertex>();
 
                 pVertexBuffer[0] = new TextureVertex {
@@ -172,7 +167,7 @@ namespace TerraFX.Samples.Graphics
                 var vertexShader = CompileShader(graphicsDevice, GraphicsShaderKind.Vertex, shaderName, vertexShaderEntryPoint);
                 var pixelShader = CompileShader(graphicsDevice, GraphicsShaderKind.Pixel, shaderName, pixelShaderEntryPoint);
 
-                return graphicsDevice.CreateGraphicsPipeline(signature, vertexShader, pixelShader);
+                return graphicsDevice.CreatePipeline(signature, vertexShader, pixelShader);
             }
 
             static GraphicsPipelineSignature CreateGraphicsPipelineSignature(GraphicsDevice graphicsDevice)
@@ -190,7 +185,7 @@ namespace TerraFX.Samples.Graphics
                     new GraphicsPipelineResource(GraphicsPipelineResourceKind.Texture, GraphicsShaderVisibility.Pixel),
                 };
 
-                return graphicsDevice.CreateGraphicsPipelineSignature(inputs, resources);
+                return graphicsDevice.CreatePipelineSignature(inputs, resources);
             }
         }
 
@@ -199,7 +194,7 @@ namespace TerraFX.Samples.Graphics
         private void Render()
         {
             var graphicsDevice = _graphicsDevice;
-            var graphicsContext = graphicsDevice.CurrentGraphicsContext;
+            var graphicsContext = graphicsDevice.CurrentContext;
 
             var backgroundColor = new ColorRgba(red: 100.0f / 255.0f, green: 149.0f / 255.0f, blue: 237.0f / 255.0f, alpha: 1.0f);
 

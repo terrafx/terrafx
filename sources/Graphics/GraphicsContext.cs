@@ -8,31 +8,31 @@ namespace TerraFX.Graphics
     /// <summary>Represents a graphics context, which can be used for rendering images.</summary>
     public abstract class GraphicsContext : IDisposable
     {
-        private readonly GraphicsDevice _graphicsDevice;
+        private readonly GraphicsDevice _device;
         private readonly int _index;
 
-        /// <summary>Initializes a new instance of the <see cref="GraphicsDevice" /> class.</summary>
-        /// <param name="graphicsDevice">The graphics device for which the context was created.</param>
-        /// <param name="index">An index which can be used to lookup the context via <see cref="GraphicsDevice.GraphicsContexts" />.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="graphicsDevice" /> is <c>null</c>.</exception>
+        /// <summary>Initializes a new instance of the <see cref="GraphicsContext" /> class.</summary>
+        /// <param name="device">The device for which the context was created.</param>
+        /// <param name="index">An index which can be used to lookup the context via <see cref="GraphicsDevice.Contexts" />.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is <c>negative</c>.</exception>
-        protected GraphicsContext(GraphicsDevice graphicsDevice, int index)
+        protected GraphicsContext(GraphicsDevice device, int index)
         {
-            ThrowIfNull(graphicsDevice, nameof(graphicsDevice));
+            ThrowIfNull(device, nameof(device));
             ThrowIfNegative(index, nameof(index));
 
-            _graphicsDevice = graphicsDevice;
+            _device = device;
             _index = index;
         }
 
-        /// <summary>Gets the <see cref="GraphicsDevice" /> for the context.</summary>
-        public GraphicsDevice GraphicsDevice => _graphicsDevice;
+        /// <summary>Gets the device which manages the context.</summary>
+        public GraphicsDevice Device => _device;
 
-        /// <summary>Gets the graphics fence used by the context for synchronization.</summary>
+        /// <summary>Gets the fence used by the context for synchronization.</summary>
         /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
-        public abstract GraphicsFence GraphicsFence { get; }
+        public abstract GraphicsFence Fence { get; }
 
-        /// <summary>Gets an index which can be used to lookup the context via <see cref="GraphicsDevice.GraphicsContexts" />.</summary>
+        /// <summary>Gets an index which can be used to lookup the context via <see cref="GraphicsDevice.Contexts" />.</summary>
         public int Index => _index;
 
         /// <summary>Begins the drawing stage.</summary>
@@ -51,27 +51,27 @@ namespace TerraFX.Graphics
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>Copies the contents of a graphics buffer to a separate graphics buffer.</summary>
-        /// <param name="destination">The destination graphics buffer.</param>
-        /// <param name="source">The source graphics buffer.</param>
+        /// <summary>Copies the contents of a buffer to a separate buffer.</summary>
+        /// <param name="destination">The destination buffer.</param>
+        /// <param name="source">The source buffer.</param>
         /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="source" /> is <c>null</c>.</exception>
         /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
         public abstract void Copy(GraphicsBuffer destination, GraphicsBuffer source);
 
-        /// <summary>Copies the contents of a graphics buffer to a two-dimensional graphics texture.</summary>
-        /// <param name="destination">The destination two-dimensional graphics texture.</param>
-        /// <param name="source">The source graphics buffer.</param>
+        /// <summary>Copies the contents of a buffer to a two-dimensional texture.</summary>
+        /// <param name="destination">The destination two-dimensional texture.</param>
+        /// <param name="source">The source buffer.</param>
         /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="source" /> is <c>null</c>.</exception>
         /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
         public abstract void Copy(GraphicsTexture destination, GraphicsBuffer source);
 
-        /// <summary>Draws a graphics primitive to the render surface.</summary>
-        /// <param name="graphicsPrimitive">The graphics primitive to draw.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="graphicsPrimitive" /> is <c>null</c>.</exception>
+        /// <summary>Draws a primitive to the render surface.</summary>
+        /// <param name="primitive">The primitive to draw.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="primitive" /> is <c>null</c>.</exception>
         /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
-        public abstract void Draw(GraphicsPrimitive graphicsPrimitive);
+        public abstract void Draw(GraphicsPrimitive primitive);
 
         /// <summary>Ends the drawing stage.</summary>
         /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>

@@ -19,7 +19,6 @@ using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.VkSubpassContents;
 using static TerraFX.Interop.Vulkan;
 using static TerraFX.Utilities.AssertionUtilities;
-using static TerraFX.Utilities.DisposeUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
@@ -28,8 +27,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
     /// <inheritdoc />
     public sealed unsafe class VulkanGraphicsContext : GraphicsContext
     {
-        private readonly VulkanGraphicsFence _graphicsFence;
-        private readonly VulkanGraphicsFence _waitForExecuteCompletionGraphicsFence;
+        private readonly VulkanGraphicsFence _fence;
+        private readonly VulkanGraphicsFence _waitForExecuteCompletionFence;
 
         private ValueLazy<VkCommandBuffer> _vulkanCommandBuffer;
         private ValueLazy<VkCommandPool> _vulkanCommandPool;
@@ -38,11 +37,11 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private State _state;
 
-        internal VulkanGraphicsContext(VulkanGraphicsDevice graphicsDevice, int index)
-            : base(graphicsDevice, index)
+        internal VulkanGraphicsContext(VulkanGraphicsDevice device, int index)
+            : base(device, index)
         {
-            _graphicsFence = new VulkanGraphicsFence(graphicsDevice);
-            _waitForExecuteCompletionGraphicsFence = new VulkanGraphicsFence(graphicsDevice);
+            _fence = new VulkanGraphicsFence(device);
+            _waitForExecuteCompletionFence = new VulkanGraphicsFence(device);
 
             _vulkanCommandBuffer = new ValueLazy<VkCommandBuffer>(CreateVulkanCommandBuffer);
             _vulkanCommandPool = new ValueLazy<VkCommandPool>(CreateVulkanCommandPool);
@@ -51,17 +50,17 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             _ = _state.Transition(to: Initialized);
 
-            WaitForExecuteCompletionGraphicsFence.Reset();
+            WaitForExecuteCompletionFence.Reset();
         }
 
         /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsContext" /> class.</summary>
-        ~VulkanGraphicsContext()
-        {
-            Dispose(isDisposing: false);
-        }
+        ~VulkanGraphicsContext() => Dispose(isDisposing: false);
+
+        /// <inheritdoc cref="GraphicsContext.Device" />
+        public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
 
         /// <inheritdoc />
-        public override GraphicsFence GraphicsFence => VulkanGraphicsFence;
+        public override VulkanGraphicsFence Fence => _fence;
 
         /// <summary>Gets the <see cref="VkCommandBuffer" /> used by the context.</summary>
         /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
@@ -75,18 +74,12 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
         public VkFramebuffer VulkanFramebuffer => _vulkanFramebuffer.Value;
 
-        /// <inheritdoc cref="GraphicsContext.GraphicsDevice" />
-        public VulkanGraphicsDevice VulkanGraphicsDevice => (VulkanGraphicsDevice)GraphicsDevice;
-
-        /// <inheritdoc cref="VulkanGraphicsContext.GraphicsFence" />
-        public VulkanGraphicsFence VulkanGraphicsFence => _graphicsFence;
-
         /// <summary>Gets the <see cref="VkImageView" /> used by the context.</summary>
         /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
         public VkImageView VulkanSwapChainImageView => _vulkanSwapChainImageView.Value;
 
-        /// <summary>Gets a graphics fence that is used to wait for the context to finish execution.</summary>
-        public VulkanGraphicsFence WaitForExecuteCompletionGraphicsFence => _waitForExecuteCompletionGraphicsFence;
+        /// <summary>Gets a fence that is used to wait for the context to finish execution.</summary>
+        public VulkanGraphicsFence WaitForExecuteCompletionFence => _waitForExecuteCompletionFence;
 
         /// <inheritdoc />
         public override void BeginDrawing(ColorRgba backgroundColor)
@@ -98,20 +91,20 @@ namespace TerraFX.Graphics.Providers.Vulkan
             clearValue.color.float32[2] = backgroundColor.Blue;
             clearValue.color.float32[3] = backgroundColor.Alpha;
 
-            var graphicsDevice = VulkanGraphicsDevice;
-            var graphicsSurface = graphicsDevice.GraphicsSurface;
+            var device = Device;
+            var surface = device.Surface;
 
-            var graphicsSurfaceWidth = graphicsSurface.Width;
-            var graphicsSurfaceHeight = graphicsSurface.Height;
+            var surfaceWidth = surface.Width;
+            var surfaceHeight = surface.Height;
 
             var renderPassBeginInfo = new VkRenderPassBeginInfo {
                 sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
-                renderPass = graphicsDevice.VulkanRenderPass,
+                renderPass = device.VulkanRenderPass,
                 framebuffer = VulkanFramebuffer,
                 renderArea = new VkRect2D {
                     extent = new VkExtent2D {
-                        width = (uint)graphicsSurface.Width,
-                        height = (uint)graphicsSurface.Height,
+                        width = (uint)surface.Width,
+                        height = (uint)surface.Height,
                     },
                 },
                 clearValueCount = 1,
@@ -123,9 +116,9 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             var viewport = new VkViewport {
                 x = 0,
-                y = graphicsSurface.Height,
-                width = graphicsSurface.Width,
-                height = -graphicsSurface.Height,
+                y = surface.Height,
+                width = surface.Width,
+                height = -surface.Height,
                 minDepth = 0.0f,
                 maxDepth = 1.0f,
             };
@@ -133,8 +126,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             var scissorRect = new VkRect2D {
                 extent = new VkExtent2D {
-                    width = (uint)graphicsSurface.Width,
-                    height = (uint)graphicsSurface.Height,
+                    width = (uint)surface.Width,
+                    height = (uint)surface.Height,
                 },
             };
             vkCmdSetScissor(commandBuffer, firstScissor: 0, scissorCount: 1, &scissorRect);
@@ -143,10 +136,10 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <inheritdoc />
         public override void BeginFrame()
         {
-            var graphicsFence = VulkanGraphicsFence;
+            var fence = Fence;
 
-            graphicsFence.Wait();
-            graphicsFence.Reset();
+            fence.Wait();
+            fence.Reset();
 
             var commandBufferBeginInfo = new VkCommandBufferBeginInfo {
                 sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
@@ -154,6 +147,14 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             ThrowExternalExceptionIfNotSuccess(nameof(vkBeginCommandBuffer), vkBeginCommandBuffer(VulkanCommandBuffer, &commandBufferBeginInfo));
         }
+
+        /// <inheritdoc />
+        public override void Copy(GraphicsBuffer destination, GraphicsBuffer source)
+            => Copy((VulkanGraphicsBuffer)destination, (VulkanGraphicsBuffer)source);
+
+        /// <inheritdoc />
+        public override void Copy(GraphicsTexture destination, GraphicsBuffer source)
+            => Copy((VulkanGraphicsTexture)destination, (VulkanGraphicsBuffer)source);
 
         /// <inheritdoc cref="Copy(GraphicsBuffer, GraphicsBuffer)" />
         public void Copy(VulkanGraphicsBuffer destination, VulkanGraphicsBuffer source)
@@ -235,32 +236,30 @@ namespace TerraFX.Graphics.Providers.Vulkan
         }
 
         /// <inheritdoc />
-        public override void Copy(GraphicsBuffer destination, GraphicsBuffer source) => Copy((VulkanGraphicsBuffer)destination, (VulkanGraphicsBuffer)source);
-
-        /// <inheritdoc />
-        public override void Copy(GraphicsTexture destination, GraphicsBuffer source) => Copy((VulkanGraphicsTexture)destination, (VulkanGraphicsBuffer)source);
+        public override void Draw(GraphicsPrimitive primitive)
+            => Draw((VulkanGraphicsPrimitive)primitive);
 
         /// <inheritdoc cref="Draw(GraphicsPrimitive)" />
-        public void Draw(VulkanGraphicsPrimitive graphicsPrimitive)
+        public void Draw(VulkanGraphicsPrimitive primitive)
         {
-            ThrowIfNull(graphicsPrimitive, nameof(graphicsPrimitive));
+            ThrowIfNull(primitive, nameof(primitive));
 
-            var graphicsCommandBuffer = VulkanCommandBuffer;
-            var graphicsPipeline = graphicsPrimitive.VulkanGraphicsPipeline;
-            var graphicsPipelineSignature = graphicsPipeline.VulkanSignature;
-            var vulkanPipeline = graphicsPipeline.VulkanPipeline;
-            var vertexBuffer = graphicsPrimitive.VulkanVertexBuffer;
+            var vulkanCommandBuffer = VulkanCommandBuffer;
+            var pipeline = primitive.Pipeline;
+            var pipelineSignature = pipeline.Signature;
+            var vulkanPipeline = pipeline.VulkanPipeline;
+            var vertexBuffer = (VulkanGraphicsBuffer)(primitive.VertexBufferView.Buffer);
             var vulkanVertexBuffer = vertexBuffer.VulkanBuffer;
             var vulkanVertexBufferOffset = 0ul;
 
-            vkCmdBindPipeline(graphicsCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline);
-            vkCmdBindVertexBuffers(graphicsCommandBuffer, firstBinding: 0, bindingCount: 1, (ulong*)&vulkanVertexBuffer, &vulkanVertexBufferOffset);
+            vkCmdBindPipeline(vulkanCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline);
+            vkCmdBindVertexBuffers(vulkanCommandBuffer, firstBinding: 0, bindingCount: 1, (ulong*)&vulkanVertexBuffer, &vulkanVertexBufferOffset);
 
-            var vulkanDescriptorSet = graphicsPipelineSignature.VulkanDescriptorSet;
+            var vulkanDescriptorSet = pipelineSignature.VulkanDescriptorSet;
 
             if (vulkanDescriptorSet != VK_NULL_HANDLE)
             {
-                var inputResources = graphicsPrimitive.InputResources;
+                var inputResources = primitive.InputResources;
                 var inputResourcesLength = inputResources.Length;
 
                 for (var index = 0; index < inputResourcesLength; index++)
@@ -304,17 +303,17 @@ namespace TerraFX.Graphics.Providers.Vulkan
                         };
                     }
 
-                    vkUpdateDescriptorSets(VulkanGraphicsDevice.VulkanDevice, 1, &writeDescriptorSet, 0, pDescriptorCopies: null);
+                    vkUpdateDescriptorSets(Device.VulkanDevice, 1, &writeDescriptorSet, 0, pDescriptorCopies: null);
                 }
 
-                vkCmdBindDescriptorSets(graphicsCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipelineSignature.VulkanPipelineLayout, firstSet: 0, 1, (ulong*)&vulkanDescriptorSet, dynamicOffsetCount: 0, pDynamicOffsets: null);
+                vkCmdBindDescriptorSets(vulkanCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineSignature.VulkanPipelineLayout, firstSet: 0, 1, (ulong*)&vulkanDescriptorSet, dynamicOffsetCount: 0, pDynamicOffsets: null);
             }
 
-            var indexBuffer = graphicsPrimitive.VulkanIndexBuffer;
+            var indexBuffer = (VulkanGraphicsBuffer)(primitive.IndexBufferView.Buffer);
 
             if (indexBuffer != null)
             {
-                var indexBufferStride = indexBuffer.Stride;
+                var indexBufferStride = primitive.IndexBufferView.Stride;
                 var indexType = VK_INDEX_TYPE_UINT16;
 
                 if (indexBufferStride != 2)
@@ -322,18 +321,15 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     Assert(indexBufferStride == 4, "Index Buffer has an unsupported stride.");
                     indexType = VK_INDEX_TYPE_UINT32;
                 }
-                vkCmdBindIndexBuffer(graphicsCommandBuffer, indexBuffer.VulkanBuffer, offset: 0, indexType);
+                vkCmdBindIndexBuffer(vulkanCommandBuffer, indexBuffer.VulkanBuffer, offset: 0, indexType);
 
-                vkCmdDrawIndexed(graphicsCommandBuffer, indexCount: (uint)(indexBuffer.Size / indexBufferStride), instanceCount: 1, firstIndex: 0, vertexOffset: 0, firstInstance: 0);
+                vkCmdDrawIndexed(vulkanCommandBuffer, indexCount: (uint)(indexBuffer.Size / indexBufferStride), instanceCount: 1, firstIndex: 0, vertexOffset: 0, firstInstance: 0);
             }
             else
             {
-                vkCmdDraw(graphicsCommandBuffer, vertexCount: (uint)(vertexBuffer.Size / vertexBuffer.Stride), instanceCount: 1, firstVertex: 0, firstInstance: 0);
+                vkCmdDraw(vulkanCommandBuffer, vertexCount: (uint)(vertexBuffer.Size / primitive.VertexBufferView.Stride), instanceCount: 1, firstVertex: 0, firstInstance: 0);
             }
         }
-
-        /// <inheritdoc />
-        public override void Draw(GraphicsPrimitive graphicsPrimitive) => Draw((VulkanGraphicsPrimitive)graphicsPrimitive);
 
         /// <inheritdoc />
         public override void EndDrawing() => vkCmdEndRenderPass(VulkanCommandBuffer);
@@ -350,8 +346,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 pCommandBuffers = (IntPtr*)&commandBuffer,
             };
 
-            var executeGraphicsFence = WaitForExecuteCompletionGraphicsFence;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkQueueSubmit), vkQueueSubmit(VulkanGraphicsDevice.VulkanCommandQueue, submitCount: 1, &submitInfo, executeGraphicsFence.VulkanFence));
+            var executeGraphicsFence = WaitForExecuteCompletionFence;
+            ThrowExternalExceptionIfNotSuccess(nameof(vkQueueSubmit), vkQueueSubmit(Device.VulkanCommandQueue, submitCount: 1, &submitInfo, executeGraphicsFence.VulkanFence));
 
             executeGraphicsFence.Wait();
             executeGraphicsFence.Reset();
@@ -369,8 +365,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 _vulkanFramebuffer.Dispose(DisposeVulkanFramebuffer);
                 _vulkanSwapChainImageView.Dispose(DisposeVulkanSwapChainImageView);
 
-                DisposeIfNotNull(_waitForExecuteCompletionGraphicsFence);
-                DisposeIfNotNull(_graphicsFence);
+                _waitForExecuteCompletionFence?.Dispose();
+                _fence?.Dispose();
             }
 
             _state.EndDispose();
@@ -384,7 +380,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
                 if (vulkanFramebuffer != VK_NULL_HANDLE)
                 {
-                    vkDestroyFramebuffer(VulkanGraphicsDevice.VulkanDevice, vulkanFramebuffer, pAllocator: null);
+                    vkDestroyFramebuffer(Device.VulkanDevice, vulkanFramebuffer, pAllocator: null);
                 }
 
                 _vulkanFramebuffer.Reset(CreateVulkanFramebuffer);
@@ -396,7 +392,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
                 if (vulkanSwapChainImageView != VK_NULL_HANDLE)
                 {
-                    vkDestroyImageView(VulkanGraphicsDevice.VulkanDevice, vulkanSwapChainImageView, pAllocator: null);
+                    vkDestroyImageView(Device.VulkanDevice, vulkanSwapChainImageView, pAllocator: null);
                 }
 
                 _vulkanSwapChainImageView.Reset(CreateVulkanSwapChainImageView);
@@ -412,7 +408,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 commandPool = VulkanCommandPool,
                 commandBufferCount = 1,
             };
-            ThrowExternalExceptionIfNotSuccess(nameof(vkAllocateCommandBuffers), vkAllocateCommandBuffers(VulkanGraphicsDevice.VulkanDevice, &commandBufferAllocateInfo, (IntPtr*)&vulkanCommandBuffer));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkAllocateCommandBuffers), vkAllocateCommandBuffers(Device.VulkanDevice, &commandBufferAllocateInfo, (IntPtr*)&vulkanCommandBuffer));
 
             return vulkanCommandBuffer;
         }
@@ -424,9 +420,9 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var commandPoolCreateInfo = new VkCommandPoolCreateInfo {
                 sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
                 flags = (uint)VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
-                queueFamilyIndex = VulkanGraphicsDevice.VulkanCommandQueueFamilyIndex,
+                queueFamilyIndex = Device.VulkanCommandQueueFamilyIndex,
             };
-            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateCommandPool), vkCreateCommandPool(VulkanGraphicsDevice.VulkanDevice, &commandPoolCreateInfo, pAllocator: null, (ulong*)&vulkanCommandPool));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateCommandPool), vkCreateCommandPool(Device.VulkanDevice, &commandPoolCreateInfo, pAllocator: null, (ulong*)&vulkanCommandPool));
 
             return vulkanCommandPool;
         }
@@ -435,20 +431,20 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             VkFramebuffer vulkanFramebuffer;
 
-            var graphicsDevice = VulkanGraphicsDevice;
-            var graphicsSurface = graphicsDevice.GraphicsSurface;
+            var device = Device;
+            var surface = device.Surface;
             var swapChainImageView = VulkanSwapChainImageView;
 
             var frameBufferCreateInfo = new VkFramebufferCreateInfo {
                 sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
-                renderPass = graphicsDevice.VulkanRenderPass,
+                renderPass = device.VulkanRenderPass,
                 attachmentCount = 1,
                 pAttachments = (ulong*)&swapChainImageView,
-                width = (uint)graphicsSurface.Width,
-                height = (uint)graphicsSurface.Height,
+                width = (uint)surface.Width,
+                height = (uint)surface.Height,
                 layers = 1,
             };
-            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateFramebuffer), vkCreateFramebuffer(graphicsDevice.VulkanDevice, &frameBufferCreateInfo, pAllocator: null, (ulong*)&vulkanFramebuffer));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateFramebuffer), vkCreateFramebuffer(device.VulkanDevice, &frameBufferCreateInfo, pAllocator: null, (ulong*)&vulkanFramebuffer));
 
             return vulkanFramebuffer;
         }
@@ -457,13 +453,13 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             VkImageView swapChainImageView;
 
-            var graphicsDevice = VulkanGraphicsDevice;
+            var device = Device;
 
             var swapChainImageViewCreateInfo = new VkImageViewCreateInfo {
                 sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
-                image = graphicsDevice.VulkanSwapchainImages[Index],
+                image = device.VulkanSwapchainImages[Index],
                 viewType = VK_IMAGE_VIEW_TYPE_2D,
-                format = graphicsDevice.VulkanSwapchainFormat,
+                format = device.VulkanSwapchainFormat,
                 components = new VkComponentMapping {
                     r = VK_COMPONENT_SWIZZLE_R,
                     g = VK_COMPONENT_SWIZZLE_G,
@@ -476,7 +472,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     layerCount = 1,
                 },
             };
-            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateImageView), vkCreateImageView(graphicsDevice.VulkanDevice, &swapChainImageViewCreateInfo, pAllocator: null, (ulong*)&swapChainImageView));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateImageView), vkCreateImageView(device.VulkanDevice, &swapChainImageViewCreateInfo, pAllocator: null, (ulong*)&swapChainImageView));
 
             return swapChainImageView;
         }
@@ -487,7 +483,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             if (vulkanCommandBuffer != null)
             {
-                vkFreeCommandBuffers(VulkanGraphicsDevice.VulkanDevice, VulkanCommandPool, 1, (IntPtr*)&vulkanCommandBuffer);
+                vkFreeCommandBuffers(Device.VulkanDevice, VulkanCommandPool, 1, (IntPtr*)&vulkanCommandBuffer);
             }
         }
 
@@ -497,7 +493,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             if (vulkanCommandPool != VK_NULL_HANDLE)
             {
-                vkDestroyCommandPool(VulkanGraphicsDevice.VulkanDevice, vulkanCommandPool, pAllocator: null);
+                vkDestroyCommandPool(Device.VulkanDevice, vulkanCommandPool, pAllocator: null);
             }
         }
 
@@ -507,7 +503,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             if (vulkanFramebuffer != VK_NULL_HANDLE)
             {
-                vkDestroyFramebuffer(VulkanGraphicsDevice.VulkanDevice, vulkanFramebuffer, pAllocator: null);
+                vkDestroyFramebuffer(Device.VulkanDevice, vulkanFramebuffer, pAllocator: null);
             }
         }
 
@@ -517,7 +513,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             if (vulkanSwapchainImageView != VK_NULL_HANDLE)
             {
-                vkDestroyImageView(VulkanGraphicsDevice.VulkanDevice, vulkanSwapchainImageView, pAllocator: null);
+                vkDestroyImageView(Device.VulkanDevice, vulkanSwapchainImageView, pAllocator: null);
             }
         }
     }

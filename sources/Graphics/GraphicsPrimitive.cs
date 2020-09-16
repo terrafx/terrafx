@@ -8,66 +8,66 @@ namespace TerraFX.Graphics
     /// <summary>A graphics primitive which represents the most basic renderable object.</summary>
     public abstract class GraphicsPrimitive : IDisposable
     {
-        private readonly GraphicsDevice _graphicsDevice;
-        private readonly GraphicsPipeline _graphicsPipeline;
-        private readonly GraphicsBuffer _vertexBuffer;
-        private readonly GraphicsBuffer? _indexBuffer;
+        private readonly GraphicsDevice _device;
+        private readonly GraphicsPipeline _pipeline;
+        private readonly GraphicsBufferView _vertexBuffer;
+        private readonly GraphicsBufferView _indexBuffer;
         private readonly GraphicsResource[] _inputResources;
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsPrimitive" /> class.</summary>
-        /// <param name="graphicsDevice">The graphics device for which the primitive was created.</param>
-        /// <param name="graphicsPipeline">The graphics pipeline used for rendering the primitive.</param>
-        /// <param name="vertexBuffer">The graphics buffer which holds the vertices for the primitive.</param>
-        /// <param name="indexBuffer">The graphics buffer which holds the indices for the primitive or <c>null</c> if none exists.</param>
-        /// <param name="inputResources">The graphics resources which hold the input data for the primitive or an empty span if none exist.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="graphicsDevice" /> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="graphicsPipeline" /> is <c>null</c>.</exception>
+        /// <param name="device">The device for which the primitive was created.</param>
+        /// <param name="pipeline">The pipeline used for rendering the primitive.</param>
+        /// <param name="vertexBuffer">The buffer which holds the vertices for the primitive.</param>
+        /// <param name="indexBuffer">The buffer which holds the indices for the primitive or <c>default</c> if none exists.</param>
+        /// <param name="inputResources">The resources which hold the input data for the primitive or an empty span if none exist.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="pipeline" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="vertexBuffer" /> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="graphicsPipeline" /> was not created for <paramref name="graphicsDevice" />.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexBuffer" /> was not created for <paramref name="graphicsDevice" />.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexBuffer" /> was not created for <paramref name="graphicsDevice" />.</exception>
-        protected GraphicsPrimitive(GraphicsDevice graphicsDevice, GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer, GraphicsBuffer? indexBuffer, ReadOnlySpan<GraphicsResource> inputResources)
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="pipeline" /> was not created for <paramref name="device" />.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexBuffer" /> was not created for <paramref name="device" />.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexBuffer" /> was not created for <paramref name="device" />.</exception>
+        protected GraphicsPrimitive(GraphicsDevice device, GraphicsPipeline pipeline, in GraphicsBufferView vertexBuffer, in GraphicsBufferView indexBuffer, ReadOnlySpan<GraphicsResource> inputResources)
         {
-            ThrowIfNull(graphicsPipeline, nameof(graphicsPipeline));
-            ThrowIfNull(vertexBuffer, nameof(vertexBuffer));
+            ThrowIfNull(pipeline, nameof(pipeline));
+            ThrowIfNull(vertexBuffer.Buffer, nameof(vertexBuffer));
 
-            if (graphicsPipeline.GraphicsDevice != graphicsDevice)
+            if (pipeline.Device != device)
             {
-                ThrowArgumentOutOfRangeException(nameof(graphicsPipeline), graphicsPipeline);
+                ThrowArgumentOutOfRangeException(nameof(pipeline), pipeline);
             }
 
-            if (vertexBuffer.GraphicsHeap.GraphicsDevice != graphicsDevice)
+            if (vertexBuffer.Buffer.Allocator.Device != device)
             {
                 ThrowArgumentOutOfRangeException(nameof(vertexBuffer), vertexBuffer);
             }
 
-            if ((indexBuffer != null) && (indexBuffer.GraphicsHeap.GraphicsDevice != graphicsDevice))
+            if ((indexBuffer.Buffer is not null) && (indexBuffer.Buffer.Allocator.Device != device))
             {
                 ThrowArgumentOutOfRangeException(nameof(indexBuffer), indexBuffer);
             }
 
-            _graphicsDevice = graphicsDevice;
-            _graphicsPipeline = graphicsPipeline;
+            _device = device;
+            _pipeline = pipeline;
 
             _vertexBuffer = vertexBuffer;
             _indexBuffer = indexBuffer;
             _inputResources = inputResources.ToArray();
         }
 
-        /// <summary>Gets the graphics resources which hold the input data for the primitive or <see cref="ReadOnlySpan{T}.Empty" /> if none exist.</summary>
+        /// <summary>Gets the device for which the pipeline was created.</summary>
+        public GraphicsDevice Device => _device;
+
+        /// <summary>Gets the resources which hold the input data for the primitive or <see cref="ReadOnlySpan{T}.Empty" /> if none exist.</summary>
         public ReadOnlySpan<GraphicsResource> InputResources => _inputResources;
 
-        /// <summary>Gets the graphics device for which the pipeline was created.</summary>
-        public GraphicsDevice GraphicsDevice => _graphicsDevice;
+        /// <summary>Gets the buffer which holds the indices for the primitive or <c>default</c> if none exists.</summary>
+        public ref readonly GraphicsBufferView IndexBufferView => ref _indexBuffer;
 
-        /// <summary>Gets the graphics pipeline used for rendering the primitive.</summary>
-        public GraphicsPipeline GraphicsPipeline => _graphicsPipeline;
+        /// <summary>Gets the pipeline used for rendering the primitive.</summary>
+        public GraphicsPipeline Pipeline => _pipeline;
 
-        /// <summary>Gets the graphics buffer which holds the indices for the primitive or <c>null</c> if none exists.</summary>
-        public GraphicsBuffer? IndexBuffer => _indexBuffer;
-
-        /// <summary>Gets the graphics buffer which holds the vertices for the primitive.</summary>
-        public GraphicsBuffer VertexBuffer => _vertexBuffer;
+        /// <summary>Gets the buffer which holds the vertices for the primitive.</summary>
+        public ref readonly GraphicsBufferView VertexBufferView => ref _vertexBuffer;
 
         /// <inheritdoc />
         public void Dispose()

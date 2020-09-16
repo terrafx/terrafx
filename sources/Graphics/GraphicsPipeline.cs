@@ -8,45 +8,45 @@ namespace TerraFX.Graphics
     /// <summary>A graphics pipeline which defines how a graphics primitive should be rendered.</summary>
     public abstract class GraphicsPipeline : IDisposable
     {
-        private readonly GraphicsDevice _graphicsDevice;
+        private readonly GraphicsDevice _device;
         private readonly GraphicsPipelineSignature _signature;
         private readonly GraphicsShader? _vertexShader;
         private readonly GraphicsShader? _pixelShader;
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsPipeline" /> class.</summary>
-        /// <param name="graphicsDevice">The graphics device for which the pipeline was created.</param>
+        /// <param name="device">The device for which the pipeline was created.</param>
         /// <param name="signature">The signature which details the inputs given and resources available to the pipeline.</param>
         /// <param name="vertexShader">The vertex shader for the pipeline or <c>null</c> if none exists.</param>
         /// <param name="pixelShader">The pixel shader for the pipeline or <c>null</c> if none exists.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="graphicsDevice" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="signature" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexShader" /> is not <see cref="GraphicsShaderKind.Vertex"/>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexShader" /> was not created for <paramref name="graphicsDevice" />.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexShader" /> was not created for <paramref name="device" />.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="pixelShader" /> is not <see cref="GraphicsShaderKind.Pixel"/>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="pixelShader" />was not created for <paramref name="graphicsDevice" />.</exception>
-        protected GraphicsPipeline(GraphicsDevice graphicsDevice, GraphicsPipelineSignature signature, GraphicsShader? vertexShader, GraphicsShader? pixelShader)
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="pixelShader" />was not created for <paramref name="device" />.</exception>
+        protected GraphicsPipeline(GraphicsDevice device, GraphicsPipelineSignature signature, GraphicsShader? vertexShader, GraphicsShader? pixelShader)
         {
-            ThrowIfNull(graphicsDevice, nameof(graphicsDevice));
+            ThrowIfNull(device, nameof(device));
             ThrowIfNull(signature, nameof(signature));
 
-            if ((vertexShader != null) && ((vertexShader.Kind != GraphicsShaderKind.Vertex) || (vertexShader.GraphicsDevice != graphicsDevice)))
+            if ((vertexShader != null) && ((vertexShader.Kind != GraphicsShaderKind.Vertex) || (vertexShader.Device != device)))
             {
                 ThrowArgumentOutOfRangeException(nameof(vertexShader), vertexShader);
             }
 
-            if ((pixelShader != null) && ((pixelShader.Kind != GraphicsShaderKind.Pixel) || (pixelShader.GraphicsDevice != graphicsDevice)))
+            if ((pixelShader != null) && ((pixelShader.Kind != GraphicsShaderKind.Pixel) || (pixelShader.Device != device)))
             {
                 ThrowArgumentOutOfRangeException(nameof(pixelShader), pixelShader);;
             }
 
-            _graphicsDevice = graphicsDevice;
+            _device = device;
             _signature = signature;
             _vertexShader = vertexShader;
             _pixelShader = pixelShader;
         }
 
         /// <summary>Gets the graphics device for which the pipeline was created.</summary>
-        public GraphicsDevice GraphicsDevice => _graphicsDevice;
+        public GraphicsDevice Device => _device;
 
         /// <summary>Gets <c>true</c> if the pipeline has a pixel shader; otherwise, <c>false</c>.</summary>
         public bool HasPixelShader => _pixelShader != null;

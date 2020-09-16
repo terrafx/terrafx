@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using TerraFX.Interop;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
-using static TerraFX.Utilities.AssertionUtilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.InteropUtilities;
 using static TerraFX.Utilities.State;
 
@@ -21,10 +21,10 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private State _state;
 
-        internal D3D12GraphicsAdapter(D3D12GraphicsProvider graphicsProvider, IDXGIAdapter1* dxgiAdapter)
-            : base(graphicsProvider)
+        internal D3D12GraphicsAdapter(D3D12GraphicsProvider provider, IDXGIAdapter1* dxgiAdapter)
+            : base(provider)
         {
-            AssertNotNull(dxgiAdapter, nameof(dxgiAdapter));
+            ThrowIfNull(dxgiAdapter, nameof(dxgiAdapter));
 
             _dxgiAdapter = dxgiAdapter;
 
@@ -35,13 +35,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         }
 
         /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsAdapter" /> class.</summary>
-        ~D3D12GraphicsAdapter()
-        {
-            Dispose(isDisposing: true);
-        }
-
-        /// <inheritdoc cref="GraphicsAdapter.GraphicsProvider" />
-        public D3D12GraphicsProvider D3D12GraphicsProvider => (D3D12GraphicsProvider)GraphicsProvider;
+        ~D3D12GraphicsAdapter() => Dispose(isDisposing: true);
 
         /// <inheritdoc />
         public override uint DeviceId => DxgiAdapterDesc.DeviceId;
@@ -60,23 +54,23 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <summary>Gets the <see cref="DXGI_ADAPTER_DESC1" /> for <see cref="DxgiAdapter" />.</summary>
         /// <exception cref="ExternalException">The call to <see cref="IDXGIAdapter1.GetDesc1(DXGI_ADAPTER_DESC1*)" /> failed.</exception>
         /// <exception cref="ObjectDisposedException">The adapter has been disposed and the value was not otherwise cached.</exception>
-        public ref readonly DXGI_ADAPTER_DESC1 DxgiAdapterDesc => ref _dxgiAdapterDesc.RefValue;
+        public ref readonly DXGI_ADAPTER_DESC1 DxgiAdapterDesc => ref _dxgiAdapterDesc.ValueRef;
 
         /// <inheritdoc />
         public override string Name => _name.Value;
 
+        /// <inheritdoc cref="GraphicsAdapter.Provider" />
+        public new D3D12GraphicsProvider Provider => (D3D12GraphicsProvider)base.Provider;
+
         /// <inheritdoc />
         public override uint VendorId => DxgiAdapterDesc.VendorId;
 
-        /// <inheritdoc cref="CreateGraphicsDevice(IGraphicsSurface, int)" />
-        public D3D12GraphicsDevice CreateD3D12GraphicsDevice(IGraphicsSurface graphicsSurface, int graphicsContextCount)
+        /// <inheritdoc />
+        public override D3D12GraphicsDevice CreateDevice(IGraphicsSurface surface, int contextCount)
         {
             _state.ThrowIfDisposedOrDisposing();
-            return new D3D12GraphicsDevice(this, graphicsSurface, graphicsContextCount);
+            return new D3D12GraphicsDevice(this, surface, contextCount);
         }
-
-        /// <inheritdoc />
-        public override GraphicsDevice CreateGraphicsDevice(IGraphicsSurface graphicsSurface, int graphicsContextCount) => CreateD3D12GraphicsDevice(graphicsSurface, graphicsContextCount);
 
         /// <inheritdoc />
         protected override void Dispose(bool isDisposing)
@@ -95,9 +89,9 @@ namespace TerraFX.Graphics.Providers.D3D12
         {
             _state.ThrowIfDisposedOrDisposing();
 
-            DXGI_ADAPTER_DESC1 dxgiAdapterDesc;
-            ThrowExternalExceptionIfFailed(nameof(IDXGIAdapter1.GetDesc1), DxgiAdapter->GetDesc1(&dxgiAdapterDesc));
-            return dxgiAdapterDesc;
+            DXGI_ADAPTER_DESC1 adapterDesc;
+            ThrowExternalExceptionIfFailed(nameof(IDXGIAdapter1.GetDesc1), DxgiAdapter->GetDesc1(&adapterDesc));
+            return adapterDesc;
         }
 
         private string GetName()

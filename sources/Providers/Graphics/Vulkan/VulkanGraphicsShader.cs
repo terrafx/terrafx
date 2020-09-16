@@ -20,8 +20,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private State _state;
 
-        internal VulkanGraphicsShader(VulkanGraphicsDevice graphicsDevice, GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
-            : base(graphicsDevice, kind, entryPointName)
+        internal VulkanGraphicsShader(VulkanGraphicsDevice device, GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
+            : base(device, kind, entryPointName)
         {
             var bytecodeLength = (nuint)bytecode.Length;
 
@@ -38,16 +38,13 @@ namespace TerraFX.Graphics.Providers.Vulkan
         }
 
         /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsShader" /> class.</summary>
-        ~VulkanGraphicsShader()
-        {
-            Dispose(isDisposing: true);
-        }
+        ~VulkanGraphicsShader() => Dispose(isDisposing: true);
 
         /// <inheritdoc />
         public override ReadOnlySpan<byte> Bytecode => new ReadOnlySpan<byte>(_vulkanShaderModuleCreateInfo.pCode, (int)_vulkanShaderModuleCreateInfo.codeSize);
 
-        /// <inheritdoc cref="GraphicsShader.GraphicsDevice" />
-        public VulkanGraphicsDevice VulkanGraphicsDevice => (VulkanGraphicsDevice)GraphicsDevice;
+        /// <inheritdoc cref="GraphicsShader.Device" />
+        public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
 
         /// <summary>Gets the underlying <see cref="VkShaderModule" /> for the shader.</summary>
         public VkShaderModule VulkanShaderModule => _vulkanShaderModule.Value;
@@ -72,7 +69,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             fixed (VkShaderModuleCreateInfo* shaderModuleCreateInfo = &_vulkanShaderModuleCreateInfo)
             {
-                ThrowExternalExceptionIfNotSuccess(nameof(vkCreateShaderModule), vkCreateShaderModule(VulkanGraphicsDevice.VulkanDevice, shaderModuleCreateInfo, pAllocator: null, (ulong*)&vulkanShaderModule));
+                ThrowExternalExceptionIfNotSuccess(nameof(vkCreateShaderModule), vkCreateShaderModule(Device.VulkanDevice, shaderModuleCreateInfo, pAllocator: null, (ulong*)&vulkanShaderModule));
             }
 
             return vulkanShaderModule;
@@ -82,7 +79,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             if (vulkanShaderModule != VK_NULL_HANDLE)
             {
-                vkDestroyShaderModule(VulkanGraphicsDevice.VulkanDevice, vulkanShaderModule, pAllocator: null);
+                vkDestroyShaderModule(Device.VulkanDevice, vulkanShaderModule, pAllocator: null);
             }
         }
 

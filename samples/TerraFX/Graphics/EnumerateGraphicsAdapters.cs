@@ -23,7 +23,7 @@ namespace TerraFX.Samples.Graphics
             {
                 var graphicsProvider = application.GetService<GraphicsProvider>();
 
-                foreach (var graphicsAdapter in graphicsProvider.GraphicsAdapters)
+                foreach (var graphicsAdapter in graphicsProvider.Adapters)
                 {
                     Console.WriteLine($"    Name: {graphicsAdapter.Name}");
                     Console.WriteLine($"        Device ID: {graphicsAdapter.DeviceId}");

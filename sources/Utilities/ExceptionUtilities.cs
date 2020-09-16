@@ -1,16 +1,18 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
+using static TerraFX.Utilities.IntegerUtilities;
 
 namespace TerraFX.Utilities
 {
     /// <summary>Provides a set of methods for throwing exceptions.</summary>
-    public static class ExceptionUtilities
+    public static unsafe class ExceptionUtilities
     {
         /// <summary>Throws an instance of the <see cref="ArgumentException" /> class.</summary>
         /// <param name="paramName">The name of the parameter that caused the exception.</param>
@@ -72,6 +74,19 @@ namespace TerraFX.Utilities
             throw new ExternalException(message, hresult);
         }
 
+        /// <summary>Throws a <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>false</c>.</summary>
+        /// <param name="value">The value to be checked if <c>false</c>.</param>
+        /// <param name="paramName">The name of the parameter being checked.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>false</c>.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowIfFalse(bool value, string paramName)
+        {
+            if (!value)
+            {
+                ThrowArgumentOutOfRangeException(paramName, value);
+            }
+        }
+
         /// <summary>Throws a <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>negative</c>.</summary>
         /// <param name="value">The value to be checked if <c>negative</c>.</param>
         /// <param name="paramName">The name of the parameter being checked.</param>
@@ -100,6 +115,21 @@ namespace TerraFX.Utilities
             }
         }
 
+        /// <summary>Throws a <see cref="ArgumentNullException" /> if <paramref name="value" /> is <c>null</c>.</summary>
+        /// <typeparam name="T">The type of <paramref name="value" />.</typeparam>
+        /// <param name="value">The value to be checked for <c>null</c>.</param>
+        /// <param name="paramName">The name of the parameter being checked.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="value" /> is <c>null</c>.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowIfNull<T>(T* value, string paramName)
+            where T : unmanaged
+        {
+            if (value == null)
+            {
+                ThrowArgumentNullException(paramName);
+            }
+        }
+
         /// <summary>Throws a <see cref="InvalidOperationException" /> if <see cref="Thread.CurrentThread" /> is not <paramref name="thread" />.</summary>
         /// <param name="thread">The <see cref="Thread" /> to check against <see cref="Thread.CurrentThread" />.</param>
         /// <exception cref="InvalidOperationException"><see cref="Thread.CurrentThread" /> is not <paramref name="thread" />.</exception>
@@ -111,6 +141,45 @@ namespace TerraFX.Utilities
             if (currentThread != thread)
             {
                 ThrowInvalidOperationException(nameof(Thread.CurrentThread), currentThread);
+            }
+        }
+
+        /// <summary>Throws a <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not a <c>power of two</c>.</summary>
+        /// <param name="value">The value to be checked for <c>power of two</c>.</param>
+        /// <param name="paramName">The name of the parameter being checked.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not a <c>power of two</c>.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowIfNotPow2(ulong value, string paramName)
+        {
+            if (!IsPow2(value))
+            {
+                ThrowArgumentOutOfRangeException(paramName, value);
+            }
+        }
+
+        /// <summary>Throws a <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>zero</c>.</summary>
+        /// <param name="value">The value to be checked for <c>zero</c>.</param>
+        /// <param name="paramName">The name of the parameter being checked.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>zero</c>.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowIfZero(uint value, string paramName)
+        {
+            if (value == 0)
+            {
+                ThrowArgumentOutOfRangeException(paramName, value);
+            }
+        }
+
+        /// <summary>Throws a <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>zero</c>.</summary>
+        /// <param name="value">The value to be checked for <c>zero</c>.</param>
+        /// <param name="paramName">The name of the parameter being checked.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>zero</c>.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowIfZero(ulong value, string paramName)
+        {
+            if (value == 0)
+            {
+                ThrowArgumentOutOfRangeException(paramName, value);
             }
         }
 
@@ -141,6 +210,17 @@ namespace TerraFX.Utilities
         {
             var message = string.Format(Resources.InvalidOperationExceptionMessage, paramName, value);
             throw new InvalidOperationException(message);
+        }
+
+        /// <summary>Throws an instance of the <see cref="KeyNotFoundException" /> class.</summary>
+        /// <param name="paramName">The name of the parameter that caused the exception.</param>
+        /// <exception cref="KeyNotFoundException"><paramref name="paramName" /> was not found in the collection.</exception>
+        [DoesNotReturn]
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void ThrowKeyNotFoundException(string paramName)
+        {
+            var message = string.Format(Resources.KeyNotFoundExceptionMessage, paramName);
+            throw new KeyNotFoundException(message);
         }
 
         /// <summary>Throws an instance of the <see cref="NotSupportedException" /> class.</summary>
