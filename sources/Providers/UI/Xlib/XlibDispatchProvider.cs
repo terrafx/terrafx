@@ -19,18 +19,18 @@ namespace TerraFX.UI.Providers.Xlib
     /// <summary>Provides access to an X11 based dispatch subsystem.</summary>
     public sealed unsafe class XlibDispatchProvider : DispatchProvider
     {
-        private static readonly NativeDelegate<XErrorHandler> s_errorHandler = new NativeDelegate<XErrorHandler>(HandleXlibError);
+        private static readonly delegate* unmanaged<IntPtr, XErrorEvent*, int> s_errorHandler = (delegate* unmanaged<IntPtr, XErrorEvent*, int> )(delegate*<IntPtr, XErrorEvent*, int> )&HandleXlibError;
         private static ValueLazy<XlibDispatchProvider> s_instance = new ValueLazy<XlibDispatchProvider>(CreateDispatchProvider);
 
         private readonly ConcurrentDictionary<Thread, Dispatcher> _dispatchers;
 
-        private ValueLazy<UIntPtr> _dispatcherExitRequestedAtom;
-        private ValueLazy<UIntPtr> _display;
-        private ValueLazy<UIntPtr> _systemIntPtrAtom;
-        private ValueLazy<UIntPtr> _windowProviderCreateWindowAtom;
-        private ValueLazy<UIntPtr> _windowWindowProviderAtom;
-        private ValueLazy<UIntPtr> _wmProtocolsAtom;
-        private ValueLazy<UIntPtr> _wmDeleteWindowAtom;
+        private ValueLazy<nuint> _dispatcherExitRequestedAtom;
+        private ValueLazy<IntPtr> _display;
+        private ValueLazy<nuint> _systemIntPtrAtom;
+        private ValueLazy<nuint> _windowProviderCreateWindowAtom;
+        private ValueLazy<nuint> _windowWindowProviderAtom;
+        private ValueLazy<nuint> _wmProtocolsAtom;
+        private ValueLazy<nuint> _wmDeleteWindowAtom;
 
         private State _state;
 
@@ -38,22 +38,19 @@ namespace TerraFX.UI.Providers.Xlib
         {
             _dispatchers = new ConcurrentDictionary<Thread, Dispatcher>();
 
-            _dispatcherExitRequestedAtom = new ValueLazy<UIntPtr>(CreateDispatcherExitRequestedAtom);
-            _display = new ValueLazy<UIntPtr>(CreateDisplay);
-            _systemIntPtrAtom = new ValueLazy<UIntPtr>(CreateSystemIntPtrAtom);
-            _windowProviderCreateWindowAtom = new ValueLazy<UIntPtr>(CreateWindowProviderCreateWindowAtom);
-            _windowWindowProviderAtom = new ValueLazy<UIntPtr>(CreateWindowWindowProviderAtom);
-            _wmProtocolsAtom = new ValueLazy<UIntPtr>(CreateWmProtocolsAtom);
-            _wmDeleteWindowAtom = new ValueLazy<UIntPtr>(CreateWmDeleteWindowAtom);
+            _dispatcherExitRequestedAtom = new ValueLazy<nuint>(CreateDispatcherExitRequestedAtom);
+            _display = new ValueLazy<IntPtr>(CreateDisplay);
+            _systemIntPtrAtom = new ValueLazy<nuint>(CreateSystemIntPtrAtom);
+            _windowProviderCreateWindowAtom = new ValueLazy<nuint>(CreateWindowProviderCreateWindowAtom);
+            _windowWindowProviderAtom = new ValueLazy<nuint>(CreateWindowWindowProviderAtom);
+            _wmProtocolsAtom = new ValueLazy<nuint>(CreateWmProtocolsAtom);
+            _wmDeleteWindowAtom = new ValueLazy<nuint>(CreateWmDeleteWindowAtom);
 
             _ = _state.Transition(to: Initialized);
         }
 
         /// <summary>Finalizes an instance of the <see cref="XlibDispatchProvider" /> class.</summary>
-        ~XlibDispatchProvider()
-        {
-            Dispose(isDisposing: false);
-        }
+        ~XlibDispatchProvider() => Dispose(isDisposing: false);
 
         /// <summary>Gets the <see cref="XlibDispatchProvider" /> instance for the current program.</summary>
         public static XlibDispatchProvider Instance => s_instance.Value;
@@ -305,7 +302,7 @@ namespace TerraFX.UI.Providers.Xlib
 
         /// <summary>Gets the atom created to track the <see cref="XlibDispatcher.ExitRequested" /> event.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public UIntPtr DispatcherExitRequestedAtom
+        public nuint DispatcherExitRequestedAtom
         {
             get
             {
@@ -319,7 +316,7 @@ namespace TerraFX.UI.Providers.Xlib
 
         /// <summary>Gets the <c>Display</c> that was created for the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public UIntPtr Display
+        public IntPtr Display
         {
             get
             {
@@ -330,7 +327,7 @@ namespace TerraFX.UI.Providers.Xlib
 
         /// <summary>Gets the atom created to track the <see cref="System.IntPtr" /> type.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public UIntPtr SystemIntPtrAtom
+        public nuint SystemIntPtrAtom
         {
             get
             {
@@ -341,7 +338,7 @@ namespace TerraFX.UI.Providers.Xlib
 
         /// <summary>Gets the atom created to track the <see cref="XlibWindowProvider.CreateWindow" /> method.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public UIntPtr WindowProviderCreateWindowAtom
+        public nuint WindowProviderCreateWindowAtom
         {
             get
             {
@@ -352,7 +349,7 @@ namespace TerraFX.UI.Providers.Xlib
 
         /// <summary>Gets the atom created to track the <see cref="Window.WindowProvider" /> property.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public UIntPtr WindowWindowProviderAtom
+        public nuint WindowWindowProviderAtom
         {
             get
             {
@@ -363,7 +360,7 @@ namespace TerraFX.UI.Providers.Xlib
 
         /// <summary>Gets the atom created for the <c>WM_PROTOCOLS</c> client message.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public UIntPtr WmProtocolsAtom
+        public nuint WmProtocolsAtom
         {
             get
             {
@@ -374,7 +371,7 @@ namespace TerraFX.UI.Providers.Xlib
 
         /// <summary>Gets the atom created for the <c>WM_DELETE_WINDOW</c> client message.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public UIntPtr WmDeleteWindowAtom
+        public nuint WmDeleteWindowAtom
         {
             get
             {
@@ -399,7 +396,7 @@ namespace TerraFX.UI.Providers.Xlib
 
         private static XlibDispatchProvider CreateDispatchProvider() => new XlibDispatchProvider();
 
-        private static int HandleXlibError(UIntPtr display, XErrorEvent* errorEvent)
+        private static int HandleXlibError(IntPtr display, XErrorEvent* errorEvent)
         {
             // Due to the asynchronous nature of Xlib, there can be a race between
             // the window being deleted and it being unmapped. This ignores the warning
@@ -408,32 +405,32 @@ namespace TerraFX.UI.Providers.Xlib
 
             if ((errorEvent->error_code != BadWindow) || (errorEvent->request_code != X_GetProperty))
             {
-                ThrowExternalException(nameof(XErrorHandler), errorEvent->error_code);
+                ThrowExternalException(nameof(HandleXlibError), errorEvent->error_code);
             }
 
             return 0;
         }
 
-        private static UIntPtr CreateDisplay()
+        private static IntPtr CreateDisplay()
         {
-            var display = XOpenDisplay(display_name: null);
+            var display = XOpenDisplay(null);
             ThrowExternalExceptionIfZero(nameof(XOpenDisplay), display);
 
             _ = XSetErrorHandler(s_errorHandler);
             return display;
         }
 
-        private UIntPtr CreateDispatcherExitRequestedAtom() => CreateAtom(Display, DispatcherExitRequestedAtomName);
+        private nuint CreateDispatcherExitRequestedAtom() => CreateAtom(Display, DispatcherExitRequestedAtomName);
 
-        private UIntPtr CreateSystemIntPtrAtom() => CreateAtom(Display, SystemIntPtrAtomName);
+        private nuint CreateSystemIntPtrAtom() => CreateAtom(Display, SystemIntPtrAtomName);
 
-        private UIntPtr CreateWindowProviderCreateWindowAtom() => CreateAtom(Display, WindowProviderCreateWindowAtomName);
+        private nuint CreateWindowProviderCreateWindowAtom() => CreateAtom(Display, WindowProviderCreateWindowAtomName);
 
-        private UIntPtr CreateWindowWindowProviderAtom() => CreateAtom(Display, WindowWindowProviderAtomName);
+        private nuint CreateWindowWindowProviderAtom() => CreateAtom(Display, WindowWindowProviderAtomName);
 
-        private UIntPtr CreateWmProtocolsAtom() => CreateAtom(Display, WmProtocolsAtomName);
+        private nuint CreateWmProtocolsAtom() => CreateAtom(Display, WmProtocolsAtomName);
 
-        private UIntPtr CreateWmDeleteWindowAtom() => CreateAtom(Display, WmDeleteWindowAtomName);
+        private nuint CreateWmDeleteWindowAtom() => CreateAtom(Display, WmDeleteWindowAtomName);
 
         /// <inheritdoc />
         protected override void Dispose(bool isDisposing)
@@ -454,7 +451,7 @@ namespace TerraFX.UI.Providers.Xlib
 
             if (_display.IsCreated)
             {
-                _ = XSetErrorHandler(IntPtr.Zero);
+                _ = XSetErrorHandler(null);
                 _ = XCloseDisplay(_display.Value);
             }
         }

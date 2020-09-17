@@ -13,12 +13,12 @@ namespace TerraFX.UI.Providers.Xlib
 {
     internal static unsafe partial class HelperUtilities
     {
-        public static UIntPtr CreateAtom(UIntPtr display, ReadOnlySpan<byte> name)
+        public static nuint CreateAtom(IntPtr display, ReadOnlySpan<byte> name)
         {
             var atom = XInternAtom(
                 display,
-                atom_name: (sbyte*)Unsafe.AsPointer(ref MemoryMarshal.GetReference(name)),
-                only_if_exists: False
+                (sbyte*)Unsafe.AsPointer(ref MemoryMarshal.GetReference(name)),
+                False
             );
             ThrowExternalExceptionIfZero(nameof(XInternAtom), atom);
             return atom;
@@ -40,19 +40,27 @@ namespace TerraFX.UI.Providers.Xlib
             }
         }
 
-        public static void ThrowExternalExceptionIfZero(string methodName, UIntPtr value)
+        public static void ThrowExternalExceptionIfZero(string methodName, nint value)
         {
-            if (value == UIntPtr.Zero)
+            if (value == 0)
             {
                 ThrowExternalExceptionForLastError(methodName);
             }
         }
 
-        public static void SendClientMessage(UIntPtr display, UIntPtr window, UIntPtr messageType, UIntPtr message, IntPtr data = default)
+        public static void ThrowExternalExceptionIfZero(string methodName, nuint value)
+        {
+            if (value == 0)
+            {
+                ThrowExternalExceptionForLastError(methodName);
+            }
+        }
+
+        public static void SendClientMessage(IntPtr display, nuint window, nuint messageType, nuint message, nint data = default)
         {
             var clientEvent = new XClientMessageEvent {
                 type = ClientMessage,
-                serial = UIntPtr.Zero,
+                serial = 0,
                 send_event = True,
                 display = display,
                 window = window,
@@ -62,29 +70,24 @@ namespace TerraFX.UI.Providers.Xlib
 
             if (Environment.Is64BitProcess)
             {
-                var messageBits = message.ToUInt64();
-                clientEvent.data.l[0] = unchecked((IntPtr)(uint)messageBits);
-                clientEvent.data.l[1] = (IntPtr)(uint)(messageBits >> 32);
-                Assert(clientEvent.data.l[1] == IntPtr.Zero, Resources.ArgumentOutOfRangeExceptionMessage, nameof(message), message);
+                clientEvent.data.l[0] = unchecked((nint)(uint)message);
+                clientEvent.data.l[1] = (nint)(uint)(message >> 32);
+                Assert(clientEvent.data.l[1] == 0, Resources.ArgumentOutOfRangeExceptionMessage, nameof(message), message);
 
-                var dataBits = data.ToInt64();
-                clientEvent.data.l[2] = unchecked((IntPtr)(uint)dataBits);
-                clientEvent.data.l[3] = (IntPtr)(uint)(dataBits >> 32);
+                clientEvent.data.l[2] = unchecked((nint)(uint)data);
+                clientEvent.data.l[3] = (nint)(uint)(data >> 32);
             }
             else
             {
-                var messageBits = message.ToUInt32();
-                clientEvent.data.l[0] = (IntPtr)messageBits;
-
-                var dataBits = data.ToInt32();
-                clientEvent.data.l[1] = (IntPtr)dataBits;
+                clientEvent.data.l[0] = (nint)message;
+                clientEvent.data.l[1] = data;
             }
 
             ThrowExternalExceptionIfZero(nameof(XSendEvent), XSendEvent(
                 clientEvent.display,
                 clientEvent.window,
-                propagate: False,
-                (IntPtr)NoEventMask,
+                False,
+                NoEventMask,
                 (XEvent*)&clientEvent
             ));
         }

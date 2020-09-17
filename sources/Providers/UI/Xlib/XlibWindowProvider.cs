@@ -22,7 +22,7 @@ namespace TerraFX.UI.Providers.Xlib
     {
         private const string VulkanRequiredExtensionNamesDataName = "TerraFX.Graphics.Providers.Vulkan.GraphicsProvider.RequiredExtensionNames";
 
-        private readonly ThreadLocal<Dictionary<UIntPtr, XlibWindow>> _windows;
+        private readonly ThreadLocal<Dictionary<nuint, XlibWindow>> _windows;
 
         private ValueLazy<GCHandle> _nativeHandle;
         private State _state;
@@ -36,7 +36,7 @@ namespace TerraFX.UI.Providers.Xlib
             AppDomain.CurrentDomain.SetData(VulkanRequiredExtensionNamesDataName, vulkanRequiredExtensionNamesDataName);
 
             _nativeHandle = new ValueLazy<GCHandle>(() => GCHandle.Alloc(this, GCHandleType.Normal));
-            _windows = new ThreadLocal<Dictionary<UIntPtr, XlibWindow>>(trackAllValues: true);
+            _windows = new ThreadLocal<Dictionary<nuint, XlibWindow>>(trackAllValues: true);
             _ = _state.Transition(to: Initialized);
         }
 
@@ -80,7 +80,7 @@ namespace TerraFX.UI.Providers.Xlib
 
             if (windows is null)
             {
-                windows = new Dictionary<UIntPtr, XlibWindow>(capacity: 4);
+                windows = new Dictionary<nuint, XlibWindow>(capacity: 4);
                 _windows.Value = windows;
             }
 
@@ -92,11 +92,11 @@ namespace TerraFX.UI.Providers.Xlib
 
         internal static void ForwardWindowEvent(XEvent* xevent, bool isWmProtocolsEvent)
         {
-            IntPtr userData;
+            nint userData;
 
             var dispatchProvider = Xlib.XlibDispatchProvider.Instance;
 
-            if (isWmProtocolsEvent && (xevent->xclient.data.l[0] == (IntPtr)(void*)dispatchProvider.WindowProviderCreateWindowAtom))
+            if (isWmProtocolsEvent && (xevent->xclient.data.l[0] == (nint)dispatchProvider.WindowProviderCreateWindowAtom))
             {
                 // We allow the WindowProviderCreateWindowAtom message to be forwarded to the Window instance
                 // for xevent->xany.window. This allows some delayed initialization to occur since most of the
@@ -104,14 +104,11 @@ namespace TerraFX.UI.Providers.Xlib
 
                 if (Environment.Is64BitProcess)
                 {
-                    var lowerBits = unchecked((uint)xevent->xclient.data.l[2].ToInt64());
-                    var upperBits = unchecked((ulong)(uint)xevent->xclient.data.l[3].ToInt64());
-                    userData = (IntPtr)((upperBits << 32) | lowerBits);
+                    userData = (xevent->xclient.data.l[3] << 32) | xevent->xclient.data.l[2];
                 }
                 else
                 {
-                    var bits = xevent->xclient.data.l[1].ToInt32();
-                    userData = (IntPtr)bits;
+                    userData = xevent->xclient.data.l[1];
                 }
 
                 _ = XChangeProperty(
@@ -119,27 +116,27 @@ namespace TerraFX.UI.Providers.Xlib
                     xevent->xany.window,
                     dispatchProvider.WindowWindowProviderAtom,
                     dispatchProvider.SystemIntPtrAtom,
-                    format: 8,
+                    8,
                     PropModeReplace,
                     (byte*)&userData,
-                    nelements: IntPtr.Size
+                    sizeof(nint)
                 );
             }
             else
             {
-                UIntPtr actualTypeReturn;
+                nuint actualTypeReturn;
                 int actualFormatReturn;
-                UIntPtr nitemsReturn;
-                UIntPtr bytesAfterReturn;
+                nuint nitemsReturn;
+                nuint bytesAfterReturn;
                 IntPtr* propReturn;
 
                 ThrowExternalExceptionIfFailed(nameof(XGetWindowProperty), XGetWindowProperty(
                     xevent->xany.display,
                     xevent->xany.window,
                     dispatchProvider.WindowWindowProviderAtom,
-                    long_offset: IntPtr.Zero,
-                    long_length: (IntPtr)IntPtr.Size,
-                    delete: False,
+                    0,
+                    sizeof(nint),
+                    False,
                     dispatchProvider.SystemIntPtrAtom,
                     &actualTypeReturn,
                     &actualFormatReturn,
@@ -152,11 +149,11 @@ namespace TerraFX.UI.Providers.Xlib
             }
 
             XlibWindowProvider windowProvider = null!;
-            Dictionary<UIntPtr, XlibWindow>? windows = null;
+            Dictionary<nuint, XlibWindow>? windows = null;
             var forwardMessage = false;
             XlibWindow? window = null;
 
-            if (userData != IntPtr.Zero)
+            if (userData != 0)
             {
                 windowProvider = (XlibWindowProvider)GCHandle.FromIntPtr(userData).Target!;
                 windows = windowProvider._windows.Value;
@@ -170,7 +167,7 @@ namespace TerraFX.UI.Providers.Xlib
 
                 window.ProcessWindowEvent(xevent, isWmProtocolsEvent);
 
-                if (isWmProtocolsEvent && (xevent->xclient.data.l[0] == (IntPtr)(void*)dispatchProvider.WmDeleteWindowAtom))
+                if (isWmProtocolsEvent && (xevent->xclient.data.l[0] == (nint)dispatchProvider.WmDeleteWindowAtom))
                 {
                     // We forward the WM_DELETE_WINDOW message to the corresponding Window instance
                     // so that it can still be properly disposed of in the scenario that the
@@ -181,7 +178,7 @@ namespace TerraFX.UI.Providers.Xlib
             }
         }
 
-        private static XlibWindow RemoveWindow(Dictionary<UIntPtr, XlibWindow> windows, UIntPtr display, UIntPtr windowHandle, XlibDispatchProvider dispatchProvider)
+        private static XlibWindow RemoveWindow(Dictionary<nuint, XlibWindow> windows, IntPtr display, nuint windowHandle, XlibDispatchProvider dispatchProvider)
         {
             _ = windows.Remove(windowHandle, out var window);
             Assert(window != null, Resources.ArgumentNullExceptionMessage, nameof(window));

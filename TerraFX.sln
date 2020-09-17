@@ -68,11 +68,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Samples", "samples\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{48E1F49D-7103-4DE6-9F69-915183B85095}"
 	ProjectSection(SolutionItems) = preProject
-		scripts\azure-ci.yml = scripts\azure-ci.yml
-		scripts\azure-pipelines.yml = scripts\azure-pipelines.yml
-		scripts\azure-pr.yml = scripts\azure-pr.yml
-		scripts\azure-unix.yml = scripts\azure-unix.yml
-		scripts\azure-windows.yml = scripts\azure-windows.yml
 		scripts\build.ps1 = scripts\build.ps1
 		scripts\build.sh = scripts\build.sh
 		scripts\cibuild.cmd = scripts\cibuild.cmd
@@ -188,6 +183,13 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{B95732CF-D97C-464C-A9C5-1125CE4AE3C6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.Utilities.UnitTests", "tests\Utilities\TerraFX.Utilities.UnitTests.csproj", "{B56B6C8D-47C9-4D61-A65B-FBBF629A9DE7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{0A95BCC3-CE21-4483-A5F3-9E6335FE266E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{8D7DA6CE-DB80-4CC6-ABB0-E0C5946187E0}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\ci.yml = .github\workflows\ci.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -342,6 +344,7 @@ Global
 		{F81C3272-3809-46F3-8954-8E5B5F603699} = {D7FDC089-3AB5-4A13-8495-60CA01CBA609}
 		{B95732CF-D97C-464C-A9C5-1125CE4AE3C6} = {EFB05081-EC44-49D3-B6D1-52AE42085B5B}
 		{B56B6C8D-47C9-4D61-A65B-FBBF629A9DE7} = {B95732CF-D97C-464C-A9C5-1125CE4AE3C6}
+		{8D7DA6CE-DB80-4CC6-ABB0-E0C5946187E0} = {0A95BCC3-CE21-4483-A5F3-9E6335FE266E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2FE36DF8-2D9C-4F20-8787-45DC74B57461}

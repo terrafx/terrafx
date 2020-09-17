@@ -263,7 +263,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             const int enabledExtensionNamesCount = 1;
 
             var enabledExtensionNames = stackalloc sbyte*[enabledExtensionNamesCount] {
-                VK_KHR_SWAPCHAIN_EXTENSION_NAME.AsPointer(),
+                (sbyte*)VK_KHR_SWAPCHAIN_EXTENSION_NAME.AsPointer(),
             };
 
             var physicalDeviceFeatures = new VkPhysicalDeviceFeatures();
@@ -344,8 +344,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 {
                     var surfaceCreateInfo = new VkXlibSurfaceCreateInfoKHR {
                         sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
-                        dpy = (UIntPtr)(void*)GraphicsSurface.SurfaceContextHandle,
-                        window = (UIntPtr)(void*)GraphicsSurface.SurfaceHandle,
+                        dpy = GraphicsSurface.SurfaceContextHandle,
+                        window = (nuint)(nint)GraphicsSurface.SurfaceHandle,
                     };
 
                     ThrowExternalExceptionIfNotSuccess(nameof(vkCreateXlibSurfaceKHR), vkCreateXlibSurfaceKHR(vulkanInstance, &surfaceCreateInfo, pAllocator: null, (ulong*)&vulkanSurface));

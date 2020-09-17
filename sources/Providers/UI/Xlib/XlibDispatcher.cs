@@ -32,7 +32,7 @@ namespace TerraFX.UI.Providers.Xlib
 
                 var isWmProtocolsEvent = (xevent.type == ClientMessage) && (xevent.xclient.format == 32) && (xevent.xclient.message_type == ((XlibDispatchProvider)DispatchProvider).WmProtocolsAtom);
 
-                if (!isWmProtocolsEvent || (xevent.xclient.data.l[0] != (IntPtr)(void*)((XlibDispatchProvider)DispatchProvider).DispatcherExitRequestedAtom))
+                if (!isWmProtocolsEvent || (xevent.xclient.data.l[0] != (nint)((XlibDispatchProvider)DispatchProvider).DispatcherExitRequestedAtom))
                 {
                     XlibWindowProvider.ForwardWindowEvent(&xevent, isWmProtocolsEvent);
                 }

@@ -24,7 +24,7 @@ namespace TerraFX.UI.Providers.Xlib
         private readonly FlowDirection _flowDirection;
         private readonly ReadingDirection _readingDirection;
 
-        private ValueLazy<UIntPtr> _handle;
+        private ValueLazy<nuint> _handle;
         private string _title;
         private Rectangle _bounds;
         private Rectangle _restoredBounds;
@@ -37,7 +37,7 @@ namespace TerraFX.UI.Providers.Xlib
         internal XlibWindow(XlibWindowProvider windowProvider)
             : base(windowProvider, Thread.CurrentThread)
         {
-            _handle = new ValueLazy<UIntPtr>(CreateWindowHandle);
+            _handle = new ValueLazy<nuint>(CreateWindowHandle);
 
             _properties = new PropertySet();
             _title = typeof(XlibWindow).FullName!;
@@ -69,7 +69,7 @@ namespace TerraFX.UI.Providers.Xlib
 
         /// <summary>Gets the handle for the instance.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        public UIntPtr Handle => _handle.Value;
+        public nuint Handle => _handle.Value;
 
         /// <inheritdoc />
         public override bool IsActive => _isActive;
@@ -87,10 +87,10 @@ namespace TerraFX.UI.Providers.Xlib
         public override ReadingDirection ReadingDirection => _readingDirection;
 
         /// <inheritdoc />
-        public override IntPtr SurfaceContextHandle => (IntPtr)(void*)XlibDispatchProvider.Instance.Display;
+        public override IntPtr SurfaceContextHandle => XlibDispatchProvider.Instance.Display;
 
         /// <inheritdoc />
-        public override IntPtr SurfaceHandle => (IntPtr)(void*)Handle;
+        public override IntPtr SurfaceHandle => (nint)Handle;
 
         /// <inheritdoc />
         public override GraphicsSurfaceKind SurfaceKind => GraphicsSurfaceKind.Xlib;
@@ -115,7 +115,7 @@ namespace TerraFX.UI.Providers.Xlib
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="XSendEvent(UIntPtr, UIntPtr, int, IntPtr, XEvent*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="XSendEvent(IntPtr, nuint, int, nint, XEvent*)" /> failed.</exception>
         /// <remarks>
         ///   <para>This method can be called from any thread.</para>
         ///   <para>This method does nothing if the underlying <c>HWND</c> has not been created.</para>
@@ -141,7 +141,7 @@ namespace TerraFX.UI.Providers.Xlib
             if (_isEnabled)
             {
                 var wmHints = new XWMHints {
-                    flags = (IntPtr)InputHint,
+                    flags = InputHint,
                     input = False
                 };
 
@@ -151,14 +151,14 @@ namespace TerraFX.UI.Providers.Xlib
         }
 
         /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="XGetWMHints(UIntPtr, UIntPtr)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="XGetWMHints(IntPtr, nuint)" /> failed.</exception>
         /// <exception cref="ObjectDisposedException"><see cref="IsEnabled" /> was <c>false</c> but the instance has already been disposed.</exception>
         public override void Enable()
         {
             if (_isEnabled == false)
             {
                 var wmHints = new XWMHints {
-                    flags = (IntPtr)InputHint,
+                    flags = InputHint,
                     input = True
                 };
 
@@ -178,7 +178,7 @@ namespace TerraFX.UI.Providers.Xlib
         }
 
         /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="XGetWindowAttributes(UIntPtr, UIntPtr, XWindowAttributes*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="XGetWindowAttributes(IntPtr, nuint, XWindowAttributes*)" /> failed.</exception>
         /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Maximized" /> but the instance has already been disposed.</exception>
         public override void Maximize()
         {
@@ -201,8 +201,8 @@ namespace TerraFX.UI.Providers.Xlib
         }
 
         /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="XGetWindowAttributes(UIntPtr, UIntPtr, XWindowAttributes*)" /> failed.</exception>
-        /// <exception cref="ExternalException">The call to <see cref="XIconifyWindow(UIntPtr, UIntPtr, int)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="XGetWindowAttributes(IntPtr, nuint, XWindowAttributes*)" /> failed.</exception>
+        /// <exception cref="ExternalException">The call to <see cref="XIconifyWindow(IntPtr, nuint, int)" /> failed.</exception>
         /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Minimized" /> but the instance has already been disposed.</exception>
         public override void Minimize()
         {
@@ -300,7 +300,7 @@ namespace TerraFX.UI.Providers.Xlib
             }
         }
 
-        private UIntPtr CreateWindowHandle()
+        private nuint CreateWindowHandle()
         {
             _state.AssertNotDisposedOrDisposing();
 
@@ -320,23 +320,23 @@ namespace TerraFX.UI.Providers.Xlib
                 float.IsNaN(Bounds.Y) ? (int)(screenHeight * 0.125f) : (int)Bounds.Y,
                 float.IsNaN(Bounds.Width) ? (uint)(screenWidth * 0.75f) : (uint)Bounds.Width,
                 float.IsNaN(Bounds.Height) ? (uint)(screenHeight * 0.75f) : (uint)Bounds.Height,
-                border_width: 0,
-                depth :CopyFromParent,
-                c_class: InputOutput,
+                0,
+                (int)CopyFromParent,
+                InputOutput,
                 (Visual*)CopyFromParent,
-                valuemask: UIntPtr.Zero,
-                attributes: null
+                0,
+                null
             );
             ThrowExternalExceptionIfZero(nameof(XCreateSimpleWindow), window);
 
             _ = XSelectInput(
                 display,
                 window,
-                (IntPtr)(VisibilityChangeMask | StructureNotifyMask)
+                (VisibilityChangeMask | StructureNotifyMask)
             );
 
             var wmDeleteWindowAtom = dispatchProvider.WmDeleteWindowAtom;
-            ThrowExternalExceptionIfZero(nameof(XSetWMProtocols), XSetWMProtocols(display, window, &wmDeleteWindowAtom, count: 1));
+            ThrowExternalExceptionIfZero(nameof(XSetWMProtocols), XSetWMProtocols(display, window, &wmDeleteWindowAtom, 1));
 
             SendClientMessage(
                 display,
@@ -388,7 +388,7 @@ namespace TerraFX.UI.Providers.Xlib
         {
             if (isWmProtocolsEvent)
             {
-                if (xclientMessage->data.l[0] == (IntPtr)(void*)XlibDispatchProvider.Instance.WmDeleteWindowAtom)
+                if (xclientMessage->data.l[0] == (nint)XlibDispatchProvider.Instance.WmDeleteWindowAtom)
                 {
                     // If we are already disposing, then Dispose is happening on some other thread
                     // and Close was called in order for us to continue disposal on the parent thread.
