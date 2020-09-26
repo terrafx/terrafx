@@ -82,7 +82,7 @@ namespace TerraFX.Samples
                         }
 
                         var shaderBytecode = new ReadOnlySpan<byte>(d3dShaderBlob->GetBufferPointer(), (int)d3dShaderBlob->GetBufferSize());
-                        return graphicsDevice.CreateGraphicsShader(kind, shaderBytecode, entryPointName);
+                        return graphicsDevice.CreateShader(kind, shaderBytecode, entryPointName);
                     }
                     finally
                     {
@@ -118,7 +118,7 @@ namespace TerraFX.Samples
                 var bytecode = new byte[fileReader.Length];
                 _ = fileReader.Read(bytecode);
 
-                return graphicsDevice.CreateGraphicsShader(kind, bytecode, entryPointName);
+                return graphicsDevice.CreateShader(kind, bytecode, entryPointName);
             }
 
             static ReadOnlySpan<sbyte> GetD3D12CompileTarget(GraphicsShaderKind graphicsShaderKind)

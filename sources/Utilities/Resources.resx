@@ -126,14 +126,32 @@
   <data name="ArgumentOutOfRangeExceptionMessage" xml:space="preserve">
     <value>{0} has a value of {1}</value>
   </data>
+  <data name="CannotEnumerateAudioDevicesWhenNotRunningMessage" xml:space="preserve">
+    <value>Cannot enumerate audio devices when not running</value>
+  </data>
+  <data name="CouldNotConnectPlaybackStreamMessage" xml:space="preserve">
+    <value>Could not connect stream for playback</value>
+  </data>
+  <data name="DeviceAlreadyStartedMessage" xml:space="preserve">
+    <value>Device is already started</value>
+  </data>
+  <data name="DeviceNotCompletedMessage" xml:space="preserve">
+    <value>Device is not completed</value>
+  </data>
   <data name="ExternalExceptionMessage" xml:space="preserve">
     <value>{0} failed with an error code of {1}</value>
   </data>
   <data name="InvalidOperationExceptionMessage" xml:space="preserve">
     <value>{0} has a value of {1}</value>
   </data>
+  <data name="InvalidSampleFormatMessage" xml:space="preserve">
+    <value>Invalid sample format</value>
+  </data>
   <data name="IOExceptionMessage" xml:space="preserve">
     <value>An I/O error occurred</value>
+  </data>
+  <data name="KeyNotFoundExceptionMessage" xml:space="preserve">
+    <value>{0} was not found in the collection</value>
   </data>
   <data name="NotSupportedExceptionForMissingFeatureMessage" xml:space="preserve">
     <value>One or more of the requested {0} is unavailable</value>
@@ -144,28 +162,13 @@
   <data name="ObjectDisposedExceptionMessage" xml:space="preserve">
     <value>{0} is disposed</value>
   </data>
-  <data name="TimeoutExceptionMessage" xml:space="preserve">
-    <value>The timeout of {0} was reached before the operation could be completed</value>
-  </data>
-  <data name="InvalidSampleFormatMessage" xml:space="preserve">
-    <value>Invalid sample format</value>
-  </data>
   <data name="ProviderAlreadyStartedMessage" xml:space="preserve">
     <value>Provider is already started</value>
   </data>
   <data name="ProviderCannotBeStoppedMessage" xml:space="preserve">
     <value>Provider cannot be stopped in the {0} state</value>
   </data>
-  <data name="CannotEnumerateAudioDevicesWhenNotRunningMessage" xml:space="preserve">
-    <value>Cannot enumerate audio devices when not running</value>
-  </data>
-  <data name="DeviceNotCompletedMessage" xml:space="preserve">
-    <value>Device is not completed</value>
-  </data>
-  <data name="DeviceAlreadyStartedMessage" xml:space="preserve">
-    <value>Device is already started</value>
-  </data>
-  <data name="CouldNotConnectPlaybackStreamMessage" xml:space="preserve">
-    <value>Could not connect stream for playback</value>
+  <data name="TimeoutExceptionMessage" xml:space="preserve">
+    <value>The timeout of {0} was reached before the operation could be completed</value>
   </data>
 </root>

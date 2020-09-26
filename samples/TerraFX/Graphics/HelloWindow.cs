@@ -38,9 +38,9 @@ namespace TerraFX.Samples.Graphics
             _window.Show();
 
             var graphicsProvider = application.GetService<GraphicsProvider>();
-            var graphicsAdapter = graphicsProvider.GraphicsAdapters.First();
+            var graphicsAdapter = graphicsProvider.Adapters.First();
 
-            _graphicsDevice = graphicsAdapter.CreateGraphicsDevice(_window, graphicsContextCount: 2);
+            _graphicsDevice = graphicsAdapter.CreateDevice(_window, contextCount: 2);
 
             base.Initialize(application);
         }
@@ -59,7 +59,7 @@ namespace TerraFX.Samples.Graphics
 
             if (_window.IsVisible)
             {
-                var currentGraphicsContext = _graphicsDevice.CurrentGraphicsContext;
+                var currentGraphicsContext = _graphicsDevice.CurrentContext;
                 currentGraphicsContext.BeginFrame();
 
                 Update(eventArgs.Delta);
@@ -75,7 +75,7 @@ namespace TerraFX.Samples.Graphics
         private void Render()
         {
             var graphicsDevice = _graphicsDevice;
-            var graphicsContext = graphicsDevice.CurrentGraphicsContext;
+            var graphicsContext = graphicsDevice.CurrentContext;
 
             var backgroundColor = new ColorRgba(red: 100.0f / 255.0f, green: 149.0f / 255.0f, blue: 237.0f / 255.0f, alpha: 1.0f);
 

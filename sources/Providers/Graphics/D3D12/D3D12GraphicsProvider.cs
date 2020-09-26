@@ -10,7 +10,6 @@ using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.DXGI_DEBUG_RLO_FLAGS;
 using static TerraFX.Interop.Windows;
-using static TerraFX.Utilities.DisposeUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
@@ -22,7 +21,7 @@ namespace TerraFX.Graphics.Providers.D3D12
     public sealed unsafe class D3D12GraphicsProvider : GraphicsProvider
     {
         private ValueLazy<Pointer<IDXGIFactory2>> _dxgiFactory;
-        private ValueLazy<ImmutableArray<D3D12GraphicsAdapter>> _graphicsAdapters;
+        private ValueLazy<ImmutableArray<D3D12GraphicsAdapter>> _adapters;
 
         private State _state;
 
@@ -31,28 +30,22 @@ namespace TerraFX.Graphics.Providers.D3D12
         public D3D12GraphicsProvider()
         {
             _dxgiFactory = new ValueLazy<Pointer<IDXGIFactory2>>(CreateDxgiFactory);
-            _graphicsAdapters = new ValueLazy<ImmutableArray<D3D12GraphicsAdapter>>(GetGraphicsAdapters);
+            _adapters = new ValueLazy<ImmutableArray<D3D12GraphicsAdapter>>(GetAdapters);
 
             _ = _state.Transition(to: Initialized);
         }
 
         /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsProvider" /> class.</summary>
-        ~D3D12GraphicsProvider()
-        {
-            Dispose(isDisposing: false);
-        }
+        ~D3D12GraphicsProvider() => Dispose(isDisposing: false);
 
-        /// <inheritdoc cref="GraphicsAdapters" />
-        public IEnumerable<D3D12GraphicsAdapter> D3D12GraphicsAdapters => _graphicsAdapters.Value;
+        /// <inheritdoc />
+        /// <exception cref="ExternalException">The call to <see cref="IDXGIFactory1.EnumAdapters1(uint, IDXGIAdapter1**)" /> failed.</exception>
+        public override IEnumerable<D3D12GraphicsAdapter> Adapters => _adapters.Value;
 
         /// <summary>Gets the underlying <see cref="IDXGIFactory2" /> for the provider.</summary>
         /// <exception cref="ExternalException">The call to <see cref="CreateDXGIFactory2" /> failed.</exception>
         /// <exception cref="ObjectDisposedException">The provider has been disposed.</exception>
         public IDXGIFactory2* DxgiFactory => _dxgiFactory.Value;
-
-        /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="IDXGIFactory1.EnumAdapters1(uint, IDXGIAdapter1**)" /> failed.</exception>
-        public override IEnumerable<GraphicsAdapter> GraphicsAdapters => D3D12GraphicsAdapters;
 
         /// <inheritdoc />
         protected override void Dispose(bool isDisposing)
@@ -61,7 +54,14 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             if (priorState < Disposing)
             {
-                _graphicsAdapters.Dispose(DisposeIfNotDefault);
+                if (_adapters.IsCreated)
+                {
+                    foreach (var adapter in _adapters.Value)
+                    {
+                        adapter?.Dispose();
+                    }
+                }
+
                 _dxgiFactory.Dispose(ReleaseIfNotNull);
 
                 if (DebugModeEnabled)
@@ -140,11 +140,11 @@ namespace TerraFX.Graphics.Providers.D3D12
             }
         }
 
-        private ImmutableArray<D3D12GraphicsAdapter> GetGraphicsAdapters()
+        private ImmutableArray<D3D12GraphicsAdapter> GetAdapters()
         {
             _state.ThrowIfDisposedOrDisposing();
 
-            var graphicsAdapters = ImmutableArray.CreateBuilder<D3D12GraphicsAdapter>();
+            var adapters = ImmutableArray.CreateBuilder<D3D12GraphicsAdapter>();
 
             var dxgiFactory = DxgiFactory;
             IDXGIAdapter1* dxgiAdapter = null;
@@ -167,8 +167,8 @@ namespace TerraFX.Graphics.Providers.D3D12
                     }
                     else
                     {
-                        var graphicsAdapter = new D3D12GraphicsAdapter(this, dxgiAdapter);
-                        graphicsAdapters.Add(graphicsAdapter);
+                        var adapter = new D3D12GraphicsAdapter(this, dxgiAdapter);
+                        adapters.Add(adapter);
 
                         dxgiAdapter = null;
                         index++;
@@ -183,7 +183,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                 ReleaseIfNotNull(dxgiAdapter);
             }
 
-            return graphicsAdapters.ToImmutable();
+            return adapters.ToImmutable();
         }
     }
 }

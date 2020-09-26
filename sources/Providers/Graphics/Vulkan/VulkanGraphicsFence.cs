@@ -21,8 +21,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private State _state;
 
-        internal VulkanGraphicsFence(VulkanGraphicsDevice graphicsDevice)
-            : base(graphicsDevice)
+        internal VulkanGraphicsFence(VulkanGraphicsDevice device)
+            : base(device)
         {
             _vulkanFence = new ValueLazy<VkFence>(CreateVulkanFence);
 
@@ -30,26 +30,23 @@ namespace TerraFX.Graphics.Providers.Vulkan
         }
 
         /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsFence" /> class.</summary>
-        ~VulkanGraphicsFence()
-        {
-            Dispose(isDisposing: false);
-        }
+        ~VulkanGraphicsFence() => Dispose(isDisposing: false);
+
+        /// <inheritdoc cref="GraphicsFence.Device" />
+        public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
 
         /// <summary>Gets the underlying <see cref="VkFence" /> for the fence.</summary>
         /// <exception cref="ObjectDisposedException">The fence has been disposed.</exception>
         public VkFence VulkanFence => _vulkanFence.Value;
 
-        /// <inheritdoc cref="GraphicsFence.GraphicsDevice" />
-        public VulkanGraphicsDevice VulkanGraphicsDevice => (VulkanGraphicsDevice)GraphicsDevice;
-
         /// <inheritdoc />
-        public override bool IsSignalled => vkGetFenceStatus(VulkanGraphicsDevice.VulkanDevice, VulkanFence) == VK_SUCCESS;
+        public override bool IsSignalled => vkGetFenceStatus(Device.VulkanDevice, VulkanFence) == VK_SUCCESS;
 
         /// <inheritdoc />
         public override void Reset()
         {
             var vulkanFence = VulkanFence;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkResetFences), vkResetFences(VulkanGraphicsDevice.VulkanDevice, fenceCount: 1, (ulong*)&vulkanFence));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkResetFences), vkResetFences(Device.VulkanDevice, fenceCount: 1, (ulong*)&vulkanFence));
         }
 
         /// <inheritdoc />
@@ -99,7 +96,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 pNext = null,
                 flags = (uint)VK_FENCE_CREATE_SIGNALED_BIT,
             };
-            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateFence), vkCreateFence(VulkanGraphicsDevice.VulkanDevice, &fenceCreateInfo, pAllocator: null, (ulong*)&vulkanFence));
+            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateFence), vkCreateFence(Device.VulkanDevice, &fenceCreateInfo, pAllocator: null, (ulong*)&vulkanFence));
 
             return vulkanFence;
         }
@@ -110,7 +107,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             if (vulkanFence != VK_NULL_HANDLE)
             {
-                vkDestroyFence(VulkanGraphicsDevice.VulkanDevice, vulkanFence, pAllocator: null);
+                vkDestroyFence(Device.VulkanDevice, vulkanFence, pAllocator: null);
             }
         }
 
@@ -121,7 +118,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             if (!fenceSignalled)
             {
                 var vulkanFence = VulkanFence;
-                var result = vkWaitForFences(VulkanGraphicsDevice.VulkanDevice, fenceCount: 1, (ulong*)&vulkanFence, waitAll: VK_TRUE, millisecondsTimeout);
+                var result = vkWaitForFences(Device.VulkanDevice, fenceCount: 1, (ulong*)&vulkanFence, waitAll: VK_TRUE, millisecondsTimeout);
 
                 if (result == VK_SUCCESS)
                 {

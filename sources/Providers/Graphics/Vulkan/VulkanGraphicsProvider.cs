@@ -77,7 +77,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private readonly string[] _optionalLayerNames;
 
         private ValueLazy<VkInstance> _vulkanInstance;
-        private ValueLazy<ImmutableArray<VulkanGraphicsAdapter>> _graphicsAdapters;
+        private ValueLazy<ImmutableArray<VulkanGraphicsAdapter>> _adapters;
 
         private VkDebugReportCallbackEXT _vulkanDebugReportCallbackExt;
 
@@ -107,7 +107,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             _optionalLayerNames = GetNames(OptionalLayerNamesDataName);
 
             _vulkanInstance = new ValueLazy<VkInstance>(CreateVulkanInstance);
-            _graphicsAdapters = new ValueLazy<ImmutableArray<VulkanGraphicsAdapter>>(GetGraphicsAdapters);
+            _adapters = new ValueLazy<ImmutableArray<VulkanGraphicsAdapter>>(GetGraphicsAdapters);
 
             _ = _state.Transition(to: Initialized);
 
@@ -143,10 +143,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="vkEnumeratePhysicalDevices(IntPtr, uint*, IntPtr*)" /> failed.</exception>
-        public override IEnumerable<GraphicsAdapter> GraphicsAdapters => VulkanGraphicsAdapters;
-
-        /// <inheritdoc cref="GraphicsAdapters" />
-        public IEnumerable<VulkanGraphicsAdapter> VulkanGraphicsAdapters => _graphicsAdapters.Value;
+        public override IEnumerable<VulkanGraphicsAdapter> Adapters => _adapters.Value;
 
         /// <summary>Gets the underlying <see cref="VkInstance" /> for the provider.</summary>
         /// <exception cref="ExternalException">The call to <see cref="vkCreateInstance(VkInstanceCreateInfo*, VkAllocationCallbacks*, IntPtr*)" /> failed.</exception>
@@ -411,15 +408,15 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var physicalDevices = stackalloc VkPhysicalDevice[unchecked((int)physicalDeviceCount)];
             ThrowExternalExceptionIfNotSuccess(nameof(vkEnumeratePhysicalDevices), vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, (IntPtr*)physicalDevices));
 
-            var graphicsAdapters = ImmutableArray.CreateBuilder<VulkanGraphicsAdapter>(unchecked((int)physicalDeviceCount));
+            var adapters = ImmutableArray.CreateBuilder<VulkanGraphicsAdapter>(unchecked((int)physicalDeviceCount));
 
             for (uint index = 0; index < physicalDeviceCount; index++)
             {
-                var graphicsAdapter = new VulkanGraphicsAdapter(this, physicalDevices[index]);
-                graphicsAdapters.Add(graphicsAdapter);
+                var adapter = new VulkanGraphicsAdapter(this, physicalDevices[index]);
+                adapters.Add(adapter);
             }
 
-            return graphicsAdapters.ToImmutable();
+            return adapters.ToImmutable();
         }
     }
 }

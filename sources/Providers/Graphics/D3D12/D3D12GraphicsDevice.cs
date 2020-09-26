@@ -13,7 +13,6 @@ using static TerraFX.Interop.D3D12_RESOURCE_HEAP_TIER;
 using static TerraFX.Interop.DXGI_FORMAT;
 using static TerraFX.Interop.DXGI_SWAP_EFFECT;
 using static TerraFX.Interop.Windows;
-using static TerraFX.Utilities.DisposeUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.InteropUtilities;
 using static TerraFX.Utilities.State;
@@ -23,73 +22,80 @@ namespace TerraFX.Graphics.Providers.D3D12
     /// <inheritdoc />
     public sealed unsafe class D3D12GraphicsDevice : GraphicsDevice
     {
-        private readonly D3D12GraphicsFence _idleGraphicsFence;
+        private readonly D3D12GraphicsFence _idleFence;
 
         private ValueLazy<Pointer<ID3D12CommandQueue>> _d3d12CommandQueue;
         private ValueLazy<Pointer<ID3D12Device>> _d3d12Device;
+        private ValueLazy<D3D12_FEATURE_DATA_D3D12_OPTIONS> _d3d12Options;
         private ValueLazy<Pointer<ID3D12DescriptorHeap>> _d3d12RenderTargetDescriptorHeap;
         private ValueLazy<Pointer<ID3D12DescriptorHeap>> _d3d12ShaderResourceDescriptorHeap;
         private ValueLazy<Pointer<IDXGISwapChain3>> _dxgiSwapChain;
+        private ValueLazy<D3D12GraphicsMemoryAllocator> _memoryAllocator;
 
-        private D3D12GraphicsContext[] _graphicsContexts;
-        private int _graphicsContextIndex;
-        private DXGI_FORMAT _dxgiSwapChainFormat;
+        private D3D12GraphicsContext[] _contexts;
+        private int _contextIndex;
+        private DXGI_FORMAT _swapChainFormat;
 
         private State _state;
 
-        internal D3D12GraphicsDevice(D3D12GraphicsAdapter graphicsAdapter, IGraphicsSurface graphicsSurface, int graphicsContextCount)
-            : base(graphicsAdapter, graphicsSurface)
+        internal D3D12GraphicsDevice(D3D12GraphicsAdapter adapter, IGraphicsSurface surface, int contextCount)
+            : base(adapter, surface)
         {
-            _idleGraphicsFence = new D3D12GraphicsFence(this);
+            _idleFence = new D3D12GraphicsFence(this);
 
             _d3d12CommandQueue = new ValueLazy<Pointer<ID3D12CommandQueue>>(CreateD3D12CommandQueue);
             _d3d12Device = new ValueLazy<Pointer<ID3D12Device>>(CreateD3D12Device);
+            _d3d12Options = new ValueLazy<D3D12_FEATURE_DATA_D3D12_OPTIONS>(GetD3D12Options);
             _d3d12RenderTargetDescriptorHeap = new ValueLazy<Pointer<ID3D12DescriptorHeap>>(CreateD3D12RenderTargetDescriptorHeap);
             _d3d12ShaderResourceDescriptorHeap = new ValueLazy<Pointer<ID3D12DescriptorHeap>>(CreateD3D12ShaderResourceDescriptorHeap);
             _dxgiSwapChain = new ValueLazy<Pointer<IDXGISwapChain3>>(CreateDxgiSwapChain);
+            _memoryAllocator = new ValueLazy<D3D12GraphicsMemoryAllocator>(CreateMemoryAllocator);
 
-            _graphicsContexts = CreateGraphicsContexts(this, graphicsContextCount);
+            _contexts = CreateContexts(this, contextCount);
 
             _ = _state.Transition(to: Initialized);
 
             WaitForIdleGraphicsFence.Reset();
-            graphicsSurface.SizeChanged += OnGraphicsSurfaceSizeChanged;
+            surface.SizeChanged += OnGraphicsSurfaceSizeChanged;
 
-            static D3D12GraphicsContext[] CreateGraphicsContexts(D3D12GraphicsDevice graphicsDevice, int graphicsContextCount)
+            static D3D12GraphicsContext[] CreateContexts(D3D12GraphicsDevice device, int contextCount)
             {
-                var graphicsContexts = new D3D12GraphicsContext[graphicsContextCount];
+                var contexts = new D3D12GraphicsContext[contextCount];
 
-                for (var index = 0; index < graphicsContexts.Length; index++)
+                for (var index = 0; index < contexts.Length; index++)
                 {
-                    graphicsContexts[index] = new D3D12GraphicsContext(graphicsDevice, index);
+                    contexts[index] = new D3D12GraphicsContext(device, index);
                 }
 
-                return graphicsContexts;
+                return contexts;
             }
         }
 
         /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsDevice" /> class.</summary>
-        ~D3D12GraphicsDevice()
-        {
-            Dispose(isDisposing: false);
-        }
+        ~D3D12GraphicsDevice() => Dispose(isDisposing: false);
+
+        /// <inheritdoc cref="GraphicsDevice.Adapter" />
+        public new D3D12GraphicsAdapter Adapter => (D3D12GraphicsAdapter)base.Adapter;
+
+        /// <inheritdoc />
+        public override int ContextIndex => _contextIndex;
+
+        /// <inheritdoc />
+        public override ReadOnlySpan<GraphicsContext> Contexts => _contexts;
+
+        /// <inheritdoc cref="GraphicsDevice.CurrentContext" />
+        public new D3D12GraphicsContext CurrentContext => (D3D12GraphicsContext)base.CurrentContext;
 
         /// <summary>Gets the <see cref="ID3D12CommandQueue" /> used by the device.</summary>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
         public ID3D12CommandQueue* D3D12CommandQueue => _d3d12CommandQueue.Value;
 
-        /// <inheritdoc cref="GraphicsDevice.CurrentGraphicsContext" />
-        public D3D12GraphicsContext D3D12CurrentGraphicsContext => (D3D12GraphicsContext)CurrentGraphicsContext;
-
         /// <summary>Gets the underlying <see cref="ID3D12Device" /> for the device.</summary>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
         public ID3D12Device* D3D12Device => _d3d12Device.Value;
 
-        /// <inheritdoc cref="GraphicsDevice.GraphicsAdapter" />
-        public D3D12GraphicsAdapter D3D12GraphicsAdapter => (D3D12GraphicsAdapter)GraphicsAdapter;
-
-        /// <inheritdoc cref="GraphicsContexts" />
-        public ReadOnlySpan<D3D12GraphicsContext> D3D12GraphicsContexts => _graphicsContexts;
+        /// <summary>Gets the <see cref="D3D12_FEATURE_DATA_D3D12_OPTIONS" /> for the device.</summary>
+        public ref readonly D3D12_FEATURE_DATA_D3D12_OPTIONS D3D12Options => ref _d3d12Options.ValueRef;
 
         /// <summary>Gets the <see cref="ID3D12DescriptorHeap" /> used by the device for render target resources.</summary>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
@@ -103,81 +109,67 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
         public IDXGISwapChain3* DxgiSwapChain => _dxgiSwapChain.Value;
 
+        /// <inheritdoc />
+        public override D3D12GraphicsMemoryAllocator MemoryAllocator => _memoryAllocator.Value;
+
         /// <summary>Gets the <see cref="DXGI_FORMAT" /> used by <see cref="DxgiSwapChain" />.</summary>
-        public DXGI_FORMAT DxgiSwapChainFormat => _dxgiSwapChainFormat;
+        public DXGI_FORMAT SwapChainFormat => _swapChainFormat;
 
-        /// <inheritdoc />
-        public override ReadOnlySpan<GraphicsContext> GraphicsContexts => _graphicsContexts;
-
-        /// <inheritdoc />
-        public override int GraphicsContextIndex => _graphicsContextIndex;
-
-        /// <summary>Gets a graphics fence that is used to wait for the device to become idle.</summary>
+        /// <summary>Gets a fence that is used to wait for the device to become idle.</summary>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-        public D3D12GraphicsFence WaitForIdleGraphicsFence => _idleGraphicsFence;
+        public D3D12GraphicsFence WaitForIdleGraphicsFence => _idleFence;
 
-        /// <inheritdoc cref="CreateGraphicsHeap(ulong, GraphicsHeapCpuAccess)" />
-        public D3D12GraphicsHeap CreateD3D12GraphicsHeap(ulong size, GraphicsHeapCpuAccess cpuAccess)
-        {
-            _state.ThrowIfDisposedOrDisposing();
-            return new D3D12GraphicsHeap(this, size, cpuAccess);
-        }
+        /// <inheritdoc />
+        public override D3D12GraphicsPipeline CreatePipeline(GraphicsPipelineSignature signature, GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null)
+            => CreatePipeline((D3D12GraphicsPipelineSignature)signature, (D3D12GraphicsShader?)vertexShader, (D3D12GraphicsShader?)pixelShader);
 
-        /// <inheritdoc cref="CreateGraphicsPipeline(GraphicsPipelineSignature, GraphicsShader?, GraphicsShader?)" />
-        public D3D12GraphicsPipeline CreateD3D12GraphicsPipeline(D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader ? vertexShader = null, D3D12GraphicsShader? pixelShader = null)
+        private D3D12GraphicsPipeline CreatePipeline(D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader)
         {
             _state.ThrowIfDisposedOrDisposing();
             return new D3D12GraphicsPipeline(this, signature, vertexShader, pixelShader);
         }
 
-        /// <inheritdoc cref="CreateGraphicsPrimitive(GraphicsPipeline, GraphicsBuffer, GraphicsBuffer, ReadOnlySpan{GraphicsResource})" />
-        public D3D12GraphicsPrimitive CreateD3D12GraphicsPrimitive(D3D12GraphicsPipeline graphicsPipeline, D3D12GraphicsBuffer vertexBuffer, D3D12GraphicsBuffer? indexBuffer = null, ReadOnlySpan<GraphicsResource> inputResources = default)
-        {
-            _state.ThrowIfDisposedOrDisposing();
-            return new D3D12GraphicsPrimitive(this, graphicsPipeline, vertexBuffer, indexBuffer, inputResources);
-        }
-
-        /// <inheritdoc cref="CreateGraphicsShader(GraphicsShaderKind, ReadOnlySpan{byte}, string)" />
-        public D3D12GraphicsShader CreateD3D12GraphicsShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
-        {
-            _state.ThrowIfDisposedOrDisposing();
-            return new D3D12GraphicsShader(this, kind, bytecode, entryPointName);
-        }
-
         /// <inheritdoc />
-        public override GraphicsHeap CreateGraphicsHeap(ulong size, GraphicsHeapCpuAccess cpuAccess) => CreateD3D12GraphicsHeap(size, cpuAccess);
-
-        /// <inheritdoc />
-        public override GraphicsPipeline CreateGraphicsPipeline(GraphicsPipelineSignature signature, GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null) => CreateD3D12GraphicsPipeline((D3D12GraphicsPipelineSignature)signature, (D3D12GraphicsShader?)vertexShader, (D3D12GraphicsShader?)pixelShader);
-
-        /// <inheritdoc />
-        public override GraphicsPipelineSignature CreateGraphicsPipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResource> resources = default)
+        public override D3D12GraphicsPipelineSignature CreatePipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResource> resources = default)
         {
             _state.ThrowIfDisposedOrDisposing();
             return new D3D12GraphicsPipelineSignature(this, inputs, resources);
         }
 
         /// <inheritdoc />
-        public override GraphicsPrimitive CreateGraphicsPrimitive(GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer, GraphicsBuffer? indexBuffer = null, ReadOnlySpan<GraphicsResource> inputResources = default) => CreateD3D12GraphicsPrimitive((D3D12GraphicsPipeline)graphicsPipeline, (D3D12GraphicsBuffer)vertexBuffer, (D3D12GraphicsBuffer?)indexBuffer, inputResources);
+        public override D3D12GraphicsPrimitive CreatePrimitive(GraphicsPipeline pipeline, in GraphicsBufferView vertexBufferView, in GraphicsBufferView indexBufferView = default, ReadOnlySpan<GraphicsResource> inputResources = default)
+            => CreatePrimitive((D3D12GraphicsPipeline)pipeline, in vertexBufferView, in indexBufferView, inputResources);
+
+        /// <inheritdoc cref="CreatePrimitive(GraphicsPipeline, in GraphicsBufferView, in GraphicsBufferView, ReadOnlySpan{GraphicsResource})" />
+        private D3D12GraphicsPrimitive CreatePrimitive(D3D12GraphicsPipeline pipeline, in GraphicsBufferView vertexBufferView, in GraphicsBufferView indexBufferView, ReadOnlySpan<GraphicsResource> inputResources)
+        {
+            _state.ThrowIfDisposedOrDisposing();
+            return new D3D12GraphicsPrimitive(this, pipeline, in vertexBufferView, in indexBufferView, inputResources);
+        }
 
         /// <inheritdoc />
-        public override GraphicsShader CreateGraphicsShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName) => CreateD3D12GraphicsShader(kind, bytecode, entryPointName);
+        public override D3D12GraphicsShader CreateShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
+        {
+            _state.ThrowIfDisposedOrDisposing();
+            return new D3D12GraphicsShader(this, kind, bytecode, entryPointName);
+        }
 
         /// <inheritdoc />
         public override void PresentFrame()
         {
-            ThrowExternalExceptionIfFailed(nameof(IDXGISwapChain.Present), DxgiSwapChain->Present(1, 0));
+            ThrowExternalExceptionIfFailed(nameof(IDXGISwapChain.Present), DxgiSwapChain->Present(SyncInterval: 1, Flags: 0));
 
-            Signal(D3D12CurrentGraphicsContext.D3D12GraphicsFence);
-            _graphicsContextIndex = unchecked((int)DxgiSwapChain->GetCurrentBackBufferIndex());
+            Signal(CurrentContext.Fence);
+            _contextIndex = unchecked((int)DxgiSwapChain->GetCurrentBackBufferIndex());
         }
 
-        /// <inheritdoc cref="Signal(GraphicsFence)" />
-        public void Signal(D3D12GraphicsFence graphicsFence)
-            => ThrowExternalExceptionIfFailed(nameof(ID3D12CommandQueue.Signal), D3D12CommandQueue->Signal(graphicsFence.D3D12Fence, graphicsFence.D3D12FenceSignalValue));
-
         /// <inheritdoc />
-        public override void Signal(GraphicsFence graphicsFence) => Signal((D3D12GraphicsFence)graphicsFence);
+        public override void Signal(GraphicsFence fence)
+            => Signal((D3D12GraphicsFence)fence);
+
+        /// <inheritdoc cref="Signal(GraphicsFence)" />
+        public void Signal(D3D12GraphicsFence fence)
+            => ThrowExternalExceptionIfFailed(nameof(ID3D12CommandQueue.Signal), D3D12CommandQueue->Signal(fence.D3D12Fence, fence.D3D12FenceSignalValue));
 
         /// <inheritdoc />
         public override void WaitForIdle()
@@ -201,14 +193,18 @@ namespace TerraFX.Graphics.Providers.D3D12
             if (priorState < Disposing)
             {
                 WaitForIdle();
-                DisposeIfNotNull(_graphicsContexts);
+
+                foreach (var context in _contexts)
+                {
+                    context?.Dispose();
+                }
 
                 _d3d12ShaderResourceDescriptorHeap.Dispose(ReleaseIfNotNull);
                 _d3d12RenderTargetDescriptorHeap.Dispose(ReleaseIfNotNull);
                 _dxgiSwapChain.Dispose(ReleaseIfNotNull);
                 _d3d12CommandQueue.Dispose(ReleaseIfNotNull);
 
-                DisposeIfNotNull(_idleGraphicsFence);
+                _idleFence?.Dispose();
 
                 _d3d12Device.Dispose(ReleaseIfNotNull);
             }
@@ -236,7 +232,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             ID3D12Device* d3d12Device;
 
             var iid = IID_ID3D12Device;
-            ThrowExternalExceptionIfFailed(nameof(D3D12CreateDevice), D3D12CreateDevice((IUnknown*)D3D12GraphicsAdapter.DxgiAdapter, D3D_FEATURE_LEVEL_11_0, &iid, (void**)&d3d12Device));
+            ThrowExternalExceptionIfFailed(nameof(D3D12CreateDevice), D3D12CreateDevice((IUnknown*)Adapter.DxgiAdapter, D3D_FEATURE_LEVEL_11_0, &iid, (void**)&d3d12Device));
 
             D3D12_FEATURE_DATA_D3D12_OPTIONS d3d12Options;
             ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CheckFeatureSupport), d3d12Device->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &d3d12Options, SizeOf<D3D12_FEATURE_DATA_D3D12_OPTIONS>()));
@@ -256,7 +252,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             var renderTargetDescriptorHeapDesc = new D3D12_DESCRIPTOR_HEAP_DESC {
                 Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV,
-                NumDescriptors = (uint)D3D12GraphicsContexts.Length,
+                NumDescriptors = (uint)Contexts.Length,
             };
 
             var iid = IID_ID3D12DescriptorHeap;
@@ -289,62 +285,73 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             IDXGISwapChain3* dxgiSwapChain;
 
-            var graphicsSurface = GraphicsSurface;
-            var graphicsSurfaceHandle = graphicsSurface.SurfaceHandle;
+            var surface = Surface;
+            var surfaceHandle = surface.SurfaceHandle;
 
             var swapChainDesc = new DXGI_SWAP_CHAIN_DESC1 {
-                Width = (uint)graphicsSurface.Width,
-                Height = (uint)graphicsSurface.Height,
+                Width = (uint)surface.Width,
+                Height = (uint)surface.Height,
                 Format = DXGI_FORMAT_R8G8B8A8_UNORM,
                 SampleDesc = new DXGI_SAMPLE_DESC(count: 1, quality: 0),
                 BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT,
-                BufferCount = (uint)D3D12GraphicsContexts.Length,
+                BufferCount = (uint)Contexts.Length,
                 SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL,
             };
 
-            var graphicsProvider = D3D12GraphicsAdapter.D3D12GraphicsProvider;
+            var provider = Adapter.Provider;
             var iid = IID_IDXGISwapChain3;
 
-            switch (graphicsSurface.SurfaceKind)
+            switch (surface.SurfaceKind)
             {
                 case GraphicsSurfaceKind.Win32:
                 {
-                    ThrowExternalExceptionIfFailed(nameof(IDXGIFactory2.CreateSwapChainForHwnd), graphicsProvider.DxgiFactory->CreateSwapChainForHwnd((IUnknown*)D3D12CommandQueue, graphicsSurfaceHandle, &swapChainDesc, pFullscreenDesc: null, pRestrictToOutput: null, (IDXGISwapChain1**)&dxgiSwapChain));
+                    ThrowExternalExceptionIfFailed(nameof(IDXGIFactory2.CreateSwapChainForHwnd), provider.DxgiFactory->CreateSwapChainForHwnd((IUnknown*)D3D12CommandQueue, surfaceHandle, &swapChainDesc, pFullscreenDesc: null, pRestrictToOutput: null, (IDXGISwapChain1**)&dxgiSwapChain));
                     break;
                 }
 
                 default:
                 {
-                    ThrowInvalidOperationException(nameof(graphicsSurface), graphicsSurface);
+                    ThrowInvalidOperationException(nameof(surface), surface);
                     dxgiSwapChain = null;
                     break;
                 }
             }
 
             // Fullscreen transitions are not currently supported
-            ThrowExternalExceptionIfFailed(nameof(IDXGIFactory.MakeWindowAssociation), graphicsProvider.DxgiFactory->MakeWindowAssociation(graphicsSurfaceHandle, DXGI_MWA_NO_ALT_ENTER));
+            ThrowExternalExceptionIfFailed(nameof(IDXGIFactory.MakeWindowAssociation), provider.DxgiFactory->MakeWindowAssociation(surfaceHandle, DXGI_MWA_NO_ALT_ENTER));
 
-            _dxgiSwapChainFormat = swapChainDesc.Format;
-            _graphicsContextIndex = unchecked((int)dxgiSwapChain->GetCurrentBackBufferIndex());
+            _swapChainFormat = swapChainDesc.Format;
+            _contextIndex = unchecked((int)dxgiSwapChain->GetCurrentBackBufferIndex());
 
             return dxgiSwapChain;
         }
 
-        /// <inheritdoc />
+        private D3D12GraphicsMemoryAllocator CreateMemoryAllocator()
+            => new D3D12GraphicsMemoryAllocator(this, blockPreferredSize: 0);
+
+        private D3D12_FEATURE_DATA_D3D12_OPTIONS GetD3D12Options()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            D3D12_FEATURE_DATA_D3D12_OPTIONS d3d12Options;
+            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CheckFeatureSupport), D3D12Device->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &d3d12Options, SizeOf<D3D12_FEATURE_DATA_D3D12_OPTIONS>()));
+            return d3d12Options;
+        }
+
         private void OnGraphicsSurfaceSizeChanged(object? sender, PropertyChangedEventArgs<Vector2> eventArgs)
         {
             WaitForIdle();
 
-            foreach (var graphicsContext in D3D12GraphicsContexts)
+            foreach (var context in Contexts)
             {
-                graphicsContext.OnGraphicsSurfaceSizeChanged(sender, eventArgs);
+                ((D3D12GraphicsContext)context).OnGraphicsSurfaceSizeChanged(sender, eventArgs);
             }
 
             if (_dxgiSwapChain.IsCreated)
             {
-                var graphicsSurface = GraphicsSurface;
-                ThrowExternalExceptionIfFailed(nameof(IDXGISwapChain.ResizeBuffers), DxgiSwapChain->ResizeBuffers((uint)D3D12GraphicsContexts.Length, (uint)graphicsSurface.Width, (uint)graphicsSurface.Height, DXGI_FORMAT_R8G8B8A8_UNORM, SwapChainFlags: 0));
-                _graphicsContextIndex = unchecked((int)DxgiSwapChain->GetCurrentBackBufferIndex());
+                var surface = Surface;
+                ThrowExternalExceptionIfFailed(nameof(IDXGISwapChain.ResizeBuffers), DxgiSwapChain->ResizeBuffers((uint)Contexts.Length, (uint)surface.Width, (uint)surface.Height, DXGI_FORMAT_R8G8B8A8_UNORM, SwapChainFlags: 0));
+                _contextIndex = unchecked((int)DxgiSwapChain->GetCurrentBackBufferIndex());
             }
         }
     }

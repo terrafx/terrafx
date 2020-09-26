@@ -9,19 +9,19 @@ namespace TerraFX.Graphics
     /// <summary>A graphics fence which can be used to synchronize the processor and a graphics context.</summary>
     public abstract class GraphicsFence : IDisposable
     {
-        private readonly GraphicsDevice _graphicsDevice;
+        private readonly GraphicsDevice _device;
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsFence" /> class.</summary>
-        /// <param name="graphicsDevice">The graphics device for which the fence provides synchronization.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="graphicsDevice" /> is <c>null</c>.</exception>
-        protected GraphicsFence(GraphicsDevice graphicsDevice)
+        /// <param name="device">The device for which the fence provides synchronization.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c>.</exception>
+        protected GraphicsFence(GraphicsDevice device)
         {
-            ThrowIfNull(graphicsDevice, nameof(graphicsDevice));
-            _graphicsDevice = graphicsDevice;
+            ThrowIfNull(device, nameof(device));
+            _device = device;
         }
 
-        /// <summary>Gets the graphics device for which the fence provides synchronization.</summary>
-        public GraphicsDevice GraphicsDevice => _graphicsDevice;
+        /// <summary>Gets the device for which the fence provides synchronization.</summary>
+        public GraphicsDevice Device => _device;
 
         /// <summary>Gets <c>true</c> if the fence is in the signalled state; otherwise, <c>false</c>.</summary>
         /// <exception cref="ObjectDisposedException">The fence has been disposed.</exception>

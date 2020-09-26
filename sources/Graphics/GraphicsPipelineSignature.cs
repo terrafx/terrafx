@@ -8,26 +8,26 @@ namespace TerraFX.Graphics
     /// <summary>A graphics pipeline signature which details the inputs given and resources available to a graphics pipeline.</summary>
     public abstract class GraphicsPipelineSignature : IDisposable
     {
-        private readonly GraphicsDevice _graphicsDevice;
+        private readonly GraphicsDevice _device;
         private readonly GraphicsPipelineInput[] _inputs;
         private readonly GraphicsPipelineResource[] _resources;
 
         /// <summary>Creates a new instance of the <see cref="GraphicsPipelineSignature" /> class.</summary>
-        /// <param name="graphicsDevice">The graphics device for which the pipeline signature was created.</param>
+        /// <param name="device">The device for which the pipeline signature was created.</param>
         /// <param name="inputs">The inputs given to the graphics pipeline or <see cref="ReadOnlySpan{T}.Empty" /> if none exist.</param>
         /// <param name="resources">The resources available to the graphics pipeline or <see cref="ReadOnlySpan{T}.Empty" /> if none exist.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="graphicsDevice" /> is <c>null</c>.</exception>
-        protected GraphicsPipelineSignature(GraphicsDevice graphicsDevice, ReadOnlySpan<GraphicsPipelineInput> inputs, ReadOnlySpan<GraphicsPipelineResource> resources)
+        /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c>.</exception>
+        protected GraphicsPipelineSignature(GraphicsDevice device, ReadOnlySpan<GraphicsPipelineInput> inputs, ReadOnlySpan<GraphicsPipelineResource> resources)
         {
-            ThrowIfNull(graphicsDevice, nameof(graphicsDevice));
+            ThrowIfNull(device, nameof(device));
 
-            _graphicsDevice = graphicsDevice;
+            _device = device;
             _inputs = inputs.ToArray();
             _resources = resources.ToArray();
         }
 
-        /// <summary>Gets the graphics device for which the pipeline was created.</summary>
-        public GraphicsDevice GraphicsDevice => _graphicsDevice;
+        /// <summary>Gets the device for which the pipeline was created.</summary>
+        public GraphicsDevice Device => _device;
 
         /// <summary>Gets the inputs given to the graphics pipeline or <see cref="ReadOnlySpan{T}.Empty" /> if none exist.</summary>
         public ReadOnlySpan<GraphicsPipelineInput> Inputs => _inputs;

@@ -8,7 +8,6 @@ using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.D3D12_PRIMITIVE_TOPOLOGY_TYPE;
 using static TerraFX.Interop.DXGI_FORMAT;
 using static TerraFX.Interop.Windows;
-using static TerraFX.Utilities.DisposeUtilities;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.D3D12
@@ -20,8 +19,8 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private State _state;
 
-        internal D3D12GraphicsPipeline(D3D12GraphicsDevice graphicsDevice, D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader)
-            : base(graphicsDevice, signature, vertexShader, pixelShader)
+        internal D3D12GraphicsPipeline(D3D12GraphicsDevice device, D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader)
+            : base(device, signature, vertexShader, pixelShader)
         {
             _d3d12PipelineState = new ValueLazy<Pointer<ID3D12PipelineState>>(CreateD3D12GraphicsPipelineState);
 
@@ -29,10 +28,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         }
 
         /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsPipeline" /> class.</summary>
-        ~D3D12GraphicsPipeline()
-        {
-            Dispose(isDisposing: false);
-        }
+        ~D3D12GraphicsPipeline() => Dispose(isDisposing: false);
 
         // COLOR
         private static ReadOnlySpan<sbyte> COLOR_SEMANTIC_NAME => new sbyte[] { 0x43, 0x4F, 0x4C, 0x4F, 0x52, 0x00 };
@@ -43,20 +39,20 @@ namespace TerraFX.Graphics.Providers.D3D12
         // TEXCOORD
         private static ReadOnlySpan<sbyte> TEXCOORD_SEMANTIC_NAME => new sbyte[] { 0x54, 0x45, 0x58, 0x43, 0x4F, 0x4F, 0x52, 0x44, 0x00 };
 
-        /// <inheritdoc cref="GraphicsPipeline.GraphicsDevice" />
-        public D3D12GraphicsDevice D3D12GraphicsDevice => (D3D12GraphicsDevice)GraphicsDevice;
+        /// <inheritdoc cref="GraphicsPipeline.Device" />
+        public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
 
         /// <summary>Gets the underlying <see cref="ID3D12PipelineState" /> for the pipeline.</summary>
         public ID3D12PipelineState* D3D12PipelineState => _d3d12PipelineState.Value;
 
         /// <inheritdoc cref="GraphicsPipeline.PixelShader" />
-        public D3D12GraphicsShader? D3D12PixelShader => (D3D12GraphicsShader?)PixelShader;
+        public new D3D12GraphicsShader? PixelShader => (D3D12GraphicsShader?)base.PixelShader;
 
         /// <inheritdoc cref="GraphicsPipeline.Signature" />
-        public D3D12GraphicsPipelineSignature D3D12Signature => (D3D12GraphicsPipelineSignature)Signature;
+        public new D3D12GraphicsPipelineSignature Signature => (D3D12GraphicsPipelineSignature)base.Signature;
 
         /// <inheritdoc cref="GraphicsPipeline.VertexShader" />
-        public D3D12GraphicsShader? D3D12VertexShader => (D3D12GraphicsShader?)VertexShader;
+        public new D3D12GraphicsShader? VertexShader => (D3D12GraphicsShader?)base.VertexShader;
 
         /// <inheritdoc />
         protected override void Dispose(bool isDisposing)
@@ -67,9 +63,9 @@ namespace TerraFX.Graphics.Providers.D3D12
             {
                 _d3d12PipelineState.Dispose(ReleaseIfNotNull);
 
-                DisposeIfNotNull(Signature);
-                DisposeIfNotNull(PixelShader);
-                DisposeIfNotNull(VertexShader);
+                Signature?.Dispose();
+                PixelShader?.Dispose();
+                VertexShader?.Dispose();
             }
 
             _state.EndDispose();
@@ -83,8 +79,8 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             var inputElementDescs = Array.Empty<D3D12_INPUT_ELEMENT_DESC>();
 
-            var graphicsPipelineStateDesc = new D3D12_GRAPHICS_PIPELINE_STATE_DESC {
-                pRootSignature = D3D12Signature.D3D12RootSignature,
+            var pipelineStateDesc = new D3D12_GRAPHICS_PIPELINE_STATE_DESC {
+                pRootSignature = Signature.D3D12RootSignature,
                 RasterizerState = D3D12_RASTERIZER_DESC.DEFAULT,
                 BlendState = D3D12_BLEND_DESC.DEFAULT,
                 DepthStencilState = D3D12_DEPTH_STENCIL_DESC.DEFAULT,
@@ -93,14 +89,14 @@ namespace TerraFX.Graphics.Providers.D3D12
                 NumRenderTargets = 1,
                 SampleDesc = new DXGI_SAMPLE_DESC(count: 1, quality: 0),
             };
-            graphicsPipelineStateDesc.DepthStencilState.DepthEnable = FALSE;
-            graphicsPipelineStateDesc.RTVFormats[0] = D3D12GraphicsDevice.DxgiSwapChainFormat;
+            pipelineStateDesc.DepthStencilState.DepthEnable = FALSE;
+            pipelineStateDesc.RTVFormats[0] = Device.SwapChainFormat;
 
-            var vertexShader = D3D12VertexShader;
+            var vertexShader = VertexShader;
 
-            if (vertexShader != null)
+            if (vertexShader is not null)
             {
-                var inputs = D3D12Signature.Inputs;
+                var inputs = Signature.Inputs;
                 var inputsLength = inputs.Length;
 
                 var inputElementsCount = GetInputElementsCount(inputs);
@@ -139,25 +135,25 @@ namespace TerraFX.Graphics.Providers.D3D12
                     }
                 }
 
-                graphicsPipelineStateDesc.VS = vertexShader.D3D12ShaderBytecode;
+                pipelineStateDesc.VS = vertexShader.D3D12ShaderBytecode;
             }
 
-            var pixelShader = D3D12PixelShader;
+            var pixelShader = PixelShader;
 
-            if (pixelShader != null)
+            if (pixelShader is not null)
             {
-                graphicsPipelineStateDesc.PS = pixelShader.D3D12ShaderBytecode;
+                pipelineStateDesc.PS = pixelShader.D3D12ShaderBytecode;
             }
 
             fixed (D3D12_INPUT_ELEMENT_DESC* pInputElementDescs = inputElementDescs)
             {
-                graphicsPipelineStateDesc.InputLayout = new D3D12_INPUT_LAYOUT_DESC {
+                pipelineStateDesc.InputLayout = new D3D12_INPUT_LAYOUT_DESC {
                     pInputElementDescs = pInputElementDescs,
                     NumElements = unchecked((uint)inputElementDescs.Length),
                 };
 
                 var iid = IID_ID3D12PipelineState;
-                ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateGraphicsPipelineState), D3D12GraphicsDevice.D3D12Device->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, &iid, (void**)&d3d12GraphicsPipelineState));
+                ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateGraphicsPipelineState), Device.D3D12Device->CreateGraphicsPipelineState(&pipelineStateDesc, &iid, (void**)&d3d12GraphicsPipelineState));
             }
             return d3d12GraphicsPipelineState;
 

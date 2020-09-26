@@ -33,24 +33,6 @@ namespace TerraFX.Utilities
         /// <summary><c>true</c> if the value has already been created; otherwise, <c>false</c>.</summary>
         public bool IsCreated => _state == Created;
 
-        /// <summary>Gets a reference to the underyling value for the instance.</summary>
-        /// <remarks>This property is unsafe as it returns a reference to a struct field.</remarks>
-        /// <exception cref="ObjectDisposedException">The lazy value has been disposed.</exception>
-        public ref T RefValue
-        {
-            get
-            {
-                _state.AssertNotDisposedOrDisposing();
-
-                if (!IsCreated)
-                {
-                    CreateValue();
-                }
-
-                return ref MemoryMarshal.GetReference(MemoryMarshal.CreateSpan(ref _value, 1));
-            }
-        }
-
         /// <summary>Gets the value for the instance.</summary>
         /// <exception cref="ObjectDisposedException">The lazy value has been disposed.</exception>
         public T Value
@@ -65,6 +47,24 @@ namespace TerraFX.Utilities
                 }
 
                 return _value;
+            }
+        }
+
+        /// <summary>Gets a reference to the underyling value for the instance.</summary>
+        /// <remarks>This property is unsafe as it returns a reference to a struct field.</remarks>
+        /// <exception cref="ObjectDisposedException">The lazy value has been disposed.</exception>
+        public ref T ValueRef
+        {
+            get
+            {
+                _state.AssertNotDisposedOrDisposing();
+
+                if (!IsCreated)
+                {
+                    CreateValue();
+                }
+
+                return ref MemoryMarshal.GetReference(MemoryMarshal.CreateSpan(ref _value, 1));
             }
         }
 

@@ -20,8 +20,8 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private State _state;
 
-        internal D3D12GraphicsPipelineSignature(D3D12GraphicsDevice graphicsDevice, ReadOnlySpan<GraphicsPipelineInput> inputs, ReadOnlySpan<GraphicsPipelineResource> resources)
-            : base(graphicsDevice, inputs, resources)
+        internal D3D12GraphicsPipelineSignature(D3D12GraphicsDevice device, ReadOnlySpan<GraphicsPipelineInput> inputs, ReadOnlySpan<GraphicsPipelineResource> resources)
+            : base(device, inputs, resources)
         {
             _d3d12RootSignature = new ValueLazy<Pointer<ID3D12RootSignature>>(CreateD3D12RootSignature);
 
@@ -29,16 +29,13 @@ namespace TerraFX.Graphics.Providers.D3D12
         }
 
         /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsPipelineSignature" /> class.</summary>
-        ~D3D12GraphicsPipelineSignature()
-        {
-            Dispose(isDisposing: false);
-        }
-
-        /// <inheritdoc cref="GraphicsPipeline.GraphicsDevice" />
-        public D3D12GraphicsDevice D3D12GraphicsDevice => (D3D12GraphicsDevice)GraphicsDevice;
+        ~D3D12GraphicsPipelineSignature() => Dispose(isDisposing: false);
 
         /// <summary>Gets the underlying <see cref="ID3D12RootSignature" /> for the pipeline.</summary>
         public ID3D12RootSignature* D3D12RootSignature => _d3d12RootSignature.Value;
+
+        /// <inheritdoc cref="GraphicsPipeline.Device" />
+        public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
 
         /// <inheritdoc />
         protected override void Dispose(bool isDisposing)
@@ -151,7 +148,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                 }
 
                 var iid = IID_ID3D12RootSignature;
-                ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateRootSignature), D3D12GraphicsDevice.D3D12Device->CreateRootSignature(0, rootSignatureBlob->GetBufferPointer(), rootSignatureBlob->GetBufferSize(), &iid, (void**)&d3d12RootSignature));
+                ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateRootSignature), Device.D3D12Device->CreateRootSignature(0, rootSignatureBlob->GetBufferPointer(), rootSignatureBlob->GetBufferSize(), &iid, (void**)&d3d12RootSignature));
 
                 return d3d12RootSignature;
             }

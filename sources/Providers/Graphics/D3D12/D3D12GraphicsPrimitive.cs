@@ -2,7 +2,6 @@
 
 using System;
 using TerraFX.Utilities;
-using static TerraFX.Utilities.DisposeUtilities;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.D3D12
@@ -12,29 +11,20 @@ namespace TerraFX.Graphics.Providers.D3D12
     {
         private State _state;
 
-        internal D3D12GraphicsPrimitive(D3D12GraphicsDevice graphicsDevice, D3D12GraphicsPipeline graphicsPipeline, D3D12GraphicsBuffer vertexBuffer, D3D12GraphicsBuffer? indexBuffer, ReadOnlySpan<GraphicsResource> inputResources)
-            : base(graphicsDevice, graphicsPipeline, vertexBuffer, indexBuffer, inputResources)
+        internal D3D12GraphicsPrimitive(D3D12GraphicsDevice device, D3D12GraphicsPipeline pipeline, in GraphicsBufferView vertexBufferView, in GraphicsBufferView indexBufferView, ReadOnlySpan<GraphicsResource> inputResources)
+            : base(device, pipeline, in vertexBufferView, in indexBufferView, inputResources)
         {
             _ = _state.Transition(to: Initialized);
         }
 
         /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsPrimitive" /> class.</summary>
-        ~D3D12GraphicsPrimitive()
-        {
-            Dispose(isDisposing: false);
-        }
+        ~D3D12GraphicsPrimitive() => Dispose(isDisposing: false);
 
-        /// <inheritdoc cref="GraphicsPrimitive.GraphicsDevice" />
-        public D3D12GraphicsDevice D3D12GraphicsDevice => (D3D12GraphicsDevice)GraphicsDevice;
+        /// <inheritdoc cref="GraphicsPrimitive.Device" />
+        public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
 
-        /// <inheritdoc cref="GraphicsPrimitive.GraphicsPipeline" />
-        public D3D12GraphicsPipeline D3D12GraphicsPipeline => (D3D12GraphicsPipeline)GraphicsPipeline;
-
-        /// <inheritdoc cref="GraphicsPrimitive.IndexBuffer" />
-        public D3D12GraphicsBuffer? D3D12IndexBuffer => (D3D12GraphicsBuffer?)IndexBuffer;
-
-        /// <inheritdoc cref="GraphicsPrimitive.VertexBuffer" />
-        public D3D12GraphicsBuffer D3D12VertexBuffer => (D3D12GraphicsBuffer)VertexBuffer;
+        /// <inheritdoc cref="GraphicsPrimitive.Pipeline" />
+        public new D3D12GraphicsPipeline Pipeline => (D3D12GraphicsPipeline)base.Pipeline;
 
         /// <inheritdoc />
         protected override void Dispose(bool isDisposing)
@@ -43,13 +33,11 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             if (priorState < Disposing)
             {
-                DisposeIfNotNull(GraphicsPipeline);
-                DisposeIfNotNull(VertexBuffer);
-                DisposeIfNotNull(IndexBuffer);
+                Pipeline?.Dispose();
 
                 foreach (var inputResource in InputResources)
                 {
-                    DisposeIfNotNull(inputResource);
+                    inputResource?.Dispose();
                 }
             }
 

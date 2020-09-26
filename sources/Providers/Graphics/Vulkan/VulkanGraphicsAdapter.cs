@@ -16,17 +16,19 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private readonly VkPhysicalDevice _vulkanPhysicalDevice;
 
         private ValueLazy<VkPhysicalDeviceProperties> _vulkanPhysicalDeviceProperties;
+        private ValueLazy<VkPhysicalDeviceMemoryProperties> _vulkanPhysicalDeviceMemoryProperties;
         private ValueLazy<string> _name;
 
         private State _state;
 
-        internal VulkanGraphicsAdapter(VulkanGraphicsProvider graphicsProvider, VkPhysicalDevice vulkanPhysicalDevice)
-            : base(graphicsProvider)
+        internal VulkanGraphicsAdapter(VulkanGraphicsProvider provider, VkPhysicalDevice vulkanPhysicalDevice)
+            : base(provider)
         {
             AssertNotNull(vulkanPhysicalDevice, nameof(vulkanPhysicalDevice));
 
             _vulkanPhysicalDevice = vulkanPhysicalDevice;
 
+            _vulkanPhysicalDeviceMemoryProperties = new ValueLazy<VkPhysicalDeviceMemoryProperties>(GetVulkanPhysicalDeviceMemoryProperties);
             _vulkanPhysicalDeviceProperties = new ValueLazy<VkPhysicalDeviceProperties>(GetVulkanPhysicalDeviceProperties);
             _name = new ValueLazy<string>(GetName);
 
@@ -39,11 +41,11 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <inheritdoc />
         public override string Name => _name.Value;
 
+        /// <inheritdoc cref="GraphicsAdapter.Provider" />
+        public new VulkanGraphicsProvider Provider => (VulkanGraphicsProvider)base.Provider;
+
         /// <inheritdoc />
         public override uint VendorId => VulkanPhysicalDeviceProperties.vendorID;
-
-        /// <inheritdoc cref="GraphicsAdapter.GraphicsProvider" />
-        public VulkanGraphicsProvider VulkanGraphicsProvider => (VulkanGraphicsProvider)GraphicsProvider;
 
         /// <summary>Gets the underlying <see cref="VkPhysicalDevice" /> for the adapter.</summary>
         /// <exception cref="ObjectDisposedException">The adapter has been disposed.</exception>
@@ -58,20 +60,24 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         /// <summary>Gets the <see cref="VkPhysicalDeviceProperties" /> for <see cref="VulkanPhysicalDevice" />.</summary>
         /// <exception cref="ObjectDisposedException">The adapter has been disposed and the value was not otherwise cached.</exception>
-        public ref readonly VkPhysicalDeviceProperties VulkanPhysicalDeviceProperties => ref _vulkanPhysicalDeviceProperties.RefValue;
+        public ref readonly VkPhysicalDeviceMemoryProperties VulkanPhysicalDeviceMemoryProperties => ref _vulkanPhysicalDeviceMemoryProperties.ValueRef;
+
+        /// <summary>Gets the <see cref="VkPhysicalDeviceProperties" /> for <see cref="VulkanPhysicalDevice" />.</summary>
+        /// <exception cref="ObjectDisposedException">The adapter has been disposed and the value was not otherwise cached.</exception>
+        public ref readonly VkPhysicalDeviceProperties VulkanPhysicalDeviceProperties => ref _vulkanPhysicalDeviceProperties.ValueRef;
 
         /// <inheritdoc />
-        public override GraphicsDevice CreateGraphicsDevice(IGraphicsSurface graphicsSurface, int graphicsContextCount) => CreateVulkanGraphicsDevice(graphicsSurface, graphicsContextCount);
+        public override GraphicsDevice CreateDevice(IGraphicsSurface surface, int contextCount) => CreateVulkanGraphicsDevice(surface, contextCount);
 
-        /// <inheritdoc cref="CreateGraphicsDevice(IGraphicsSurface, int)" />
-        public VulkanGraphicsDevice CreateVulkanGraphicsDevice(IGraphicsSurface graphicsSurface, int graphicsContextCount)
+        /// <inheritdoc cref="CreateDevice(IGraphicsSurface, int)" />
+        public VulkanGraphicsDevice CreateVulkanGraphicsDevice(IGraphicsSurface surface, int contextCount)
         {
             _state.ThrowIfDisposedOrDisposing();
-            return new VulkanGraphicsDevice(this, graphicsSurface, graphicsContextCount);
+            return new VulkanGraphicsDevice(this, surface, contextCount);
         }
 
         /// <inheritdoc />
-        /// <remarks>While there are no unmanaged resources to cleanup, we still want to mark the instance as disposed if, for example, <see cref="GraphicsAdapter.GraphicsProvider" /> was disposed.</remarks>
+        /// <remarks>While there are no unmanaged resources to cleanup, we still want to mark the instance as disposed if, for example, <see cref="GraphicsAdapter.Provider" /> was disposed.</remarks>
         protected override void Dispose(bool isDisposing)
         {
             _ = _state.BeginDispose();
@@ -82,6 +88,15 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             _state.ThrowIfDisposedOrDisposing();
             return MarshalUtf8ToReadOnlySpan(in VulkanPhysicalDeviceProperties.deviceName[0], 256).AsString() ?? string.Empty;
+        }
+
+        private VkPhysicalDeviceMemoryProperties GetVulkanPhysicalDeviceMemoryProperties()
+        {
+            _state.ThrowIfDisposedOrDisposing();
+
+            VkPhysicalDeviceMemoryProperties physicalDeviceMemoryProperties;
+            vkGetPhysicalDeviceMemoryProperties(VulkanPhysicalDevice, &physicalDeviceMemoryProperties);
+            return physicalDeviceMemoryProperties;
         }
 
         private VkPhysicalDeviceProperties GetVulkanPhysicalDeviceProperties()

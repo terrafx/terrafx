@@ -36,13 +36,13 @@ namespace TerraFX.Graphics
             }
         }
 
+        /// <summary>Gets the adapters available to the provider.</summary>
+        /// <exception cref="ObjectDisposedException">The provider has been disposed.</exception>
+        public abstract IEnumerable<GraphicsAdapter> Adapters { get; }
+
         /// <summary>Gets the value of the <see cref="EnableDebugModeSwitchName" /> switch from when the provider was created.</summary>
         /// <remarks>The exact behavior of debug mode may vary based on the provider and configuration of the host machine.</remarks>
         public bool DebugModeEnabled => _debugModeEnabled;
-
-        /// <summary>Gets the graphics adapters available to the provider.</summary>
-        /// <exception cref="ObjectDisposedException">The provider has been disposed.</exception>
-        public abstract IEnumerable<GraphicsAdapter> GraphicsAdapters { get; }
 
         /// <inheritdoc />
         public void Dispose()

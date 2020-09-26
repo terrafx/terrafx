@@ -8,43 +8,40 @@ namespace TerraFX.Graphics
     /// <summary>A graphics device which provides state management and isolation for a graphics adapter.</summary>
     public abstract class GraphicsDevice : IDisposable
     {
-        private readonly GraphicsAdapter _graphicsAdapter;
-        private readonly IGraphicsSurface _graphicsSurface;
+        private readonly GraphicsAdapter _adapter;
+        private readonly IGraphicsSurface _surface;
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsDevice" /> class.</summary>
-        /// <param name="graphicsAdapter">The underlying graphics adapter for the device.</param>
-        /// <param name="graphicsSurface">The graphics surface on which the device can render.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="graphicsAdapter" /> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="graphicsSurface" /> is <c>null</c>.</exception>
-        protected GraphicsDevice(GraphicsAdapter graphicsAdapter, IGraphicsSurface graphicsSurface)
+        /// <param name="adapter">The underlying adapter for the device.</param>
+        /// <param name="surface">The surface on which the device can render.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="adapter" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="surface" /> is <c>null</c>.</exception>
+        protected GraphicsDevice(GraphicsAdapter adapter, IGraphicsSurface surface)
         {
-            ThrowIfNull(graphicsAdapter, nameof(graphicsAdapter));
-            ThrowIfNull(graphicsSurface, nameof(graphicsSurface));
+            ThrowIfNull(adapter, nameof(adapter));
+            ThrowIfNull(surface, nameof(surface));
 
-            _graphicsAdapter = graphicsAdapter;
-            _graphicsSurface = graphicsSurface;
+            _adapter = adapter;
+            _surface = surface;
         }
 
-        /// <summary>Gets the current graphics context.</summary>
-        public GraphicsContext CurrentGraphicsContext => GraphicsContexts[GraphicsContextIndex];
-
-        /// <summary>Gets the <see cref="Graphics.GraphicsAdapter" /> for the instance.</summary>
-        public GraphicsAdapter GraphicsAdapter => _graphicsAdapter;
-
-        /// <summary>Gets the graphics contexts for the device.</summary>
-        public abstract ReadOnlySpan<GraphicsContext> GraphicsContexts { get; }
+        /// <summary>Gets the underlying adapter for the device.</summary>
+        public GraphicsAdapter Adapter => _adapter;
 
         /// <summary>Gets an index which can be used to lookup the current graphics context.</summary>
-        public abstract int GraphicsContextIndex { get; }
+        public abstract int ContextIndex { get; }
 
-        /// <summary>Gets the graphics surface on which the device can render.</summary>
-        public IGraphicsSurface GraphicsSurface => _graphicsSurface;
+        /// <summary>Gets the contexts for the device.</summary>
+        public abstract ReadOnlySpan<GraphicsContext> Contexts { get; }
 
-        /// <summary>Creates a new graphics heap for the device.</summary>
-        /// <param name="size">The size, in bytes, of the graphics heap.</param>
-        /// <param name="cpuAccess">The CPU access capabilities of the graphics heap.</param>
-        /// <returns>A new graphics heap created for the device.</returns>
-        public abstract GraphicsHeap CreateGraphicsHeap(ulong size, GraphicsHeapCpuAccess cpuAccess = GraphicsHeapCpuAccess.None);
+        /// <summary>Gets the current context.</summary>
+        public GraphicsContext CurrentContext => Contexts[ContextIndex];
+
+        /// <summary>Gets the memory allocator for the device.</summary>
+        public abstract GraphicsMemoryAllocator MemoryAllocator { get; }
+
+        /// <summary>Gets the surface on which the device can render.</summary>
+        public IGraphicsSurface Surface => _surface;
 
         /// <summary>Creates a new graphics pipeline for the device.</summary>
         /// <param name="signature">The signature which details the inputs given and resources available to the graphics pipeline.</param>
@@ -57,27 +54,27 @@ namespace TerraFX.Graphics
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="pixelShader" /> is not <see cref="GraphicsShaderKind.Pixel"/>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="pixelShader" /> was not created for this device.</exception>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-        public abstract GraphicsPipeline CreateGraphicsPipeline(GraphicsPipelineSignature signature, GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null);
+        public abstract GraphicsPipeline CreatePipeline(GraphicsPipelineSignature signature, GraphicsShader? vertexShader = null, GraphicsShader? pixelShader = null);
 
         /// <summary>Creates a new graphics pipeline signature for the device.</summary>
         /// <param name="inputs">The inputs given to the graphics pipeline or <see cref="ReadOnlySpan{T}.Empty" /> if none exist.</param>
         /// <param name="resources">The resources available to the graphics pipeline or <see cref="ReadOnlySpan{T}.Empty" /> if none exist.</param>
         /// <returns>A new graphics pipeline signature created for the device.</returns>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-        public abstract GraphicsPipelineSignature CreateGraphicsPipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResource> resources = default);
+        public abstract GraphicsPipelineSignature CreatePipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResource> resources = default);
 
         /// <summary>Creates a new graphics primitive for the device.</summary>
-        /// <param name="graphicsPipeline">The graphics pipeline used for rendering the graphics primitive.</param>
-        /// <param name="vertexBuffer">The graphics buffer which holds the vertices for the graphics primitive.</param>
-        /// <param name="indexBuffer">The graphics buffer which holds the indices for the graphics primitive or <c>null</c> if none exists.</param>
-        /// <param name="inputResources">The graphics resources which hold the input data for the graphics primitive or an empty span if none exist.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="graphicsPipeline" /> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="vertexBuffer" /> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="graphicsPipeline" /> was not created for this device.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexBuffer" /> was not created for this device.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexBuffer" /> was not created for this device.</exception>
+        /// <param name="pipeline">The pipeline used for rendering the graphics primitive.</param>
+        /// <param name="vertexBufferView">The buffer view which holds the vertices for the graphics primitive.</param>
+        /// <param name="indexBufferView">The buffer view which holds the indices for the graphics primitive or <c>default</c> if none exists.</param>
+        /// <param name="inputResources">The resources which hold the input data for the graphics primitive or an empty span if none exist.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="pipeline" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="vertexBufferView" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="pipeline" /> was not created for this device.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexBufferView" /> was not created for this device.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexBufferView" /> was not created for this device.</exception>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-        public abstract GraphicsPrimitive CreateGraphicsPrimitive(GraphicsPipeline graphicsPipeline, GraphicsBuffer vertexBuffer, GraphicsBuffer? indexBuffer = null, ReadOnlySpan<GraphicsResource> inputResources = default);
+        public abstract GraphicsPrimitive CreatePrimitive(GraphicsPipeline pipeline, in GraphicsBufferView vertexBufferView, in GraphicsBufferView indexBufferView = default, ReadOnlySpan<GraphicsResource> inputResources = default);
 
         /// <summary>Creates a new graphics shader for the device.</summary>
         /// <param name="kind">The kind of graphics shader to create.</param>
@@ -87,7 +84,7 @@ namespace TerraFX.Graphics
         /// <exception cref="ArgumentNullException"><paramref name="entryPointName" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="kind" /> is unsupported.</exception>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-        public abstract GraphicsShader CreateGraphicsShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName);
+        public abstract GraphicsShader CreateShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName);
 
         /// <inheritdoc />
         public void Dispose()
@@ -101,9 +98,9 @@ namespace TerraFX.Graphics
         public abstract void PresentFrame();
 
         /// <summary>Signals a graphics fence.</summary>
-        /// <param name="graphicsFence">The graphics fence to be signaled</param>
+        /// <param name="fence">The fence to be signaled</param>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-        public abstract void Signal(GraphicsFence graphicsFence);
+        public abstract void Signal(GraphicsFence fence);
 
         /// <summary>Waits for the device to become idle.</summary>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>

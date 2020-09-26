@@ -22,8 +22,8 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private State _state;
 
-        internal D3D12GraphicsFence(D3D12GraphicsDevice graphicsDevice)
-            : base(graphicsDevice)
+        internal D3D12GraphicsFence(D3D12GraphicsDevice device)
+            : base(device)
         {
             _d3d12Fence = new ValueLazy<Pointer<ID3D12Fence>>(CreateD3D12Fence);
             _d3d12FenceSignalEvent = new ValueLazy<HANDLE>(CreateEventHandle);
@@ -32,10 +32,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         }
 
         /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsFence" /> class.</summary>
-        ~D3D12GraphicsFence()
-        {
-            Dispose(isDisposing: false);
-        }
+        ~D3D12GraphicsFence() => Dispose(isDisposing: false);
 
         /// <summary>Gets the underlying <see cref="ID3D12Fence" /> for the fence.</summary>
         /// <exception cref="ObjectDisposedException">The fence has been disposed.</exception>
@@ -49,8 +46,8 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <exception cref="ObjectDisposedException">The fence has been disposed.</exception>
         public ulong D3D12FenceSignalValue => _d3d12FenceSignalValue;
 
-        /// <inheritdoc cref="GraphicsFence.GraphicsDevice" />
-        public D3D12GraphicsDevice D3D12GraphicsDevice => (D3D12GraphicsDevice)GraphicsDevice;
+        /// <inheritdoc cref="GraphicsFence.Device" />
+        public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
 
         /// <inheritdoc />
         public override bool IsSignalled => D3D12Fence->GetCompletedValue() >= D3D12FenceSignalValue;
@@ -123,7 +120,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             ID3D12Fence* d3d12Fence;
 
             var iid = IID_ID3D12Fence;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateFence), D3D12GraphicsDevice.D3D12Device->CreateFence(InitialValue: 0, D3D12_FENCE_FLAG_NONE, &iid, (void**)&d3d12Fence));
+            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateFence), Device.D3D12Device->CreateFence(InitialValue: 0, D3D12_FENCE_FLAG_NONE, &iid, (void**)&d3d12Fence));
 
             return d3d12Fence;
         }

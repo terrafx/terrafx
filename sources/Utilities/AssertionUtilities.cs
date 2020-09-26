@@ -2,6 +2,7 @@
 
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace TerraFX.Utilities
 {
@@ -12,7 +13,7 @@ namespace TerraFX.Utilities
         /// <param name="condition">The condition to assert.</param>
         /// <param name="message">The message to print if <paramref name="condition" /> is <c>false</c>.</param>
         [Conditional("DEBUG")]
-        public static void Assert([DoesNotReturnIf(false)] bool condition, string message)
+        public static void Assert([DoesNotReturnIf(false)] bool condition, [CallerArgumentExpression("condition")] string? message = null)
         {
             if (!condition)
             {

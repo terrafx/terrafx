@@ -5,8 +5,8 @@ namespace TerraFX.Graphics
     /// <summary>Defines a graphics buffer kind.</summary>
     public enum GraphicsBufferKind
     {
-        /// <summary>Defines an unknown graphics buffer kind.</summary>
-        Unknown,
+        /// <summary>Defines the default buffer kind.</summary>
+        Default,
 
         /// <summary>Defines a vertex buffer.</summary>
         Vertex,
@@ -18,11 +18,8 @@ namespace TerraFX.Graphics
         /// <remarks>This is an alternative name for <see cref="Uniform" />.</remarks>
         Constant,
 
-        /// <summary>Defines a uniform buffer.</summary>
+        /// <inheritdoc cref="Constant" />
         /// <remarks>This is an alternative name for <see cref="Constant" />.</remarks>
         Uniform = Constant,
-
-        /// <summary>Defines a staging buffer.</summary>
-        Staging,
     }
 }
