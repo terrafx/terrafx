@@ -39,6 +39,9 @@ namespace TerraFX.Graphics.Providers.D3D12
                 {
                     inputResource?.Dispose();
                 }
+
+                VertexBufferView.Buffer?.Dispose();
+                IndexBufferView.Buffer?.Dispose();
             }
 
             _state.EndDispose();

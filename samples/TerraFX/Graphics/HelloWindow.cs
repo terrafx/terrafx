@@ -10,7 +10,7 @@ using TerraFX.Utilities;
 
 namespace TerraFX.Samples.Graphics
 {
-    public sealed class HelloWindow : Sample
+    public class HelloWindow : Sample
     {
         private GraphicsDevice _graphicsDevice = null!;
         private Window _window = null!;
@@ -20,6 +20,10 @@ namespace TerraFX.Samples.Graphics
             : base(name, compositionAssemblies)
         {
         }
+
+        public GraphicsDevice GraphicsDevice => _graphicsDevice;
+
+        public Window Window => _window;
 
         public override void Cleanup()
         {
@@ -44,6 +48,10 @@ namespace TerraFX.Samples.Graphics
 
             base.Initialize(application);
         }
+
+        protected virtual void Draw(GraphicsContext graphicsContext) { }
+
+        protected virtual void Update(TimeSpan delta) { }
 
         protected override void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs)
         {
@@ -74,17 +82,12 @@ namespace TerraFX.Samples.Graphics
 
         private void Render()
         {
-            var graphicsDevice = _graphicsDevice;
-            var graphicsContext = graphicsDevice.CurrentContext;
-
+            var graphicsContext = GraphicsDevice.CurrentContext;
             var backgroundColor = new ColorRgba(red: 100.0f / 255.0f, green: 149.0f / 255.0f, blue: 237.0f / 255.0f, alpha: 1.0f);
 
             graphicsContext.BeginDrawing(backgroundColor);
+            Draw(graphicsContext);
             graphicsContext.EndDrawing();
-        }
-
-        private unsafe void Update(TimeSpan delta)
-        {
         }
     }
 }

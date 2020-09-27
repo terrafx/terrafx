@@ -1,23 +1,16 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Linq;
 using System.Reflection;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
 using TerraFX.Numerics;
-using TerraFX.UI;
-using TerraFX.Utilities;
 
 namespace TerraFX.Samples.Graphics
 {
-    public sealed class HelloConstantBuffer : Sample
+    public sealed class HelloConstantBuffer : HelloWindow
     {
-        private GraphicsDevice _graphicsDevice = null!;
         private GraphicsPrimitive _trianglePrimitive = null!;
-        private Window _window = null!;
-
-        private TimeSpan _elapsedTime;
         private float _trianglePrimitiveTranslationX;
 
         public HelloConstantBuffer(string name, params Assembly[] compositionAssemblies)
@@ -28,71 +21,64 @@ namespace TerraFX.Samples.Graphics
         public override void Cleanup()
         {
             _trianglePrimitive?.Dispose();
-            _graphicsDevice?.Dispose();
-            _window?.Dispose();
-
             base.Cleanup();
         }
 
         public override void Initialize(Application application)
         {
-            ExceptionUtilities.ThrowIfNull(application, nameof(application));
+            base.Initialize(application);
 
-            var windowProvider = application.GetService<WindowProvider>();
-            _window = windowProvider.CreateWindow();
-            _window.Show();
-
-            var graphicsProvider = application.GetService<GraphicsProvider>();
-            var graphicsAdapter = graphicsProvider.Adapters.First();
-
-            var graphicsDevice = graphicsAdapter.CreateDevice(_window, contextCount: 2);
-
-            _graphicsDevice = graphicsDevice;
+            var graphicsDevice = GraphicsDevice;
 
             using (var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024))
             {
                 var currentGraphicsContext = graphicsDevice.CurrentContext;
+
                 currentGraphicsContext.BeginFrame();
-
                 _trianglePrimitive = CreateTrianglePrimitive(currentGraphicsContext, vertexStagingBuffer);
-
                 currentGraphicsContext.EndFrame();
 
                 graphicsDevice.Signal(currentGraphicsContext.Fence);
                 graphicsDevice.WaitForIdle();
             }
-
-            base.Initialize(application);
         }
 
-        protected override void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs)
+        protected override void Draw(GraphicsContext graphicsContext)
         {
-            ExceptionUtilities.ThrowIfNull(sender, nameof(sender));
+            graphicsContext.Draw(_trianglePrimitive);
+            base.Draw(graphicsContext);
+        }
 
-            _elapsedTime += eventArgs.Delta;
+        protected override unsafe void Update(TimeSpan delta)
+        {
+            const float translationSpeed = 1.0f;
+            const float offsetBounds = 1.25f;
 
-            if (_elapsedTime.TotalSeconds >= 2.5)
+            var trianglePrimitiveTranslationX = _trianglePrimitiveTranslationX;
             {
-                var application = (Application)sender;
-                application.RequestExit();
+                trianglePrimitiveTranslationX += (float)(translationSpeed * delta.TotalSeconds);
+
+                if (trianglePrimitiveTranslationX > offsetBounds)
+                {
+                    trianglePrimitiveTranslationX = -offsetBounds;
+                }
             }
+            _trianglePrimitiveTranslationX = trianglePrimitiveTranslationX;
 
-            if (_window.IsVisible)
-            {
-                var currentGraphicsContext = _graphicsDevice.CurrentContext;
-                currentGraphicsContext.BeginFrame();
+            var constantBuffer = (GraphicsBuffer)_trianglePrimitive.InputResources[0];
+            var pConstantBuffer = constantBuffer.Map<Matrix4x4>();
 
-                Update(eventArgs.Delta);
-                Render();
+            // Shaders take transposed matrices, so we want to set X.W
+            pConstantBuffer[0] = Matrix4x4.Identity.WithX(
+                new Vector4(1.0f, 0.0f, 0.0f, trianglePrimitiveTranslationX)
+            );
 
-                currentGraphicsContext.EndFrame();
-                Present();
-            }
+            constantBuffer.Unmap(0..sizeof(Matrix4x4));
         }
 
         private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer)
         {
-            var graphicsDevice = _graphicsDevice;
+            var graphicsDevice = GraphicsDevice;
             var graphicsSurface = graphicsDevice.Surface;
 
             var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Transform", "main", "main");
@@ -168,47 +154,6 @@ namespace TerraFX.Samples.Graphics
 
                 return graphicsDevice.CreatePipelineSignature(inputs, resources);
             }
-        }
-
-        private void Present() => _graphicsDevice.PresentFrame();
-
-        private void Render()
-        {
-            var graphicsDevice = _graphicsDevice;
-            var graphicsContext = graphicsDevice.CurrentContext;
-
-            var backgroundColor = new ColorRgba(red: 100.0f / 255.0f, green: 149.0f / 255.0f, blue: 237.0f / 255.0f, alpha: 1.0f);
-
-            graphicsContext.BeginDrawing(backgroundColor);
-            graphicsContext.Draw(_trianglePrimitive);
-            graphicsContext.EndDrawing();
-        }
-
-        private unsafe void Update(TimeSpan delta)
-        {
-            const float translationSpeed = 1.0f;
-            const float offsetBounds = 1.25f;
-
-            var trianglePrimitiveTranslationX = _trianglePrimitiveTranslationX;
-            {
-                trianglePrimitiveTranslationX += (float)(translationSpeed * delta.TotalSeconds);
-
-                if (trianglePrimitiveTranslationX > offsetBounds)
-                {
-                    trianglePrimitiveTranslationX = -offsetBounds;
-                }
-            }
-            _trianglePrimitiveTranslationX = trianglePrimitiveTranslationX;
-
-            var constantBuffer = (GraphicsBuffer)_trianglePrimitive.InputResources[0];
-            var pConstantBuffer = constantBuffer.Map<Matrix4x4>();
-
-            // Shaders take transposed matrices, so we want to set X.W
-            pConstantBuffer[0] = Matrix4x4.Identity.WithX(
-                new Vector4(1.0f, 0.0f, 0.0f, trianglePrimitiveTranslationX)
-            );
-
-            constantBuffer.Unmap(0..sizeof(Matrix4x4));
         }
     }
 }

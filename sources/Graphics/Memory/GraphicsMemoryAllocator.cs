@@ -11,7 +11,7 @@ using System;
 namespace TerraFX.Graphics
 {
     /// <summary>A memory allocator which manages memory for a graphics device.</summary>
-    public abstract class GraphicsMemoryAllocator
+    public abstract class GraphicsMemoryAllocator : IDisposable
     {
         /// <summary>The name of the data value that controls the value of <see cref="BlockMarginSize" />.</summary>
         /// <remarks>
@@ -125,5 +125,16 @@ namespace TerraFX.Graphics
         /// <param name="budget">On return, contains the budget for <paramref name="blockCollection" />.</param>
         /// <exception cref="ArgumentNullException"><paramref name="blockCollection" /> is <c>null</c>.</exception>
         public abstract void GetBudget(GraphicsMemoryBlockCollection blockCollection, out GraphicsMemoryBudget budget);
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <inheritdoc cref="Dispose()" />
+        /// <param name="isDisposing"><c>true</c> if the method was called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
+        protected abstract void Dispose(bool isDisposing);
     }
 }
