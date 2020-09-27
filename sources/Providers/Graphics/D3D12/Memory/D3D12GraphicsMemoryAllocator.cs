@@ -5,12 +5,14 @@
 
 using System;
 using TerraFX.Interop;
+using TerraFX.Utilities;
 using static TerraFX.Interop.D3D12_HEAP_FLAGS;
 using static TerraFX.Interop.D3D12_HEAP_TYPE;
 using static TerraFX.Interop.D3D12_RESOURCE_FLAGS;
 using static TerraFX.Interop.D3D12_RESOURCE_HEAP_TIER;
 using static TerraFX.Interop.DXGI_FORMAT;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
@@ -19,6 +21,8 @@ namespace TerraFX.Graphics.Providers.D3D12
     {
         private readonly D3D12GraphicsMemoryBlockCollection[] _blockCollections;
         private readonly bool _supportsResourceHeapTier2;
+
+        private State _state;
 
         internal D3D12GraphicsMemoryAllocator(D3D12GraphicsDevice device, ulong blockPreferredSize)
             : base(device, blockPreferredSize)
@@ -59,7 +63,11 @@ namespace TerraFX.Graphics.Providers.D3D12
             _supportsResourceHeapTier2 = supportsResourceHeapTier2;
 
             // TODO: UpdateBudget
+            _ = _state.Transition(to: Initialized);
         }
+
+        /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsMemoryAllocator" /> class.</summary>
+        ~D3D12GraphicsMemoryAllocator() => Dispose(isDisposing: true);
 
         /// <inheritdoc cref="GraphicsMemoryAllocator.Device" />
         public new D3D12GraphicsDevice Device => (D3D12GraphicsDevice)base.Device;
@@ -114,6 +122,22 @@ namespace TerraFX.Graphics.Providers.D3D12
         public void GetBudget(D3D12GraphicsMemoryBlockCollection blockCollection, out GraphicsMemoryBudget budget)
         {
             budget = new GraphicsMemoryBudget(estimatedBudget: ulong.MaxValue, estimatedUsage: 0, totalAllocatedRegionSize: 0, totalBlockSize: 0);
+        }
+
+        /// <inheritdoc />
+        protected override void Dispose(bool isDisposing)
+        {
+            var priorState = _state.BeginDispose();
+
+            if (priorState < Disposing)
+            {
+                foreach (var blockCollection in _blockCollections)
+                {
+                    blockCollection?.Dispose();
+                }
+            }
+
+            _state.EndDispose();
         }
 
         private int GetBlockCollectionIndex(GraphicsResourceCpuAccess cpuAccess, int kind)

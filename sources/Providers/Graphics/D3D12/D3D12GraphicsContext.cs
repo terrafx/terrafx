@@ -415,7 +415,6 @@ namespace TerraFX.Graphics.Providers.D3D12
             {
                 _d3d12GraphicsCommandList.Dispose(ReleaseIfNotNull);
                 _d3d12CommandAllocator.Dispose(ReleaseIfNotNull);
-                _d3d12RenderTargetView.Dispose();
                 _d3d12RenderTargetResource.Dispose(ReleaseIfNotNull);
 
                 _waitForExecuteCompletionFence?.Dispose();

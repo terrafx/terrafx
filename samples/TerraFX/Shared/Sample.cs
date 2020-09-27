@@ -15,7 +15,7 @@ using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Samples
 {
-    public abstract class Sample
+    public abstract class Sample : IDisposable
     {
         internal static readonly Assembly s_uiProviderWin32 = Assembly.LoadFrom("TerraFX.UI.Providers.Win32.dll");
         internal static readonly Assembly s_uiProviderXlib = Assembly.LoadFrom("TerraFX.UI.Providers.Xlib.dll");
@@ -37,6 +37,8 @@ namespace TerraFX.Samples
             Array.Copy(compositionAssemblies, 0, _compositionAssemblies, 1, compositionAssemblies.Length);
         }
 
+        ~Sample() => Dispose(isDisposing: false);
+
         // ps_5_0
         private static ReadOnlySpan<sbyte> D3D12CompileTarget_ps_5_0 => new sbyte[] { 0x70, 0x73, 0x5F, 0x35, 0x5F, 0x30, 0x00 };
 
@@ -47,13 +49,15 @@ namespace TerraFX.Samples
 
         public string Name => _name;
 
-        public virtual void Cleanup()
+        public virtual void Cleanup() { }
+
+        public void Dispose()
         {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
         }
 
         public virtual void Initialize(Application application) => application.Idle += OnIdle;
-
-        protected abstract void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs);
 
         protected unsafe GraphicsShader CompileShader(GraphicsDevice graphicsDevice, GraphicsShaderKind kind, string shaderName, string entryPointName)
         {
@@ -179,6 +183,10 @@ namespace TerraFX.Samples
                 return vulkanShaderStage;
             }
         }
+
+        protected virtual void Dispose(bool isDisposing) => Cleanup();
+
+        protected abstract void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs);
 
         private string GetAssetFullPath(string assetCategory, string assetName) => Path.Combine(_assemblyPath, "Assets", assetCategory, assetName);
     }

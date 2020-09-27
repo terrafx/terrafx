@@ -6,6 +6,7 @@
 using System;
 using System.Numerics;
 using TerraFX.Interop;
+using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
 using static TerraFX.Interop.VkFormat;
 using static TerraFX.Interop.VkImageType;
@@ -14,6 +15,7 @@ using static TerraFX.Interop.VkPhysicalDeviceType;
 using static TerraFX.Interop.VkSampleCountFlagBits;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
+using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
@@ -21,6 +23,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
     public sealed unsafe class VulkanGraphicsMemoryAllocator : GraphicsMemoryAllocator
     {
         private readonly VulkanGraphicsMemoryBlockCollection[] _blockCollections;
+        private State _state;
 
         internal VulkanGraphicsMemoryAllocator(VulkanGraphicsDevice device, ulong blockPreferredSize)
             : base(device, blockPreferredSize)
@@ -43,7 +46,11 @@ namespace TerraFX.Graphics.Providers.Vulkan
             }
 
             // TODO: UpdateBudget
+            _ = _state.Transition(to: Initialized);
         }
+
+        /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsMemoryAllocator" /> class.</summary>
+        ~VulkanGraphicsMemoryAllocator() => Dispose(isDisposing: true);
 
         /// <inheritdoc cref="GraphicsMemoryAllocator.Device" />
         public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
@@ -123,6 +130,22 @@ namespace TerraFX.Graphics.Providers.Vulkan
         public void GetBudget(VulkanGraphicsMemoryBlockCollection blockCollection, out GraphicsMemoryBudget budget)
         {
             budget = new GraphicsMemoryBudget(estimatedBudget: ulong.MaxValue, estimatedUsage: 0, totalAllocatedRegionSize: 0, totalBlockSize: 0);
+        }
+
+        /// <inheritdoc />
+        protected override void Dispose(bool isDisposing)
+        {
+            var priorState = _state.BeginDispose();
+
+            if (priorState < Disposing)
+            {
+                foreach (var blockCollection in _blockCollections)
+                {
+                    blockCollection?.Dispose();
+                }
+            }
+
+            _state.EndDispose();
         }
 
         private int GetBlockCollectionIndex(GraphicsResourceCpuAccess cpuAccess, uint memoryTypeBits)

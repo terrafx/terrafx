@@ -52,6 +52,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             if (priorState < Disposing)
             {
                 _d3d12Resource.Dispose(ReleaseIfNotNull);
+                MemoryBlockRegion.Block.Free(in MemoryBlockRegion);
             }
 
             _state.EndDispose();

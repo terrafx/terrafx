@@ -128,7 +128,9 @@ namespace TerraFX.Graphics.Providers.Vulkan
             {
                 _vulkanSampler.Dispose(DisposeVulkanSampler);
                 _vulkanImageView.Dispose(DisposeVulkanImageView);
+
                 DisposeVulkanImage(_vulkanImage);
+                MemoryBlockRegion.Block.Free(in MemoryBlockRegion);
             }
 
             _state.EndDispose();

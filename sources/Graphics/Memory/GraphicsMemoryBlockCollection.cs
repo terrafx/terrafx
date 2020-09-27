@@ -14,6 +14,7 @@ using System.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics
 {
@@ -32,6 +33,7 @@ namespace TerraFX.Graphics
 
         private ulong _minimumSize;
         private GraphicsMemoryBlock? _emptyBlock;
+        private State _state;
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsMemoryBlockCollection" /> class.</summary>
         /// <param name="blockMinimumSize">The minimum size of any new memory blocks created for the collection, in bytes.</param>
@@ -79,7 +81,12 @@ namespace TerraFX.Graphics
                 var block = CreateBlock(blockMinimumSize);
                 _blocks.Add(block);
             }
+
+            _ = _state.Transition(to: Initialized);
         }
+
+        /// <summary>Finalizes an instance of the <see cref="GraphicsMemoryBlockCollection" /> class.</summary>
+        ~GraphicsMemoryBlockCollection() => Dispose(isDisposing: true);
 
         /// <summary>Gets the allocator that manages the collection.</summary>
         public GraphicsMemoryAllocator Allocator => _allocator;
@@ -110,7 +117,11 @@ namespace TerraFX.Graphics
         public ulong MinimumSize => _minimumSize;
 
         /// <inheritdoc />
-        public void Dispose() => _mutex?.Dispose();
+        public void Dispose()
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
 
         /// <summary>Frees a region from the collection.</summary>
         /// <param name="region">The region to be freed.</param>
@@ -297,6 +308,24 @@ namespace TerraFX.Graphics
         /// <param name="size">The size of the block, in bytes.</param>
         /// <returns>The created graphics memory block.</returns>
         protected abstract GraphicsMemoryBlock CreateBlock(ulong size);
+
+        /// <inheritdoc />
+        protected virtual void Dispose(bool isDisposing)
+        {
+            var priorState = _state.BeginDispose();
+
+            if (priorState < Disposing)
+            {
+                foreach (var block in _blocks)
+                {
+                    block?.Dispose();
+                }
+
+                _mutex?.Dispose();
+            }
+
+            _state.EndDispose();
+        }
 
         private ulong GetLargestBlockSize()
         {

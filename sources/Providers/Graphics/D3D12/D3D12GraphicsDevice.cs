@@ -199,6 +199,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                     context?.Dispose();
                 }
 
+                _memoryAllocator.Dispose(DisposeMemoryAllocator);
                 _d3d12ShaderResourceDescriptorHeap.Dispose(ReleaseIfNotNull);
                 _d3d12RenderTargetDescriptorHeap.Dispose(ReleaseIfNotNull);
                 _dxgiSwapChain.Dispose(ReleaseIfNotNull);
@@ -328,6 +329,11 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private D3D12GraphicsMemoryAllocator CreateMemoryAllocator()
             => new D3D12GraphicsMemoryAllocator(this, blockPreferredSize: 0);
+
+        private void DisposeMemoryAllocator(D3D12GraphicsMemoryAllocator memoryAllocator)
+        {
+            memoryAllocator?.Dispose();
+        }
 
         private D3D12_FEATURE_DATA_D3D12_OPTIONS GetD3D12Options()
         {

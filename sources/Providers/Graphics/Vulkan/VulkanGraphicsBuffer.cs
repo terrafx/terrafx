@@ -107,6 +107,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             if (priorState < Disposing)
             {
                 DisposeVulkanBuffer(_vulkanBuffer);
+                MemoryBlockRegion.Block.Free(in MemoryBlockRegion);
             }
 
             _state.EndDispose();

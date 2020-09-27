@@ -227,6 +227,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     context?.Dispose();
                 }
 
+                _memoryAllocator.Dispose(DisposeMemoryAllocator);
                 _vulkanRenderPass.Dispose(DisposeVulkanRenderPass);
                 _vulkanSwapchain.Dispose(DisposeVulkanSwapchain);
                 _vulkanSurface.Dispose(DisposeVulkanSurface);
@@ -429,6 +430,11 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             _vulkanSwapchainFormat = swapChainCreateInfo.imageFormat;
             return vulkanSwapchain;
+        }
+
+        private void DisposeMemoryAllocator(VulkanGraphicsMemoryAllocator memoryAllocator)
+        {
+            memoryAllocator?.Dispose();
         }
 
         private void DisposeVulkanDevice(VkDevice vulkanDevice)
