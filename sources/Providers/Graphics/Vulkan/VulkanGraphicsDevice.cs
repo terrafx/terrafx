@@ -552,6 +552,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             {
                 vkDestroySwapchainKHR(_vulkanDevice.Value, _vulkanSwapchain.Value, pAllocator: null);
                 _vulkanSwapchain.Reset(CreateVulkanSwapchain);
+                _contextIndex = 0;
             }
 
             foreach (var context in Contexts)

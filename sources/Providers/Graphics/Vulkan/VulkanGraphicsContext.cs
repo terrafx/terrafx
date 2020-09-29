@@ -49,8 +49,6 @@ namespace TerraFX.Graphics.Providers.Vulkan
             _vulkanSwapChainImageView = new ValueLazy<VkImageView>(CreateVulkanSwapChainImageView);
 
             _ = _state.Transition(to: Initialized);
-
-            WaitForExecuteCompletionFence.Reset();
         }
 
         /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsContext" /> class.</summary>
