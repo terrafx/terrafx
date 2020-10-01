@@ -4,6 +4,7 @@ using System.Reflection;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
 using TerraFX.Numerics;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Samples.Graphics
 {
@@ -57,7 +58,7 @@ namespace TerraFX.Samples.Graphics
             var vertexBuffer = CreateVertexBuffer(graphicsContext, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
             var indexBuffer = CreateIndexBuffer(graphicsContext, indexStagingBuffer);
 
-            return graphicsDevice.CreatePrimitive(graphicsPipeline, new GraphicsBufferView(vertexBuffer, vertexBuffer.Size, (uint)sizeof(IdentityVertex)), new GraphicsBufferView(indexBuffer, indexBuffer.Size, sizeof(ushort)));
+            return graphicsDevice.CreatePrimitive(graphicsPipeline, new GraphicsBufferView(vertexBuffer, vertexBuffer.Size, SizeOf<IdentityVertex>()), new GraphicsBufferView(indexBuffer, indexBuffer.Size, sizeof(ushort)));
 
             static GraphicsBuffer CreateVertexBuffer(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
             {

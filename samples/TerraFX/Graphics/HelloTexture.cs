@@ -4,6 +4,7 @@ using System.Reflection;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
 using TerraFX.Numerics;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Samples.Graphics
 {
@@ -59,7 +60,7 @@ namespace TerraFX.Samples.Graphics
             var inputResources = new GraphicsResource[1] {
                 CreateTexture2D(graphicsContext, textureStagingBuffer),
             };
-            return graphicsDevice.CreatePrimitive(graphicsPipeline, new GraphicsBufferView(vertexBuffer, vertexBuffer.Size, (uint)sizeof(TextureVertex)), indexBufferView: default, inputResources);
+            return graphicsDevice.CreatePrimitive(graphicsPipeline, new GraphicsBufferView(vertexBuffer, vertexBuffer.Size, SizeOf<TextureVertex>()), indexBufferView: default, inputResources);
 
             static GraphicsTexture CreateTexture2D(GraphicsContext graphicsContext, GraphicsBuffer textureStagingBuffer)
             {
