@@ -3,8 +3,6 @@
 using System;
 using System.Globalization;
 using System.Text;
-using static TerraFX.Utilities.HashUtilities;
-using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Numerics
 {
@@ -68,12 +66,12 @@ namespace TerraFX.Numerics
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            var combinedValue = 0;
+            var hashCode = new HashCode();
             {
-                combinedValue = CombineValue(Center.GetHashCode(), combinedValue);
-                combinedValue = CombineValue(Size.GetHashCode(), combinedValue);
+                hashCode.Add(Center);
+                hashCode.Add(Size);
             }
-            return FinalizeValue(combinedValue, SizeOf<Vector3>() * 3);
+            return hashCode.ToHashCode();
         }
 
         /// <inheritdoc />

@@ -3,7 +3,6 @@
 using System;
 using System.Globalization;
 using System.Text;
-using static TerraFX.Utilities.HashUtilities;
 
 namespace TerraFX.Graphics
 {
@@ -80,13 +79,13 @@ namespace TerraFX.Graphics
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            var combinedValue = 0;
+            var hashCode = new HashCode();
             {
-                combinedValue = CombineValue(Red.GetHashCode(), combinedValue);
-                combinedValue = CombineValue(Green.GetHashCode(), combinedValue);
-                combinedValue = CombineValue(Blue.GetHashCode(), combinedValue);
+                hashCode.Add(Red);
+                hashCode.Add(Green);
+                hashCode.Add(Blue);
             }
-            return FinalizeValue(combinedValue, sizeof(float) * 3);
+            return hashCode.ToHashCode();
         }
 
         /// <inheritdoc />

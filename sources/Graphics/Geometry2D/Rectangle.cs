@@ -4,7 +4,6 @@ using System;
 using System.Globalization;
 using System.Text;
 using TerraFX.Numerics;
-using static TerraFX.Utilities.HashUtilities;
 
 namespace TerraFX.Graphics.Geometry2D
 {
@@ -127,14 +126,14 @@ namespace TerraFX.Graphics.Geometry2D
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            var combinedValue = 0;
+            var hashCode = new HashCode();
             {
-                combinedValue = CombineValue(X.GetHashCode(), combinedValue);
-                combinedValue = CombineValue(Y.GetHashCode(), combinedValue);
-                combinedValue = CombineValue(Width.GetHashCode(), combinedValue);
-                combinedValue = CombineValue(Height.GetHashCode(), combinedValue);
+                hashCode.Add(X);
+                hashCode.Add(Y);
+                hashCode.Add(Width);
+                hashCode.Add(Height);
             }
-            return FinalizeValue(combinedValue, sizeof(float) * 4);
+            return hashCode.ToHashCode();
         }
 
         /// <inheritdoc />
