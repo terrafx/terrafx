@@ -1,11 +1,11 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.InteropUtilities;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.Utilities
@@ -26,7 +26,7 @@ namespace TerraFX.Utilities
         /// <exception cref="ArgumentNullException"><paramref name="factory" /> is <c>null</c>.</exception>
         public ValueLazy(Func<T> factory)
         {
-            SkipInit(out this);
+            Unsafe.SkipInit(out this);
             Reset(factory);
         }
 

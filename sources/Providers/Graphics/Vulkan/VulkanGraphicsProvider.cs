@@ -346,7 +346,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             static int MarshalNames(string[] names, out sbyte* namesBuffer)
             {
-                var sizePerEntry = (nuint)sizeof(nuint) + VK_MAX_EXTENSION_NAME_SIZE;
+                nuint sizePerEntry = SizeOf<nuint>() + VK_MAX_EXTENSION_NAME_SIZE;
                 namesBuffer = (sbyte*)Allocate((nuint)names.Length * sizePerEntry);
 
                 var pCurrent = namesBuffer;

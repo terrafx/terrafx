@@ -5,6 +5,7 @@ using System.Reflection;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
 using TerraFX.Numerics;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Samples.Graphics
 {
@@ -88,7 +89,7 @@ namespace TerraFX.Samples.Graphics
                 CreateConstantBuffer(graphicsContext),
                 CreateConstantBuffer(graphicsContext),
             };
-            return graphicsDevice.CreatePrimitive(graphicsPipeline, new GraphicsBufferView(vertexBuffer, vertexBuffer.Size, (uint)sizeof(IdentityVertex)), indexBufferView: default, inputResources);
+            return graphicsDevice.CreatePrimitive(graphicsPipeline, new GraphicsBufferView(vertexBuffer, vertexBuffer.Size, SizeOf<IdentityVertex>()), indexBufferView: default, inputResources);
 
             static GraphicsBuffer CreateConstantBuffer(GraphicsContext graphicsContext)
             {

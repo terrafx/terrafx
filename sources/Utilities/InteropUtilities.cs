@@ -1,7 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -117,21 +116,6 @@ namespace TerraFX.Utilities
         /// <param name="memory">The memory to free</param>
         public static void Free(void* memory) => Marshal.FreeHGlobal((IntPtr)memory);
 
-        /// <summary>Marshals a managed delegate to get a function pointer which will invoke it.</summary>
-        /// <typeparam name="TDelegate">The type of the managed delegate.</typeparam>
-        /// <param name="function">The managed delegate for which to marshal.</param>
-        /// <returns>A function pointer that invokes <paramref name="function" />.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static IntPtr MarshalDelegate<TDelegate>(TDelegate function)
-            where TDelegate : notnull => Marshal.GetFunctionPointerForDelegate(function);
-
-        /// <summary>Marshals a function pointer to get a managed delegate which will invoke it.</summary>
-        /// <typeparam name="TDelegate">The type of the managed delegate.</typeparam>
-        /// <param name="function">The function pointer for which to marshal.</param>
-        /// <returns>A managed delegate that invokes <paramref name="function" />.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TDelegate MarshalFunctionPointer<TDelegate>(IntPtr function) => Marshal.GetDelegateForFunctionPointer<TDelegate>(function);
-
         /// <summary>Marshals a string to a null-terminated UTF8 string.</summary>
         /// <param name="source">The string for which to marshal.</param>
         /// <returns>A null-terminated UTF8 string that is equivalent to <paramref name="source" />.</returns>
@@ -222,22 +206,10 @@ namespace TerraFX.Utilities
             return span;
         }
 
-        /// <summary>Gets a null reference of <typeparamref name="T"/>.</summary>
-        /// <typeparam name="T">The type of the null reference to retrieve.</typeparam>
-        /// <returns>A null reference of <typeparamref name="T"/>.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ref T NullRef<T>() => ref Unsafe.AsRef<T>(null);
-
         /// <summary>Gets the size of <typeparamref name="T" />.</summary>
         /// <typeparam name="T">The type for which to get the size.</typeparam>
         /// <returns>The size of <typeparamref name="T" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint SizeOf<T>() => unchecked((uint)Unsafe.SizeOf<T>());
-
-        /// <summary>Bypasses definite assignment rules by taking advantage of <c>out</c> semantics.</summary>
-        /// <typeparam name="T">The type of <paramref name="value" />.</typeparam>
-        /// <param name="value">The value for which to skip initialization.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SkipInit<T>([MaybeNull] out T value) => Unsafe.SkipInit(out value);
     }
 }
