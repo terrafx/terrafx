@@ -185,6 +185,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\ci.yml = .github\workflows\ci.yml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WinForms", "WinForms", "{F6DC2F6E-0A8B-41C2-B4B6-E788E3DC37A6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraFX.WinForms", "sources\WinForms\TerraFX.WinForms.csproj", "{DEEC9AAF-E7E3-44D1-85A7-0201E1F60420}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -279,6 +283,10 @@ Global
 		{B56B6C8D-47C9-4D61-A65B-FBBF629A9DE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B56B6C8D-47C9-4D61-A65B-FBBF629A9DE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B56B6C8D-47C9-4D61-A65B-FBBF629A9DE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEEC9AAF-E7E3-44D1-85A7-0201E1F60420}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEEC9AAF-E7E3-44D1-85A7-0201E1F60420}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEEC9AAF-E7E3-44D1-85A7-0201E1F60420}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEEC9AAF-E7E3-44D1-85A7-0201E1F60420}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -339,6 +347,8 @@ Global
 		{B95732CF-D97C-464C-A9C5-1125CE4AE3C6} = {EFB05081-EC44-49D3-B6D1-52AE42085B5B}
 		{B56B6C8D-47C9-4D61-A65B-FBBF629A9DE7} = {B95732CF-D97C-464C-A9C5-1125CE4AE3C6}
 		{8D7DA6CE-DB80-4CC6-ABB0-E0C5946187E0} = {0A95BCC3-CE21-4483-A5F3-9E6335FE266E}
+		{F6DC2F6E-0A8B-41C2-B4B6-E788E3DC37A6} = {0B821858-8E47-4485-AC06-D2E971A53EB2}
+		{DEEC9AAF-E7E3-44D1-85A7-0201E1F60420} = {F6DC2F6E-0A8B-41C2-B4B6-E788E3DC37A6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2FE36DF8-2D9C-4F20-8787-45DC74B57461}

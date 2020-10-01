@@ -55,3 +55,5 @@ That is, all of the existing well known commands "just work". This includes, but
  * `dotnet build`
  * `dotnet test`
  * `dotnet pack`
+
+On Unix, [TerraFX.Unix.slnf] should be used instead of [TerraFX.sln] as it excludes any projects that are incapable of building such as the WinForms support.
