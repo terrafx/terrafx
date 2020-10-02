@@ -121,7 +121,7 @@ namespace TerraFX.Numerics
         /// <param name="left">The dividend.</param>
         /// <param name="right">The divisor to divide each component by.</param>
         /// <returns>The result of multiplying each component of <paramref name="left"/> by <paramref name="right"/>.</returns>
-        public static Vector3 operator /(Vector3 left, float right) => new Vector3(left.X * right, left.Y * right, left.Z * right);
+        public static Vector3 operator /(Vector3 left, float right) => new Vector3(left.X / right, left.Y / right, left.Z / right);
 
         /// <summary>Computes the cross product of two <see cref="Vector3"/> values.</summary>
         /// <remarks>This method assumes both vectors <paramref name="left"/> and <paramref name="right"/> start at the origin.</remarks>
