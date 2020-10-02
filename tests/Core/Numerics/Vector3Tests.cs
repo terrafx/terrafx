@@ -10,16 +10,16 @@ namespace TerraFX.UnitTests.Numerics
         [Test]
         public static void VectorsCompareEqual()
         {
-            Assert.True(new Vector3(0,0,0) == new Vector3(0,0,0));
-            Assert.False(new Vector3(0,0,0) == new Vector3(1,1,1));
+            Assert.True(new Vector3(0, 0, 0) == new Vector3(0, 0, 0));
+            Assert.False(new Vector3(0, 0, 0) == new Vector3(1, 1, 1));
         }
 
         /// <summary>Ensures that two vectors that are expected to compare not equal do, in fact compare not equal.</summary>
         [Test]
         public static void VectorsCompareNotEqual()
         {
-            Assert.False(new Vector3(0,0,0) != new Vector3(0,0,0));
-            Assert.True(new Vector3(0,0,0) != new Vector3(1,1,1));
+            Assert.False(new Vector3(0, 0, 0) != new Vector3(0, 0, 0));
+            Assert.True(new Vector3(0, 0, 0) != new Vector3(1, 1, 1));
         }
 
         /// <summary>Ensures that <see cref="Vector3.operator+(Vector3)"/> returns its input unchanced.</summary>
@@ -33,7 +33,7 @@ namespace TerraFX.UnitTests.Numerics
         [Test]
         public static void UnaryNegationReturnsNegative()
         {
-            var minusOne = -new Vector3(1,1,1);
+            var minusOne = -new Vector3(1, 1, 1);
 
             Assert.AreEqual(-1, minusOne.X);
             Assert.AreEqual(-1, minusOne.Y);
