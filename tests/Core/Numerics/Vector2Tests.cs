@@ -1,0 +1,129 @@
+using NUnit.Framework;
+using TerraFX.Numerics;
+
+namespace TerraFX.UnitTests.Numerics
+{
+    /// <summary>Unit tests for <see cref="Vector2"/>.</summary>
+    public class Vector2Tests
+    {
+        /// <summary>Ensures that two vectors that are expected to compare equal do, in fact compare equal.</summary>
+        [Test]
+        public static void VectorsCompareEqual()
+        {
+            Assert.True(new Vector2(0, 0) == new Vector2(0, 0));
+            Assert.False(new Vector2(0, 0) == new Vector2(1, 1));
+        }
+
+        /// <summary>Ensures that two vectors that are expected to compare not equal do, in fact compare not equal.</summary>
+        [Test]
+        public static void VectorsCompareNotEqual()
+        {
+            Assert.False(new Vector2(0, 0) != new Vector2(0, 0));
+            Assert.True(new Vector2(0, 0) != new Vector2(1, 1));
+        }
+
+        /// <summary>Ensures that <see cref="Vector2.operator+(Vector2)"/> returns its input unchanced.</summary>
+        [Test]
+        public static void UnaryPlusReturnsUnchanged()
+        {
+            Assert.True(+Vector2.Zero == Vector2.Zero);
+        }
+
+        /// <summary>Ensures that <see cref="Vector2.operator-(Vector2)"/> returns the negation of its input.</summary>
+        [Test]
+        public static void UnaryNegationReturnsNegative()
+        {
+            var minusOne = -new Vector2(1, 1);
+
+            Assert.AreEqual(-1, minusOne.X);
+            Assert.AreEqual(-1, minusOne.Y);
+        }
+
+        /// <summary>Ensures that <see cref="Vector2.operator+(Vector2,Vector2)"/> returns the vector sum of its components.</summary>
+        [Test]
+        public static void AdditionReturnsSumOfValues()
+        {
+            var vector = new Vector2(1, 2) + new Vector2(1, 2);
+
+            Assert.AreEqual(2, vector.X);
+            Assert.AreEqual(4, vector.Y);
+        }
+
+        /// <summary>Ensures that <see cref="Vector2.operator-(Vector2,Vector2)"/> returns the vector difference of its components.</summary>
+        [Test]
+        public static void SubtractionReturnsDifferenceOfValues()
+        {
+            var vector = new Vector2(3, 2) - new Vector2(1, 2);
+
+            Assert.AreEqual(2, vector.X);
+            Assert.AreEqual(0, vector.Y);
+        }
+
+        /// <summary>Ensures that <see cref="Vector2.operator*(Vector2,Vector2)"/> returns the vector product of its components.</summary>
+        [Test]
+        public static void VectorMultiplicationReturnsProductOfValues()
+        {
+            var vector = new Vector2(1, 2) * new Vector2(3, 2);
+
+            Assert.AreEqual(3, vector.X);
+            Assert.AreEqual(4, vector.Y);
+        }
+
+        /// <summary>Ensures that <see cref="Vector2.operator/(Vector2,Vector2)"/> returns the vector division of its components.</summary>
+        [Test]
+        public static void VectorDivisionReturnsDivisionOfValues()
+        {
+            var vector = new Vector2(6, 12) / new Vector2(3, 6);
+
+            Assert.AreEqual(2, vector.X);
+            Assert.AreEqual(2, vector.Y);
+        }
+
+        /// <summary>Ensures that <see cref="Vector2.operator*(Vector2,float)"/> returns a vector with each component multiplied by the given float.</summary>
+        [Test]
+        public static void ScalarMultiplicationReturnValuesScaled()
+        {
+            var vector = new Vector2(1, 2) * 5;
+
+            Assert.AreEqual(5, vector.X);
+            Assert.AreEqual(10, vector.Y);
+        }
+
+        /// <summary>Ensures that <see cref="Vector2.operator/(Vector2,float)"/> returns a vector with each component divided by the given float.</summary>
+        [Test]
+        public static void ScalarDivisionReturnsValuesScaled()
+        {
+            var vector = new Vector2(5, 10) / 5;
+
+            Assert.AreEqual(1, vector.X);
+            Assert.AreEqual(2, vector.Y);
+        }
+
+        /// <summary>Ensures that <see cref="Vector2.Dot(Vector2,Vector2)"/> returns the scalar product of both input vectors.</summary>
+        [Test]
+        public static void DotProductReturnsScalarProduct()
+        {
+            var product = Vector2.Dot(new Vector2(1, 0.5f), new Vector2(2, 1));
+
+            Assert.AreEqual(2.5f, product);
+        }
+
+        /// <summary>Ensures that <see cref="Vector2.Normalize(Vector2)"/> returns a unit vector.</summary>
+        [Test]
+        public static void NormalizeReturnsUnitVector()
+        {
+            Assert.AreEqual(new Vector2(0, 1), Vector2.Normalize(new Vector2(0, 2)));
+            Assert.AreEqual(new Vector2(1, 0), Vector2.Normalize(new Vector2(1, 0)));
+        }
+
+        /// <summary>Ensures that <see cref="Vector2.Length"/> and <see cref="Vector2.LengthSquared"/> return the magnitude and squared magnitude of the input vector.</summary>
+        [Test]
+        public static void LengthReturnsMagnitudeOfVector()
+        {
+            var vector = new Vector2(0, 5);
+
+            Assert.AreEqual(5, vector.Length);
+            Assert.AreEqual(25, vector.LengthSquared);
+        }
+    }
+}
