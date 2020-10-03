@@ -6,6 +6,20 @@ namespace TerraFX.UnitTests.Numerics
     /// <summary>Unit tests for <see cref="Vector3"/>.</summary>
     public class Vector3Tests
     {
+        /// <summary>Ensures that a vector's components are equal to the parameters used to construct one.</summary>
+        [Test]
+        public static void ComponentsReturnCorrectValues(
+            [Values(1, 2, 3)] float x,
+            [Values(1, 2, 3)] float y,
+            [Values(1, 2, 3)] float z)
+        {
+            var vector = new Vector3(x, y, z);
+
+            Assert.That(vector.X, Is.EqualTo(x));
+            Assert.That(vector.Y, Is.EqualTo(y));
+            Assert.That(vector.Z, Is.EqualTo(z));
+        }
+
         /// <summary>Ensures that two vectors that are expected to compare equal do, in fact compare equal.</summary>
         [Test]
         public static void VectorsCompareEqual()
