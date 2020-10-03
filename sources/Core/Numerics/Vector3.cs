@@ -39,6 +39,15 @@ namespace TerraFX.Numerics
             _z = z;
         }
 
+        /// <summary>Initializes a new instance of the <see cref="Vector3"/> struct with each component set to <paramref name="value"/>.</summary>
+        /// <param name="value">The value to set each component to.</param>
+        public Vector3(float value)
+        {
+            _x = value;
+            _y = value;
+            _z = value;
+        }
+
         /// <summary>Gets the value of the x-dimension.</summary>
         public float X => _x;
 
@@ -53,7 +62,6 @@ namespace TerraFX.Numerics
 
         /// <summary>Gets the squared length of the vector.</summary>
         public float LengthSquared => Dot(this, this);
-
 
         /// <summary>Compares two <see cref="Vector3" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="Vector3" /> to compare with <paramref name="right" />.</param>
@@ -131,7 +139,8 @@ namespace TerraFX.Numerics
         public static Vector3 Cross(Vector3 left, Vector3 right) => new Vector3(
             (left.Y * right.Z) - (left.Z * right.Y),
             (left.Z * right.X) - (left.X * right.Z),
-            (left.X * right.Y) - (left.Y * right.X));
+            (left.X * right.Y) - (left.Y * right.X)
+        );
 
         /// <summary>Calculates the dot product of two <see cref="Vector3"/> values.</summary>
         /// <param name="left">The first value to dot.</param>
