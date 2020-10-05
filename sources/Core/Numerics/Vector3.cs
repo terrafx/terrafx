@@ -39,6 +39,15 @@ namespace TerraFX.Numerics
             _z = z;
         }
 
+        /// <summary>Initializes a new instance of the <see cref="Vector3"/> struct with each component set to <paramref name="value"/>.</summary>
+        /// <param name="value">The value to set each component to.</param>
+        public Vector3(float value)
+        {
+            _x = value;
+            _y = value;
+            _z = value;
+        }
+
         /// <summary>Gets the value of the x-dimension.</summary>
         public float X => _x;
 
@@ -47,6 +56,12 @@ namespace TerraFX.Numerics
 
         /// <summary>Gets the value of the z-dimension.</summary>
         public float Z => _z;
+
+        /// <summary>Gets the square-rooted length of the vector.</summary>
+        public float Length => MathF.Sqrt(LengthSquared);
+
+        /// <summary>Gets the squared length of the vector.</summary>
+        public float LengthSquared => Dot(this, this);
 
         /// <summary>Compares two <see cref="Vector3" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="Vector3" /> to compare with <paramref name="right" />.</param>
@@ -69,6 +84,74 @@ namespace TerraFX.Numerics
                 || (left.Y != right.Y)
                 || (left.Z != right.Z);
         }
+
+        /// <summary>Returns the value of the <see cref="Vector3" /> operand (the sign of the operand is unchanged).</summary>
+        /// <param name="value">The operand to return</param>
+        /// <returns>The value of the operand, <paramref name="value"/>.</returns>
+        public static Vector3 operator +(Vector3 value) => value;
+
+        /// <summary>Negates the value of the specified <see cref="Vector3" /> operand.</summary>
+        /// <param name="value">The value to negate.</param>
+        /// <returns>The result of <paramref name="value"/> multiplied by negative one (-1).</returns>
+        public static Vector3 operator -(Vector3 value) => value * -1;
+
+        /// <summary>Adds two specified <see cref="Vector3"/> values.</summary>
+        /// <param name="left">The first value to add.</param>
+        /// <param name="right">The second value to add.</param>
+        /// <returns>The result of adding <paramref name="left"/> and <paramref name="right"/>.</returns>
+        public static Vector3 operator +(Vector3 left, Vector3 right) => new Vector3(left.X + right.X, left.Y + right.Y, left.Z + right.Z);
+
+        /// <summary>Subtracts two specified <see cref="Vector3"/> values.</summary>
+        /// <param name="left">The minuend.</param>
+        /// <param name="right">The subtrahend.</param>
+        /// <returns>The result of subtracting <paramref name="right"/> from <paramref name="left"/>.</returns>
+        public static Vector3 operator -(Vector3 left, Vector3 right) => new Vector3(left.X - right.X, left.Y - right.Y, left.Z - right.Z);
+
+        /// <summary>Multiplies two specified <see cref="Vector3"/> values.</summary>
+        /// <param name="left">The first value to multiply.</param>
+        /// <param name="right">The second value to multiply.</param>
+        /// <returns>The result of multiplying <paramref name="left"/> by <paramref name="right"/>.</returns>
+        public static Vector3 operator *(Vector3 left, Vector3 right) => new Vector3(left.X * right.X, left.Y * right.Y, left.Z * right.Z);
+
+        /// <summary>Divides two specified <see cref="Vector3"/> values.</summary>
+        /// <param name="left">The dividend.</param>
+        /// <param name="right">The divisor.</param>
+        /// <returns>The result of dividing <paramref name="left"/> by <paramref name="right"/>.</returns>
+        public static Vector3 operator /(Vector3 left, Vector3 right) => new Vector3(left.X / right.X, left.Y / right.Y, left.Z / right.Z);
+
+        /// <summary>Multiplies each component of a <see cref="Vector3"/> value by a given <see cref="float"/> value.</summary>
+        /// <param name="left">The vector to multiply.</param>
+        /// <param name="right">The value to multiply each component by.</param>
+        /// <returns>The result of multiplying each component of <paramref name="left"/> by <paramref name="right"/>.</returns>
+        public static Vector3 operator *(Vector3 left, float right) => new Vector3(left.X * right, left.Y * right, left.Z * right);
+
+        /// <summary>Divides each component of a <see cref="Vector3"/> value by a given <see cref="float"/> value.</summary>
+        /// <param name="left">The dividend.</param>
+        /// <param name="right">The divisor to divide each component by.</param>
+        /// <returns>The result of multiplying each component of <paramref name="left"/> by <paramref name="right"/>.</returns>
+        public static Vector3 operator /(Vector3 left, float right) => new Vector3(left.X / right, left.Y / right, left.Z / right);
+
+        /// <summary>Computes the cross product of two <see cref="Vector3"/> values.</summary>
+        /// <remarks>This method assumes both vectors <paramref name="left"/> and <paramref name="right"/> start at the origin.</remarks>
+        /// <param name="left">The first value to cross.</param>
+        /// <param name="right">The second value to cross.</param>
+        /// <returns>The cross product of <paramref name="left"/> and <paramref name="right"/></returns>
+        public static Vector3 Cross(Vector3 left, Vector3 right) => new Vector3(
+            (left.Y * right.Z) - (left.Z * right.Y),
+            (left.Z * right.X) - (left.X * right.Z),
+            (left.X * right.Y) - (left.Y * right.X)
+        );
+
+        /// <summary>Calculates the dot product of two <see cref="Vector3"/> values.</summary>
+        /// <param name="left">The first value to dot.</param>
+        /// <param name="right">The second value to dot.</param>
+        /// <returns>The result of adding the multiplication of each component of <paramref name="left"/> by each component of <paramref name="right"/>.</returns>
+        public static float Dot(Vector3 left, Vector3 right) => (left.X * right.X) + (left.Y * right.Y) + (left.Z * right.Z);
+
+        /// <summary>Computes the normalized value of the given <see cref="Vector3"/> value.</summary>
+        /// <param name="value">The value to normalize.</param>
+        /// <returns>The unit vector of <paramref name="value"/>.</returns>
+        public static Vector3 Normalize(Vector3 value) => value / value.Length;
 
         /// <summary>Creates a new <see cref="Vector3" /> instance with <see cref="X" /> set to the specified value.</summary>
         /// <param name="value">The new value of the x-dimension.</param>
