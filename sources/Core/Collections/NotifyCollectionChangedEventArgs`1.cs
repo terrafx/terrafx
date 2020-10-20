@@ -13,9 +13,9 @@ namespace TerraFX.Collections
         private static readonly NotifyCollectionChangedEventArgs<T> Reset = new NotifyCollectionChangedEventArgs<T>(NotifyCollectionChangedAction.Reset);
 
         private readonly NotifyCollectionChangedAction _action;
-        private readonly T _value;
+        private readonly T? _value;
 
-        private NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, T value = default)
+        private NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, T? value = default)
         {
             Debug.Assert(Enum.IsDefined(typeof(NotifyCollectionChangedAction), action));
 
@@ -28,7 +28,7 @@ namespace TerraFX.Collections
 
         /// <summary>Gets the value of the item that caused the event.</summary>
         /// <exception cref="InvalidOperationException"><see cref="Action" /> is not <see cref="NotifyDictionaryChangedAction.Add" /> or <see cref="NotifyDictionaryChangedAction.Remove" />.</exception>
-        public T Value
+        public T? Value
         {
             get
             {

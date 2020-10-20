@@ -14,11 +14,11 @@ namespace TerraFX.Collections
         private static readonly NotifyDictionaryChangedEventArgs<TKey, TValue> Reset = new NotifyDictionaryChangedEventArgs<TKey, TValue>(NotifyDictionaryChangedAction.Reset);
 
         private readonly NotifyDictionaryChangedAction _action;
-        private readonly TKey _key;
-        private readonly TValue _oldValue;
-        private readonly TValue _newValue;
+        private readonly TKey? _key;
+        private readonly TValue? _oldValue;
+        private readonly TValue? _newValue;
 
-        private NotifyDictionaryChangedEventArgs(NotifyDictionaryChangedAction action, TKey key = default, TValue oldValue = default, TValue newValue = default)
+        private NotifyDictionaryChangedEventArgs(NotifyDictionaryChangedAction action, TKey? key = default, TValue? oldValue = default, TValue? newValue = default)
         {
             Debug.Assert(Enum.IsDefined(typeof(NotifyDictionaryChangedAction), action));
 
@@ -33,7 +33,7 @@ namespace TerraFX.Collections
 
         /// <summary>Gets the key of the item that caused the event.</summary>
         /// <exception cref="InvalidOperationException"><see cref="Action" /> is not <see cref="NotifyDictionaryChangedAction.Add" />, <see cref="NotifyDictionaryChangedAction.Remove" />, or <see cref="NotifyDictionaryChangedAction.ValueChanged" />.</exception>
-        public TKey Key
+        public TKey? Key
         {
             get
             {
@@ -48,7 +48,7 @@ namespace TerraFX.Collections
 
         /// <summary>Gets the old value of the item that caused the event.</summary>
         /// <exception cref="InvalidOperationException"><see cref="Action" /> is not <see cref="NotifyDictionaryChangedAction.ValueChanged" />.</exception>
-        public TValue OldValue
+        public TValue? OldValue
         {
             get
             {
@@ -63,7 +63,7 @@ namespace TerraFX.Collections
 
         /// <summary>Gets the new value of the item that caused the event.</summary>
         /// <exception cref="InvalidOperationException"><see cref="Action" /> is not <see cref="NotifyDictionaryChangedAction.ValueChanged" />.</exception>
-        public TValue NewValue
+        public TValue? NewValue
         {
             get
             {
