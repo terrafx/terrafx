@@ -61,7 +61,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
             _sampleDataPipe = new Pipe();
             _stream = new Lazy<IntPtr>(CreateStream, isThreadSafe: true);
             _writeDelegateHandle = new ValueLazy<GCHandle>(CreateHandle);
-            _writeDelegate = (delegate* unmanaged<IntPtr, nuint, void*, void>)(delegate*<IntPtr, nuint, void*, void>)&WriteCallback;
+            _writeDelegate = &WriteCallback;
             _writeRequest = new ManualResetValueTaskSource<int>() {
                 RunContinuationsAsynchronously = true
             };

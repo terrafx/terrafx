@@ -24,17 +24,17 @@
 
   <!-- Package versions for package references across all projects -->
   <ItemGroup>
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.8.0-preview-20200812-03" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.8.0-preview-20200921-01" />
     <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.0.0" />
     <PackageReference Update="NUnit" Version="3.12.0" />
     <PackageReference Update="NUnit3TestAdapter" Version="3.17.0" />
-    <PackageReference Update="System.Composition" Version="5.0.0-preview.8.20407.11" />
-    <PackageReference Update="System.IO.Pipelines" Version="5.0.0-preview.8.20407.11" />
-    <PackageReference Update="TerraFX.Interop.Libc" Version="1.2017.0-alpha-258283270" />
-    <PackageReference Update="TerraFX.Interop.PulseAudio" Version="13.0.0-alpha-258313922" />
-    <PackageReference Update="TerraFX.Interop.Vulkan" Version="1.2.135-alpha-257883922" />
-    <PackageReference Update="TerraFX.Interop.Windows" Version="10.0.19041-alpha-257883804" />
-    <PackageReference Update="TerraFX.Interop.Xlib" Version="6.3.0-alpha-258281612" />
+    <PackageReference Update="System.Composition" Version="5.0.0-rc.2.20475.5" />
+    <PackageReference Update="System.IO.Pipelines" Version="5.0.0-rc.2.20475.5" />
+    <PackageReference Update="TerraFX.Interop.Libc" Version="1.2017.0-alpha-306791429" />
+    <PackageReference Update="TerraFX.Interop.PulseAudio" Version="13.0.0-alpha-306791545" />
+    <PackageReference Update="TerraFX.Interop.Vulkan" Version="1.2.135-alpha-306791632" />
+    <PackageReference Update="TerraFX.Interop.Windows" Version="10.0.19041-alpha-306793647" />
+    <PackageReference Update="TerraFX.Interop.Xlib" Version="6.3.0-alpha-306791182" />
   </ItemGroup>
 
 </Project>
