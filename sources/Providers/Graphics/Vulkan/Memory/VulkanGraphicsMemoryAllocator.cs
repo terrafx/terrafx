@@ -186,6 +186,11 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             for (var i = 0; i < _blockCollections.Length; i++)
             {
+                if ((memoryTypeBits & (1 << i)) == 0)
+                {
+                    continue;
+                }
+
                 var memoryPropertyFlags = memoryProperties.memoryTypes[i].propertyFlags;
 
                 if (((uint)requiredMemoryPropertyFlags & ~memoryPropertyFlags) != 0)
