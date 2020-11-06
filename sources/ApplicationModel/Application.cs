@@ -108,6 +108,7 @@ namespace TerraFX.ApplicationModel
                         if (secondCounter.TotalSeconds >= 1.0)
                         {
                             framesPerSecond = framesThisSecond;
+                            Console.WriteLine(framesPerSecond.ToString("0.0") + "fps");
                             framesThisSecond = 0;
 
                             var ticks = secondCounter.Ticks - TimeSpan.TicksPerSecond;

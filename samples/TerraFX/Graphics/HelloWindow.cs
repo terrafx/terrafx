@@ -78,9 +78,9 @@ namespace TerraFX.Samples.Graphics
             }
         }
 
-        private void Present() => _graphicsDevice.PresentFrame();
+        protected void Present() => _graphicsDevice.PresentFrame();
 
-        private void Render()
+        protected void Render()
         {
             var graphicsContext = GraphicsDevice.CurrentContext;
             var backgroundColor = new ColorRgba(red: 100.0f / 255.0f, green: 149.0f / 255.0f, blue: 237.0f / 255.0f, alpha: 1.0f);
