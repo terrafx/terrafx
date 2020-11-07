@@ -56,15 +56,15 @@ namespace TerraFX.Samples.Graphics
 
         protected override unsafe void Update(TimeSpan delta)
         {
-            const float translationSpeed = (float)Math.PI;
+            const float translationSpeed = MathF.PI;
 
             double trianglePrimitiveTranslationAngle = _trianglePrimitiveTranslationAngle;
             {
                 trianglePrimitiveTranslationAngle = (float)(translationSpeed * delta.TotalSeconds);
             }
             _trianglePrimitiveTranslationAngle = trianglePrimitiveTranslationAngle;
-            float x = (float)(0.5 * Math.Cos(trianglePrimitiveTranslationAngle));
-            float y = (float)(0.5 * Math.Sin(trianglePrimitiveTranslationAngle));
+            float x = 0.5f * MathF.Cos(trianglePrimitiveTranslationAngle);
+            float y = 0.5f * MathF.Sin(trianglePrimitiveTranslationAngle);
 
 
             var constantBuffer = (GraphicsBuffer)_trianglePrimitive.InputResources[0];
