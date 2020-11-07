@@ -16,12 +16,12 @@ namespace TerraFX.Samples.Graphics
     /// The moving is via a translation matrix similar to HelloConstBuffer.
     ///   It has the same DX12 setup, but different translation math.
     /// </summary>
-    public sealed class HelloCombined : HelloWindow
+    public sealed class HelloTextureTransform : HelloWindow
     {
         private GraphicsPrimitive _trianglePrimitive = null!;
         private float _trianglePrimitiveTranslationAngle;
 
-        public HelloCombined(string name, params Assembly[] compositionAssemblies)
+        public HelloTextureTransform(string name, params Assembly[] compositionAssemblies)
             : base(name, compositionAssemblies)
         {
         }
@@ -113,7 +113,7 @@ namespace TerraFX.Samples.Graphics
             var graphicsDevice = GraphicsDevice;
             var graphicsSurface = graphicsDevice.Surface;
 
-            var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Combined", "main", "main");
+            var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "TextureTransform", "main", "main");
             var vertexBuffer = CreateVertexBuffer(graphicsContext, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
 
             var inputResources = new GraphicsResource[3] {
