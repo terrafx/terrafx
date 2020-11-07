@@ -44,6 +44,7 @@ namespace TerraFX.Samples
             new PlaySampleAudio("PulseAudio.PlaySampleAudio", s_audioProviderPulseAudio),
 
             new HelloCombined("D3D12.HelloCombined", s_graphicsProviderD3D12),
+            new HelloCombined("Vulcan.HelloCombined", s_graphicsProviderVulkan),
         };
 
         public static void Main(string[] args)

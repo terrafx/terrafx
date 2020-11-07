@@ -19,8 +19,7 @@ namespace TerraFX.Samples.Graphics
     public sealed class HelloCombined : HelloWindow
     {
         private GraphicsPrimitive _trianglePrimitive = null!;
-        private double _trianglePrimitiveTranslationAngle;
-        private DateTime _startTime;
+        private float _trianglePrimitiveTranslationAngle;
 
         public HelloCombined(string name, params Assembly[] compositionAssemblies)
             : base(name, compositionAssemblies)
@@ -51,16 +50,15 @@ namespace TerraFX.Samples.Graphics
                 graphicsDevice.Signal(currentGraphicsContext.Fence);
                 graphicsDevice.WaitForIdle();
             }
-            _startTime = DateTime.Now;
         }
 
         protected override unsafe void Update(TimeSpan delta)
         {
             const float translationSpeed = MathF.PI;
 
-            double trianglePrimitiveTranslationAngle = _trianglePrimitiveTranslationAngle;
+            float trianglePrimitiveTranslationAngle = _trianglePrimitiveTranslationAngle;
             {
-                trianglePrimitiveTranslationAngle = (float)(translationSpeed * delta.TotalSeconds);
+                trianglePrimitiveTranslationAngle += (float)(translationSpeed * delta.TotalSeconds);
             }
             _trianglePrimitiveTranslationAngle = trianglePrimitiveTranslationAngle;
             float x = 0.5f * MathF.Cos(trianglePrimitiveTranslationAngle);
@@ -96,7 +94,7 @@ namespace TerraFX.Samples.Graphics
                 var currentGraphicsContext = GraphicsDevice.CurrentContext;
                 currentGraphicsContext.BeginFrame();
 
-                Update(DateTime.Now - _startTime);
+                Update(eventArgs.Delta);
                 Render();
 
                 currentGraphicsContext.EndFrame();
