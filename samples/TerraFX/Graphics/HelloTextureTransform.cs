@@ -65,7 +65,6 @@ namespace TerraFX.Samples.Graphics
             float x = 0.5f * MathF.Cos(radians);
             float y = 0.5f * MathF.Sin(radians);
 
-
             var constantBuffer = (GraphicsBuffer)_trianglePrimitive.InputResources[0];
             var pConstantBuffer = constantBuffer.Map<Matrix4x4>();
 
