@@ -56,13 +56,14 @@ namespace TerraFX.Samples.Graphics
         {
             const float translationSpeed = MathF.PI;
 
-            float trianglePrimitiveTranslationAngle = _trianglePrimitiveTranslationAngle;
+            float radians = _trianglePrimitiveTranslationAngle;
             {
-                trianglePrimitiveTranslationAngle += (float)(translationSpeed * delta.TotalSeconds);
+                radians += (float)(translationSpeed * delta.TotalSeconds);
+                radians = radians % (2 * MathF.PI); 
             }
-            _trianglePrimitiveTranslationAngle = trianglePrimitiveTranslationAngle;
-            float x = 0.5f * MathF.Cos(trianglePrimitiveTranslationAngle);
-            float y = 0.5f * MathF.Sin(trianglePrimitiveTranslationAngle);
+            _trianglePrimitiveTranslationAngle = radians;
+            float x = 0.5f * MathF.Cos(radians);
+            float y = 0.5f * MathF.Sin(radians);
 
 
             var constantBuffer = (GraphicsBuffer)_trianglePrimitive.InputResources[0];
@@ -77,29 +78,6 @@ namespace TerraFX.Samples.Graphics
             );
 
             constantBuffer.Unmap(0..sizeof(Matrix4x4));
-        }
-
-        protected override void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs)
-        {
-            ExceptionUtilities.ThrowIfNull(sender, nameof(sender));
-
-            if (_trianglePrimitiveTranslationAngle >= 4 * Math.PI)
-            {
-                var application = (Application)sender;
-                application.RequestExit();
-            }
-
-            if (this.Window.IsVisible)
-            {
-                var currentGraphicsContext = GraphicsDevice.CurrentContext;
-                currentGraphicsContext.BeginFrame();
-
-                Update(eventArgs.Delta);
-                Render();
-
-                currentGraphicsContext.EndFrame();
-                Present();
-            }
         }
 
         protected override void Draw(GraphicsContext graphicsContext)

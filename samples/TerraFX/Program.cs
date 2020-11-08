@@ -38,13 +38,13 @@ namespace TerraFX.Samples
             new HelloTexture("D3D12.HelloTexture", s_graphicsProviderD3D12),
             new HelloTexture("Vulkan.HelloTexture", s_graphicsProviderVulkan),
 
+            new HelloTextureTransform("D3D12.HelloTextureTransform", s_graphicsProviderD3D12),
+            new HelloTextureTransform("Vulkan.HelloTextureTransform", s_graphicsProviderVulkan),
+
             new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Sync", false, s_audioProviderPulseAudio),
             new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Async", true, s_audioProviderPulseAudio),
 
             new PlaySampleAudio("PulseAudio.PlaySampleAudio", s_audioProviderPulseAudio),
-
-            new HelloTextureTransform("D3D12.HelloTextureTransform", s_graphicsProviderD3D12),
-            new HelloTextureTransform("Vulcan.HelloTextureTransform", s_graphicsProviderVulkan),
         };
 
         public static void Main(string[] args)
