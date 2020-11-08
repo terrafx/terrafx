@@ -99,7 +99,7 @@ namespace TerraFX.Samples.Graphics
                 CreateConstantBuffer(graphicsContext),
                 CreateTexture2D(graphicsContext, textureStagingBuffer),
             };
-            return graphicsDevice.CreatePrimitive(graphicsPipeline, new GraphicsBufferView(vertexBuffer, vertexBuffer.Size, SizeOf<IdentityVertex>()), indexBufferView: default, inputResources);
+            return graphicsDevice.CreatePrimitive(graphicsPipeline, new GraphicsBufferView(vertexBuffer, vertexBuffer.Size, SizeOf<TextureVertex>()), indexBufferView: default, inputResources);
 
             static GraphicsBuffer CreateConstantBuffer(GraphicsContext graphicsContext)
             {
@@ -148,24 +148,24 @@ namespace TerraFX.Samples.Graphics
             static GraphicsBuffer CreateVertexBuffer(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
             {
                 var vertexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.None, (ulong)(sizeof(IdentityVertex) * 3));
-                var pVertexBuffer = vertexStagingBuffer.Map<IdentityVertex>();
+                var pVertexBuffer = vertexStagingBuffer.Map<TextureVertex>();
 
-                pVertexBuffer[0] = new IdentityVertex {
+                pVertexBuffer[0] = new TextureVertex {
                     Position = new Vector3(0.0f, 0.25f * aspectRatio, 0.0f),
-                    Color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f)
+                    UV = new Vector2(1.0f, 0.0f)
                 };
 
-                pVertexBuffer[1] = new IdentityVertex {
+                pVertexBuffer[1] = new TextureVertex {
                     Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),
-                    Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f)
+                    UV = new Vector2(0.0f, 1.0f)
                 };
 
-                pVertexBuffer[2] = new IdentityVertex {
+                pVertexBuffer[2] = new TextureVertex {
                     Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
-                    Color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f)
+                    UV = new Vector2(0.0f, 0.0f)
                 };
 
-                vertexStagingBuffer.Unmap(0..(sizeof(IdentityVertex) * 3));
+                vertexStagingBuffer.Unmap(0..(sizeof(TextureVertex) * 3));
                 graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
 
                 return vertexBuffer;
