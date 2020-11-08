@@ -116,10 +116,33 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             var shaderResourceViewDesc = new D3D12_SHADER_RESOURCE_VIEW_DESC {
                 Format = DXGI_FORMAT_R8G8B8A8_UNORM,
-                ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D,
+                ViewDimension = D3D12_SRV_DIMENSION_UNKNOWN,
                 Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING,
             };
-            shaderResourceViewDesc.Anonymous.Texture2D.MipLevels = 1;
+
+            switch(Kind)
+            {
+                case GraphicsTextureKind.OneDimensional:
+                {
+                    shaderResourceViewDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE1D;
+                    shaderResourceViewDesc.Texture1D.MipLevels = 1;
+                    break;
+                }
+
+                case GraphicsTextureKind.TwoDimensional:
+                {
+                    shaderResourceViewDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+                    shaderResourceViewDesc.Texture2D.MipLevels = 1;
+                    break;
+                }
+
+                case GraphicsTextureKind.ThreeDimensional:
+                {
+                    shaderResourceViewDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE3D;
+                    shaderResourceViewDesc.Texture3D.MipLevels = 1;
+                    break;
+                }
+            }
 
             d3d12Device->CreateShaderResourceView(d3d12Resource, &shaderResourceViewDesc, device.D3D12ShaderResourceDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 
