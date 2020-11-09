@@ -11,7 +11,7 @@ namespace TerraFX.Samples.Graphics
 {
     public sealed class HelloTexture3D : HelloWindow
     {
-        private GraphicsPrimitive _trianglePrimitive = null!;
+        private GraphicsPrimitive _quadPrimitive = null!;
         private float _texturePosition;
 
         public HelloTexture3D(string name, params Assembly[] compositionAssemblies)
@@ -21,7 +21,7 @@ namespace TerraFX.Samples.Graphics
 
         public override void Cleanup()
         {
-            _trianglePrimitive?.Dispose();
+            _quadPrimitive?.Dispose();
             base.Cleanup();
         }
 
@@ -32,12 +32,13 @@ namespace TerraFX.Samples.Graphics
             var graphicsDevice = GraphicsDevice;
 
             using (var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024)) // 2^16, minimum page size
+            using (var indexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024))
             using (var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024 * 1024)) // 2^26, same as 4 * 256 * 256 * 256
             {
                 var currentGraphicsContext = graphicsDevice.CurrentContext;
 
                 currentGraphicsContext.BeginFrame();
-                _trianglePrimitive = CreateTrianglePrimitive(currentGraphicsContext, vertexStagingBuffer, textureStagingBuffer);
+                _quadPrimitive = CreateQuadPrimitive(currentGraphicsContext, vertexStagingBuffer, indexStagingBuffer, textureStagingBuffer);
                 currentGraphicsContext.EndFrame();
 
                 graphicsDevice.Signal(currentGraphicsContext.Fence);
@@ -57,7 +58,7 @@ namespace TerraFX.Samples.Graphics
             _texturePosition = radians;
             float z = 0.5f + 0.5f * MathF.Cos(radians);
 
-            var constantBuffer = (GraphicsBuffer)_trianglePrimitive.InputResources[0];
+            var constantBuffer = (GraphicsBuffer)_quadPrimitive.InputResources[0];
             var pConstantBuffer = constantBuffer.Map<Matrix4x4>();
 
             // Shaders take transposed matrices, so we want to set X.W
@@ -73,24 +74,75 @@ namespace TerraFX.Samples.Graphics
 
         protected override void Draw(GraphicsContext graphicsContext)
         {
-            graphicsContext.Draw(_trianglePrimitive);
+            graphicsContext.Draw(_quadPrimitive);
             base.Draw(graphicsContext);
         }
 
-        private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer textureStagingBuffer)
+        private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer indexStagingBuffer, GraphicsBuffer textureStagingBuffer)
         {
             var graphicsDevice = GraphicsDevice;
             var graphicsSurface = graphicsDevice.Surface;
 
             var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Texture3D", "main", "main");
             var vertexBuffer = CreateVertexBuffer(graphicsContext, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
+            var indexBuffer = CreateIndexBuffer(graphicsContext, indexStagingBuffer);
 
             var inputResources = new GraphicsResource[3] {
                 CreateConstantBuffer(graphicsContext),
                 CreateConstantBuffer(graphicsContext),
                 CreateTexture3D(graphicsContext, textureStagingBuffer),
             };
-            return graphicsDevice.CreatePrimitive(graphicsPipeline, new GraphicsBufferView(vertexBuffer, vertexBuffer.Size, SizeOf<Texture3DVertex>()), indexBufferView: default, inputResources);
+            return graphicsDevice.CreatePrimitive(graphicsPipeline, new GraphicsBufferView(vertexBuffer, vertexBuffer.Size, SizeOf<Texture3DVertex>()), new GraphicsBufferView(indexBuffer, indexBuffer.Size, sizeof(ushort)), inputResources);
+
+            static GraphicsBuffer CreateVertexBuffer(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
+            {
+                var vertexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.None, (ulong)(sizeof(Texture3DVertex) * 3));
+                var pVertexBuffer = vertexStagingBuffer.Map<Texture3DVertex>();
+
+                pVertexBuffer[0] = new Texture3DVertex {
+                    Position = new Vector3(0.25f, 0.25f * aspectRatio, 0.0f),
+                    UVW = new Vector3(1.0f, 0.0f, 0.5f),
+                };
+
+                pVertexBuffer[1] = new Texture3DVertex {
+                    Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),
+                    UVW = new Vector3(0.0f, 1.0f, 0.5f),
+                };
+
+                pVertexBuffer[2] = new Texture3DVertex {
+                    Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
+                    UVW = new Vector3(0.0f, 0.0f, 0.5f),
+                };
+
+                pVertexBuffer[3] = new Texture3DVertex {
+                    Position = new Vector3(-0.25f, 0.25f * aspectRatio, 0.0f),
+                    UVW = new Vector3(0.0f, 1.0f, 0.5f),
+                };
+
+                vertexStagingBuffer.Unmap(0..(sizeof(Texture3DVertex) * 3));
+                graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
+
+                return vertexBuffer;
+            }
+
+            static GraphicsBuffer CreateIndexBuffer(GraphicsContext graphicsContext, GraphicsBuffer indexStagingBuffer)
+            {
+                var indexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Index, GraphicsResourceCpuAccess.None, sizeof(ushort) * 6);
+                var pIndexBuffer = indexStagingBuffer.Map<ushort>();
+
+                pIndexBuffer[0] = 0;
+                pIndexBuffer[1] = 1;
+                pIndexBuffer[2] = 2;
+
+                pIndexBuffer[3] = 0;
+                pIndexBuffer[4] = 2;
+                pIndexBuffer[5] = 3;
+
+                indexStagingBuffer.Unmap(0..(sizeof(ushort) * 6));
+                graphicsContext.Copy(indexBuffer, indexStagingBuffer);
+
+                return indexBuffer;
+            }
 
             static GraphicsBuffer CreateConstantBuffer(GraphicsContext graphicsContext)
             {
@@ -128,32 +180,6 @@ namespace TerraFX.Samples.Graphics
                 graphicsContext.Copy(texture3D, textureStagingBuffer);
 
                 return texture3D;
-            }
-
-            static GraphicsBuffer CreateVertexBuffer(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
-            {
-                var vertexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.None, (ulong)(sizeof(Texture3DVertex) * 3));
-                var pVertexBuffer = vertexStagingBuffer.Map<Texture3DVertex>();
-
-                pVertexBuffer[0] = new Texture3DVertex {
-                    Position = new Vector3(0.0f, 0.25f * aspectRatio, 0.0f),
-                    UVW = new Vector3(0.5f, 1.0f, 0.5f),
-                };
-
-                pVertexBuffer[1] = new Texture3DVertex {
-                    Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),
-                    UVW = new Vector3(1.0f, 0.0f, 0.5f),
-                };
-
-                pVertexBuffer[2] = new Texture3DVertex {
-                    Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
-                    UVW = new Vector3(0.0f, 0.0f, 0.5f),
-                };
-
-                vertexStagingBuffer.Unmap(0..(sizeof(Texture3DVertex) * 3));
-                graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
-
-                return vertexBuffer;
             }
 
             GraphicsPipeline CreateGraphicsPipeline(GraphicsDevice graphicsDevice, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)
