@@ -2,7 +2,7 @@
 
 #version 450 core
 
-layout(binding = 0) uniform sampler3D input_textureSampler;
+layout(binding = 2) uniform sampler3D input_textureSampler;
 
 layout(location = 0) in vec3 input_uvw;
 layout(location = 0) out vec4 output_color;
