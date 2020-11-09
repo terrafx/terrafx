@@ -58,11 +58,11 @@ namespace TerraFX.Samples.Graphics
             var vertexBuffer = CreateVertexBuffer(graphicsContext, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
 
             var inputResources = new GraphicsResource[1] {
-                CreateTexture3d(graphicsContext, textureStagingBuffer),
+                CreateTexture3D(graphicsContext, textureStagingBuffer),
             };
             return graphicsDevice.CreatePrimitive(graphicsPipeline, new GraphicsBufferView(vertexBuffer, vertexBuffer.Size, SizeOf<Texture3DVertex>()), indexBufferView: default, inputResources);
 
-            static GraphicsTexture CreateTexture3d(GraphicsContext graphicsContext, GraphicsBuffer textureStagingBuffer)
+            static GraphicsTexture CreateTexture3D(GraphicsContext graphicsContext, GraphicsBuffer textureStagingBuffer)
             {
                 const uint TextureWidth = 256;
                 const uint TextureHeight = 256;
@@ -71,7 +71,7 @@ namespace TerraFX.Samples.Graphics
                 const uint TexturePixels = TextureDz * TextureDepth;
                 const uint TextureSize = TexturePixels * 4;
 
-                var texture3d = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.ThreeDimensional, GraphicsResourceCpuAccess.None, TextureWidth, TextureHeight, TextureDepth);
+                var texture3D = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.ThreeDimensional, GraphicsResourceCpuAccess.None, TextureWidth, TextureHeight, TextureDepth);
                 var pTextureData = textureStagingBuffer.Map<uint>();
 
                 for (uint n = 0; n < TexturePixels; n++)
@@ -84,9 +84,9 @@ namespace TerraFX.Samples.Graphics
                 }
 
                 textureStagingBuffer.Unmap(0..(int)TextureSize);
-                graphicsContext.Copy(texture3d, textureStagingBuffer);
+                graphicsContext.Copy(texture3D, textureStagingBuffer);
 
-                return texture3d;
+                return texture3D;
             }
 
             static GraphicsBuffer CreateVertexBuffer(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
