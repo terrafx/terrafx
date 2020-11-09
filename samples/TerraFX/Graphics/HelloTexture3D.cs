@@ -8,11 +8,11 @@ using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Samples.Graphics
 {
-    public sealed class HelloTexture3d : HelloWindow
+    public sealed class HelloTexture3D : HelloWindow
     {
         private GraphicsPrimitive _trianglePrimitive = null!;
 
-        public HelloTexture3d(string name, params Assembly[] compositionAssemblies)
+        public HelloTexture3D(string name, params Assembly[] compositionAssemblies)
             : base(name, compositionAssemblies)
         {
         }
@@ -29,8 +29,8 @@ namespace TerraFX.Samples.Graphics
 
             var graphicsDevice = GraphicsDevice;
 
-            using (var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024))
-            using (var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024 * 4))
+            using (var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024)) // 2^16, minimum page size
+            using (var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024 * 1024)) // 2^26, same as 4 * 256 * 256 * 256
             {
                 var currentGraphicsContext = graphicsDevice.CurrentContext;
 
@@ -54,13 +54,13 @@ namespace TerraFX.Samples.Graphics
             var graphicsDevice = GraphicsDevice;
             var graphicsSurface = graphicsDevice.Surface;
 
-            var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Texture3d", "main", "main");
+            var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Texture3D", "main", "main");
             var vertexBuffer = CreateVertexBuffer(graphicsContext, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
 
             var inputResources = new GraphicsResource[1] {
                 CreateTexture3d(graphicsContext, textureStagingBuffer),
             };
-            return graphicsDevice.CreatePrimitive(graphicsPipeline, new GraphicsBufferView(vertexBuffer, vertexBuffer.Size, SizeOf<TextureVertex>()), indexBufferView: default, inputResources);
+            return graphicsDevice.CreatePrimitive(graphicsPipeline, new GraphicsBufferView(vertexBuffer, vertexBuffer.Size, SizeOf<Texture3DVertex>()), indexBufferView: default, inputResources);
 
             static GraphicsTexture CreateTexture3d(GraphicsContext graphicsContext, GraphicsBuffer textureStagingBuffer)
             {
@@ -91,25 +91,25 @@ namespace TerraFX.Samples.Graphics
 
             static GraphicsBuffer CreateVertexBuffer(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
             {
-                var vertexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.None, (ulong)(sizeof(TextureVertex) * 3));
-                var pVertexBuffer = vertexStagingBuffer.Map<Texture3dVertex>();
+                var vertexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.None, (ulong)(sizeof(Texture3DVertex) * 3));
+                var pVertexBuffer = vertexStagingBuffer.Map<Texture3DVertex>();
 
-                pVertexBuffer[0] = new Texture3dVertex {
+                pVertexBuffer[0] = new Texture3DVertex {
                     Position = new Vector3(0.0f, 0.25f * aspectRatio, 0.0f),
                     UVW = new Vector3(0.5f, 1.0f, 0.5f),
                 };
 
-                pVertexBuffer[1] = new Texture3dVertex {
+                pVertexBuffer[1] = new Texture3DVertex {
                     Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),
                     UVW = new Vector3(1.0f, 0.0f, 0.5f),
                 };
 
-                pVertexBuffer[2] = new Texture3dVertex {
+                pVertexBuffer[2] = new Texture3DVertex {
                     Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
                     UVW = new Vector3(0.0f, 0.0f, 0.5f),
                 };
 
-                vertexStagingBuffer.Unmap(0..(sizeof(TextureVertex) * 3));
+                vertexStagingBuffer.Unmap(0..(sizeof(Texture3DVertex) * 3));
                 graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
 
                 return vertexBuffer;
@@ -130,7 +130,7 @@ namespace TerraFX.Samples.Graphics
                     new GraphicsPipelineInput(
                         new GraphicsPipelineInputElement[2] {
                             new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
-                            new GraphicsPipelineInputElement(typeof(Vector2), GraphicsPipelineInputElementKind.TextureCoordinate, size: 8),
+                            new GraphicsPipelineInputElement(typeof(Vector2), GraphicsPipelineInputElementKind.TextureCoordinate, size: 12),
                         }
                     ),
                 };
