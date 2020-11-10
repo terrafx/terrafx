@@ -9,6 +9,13 @@ using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Samples.Graphics
 {
+    /// <summary>
+    /// Demonstrates the use of
+    /// * Quads (Vertex buffer + Index Buffer, see HelloQuad)
+    /// * Texture3D (256x256x256, representing the RGB cube, extension of HelloTexture)
+    /// * ConstBuffer (transformation matrix as in HelloConstBuffer, but here to animate the 3D texture coordinates)
+    /// Will show a quad cutting through the RGB cube and being animated to move back and forth in texture coordinate space.
+    /// </summary>
     public sealed class HelloTexture3D : HelloWindow
     {
         private GraphicsPrimitive _quadPrimitive = null!;
