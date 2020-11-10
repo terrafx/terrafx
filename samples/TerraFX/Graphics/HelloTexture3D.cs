@@ -96,7 +96,7 @@ namespace TerraFX.Samples.Graphics
 
             static GraphicsBuffer CreateVertexBuffer(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
             {
-                var vertexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.None, (ulong)(sizeof(Texture3DVertex) * 3));
+                var vertexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.None, (ulong)(sizeof(Texture3DVertex) * 4));
                 var pVertexBuffer = vertexStagingBuffer.Map<Texture3DVertex>();
 
                 pVertexBuffer[0] = new Texture3DVertex {
