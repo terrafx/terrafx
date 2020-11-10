@@ -144,6 +144,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 case TEXEL_FORMAT.TEXEL_FORMAT_R16_TYPELESS:
                     break;
                 case TEXEL_FORMAT.TEXEL_FORMAT_R16_FLOAT:
+                    vkFormat = VK_FORMAT_R16_SFLOAT;
                     break;
                 case TEXEL_FORMAT.TEXEL_FORMAT_D16_UNORM:
                     break;
@@ -361,7 +362,6 @@ namespace TerraFX.Graphics.Providers.Vulkan
     VK_FORMAT_R16_SNORM = 71,
     VK_FORMAT_R16_USCALED = 72,
     VK_FORMAT_R16_SSCALED = 73,
-    VK_FORMAT_R16_SFLOAT = 76,
     VK_FORMAT_R16G16_UNORM = 77,
     VK_FORMAT_R16G16_SNORM = 78,
     VK_FORMAT_R16G16_USCALED = 79,
