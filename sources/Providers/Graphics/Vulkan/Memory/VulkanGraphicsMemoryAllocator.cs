@@ -83,7 +83,9 @@ namespace TerraFX.Graphics.Providers.Vulkan
         }
 
         /// <inheritdoc />
-        public override VulkanGraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, ulong alignment = 0, GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None)
+        public override VulkanGraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, ulong alignment = 0,
+            GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None,
+            TEXEL_FORMAT texelFormat = TEXEL_FORMAT.TEXEL_FORMAT_R8G8B8A8_UNORM)
         {
             var vulkanDevice = Device.VulkanDevice;
 
@@ -95,7 +97,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     GraphicsTextureKind.ThreeDimensional => VK_IMAGE_TYPE_3D,
                     _ => default,
                 },
-                format = VK_FORMAT_R8G8B8A8_UNORM,
+                format = VulkanGraphicsMemoryTexelMapper.Map(texelFormat),
                 extent = new VkExtent3D {
                     width = width,
                     height = height,
