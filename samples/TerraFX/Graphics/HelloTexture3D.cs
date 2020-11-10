@@ -128,7 +128,7 @@ namespace TerraFX.Samples.Graphics
                     UVW = new Vector3(0.0f, 1.0f, 0.5f),
                 };
 
-                vertexStagingBuffer.Unmap(0..(sizeof(Texture3DVertex) * 3));
+                vertexStagingBuffer.Unmap(0..(sizeof(Texture3DVertex) * 4));
                 graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
 
                 return vertexBuffer;
@@ -184,7 +184,6 @@ namespace TerraFX.Samples.Graphics
 
                     pTextureData[n] = 0xFF000000 | (z << 16) | (y << 8) | (x << 0);
                 }
-
                 textureStagingBuffer.Unmap(0..(int)TextureSize);
                 graphicsContext.Copy(texture3D, textureStagingBuffer);
 
@@ -206,7 +205,7 @@ namespace TerraFX.Samples.Graphics
                     new GraphicsPipelineInput(
                         new GraphicsPipelineInputElement[2] {
                             new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
-                            new GraphicsPipelineInputElement(typeof(Vector2), GraphicsPipelineInputElementKind.TextureCoordinate, size: 12),
+                            new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.TextureCoordinate, size: 12),
                         }
                     ),
                 };
