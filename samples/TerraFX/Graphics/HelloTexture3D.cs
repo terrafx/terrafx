@@ -59,8 +59,8 @@ namespace TerraFX.Samples.Graphics
             var graphicsSurface = graphicsDevice.Surface;
             var scale255_256 = 255f / 256f;
             var aspectRatio = graphicsSurface.Width / graphicsSurface.Height;
-            var scaleY = 1 / aspectRatio * scale255_256;
             var scaleX = scale255_256;
+            var scaleY = scale255_256 / aspectRatio;
             var scaleZ = scale255_256;
 
             const float translationSpeed = MathF.PI;
