@@ -98,7 +98,7 @@ jobs:
         path: ./artifacts
     - uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '3.1.x'
+        dotnet-version: '5.0.x'
         source-url: https://pkgs.terrafx.dev/index.json
       env:
         NUGET_AUTH_TOKEN: ${{ secrets.AZURE_DEVOPS_PAT }}
