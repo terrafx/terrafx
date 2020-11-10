@@ -9,5 +9,6 @@ layout(location = 0) out vec4 output_color;
 
 void main()
 {
-    output_color = texture(input_textureSampler, input_uvw);
+    vec4 color = vec4(1.0, 1.0, 1.0, 1.0);
+    output_color = color * texture(input_textureSampler, input_uvw);
 }
