@@ -48,6 +48,14 @@ namespace TerraFX.Samples.Graphics
 
         protected override unsafe void Update(TimeSpan delta)
         {
+            var graphicsDevice = GraphicsDevice;
+            var graphicsSurface = graphicsDevice.Surface;
+            var scale255_256 = 255f / 256f;
+            var aspectRatio = graphicsSurface.Width / graphicsSurface.Height;
+            var scaleY = 1 / aspectRatio * scale255_256;
+            var scaleX = scale255_256;
+            var scaleZ = scale255_256;
+
             const float translationSpeed = MathF.PI;
 
             float radians = _texturePosition;
@@ -56,15 +64,16 @@ namespace TerraFX.Samples.Graphics
                 radians = radians % (2 * MathF.PI); 
             }
             _texturePosition = radians;
-            float z = 0.5f + 0.5f * MathF.Cos(radians);
+            float z = scaleZ * (0.5f + 0.5f * MathF.Cos(radians));
 
             var constantBuffer = (GraphicsBuffer)_quadPrimitive.InputResources[0];
             var pConstantBuffer = constantBuffer.Map<Matrix4x4>();
 
+
             // Shaders take transposed matrices, so we want to set X.W
             pConstantBuffer[0] = new Matrix4x4(
-                new Vector4(1.0f, 0.0f, 0.0f, 0.5f),
-                new Vector4(0.0f, 1.0f, 0.0f, 0.5f),
+                new Vector4(scaleX, 0.0f, 0.0f, 0.5f), // +0.5 since the input coordinates are in range [-.5, .5]  but output needs to be [0, 1]
+                new Vector4(0.0f, scaleY, 0.0f, 0.5f), // +0.5 since the input coordinates are in range [-.5, .5]  but output needs to be [0, 1]
                 new Vector4(0.0f, 0.0f, 1.0f, z),
                 new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
             );
@@ -100,22 +109,22 @@ namespace TerraFX.Samples.Graphics
                 var pVertexBuffer = vertexStagingBuffer.Map<Texture3DVertex>();
 
                 pVertexBuffer[0] = new Texture3DVertex {
-                    Position = new Vector3(0.25f, 0.25f * aspectRatio, 0.0f),
+                    Position = new Vector3(0.5f, 0.5f * aspectRatio, 0.0f),
                     UVW = new Vector3(1.0f, 0.0f, 0.5f),
                 };
 
                 pVertexBuffer[1] = new Texture3DVertex {
-                    Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),
+                    Position = new Vector3(0.5f, -0.5f * aspectRatio, 0.0f),
                     UVW = new Vector3(0.0f, 1.0f, 0.5f),
                 };
 
                 pVertexBuffer[2] = new Texture3DVertex {
-                    Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
+                    Position = new Vector3(-0.5f, -0.5f * aspectRatio, 0.0f),
                     UVW = new Vector3(0.0f, 0.0f, 0.5f),
                 };
 
                 pVertexBuffer[3] = new Texture3DVertex {
-                    Position = new Vector3(-0.25f, 0.25f * aspectRatio, 0.0f),
+                    Position = new Vector3(-0.5f, 0.5f * aspectRatio, 0.0f),
                     UVW = new Vector3(0.0f, 1.0f, 0.5f),
                 };
 
