@@ -102,4 +102,4 @@ jobs:
         source-url: https://pkgs.terrafx.dev/index.json
       env:
         NUGET_AUTH_TOKEN: ${{ secrets.AZURE_DEVOPS_PAT }}
-    - run: dotnet nuget push ./artifacts/pkg/Release/*.nupkg --api-key AzureDevOps
+    - run: dotnet nuget push "./artifacts/pkg/Release/*.nupkg" --api-key AzureDevOps
