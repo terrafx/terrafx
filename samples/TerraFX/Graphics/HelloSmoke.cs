@@ -33,7 +33,7 @@ namespace TerraFX.Samples.Graphics
 
             using (var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024)) // 2^16, minimum page size
             using (var indexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024))
-            using (var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024 * 512 * 2)) // 2^26, same as 2 * 256 * 256 * 256
+            using (var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024 * 512 * 4)) // 2^26, same as 2 * 256 * 256 * 256
             {
                 var currentGraphicsContext = graphicsDevice.CurrentContext;
 
@@ -168,10 +168,10 @@ namespace TerraFX.Samples.Graphics
                 const ushort TextureDepth = 256;
                 const uint TextureDz = TextureWidth * TextureHeight;
                 const uint TexturePixels = TextureDz * TextureDepth;
-                const uint TextureSize = TexturePixels * 2;
+                const uint TextureSize = TexturePixels * 4;
 
-                var texture3D = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.ThreeDimensional, GraphicsResourceCpuAccess.None, TextureWidth, TextureHeight, TextureDepth, texelFormat: TEXEL_FORMAT.TEXEL_FORMAT_R16_FLOAT);
-                var pTextureData = textureStagingBuffer.Map<float>();
+                var texture3D = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.ThreeDimensional, GraphicsResourceCpuAccess.None, TextureWidth, TextureHeight, TextureDepth /*,texelFormat: TEXEL_FORMAT.TEXEL_FORMAT_R16_FLOAT*/);
+                var pTextureData = textureStagingBuffer.Map<UInt32>();
 
                 var random = new Random(Seed: 1);
 
@@ -196,8 +196,8 @@ namespace TerraFX.Samples.Graphics
                     float scale = 2 * (0.5f - radius); 
                     // random value scaled by the above
                     float rand = (float)random.NextDouble();
-                    float value = rand * scale;
-                    pTextureData[n] = value;
+                    uint value = (byte)(rand * scale * 255);
+                    pTextureData[n] = (uint)(value | value << 8 | value << 16 | value << 24);
                 }
                 textureStagingBuffer.Unmap(0..(int)TextureSize);
                 graphicsContext.Copy(texture3D, textureStagingBuffer);
