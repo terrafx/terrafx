@@ -8,5 +8,7 @@ SamplerState samplerInput : register(s0);
 float4 main(PSInput input) : SV_Target
 {
     float4 color = float4(1,1,1,1);
-    return color * textureInput.Sample(samplerInput, input.uvw);
+    // get and apply the gray level intensitiy from the single value float texture 
+    color = color * textureInput.Sample(samplerInput, input.uvw);
+    return color;
 }
