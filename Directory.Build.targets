@@ -19,22 +19,22 @@
   <!-- Settings that are only set for CI builds -->
   <PropertyGroup Condition="'$(GITHUB_RUN_ID)' != ''">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-    <PackageVersion>$(Version)-$(GITHUB_RUN_ID)</PackageVersion>
+    <PackageVersion Condition="'$(EXCLUDE_RUN_ID_FROM_PACKAGE)' == ''">$(Version)-$(GITHUB_RUN_ID)</PackageVersion>
   </PropertyGroup>
 
   <!-- Package versions for package references across all projects -->
   <ItemGroup>
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.8.0-preview-20200921-01" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.8.0" />
     <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.0.0" />
     <PackageReference Update="NUnit" Version="3.12.0" />
     <PackageReference Update="NUnit3TestAdapter" Version="3.17.0" />
-    <PackageReference Update="System.Composition" Version="5.0.0-rc.2.20475.5" />
-    <PackageReference Update="System.IO.Pipelines" Version="5.0.0-rc.2.20475.5" />
-    <PackageReference Update="TerraFX.Interop.Libc" Version="1.2017.0-alpha-306791429" />
-    <PackageReference Update="TerraFX.Interop.PulseAudio" Version="13.0.0-alpha-306791545" />
-    <PackageReference Update="TerraFX.Interop.Vulkan" Version="1.2.135-alpha-306791632" />
-    <PackageReference Update="TerraFX.Interop.Windows" Version="10.0.19041-alpha-306793647" />
-    <PackageReference Update="TerraFX.Interop.Xlib" Version="6.3.0-alpha-306791182" />
+    <PackageReference Update="System.Composition" Version="5.0.0" />
+    <PackageReference Update="System.IO.Pipelines" Version="5.0.0" />
+    <PackageReference Update="TerraFX.Interop.Libc" Version="1.2017.0-beta1" />
+    <PackageReference Update="TerraFX.Interop.PulseAudio" Version="13.0.0-beta1" />
+    <PackageReference Update="TerraFX.Interop.Vulkan" Version="1.2.154-beta1" />
+    <PackageReference Update="TerraFX.Interop.Windows" Version="10.0.19041-beta1" />
+    <PackageReference Update="TerraFX.Interop.Xlib" Version="6.3.0-beta1" />
   </ItemGroup>
 
 </Project>
