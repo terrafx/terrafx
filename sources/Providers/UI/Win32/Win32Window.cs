@@ -418,7 +418,7 @@ namespace TerraFX.UI.Providers.Win32
 
         private void OnSizeChanged(Vector2 previousSize, Vector2 currentSize)
         {
-            if (SizeChanged != null)
+            if (SizeChanged is not null)
             {
                 var eventArgs = new PropertyChangedEventArgs<Vector2>(previousSize, currentSize);
                 SizeChanged(this, eventArgs);
