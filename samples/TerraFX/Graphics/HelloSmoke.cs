@@ -53,15 +53,15 @@ namespace TerraFX.Samples.Graphics
             var scaleX = scale255_256;
             var scaleZ = scale255_256;
 
-            const float translationSpeed = MathF.PI;
+            const float translationSpeed = 0.1f;
 
-            float radians = _texturePosition;
+            float dy = _texturePosition;
             {
-                radians += (float)(translationSpeed * delta.TotalSeconds);
-                radians = radians % (2 * MathF.PI); 
+                dy += (float)(translationSpeed * delta.TotalSeconds);
+                dy = dy % (1.0f); 
             }
-            _texturePosition = radians;
-            float z = scaleZ * (0.5f + 0.5f * MathF.Cos(radians));
+            _texturePosition = dy;
+            float y = scaleY * dy;
 
             var constantBuffer = (GraphicsBuffer)_quadPrimitive.InputResources[0];
             var pConstantBuffer = constantBuffer.Map<Matrix4x4>();
@@ -70,8 +70,8 @@ namespace TerraFX.Samples.Graphics
             // Shaders take transposed matrices, so we want to set X.W
             pConstantBuffer[0] = new Matrix4x4(
                 new Vector4(scaleX, 0.0f, 0.0f, 0.5f), // +0.5 since the input coordinates are in range [-.5, .5]  but output needs to be [0, 1]
-                new Vector4(0.0f, scaleY, 0.0f, 0.5f), // +0.5 since the input coordinates are in range [-.5, .5]  but output needs to be [0, 1]
-                new Vector4(0.0f, 0.0f, scaleZ, z),
+                new Vector4(0.0f, scaleY, 0.0f, 0.5f-dy), // +0.5 since the input coordinates are in range [-.5, .5]  but output needs to be [0, 1]
+                new Vector4(0.0f, 0.0f, scaleZ, 0.5f),
                 new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
             );
 
