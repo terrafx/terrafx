@@ -47,13 +47,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "project", "project", "{6253
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{B7F289C1-521B-4185-841D-EBFC5724C98B}"
 	ProjectSection(SolutionItems) = preProject
-		docs\samples\D3D12.EnumerateGraphicsAdapters - Windows.png = docs\samples\D3D12.EnumerateGraphicsAdapters - Windows.png
-		docs\samples\D3D12.HelloWindow - Windows.png = docs\samples\D3D12.HelloWindow - Windows.png
 		docs\samples\Samples.md = docs\samples\Samples.md
-		docs\samples\Vulkan.EnumerateGraphicsAdapters - Linux.png = docs\samples\Vulkan.EnumerateGraphicsAdapters - Linux.png
-		docs\samples\Vulkan.EnumerateGraphicsAdapters - Windows.png = docs\samples\Vulkan.EnumerateGraphicsAdapters - Windows.png
-		docs\samples\Vulkan.HelloWindow - Linux.png = docs\samples\Vulkan.HelloWindow - Linux.png
-		docs\samples\Vulkan.HelloWindow - Windows.png = docs\samples\Vulkan.HelloWindow - Windows.png
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{1054E499-981F-4EFA-855B-EC6FA604C6FB}"

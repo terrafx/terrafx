@@ -9,12 +9,12 @@ using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Samples.Graphics
 {
-    public sealed class HelloConstantBuffer : HelloWindow
+    public sealed class HelloTransform : HelloWindow
     {
         private GraphicsPrimitive _trianglePrimitive = null!;
         private float _trianglePrimitiveTranslationX;
 
-        public HelloConstantBuffer(string name, params Assembly[] compositionAssemblies)
+        public HelloTransform(string name, params Assembly[] compositionAssemblies)
             : base(name, compositionAssemblies)
         {
         }

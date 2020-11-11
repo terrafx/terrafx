@@ -32,8 +32,8 @@ namespace TerraFX.Samples
             new HelloQuad("D3D12.HelloQuad", s_graphicsProviderD3D12),
             new HelloQuad("Vulkan.HelloQuad", s_graphicsProviderVulkan),
 
-            new HelloConstantBuffer("D3D12.HelloConstantBuffer", s_graphicsProviderD3D12),
-            new HelloConstantBuffer("Vulkan.HelloConstantBuffer", s_graphicsProviderVulkan),
+            new HelloTransform("D3D12.HelloTransform", s_graphicsProviderD3D12),
+            new HelloTransform("Vulkan.HelloTransform", s_graphicsProviderVulkan),
 
             new HelloTexture("D3D12.HelloTexture", s_graphicsProviderD3D12),
             new HelloTexture("Vulkan.HelloTexture", s_graphicsProviderVulkan),
