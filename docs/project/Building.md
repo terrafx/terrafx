@@ -12,6 +12,10 @@ Each script only performs the designated build step and expects that the .NET SD
 
 In addition there are [scripts/cibuild.cmd](../../scripts/cibuild.cmd) and [scripts/cibuild.sh](../../scripts/cibuild.sh) scripts which allow you to reproduce everything the CI environment does. This includes automatically acquiring a known good .NET SDK and running each step in the correct sequence (first restore, then build, then test, then pack).
 
+## Requirements
+
+.NET 5.0 SDK: https://dotnet.microsoft.com/download/dotnet/5.0
+
 ## Available Arguments
 
 All scripts forward to a central build script: [scripts/build.ps1](../../scripts/build.ps1) or [scripts/build.sh](../../scripts/build.sh) specifying a single argument matching the name of the script and additionally forwards any user specified arguments given.
