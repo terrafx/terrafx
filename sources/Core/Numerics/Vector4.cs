@@ -33,10 +33,10 @@ namespace TerraFX.Numerics
         private readonly float _w;
 
         /// <summary>Initializes a new instance of the <see cref="Vector4" /> struct.</summary>
-        /// <param name="x">The value of the x-component.</param>
-        /// <param name="y">The value of the y-component.</param>
-        /// <param name="z">The value of the z-component.</param>
-        /// <param name="w">The value of the w-component.</param>
+        /// <param name="x">The value of the x-dimension.</param>
+        /// <param name="y">The value of the y-dimension.</param>
+        /// <param name="z">The value of the z-dimension.</param>
+        /// <param name="w">The value of the w-dimension.</param>
         public Vector4(float x, float y, float z, float w)
         {
             _x = x;
@@ -45,16 +45,26 @@ namespace TerraFX.Numerics
             _w = w;
         }
 
-        /// <summary>Gets the value of the x-component.</summary>
+        /// <summary>Initializes a new instance of the <see cref="Vector4"/> struct with each component set to <paramref name="value"/>.</summary>
+        /// <param name="value">The value to set each component to.</param>
+        public Vector4(float value)
+        {
+            _x = value;
+            _y = value;
+            _z = value;
+            _w = value;
+        }
+
+        /// <summary>Gets the value of the x-dimension.</summary>
         public float X => _x;
 
-        /// <summary>Gets the value of the y-component.</summary>
+        /// <summary>Gets the value of the y-dimension.</summary>
         public float Y => _y;
 
-        /// <summary>Gets the value of the z-component.</summary>
+        /// <summary>Gets the value of the z-dimension.</summary>
         public float Z => _z;
 
-        /// <summary>Gets the value of the w-component.</summary>
+        /// <summary>Gets the value of the w-dimension.</summary>
         public float W => _w;
 
         /// <summary>Gets the square-rooted length of the vector.</summary>
@@ -145,22 +155,22 @@ namespace TerraFX.Numerics
         public static Vector4 Normalize(Vector4 value) => value / value.Length;
 
         /// <summary>Creates a new <see cref="Vector4" /> instance with <see cref="X" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the x-component.</param>
+        /// <param name="value">The new value of the x-dimension.</param>
         /// <returns>A new <see cref="Vector4" /> instance with <see cref="X" /> set to <paramref name="value" />.</returns>
         public Vector4 WithX(float value) => new Vector4(value, Y, Z, W);
 
         /// <summary>Creates a new <see cref="Vector4" /> instance with <see cref="Y" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the y-component.</param>
+        /// <param name="value">The new value of the y-dimension.</param>
         /// <returns>A new <see cref="Vector4" /> instance with <see cref="Y" /> set to <paramref name="value" />.</returns>
         public Vector4 WithY(float value) => new Vector4(X, value, Z, W);
 
         /// <summary>Creates a new <see cref="Vector4" /> instance with <see cref="Z" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the z-component.</param>
+        /// <param name="value">The new value of the z-dimension.</param>
         /// <returns>A new <see cref="Vector4" /> instance with <see cref="Z" /> set to <paramref name="value" />.</returns>
         public Vector4 WithZ(float value) => new Vector4(X, Y, value, W);
 
         /// <summary>Creates a new <see cref="Vector4" /> instance with <see cref="W" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the w-component.</param>
+        /// <param name="value">The new value of the w-dimension.</param>
         /// <returns>A new <see cref="Vector4" /> instance with <see cref="W" /> set to <paramref name="value" />.</returns>
         public Vector4 WithW(float value) => new Vector4(X, Y, Z, value);
 
