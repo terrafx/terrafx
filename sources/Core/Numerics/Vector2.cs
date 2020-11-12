@@ -33,6 +33,14 @@ namespace TerraFX.Numerics
             _y = y;
         }
 
+        /// <summary>Initializes a new instance of the <see cref="Vector2"/> struct with each component set to <paramref name="value"/>.</summary>
+        /// <param name="value">The value to set each component to.</param>
+        public Vector2(float value)
+        {
+            _x = value;
+            _y = value;
+        }
+
         /// <summary>Gets the value of the x-dimension.</summary>
         public float X => _x;
 
