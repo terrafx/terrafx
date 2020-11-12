@@ -58,13 +58,13 @@ namespace TerraFX.Samples.Graphics
 
             const float translationSpeed = 0.1f;
 
-            float dy = _texturePosition;
+            float dydz = _texturePosition;
             {
-                dy += (float)(translationSpeed * delta.TotalSeconds);
-                dy = dy % (1.0f); 
+                dydz += (float)(translationSpeed * delta.TotalSeconds);
+                dydz = dydz % (1.0f); 
             }
-            _texturePosition = dy;
-            float y = scaleY * dy;
+            _texturePosition = dydz;
+            float y = scaleY * dydz;
 
             var constantBuffer = (GraphicsBuffer)_quadPrimitive.InputResources[0];
             var pConstantBuffer = constantBuffer.Map<Matrix4x4>();
@@ -73,8 +73,8 @@ namespace TerraFX.Samples.Graphics
             // Shaders take transposed matrices, so we want to set X.W
             pConstantBuffer[0] = new Matrix4x4(
                 new Vector4(scaleX, 0.0f, 0.0f, 0.5f), // +0.5 since the input coordinates are in range [-.5, .5]  but output needs to be [0, 1]
-                new Vector4(0.0f, scaleY, 0.0f, 0.5f-dy), // +0.5 since the input coordinates are in range [-.5, .5]  but output needs to be [0, 1]
-                new Vector4(0.0f, 0.0f, scaleZ, 0.5f),
+                new Vector4(0.0f, scaleY, 0.0f, 0.5f-dydz), // +0.5 since the input coordinates are in range [-.5, .5]  but output needs to be [0, 1]
+                new Vector4(0.0f, 0.0f, scaleZ, 0.5f+dydz),
                 new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
             );
 
@@ -194,11 +194,11 @@ namespace TerraFX.Samples.Graphics
                     x -= 0.5f;
                     z -= 0.5f;
                     // get radius from center, clamped to 0.5
-                    float radius = MathF.Sqrt(x * x + z * z);
+                    float radius = MathF.Abs(x); // MathF.Sqrt(x * x + z * z);
                     if (radius > 0.5f)
                         radius = 0.5f;
                     // scale as 1 in center, tapering off to the edge
-                    float scale = 2 * (0.5f - radius); 
+                    float scale = 2 * MathF.Abs(0.5f - radius); 
                     // random value scaled by the above
                     float rand = (float)random.NextDouble();
                     if (!isQuickAndDirty &&  rand < 0.99)

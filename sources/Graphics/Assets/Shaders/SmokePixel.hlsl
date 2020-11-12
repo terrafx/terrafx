@@ -13,11 +13,12 @@ float4 main(PSInput input) : SV_Target
     float a = 0;
     for (int i = 0; i < 100; i++)
     {
-        float4 color = float4(1, 1, 1, 1);
         // get and apply the gray level intensitiy from the single value float texture
-        float3 uvw = float3(input.uvw[0], input.uvw[1], (input.scale + i * 0.01) % 1.0);
-        color = color * textureInput.Sample(samplerInput, uvw)[0];
-        color = color * input.scale * input.scale * 0.5;
+        float3 uvw = float3(input.uvw[0], input.uvw[1], (input.uvw[2] + i * 0.01) % 1.0);
+        float4 texel = textureInput.Sample(samplerInput, uvw);
+        float4 color = texel[0] * float4(1, 1, 1, 1);
+        float4 scale = clamp(input.scale, 0, 1); // hack to make limit the ugliness of the unexpectedly large incoming scale values
+        color = color * scale * scale * 0.5;
         r = r * a + color[0] * (1 - a);
         g = g * a + color[1] * (1 - a);
         b = b * a + color[2] * (1 - a);

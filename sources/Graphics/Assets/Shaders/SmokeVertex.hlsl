@@ -21,7 +21,7 @@ PSInput main(VSInput input)
     // the scale dops of as the smoke rises from bottom to top
     output.scale = (1.0 - v4[1]);
 
-    // the texture coordinates are animated to have the rising smoke visual effet
+    // the texture coordinates are animated to have the rising smoke visual effect
     v4 = mul(v4, primitiveTransform);
     v4 = mul(v4, frameTransform);
     output.uvw = v4;
