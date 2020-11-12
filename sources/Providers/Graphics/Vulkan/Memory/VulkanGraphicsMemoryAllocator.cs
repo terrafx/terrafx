@@ -85,7 +85,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <inheritdoc />
         public override VulkanGraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, ulong alignment = 0,
             GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None,
-            TEXEL_FORMAT texelFormat = TEXEL_FORMAT.TEXEL_FORMAT_R8G8B8A8_UNORM)
+            TexelFormat texelFormat = default(TexelFormat))
         {
             var vulkanDevice = Device.VulkanDevice;
 

@@ -121,7 +121,7 @@ namespace TerraFX.Graphics
         /// <exception cref="ObjectDisposedException">The allocator has been disposed.</exception>
         public abstract GraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, ulong alignment = 0,
             GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None,
-            TEXEL_FORMAT texelFormat = TEXEL_FORMAT.TEXEL_FORMAT_R8G8B8A8_UNORM);
+            TerraFX.Graphics.TexelFormat texelFormat = default(TerraFX.Graphics.TexelFormat));
 
         /// <summary>Gets the budget for a block collection.</summary>
         /// <param name="blockCollection">The block collection for which the budget should be retrieved.</param>

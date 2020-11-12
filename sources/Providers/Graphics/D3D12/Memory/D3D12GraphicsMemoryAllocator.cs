@@ -95,9 +95,9 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <inheritdoc />
         public override D3D12GraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, ulong alignment = 0,
             GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None,
-            TEXEL_FORMAT texelFormat = TEXEL_FORMAT.TEXEL_FORMAT_R8G8B8A8_UNORM)
+            TexelFormat texelFormat = default(TexelFormat))
         {
-            DXGI_FORMAT dxgiFormat = (DXGI_FORMAT)texelFormat;
+            DXGI_FORMAT dxgiFormat = D3D12GraphicsMemoryTexelMapper.Map(texelFormat);
             var index = GetBlockCollectionIndex(cpuAccess, 1);
 
             var resourceDesc = kind switch {
