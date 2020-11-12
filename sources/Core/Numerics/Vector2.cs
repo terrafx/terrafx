@@ -33,11 +33,25 @@ namespace TerraFX.Numerics
             _y = y;
         }
 
+        /// <summary>Initializes a new instance of the <see cref="Vector2"/> struct with each component set to <paramref name="value"/>.</summary>
+        /// <param name="value">The value to set each component to.</param>
+        public Vector2(float value)
+        {
+            _x = value;
+            _y = value;
+        }
+
         /// <summary>Gets the value of the x-dimension.</summary>
         public float X => _x;
 
         /// <summary>Gets the value of the y-dimension.</summary>
         public float Y => _y;
+
+        /// <summary>Gets the square-rooted length of the vector.</summary>
+        public float Length => MathF.Sqrt(LengthSquared);
+
+        /// <summary>Gets the squared length of the vector.</summary>
+        public float LengthSquared => Dot(this, this);
 
         /// <summary>Compares two <see cref="Vector2" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="Vector2" /> to compare with <paramref name="right" />.</param>
@@ -58,6 +72,63 @@ namespace TerraFX.Numerics
             return (left.X != right.X)
                 || (left.Y != right.Y);
         }
+
+        /// <summary>Returns the value of the <see cref="Vector2" /> operand (the sign of the operand is unchanged).</summary>
+        /// <param name="value">The operand to return</param>
+        /// <returns>The value of the operand, <paramref name="value"/>.</returns>
+        public static Vector2 operator +(Vector2 value) => value;
+
+        /// <summary>Negates the value of the specified <see cref="Vector2" /> operand.</summary>
+        /// <param name="value">The value to negate.</param>
+        /// <returns>The result of <paramref name="value"/> multiplied by negative one (-1).</returns>
+        public static Vector2 operator -(Vector2 value) => value * -1;
+
+        /// <summary>Adds two specified <see cref="Vector2"/> values.</summary>
+        /// <param name="left">The first value to add.</param>
+        /// <param name="right">The second value to add.</param>
+        /// <returns>The result of adding <paramref name="left"/> and <paramref name="right"/>.</returns>
+        public static Vector2 operator +(Vector2 left, Vector2 right) => new Vector2(left.X + right.X, left.Y + right.Y);
+
+        /// <summary>Subtracts two specified <see cref="Vector2"/> values.</summary>
+        /// <param name="left">The minuend.</param>
+        /// <param name="right">The subtrahend.</param>
+        /// <returns>The result of subtracting <paramref name="right"/> from <paramref name="left"/>.</returns>
+        public static Vector2 operator -(Vector2 left, Vector2 right) => new Vector2(left.X - right.X, left.Y - right.Y);
+
+        /// <summary>Multiplies two specified <see cref="Vector2"/> values.</summary>
+        /// <param name="left">The first value to multiply.</param>
+        /// <param name="right">The second value to multiply.</param>
+        /// <returns>The result of multiplying <paramref name="left"/> by <paramref name="right"/>.</returns>
+        public static Vector2 operator *(Vector2 left, Vector2 right) => new Vector2(left.X * right.X, left.Y * right.Y);
+
+        /// <summary>Divides two specified <see cref="Vector2"/> values.</summary>
+        /// <param name="left">The dividend.</param>
+        /// <param name="right">The divisor.</param>
+        /// <returns>The result of dividing <paramref name="left"/> by <paramref name="right"/>.</returns>
+        public static Vector2 operator /(Vector2 left, Vector2 right) => new Vector2(left.X / right.X, left.Y / right.Y);
+
+        /// <summary>Multiplies each component of a <see cref="Vector2"/> value by a given <see cref="float"/> value.</summary>
+        /// <param name="left">The vector to multiply.</param>
+        /// <param name="right">The value to multiply each component by.</param>
+        /// <returns>The result of multiplying each component of <paramref name="left"/> by <paramref name="right"/>.</returns>
+        public static Vector2 operator *(Vector2 left, float right) => new Vector2(left.X * right, left.Y * right);
+
+        /// <summary>Divides each component of a <see cref="Vector2"/> value by a given <see cref="float"/> value.</summary>
+        /// <param name="left">The dividend.</param>
+        /// <param name="right">The divisor to divide each component by.</param>
+        /// <returns>The result of multiplying each component of <paramref name="left"/> by <paramref name="right"/>.</returns>
+        public static Vector2 operator /(Vector2 left, float right) => new Vector2(left.X / right, left.Y / right);
+
+        /// <summary>Calculates the dot product of two <see cref="Vector2"/> values.</summary>
+        /// <param name="left">The first value to dot.</param>
+        /// <param name="right">The second value to dot.</param>
+        /// <returns>The result of adding the multiplication of each component of <paramref name="left"/> by each component of <paramref name="right"/>.</returns>
+        public static float Dot(Vector2 left, Vector2 right) => (left.X * right.X) + (left.Y * right.Y);
+
+        /// <summary>Computes the normalized value of the given <see cref="Vector2"/> value.</summary>
+        /// <param name="value">The value to normalize.</param>
+        /// <returns>The unit vector of <paramref name="value"/>.</returns>
+        public static Vector2 Normalize(Vector2 value) => value / value.Length;
 
         /// <summary>Creates a new <see cref="Vector2" /> instance with <see cref="X" /> set to the specified value.</summary>
         /// <param name="value">The new value of the x-dimension.</param>
