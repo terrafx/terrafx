@@ -21,15 +21,20 @@ out gl_PerVertex
 };
 
 layout(location = 0) out vec3 output_uvw;
+layout(location = 1) out float output_scale;
 
 void main()
 {
     vec4 v4 = vec4(input_position, 1.0);
+    // the quad position does not change
     gl_Position = v4;
 
+    // the scale dops of as the smoke rises from bottom to top
+    output_scale = (1.0 - v4[1]);
+
+    // the texture coordinates are animated to have the rising smoke visual effet
     v4 = v4 * primitiveTransform;
     v4 = v4 * frameTransform;
 
     output_uvw = vec3(v4);
-
 }

@@ -1,6 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Diagnostics;
 using System.Reflection;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
@@ -13,10 +14,12 @@ namespace TerraFX.Samples.Graphics
     {
         private GraphicsPrimitive _quadPrimitive = null!;
         private float _texturePosition;
+        private bool _isQuickAndDirty;
 
-        public HelloSmoke(string name, params Assembly[] compositionAssemblies)
+        public HelloSmoke(string name, bool isQuickAndDirty, params Assembly[] compositionAssemblies)
             : base(name, compositionAssemblies)
         {
+            _isQuickAndDirty = isQuickAndDirty;
         }
 
         public override void Cleanup()
@@ -96,7 +99,7 @@ namespace TerraFX.Samples.Graphics
             var inputResources = new GraphicsResource[3] {
                 CreateConstantBuffer(graphicsContext),
                 CreateConstantBuffer(graphicsContext),
-                CreateTexture3D(graphicsContext, textureStagingBuffer),
+                CreateTexture3D(graphicsContext, textureStagingBuffer, _isQuickAndDirty),
             };
             return graphicsDevice.CreatePrimitive(graphicsPipeline, new GraphicsBufferView(vertexBuffer, vertexBuffer.Size, SizeOf<Texture3DVertex>()), new GraphicsBufferView(indexBuffer, indexBuffer.Size, sizeof(ushort)), inputResources);
 
@@ -161,7 +164,7 @@ namespace TerraFX.Samples.Graphics
                 return constantBuffer;
             }
 
-            static GraphicsTexture CreateTexture3D(GraphicsContext graphicsContext, GraphicsBuffer textureStagingBuffer)
+            static GraphicsTexture CreateTexture3D(GraphicsContext graphicsContext, GraphicsBuffer textureStagingBuffer, bool isQuickAndDirty)
             {
                 const uint TextureWidth = 256;
                 const uint TextureHeight = 256;
@@ -170,11 +173,13 @@ namespace TerraFX.Samples.Graphics
                 const uint TexturePixels = TextureDz * TextureDepth;
                 const uint TextureSize = TexturePixels * 4;
 
-                var texture3D = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.ThreeDimensional, GraphicsResourceCpuAccess.None, TextureWidth, TextureHeight, TextureDepth /*,texelFormat: TEXEL_FORMAT.TEXEL_FORMAT_R16_FLOAT*/);
+                var texture3D = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.ThreeDimensional, GraphicsResourceCpuAccess.None
+                    , TextureWidth, TextureHeight, TextureDepth /*,texelFormat: TEXEL_FORMAT.TEXEL_FORMAT_R16_FLOAT*/);
                 var pTextureData = textureStagingBuffer.Map<UInt32>();
 
                 var random = new Random(Seed: 1);
 
+                // start with random speckles
                 for (uint n = 0; n < TexturePixels; n++)
                 {
                     // convert n to indices
@@ -196,8 +201,124 @@ namespace TerraFX.Samples.Graphics
                     float scale = 2 * (0.5f - radius); 
                     // random value scaled by the above
                     float rand = (float)random.NextDouble();
+                    if (!isQuickAndDirty &&  rand < 0.99)
+                        rand = 0;
                     uint value = (byte)(rand * scale * 255);
                     pTextureData[n] = (uint)(value | value << 8 | value << 16 | value << 24);
+                }
+                if (!isQuickAndDirty)
+                {
+                    // now smear them out to smooth smoke splotches
+                    const uint dy = TextureWidth;
+                    const uint dz = dy * TextureHeight;
+                    for (int z = 0; z < TextureDepth; z++)
+                    {
+                        for (int y = 0; y < TextureHeight; y++)
+                        {
+                            for (int x = 1; x < TextureWidth; x++)
+                            {
+                                var n = x + y * dy + z * dz;
+                                if ((pTextureData[n] & 0xFF) < 0.9f * (pTextureData[n - 1] & 0xFF))
+                                {
+                                    uint value = (byte)(0.9f * (pTextureData[n - 1] & 0xFF));
+                                    pTextureData[n] = (uint)(value | value << 8 | value << 16 | value << 24);
+                                }
+                            }
+                            for (int x = (int)TextureWidth - 2; x >= 0; x--)
+                            {
+                                var n = x + y * dy + z * dz;
+                                if ((pTextureData[n] & 0xFF) < 0.9f * (pTextureData[n + 1] & 0xFF))
+                                {
+                                    uint value = (byte)(0.9f * (pTextureData[n + 1] & 0xFF));
+                                    pTextureData[n] = (uint)(value | value << 8 | value << 16 | value << 24);
+                                }
+                            }
+                        }
+                    }
+                    for (int z = 0; z < TextureDepth; z++)
+                    {
+                        for (int x = 0; x < TextureWidth; x++)
+                        {
+                            for (int y = 1; y < TextureHeight; y++)
+                            {
+                                var n = x + y * dy + z * dz;
+                                if ((pTextureData[n] & 0xFF) < 0.9f * (pTextureData[n - dy] & 0xFF))
+                                {
+                                    uint value = (byte)(0.9f * (pTextureData[n - dy] & 0xFF));
+                                    pTextureData[n] = (uint)(value | value << 8 | value << 16 | value << 24);
+                                }
+                            }
+                            for (int y = 0; y <= 0; y++)
+                            {
+                                var n = x + y * dy + z * dz;
+                                if ((pTextureData[n] & 0xFF) < 0.9f * (pTextureData[n - dy + dz] & 0xFF))
+                                {
+                                    uint value = (byte)(0.9f * (pTextureData[n - dy + dz] & 0xFF));
+                                    pTextureData[n] = (uint)(value | value << 8 | value << 16 | value << 24);
+                                }
+                            }
+                            for (int y = 1; y < TextureHeight; y++)
+                            {
+                                var n = x + y * dy + z * dz;
+                                if ((pTextureData[n] & 0xFF) < 0.9f * (pTextureData[n - dy] & 0xFF))
+                                {
+                                    uint value = (byte)(0.9f * (pTextureData[n - dy] & 0xFF));
+                                    pTextureData[n] = (uint)(value | value << 8 | value << 16 | value << 24);
+                                }
+                            }
+                            for (int y = (int)TextureHeight - 2; y >= 0; y--)
+                            {
+                                var n = x + y * dy + z * dz;
+                                if ((pTextureData[n] & 0xFF) < 0.9f * (pTextureData[n + dy] & 0xFF))
+                                {
+                                    uint value = (byte)(0.9f * (pTextureData[n + dy] & 0xFF));
+                                    pTextureData[n] = (uint)(value | value << 8 | value << 16 | value << 24);
+                                }
+                            }
+                            for (int y = (int)TextureHeight - 1; y >= (int)TextureHeight - 1; y--)
+                            {
+                                var n = x + y * dy + z * dz;
+                                if ((pTextureData[n] & 0xFF) < 0.9f * (pTextureData[n + dy - dz] & 0xFF))
+                                {
+                                    uint value = (byte)(0.9f * (pTextureData[n + dy - dz] & 0xFF));
+                                    pTextureData[n] = (uint)(value | value << 8 | value << 16 | value << 24);
+                                }
+                            }
+                            for (int y = (int)TextureHeight - 2; y >= 0; y--)
+                            {
+                                var n = x + y * dy + z * dz;
+                                if ((pTextureData[n] & 0xFF) < 0.9f * (pTextureData[n + dy] & 0xFF))
+                                {
+                                    uint value = (byte)(0.9f * (pTextureData[n + dy] & 0xFF));
+                                    pTextureData[n] = (uint)(value | value << 8 | value << 16 | value << 24);
+                                }
+                            }
+                        }
+                    }
+                    for (int y = 0; y < TextureHeight; y++)
+                    {
+                        for (int x = 0; x < TextureWidth; x++)
+                        {
+                            for (int z = 1; z < TextureDepth; z++)
+                            {
+                                var n = x + y * dy + z * dz;
+                                if ((pTextureData[n] & 0xFF) < 0.9f * (pTextureData[n - dz] & 0xFF))
+                                {
+                                    uint value = (byte)(0.9f * (pTextureData[n - 1] & 0xFF));
+                                    pTextureData[n] = (uint)(value | value << 8 | value << 16 | value << 24);
+                                }
+                            }
+                            for (int z = (int)TextureDepth - 0; z >= 0; z--)
+                            {
+                                var n = x + y * dy + z * dz;
+                                if ((pTextureData[n] & 0xFF) < 0.9f * (pTextureData[n + dz] & 0xFF))
+                                {
+                                    uint value = (byte)(0.9f * (pTextureData[n + 1] & 0xFF));
+                                    pTextureData[n] = (uint)(value | value << 8 | value << 16 | value << 24);
+                                }
+                            }
+                        }
+                    }
                 }
                 textureStagingBuffer.Unmap(0..(int)TextureSize);
                 graphicsContext.Copy(texture3D, textureStagingBuffer);
