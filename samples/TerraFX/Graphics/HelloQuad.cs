@@ -65,25 +65,29 @@ namespace TerraFX.Samples.Graphics
                 var vertexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.None, (ulong)(sizeof(IdentityVertex) * 4));
                 var pVertexBuffer = vertexStagingBuffer.Map<IdentityVertex>();
 
-                pVertexBuffer[0] = new IdentityVertex {
-                    Position = new Vector3(0.25f, 0.25f * aspectRatio, 0.0f),
-                    Color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f),
-                };
-
-                pVertexBuffer[1] = new IdentityVertex {
-                    Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),
-                    Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f),
-                };
-
-                pVertexBuffer[2] = new IdentityVertex {
-                    Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
-                    Color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f),
-                };
-
-                pVertexBuffer[3] = new IdentityVertex {
-                    Position = new Vector3(-0.25f, 0.25f * aspectRatio, 0.0f),
-                    Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f),
-                };
+                var a = new IdentityVertex {                                         //  
+                    Position = new Vector3(-0.25f, 0.25f * aspectRatio, 0.0f),       //   y          in this setup 
+                    Color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f),                     //   ^     z    the origin o
+                };                                                                   //   |   /      is in the middle
+                                                                                     //   | /        of the rendered scene
+                var b = new IdentityVertex {                                         //   o------>x
+                    Position = new Vector3(0.25f, 0.25f * aspectRatio, 0.0f),        //  
+                    Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f),                     //   a ----- b
+                };                                                                   //   | \     |
+                                                                                     //   |   \   |
+                var c = new IdentityVertex {                                         //   |     \ |
+                    Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),       //   d-------c
+                    Color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f),                     //  
+                };                                                                   //   0 ----- 1  
+                                                                                     //   | \     |  
+                var d = new IdentityVertex {                                         //   |   \   |  
+                    Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),      //   |     \ |  
+                    Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f),                     //   3-------2  
+                };                                                                   //
+                pVertexBuffer[0] = a;
+                pVertexBuffer[1] = b;
+                pVertexBuffer[2] = c;
+                pVertexBuffer[3] = d;
 
                 vertexStagingBuffer.Unmap(0..(sizeof(IdentityVertex) * 4));
                 graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
@@ -96,13 +100,13 @@ namespace TerraFX.Samples.Graphics
                 var indexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Index, GraphicsResourceCpuAccess.None, sizeof(ushort) * 6);
                 var pIndexBuffer = indexStagingBuffer.Map<ushort>();
 
-                pIndexBuffer[0] = 0;
-                pIndexBuffer[1] = 1;
-                pIndexBuffer[2] = 2;
+                pIndexBuffer[0] = 0; // a
+                pIndexBuffer[1] = 1; // b
+                pIndexBuffer[2] = 2; // d
 
-                pIndexBuffer[3] = 0;
-                pIndexBuffer[4] = 2;
-                pIndexBuffer[5] = 3;
+                pIndexBuffer[3] = 0; // b
+                pIndexBuffer[4] = 2; // c
+                pIndexBuffer[5] = 3; // d
 
                 indexStagingBuffer.Unmap(0..(sizeof(ushort) * 6));
                 graphicsContext.Copy(indexBuffer, indexStagingBuffer);

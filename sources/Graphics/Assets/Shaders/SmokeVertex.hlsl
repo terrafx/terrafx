@@ -19,7 +19,7 @@ PSInput main(VSInput input)
     // the quad position does not change
     output.position = v4;
     // the scale dops of as the smoke rises from bottom to top
-    output.scale = (1.0 - v4[1]);
+    output.scale = (1.0 - (v4[1] + 0.5));
 
     // the texture coordinates are animated to have the rising smoke visual effect
     v4 = mul(v4, primitiveTransform);
