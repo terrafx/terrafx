@@ -1,6 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using TerraFX.ApplicationModel;
@@ -10,13 +11,13 @@ using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Samples.Graphics
 {
-    public sealed class HelloSierpinsky : HelloWindow
+    public class HelloSierpinski : HelloWindow
     {
-        private GraphicsPrimitive _quadPrimitive = null!;
+        private GraphicsPrimitive _pyramid = null!;
         private float _texturePosition;
         private int _recursionDepth;
 
-        public HelloSierpinsky(string name, int recursionDepth, params Assembly[] compositionAssemblies)
+        public HelloSierpinski(string name, int recursionDepth, params Assembly[] compositionAssemblies)
             : base(name, compositionAssemblies)
         {
             _recursionDepth = recursionDepth;
@@ -24,7 +25,7 @@ namespace TerraFX.Samples.Graphics
 
         public override void Cleanup()
         {
-            _quadPrimitive?.Dispose();
+            _pyramid?.Dispose();
             base.Cleanup();
         }
 
@@ -41,7 +42,7 @@ namespace TerraFX.Samples.Graphics
                 var currentGraphicsContext = graphicsDevice.CurrentContext;
 
                 currentGraphicsContext.BeginFrame();
-                _quadPrimitive = CreateQuadPrimitive(currentGraphicsContext, vertexStagingBuffer, indexStagingBuffer, textureStagingBuffer);
+                _pyramid = CreateGraphicsPrimitive(currentGraphicsContext, vertexStagingBuffer, indexStagingBuffer, textureStagingBuffer);
                 currentGraphicsContext.EndFrame();
 
                 graphicsDevice.Signal(currentGraphicsContext.Fence);
@@ -69,7 +70,7 @@ namespace TerraFX.Samples.Graphics
             _texturePosition = radians;
             float z = scaleZ * (0.5f + 0.5f * MathF.Cos(radians));
 
-            var constantBuffer = (GraphicsBuffer)_quadPrimitive.InputResources[0];
+            var constantBuffer = (GraphicsBuffer)_pyramid.InputResources[0];
             var pConstantBuffer = constantBuffer.Map<Matrix4x4>();
 
 
@@ -86,18 +87,19 @@ namespace TerraFX.Samples.Graphics
 
         protected override void Draw(GraphicsContext graphicsContext)
         {
-            graphicsContext.Draw(_quadPrimitive);
+            graphicsContext.Draw(_pyramid);
             base.Draw(graphicsContext);
         }
 
-        private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer indexStagingBuffer, GraphicsBuffer textureStagingBuffer)
+        private unsafe GraphicsPrimitive CreateGraphicsPrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer indexStagingBuffer, GraphicsBuffer textureStagingBuffer)
         {
             var graphicsDevice = GraphicsDevice;
             var graphicsSurface = graphicsDevice.Surface;
 
             var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Texture3D", "main", "main");
-            var vertexBuffer = CreateVertexBuffer(graphicsContext, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
-            var indexBuffer = CreateIndexBuffer(graphicsContext, indexStagingBuffer);
+            (List<Vector3> vertices, List<ushort[]> indices) = SierpinskiPyramid.CreateMesh(_recursionDepth);
+            var vertexBuffer = CreateVertexBuffer(vertices, graphicsContext, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
+            var indexBuffer = CreateIndexBuffer(indices, graphicsContext, indexStagingBuffer);
 
             var inputResources = new GraphicsResource[3] {
                 CreateConstantBuffer(graphicsContext),
@@ -106,55 +108,44 @@ namespace TerraFX.Samples.Graphics
             };
             return graphicsDevice.CreatePrimitive(graphicsPipeline, new GraphicsBufferView(vertexBuffer, vertexBuffer.Size, SizeOf<Texture3DVertex>()), new GraphicsBufferView(indexBuffer, indexBuffer.Size, sizeof(ushort)), inputResources);
 
-            static GraphicsBuffer CreateVertexBuffer(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
+            static GraphicsBuffer CreateVertexBuffer(List<Vector3> vertices, GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
             {
-                var vertexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.None, (ulong)(sizeof(Texture3DVertex) * 4));
+                int size = sizeof(Texture3DVertex) * vertices.Count;
+                var vertexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.None, (ulong)size);
                 var pVertexBuffer = vertexStagingBuffer.Map<Texture3DVertex>();
 
-                var a = new Texture3DVertex {                        //  
-                    Position = new Vector3(-0.5f, 0.5f, 0.0f),       //   y          in this setup 
-                    UVW = new Vector3(0, 1, 0.5f),                   //   ^     z    the origin o
-                };                                                   //   |   /      is in the middle
-                                                                     //   | /        of the rendered scene
-                var b = new Texture3DVertex {                        //   o------>x
-                    Position = new Vector3(0.5f, 0.5f, 0.0f),        //  
-                    UVW = new Vector3(1, 1, 0.5f),                   //   a ----- b
-                };                                                   //   | \     |
-                                                                     //   |   \   |
-                var c = new Texture3DVertex {                        //   |     \ |
-                    Position = new Vector3(0.5f, -0.5f, 0.0f),       //   d-------c
-                    UVW = new Vector3(1, 0, 0.5f),                   //  
-                };                                                   //   0 ----- 1  
-                                                                     //   | \     |  
-                var d = new Texture3DVertex {                        //   |   \   |  
-                    Position = new Vector3(-0.5f, -0.5f, 0.0f),      //   |     \ |  
-                    UVW = new Vector3(0, 0, 0.5f),                   //   3-------2  
-                };                                                   //
-                pVertexBuffer[0] = a;
-                pVertexBuffer[1] = b;
-                pVertexBuffer[2] = c;
-                pVertexBuffer[3] = d;
+                // assumes the vertices are in a box from (-1,-1,-1) to (1,1,1)
+                var offset3D = new Vector3(1, 1, 1); // to move lower left corner to (0,0,0)
+                var scale3D = new Vector3(0.5f, 0.5f, 0.5f); // to scale to side length 1
+                for (int i = 0; i < vertices.Count; i++)
+                {
+                    var xyz = vertices[i];                // position
+                    var uvw = (xyz + offset3D) * scale3D; // texture coordinate
+                    pVertexBuffer[i] = new Texture3DVertex {
+                        Position = xyz,
+                        UVW = uvw
+                    };
+                }
 
-                vertexStagingBuffer.Unmap(0..(sizeof(Texture3DVertex) * 4));
+                vertexStagingBuffer.Unmap(0..size);
                 graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
 
                 return vertexBuffer;
             }
 
-            static GraphicsBuffer CreateIndexBuffer(GraphicsContext graphicsContext, GraphicsBuffer indexStagingBuffer)
+            static GraphicsBuffer CreateIndexBuffer(List<ushort[]> indices, GraphicsContext graphicsContext, GraphicsBuffer indexStagingBuffer)
             {
-                var indexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Index, GraphicsResourceCpuAccess.None, sizeof(ushort) * 6);
+                int size = sizeof(ushort) * 3 * indices.Count;
+                var indexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Index, GraphicsResourceCpuAccess.None, (ulong)size);
                 var pIndexBuffer = indexStagingBuffer.Map<ushort>();
 
-                pIndexBuffer[0] = 0; // a
-                pIndexBuffer[1] = 1; // b
-                pIndexBuffer[2] = 2; // d
+                for (int i = 0; i < indices.Count; i++)
+                {
+                    for (int j = 0; j < 3; j++)
+                        pIndexBuffer[j + 3 * i] = indices[i][j];
+                }
 
-                pIndexBuffer[3] = 0; // b
-                pIndexBuffer[4] = 2; // c
-                pIndexBuffer[5] = 3; // d
-
-                indexStagingBuffer.Unmap(0..(sizeof(ushort) * 6));
+                indexStagingBuffer.Unmap(0..size);
                 graphicsContext.Copy(indexBuffer, indexStagingBuffer);
 
                 return indexBuffer;
