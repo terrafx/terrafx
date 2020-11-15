@@ -150,7 +150,7 @@ namespace TerraFX.Samples.Graphics
                 var indexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Index, GraphicsResourceCpuAccess.None, sizeof(ushort) * 6);
                 var pIndexBuffer = indexStagingBuffer.Map<ushort>();
 
-                pIndexBuffer[0] = 0; // a
+                pIndexBuffer[0] = 0; // a clockwise when looking at the triangle from the outside
                 pIndexBuffer[1] = 1; // b
                 pIndexBuffer[2] = 2; // d
 

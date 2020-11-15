@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Reflection;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
+using TerraFX.Interop;
 using TerraFX.Numerics;
 using static TerraFX.Utilities.InteropUtilities;
 
@@ -52,15 +53,11 @@ namespace TerraFX.Samples.Graphics
 
         protected override unsafe void Update(TimeSpan delta)
         {
-            var graphicsDevice = GraphicsDevice;
-            var graphicsSurface = graphicsDevice.Surface;
-            var scale255_256 = 255f / 256f;
-            var aspectRatio = graphicsSurface.Width / graphicsSurface.Height;
-            var scaleX = scale255_256;
-            var scaleY = scale255_256 / aspectRatio;
-            var scaleZ = scale255_256;
+            //var graphicsDevice = GraphicsDevice;
+            //var graphicsSurface = graphicsDevice.Surface;
+            //var aspectRatio = graphicsSurface.Width / graphicsSurface.Height;
 
-            const float translationSpeed = MathF.PI;
+            const float translationSpeed = 1;
 
             float radians = _texturePosition;
             {
@@ -68,17 +65,19 @@ namespace TerraFX.Samples.Graphics
                 radians = radians % (2 * MathF.PI);
             }
             _texturePosition = radians;
-            float z = scaleZ * (0.5f + 0.5f * MathF.Cos(radians));
+            float sin = MathF.Sin(radians);
+            float cos = MathF.Cos(radians);
 
             var constantBuffer = (GraphicsBuffer)_pyramid.InputResources[0];
             var pConstantBuffer = constantBuffer.Map<Matrix4x4>();
 
 
-            // Shaders take transposed matrices, so we want to set X.W
+            // Shaders take transposed matrices, so we want to mirror along the diagonal
+            // rotate around y axis
             pConstantBuffer[0] = new Matrix4x4(
-                new Vector4(scaleX, 0.0f, 0.0f, 0.5f), // +0.5 since the input coordinates are in range [-.5, .5]  but output needs to be [0, 1]
-                new Vector4(0.0f, scaleY, 0.0f, 0.5f), // +0.5 since the input coordinates are in range [-.5, .5]  but output needs to be [0, 1]
-                new Vector4(0.0f, 0.0f, 1.0f, z),
+                new Vector4(+cos, 0.0f, -sin, 0.0f), 
+                new Vector4(0.0f, 1.0f, 0.0f, 0.0f), 
+                new Vector4(+sin, 0.0f, +cos, 0.0f),
                 new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
             );
 
@@ -96,7 +95,7 @@ namespace TerraFX.Samples.Graphics
             var graphicsDevice = GraphicsDevice;
             var graphicsSurface = graphicsDevice.Surface;
 
-            var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Texture3D", "main", "main");
+            var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "PositionTransformUvwFixed", "main", "main");
             (List<Vector3> vertices, List<ushort[]> indices) = SierpinskiPyramid.CreateMesh(_recursionDepth);
             var vertexBuffer = CreateVertexBuffer(vertices, graphicsContext, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
             var indexBuffer = CreateIndexBuffer(indices, graphicsContext, indexStagingBuffer);
