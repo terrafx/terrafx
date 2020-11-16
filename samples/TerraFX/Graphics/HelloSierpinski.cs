@@ -55,11 +55,11 @@ namespace TerraFX.Samples.Graphics
 
         protected override unsafe void Update(TimeSpan delta)
         {
-            const float translationSpeed = 1;
+            const float rotationSpeed = 0.5f;
 
             float radians = _texturePosition;
             {
-                radians += (float)(translationSpeed * delta.TotalSeconds);
+                radians += (float)(rotationSpeed * delta.TotalSeconds);
                 radians = radians % (2 * MathF.PI);
             }
             _texturePosition = radians;
@@ -120,7 +120,7 @@ namespace TerraFX.Samples.Graphics
                     var uvw = (xyz + offset3D) * scale3D; // texture coordinate
                     pVertexBuffer[i] = new PosNormTex3DVertex {
                         Position = xyz,
-                        //Normal = normal,
+                        Normal = normal,
                         UVW = uvw
                     };
                 }
@@ -200,9 +200,9 @@ namespace TerraFX.Samples.Graphics
             {
                 var inputs = new GraphicsPipelineInput[1] {
                     new GraphicsPipelineInput(
-                        new GraphicsPipelineInputElement[2] {
+                        new GraphicsPipelineInputElement[3] {
                             new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
-                            //new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Normal, size: 12),
+                            new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Unknown, size: 12),
                             new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.TextureCoordinate, size: 12),
                         }
                     ),

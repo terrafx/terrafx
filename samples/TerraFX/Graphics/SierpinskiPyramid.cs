@@ -14,13 +14,13 @@ namespace TerraFX.Samples.Graphics
             var vertices = new List<Vector3>();
             var indices = new List<ushort[]>();
 
-            //         d
-            //         .
-            //        /|\
-            //       / | \
-            //      /  |  \
-            //     /   |   \
-            //    /    |    \
+            //         d               
+            //         .            
+            //        /|\         y          in this setup 
+            //       / | \        ^     z    the origin o
+            //      /  |  \       |   /      is in the middle
+            //     /   |   \      | /        of the rendered scene
+            //    /    |    \     o------>x  (z is into the page, so xyz is left-handed)
             //  a'\''''|''''/'b
             //      \  |  /   
             //        \|/
@@ -47,11 +47,11 @@ namespace TerraFX.Samples.Graphics
         {
             //         d
             //         .
-            //        /|\
-            //       / | \
-            //      /h |  \i
-            //     /   |   \
-            //    /    |j    \
+            //        /|\         y          in this setup 
+            //       / | \        ^     z    the origin o
+            //      /h |  \i      |   /      is in the middle
+            //     /   |   \      | /        of the rendered scene
+            //    /    |j    \    o------>x  (z is into the page, so xyz is left-handed)
             //  a'\'''e|''''/'b
             //     f\  |  /g    
             //        \|/
@@ -85,22 +85,22 @@ namespace TerraFX.Samples.Graphics
             //         d
             //         .
             //        /|\
-            //       / | \
-            //      /  |  \
-            //     /   |   \
-            //    /    |    \
-            //  a'\''''|''''/'b
+            //       / | \        y          in this setup  
+            //      /  |  \       ^     z    the origin o
+            //     /   |   \      |   /      is in the middle
+            //    /    |    \     | /        of the rendered scene
+            //  a'\''''|''''/'b   o------>x  (z is into the page, so xyz is left-handed)
             //      \  |  /   
             //        \|/
             //         '
             //         c
 
-            // Clockwise when looking at the triangle from the inside.
+            // Clockwise when looking at the triangle from the outside.
             // Replicate vertices in order for normals be different.
             // In spite of normal interpolation we want a flat surface shading effect
-            vertices.AddRange(new[] { a, b, c }); // bottom
-            vertices.AddRange(new[] { a, c, d }); // left
-            vertices.AddRange(new[] { b, d, c }); // right
+            vertices.AddRange(new[] { a, c, b }); // bottom
+            vertices.AddRange(new[] { a, d, c }); // left
+            vertices.AddRange(new[] { b, c, d }); // right
             vertices.AddRange(new[] { a, d, b }); // back
 
             var i = indices.Count;

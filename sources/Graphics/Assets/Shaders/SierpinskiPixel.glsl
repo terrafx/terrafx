@@ -4,10 +4,13 @@
 
 layout(binding = 2) uniform sampler3D input_textureSampler;
 
-layout(location = 0) in vec3 input_uvw;
+layout(location = 0) in vec3 input_normal;
+layout(location = 1) in vec3 input_uvw;
 layout(location = 0) out vec4 output_color;
 
 void main()
 {
-    output_color = texture(input_textureSampler, input_uvw);
+    vec4 color = texture(input_textureSampler, input_uvw);
+    float brightness = 0.1 + 0.9 * clamp(input_normal[2], 0, 1);
+    output_color = color * brightness;
 }

@@ -13,14 +13,16 @@ layout(binding = 1, std140) uniform PerPrimitiveInput
 };
 
 layout(location = 0) in vec3 input_position;
-layout(location = 1) in vec3 input_uvw;
+layout(location = 1) in vec3 input_normal;
+layout(location = 2) in vec3 input_uvw;
 
 out gl_PerVertex
 {
     vec4 gl_Position;
 };
 
-layout(location = 0) out vec3 output_uvw;
+layout(location = 0) out vec3 output_normal;
+layout(location = 1) out vec3 output_uvw;
 
 void main()
 {
@@ -29,6 +31,11 @@ void main()
     v4 = v4 * frameTransform;
     gl_Position = v4;
 
-    output_uvw = input_uvw;
+    v4 = vec4(input_normal, 1.0);
+    v4 = v4 * primitiveTransform;
+    v4 = v4 * frameTransform;
+    vec3 v3 = vec3(v4[0], v4[1], v4[2]);
 
+    output_normal = v3;
+    output_uvw = input_uvw;
 }
