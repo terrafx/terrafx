@@ -35,7 +35,7 @@ namespace TerraFX.Samples.Graphics
             base.Initialize(application);
 
             var graphicsDevice = GraphicsDevice;
-            ulong vertices = 12 * (ulong)MathF.Pow(4, _recursionDepth);
+            ulong vertices = 2 * 12 * (ulong)MathF.Pow(4, _recursionDepth);
             ulong vertexBufferSize = vertices * SizeOf<PosNormTex3DVertex>();
             ulong indexBufferSize = vertices * SizeOf<uint>(); // matches vertices count because vertices are replicated, three unique ones per triangle
             using (var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, vertexBufferSize)) 

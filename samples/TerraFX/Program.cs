@@ -20,37 +20,37 @@ namespace TerraFX.Samples
         internal static readonly Assembly s_graphicsProviderVulkan = Assembly.LoadFrom("TerraFX.Graphics.Providers.Vulkan.dll");
 
         private static readonly Sample[] s_samples = {
-            new EnumerateGraphicsAdapters("D3D12.EnumerateGraphicsAdapters", s_graphicsProviderD3D12),
-            new EnumerateGraphicsAdapters("Vulkan.EnumerateGraphicsAdapters", s_graphicsProviderVulkan),
+            //new EnumerateGraphicsAdapters("D3D12.EnumerateGraphicsAdapters", s_graphicsProviderD3D12),
+            //new EnumerateGraphicsAdapters("Vulkan.EnumerateGraphicsAdapters", s_graphicsProviderVulkan),
 
-            new HelloWindow("D3D12.HelloWindow", s_graphicsProviderD3D12),
-            new HelloWindow("Vulkan.HelloWindow", s_graphicsProviderVulkan),
+            //new HelloWindow("D3D12.HelloWindow", s_graphicsProviderD3D12),
+            //new HelloWindow("Vulkan.HelloWindow", s_graphicsProviderVulkan),
 
-            new HelloTriangle("D3D12.HelloTriangle", s_graphicsProviderD3D12),
-            new HelloTriangle("Vulkan.HelloTriangle", s_graphicsProviderVulkan),
+            //new HelloTriangle("D3D12.HelloTriangle", s_graphicsProviderD3D12),
+            //new HelloTriangle("Vulkan.HelloTriangle", s_graphicsProviderVulkan),
 
-            new HelloQuad("D3D12.HelloQuad", s_graphicsProviderD3D12),
-            new HelloQuad("Vulkan.HelloQuad", s_graphicsProviderVulkan),
+            //new HelloQuad("D3D12.HelloQuad", s_graphicsProviderD3D12),
+            //new HelloQuad("Vulkan.HelloQuad", s_graphicsProviderVulkan),
 
-            new HelloTransform("D3D12.HelloTransform", s_graphicsProviderD3D12),
-            new HelloTransform("Vulkan.HelloTransform", s_graphicsProviderVulkan),
+            //new HelloTransform("D3D12.HelloTransform", s_graphicsProviderD3D12),
+            //new HelloTransform("Vulkan.HelloTransform", s_graphicsProviderVulkan),
 
-            new HelloTexture("D3D12.HelloTexture", s_graphicsProviderD3D12),
-            new HelloTexture("Vulkan.HelloTexture", s_graphicsProviderVulkan),
+            //new HelloTexture("D3D12.HelloTexture", s_graphicsProviderD3D12),
+            //new HelloTexture("Vulkan.HelloTexture", s_graphicsProviderVulkan),
 
-            new HelloTextureTransform("D3D12.HelloTextureTransform", s_graphicsProviderD3D12),
-            new HelloTextureTransform("Vulkan.HelloTextureTransform", s_graphicsProviderVulkan),
+            //new HelloTextureTransform("D3D12.HelloTextureTransform", s_graphicsProviderD3D12),
+            //new HelloTextureTransform("Vulkan.HelloTextureTransform", s_graphicsProviderVulkan),
 
-            new HelloTexture3D("D3D12.HelloTexture3D", s_graphicsProviderD3D12),
-            new HelloTexture3D("Vulkan.HelloTexture3D", s_graphicsProviderVulkan),
+            //new HelloTexture3D("D3D12.HelloTexture3D", s_graphicsProviderD3D12),
+            //new HelloTexture3D("Vulkan.HelloTexture3D", s_graphicsProviderVulkan),
 
-            new HelloSierpinski("D3D12.HelloSierpinski", 4, s_graphicsProviderD3D12),
-            new HelloSierpinski("Vulkan.HelloSierpinski", 4, s_graphicsProviderVulkan),
+            new HelloSierpinski("D3D12.HelloSierpinski", 2, s_graphicsProviderD3D12),
+            //new HelloSierpinski("Vulkan.HelloSierpinski", 4, s_graphicsProviderVulkan),
 
-            new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Sync", false, s_audioProviderPulseAudio),
-            new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Async", true, s_audioProviderPulseAudio),
+            //new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Sync", false, s_audioProviderPulseAudio),
+            //new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Async", true, s_audioProviderPulseAudio),
 
-            new PlaySampleAudio("PulseAudio.PlaySampleAudio", s_audioProviderPulseAudio),
+            //new PlaySampleAudio("PulseAudio.PlaySampleAudio", s_audioProviderPulseAudio),
         };
 
         public static void Main(string[] args)
