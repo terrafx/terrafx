@@ -37,7 +37,7 @@ namespace TerraFX.Samples.Graphics
             var graphicsDevice = GraphicsDevice;
             ulong vertices = 12 * (ulong)MathF.Pow(4, _recursionDepth);
             ulong vertexBufferSize = vertices * SizeOf<PosNormTex3DVertex>();
-            ulong indexBufferSize = vertices * SizeOf<ushort>(); // matches #vertices because vertices are replicated, three unique ones per triangle
+            ulong indexBufferSize = vertices * SizeOf<uint>(); // matches #vertices because vertices are replicated, three unique ones per triangle
             using (var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, vertexBufferSize)) 
             using (var indexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, indexBufferSize))
             using (var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024 * 1024)) // 2^26, same as 4 * 256 * 256 * 256
@@ -93,7 +93,7 @@ namespace TerraFX.Samples.Graphics
             var graphicsSurface = graphicsDevice.Surface;
 
             var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Sierpinski", "main", "main");
-            (List<Vector3> vertices, List<Vector3> normals, List<ushort[]> indices) = SierpinskiPyramid.CreateMeshWithNormals(_recursionDepth);
+            (List<Vector3> vertices, List<Vector3> normals, List<uint[]> indices) = SierpinskiPyramid.CreateMeshWithNormals(_recursionDepth);
             var vertexBuffer = CreateVertexBuffer(vertices, normals, graphicsContext, vertexStagingBuffer);
             var indexBuffer = CreateIndexBuffer(indices, graphicsContext, indexStagingBuffer);
 
@@ -131,11 +131,11 @@ namespace TerraFX.Samples.Graphics
                 return vertexBuffer;
             }
 
-            static GraphicsBuffer CreateIndexBuffer(List<ushort[]> indices, GraphicsContext graphicsContext, GraphicsBuffer indexStagingBuffer)
+            static GraphicsBuffer CreateIndexBuffer(List<uint[]> indices, GraphicsContext graphicsContext, GraphicsBuffer indexStagingBuffer)
             {
-                int size = sizeof(ushort) * 3 * indices.Count;
+                int size = sizeof(uint) * 3 * indices.Count;
                 var indexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Index, GraphicsResourceCpuAccess.None, (ulong)size);
-                var pIndexBuffer = indexStagingBuffer.Map<ushort>();
+                var pIndexBuffer = indexStagingBuffer.Map<uint>();
 
                 for (int i = 0; i < indices.Count; i++)
                 {

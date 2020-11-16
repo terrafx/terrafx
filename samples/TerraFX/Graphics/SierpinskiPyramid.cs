@@ -8,11 +8,11 @@ namespace TerraFX.Samples.Graphics
 {
     internal class SierpinskiPyramid
     {
-        internal static (List<Vector3> vertices, List<ushort[]> indices) CreateMeshPlain(int recursionDepth)
+        internal static (List<Vector3> vertices, List<uint[]> indices) CreateMeshPlain(int recursionDepth)
         {
             float scale = 0.25f;
             var vertices = new List<Vector3>();
-            var indices = new List<ushort[]>();
+            var indices = new List<uint[]>();
 
             //         d               
             //         .            
@@ -43,7 +43,7 @@ namespace TerraFX.Samples.Graphics
 
         private static void PyramidRecursion(int recursionDepth
             , Vector3 a, Vector3 b, Vector3 c, Vector3 d
-            , List<Vector3> vertices, List<ushort[]> indices)
+            , List<Vector3> vertices, List<uint[]> indices)
         {
             //         d
             //         .
@@ -80,7 +80,7 @@ namespace TerraFX.Samples.Graphics
 
         private static void BaseCaseAdd(
             Vector3 a, Vector3 b, Vector3 c, Vector3 d
-            , List<Vector3> vertices, List<ushort[]> indices)
+            , List<Vector3> vertices, List<uint[]> indices)
         {
             //         d
             //         .
@@ -106,16 +106,16 @@ namespace TerraFX.Samples.Graphics
             var i = indices.Count;
             for (int j = 0; j < 12; j += 3)
             {
-                indices.Add(new ushort[] {
-                    (ushort)(i + j),
-                    (ushort)(i + j + 1),
-                    (ushort)(i + j + 2) });
+                indices.Add(new uint[] {
+                    (uint)(i + j),
+                    (uint)(i + j + 1),
+                    (uint)(i + j + 2) });
             }
         }
 
-        internal static (List<Vector3> vertices, List<Vector3> normals, List<ushort[]> indices) CreateMeshWithNormals(int recursionDepth)
+        internal static (List<Vector3> vertices, List<Vector3> normals, List<uint[]> indices) CreateMeshWithNormals(int recursionDepth)
         {
-            (List<Vector3> vertices, List<ushort[]> indices)
+            (List<Vector3> vertices, List<uint[]> indices)
                 = CreateMeshPlain(recursionDepth);
 
             var n4 = new Vector3[4];
