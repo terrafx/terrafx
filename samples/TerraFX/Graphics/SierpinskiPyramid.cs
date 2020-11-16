@@ -10,7 +10,7 @@ namespace TerraFX.Samples.Graphics
     {
         internal static (List<Vector3> vertices, List<ushort[]> indices) CreateMeshPlain(int recursionDepth)
         {
-            float scale = 0.5f;
+            float scale = 0.25f;
             var vertices = new List<Vector3>();
             var indices = new List<ushort[]>();
 
@@ -36,13 +36,13 @@ namespace TerraFX.Samples.Graphics
             var c = new Vector3(0, -r6, -2 * r3);
             var d = new Vector3(0, 3 * r6, 0);
 
-            PyramidRecursion(recursionDepth, a, b, c, d, scale, vertices, indices);
+            PyramidRecursion(recursionDepth, a, b, c, d, vertices, indices);
 
             return (vertices, indices);
         }
 
         private static void PyramidRecursion(int recursionDepth
-            , Vector3 a, Vector3 b, Vector3 c, Vector3 d, float scale
+            , Vector3 a, Vector3 b, Vector3 c, Vector3 d
             , List<Vector3> vertices, List<ushort[]> indices)
         {
             //         d
@@ -57,8 +57,25 @@ namespace TerraFX.Samples.Graphics
             //        \|/
             //         '
             //         c 
-
-            BaseCaseAdd(a, b, c, d, vertices, indices);
+            if (recursionDepth == 0)
+            {
+                BaseCaseAdd(a, b, c, d, vertices, indices);
+            }
+            else
+            {
+                // subdivide all tetrahedron edges at their midpoints
+                // and form four new tetrahedrons from them
+                Vector3 e = (a + b) / 2;
+                Vector3 f = (a + c) / 2;
+                Vector3 g = (b + c) / 2;
+                Vector3 h = (a + d) / 2;
+                Vector3 i = (b + d) / 2;
+                Vector3 j = (c + d) / 2;
+                PyramidRecursion(recursionDepth - 1, a, e, f, h, vertices, indices);
+                PyramidRecursion(recursionDepth - 1, e, b, g, i, vertices, indices);
+                PyramidRecursion(recursionDepth - 1, f, g, c, j, vertices, indices);
+                PyramidRecursion(recursionDepth - 1, h, i, j, d, vertices, indices);
+            }
         }
 
         private static void BaseCaseAdd(

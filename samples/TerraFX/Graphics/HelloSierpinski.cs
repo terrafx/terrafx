@@ -35,9 +35,11 @@ namespace TerraFX.Samples.Graphics
             base.Initialize(application);
 
             var graphicsDevice = GraphicsDevice;
-
-            using (var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024)) // 2^16, minimum page size
-            using (var indexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024))
+            ulong vertices = 12 * (ulong)MathF.Pow(4, _recursionDepth);
+            ulong vertexBufferSize = vertices * SizeOf<PosNormTex3DVertex>();
+            ulong indexBufferSize = vertices * SizeOf<ushort>(); // matches #vertices because vertices are replicated, three unique ones per triangle
+            using (var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, vertexBufferSize)) 
+            using (var indexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, indexBufferSize))
             using (var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024 * 1024)) // 2^26, same as 4 * 256 * 256 * 256
             {
                 var currentGraphicsContext = graphicsDevice.CurrentContext;
@@ -53,10 +55,6 @@ namespace TerraFX.Samples.Graphics
 
         protected override unsafe void Update(TimeSpan delta)
         {
-            //var graphicsDevice = GraphicsDevice;
-            //var graphicsSurface = graphicsDevice.Surface;
-            //var aspectRatio = graphicsSurface.Width / graphicsSurface.Height;
-
             const float translationSpeed = 1;
 
             float radians = _texturePosition;
@@ -70,7 +68,6 @@ namespace TerraFX.Samples.Graphics
 
             var constantBuffer = (GraphicsBuffer)_pyramid.InputResources[0];
             var pConstantBuffer = constantBuffer.Map<Matrix4x4>();
-
 
             // Shaders take transposed matrices, so we want to mirror along the diagonal
             // rotate around y axis
@@ -97,7 +94,7 @@ namespace TerraFX.Samples.Graphics
 
             var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Sierpinski", "main", "main");
             (List<Vector3> vertices, List<Vector3> normals, List<ushort[]> indices) = SierpinskiPyramid.CreateMeshWithNormals(_recursionDepth);
-            var vertexBuffer = CreateVertexBuffer(vertices, normals, graphicsContext, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
+            var vertexBuffer = CreateVertexBuffer(vertices, normals, graphicsContext, vertexStagingBuffer);
             var indexBuffer = CreateIndexBuffer(indices, graphicsContext, indexStagingBuffer);
 
             var inputResources = new GraphicsResource[3] {
@@ -107,7 +104,7 @@ namespace TerraFX.Samples.Graphics
             };
             return graphicsDevice.CreatePrimitive(graphicsPipeline, new GraphicsBufferView(vertexBuffer, vertexBuffer.Size, SizeOf<PosNormTex3DVertex>()), new GraphicsBufferView(indexBuffer, indexBuffer.Size, sizeof(ushort)), inputResources);
 
-            static GraphicsBuffer CreateVertexBuffer(List<Vector3> vertices, List<Vector3> normals, GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
+            static GraphicsBuffer CreateVertexBuffer(List<Vector3> vertices, List<Vector3> normals, GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer)
             {
                 int size = sizeof(PosNormTex3DVertex) * vertices.Count;
                 var vertexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.None, (ulong)size);
