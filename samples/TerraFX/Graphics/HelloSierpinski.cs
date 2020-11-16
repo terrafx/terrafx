@@ -80,12 +80,6 @@ namespace TerraFX.Samples.Graphics
                 new Vector4(+sin, 0.0f, +cos, 0.0f),
                 new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
             );
-            //pConstantBuffer[0] = new Matrix4x4(
-            //    new Vector4(1.0f, 0.0f, 0.0f, 0.0f),
-            //    new Vector4(0.0f, 1.0f, 0.0f, 0.0f),
-            //    new Vector4(0.0f, 0.0f, 1.0f, 0.0f),
-            //    new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
-            //);
 
             constantBuffer.Unmap(0..sizeof(Matrix4x4));
         }
@@ -101,9 +95,9 @@ namespace TerraFX.Samples.Graphics
             var graphicsDevice = GraphicsDevice;
             var graphicsSurface = graphicsDevice.Surface;
 
-            var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "PositionTransformUvwFixed", "main", "main");
-            (List<Vector3> vertices, List<ushort[]> indices) = SierpinskiPyramid.CreateMesh(_recursionDepth);
-            var vertexBuffer = CreateVertexBuffer(vertices, graphicsContext, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
+            var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Sierpinski", "main", "main");
+            (List<Vector3> vertices, List<Vector3> normals, List<ushort[]> indices) = SierpinskiPyramid.CreateMeshWithNormals(_recursionDepth);
+            var vertexBuffer = CreateVertexBuffer(vertices, normals, graphicsContext, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
             var indexBuffer = CreateIndexBuffer(indices, graphicsContext, indexStagingBuffer);
 
             var inputResources = new GraphicsResource[3] {
@@ -111,13 +105,13 @@ namespace TerraFX.Samples.Graphics
                 CreateConstantBuffer(graphicsContext),
                 CreateTexture3D(graphicsContext, textureStagingBuffer),
             };
-            return graphicsDevice.CreatePrimitive(graphicsPipeline, new GraphicsBufferView(vertexBuffer, vertexBuffer.Size, SizeOf<Texture3DVertex>()), new GraphicsBufferView(indexBuffer, indexBuffer.Size, sizeof(ushort)), inputResources);
+            return graphicsDevice.CreatePrimitive(graphicsPipeline, new GraphicsBufferView(vertexBuffer, vertexBuffer.Size, SizeOf<PosNormTex3DVertex>()), new GraphicsBufferView(indexBuffer, indexBuffer.Size, sizeof(ushort)), inputResources);
 
-            static GraphicsBuffer CreateVertexBuffer(List<Vector3> vertices, GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
+            static GraphicsBuffer CreateVertexBuffer(List<Vector3> vertices, List<Vector3> normals, GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
             {
-                int size = sizeof(Texture3DVertex) * vertices.Count;
+                int size = sizeof(PosNormTex3DVertex) * vertices.Count;
                 var vertexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.None, (ulong)size);
-                var pVertexBuffer = vertexStagingBuffer.Map<Texture3DVertex>();
+                var pVertexBuffer = vertexStagingBuffer.Map<PosNormTex3DVertex>();
 
                 // assumes the vertices are in a box from (-1,-1,-1) to (1,1,1)
                 var offset3D = new Vector3(1, 1, 1); // to move lower left corner to (0,0,0)
@@ -125,9 +119,11 @@ namespace TerraFX.Samples.Graphics
                 for (int i = 0; i < vertices.Count; i++)
                 {
                     var xyz = vertices[i];                // position
+                    var normal = normals[i];              // normal
                     var uvw = (xyz + offset3D) * scale3D; // texture coordinate
-                    pVertexBuffer[i] = new Texture3DVertex {
+                    pVertexBuffer[i] = new PosNormTex3DVertex {
                         Position = xyz,
+                        Normal = normal,
                         UVW = uvw
                     };
                 }
@@ -207,8 +203,9 @@ namespace TerraFX.Samples.Graphics
             {
                 var inputs = new GraphicsPipelineInput[1] {
                     new GraphicsPipelineInput(
-                        new GraphicsPipelineInputElement[2] {
+                        new GraphicsPipelineInputElement[3] {
                             new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
+                            new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Normal, size: 12),
                             new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.TextureCoordinate, size: 12),
                         }
                     ),
