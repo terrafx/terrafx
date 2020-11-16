@@ -41,11 +41,11 @@ namespace TerraFX.Samples
             new HelloTextureTransform("D3D12.HelloTextureTransform", s_graphicsProviderD3D12),
             new HelloTextureTransform("Vulkan.HelloTextureTransform", s_graphicsProviderVulkan),
 
-            new HelloTexture3D("d3d12.HelloTexture3D", s_graphicsProviderD3D12),
-            new HelloTexture3D("vulkan.HelloTexture3D", s_graphicsProviderVulkan),
+            new HelloTexture3D("D3D12.HelloTexture3D", s_graphicsProviderD3D12),
+            new HelloTexture3D("Vulkan.HelloTexture3D", s_graphicsProviderVulkan),
 
-            new HelloSierpinski("D3D12.HelloSierpinski", 1, s_graphicsProviderD3D12),
-            new HelloSierpinski("Vulkan.HelloSierpinski", 1, s_graphicsProviderVulkan),
+            new HelloSierpinski("D3D12.HelloSierpinski", 4, s_graphicsProviderD3D12),
+            new HelloSierpinski("Vulkan.HelloSierpinski", 4, s_graphicsProviderVulkan),
 
             new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Sync", false, s_audioProviderPulseAudio),
             new EnumerateAudioAdapters("PulseAudio.EnumerateAudioAdapters.Async", true, s_audioProviderPulseAudio),
