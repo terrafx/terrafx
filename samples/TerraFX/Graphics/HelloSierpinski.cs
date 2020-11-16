@@ -202,7 +202,7 @@ namespace TerraFX.Samples.Graphics
                     new GraphicsPipelineInput(
                         new GraphicsPipelineInputElement[3] {
                             new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
-                            new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Unknown, size: 12),
+                            new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Normal, size: 12),
                             new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.TextureCoordinate, size: 12),
                         }
                     ),
