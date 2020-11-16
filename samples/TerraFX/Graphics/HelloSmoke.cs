@@ -56,7 +56,7 @@ namespace TerraFX.Samples.Graphics
             var scaleX = scale255_256;
             var scaleZ = scale255_256;
 
-            const float translationSpeed = 0.1f;
+            const float translationSpeed = 0.05f;
 
             float dydz = _texturePosition;
             {
@@ -74,7 +74,7 @@ namespace TerraFX.Samples.Graphics
             pConstantBuffer[0] = new Matrix4x4(
                 new Vector4(scaleX, 0.0f, 0.0f, 0.5f),      // +0.5 since the input vertex coordinates are in range [-.5, .5]  but output texture coordinates needs to be [0, 1]
                 new Vector4(0.0f, scaleY, 0.0f, 0.5f-dydz), // +0.5 as above, -dydz to slide the view of the texture vertically each frame
-                new Vector4(0.0f, 0.0f, scaleZ, dydz/10),      // +dydz to slide the start of the compositing ray in depth each frame
+                new Vector4(0.0f, 0.0f, scaleZ, dydz/5),      // +dydz to slide the start of the compositing ray in depth each frame
                 new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
             );
 
