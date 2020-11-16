@@ -75,11 +75,17 @@ namespace TerraFX.Samples.Graphics
             // Shaders take transposed matrices, so we want to mirror along the diagonal
             // rotate around y axis
             pConstantBuffer[0] = new Matrix4x4(
-                new Vector4(+cos, 0.0f, -sin, 0.0f), 
-                new Vector4(0.0f, 1.0f, 0.0f, 0.0f), 
+                new Vector4(+cos, 0.0f, -sin, 0.0f),
+                new Vector4(0.0f, 1.0f, 0.0f, 0.0f),
                 new Vector4(+sin, 0.0f, +cos, 0.0f),
                 new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
             );
+            //pConstantBuffer[0] = new Matrix4x4(
+            //    new Vector4(1.0f, 0.0f, 0.0f, 0.0f),
+            //    new Vector4(0.0f, 1.0f, 0.0f, 0.0f),
+            //    new Vector4(0.0f, 0.0f, 1.0f, 0.0f),
+            //    new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
+            //);
 
             constantBuffer.Unmap(0..sizeof(Matrix4x4));
         }

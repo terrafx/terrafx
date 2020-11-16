@@ -29,10 +29,10 @@ namespace TerraFX.Samples.Graphics
             float r6 = scale / MathF.Sqrt(6);          
             var vertices = new List<Vector3>();    
                                                    
-            var a = new Vector3(-r1, r3, -r6);    
-            var b = new Vector3(+r1, r3, -r6);    
-            var c = new Vector3(0, -2 * r3, -r6);     
-            var d = new Vector3(0, 0, 3 * r6);     
+            var a = new Vector3(-r1,    -r6,      r3);    
+            var b = new Vector3(+r1,    -r6,      r3);    
+            var c = new Vector3(0  ,    -r6, -2 * r3);     
+            var d = new Vector3(0  , 3 * r6,       0);     
             vertices.Add(a);
             vertices.Add(b);
             vertices.Add(c);
@@ -40,10 +40,10 @@ namespace TerraFX.Samples.Graphics
 
             var indices = new List<ushort[]>();
             // clockwise when looking at the triangle from the outside
-            indices.Add(new ushort[] { 0, 2, 1 }); // bottom
-            indices.Add(new ushort[] { 0, 3, 2 }); // left
-            indices.Add(new ushort[] { 2, 3, 1 }); // right
-            indices.Add(new ushort[] { 1, 3, 0 }); // back
+            indices.Add(new ushort[] { 2, 0, 1 }); // bottom
+            indices.Add(new ushort[] { 3, 0, 2 }); // left
+            indices.Add(new ushort[] { 3, 2, 1 }); // right
+            indices.Add(new ushort[] { 3, 1, 0 }); // back
 
             return (vertices, indices);
         }
