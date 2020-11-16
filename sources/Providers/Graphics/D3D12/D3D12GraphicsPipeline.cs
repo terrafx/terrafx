@@ -33,6 +33,9 @@ namespace TerraFX.Graphics.Providers.D3D12
         // COLOR
         private static ReadOnlySpan<sbyte> COLOR_SEMANTIC_NAME => new sbyte[] { 0x43, 0x4F, 0x4C, 0x4F, 0x52, 0x00 };
 
+        // NORMAL
+        private static ReadOnlySpan<sbyte> NORMAL_SEMANTIC_NAME => new sbyte[] { 0x4E, 0x4F, 0x52, 0x4D, 0x41, 0x4C, 0x00 };
+
         // POSITION
         private static ReadOnlySpan<sbyte> POSITION_SEMANTIC_NAME => new sbyte[] { 0x50, 0x4F, 0x53, 0x49, 0x54, 0x49, 0x4F, 0x4E, 0x00 };
 
@@ -205,6 +208,12 @@ namespace TerraFX.Graphics.Providers.D3D12
                 case GraphicsPipelineInputElementKind.Color:
                 {
                     inputElementSemanticName = COLOR_SEMANTIC_NAME;
+                    break;
+                }
+
+                case GraphicsPipelineInputElementKind.Normal:
+                {
+                    inputElementSemanticName = NORMAL_SEMANTIC_NAME;
                     break;
                 }
 

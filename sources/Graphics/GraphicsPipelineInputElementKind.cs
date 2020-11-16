@@ -14,6 +14,9 @@ namespace TerraFX.Graphics
         /// <summary>Defines a graphics pipeline input element for a color.</summary>
         Color,
 
+        /// <summary>Defines a graphics pipeline input element for a normal.</summary>
+        Normal,
+
         /// <summary>Defines a graphics pipeline input element for a texture coordinate.</summary>
         TextureCoordinate,
     }
