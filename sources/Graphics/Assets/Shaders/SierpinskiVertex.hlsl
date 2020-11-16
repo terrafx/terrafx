@@ -20,10 +20,10 @@ PSInput main(VSInput input)
     p4 = mul(p4, frameTransform);
     output.position = p4;
 
-    float4 n4 = float4(input.normal, 1.0f);
-    n4 = mul(n4, primitiveTransform);
-    n4 = mul(n4, frameTransform);
-    output.normal = float3(n4[0], n4[1], n4[2]);
+    //float4 n4 = float4(input.normal, 1.0f);
+    //n4 = mul(n4, primitiveTransform);
+    //n4 = mul(n4, frameTransform);
+    //output.normal = float3(n4[0], n4[1], n4[2]);
 
     output.uvw = input.uvw;
 

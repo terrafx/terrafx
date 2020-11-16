@@ -123,7 +123,7 @@ namespace TerraFX.Samples.Graphics
                     var uvw = (xyz + offset3D) * scale3D; // texture coordinate
                     pVertexBuffer[i] = new PosNormTex3DVertex {
                         Position = xyz,
-                        Normal = normal,
+                        //Normal = normal,
                         UVW = uvw
                     };
                 }
@@ -203,9 +203,9 @@ namespace TerraFX.Samples.Graphics
             {
                 var inputs = new GraphicsPipelineInput[1] {
                     new GraphicsPipelineInput(
-                        new GraphicsPipelineInputElement[3] {
+                        new GraphicsPipelineInputElement[2] {
                             new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
-                            new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Normal, size: 12),
+                            //new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Normal, size: 12),
                             new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.TextureCoordinate, size: 12),
                         }
                     ),
