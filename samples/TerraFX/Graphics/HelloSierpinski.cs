@@ -70,11 +70,32 @@ namespace TerraFX.Samples.Graphics
             var pConstantBuffer = constantBuffer.Map<Matrix4x4>();
 
             // Shaders take transposed matrices, so we want to mirror along the diagonal
-            // rotate around y axis
-            pConstantBuffer[0] = new Matrix4x4(
+
+            bool isIdentity = true; if (isIdentity) pConstantBuffer[0] = new Matrix4x4(
+                new Vector4(1.0f, 0.0f, 0.0f, 0.0f),
+                new Vector4(0.0f, 1.0f, 0.0f, 0.0f),
+                new Vector4(0.0f, 0.0f, 1.0f, 0.0f),
+                new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
+            );
+
+            bool isRotateAroundX = false; if (isRotateAroundX) pConstantBuffer[0] = new Matrix4x4(
+                new Vector4(1.0f, 0.0f, 0.0f, 0.0f),
+                new Vector4(0.0f, +cos, -sin, 0.0f),
+                new Vector4(0.0f, +sin, +cos, 0.0f),
+                new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
+            );
+
+            bool isRotateAroundY = false; if (isRotateAroundY) pConstantBuffer[0] = new Matrix4x4(
                 new Vector4(+cos, 0.0f, -sin, 0.0f),
                 new Vector4(0.0f, 1.0f, 0.0f, 0.0f),
                 new Vector4(+sin, 0.0f, +cos, 0.0f),
+                new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
+            );
+
+            bool isRotateAroundZ = false; if (isRotateAroundZ) pConstantBuffer[0] = new Matrix4x4(
+                new Vector4(+cos, -sin, 0.0f, 0.0f),
+                new Vector4(+sin, +cos, 0.0f, 0.0f),
+                new Vector4(0.0f, 0.0f, 1.0f, 0.0f),
                 new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
             );
 
@@ -93,8 +114,8 @@ namespace TerraFX.Samples.Graphics
             var graphicsSurface = graphicsDevice.Surface;
 
             var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Sierpinski", "main", "main");
-            (List<Vector3> vertices, List<Vector3> normals, List<uint> indices)
-                = SierpinskiPyramid.CreateMeshWithNormals(_recursionDepth);
+            (List<Vector3> vertices, List<uint> indices) = SierpinskiPyramid.CreateMeshQuad(_recursionDepth);
+            List<Vector3> normals = SierpinskiPyramid.MeshNormals(vertices);
             var vertexBuffer = CreateVertexBuffer(vertices, normals, graphicsContext, vertexStagingBuffer);
             var indexBuffer = CreateIndexBuffer(indices, graphicsContext, indexStagingBuffer);
 
