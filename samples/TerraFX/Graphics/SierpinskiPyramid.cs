@@ -11,7 +11,7 @@ namespace TerraFX.Samples.Graphics
         #region Tetrahedron
         internal static (List<Vector3> vertices, List<uint> indices) CreateMeshTetrahedron(int recursionDepth)
         {
-            float scale = 0.75f;
+            float scale = 1.0f;
             var vertices = new List<Vector3>();
             var indices = new List<uint>();
 
@@ -32,40 +32,12 @@ namespace TerraFX.Samples.Graphics
             float r3 = scale / MathF.Sqrt(3);
             float r6 = scale / MathF.Sqrt(6);
 
-            var a = new Vector3(-r1,    -r6,      r3);
-            var b = new Vector3(+r1,    -r6,      r3);
-            var c = new Vector3(0  ,    -r6, -2 * r3);
-            var d = new Vector3(0  , 3 * r6,       0);
+            var a = new Vector3(-r1,    -r6-0.4f,      r3);
+            var b = new Vector3(+r1,    -r6-0.4f,      r3);
+            var c = new Vector3(0  ,    -r6-0.4f, -2 * r3);
+            var d = new Vector3(0  , 3 * r6-0.4f,       0);
 
             TetrahedronRecursion(recursionDepth, a, b, c, d, vertices, indices);
-
-            //var dict = new Dictionary<Vector3, int>();
-            //foreach (var v in vertices)
-            //{
-            //    if (dict.ContainsKey(v))
-            //        dict[v]++;
-            //    else
-            //        dict[v] = 1;
-            //}
-            //foreach (var v in dict.Keys)
-            //{
-            //    if (dict[v] != 3 && dict[v] != 6)
-            //        System.Diagnostics.Debugger.Break();
-            //}
-
-            //for (int i = 0; i < vertices.Count; i+=3)
-            //{
-            //    a = vertices[i];
-            //    b = vertices[i+1];
-            //    c = vertices[i+2];
-            //    float ab = (a - b).Length;
-            //    float ac = (a - c).Length;
-            //    float bc = (b - c).Length;
-            //    if (MathF.Abs((ac / ab) - 1) > 0.1 || MathF.Abs((ac / bc) - 1) > 0.1)
-            //    {
-            //        System.Diagnostics.Debugger.Break();
-            //    }
-            //}
 
             return (vertices, indices);
         }
@@ -143,7 +115,7 @@ namespace TerraFX.Samples.Graphics
         #region Quad
         internal static (List<Vector3> vertices, List<uint> indices) CreateMeshQuad(int recursionDepth)
         {
-            float r = 0.75f;
+            float r = 0.99f;
             var vertices = new List<Vector3>();
             var indices = new List<uint>();
 
@@ -155,10 +127,10 @@ namespace TerraFX.Samples.Graphics
             //  d-------c    o------>x  (z is into the page, so xyz is left-handed)
             //  
 
-            var a = new Vector3(-r, +r, 0);
-            var b = new Vector3(+r, +r, 0);
-            var c = new Vector3(+r, -r, 0);
-            var d = new Vector3(-r, -r, 0);
+            var a = new Vector3(-r, +r, 0f);
+            var b = new Vector3(+r, +r, 0f);
+            var c = new Vector3(+r, -r, 0f);
+            var d = new Vector3(-r, -r, 0f);
 
             QuadRecursion(recursionDepth, a, b, c, d, vertices, indices);
 
