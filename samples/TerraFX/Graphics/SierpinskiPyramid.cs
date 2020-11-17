@@ -176,11 +176,11 @@ namespace TerraFX.Samples.Graphics
             , List<Vector3> vertices, List<uint> indices)
         {
             //
-            //  a---e---b    y          in this setup 
-            //  | \     |    ^     z    the origin o
-            //  h   i   f    |   /      is in the middle
-            //  |     \ |    | /        of the rendered scene
-            //  d---g---c    o------>x  (z is into the page, so xyz is left-handed)
+            //  a-e---f-b    y          in this setup 
+            //  l m   n g    ^     z    the origin o
+            //  |   \   |    |   /      is in the middle
+            //  k p   o h    | /        of the rendered scene
+            //  d-j---i-c    o------>x  (z is into the page, so xyz is left-handed)
             //  
             if (recursionDepth == 0)
             {
@@ -190,15 +190,22 @@ namespace TerraFX.Samples.Graphics
             {
                 // subdivide all tetrahedron edges at their midpoints
                 // and form four new tetrahedrons from them
-                Vector3 e = (a + b) / 2;
-                Vector3 f = (b + c) / 2;
-                Vector3 g = (c + d) / 2;
-                Vector3 h = (d + a) / 2;
-                Vector3 i = (a + c) / 2;
-                QuadRecursion(recursionDepth - 1, a, e, i, h, vertices, indices);
-                QuadRecursion(recursionDepth - 1, e, b, f, i, vertices, indices);
-                QuadRecursion(recursionDepth - 1, i, f, c, g, vertices, indices);
-                QuadRecursion(recursionDepth - 1, h, i, g, d, vertices, indices);
+                Vector3 e = a * 2 / 3 + b * 1 / 3;
+                Vector3 f = a * 1 / 3 + b * 2 / 3;
+                Vector3 g = b * 2 / 3 + c * 1 / 3;
+                Vector3 h = b * 1 / 3 + c * 2 / 3;
+                Vector3 i = c * 2 / 3 + d * 1 / 3;
+                Vector3 j = c * 1 / 3 + d * 2 / 3;
+                Vector3 k = d * 2 / 3 + a * 1 / 3;
+                Vector3 l = d * 1 / 3 + a * 2 / 3;
+                Vector3 m = a * 2 / 3 + c * 1 / 3;
+                Vector3 o = a * 1 / 3 + c * 2 / 3;
+                Vector3 n = b * 2 / 3 + d * 1 / 3;
+                Vector3 p = b * 1 / 3 + d * 2 / 3;
+                QuadRecursion(recursionDepth - 1, a, e, m, l, vertices, indices);
+                QuadRecursion(recursionDepth - 1, f, b, g, n, vertices, indices);
+                QuadRecursion(recursionDepth - 1, o, h, c, i, vertices, indices);
+                QuadRecursion(recursionDepth - 1, k, p, j, d, vertices, indices);
             }
         }
 
@@ -207,11 +214,11 @@ namespace TerraFX.Samples.Graphics
             , List<Vector3> vertices, List<uint> indices)
         {
             //
-            //  a---e---b    y          in this setup 
+            //  a-------b    y          in this setup 
             //  | \     |    ^     z    the origin o
-            //  h   i   f    |   /      is in the middle
+            //  |   \   |    |   /      is in the middle
             //  |     \ |    | /        of the rendered scene
-            //  d---g---c    o------>x  (z is into the page, so xyz is left-handed)
+            //  d-------c    o------>x  (z is into the page, so xyz is left-handed)
             //  
 
             // Clockwise when looking at the triangle from the outside.
