@@ -35,7 +35,7 @@ void main()
     v4 = v4 * primitiveTransform;
     v4 = v4 * frameTransform;
     vec3 v3 = vec3(v4[0], v4[1], v4[2]);
-
     output_normal = v3;
+
     output_uvw = input_uvw;
 }

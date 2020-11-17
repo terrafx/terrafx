@@ -17,11 +17,13 @@ namespace TerraFX.Samples.Graphics
         private GraphicsPrimitive _pyramid = null!;
         private float _texturePosition;
         private int _recursionDepth;
+        private int _pyramids0quads1;
 
-        public HelloSierpinski(string name, int recursionDepth, params Assembly[] compositionAssemblies)
+        public HelloSierpinski(string name, int recursionDepth, int pyramids0quads1, params Assembly[] compositionAssemblies)
             : base(name, compositionAssemblies)
         {
             _recursionDepth = recursionDepth;
+            _pyramids0quads1 = pyramids0quads1;
         }
 
         public override void Cleanup()
@@ -114,11 +116,13 @@ namespace TerraFX.Samples.Graphics
             var graphicsDevice = GraphicsDevice;
             var graphicsSurface = graphicsDevice.Surface;
 
-            var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Transform", "main", "main");
-            (List<Vector3> vertices, List<uint> indices) = SierpinskiPyramid.CreateMeshQuad(_recursionDepth);
+            var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Sierpinski", "main", "main");
+            (List<Vector3> vertices, List<uint> indices) = (_pyramids0quads1 == 0)
+                ? SierpinskiPyramid.CreateMeshTetrahedron(_recursionDepth)
+                : SierpinskiPyramid.CreateMeshQuad(_recursionDepth);
             List<Vector3> normals = SierpinskiPyramid.MeshNormals(vertices);
 
-            var vertexBuffer = CreateVertexBuffer(vertices, normals, graphicsContext, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
+            var vertexBuffer = CreateVertexBuffer(vertices, normals, graphicsContext, vertexStagingBuffer);
             var indexBuffer = CreateIndexBuffer(indices, graphicsContext, indexStagingBuffer);
 
             var inputResources = new GraphicsResource[3] {
@@ -126,13 +130,13 @@ namespace TerraFX.Samples.Graphics
                 CreateConstantBuffer(graphicsContext),
                 CreateTexture3D(graphicsContext, textureStagingBuffer),
             };
-            return graphicsDevice.CreatePrimitive(graphicsPipeline, new GraphicsBufferView(vertexBuffer, vertexBuffer.Size, SizeOf<Texture3DVertex>()), new GraphicsBufferView(indexBuffer, indexBuffer.Size, sizeof(uint)), inputResources);
+            return graphicsDevice.CreatePrimitive(graphicsPipeline, new GraphicsBufferView(vertexBuffer, vertexBuffer.Size, SizeOf<PosNormTex3DVertex>()), new GraphicsBufferView(indexBuffer, indexBuffer.Size, sizeof(uint)), inputResources);
 
-            static GraphicsBuffer CreateVertexBuffer(List<Vector3> vertices, List<Vector3> normals, GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
+            static GraphicsBuffer CreateVertexBuffer(List<Vector3> vertices, List<Vector3> normals, GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer)
             {
-                int size = sizeof(Texture3DVertex) * vertices.Count;
+                int size = sizeof(PosNormTex3DVertex) * vertices.Count;
                 var vertexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.None, (ulong)size);
-                var pVertexBuffer = vertexStagingBuffer.Map<Texture3DVertex>();
+                var pVertexBuffer = vertexStagingBuffer.Map<PosNormTex3DVertex>();
 
                 // assumes the vertices are in a box from (-1,-1,-1) to (1,1,1)
                 var offset3D = new Vector3(1, 1, 1); // to move lower left corner to (0,0,0)
@@ -142,9 +146,9 @@ namespace TerraFX.Samples.Graphics
                     var xyz = vertices[i];                // position
                     var normal = normals[i];              // normal
                     var uvw = (xyz + offset3D) * scale3D; // texture coordinate
-                    pVertexBuffer[i] = new Texture3DVertex {
+                    pVertexBuffer[i] = new PosNormTex3DVertex {
                         Position = xyz,
-                        //Normal = normal,
+                        Normal = normal,
                         UVW = uvw
                     };
                 }
@@ -225,7 +229,7 @@ namespace TerraFX.Samples.Graphics
                     new GraphicsPipelineInput(
                         new GraphicsPipelineInputElement[3] {
                             new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
-                            new GraphicsPipelineInputElement(typeof(Vector4), GraphicsPipelineInputElementKind.Color, size: 16),
+                            new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Normal, size: 12),
                             new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.TextureCoordinate, size: 12),
                         }
                     ),

@@ -11,7 +11,7 @@ namespace TerraFX.Samples.Graphics
         #region Tetrahedron
         internal static (List<Vector3> vertices, List<uint> indices) CreateMeshTetrahedron(int recursionDepth)
         {
-            float scale = 0.5f;
+            float scale = 0.75f;
             var vertices = new List<Vector3>();
             var indices = new List<uint>();
 
@@ -127,10 +127,10 @@ namespace TerraFX.Samples.Graphics
             // Clockwise when looking at the triangle from the outside.
             // Replicate vertices in order for normals be different.
             // In spite of normal interpolation we want a flat surface shading effect
-            vertices.AddRange(new[] { a, c, b }); // bottom
-            vertices.AddRange(new[] { a, d, c }); // left
-            vertices.AddRange(new[] { b, c, d }); // right
-            vertices.AddRange(new[] { a, b, d }); // back
+            vertices.AddRange(new[] { a, b, c }); // bottom
+            vertices.AddRange(new[] { a, c, d }); // left
+            vertices.AddRange(new[] { b, d, c }); // right
+            vertices.AddRange(new[] { a, d, b }); // back
 
             var i = indices.Count;
             for (int j = 0; j < 12; j++)
@@ -143,7 +143,7 @@ namespace TerraFX.Samples.Graphics
         #region Quad
         internal static (List<Vector3> vertices, List<uint> indices) CreateMeshQuad(int recursionDepth)
         {
-            float r = 0.25f;
+            float r = 0.75f;
             var vertices = new List<Vector3>();
             var indices = new List<uint>();
 
@@ -184,18 +184,20 @@ namespace TerraFX.Samples.Graphics
             {
                 // subdivide all tetrahedron edges at their midpoints
                 // and form four new tetrahedrons from them
-                Vector3 e = a * 2 / 3 + b * 1 / 3;
-                Vector3 f = a * 1 / 3 + b * 2 / 3;
-                Vector3 g = b * 2 / 3 + c * 1 / 3;
-                Vector3 h = b * 1 / 3 + c * 2 / 3;
-                Vector3 i = c * 2 / 3 + d * 1 / 3;
-                Vector3 j = c * 1 / 3 + d * 2 / 3;
-                Vector3 k = d * 2 / 3 + a * 1 / 3;
-                Vector3 l = d * 1 / 3 + a * 2 / 3;
-                Vector3 m = a * 2 / 3 + c * 1 / 3;
-                Vector3 o = a * 1 / 3 + c * 2 / 3;
-                Vector3 n = b * 2 / 3 + d * 1 / 3;
-                Vector3 p = b * 1 / 3 + d * 2 / 3;
+                float s = 5 / 11f;
+                float t = 1 - s;
+                Vector3 e = a * t + b * s;
+                Vector3 f = a * s + b * t;
+                Vector3 g = b * t + c * s;
+                Vector3 h = b * s + c * t;
+                Vector3 i = c * t + d * s;
+                Vector3 j = c * s + d * t;
+                Vector3 k = d * t + a * s;
+                Vector3 l = d * s + a * t;
+                Vector3 m = a * t + c * s;
+                Vector3 o = a * s + c * t;
+                Vector3 n = b * t + d * s;
+                Vector3 p = b * s + d * t;
                 QuadRecursion(recursionDepth - 1, a, e, m, l, vertices, indices);
                 QuadRecursion(recursionDepth - 1, f, b, g, n, vertices, indices);
                 QuadRecursion(recursionDepth - 1, o, h, c, i, vertices, indices);

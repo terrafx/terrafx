@@ -26,6 +26,5 @@ PSInput main(VSInput input)
     output.normal = float3(n4[0], n4[1], n4[2]);
 
     output.uvw = input.uvw;
-
     return output;
 }
