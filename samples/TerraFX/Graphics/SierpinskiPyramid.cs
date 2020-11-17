@@ -32,16 +32,10 @@ namespace TerraFX.Samples.Graphics
             float r3 = scale / MathF.Sqrt(3);
             float r6 = scale / MathF.Sqrt(6);
 
-            var a = new Vector3(-r1,      r3,    -r6);
-            var b = new Vector3(+r1,      r3,    -r6);
-            var c = new Vector3(0  , -2 * r3,    -r6);
-            var d = new Vector3(0  ,       0, 3 * r6);
-
-
-            a = new Vector3(-0.25f, +0.25f, 0);
-            b = new Vector3(+0.25f, +0.25f, 0);
-            c = new Vector3(+0.25f, -0.25f, 0);
-            d = new Vector3(-0.25f, -0.25f, 0);
+            var a = new Vector3(-r1,    -r6,      r3);
+            var b = new Vector3(+r1,    -r6,      r3);
+            var c = new Vector3(0  ,    -r6, -2 * r3);
+            var d = new Vector3(0  , 3 * r6,       0);
 
             TetrahedronRecursion(recursionDepth, a, b, c, d, vertices, indices);
 
