@@ -8,11 +8,11 @@ namespace TerraFX.Samples.Graphics
 {
     internal class SierpinskiPyramid
     {
-        internal static (List<Vector3> vertices, List<uint[]> indices) CreateMeshPlain(int recursionDepth)
+        internal static (List<Vector3> vertices, List<uint> indices) CreateMeshPlain(int recursionDepth)
         {
-            float scale = 0.25f;
+            float scale = 0.5f;
             var vertices = new List<Vector3>();
-            var indices = new List<uint[]>();
+            var indices = new List<uint>();
 
             //         d               
             //         .            
@@ -38,12 +38,40 @@ namespace TerraFX.Samples.Graphics
 
             PyramidRecursion(recursionDepth, a, b, c, d, vertices, indices);
 
+            var dict = new Dictionary<Vector3, int>();
+            foreach (var v in vertices)
+            {
+                if (dict.ContainsKey(v))
+                    dict[v]++;
+                else
+                    dict[v] = 1;
+            }
+            foreach (var v in dict.Keys)
+            {
+                if (dict[v] != 3 && dict[v] != 6)
+                    System.Diagnostics.Debugger.Break();
+            }
+
+            for (int i = 0; i < vertices.Count; i+=3)
+            {
+                a = vertices[i];
+                b = vertices[i+1];
+                c = vertices[i+2];
+                float ab = (a - b).Length;
+                float ac = (a - c).Length;
+                float bc = (b - c).Length;
+                if (MathF.Abs((ac / ab) - 1) > 0.1 || MathF.Abs((ac / bc) - 1) > 0.1)
+                {
+                    System.Diagnostics.Debugger.Break();
+                }
+            }
+
             return (vertices, indices);
         }
 
         private static void PyramidRecursion(int recursionDepth
             , Vector3 a, Vector3 b, Vector3 c, Vector3 d
-            , List<Vector3> vertices, List<uint[]> indices)
+            , List<Vector3> vertices, List<uint> indices)
         {
             //         d
             //         .
@@ -80,7 +108,7 @@ namespace TerraFX.Samples.Graphics
 
         private static void BaseCaseAdd(
             Vector3 a, Vector3 b, Vector3 c, Vector3 d
-            , List<Vector3> vertices, List<uint[]> indices)
+            , List<Vector3> vertices, List<uint> indices)
         {
             //         d
             //         .
@@ -101,21 +129,23 @@ namespace TerraFX.Samples.Graphics
             vertices.AddRange(new[] { a, c, b }); // bottom
             vertices.AddRange(new[] { a, d, c }); // left
             vertices.AddRange(new[] { b, c, d }); // right
-            vertices.AddRange(new[] { a, d, b }); // back
+            vertices.AddRange(new[] { a, b, d }); // back
+            ////// same again in reverse winding order
+            //vertices.AddRange(new[] { a, b, c }); // bottom
+            //vertices.AddRange(new[] { a, c, d }); // left
+            //vertices.AddRange(new[] { b, d, c }); // right
+            //vertices.AddRange(new[] { a, d, b }); // back
 
             var i = indices.Count;
-            for (int j = 0; j < 12; j += 3)
+            for (int j = 0; j < 12; j++)
             {
-                indices.Add(new uint[] {
-                    (uint)(i + j),
-                    (uint)(i + j + 1),
-                    (uint)(i + j + 2) });
+                indices.Add((uint)(i + j));
             }
         }
 
-        internal static (List<Vector3> vertices, List<Vector3> normals, List<uint[]> indices) CreateMeshWithNormals(int recursionDepth)
+        internal static (List<Vector3> vertices, List<Vector3> normals, List<uint> indices) CreateMeshWithNormals(int recursionDepth)
         {
-            (List<Vector3> vertices, List<uint[]> indices)
+            (List<Vector3> vertices, List<uint> indices)
                 = CreateMeshPlain(recursionDepth);
 
             var n4 = new Vector3[4];

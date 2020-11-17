@@ -9,6 +9,7 @@ float4 main(PSInput input) : SV_Target
 {
     float4 color = textureInput.Sample(samplerInput, input.uvw);
     float3 normal = normalize(input.normal);
-    float brightness = 0.2 * 0.8 * abs(normal[2]);
+    float brightness = 0.2 + 0.8 * clamp(2 * abs(normal[2]), 0, 1);
     return color * brightness;
+    return color;
 }

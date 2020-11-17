@@ -93,7 +93,8 @@ namespace TerraFX.Samples.Graphics
             var graphicsSurface = graphicsDevice.Surface;
 
             var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Sierpinski", "main", "main");
-            (List<Vector3> vertices, List<Vector3> normals, List<uint[]> indices) = SierpinskiPyramid.CreateMeshWithNormals(_recursionDepth);
+            (List<Vector3> vertices, List<Vector3> normals, List<uint> indices)
+                = SierpinskiPyramid.CreateMeshWithNormals(_recursionDepth);
             var vertexBuffer = CreateVertexBuffer(vertices, normals, graphicsContext, vertexStagingBuffer);
             var indexBuffer = CreateIndexBuffer(indices, graphicsContext, indexStagingBuffer);
 
@@ -131,16 +132,15 @@ namespace TerraFX.Samples.Graphics
                 return vertexBuffer;
             }
 
-            static GraphicsBuffer CreateIndexBuffer(List<uint[]> indices, GraphicsContext graphicsContext, GraphicsBuffer indexStagingBuffer)
+            static GraphicsBuffer CreateIndexBuffer(List<uint> indices, GraphicsContext graphicsContext, GraphicsBuffer indexStagingBuffer)
             {
-                int size = sizeof(uint) * 3 * indices.Count;
+                int size = sizeof(uint) * indices.Count;
                 var indexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Index, GraphicsResourceCpuAccess.None, (ulong)size);
                 var pIndexBuffer = indexStagingBuffer.Map<uint>();
 
                 for (int i = 0; i < indices.Count; i++)
                 {
-                    for (int j = 0; j < 3; j++)
-                        pIndexBuffer[j + 3 * i] = indices[i][j];
+                    pIndexBuffer[i] = indices[i];
                 }
 
                 indexStagingBuffer.Unmap(0..size);
