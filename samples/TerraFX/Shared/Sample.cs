@@ -78,10 +78,14 @@ namespace TerraFX.Samples
 
                     try
                     {
-                        var result = D3DCompileFromFile((ushort*)assetPath, pDefines: null, (ID3DInclude*)D3D_COMPILE_STANDARD_FILE_INCLUDE, entryPoint, GetD3D12CompileTarget(kind).AsPointer(), compileFlags, Flags2: 0, &d3dShaderBlob, ppErrorMsgs: null);
+                        ID3DBlob* pError = null;
+                        var result = D3DCompileFromFile((ushort*)assetPath, pDefines: null, (ID3DInclude*)D3D_COMPILE_STANDARD_FILE_INCLUDE, entryPoint, GetD3D12CompileTarget(kind).AsPointer(), compileFlags, Flags2: 0, &d3dShaderBlob, ppErrorMsgs: &pError);
 
                         if (FAILED(result))
                         {
+                            // todo: var span = TerraFX.Utilities.InteropUtilities.MarshalUtf8ToReadOnlySpan((sbyte*)pError->GetBufferPointer(), (int)pError->GetBufferSize());
+                            string errorMsg = System.Text.Encoding.ASCII.GetString((byte*)pError->GetBufferPointer(), (int)pError->GetBufferSize());
+                            Console.WriteLine(errorMsg);
                             ThrowExternalException(nameof(D3DCompileFromFile), result);
                         }
 
