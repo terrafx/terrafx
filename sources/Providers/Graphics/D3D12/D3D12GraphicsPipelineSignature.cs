@@ -61,9 +61,6 @@ namespace TerraFX.Graphics.Providers.D3D12
             {
                 ID3D12RootSignature* d3d12RootSignature;
 
-                var rootParameters = Array.Empty<D3D12_ROOT_PARAMETER>();
-                var staticSamplers = Array.Empty<D3D12_STATIC_SAMPLER_DESC>();
-
                 var rootSignatureDesc = new D3D12_ROOT_SIGNATURE_DESC {
                     Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT,
                 };
@@ -90,10 +87,14 @@ namespace TerraFX.Graphics.Providers.D3D12
                             staticSamplersLength++;
                         }
                     }
+                }
 
-                    rootParameters = new D3D12_ROOT_PARAMETER[rootParametersLength];
-                    staticSamplers = new D3D12_STATIC_SAMPLER_DESC[staticSamplersLength];
+                var rootParameters = stackalloc D3D12_ROOT_PARAMETER[rootParametersLength];
+                var staticSamplers = stackalloc D3D12_STATIC_SAMPLER_DESC[staticSamplersLength];
+                var descriptorRanges = stackalloc D3D12_DESCRIPTOR_RANGE[staticSamplersLength];
 
+                if (resourcesLength != 0)
+                {
                     for (var inputIndex = 0; inputIndex < resourcesLength; inputIndex++)
                     {
                         var input = resources[inputIndex];
@@ -112,10 +113,10 @@ namespace TerraFX.Graphics.Providers.D3D12
 
                             case GraphicsPipelineResourceKind.Texture:
                             {
-                                var descriptorRange = new D3D12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, numDescriptors: 1, baseShaderRegister: unchecked((uint)textureShaderRegister));
+                                descriptorRanges[staticSamplersIndex] = new D3D12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, numDescriptors: 1, baseShaderRegister: unchecked((uint)textureShaderRegister));
                                 var shaderVisibility = GetD3D12ShaderVisiblity(input.ShaderVisibility);
 
-                                rootParameters[rootParametersIndex].InitAsDescriptorTable(1, &descriptorRange, shaderVisibility);
+                                rootParameters[rootParametersIndex].InitAsDescriptorTable(1, &descriptorRanges[staticSamplersIndex], shaderVisibility);
                                 staticSamplers[staticSamplersIndex] = new D3D12_STATIC_SAMPLER_DESC(
                                     shaderRegister: unchecked((uint)staticSamplersIndex),
                                     shaderVisibility: shaderVisibility
@@ -135,17 +136,13 @@ namespace TerraFX.Graphics.Providers.D3D12
                     }
                 }
 
-                fixed (D3D12_ROOT_PARAMETER* pRootParameters = rootParameters)
-                fixed (D3D12_STATIC_SAMPLER_DESC* pStaticSamplers = staticSamplers)
-                {
-                    rootSignatureDesc.NumParameters = unchecked((uint)rootParametersLength);
-                    rootSignatureDesc.pParameters = pRootParameters;
+                rootSignatureDesc.NumParameters = unchecked((uint)rootParametersLength);
+                rootSignatureDesc.pParameters = rootParameters;
 
-                    rootSignatureDesc.NumStaticSamplers = unchecked((uint)staticSamplersLength);
-                    rootSignatureDesc.pStaticSamplers = pStaticSamplers;
+                rootSignatureDesc.NumStaticSamplers = unchecked((uint)staticSamplersLength);
+                rootSignatureDesc.pStaticSamplers = staticSamplers;
 
-                    ThrowExternalExceptionIfFailed(nameof(D3D12SerializeRootSignature), D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &rootSignatureBlob, &rootSignatureErrorBlob));
-                }
+                ThrowExternalExceptionIfFailed(nameof(D3D12SerializeRootSignature), D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &rootSignatureBlob, &rootSignatureErrorBlob));
 
                 var iid = IID_ID3D12RootSignature;
                 ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateRootSignature), Device.D3D12Device->CreateRootSignature(0, rootSignatureBlob->GetBufferPointer(), rootSignatureBlob->GetBufferSize(), &iid, (void**)&d3d12RootSignature));
