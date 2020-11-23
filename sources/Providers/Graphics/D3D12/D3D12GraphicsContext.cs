@@ -105,11 +105,6 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             commandList->ClearRenderTargetView(renderTargetView, (float*)&backgroundColor, NumRects: 0, pRects: null);
             commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-            var descriptorHeaps = stackalloc ID3D12DescriptorHeap*[1] {
-                Device.D3D12ShaderResourceDescriptorHeap,
-            };
-            commandList->SetDescriptorHeaps(1, descriptorHeaps);
         }
 
         /// <inheritdoc />
@@ -331,6 +326,11 @@ namespace TerraFX.Graphics.Providers.D3D12
             commandList->SetGraphicsRootSignature(pipeline.Signature.D3D12RootSignature);
             commandList->SetPipelineState(pipeline.D3D12PipelineState);
 
+            var descriptorHeaps = stackalloc ID3D12DescriptorHeap*[1] {
+                primitive.D3D12CbvSrvUavDescriptorHeap,
+            };
+            commandList->SetDescriptorHeaps(1, descriptorHeaps);
+
             var d3d12VertexBufferView = new D3D12_VERTEX_BUFFER_VIEW {
                 BufferLocation = ((D3D12GraphicsBuffer)vertexBufferView.Buffer).D3D12Resource->GetGPUVirtualAddress(),
                 StrideInBytes = vertexBufferView.Stride,
@@ -341,17 +341,23 @@ namespace TerraFX.Graphics.Providers.D3D12
             var inputResources = primitive.InputResources;
             var inputResourcesLength = inputResources.Length;
 
+            var rootDescriptorTableIndex = 0;
+            var cbvSrvUavDescriptorHandleIncrementSize = Device.CbvSrvUavDescriptorHandleIncrementSize;
+
             for (var index = 0; index < inputResourcesLength; index++)
             {
                 var inputResource = inputResources[index];
 
                 if (inputResource is D3D12GraphicsBuffer d3d12GraphicsBuffer)
                 {
-                    commandList->SetGraphicsRootConstantBufferView(unchecked((uint)index), d3d12GraphicsBuffer.D3D12Resource->GetGPUVirtualAddress());
+                    var gpuVirtualAddress = d3d12GraphicsBuffer.D3D12Resource->GetGPUVirtualAddress();
+                    commandList->SetGraphicsRootConstantBufferView(unchecked((uint)index), gpuVirtualAddress);
                 }
                 else if (inputResource is D3D12GraphicsTexture d3d12GraphicsTexture)
                 {
-                    commandList->SetGraphicsRootDescriptorTable(unchecked((uint)index), Device.D3D12ShaderResourceDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+                    var gpuDescriptorHandleForHeapStart = primitive.D3D12CbvSrvUavDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
+                    commandList->SetGraphicsRootDescriptorTable(unchecked((uint)index), gpuDescriptorHandleForHeapStart.Offset(rootDescriptorTableIndex, cbvSrvUavDescriptorHandleIncrementSize));
+                    rootDescriptorTableIndex++;
                 }
             }
 
