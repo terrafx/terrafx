@@ -51,29 +51,23 @@ namespace TerraFX.Samples.Graphics
 
         protected override unsafe void Update(TimeSpan delta)
         {
-            var scale255_256 = 255f / 256f;
-            var scaleY = scale255_256;
-            var scaleX = scale255_256;
-            var scaleZ = scale255_256;
-
             const float translationSpeed = 0.05f;
 
             float dydz = _texturePosition;
             {
                 dydz += (float)(translationSpeed * delta.TotalSeconds);
-                dydz = dydz % (1.0f); 
+                dydz = dydz % 1.0f; 
             }
             _texturePosition = dydz;
-            float y = scaleY * dydz;
 
             var constantBuffer = (GraphicsBuffer)_quadPrimitive.InputResources[0];
             var pConstantBuffer = constantBuffer.Map<Matrix4x4>();
 
             // Shaders take transposed matrices, so we want to set X.W
             pConstantBuffer[0] = new Matrix4x4(
-                new Vector4(scaleX, 0.0f, 0.0f, 0.5f),      // +0.5 since the input vertex coordinates are in range [-.5, .5]  but output texture coordinates needs to be [0, 1]
-                new Vector4(0.0f, scaleY, 0.0f, 0.5f-dydz), // +0.5 as above, -dydz to slide the view of the texture vertically each frame
-                new Vector4(0.0f, 0.0f, scaleZ, dydz/5.0f), // +dydz to slide the start of the compositing ray in depth each frame
+                new Vector4(0.5f, 0.0f, 0.0f, 0.5f),      // *0.5f and +0.5f since the input vertex coordinates are in range [-1, 1]  but output texture coordinates needs to be [0, 1]
+                new Vector4(0.0f, 0.5f, 0.0f, 0.5f-dydz), // *0.5f and +0.5f as above, -dydz to slide the view of the texture vertically each frame
+                new Vector4(0.0f, 0.0f, 0.5f, dydz/5.0f), // +dydz to slide the start of the compositing ray in depth each frame
                 new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
             );
 
@@ -107,30 +101,28 @@ namespace TerraFX.Samples.Graphics
                 var vertexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.None, (ulong)(sizeof(Texture3DVertex) * 4));
                 var pVertexBuffer = vertexStagingBuffer.Map<Texture3DVertex>();
 
-                var a = new Texture3DVertex {                        //  
-                    Position = new Vector3(-0.5f, 0.5f, 0.0f),       //   y          in this setup 
-                    UVW = new Vector3(0, 1, 0.5f),                   //   ^     z    the origin o
-                };                                                   //   |   /      is in the middle
-                                                                     //   | /        of the rendered scene
-                var b = new Texture3DVertex {                        //   o------>x
-                    Position = new Vector3(0.5f, 0.5f, 0.0f),        //  
-                    UVW = new Vector3(1, 1, 0.5f),                   //   a ----- b
-                };                                                   //   | \     |
-                                                                     //   |   \   |
-                var c = new Texture3DVertex {                        //   |     \ |
-                    Position = new Vector3(0.5f, -0.5f, 0.0f),       //   d-------c
-                    UVW = new Vector3(1, 0, 0.5f),                   //  
-                };                                                   //   0 ----- 1  
-                                                                     //   | \     |  
-                var d = new Texture3DVertex {                        //   |   \   |  
-                    Position = new Vector3(-0.5f, -0.5f, 0.0f),      //   |     \ |  
-                    UVW = new Vector3(0, 0, 0.5f),                   //   3-------2  
-                };                                                   //
-
-                pVertexBuffer[0] = a;
-                pVertexBuffer[1] = b;
-                pVertexBuffer[2] = c;
-                pVertexBuffer[3] = d;
+                float y = 1.0f;
+                float x = y / aspectRatio;
+                float t = 1f;
+                pVertexBuffer[0] = new Texture3DVertex {       //  
+                    Position = new Vector3(-x, y, 0.0f),       //   y          Vertex position space: 
+                    UVW = new Vector3(0, 0, 0),                //   ^     z    the origin o is
+                };                                             //   |   /      in the middle
+                                                               //   | /        of the rendered scene
+                pVertexBuffer[1] = new Texture3DVertex {       //   o------>x  here the range is [-1,1] but x is shortened by aspectRatio
+                    Position = new Vector3(x, y, 0.0f),        //  
+                    UVW = new Vector3(t, 0, 0),                //   o------>x  Texture coordinate space:
+                };                                             //   | \        the origin o is 
+                                                               //   |   \      at the top left corner
+                pVertexBuffer[2] = new Texture3DVertex {       //   v     z    and at the beginning of the texture memory
+                    Position = new Vector3(x, -y, 0.0f),       //   y          here the range is [0,1] for x and y
+                    UVW = new Vector3(t, t, 0),                //  
+                };                                             //   0 ----- 1  the numbers at the corners 
+                                                               //   | \     |  are the indices into the 
+                pVertexBuffer[3] = new Texture3DVertex {       //   |   \   |  vertex array
+                    Position = new Vector3(-x, -y, 0.0f),      //   |     \ |  
+                    UVW = new Vector3(0, t, 0),                //   3-------2  
+                };                                             //
 
                 vertexStagingBuffer.Unmap(0..(sizeof(Texture3DVertex) * 4));
                 graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
@@ -143,13 +135,13 @@ namespace TerraFX.Samples.Graphics
                 var indexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Index, GraphicsResourceCpuAccess.None, sizeof(ushort) * 6);
                 var pIndexBuffer = indexStagingBuffer.Map<ushort>();
 
-                pIndexBuffer[0] = 0; // a
-                pIndexBuffer[1] = 1; // b
-                pIndexBuffer[2] = 2; // d
+                pIndexBuffer[0] = 0; 
+                pIndexBuffer[1] = 1; 
+                pIndexBuffer[2] = 2; 
 
-                pIndexBuffer[3] = 0; // b
-                pIndexBuffer[4] = 2; // c
-                pIndexBuffer[5] = 3; // d
+                pIndexBuffer[3] = 0; 
+                pIndexBuffer[4] = 2; 
+                pIndexBuffer[5] = 3; 
 
                 indexStagingBuffer.Unmap(0..(sizeof(ushort) * 6));
                 graphicsContext.Copy(indexBuffer, indexStagingBuffer);
