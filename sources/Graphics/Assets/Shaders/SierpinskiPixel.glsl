@@ -12,6 +12,6 @@ void main()
 {
     vec4 color = texture(input_textureSampler, input_uvw);
     vec3 normal = normalize(input_normal);
-    float brightness = 0.2 + 0.8 * abs(normal[2]);
+    float brightness = 0.2f + 0.8f * abs(normal[2]);
     output_color = color * brightness;
 }

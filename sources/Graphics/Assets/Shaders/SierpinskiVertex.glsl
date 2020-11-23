@@ -26,13 +26,13 @@ layout(location = 1) out vec3 output_uvw;
 
 void main()
 {
-    vec4 v4 = vec4(input_position, 1.0);
+    vec4 v4 = vec4(input_position, 1.0f);
     v4 = v4 * primitiveTransform;
     v4 = v4 * frameTransform;
-    v4[2] = (v4[2] + 1) / 2; // move from [-1, 1] depth range to [0, 1] depth range
+    v4[2] = (v4[2] + 1.0f) / 2.0f; // move from [-1, 1] depth range to [0, 1] depth range
     gl_Position = v4;
 
-    v4 = vec4(input_normal, 1.0);
+    v4 = vec4(input_normal, 1.0f);
     v4 = v4 * primitiveTransform;
     v4 = v4 * frameTransform;
     vec3 v3 = vec3(v4[0], v4[1], v4[2]);

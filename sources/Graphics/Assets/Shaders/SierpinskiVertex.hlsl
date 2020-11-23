@@ -18,7 +18,7 @@ PSInput main(VSInput input)
     float4 p4 = float4(input.position, 1.0f);
     p4 = mul(p4, primitiveTransform);
     p4 = mul(p4, frameTransform);
-    p4[2] = (p4[2] + 1) / 2; // move from [-1, 1] depth range to [0, 1] depth range
+    p4[2] = (p4[2] + 1.0f) / 2.0f; // move from [-1, 1] depth range to [0, 1] depth range
     output.position = p4;
 
     float4 n4 = float4(input.normal, 1.0f);

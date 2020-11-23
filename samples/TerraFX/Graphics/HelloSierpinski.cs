@@ -12,18 +12,40 @@ using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Samples.Graphics
 {
+    public enum SierpinskiShape
+    {
+        Pyramid,
+        Quad,
+    }
+
+    public class HelloSierpinskiPyramid : HelloSierpinski
+    {
+        public HelloSierpinskiPyramid(string name, int recursionDepth, params Assembly[] compositionAssemblies)
+            : base(name, recursionDepth, SierpinskiShape.Pyramid, compositionAssemblies)
+        {
+        }
+    }
+
+    public class HelloSierpinskiQuad : HelloSierpinski
+    {
+        public HelloSierpinskiQuad(string name, int recursionDepth, params Assembly[] compositionAssemblies)
+            : base(name, recursionDepth, SierpinskiShape.Quad, compositionAssemblies)
+        {
+        }
+    }
+
     public class HelloSierpinski : HelloWindow
     {
         private GraphicsPrimitive _pyramid = null!;
         private float _texturePosition;
         private int _recursionDepth;
-        private int _pyramids0quads1;
+        private SierpinskiShape _sierpinskiShape;
 
-        public HelloSierpinski(string name, int recursionDepth, int pyramids0quads1, params Assembly[] compositionAssemblies)
+        public HelloSierpinski(string name, int recursionDepth, SierpinskiShape shape, params Assembly[] compositionAssemblies)
             : base(name, compositionAssemblies)
         {
             _recursionDepth = recursionDepth;
-            _pyramids0quads1 = pyramids0quads1;
+            _sierpinskiShape = shape;
         }
 
         public override void Cleanup()
@@ -73,32 +95,10 @@ namespace TerraFX.Samples.Graphics
             var pConstantBuffer = constantBuffer.Map<Matrix4x4>();
 
             // Shaders take transposed matrices, so we want to mirror along the diagonal
-
-            bool isIdentity = false; if (isIdentity) pConstantBuffer[0] = new Matrix4x4(
-                new Vector4(1.0f, 0.0f, 0.0f, 0.0f),
-                new Vector4(0.0f, 1.0f, 0.0f, 0.0f),
-                new Vector4(0.0f, 0.0f, 1.0f, 0.0f),
-                new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
-            );
-
-            bool isRotateAroundX = false; if (isRotateAroundX) pConstantBuffer[0] = new Matrix4x4(
-                new Vector4(1.0f, 0.0f, 0.0f, 0.0f),
-                new Vector4(0.0f, +cos, -sin, 0.0f),
-                new Vector4(0.0f, +sin, +cos, 0.0f),
-                new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
-            );
-
-            bool isRotateAroundY = true; if (isRotateAroundY) pConstantBuffer[0] = new Matrix4x4(
+            pConstantBuffer[0] = new Matrix4x4(
                 new Vector4(+cos, 0.0f, -sin, 0.0f),
                 new Vector4(0.0f, 1.0f, 0.0f, 0.0f),
                 new Vector4(+sin, 0.0f, +cos, 0.0f),
-                new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
-            );
-
-            bool isRotateAroundZ = false; if (isRotateAroundZ) pConstantBuffer[0] = new Matrix4x4(
-                new Vector4(+cos, -sin, 0.0f, 0.0f),
-                new Vector4(+sin, +cos, 0.0f, 0.0f),
-                new Vector4(0.0f, 0.0f, 1.0f, 0.0f),
                 new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
             );
 
@@ -117,7 +117,7 @@ namespace TerraFX.Samples.Graphics
             var graphicsSurface = graphicsDevice.Surface;
 
             var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Sierpinski", "main", "main");
-            (List<Vector3> vertices, List<uint> indices) = (_pyramids0quads1 == 0)
+            (List<Vector3> vertices, List<uint> indices) = (_sierpinskiShape == SierpinskiShape.Pyramid)
                 ? SierpinskiPyramid.CreateMeshTetrahedron(_recursionDepth)
                 : SierpinskiPyramid.CreateMeshQuad(_recursionDepth);
             List<Vector3> normals = SierpinskiPyramid.MeshNormals(vertices);
@@ -196,8 +196,7 @@ namespace TerraFX.Samples.Graphics
                 const uint TexturePixels = TextureDz * TextureDepth;
                 const uint TextureSize = TexturePixels * 4;
 
-                var texture3D = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.ThreeDimensional, GraphicsResourceCpuAccess.None
-                    , TextureWidth, TextureHeight, TextureDepth);
+                var texture3D = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.ThreeDimensional, GraphicsResourceCpuAccess.None, TextureWidth, TextureHeight, TextureDepth);
                 var pTextureData = textureStagingBuffer.Map<uint>();
 
                 for (uint n = 0; n < TexturePixels; n++)
