@@ -179,7 +179,7 @@ namespace TerraFX.Samples.Graphics
 
                 var texture3D = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.ThreeDimensional, GraphicsResourceCpuAccess.None
                     , TextureWidth, TextureHeight, TextureDepth
-                    , texelFormat: TexelFormat.RGBA4xByte);
+                    , texelFormat: TexelFormat.R8G8B8A8_UNORM);
                 var pTextureData = textureStagingBuffer.Map<UInt32>();
 
                 var random = new Random(Seed: 1);

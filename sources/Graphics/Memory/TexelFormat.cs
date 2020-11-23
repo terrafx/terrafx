@@ -10,10 +10,13 @@ namespace TerraFX.Graphics
     /// </summary>
     public enum TexelFormat
     {
-        /// <summary>Defines a RGBA one byte each TexelFormat.</summary>
-        RGBA4xByte,
+        /// <summary>Defines four channels RGBA, stored as 8 bit unsigned int each, to be interpreted as float4.</summary>
+        R8G8B8A8_UNORM,
 
-        /// <summary>Defines a single channel signed Int16 TexelFormat.</summary>
-        XSInt16,
+        /// <summary>Defines one channel X, 16 bit signed int.</summary>
+        R16_SINT,
+
+        /// <summary>Defines two channels RG, 16 bit unsigned int each.</summary>
+        R16G16UINT,
     }
 }

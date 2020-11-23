@@ -28,10 +28,12 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             switch (texelFormat)
             {
-                case TexelFormat.RGBA4xByte:
+                case TexelFormat.R8G8B8A8_UNORM:
                     return VkFormat.VK_FORMAT_R8G8B8A8_UNORM;
-                case TexelFormat.XSInt16:
+                case TexelFormat.R16_SINT:
                     return VkFormat.VK_FORMAT_R16_SINT;
+                case TexelFormat.R16G16UINT:
+                    return VkFormat.VK_FORMAT_R16G16_SINT;
                 default:
                     return VkFormat.VK_FORMAT_UNDEFINED;
             }

@@ -28,10 +28,12 @@ namespace TerraFX.Graphics.Providers.D3D12
         {
             switch (texelFormat)
             {
-                case TexelFormat.RGBA4xByte:
+                case TexelFormat.R8G8B8A8_UNORM:
                     return DXGI_FORMAT.DXGI_FORMAT_R8G8B8A8_UNORM;
-                case TexelFormat.XSInt16:
+                case TexelFormat.R16_SINT:
                     return DXGI_FORMAT.DXGI_FORMAT_R16_SINT;
+                case TexelFormat.R16G16UINT:
+                    return DXGI_FORMAT.DXGI_FORMAT_R16G16_UINT;
                 default:
                     return DXGI_FORMAT.DXGI_FORMAT_UNKNOWN;
             }
