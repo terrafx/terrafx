@@ -25,10 +25,10 @@ layout(location = 1) out vec3 output_uvw;
 
 void main()
 {
-    vec4 v4 = vec4(input_position, 1.0);
+    vec4 v4 = vec4(input_position, 1.0f);
     gl_Position = v4;
 
-    output_scale = (1.0 - (v4[1] + 0.5));
+    output_scale = (1.0f - (v4[1] + 0.5f));
 
     v4 = v4 * primitiveTransform;
     v4 = v4 * frameTransform;

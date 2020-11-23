@@ -69,12 +69,11 @@ namespace TerraFX.Samples.Graphics
             var constantBuffer = (GraphicsBuffer)_quadPrimitive.InputResources[0];
             var pConstantBuffer = constantBuffer.Map<Matrix4x4>();
 
-
             // Shaders take transposed matrices, so we want to set X.W
             pConstantBuffer[0] = new Matrix4x4(
                 new Vector4(scaleX, 0.0f, 0.0f, 0.5f),      // +0.5 since the input vertex coordinates are in range [-.5, .5]  but output texture coordinates needs to be [0, 1]
                 new Vector4(0.0f, scaleY, 0.0f, 0.5f-dydz), // +0.5 as above, -dydz to slide the view of the texture vertically each frame
-                new Vector4(0.0f, 0.0f, scaleZ, dydz/5),      // +dydz to slide the start of the compositing ray in depth each frame
+                new Vector4(0.0f, 0.0f, scaleZ, dydz/5.0f), // +dydz to slide the start of the compositing ray in depth each frame
                 new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
             );
 
@@ -127,6 +126,7 @@ namespace TerraFX.Samples.Graphics
                     Position = new Vector3(-0.5f, -0.5f, 0.0f),      //   |     \ |  
                     UVW = new Vector3(0, 0, 0.5f),                   //   3-------2  
                 };                                                   //
+
                 pVertexBuffer[0] = a;
                 pVertexBuffer[1] = b;
                 pVertexBuffer[2] = c;
@@ -177,9 +177,8 @@ namespace TerraFX.Samples.Graphics
                 const uint TexturePixels = TextureDz * TextureDepth;
                 const uint TextureSize = TexturePixels * 4;
 
-                var texture3D = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.ThreeDimensional, GraphicsResourceCpuAccess.None
-                    , TextureWidth, TextureHeight, TextureDepth
-                    , texelFormat: TexelFormat.R8G8B8A8_UNORM);
+                var texelFormat = TexelFormat.R8G8B8A8_UNORM;
+                var texture3D = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.ThreeDimensional, GraphicsResourceCpuAccess.None, TextureWidth, TextureHeight, TextureDepth, texelFormat: texelFormat);
                 var pTextureData = textureStagingBuffer.Map<UInt32>();
 
                 var random = new Random(Seed: 1);
@@ -191,26 +190,36 @@ namespace TerraFX.Samples.Graphics
                     float x = n % TextureWidth;
                     float y = (n % TextureDz) / TextureWidth;
                     float z = n / TextureDz;
+
                     // convert indices to fractions in the range [0, 1)
                     x /= TextureWidth;
                     y /= TextureHeight;
                     z /= TextureHeight;
+
                     // make x,z relative to texture center
                     x -= 0.5f;
                     z -= 0.5f;
+
                     // get radius from center, clamped to 0.5
                     float radius = MathF.Abs(x); // MathF.Sqrt(x * x + z * z);
                     if (radius > 0.5f)
+                    {
                         radius = 0.5f;
+                    }
+
                     // scale as 1 in center, tapering off to the edge
-                    float scale = 2 * MathF.Abs(0.5f - radius); 
+                    float scale = 2 * MathF.Abs(0.5f - radius);
+
                     // random value scaled by the above
                     float rand = (float)random.NextDouble();
-                    if (!isQuickAndDirty &&  rand < 0.99)
+                    if (!isQuickAndDirty && (rand < 0.99))
+                    {
                         rand = 0;
+                    }
                     uint value = (byte)(rand * scale * 255);
                     pTextureData[n] = (uint)(value | value << 8 | value << 16 | value << 24);
                 }
+
                 if (!isQuickAndDirty)
                 {
                     // now smear them out to smooth smoke splotches
