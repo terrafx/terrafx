@@ -32,10 +32,6 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     return VkFormat.VK_FORMAT_R8G8B8A8_UNORM;
                 case TexelFormat.XSInt16:
                     return VkFormat.VK_FORMAT_R16_SINT;
-                case TexelFormat.XUInt16:
-                    return VkFormat.VK_FORMAT_R16_UINT;
-                case TexelFormat.XFloat32:
-                    return VkFormat.VK_FORMAT_R32_SFLOAT;
                 default:
                     return VkFormat.VK_FORMAT_UNDEFINED;
             }

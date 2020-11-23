@@ -15,12 +15,5 @@ namespace TerraFX.Graphics
 
         /// <summary>Defines a single channel signed Int16 TexelFormat.</summary>
         XSInt16,
-
-        /// <summary>Defines a single channel unsignod Int16 TexelFormat.</summary>
-        XUInt16,
-
-        /// <summary>Defines a single channel float32 TexelFormat.</summary>
-        XFloat32,
-
     }
 }

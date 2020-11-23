@@ -32,10 +32,6 @@ namespace TerraFX.Graphics.Providers.D3D12
                     return DXGI_FORMAT.DXGI_FORMAT_R8G8B8A8_UNORM;
                 case TexelFormat.XSInt16:
                     return DXGI_FORMAT.DXGI_FORMAT_R16_SINT;
-                case TexelFormat.XUInt16:
-                    return DXGI_FORMAT.DXGI_FORMAT_R16_UINT;
-                case TexelFormat.XFloat32:
-                    return DXGI_FORMAT.DXGI_FORMAT_R32_FLOAT;
                 default:
                     return DXGI_FORMAT.DXGI_FORMAT_UNKNOWN;
             }
