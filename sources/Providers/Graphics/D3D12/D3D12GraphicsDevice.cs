@@ -6,10 +6,8 @@ using TerraFX.Numerics;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.D3D_FEATURE_LEVEL;
-using static TerraFX.Interop.D3D12_DESCRIPTOR_HEAP_FLAGS;
 using static TerraFX.Interop.D3D12_DESCRIPTOR_HEAP_TYPE;
 using static TerraFX.Interop.D3D12_FEATURE;
-using static TerraFX.Interop.D3D12_RESOURCE_HEAP_TIER;
 using static TerraFX.Interop.DXGI_FORMAT;
 using static TerraFX.Interop.DXGI_SWAP_EFFECT;
 using static TerraFX.Interop.Windows;
@@ -28,9 +26,9 @@ namespace TerraFX.Graphics.Providers.D3D12
         private ValueLazy<Pointer<ID3D12Device>> _d3d12Device;
         private ValueLazy<D3D12_FEATURE_DATA_D3D12_OPTIONS> _d3d12Options;
         private ValueLazy<Pointer<ID3D12DescriptorHeap>> _d3d12RenderTargetDescriptorHeap;
-        private ValueLazy<Pointer<ID3D12DescriptorHeap>> _d3d12ShaderResourceDescriptorHeap;
         private ValueLazy<Pointer<IDXGISwapChain3>> _dxgiSwapChain;
         private ValueLazy<D3D12GraphicsMemoryAllocator> _memoryAllocator;
+        private ValueLazy<uint> _cbvSrvUavDescriptorHandleIncrementSize;
 
         private D3D12GraphicsContext[] _contexts;
         private int _contextIndex;
@@ -47,9 +45,9 @@ namespace TerraFX.Graphics.Providers.D3D12
             _d3d12Device = new ValueLazy<Pointer<ID3D12Device>>(CreateD3D12Device);
             _d3d12Options = new ValueLazy<D3D12_FEATURE_DATA_D3D12_OPTIONS>(GetD3D12Options);
             _d3d12RenderTargetDescriptorHeap = new ValueLazy<Pointer<ID3D12DescriptorHeap>>(CreateD3D12RenderTargetDescriptorHeap);
-            _d3d12ShaderResourceDescriptorHeap = new ValueLazy<Pointer<ID3D12DescriptorHeap>>(CreateD3D12ShaderResourceDescriptorHeap);
             _dxgiSwapChain = new ValueLazy<Pointer<IDXGISwapChain3>>(CreateDxgiSwapChain);
             _memoryAllocator = new ValueLazy<D3D12GraphicsMemoryAllocator>(CreateMemoryAllocator);
+            _cbvSrvUavDescriptorHandleIncrementSize = new ValueLazy<uint>(GetCbvSrvUavDescriptorHandleIncrementSize);
 
             _contexts = CreateContexts(this, contextCount);
 
@@ -77,6 +75,9 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <inheritdoc cref="GraphicsDevice.Adapter" />
         public new D3D12GraphicsAdapter Adapter => (D3D12GraphicsAdapter)base.Adapter;
 
+        /// <summary>Gets the descriptor handle increment size for <see cref="D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV" />.</summary>
+        public uint CbvSrvUavDescriptorHandleIncrementSize => _cbvSrvUavDescriptorHandleIncrementSize.Value;
+
         /// <inheritdoc />
         public override int ContextIndex => _contextIndex;
 
@@ -100,10 +101,6 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <summary>Gets the <see cref="ID3D12DescriptorHeap" /> used by the device for render target resources.</summary>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
         public ID3D12DescriptorHeap* D3D12RenderTargetDescriptorHeap => _d3d12RenderTargetDescriptorHeap.Value;
-
-        /// <summary>Gets the <see cref="ID3D12DescriptorHeap" /> used by the device for shader resources.</summary>
-        /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-        public ID3D12DescriptorHeap* D3D12ShaderResourceDescriptorHeap => _d3d12ShaderResourceDescriptorHeap.Value;
 
         /// <summary>Gets the <see cref="IDXGISwapChain3" /> for the device.</summary>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
@@ -200,7 +197,6 @@ namespace TerraFX.Graphics.Providers.D3D12
                 }
 
                 _memoryAllocator.Dispose(DisposeMemoryAllocator);
-                _d3d12ShaderResourceDescriptorHeap.Dispose(ReleaseIfNotNull);
                 _d3d12RenderTargetDescriptorHeap.Dispose(ReleaseIfNotNull);
                 _dxgiSwapChain.Dispose(ReleaseIfNotNull);
                 _d3d12CommandQueue.Dispose(ReleaseIfNotNull);
@@ -255,24 +251,6 @@ namespace TerraFX.Graphics.Providers.D3D12
             return renderTargetDescriptorHeap;
         }
 
-        private Pointer<ID3D12DescriptorHeap> CreateD3D12ShaderResourceDescriptorHeap()
-        {
-            _state.ThrowIfDisposedOrDisposing();
-
-            ID3D12DescriptorHeap* shaderResourceDescriptorHeap;
-
-            var shaderResourceDescriptorHeapDesc = new D3D12_DESCRIPTOR_HEAP_DESC {
-                Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
-                NumDescriptors = 1,
-                Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE,
-            };
-
-            var iid = IID_ID3D12DescriptorHeap;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateDescriptorHeap), D3D12Device->CreateDescriptorHeap(&shaderResourceDescriptorHeapDesc, &iid, (void**)&shaderResourceDescriptorHeap));
-
-            return shaderResourceDescriptorHeap;
-        }
-
         private Pointer<IDXGISwapChain3> CreateDxgiSwapChain()
         {
             _state.ThrowIfDisposedOrDisposing();
@@ -322,6 +300,9 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private D3D12GraphicsMemoryAllocator CreateMemoryAllocator()
             => new D3D12GraphicsMemoryAllocator(this, blockPreferredSize: 0);
+
+        private uint GetCbvSrvUavDescriptorHandleIncrementSize()
+            => D3D12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
         private void DisposeMemoryAllocator(D3D12GraphicsMemoryAllocator memoryAllocator)
         {

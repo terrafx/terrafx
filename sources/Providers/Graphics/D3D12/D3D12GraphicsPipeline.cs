@@ -16,14 +16,12 @@ namespace TerraFX.Graphics.Providers.D3D12
     public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
     {
         private ValueLazy<Pointer<ID3D12PipelineState>> _d3d12PipelineState;
-
         private State _state;
 
         internal D3D12GraphicsPipeline(D3D12GraphicsDevice device, D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader)
             : base(device, signature, vertexShader, pixelShader)
         {
             _d3d12PipelineState = new ValueLazy<Pointer<ID3D12PipelineState>>(CreateD3D12GraphicsPipelineState);
-
             _ = _state.Transition(to: Initialized);
         }
 

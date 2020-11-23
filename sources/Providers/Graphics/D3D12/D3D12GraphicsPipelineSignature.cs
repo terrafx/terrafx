@@ -76,16 +76,13 @@ namespace TerraFX.Graphics.Providers.D3D12
                 var textureShaderRegister = 0;
                 var staticSamplersIndex = 0;
 
-                if (resourcesLength != 0)
+                for (var inputIndex = 0; inputIndex < resourcesLength; inputIndex++)
                 {
-                    for (var inputIndex = 0; inputIndex < resourcesLength; inputIndex++)
-                    {
-                        rootParametersLength++;
+                    rootParametersLength++;
 
-                        if (resources[inputIndex].Kind == GraphicsPipelineResourceKind.Texture)
-                        {
-                            staticSamplersLength++;
-                        }
+                    if (resources[inputIndex].Kind == GraphicsPipelineResourceKind.Texture)
+                    {
+                        staticSamplersLength++;
                     }
                 }
 
@@ -93,45 +90,42 @@ namespace TerraFX.Graphics.Providers.D3D12
                 var staticSamplers = stackalloc D3D12_STATIC_SAMPLER_DESC[staticSamplersLength];
                 var descriptorRanges = stackalloc D3D12_DESCRIPTOR_RANGE[staticSamplersLength];
 
-                if (resourcesLength != 0)
+                for (var inputIndex = 0; inputIndex < resourcesLength; inputIndex++)
                 {
-                    for (var inputIndex = 0; inputIndex < resourcesLength; inputIndex++)
+                    var input = resources[inputIndex];
+
+                    switch (input.Kind)
                     {
-                        var input = resources[inputIndex];
-
-                        switch (input.Kind)
+                        case GraphicsPipelineResourceKind.ConstantBuffer:
                         {
-                            case GraphicsPipelineResourceKind.ConstantBuffer:
-                            {
-                                var shaderVisibility = GetD3D12ShaderVisiblity(input.ShaderVisibility);
-                                rootParameters[rootParametersIndex].InitAsConstantBufferView(unchecked((uint)constantShaderRegister), registerSpace: 0, shaderVisibility);
+                            var shaderVisibility = GetD3D12ShaderVisiblity(input.ShaderVisibility);
+                            rootParameters[rootParametersIndex].InitAsConstantBufferView(unchecked((uint)constantShaderRegister), registerSpace: 0, shaderVisibility);
 
-                                constantShaderRegister++;
-                                rootParametersIndex++;
-                                break;
-                            }
+                            constantShaderRegister++;
+                            rootParametersIndex++;
+                            break;
+                        }
 
-                            case GraphicsPipelineResourceKind.Texture:
-                            {
-                                descriptorRanges[staticSamplersIndex] = new D3D12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, numDescriptors: 1, baseShaderRegister: unchecked((uint)textureShaderRegister));
-                                var shaderVisibility = GetD3D12ShaderVisiblity(input.ShaderVisibility);
+                        case GraphicsPipelineResourceKind.Texture:
+                        {
+                            descriptorRanges[staticSamplersIndex] = new D3D12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, numDescriptors: 1, baseShaderRegister: unchecked((uint)textureShaderRegister));
+                            var shaderVisibility = GetD3D12ShaderVisiblity(input.ShaderVisibility);
 
-                                rootParameters[rootParametersIndex].InitAsDescriptorTable(1, &descriptorRanges[staticSamplersIndex], shaderVisibility);
-                                staticSamplers[staticSamplersIndex] = new D3D12_STATIC_SAMPLER_DESC(
-                                    shaderRegister: unchecked((uint)staticSamplersIndex),
-                                    shaderVisibility: shaderVisibility
-                                );
+                            rootParameters[rootParametersIndex].InitAsDescriptorTable(1, &descriptorRanges[staticSamplersIndex], shaderVisibility);
+                            staticSamplers[staticSamplersIndex] = new D3D12_STATIC_SAMPLER_DESC(
+                                shaderRegister: unchecked((uint)staticSamplersIndex),
+                                shaderVisibility: shaderVisibility
+                            );
 
-                                textureShaderRegister++;
-                                rootParametersIndex++;
-                                staticSamplersIndex++;
-                                break;
-                            }
+                            textureShaderRegister++;
+                            rootParametersIndex++;
+                            staticSamplersIndex++;
+                            break;
+                        }
 
-                            default:
-                            {
-                                break;
-                            }
+                        default:
+                        {
+                            break;
                         }
                     }
                 }
