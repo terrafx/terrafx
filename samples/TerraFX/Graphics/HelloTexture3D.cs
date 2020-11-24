@@ -16,7 +16,7 @@ namespace TerraFX.Samples.Graphics
     /// * ConstBuffer (transformation matrix as in HelloConstBuffer, but here to animate the 3D texture coordinates)
     /// Will show a quad cutting through the RGB cube and being animated to move back and forth in texture coordinate space.
     /// </summary>
-    public sealed class HelloTexture3D : HelloWindow
+    public class HelloTexture3D : HelloWindow
     {
         private GraphicsPrimitive _quadPrimitive = null!;
         private float _texturePosition;
@@ -115,25 +115,29 @@ namespace TerraFX.Samples.Graphics
                 var vertexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.None, (ulong)(sizeof(Texture3DVertex) * 4));
                 var pVertexBuffer = vertexStagingBuffer.Map<Texture3DVertex>();
 
-                pVertexBuffer[0] = new Texture3DVertex {
-                    Position = new Vector3(0.5f, 0.5f * aspectRatio, 0.0f),
-                    UVW = new Vector3(1.0f, 0.0f, 0.5f),
-                };
-
-                pVertexBuffer[1] = new Texture3DVertex {
-                    Position = new Vector3(0.5f, -0.5f * aspectRatio, 0.0f),
-                    UVW = new Vector3(0.0f, 1.0f, 0.5f),
-                };
-
-                pVertexBuffer[2] = new Texture3DVertex {
-                    Position = new Vector3(-0.5f, -0.5f * aspectRatio, 0.0f),
-                    UVW = new Vector3(0.0f, 0.0f, 0.5f),
-                };
-
-                pVertexBuffer[3] = new Texture3DVertex {
-                    Position = new Vector3(-0.5f, 0.5f * aspectRatio, 0.0f),
-                    UVW = new Vector3(0.0f, 1.0f, 0.5f),
-                };
+                var a = new Texture3DVertex {                        //  
+                    Position = new Vector3(-0.5f, 0.5f, 0.0f),       //   y          in this setup 
+                    UVW = new Vector3(0, 1, 0.5f),                   //   ^     z    the origin o
+                };                                                   //   |   /      is in the middle
+                                                                     //   | /        of the rendered scene
+                var b = new Texture3DVertex {                        //   o------>x
+                    Position = new Vector3(0.5f, 0.5f, 0.0f),        //  
+                    UVW = new Vector3(1, 1, 0.5f),                   //   a ----- b
+                };                                                   //   | \     |
+                                                                     //   |   \   |
+                var c = new Texture3DVertex {                        //   |     \ |
+                    Position = new Vector3(0.5f, -0.5f, 0.0f),       //   d-------c
+                    UVW = new Vector3(1, 0, 0.5f),                   //  
+                };                                                   //   0 ----- 1  
+                                                                     //   | \     |  
+                var d = new Texture3DVertex {                        //   |   \   |  
+                    Position = new Vector3(-0.5f, -0.5f, 0.0f),      //   |     \ |  
+                    UVW = new Vector3(0, 0, 0.5f),                   //   3-------2  
+                };                                                   //
+                pVertexBuffer[0] = a;
+                pVertexBuffer[1] = b;
+                pVertexBuffer[2] = c;
+                pVertexBuffer[3] = d;
 
                 vertexStagingBuffer.Unmap(0..(sizeof(Texture3DVertex) * 4));
                 graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
@@ -146,13 +150,13 @@ namespace TerraFX.Samples.Graphics
                 var indexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Index, GraphicsResourceCpuAccess.None, sizeof(ushort) * 6);
                 var pIndexBuffer = indexStagingBuffer.Map<ushort>();
 
-                pIndexBuffer[0] = 0;
-                pIndexBuffer[1] = 1;
-                pIndexBuffer[2] = 2;
+                pIndexBuffer[0] = 0; // a clockwise when looking at the triangle from the outside
+                pIndexBuffer[1] = 1; // b
+                pIndexBuffer[2] = 2; // d
 
-                pIndexBuffer[3] = 0;
-                pIndexBuffer[4] = 2;
-                pIndexBuffer[5] = 3;
+                pIndexBuffer[3] = 0; // b
+                pIndexBuffer[4] = 2; // c
+                pIndexBuffer[5] = 3; // d
 
                 indexStagingBuffer.Unmap(0..(sizeof(ushort) * 6));
                 graphicsContext.Copy(indexBuffer, indexStagingBuffer);
@@ -180,7 +184,8 @@ namespace TerraFX.Samples.Graphics
                 const uint TexturePixels = TextureDz * TextureDepth;
                 const uint TextureSize = TexturePixels * 4;
 
-                var texture3D = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.ThreeDimensional, GraphicsResourceCpuAccess.None, TextureWidth, TextureHeight, TextureDepth);
+                var texture3D = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.ThreeDimensional, GraphicsResourceCpuAccess.None
+                    , TextureWidth, TextureHeight, TextureDepth);
                 var pTextureData = textureStagingBuffer.Map<uint>();
 
                 for (uint n = 0; n < TexturePixels; n++)
