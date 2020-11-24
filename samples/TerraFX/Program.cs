@@ -44,8 +44,12 @@ namespace TerraFX.Samples
             new HelloTexture3D("D3D12.HelloTexture3D", s_graphicsProviderD3D12),
             new HelloTexture3D("Vulkan.HelloTexture3D", s_graphicsProviderVulkan),
 
+            new HelloSmoke("D3D12.HelloSmoke", true, s_graphicsProviderD3D12),
+            new HelloSmoke("Vulkan.HelloSmoke", true, s_graphicsProviderVulkan),
+
             new HelloSierpinskiPyramid("D3D12.HelloSierpinskiPyramid", 5, s_graphicsProviderD3D12),
             new HelloSierpinskiPyramid("Vulkan.HelloSierpinskiPyramid", 5, s_graphicsProviderVulkan),
+
             new HelloSierpinskiQuad("D3D12.HelloSierpinskiQuad", 6, s_graphicsProviderD3D12),
             new HelloSierpinskiQuad("Vulkan.HelloSierpinskiQuad", 6, s_graphicsProviderVulkan),
 

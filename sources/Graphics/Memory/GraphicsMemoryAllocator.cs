@@ -116,9 +116,12 @@ namespace TerraFX.Graphics
         /// <param name="depth">The depth, in pixels, of the graphics texture.</param>
         /// <param name="alignment">The alignment of the buffer, in bytes.</param>
         /// <param name="allocationFlags">Additional flags used when allocating the backing memory for the buffer.</param>
+        /// <param name="texelFormat">Optional parameter to specify the texel format.</param>
         /// <returns>A created graphics texture.</returns>
         /// <exception cref="ObjectDisposedException">The allocator has been disposed.</exception>
-        public abstract GraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, ulong alignment = 0, GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None);
+        public abstract GraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, ulong alignment = 0,
+            GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None,
+            TerraFX.Graphics.TexelFormat texelFormat = default(TerraFX.Graphics.TexelFormat));
 
         /// <summary>Gets the budget for a block collection.</summary>
         /// <param name="blockCollection">The block collection for which the budget should be retrieved.</param>

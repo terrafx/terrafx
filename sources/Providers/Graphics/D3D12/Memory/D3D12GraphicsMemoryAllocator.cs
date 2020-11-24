@@ -93,14 +93,17 @@ namespace TerraFX.Graphics.Providers.D3D12
         }
 
         /// <inheritdoc />
-        public override D3D12GraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, ulong alignment = 0, GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None)
+        public override D3D12GraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, ulong alignment = 0,
+            GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None,
+            TexelFormat texelFormat = default(TexelFormat))
         {
+            DXGI_FORMAT dxgiFormat = D3D12GraphicsMemoryTexelMapper.Map(texelFormat);
             var index = GetBlockCollectionIndex(cpuAccess, 1);
 
             var resourceDesc = kind switch {
-                GraphicsTextureKind.OneDimensional => D3D12_RESOURCE_DESC.Tex1D(DXGI_FORMAT_R8G8B8A8_UNORM, width, mipLevels: 1, alignment: alignment),
-                GraphicsTextureKind.TwoDimensional => D3D12_RESOURCE_DESC.Tex2D(DXGI_FORMAT_R8G8B8A8_UNORM, width, height, mipLevels: 1, alignment: alignment),
-                GraphicsTextureKind.ThreeDimensional => D3D12_RESOURCE_DESC.Tex3D(DXGI_FORMAT_R8G8B8A8_UNORM, width, height, depth, mipLevels: 1, alignment: alignment),
+                GraphicsTextureKind.OneDimensional => D3D12_RESOURCE_DESC.Tex1D(dxgiFormat, width, mipLevels: 1, alignment: alignment),
+                GraphicsTextureKind.TwoDimensional => D3D12_RESOURCE_DESC.Tex2D(dxgiFormat, width, height, mipLevels: 1, alignment: alignment),
+                GraphicsTextureKind.ThreeDimensional => D3D12_RESOURCE_DESC.Tex3D(dxgiFormat, width, height, depth, mipLevels: 1, alignment: alignment),
                 _ => default,
             };
 
