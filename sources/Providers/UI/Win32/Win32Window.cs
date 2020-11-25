@@ -192,8 +192,8 @@ namespace TerraFX.UI.Providers.Win32
                 var rect = new RECT {
                     left = (int)_bounds.X,
                     top = (int)_bounds.Y,
-                    right = (int)size.X,
-                    bottom = (int)size.Y,
+                    right = (int)(_bounds.X + size.X),
+                    bottom = (int)(_bounds.Y + size.Y),
                 };
 
                 ThrowExternalExceptionIfFalse(AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, bMenu: FALSE, WS_EX_OVERLAPPEDWINDOW), nameof(AdjustWindowRectEx));
