@@ -154,7 +154,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <inheritdoc />
         public override void PresentFrame()
         {
-            ThrowExternalExceptionIfFailed(nameof(IDXGISwapChain.Present), DxgiSwapChain->Present(SyncInterval: 1, Flags: 0));
+            ThrowExternalExceptionIfFailed(DxgiSwapChain->Present(SyncInterval: 1, Flags: 0), nameof(IDXGISwapChain.Present));
 
             Signal(CurrentContext.Fence);
             _contextIndex = unchecked((int)DxgiSwapChain->GetCurrentBackBufferIndex());
@@ -166,7 +166,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         /// <inheritdoc cref="Signal(GraphicsFence)" />
         public void Signal(D3D12GraphicsFence fence)
-            => ThrowExternalExceptionIfFailed(nameof(ID3D12CommandQueue.Signal), D3D12CommandQueue->Signal(fence.D3D12Fence, fence.D3D12FenceSignalValue));
+            => ThrowExternalExceptionIfFailed(D3D12CommandQueue->Signal(fence.D3D12Fence, fence.D3D12FenceSignalValue), nameof(ID3D12CommandQueue.Signal));
 
         /// <inheritdoc />
         public override void WaitForIdle()
@@ -175,7 +175,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             {
                 var waitForIdleGraphicsFence = WaitForIdleGraphicsFence;
 
-                ThrowExternalExceptionIfFailed(nameof(ID3D12CommandQueue.Signal), D3D12CommandQueue->Signal(waitForIdleGraphicsFence.D3D12Fence, waitForIdleGraphicsFence.D3D12FenceSignalValue));
+                ThrowExternalExceptionIfFailed(D3D12CommandQueue->Signal(waitForIdleGraphicsFence.D3D12Fence, waitForIdleGraphicsFence.D3D12FenceSignalValue), nameof(ID3D12CommandQueue.Signal));
 
                 waitForIdleGraphicsFence.Wait();
                 waitForIdleGraphicsFence.Reset();
@@ -217,7 +217,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             var commandQueueDesc = new D3D12_COMMAND_QUEUE_DESC();
             var iid = IID_ID3D12CommandQueue;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateCommandQueue), D3D12Device->CreateCommandQueue(&commandQueueDesc, &iid, (void**)&d3d12CommandQueue));
+            ThrowExternalExceptionIfFailed(D3D12Device->CreateCommandQueue(&commandQueueDesc, &iid, (void**)&d3d12CommandQueue), nameof(ID3D12Device.CreateCommandQueue));
 
             return d3d12CommandQueue;
         }
@@ -229,7 +229,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             ID3D12Device* d3d12Device;
 
             var iid = IID_ID3D12Device;
-            ThrowExternalExceptionIfFailed(nameof(D3D12CreateDevice), D3D12CreateDevice((IUnknown*)Adapter.DxgiAdapter, D3D_FEATURE_LEVEL_11_0, &iid, (void**)&d3d12Device));
+            ThrowExternalExceptionIfFailed(D3D12CreateDevice((IUnknown*)Adapter.DxgiAdapter, D3D_FEATURE_LEVEL_11_0, &iid, (void**)&d3d12Device), nameof(D3D12CreateDevice));
 
             return d3d12Device;
         }
@@ -246,7 +246,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             };
 
             var iid = IID_ID3D12DescriptorHeap;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateDescriptorHeap), D3D12Device->CreateDescriptorHeap(&renderTargetDescriptorHeapDesc, &iid, (void**)&renderTargetDescriptorHeap));
+            ThrowExternalExceptionIfFailed(D3D12Device->CreateDescriptorHeap(&renderTargetDescriptorHeapDesc, &iid, (void**)&renderTargetDescriptorHeap), nameof(ID3D12Device.CreateDescriptorHeap));
 
             return renderTargetDescriptorHeap;
         }
@@ -277,20 +277,20 @@ namespace TerraFX.Graphics.Providers.D3D12
             {
                 case GraphicsSurfaceKind.Win32:
                 {
-                    ThrowExternalExceptionIfFailed(nameof(IDXGIFactory2.CreateSwapChainForHwnd), provider.DxgiFactory->CreateSwapChainForHwnd((IUnknown*)D3D12CommandQueue, surfaceHandle, &swapChainDesc, pFullscreenDesc: null, pRestrictToOutput: null, (IDXGISwapChain1**)&dxgiSwapChain));
+                    ThrowExternalExceptionIfFailed(provider.DxgiFactory->CreateSwapChainForHwnd((IUnknown*)D3D12CommandQueue, surfaceHandle, &swapChainDesc, pFullscreenDesc: null, pRestrictToOutput: null, (IDXGISwapChain1**)&dxgiSwapChain), nameof(IDXGIFactory2.CreateSwapChainForHwnd));
                     break;
                 }
 
                 default:
                 {
-                    ThrowInvalidOperationException(nameof(surface), surface);
+                    ThrowInvalidOperationException(surface, nameof(surface));
                     dxgiSwapChain = null;
                     break;
                 }
             }
 
             // Fullscreen transitions are not currently supported
-            ThrowExternalExceptionIfFailed(nameof(IDXGIFactory.MakeWindowAssociation), provider.DxgiFactory->MakeWindowAssociation(surfaceHandle, DXGI_MWA_NO_ALT_ENTER));
+            ThrowExternalExceptionIfFailed(provider.DxgiFactory->MakeWindowAssociation(surfaceHandle, DXGI_MWA_NO_ALT_ENTER), nameof(IDXGIFactory.MakeWindowAssociation));
 
             _swapChainFormat = swapChainDesc.Format;
             _contextIndex = unchecked((int)dxgiSwapChain->GetCurrentBackBufferIndex());
@@ -311,7 +311,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             _state.ThrowIfDisposedOrDisposing();
 
             D3D12_FEATURE_DATA_D3D12_OPTIONS d3d12Options;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CheckFeatureSupport), D3D12Device->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &d3d12Options, SizeOf<D3D12_FEATURE_DATA_D3D12_OPTIONS>()));
+            ThrowExternalExceptionIfFailed(D3D12Device->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &d3d12Options, SizeOf<D3D12_FEATURE_DATA_D3D12_OPTIONS>()), nameof(ID3D12Device.CheckFeatureSupport));
             return d3d12Options;
         }
 
@@ -327,7 +327,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             if (_dxgiSwapChain.IsCreated)
             {
                 var surface = Surface;
-                ThrowExternalExceptionIfFailed(nameof(IDXGISwapChain.ResizeBuffers), DxgiSwapChain->ResizeBuffers((uint)Contexts.Length, (uint)surface.Width, (uint)surface.Height, DXGI_FORMAT_R8G8B8A8_UNORM, SwapChainFlags: 0));
+                ThrowExternalExceptionIfFailed(DxgiSwapChain->ResizeBuffers((uint)Contexts.Length, (uint)surface.Width, (uint)surface.Height, DXGI_FORMAT_R8G8B8A8_UNORM, SwapChainFlags: 0), nameof(IDXGISwapChain.ResizeBuffers));
                 _contextIndex = unchecked((int)DxgiSwapChain->GetCurrentBackBufferIndex());
             }
         }

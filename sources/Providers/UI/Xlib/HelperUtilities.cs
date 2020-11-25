@@ -20,39 +20,15 @@ namespace TerraFX.UI.Providers.Xlib
                 (sbyte*)Unsafe.AsPointer(ref MemoryMarshal.GetReference(name)),
                 False
             );
-            ThrowExternalExceptionIfZero(nameof(XInternAtom), atom);
+            ThrowExternalExceptionIfZero(atom, nameof(XInternAtom));
             return atom;
         }
 
-        public static void ThrowExternalExceptionIfFailed(string methodName, int value)
+        public static void ThrowExternalExceptionIfFailed(int value, string methodName)
         {
             if (value != Success)
             {
-                ThrowExternalException(methodName, value);
-            }
-        }
-
-        public static void ThrowExternalExceptionIfZero(string methodName, int value)
-        {
-            if (value == 0)
-            {
-                ThrowExternalException(methodName, value);
-            }
-        }
-
-        public static void ThrowExternalExceptionIfZero(string methodName, nint value)
-        {
-            if (value == 0)
-            {
-                ThrowExternalExceptionForLastError(methodName);
-            }
-        }
-
-        public static void ThrowExternalExceptionIfZero(string methodName, nuint value)
-        {
-            if (value == 0)
-            {
-                ThrowExternalExceptionForLastError(methodName);
+                ThrowExternalException(value, methodName);
             }
         }
 
@@ -83,13 +59,13 @@ namespace TerraFX.UI.Providers.Xlib
                 clientEvent.data.l[1] = data;
             }
 
-            ThrowExternalExceptionIfZero(nameof(XSendEvent), XSendEvent(
+            ThrowExternalExceptionIfZero(XSendEvent(
                 clientEvent.display,
                 clientEvent.window,
                 False,
                 NoEventMask,
                 (XEvent*)&clientEvent
-            ));
+            ), nameof(XSendEvent));
         }
     }
 }

@@ -33,17 +33,17 @@ namespace TerraFX.Graphics
 
             if (pipeline.Device != device)
             {
-                ThrowArgumentOutOfRangeException(nameof(pipeline), pipeline);
+                ThrowArgumentOutOfRangeException(pipeline, nameof(pipeline));
             }
 
             if (vertexBufferView.Buffer.Allocator.Device != device)
             {
-                ThrowArgumentOutOfRangeException(nameof(vertexBufferView), vertexBufferView);
+                ThrowArgumentOutOfRangeException(vertexBufferView, nameof(vertexBufferView));
             }
 
             if ((indexBufferView.Buffer is not null) && (indexBufferView.Buffer.Allocator.Device != device))
             {
-                ThrowArgumentOutOfRangeException(nameof(indexBufferView), indexBufferView);
+                ThrowArgumentOutOfRangeException(indexBufferView, nameof(indexBufferView));
             }
 
             _device = device;

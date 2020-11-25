@@ -11,6 +11,7 @@ using TerraFX.Utilities;
 using static TerraFX.Interop.Windows;
 using static TerraFX.UI.Providers.Win32.HelperUtilities;
 using static TerraFX.Utilities.AssertionUtilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.InteropUtilities;
 using static TerraFX.Utilities.State;
 
@@ -188,15 +189,15 @@ namespace TerraFX.UI.Providers.Win32
             var desktopWindowHandle = GetDesktopWindow();
 
             var desktopClassName = stackalloc ushort[256]; // 256 is the maximum length of WNDCLASSEX.lpszClassName
-            ThrowExternalExceptionIfZero(nameof(GetClassNameW), GetClassNameW(desktopWindowHandle, desktopClassName, 256));
+            ThrowExternalExceptionIfZero(GetClassNameW(desktopWindowHandle, desktopClassName, 256), nameof(GetClassNameW));
 
             WNDCLASSEXW desktopWindowClass;
 
-            ThrowExternalExceptionIfFalse(nameof(GetClassInfoExW), GetClassInfoExW(
+            ThrowExternalExceptionIfFalse(GetClassInfoExW(
                 HINSTANCE.NULL,
                 lpszClass: desktopClassName,
                 lpwcx: &desktopWindowClass
-            ));
+            ), nameof(GetClassInfoExW));
 
             return desktopWindowClass.hCursor;
         }
@@ -232,7 +233,7 @@ namespace TerraFX.UI.Providers.Win32
 
                     classAtom = RegisterClassExW(&wndClassEx);
                 }
-                ThrowExternalExceptionIfZero(nameof(RegisterClassExW), classAtom);
+                ThrowExternalExceptionIfZero(classAtom, nameof(RegisterClassExW));
             }
             return classAtom;
         }
@@ -260,7 +261,7 @@ namespace TerraFX.UI.Providers.Win32
 
             if (_classAtom.IsCreated)
             {
-                ThrowExternalExceptionIfFalse(nameof(UnregisterClassW), UnregisterClassW((ushort*)_classAtom.Value, EntryPointModule));
+                ThrowExternalExceptionIfFalse(UnregisterClassW((ushort*)_classAtom.Value, EntryPointModule), nameof(UnregisterClassW));
             }
         }
 

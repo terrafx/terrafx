@@ -21,7 +21,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             : base(kind, cpuAccess, in memoryBlockRegion)
         {
             _vulkanBuffer = vulkanBuffer;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkBindBufferMemory), vkBindBufferMemory(Allocator.Device.VulkanDevice, vulkanBuffer, Block.GetHandle<VkDeviceMemory>(), memoryBlockRegion.Offset));
+            ThrowExternalExceptionIfNotSuccess(vkBindBufferMemory(Allocator.Device.VulkanDevice, vulkanBuffer, Block.GetHandle<VkDeviceMemory>(), memoryBlockRegion.Offset), nameof(vkBindBufferMemory));
             _ = _state.Transition(to: Initialized);
         }
 
@@ -52,7 +52,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var vulkanDeviceMemory = Block.GetHandle<VkDeviceMemory>();
 
             void* pDestination;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkMapMemory), vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, &pDestination));
+            ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, &pDestination), nameof(vkMapMemory));
 
             if (readRangeLength != 0)
             {
@@ -67,7 +67,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     offset = offset,
                     size = size,
                 };
-                ThrowExternalExceptionIfNotSuccess(nameof(vkInvalidateMappedMemoryRanges), vkInvalidateMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange));
+                ThrowExternalExceptionIfNotSuccess(vkInvalidateMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange), nameof(vkInvalidateMappedMemoryRanges));
             }
             return (T*)pDestination;
         }
@@ -94,7 +94,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     offset = offset,
                     size = size,
                 };
-                ThrowExternalExceptionIfNotSuccess(nameof(vkFlushMappedMemoryRanges), vkFlushMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange));
+                ThrowExternalExceptionIfNotSuccess(vkFlushMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange), nameof(vkFlushMappedMemoryRanges));
             }
             vkUnmapMemory(vulkanDevice, vulkanDeviceMemory);
         }

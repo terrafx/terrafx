@@ -46,7 +46,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         public override void Reset()
         {
             var vulkanFence = VulkanFence;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkResetFences), vkResetFences(Device.VulkanDevice, fenceCount: 1, (ulong*)&vulkanFence));
+            ThrowExternalExceptionIfNotSuccess(vkResetFences(Device.VulkanDevice, fenceCount: 1, (ulong*)&vulkanFence), nameof(vkResetFences));
         }
 
         /// <inheritdoc />
@@ -54,7 +54,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             if (millisecondsTimeout < Timeout.Infinite)
             {
-                ThrowArgumentOutOfRangeException(nameof(millisecondsTimeout), millisecondsTimeout);
+                ThrowArgumentOutOfRangeException(millisecondsTimeout, nameof(millisecondsTimeout));
             }
             return TryWait(unchecked((ulong)millisecondsTimeout));
         }
@@ -66,7 +66,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             if (millisecondsTimeout < Timeout.Infinite)
             {
-                ThrowArgumentOutOfRangeException(nameof(timeout), timeout);
+                ThrowArgumentOutOfRangeException(timeout, nameof(timeout));
             }
 
             return TryWait(unchecked((ulong)millisecondsTimeout));
@@ -96,7 +96,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 pNext = null,
                 flags = (uint)VK_FENCE_CREATE_SIGNALED_BIT,
             };
-            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateFence), vkCreateFence(Device.VulkanDevice, &fenceCreateInfo, pAllocator: null, (ulong*)&vulkanFence));
+            ThrowExternalExceptionIfNotSuccess(vkCreateFence(Device.VulkanDevice, &fenceCreateInfo, pAllocator: null, (ulong*)&vulkanFence), nameof(vkCreateFence));
 
             return vulkanFence;
         }
@@ -126,7 +126,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 }
                 else if (result != VK_TIMEOUT)
                 {
-                    ThrowExternalException(nameof(vkWaitForFences), (int)result);
+                    ThrowExternalException((int)result, nameof(vkWaitForFences));
                 }
             }
 

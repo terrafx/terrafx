@@ -66,7 +66,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         {
             if (millisecondsTimeout < Timeout.Infinite)
             {
-                ThrowArgumentOutOfRangeException(nameof(millisecondsTimeout), millisecondsTimeout);
+                ThrowArgumentOutOfRangeException(millisecondsTimeout, nameof(millisecondsTimeout));
             }
             return TryWait(unchecked((uint)millisecondsTimeout));
         }
@@ -78,7 +78,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             if (remainingMilliseconds < Timeout.Infinite)
             {
-                ThrowArgumentOutOfRangeException(nameof(timeout), timeout);
+                ThrowArgumentOutOfRangeException(timeout, nameof(timeout));
             }
 
             var fenceSignalled = false;
@@ -120,7 +120,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             ID3D12Fence* d3d12Fence;
 
             var iid = IID_ID3D12Fence;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateFence), Device.D3D12Device->CreateFence(InitialValue: 0, D3D12_FENCE_FLAG_NONE, &iid, (void**)&d3d12Fence));
+            ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateFence(InitialValue: 0, D3D12_FENCE_FLAG_NONE, &iid, (void**)&d3d12Fence), nameof(ID3D12Device.CreateFence));
 
             return d3d12Fence;
         }
@@ -158,7 +158,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             if (!fenceSignalled)
             {
-                ThrowExternalExceptionIfFailed(nameof(ID3D12Fence.SetEventOnCompletion), D3D12Fence->SetEventOnCompletion(D3D12FenceSignalValue, fenceSignalEvent));
+                ThrowExternalExceptionIfFailed(D3D12Fence->SetEventOnCompletion(D3D12FenceSignalValue, fenceSignalEvent), nameof(ID3D12Fence.SetEventOnCompletion));
 
                 var result = WaitForSingleObject(fenceSignalEvent, millisecondsTimeout);
 

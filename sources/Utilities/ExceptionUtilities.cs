@@ -15,46 +15,107 @@ namespace TerraFX.Utilities
     public static unsafe class ExceptionUtilities
     {
         /// <summary>Throws an instance of the <see cref="ArgumentException" /> class.</summary>
-        /// <param name="paramName">The name of the parameter that caused the exception.</param>
         /// <param name="paramType">The type of the parameter that caused the exception.</param>
+        /// <param name="paramName">The name of the parameter that caused the exception.</param>
         /// <exception cref="ArgumentException"><paramref name="paramName" /> is an instance of <paramref name="paramType" />.</exception>
         [DoesNotReturn]
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void ThrowArgumentExceptionForInvalidType(string paramName, Type paramType)
+        public static void ThrowArgumentExceptionForInvalidType(Type paramType, string paramName)
         {
             var message = string.Format(Resources.ArgumentExceptionForInvalidTypeMessage, paramName, paramType);
             throw new ArgumentException(message, paramName);
         }
 
         /// <summary>Throws an instance of the <see cref="ArgumentOutOfRangeException" /> class.</summary>
-        /// <param name="paramName">The name of the parameter that caused the exception.</param>
         /// <param name="value">The value of the parameter that caused the exception.</param>
+        /// <param name="paramName">The name of the parameter that caused the exception.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="paramName" /> has a value of <paramref name="value" />.</exception>
         [DoesNotReturn]
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void ThrowArgumentOutOfRangeException(string paramName, object value)
+        public static void ThrowArgumentOutOfRangeException(object value, string paramName)
         {
             var message = string.Format(Resources.ArgumentOutOfRangeExceptionMessage, paramName, value);
             throw new ArgumentOutOfRangeException(paramName, value, message);
         }
 
         /// <summary>Throws an instance of the <see cref="ExternalException" /> class.</summary>
-        /// <param name="methodName">The name of the method that caused the exception.</param>
         /// <param name="errorCode">The error code that caused the exception.</param>
+        /// <param name="methodName">The name of the method that caused the exception.</param>
         /// <exception cref="ExternalException"><paramref name="methodName" /> failed with an exit code of <paramref name="errorCode" />.</exception>
         [DoesNotReturn]
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void ThrowExternalException(string methodName, int errorCode)
+        public static void ThrowExternalException(int errorCode, string methodName)
         {
             var message = string.Format(Resources.ExternalExceptionMessage, methodName, errorCode);
             throw new ExternalException(message, errorCode);
+        }
+
+        /// <summary>Throws an instance of the <see cref="ExternalException" /> class if <paramref name="value" /> is <c>false</c>.</summary>
+        /// <param name="value">The value to be checked for <c>false</c>.</param>
+        /// <param name="methodName">The name of the method that caused the exception.</param>
+        /// <exception cref="ExternalException"><paramref name="methodName" /> failed with an exit code of <see cref="Marshal.GetLastWin32Error()" />.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowExternalExceptionIfFalse(bool value, string methodName)
+        {
+            if (value == false)
+            {
+                ThrowExternalExceptionForLastError(methodName);
+            }
+        }
+
+        /// <summary>Throws an instance of the <see cref="ExternalException" /> class if <paramref name="value" /> is <c>0</c>.</summary>
+        /// <param name="value">The value to be checked for <c>0</c>.</param>
+        /// <param name="methodName">The name of the method that caused the exception.</param>
+        /// <exception cref="ExternalException"><paramref name="methodName" /> failed with an exit code of <see cref="Marshal.GetLastWin32Error()" />.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowExternalExceptionIfZero(int value, string methodName)
+        {
+            if (value == 0)
+            {
+                ThrowExternalExceptionForLastError(methodName);
+            }
+        }
+
+        /// <summary>Throws an instance of the <see cref="ExternalException" /> class if <paramref name="value" /> is <c>0</c>.</summary>
+        /// <param name="value">The value to be checked for <c>0</c>.</param>
+        /// <param name="methodName">The name of the method that caused the exception.</param>
+        /// <exception cref="ExternalException"><paramref name="methodName" /> failed with an exit code of <see cref="Marshal.GetLastWin32Error()" />.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowExternalExceptionIfZero(uint value, string methodName)
+        {
+            if (value == 0)
+            {
+                ThrowExternalExceptionForLastError(methodName);
+            }
+        }
+
+        /// <summary>Throws an instance of the <see cref="ExternalException" /> class if <paramref name="value" /> is <c>0</c>.</summary>
+        /// <param name="value">The value to be checked for <c>0</c>.</param>
+        /// <param name="methodName">The name of the method that caused the exception.</param>
+        /// <exception cref="ExternalException"><paramref name="methodName" /> failed with an exit code of <see cref="Marshal.GetLastWin32Error()" />.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowExternalExceptionIfZero(nint value, string methodName)
+        {
+            if (value == 0)
+            {
+                ThrowExternalExceptionForLastError(methodName);
+            }
+        }
+
+        /// <summary>Throws an instance of the <see cref="ExternalException" /> class if <paramref name="value" /> is <c>0</c>.</summary>
+        /// <param name="value">The value to be checked for <c>0</c>.</param>
+        /// <param name="methodName">The name of the method that caused the exception.</param>
+        /// <exception cref="ExternalException"><paramref name="methodName" /> failed with an exit code of <see cref="Marshal.GetLastWin32Error()" />.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowExternalExceptionIfZero(nuint value, string methodName)
+        {
+            if (value == 0)
+            {
+                ThrowExternalExceptionForLastError(methodName);
+            }
         }
 
         /// <summary>Throws an instance of the <see cref="ExternalException" /> class.</summary>
         /// <param name="methodName">The name of the method that caused the exception.</param>
         /// <exception cref="ExternalException"><paramref name="methodName" /> failed with an exit code of <see cref="Marshal.GetLastWin32Error()" />.</exception>
         [DoesNotReturn]
-        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void ThrowExternalExceptionForLastError(string methodName)
         {
             var errorCode = Marshal.GetLastWin32Error();
@@ -66,7 +127,6 @@ namespace TerraFX.Utilities
         /// <param name="methodName">The name of the method that caused the exception.</param>
         /// <exception cref="ExternalException"><paramref name="methodName" /> failed with an exit code of <see cref="Marshal.GetHRForLastWin32Error()" />.</exception>
         [DoesNotReturn]
-        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void ThrowExternalExceptionForLastHRESULT(string methodName)
         {
             var hresult = Marshal.GetHRForLastWin32Error();
@@ -83,7 +143,7 @@ namespace TerraFX.Utilities
         {
             if (!value)
             {
-                ThrowArgumentOutOfRangeException(paramName, value);
+                ThrowArgumentOutOfRangeException(value, paramName);
             }
         }
 
@@ -96,7 +156,7 @@ namespace TerraFX.Utilities
         {
             if (value < 0)
             {
-                ThrowArgumentOutOfRangeException(paramName, value);
+                ThrowArgumentOutOfRangeException(value, paramName);
             }
         }
 
@@ -140,7 +200,7 @@ namespace TerraFX.Utilities
 
             if (currentThread != thread)
             {
-                ThrowInvalidOperationException(nameof(Thread.CurrentThread), currentThread);
+                ThrowInvalidOperationException(currentThread, nameof(Thread.CurrentThread));
             }
         }
 
@@ -153,7 +213,7 @@ namespace TerraFX.Utilities
         {
             if (!IsPow2(value))
             {
-                ThrowArgumentOutOfRangeException(paramName, value);
+                ThrowArgumentOutOfRangeException(value, paramName);
             }
         }
 
@@ -166,7 +226,7 @@ namespace TerraFX.Utilities
         {
             if (value == 0)
             {
-                ThrowArgumentOutOfRangeException(paramName, value);
+                ThrowArgumentOutOfRangeException(value, paramName);
             }
         }
 
@@ -179,14 +239,13 @@ namespace TerraFX.Utilities
         {
             if (value == 0)
             {
-                ThrowArgumentOutOfRangeException(paramName, value);
+                ThrowArgumentOutOfRangeException(value, paramName);
             }
         }
 
         /// <summary>Throws an instance of the <see cref="IOException" /> class.</summary>
         /// <exception cref="IOException">An I/O error occurred.</exception>
         [DoesNotReturn]
-        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void ThrowIOException()
         {
             var message = Resources.IOExceptionMessage;
@@ -197,16 +256,14 @@ namespace TerraFX.Utilities
         /// <param name="message">The message of the exception.</param>
         /// <exception cref="InvalidOperationException"><paramref name="message" /></exception>
         [DoesNotReturn]
-        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void ThrowInvalidOperationException(string message) => throw new InvalidOperationException(message);
 
         /// <summary>Throws an instance of the <see cref="InvalidOperationException" /> class.</summary>
-        /// <param name="paramName">The name of the parameter that caused the exception.</param>
         /// <param name="value">The value of the parameter that caused the exception.</param>
+        /// <param name="paramName">The name of the parameter that caused the exception.</param>
         /// <exception cref="InvalidOperationException"><paramref name="paramName" /> has a value of <paramref name="value" />.</exception>
         [DoesNotReturn]
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void ThrowInvalidOperationException(string paramName, object value)
+        public static void ThrowInvalidOperationException(object value, string paramName)
         {
             var message = string.Format(Resources.InvalidOperationExceptionMessage, paramName, value);
             throw new InvalidOperationException(message);
@@ -216,7 +273,6 @@ namespace TerraFX.Utilities
         /// <param name="paramName">The name of the parameter that caused the exception.</param>
         /// <exception cref="KeyNotFoundException"><paramref name="paramName" /> was not found in the collection.</exception>
         [DoesNotReturn]
-        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void ThrowKeyNotFoundException(string paramName)
         {
             var message = string.Format(Resources.KeyNotFoundExceptionMessage, paramName);
@@ -227,7 +283,6 @@ namespace TerraFX.Utilities
         /// <param name="featureName">The name of the unavailable feature.</param>
         /// <exception cref="ExternalException">One or more of the requested <paramref name="featureName" /> is unavailable.</exception>
         [DoesNotReturn]
-        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void ThrowNotSupportedExceptionForMissingFeature(string featureName)
         {
             var message = string.Format(Resources.NotSupportedExceptionForMissingFeatureMessage, featureName);
@@ -237,7 +292,6 @@ namespace TerraFX.Utilities
         /// <summary>Throws an instance of the <see cref="NotSupportedException" /> class.</summary>
         /// <exception cref="ExternalException">The collection is read-only.</exception>
         [DoesNotReturn]
-        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void ThrowNotSupportedExceptionForReadOnlyCollection()
         {
             var message = Resources.NotSupportedExceptionForReadOnlyCollectionMessage;
@@ -248,7 +302,6 @@ namespace TerraFX.Utilities
         /// <param name="objectName">The name of the object that caused the exception.</param>
         /// <exception cref="ObjectDisposedException"><paramref name="objectName" /> is disposed.</exception>
         [DoesNotReturn]
-        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void ThrowObjectDisposedException(string objectName)
         {
             var message = string.Format(Resources.ObjectDisposedExceptionMessage, objectName);
@@ -259,7 +312,6 @@ namespace TerraFX.Utilities
         /// <param name="timeout">The timeout that was reached.</param>
         /// <exception cref="TimeoutException">The timeout of <paramref name="timeout" /> was reached before the operation could be completed.</exception>
         [DoesNotReturn]
-        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void ThrowTimeoutException(TimeSpan timeout)
         {
             var message = string.Format(Resources.TimeoutExceptionMessage, timeout);
@@ -267,7 +319,6 @@ namespace TerraFX.Utilities
         }
 
         [DoesNotReturn]
-        [MethodImpl(MethodImplOptions.NoInlining)]
         private static void ThrowArgumentNullException(string paramName)
         {
             var message = string.Format(Resources.ArgumentNullExceptionMessage, paramName);

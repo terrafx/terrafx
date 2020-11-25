@@ -97,7 +97,7 @@ namespace TerraFX
             }
             else
             {
-                ThrowArgumentExceptionForInvalidType(nameof(obj), obj.GetType());
+                ThrowArgumentExceptionForInvalidType(obj.GetType(), nameof(obj));
                 return 0;
             }
         }

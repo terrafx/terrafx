@@ -21,11 +21,11 @@ namespace TerraFX.Graphics.Providers.D3D12
             }
         }
 
-        public static void ThrowExternalExceptionIfFailed(string methodName, int hr)
+        public static void ThrowExternalExceptionIfFailed(int hr, string methodName)
         {
             if (FAILED(hr))
             {
-                ThrowExternalException(methodName, hr);
+                ThrowExternalException(hr, methodName);
             }
         }
     }

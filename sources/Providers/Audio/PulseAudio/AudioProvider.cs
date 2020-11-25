@@ -59,7 +59,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
 
             if (context == IntPtr.Zero)
             {
-                ThrowExternalException(nameof(CreateContext), errorCode: -1);
+                ThrowExternalException(errorCode: -1, methodName: nameof(CreateContext));
             }
             return context;
         }
@@ -70,7 +70,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
 
             if (mainloop == IntPtr.Zero)
             {
-                ThrowExternalException(nameof(CreateMainLoop), errorCode: -1);
+                ThrowExternalException(errorCode: -1, methodName: nameof(CreateMainLoop));
             }
             return mainloop;
         }
@@ -88,7 +88,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
             {
                 if (pa_context_connect(Context, null, PA_CONTEXT_NOFLAGS, null) < 0)
                 {
-                    ThrowExternalException(nameof(StartAsync), pa_context_errno(Context));
+                    ThrowExternalException(pa_context_errno(Context), nameof(StartAsync));
                 }
             }
 
@@ -139,7 +139,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
             {
                 if (retval == 0)
                 {
-                    ThrowExternalException(nameof(RunMainLoopIteration), status);
+                    ThrowExternalException(status, nameof(RunMainLoopIteration));
                 }
 
                 return true;

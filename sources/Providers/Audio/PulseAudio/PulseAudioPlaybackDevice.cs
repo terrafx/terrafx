@@ -54,7 +54,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
 
             if (adapter.DeviceType != AudioDeviceType.Playback)
             {
-                ThrowInvalidOperationException(nameof(adapter), adapter.DeviceType);
+                ThrowInvalidOperationException(adapter.DeviceType, nameof(adapter));
             }
 
             _context = context;

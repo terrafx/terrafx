@@ -136,10 +136,10 @@ namespace TerraFX.Graphics.Providers.D3D12
                 rootSignatureDesc.NumStaticSamplers = unchecked((uint)staticSamplersLength);
                 rootSignatureDesc.pStaticSamplers = staticSamplers;
 
-                ThrowExternalExceptionIfFailed(nameof(D3D12SerializeRootSignature), D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &rootSignatureBlob, &rootSignatureErrorBlob));
+                ThrowExternalExceptionIfFailed(D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &rootSignatureBlob, &rootSignatureErrorBlob), nameof(D3D12SerializeRootSignature));
 
                 var iid = IID_ID3D12RootSignature;
-                ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateRootSignature), Device.D3D12Device->CreateRootSignature(0, rootSignatureBlob->GetBufferPointer(), rootSignatureBlob->GetBufferSize(), &iid, (void**)&d3d12RootSignature));
+                ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateRootSignature(0, rootSignatureBlob->GetBufferPointer(), rootSignatureBlob->GetBufferSize(), &iid, (void**)&d3d12RootSignature), nameof(ID3D12Device.CreateRootSignature));
 
                 return d3d12RootSignature;
             }

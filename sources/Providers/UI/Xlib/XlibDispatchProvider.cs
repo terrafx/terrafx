@@ -280,12 +280,7 @@ namespace TerraFX.UI.Providers.Xlib
             get
             {
                 timespec timespec;
-                var result = clock_gettime(CLOCK_MONOTONIC, &timespec);
-
-                if (result != 0)
-                {
-                    ThrowExternalExceptionForLastError(nameof(clock_gettime));
-                }
+                ThrowExternalExceptionIfZero(clock_gettime(CLOCK_MONOTONIC, &timespec), nameof(clock_gettime));
 
                 const long NanosecondsPerSecond = TimeSpan.TicksPerSecond * 100;
                 Assert(NanosecondsPerSecond == 1000000000, Resources.ArgumentOutOfRangeExceptionMessage, nameof(NanosecondsPerSecond), NanosecondsPerSecond);
@@ -405,7 +400,7 @@ namespace TerraFX.UI.Providers.Xlib
 
             if ((errorEvent->error_code != BadWindow) || (errorEvent->request_code != X_GetProperty))
             {
-                ThrowExternalException(nameof(HandleXlibError), errorEvent->error_code);
+                ThrowExternalException(errorEvent->error_code, nameof(HandleXlibError));
             }
 
             return 0;
@@ -414,7 +409,7 @@ namespace TerraFX.UI.Providers.Xlib
         private static IntPtr CreateDisplay()
         {
             var display = XOpenDisplay(null);
-            ThrowExternalExceptionIfZero(nameof(XOpenDisplay), display);
+            ThrowExternalExceptionIfZero(display, nameof(XOpenDisplay));
 
             _ = XSetErrorHandler(s_errorHandler);
             return display;

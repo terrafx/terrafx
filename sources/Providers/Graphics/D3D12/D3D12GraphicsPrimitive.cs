@@ -92,7 +92,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             };
 
             var iid = IID_ID3D12DescriptorHeap;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateDescriptorHeap), d3d12Device->CreateDescriptorHeap(&cbvSrvUavDescriptorHeapDesc, &iid, (void**)&cbvSrvUavDescriptorHeap));
+            ThrowExternalExceptionIfFailed(d3d12Device->CreateDescriptorHeap(&cbvSrvUavDescriptorHeapDesc, &iid, (void**)&cbvSrvUavDescriptorHeap), nameof(ID3D12Device.CreateDescriptorHeap));
 
             var cbvSrvUavDescriptorHandleIncrementSize = Device.CbvSrvUavDescriptorHandleIncrementSize;
             var cbvSrvUavDescriptorIndex = 0;

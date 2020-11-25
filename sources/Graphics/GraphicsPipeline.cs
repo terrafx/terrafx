@@ -31,12 +31,13 @@ namespace TerraFX.Graphics
 
             if ((vertexShader != null) && ((vertexShader.Kind != GraphicsShaderKind.Vertex) || (vertexShader.Device != device)))
             {
-                ThrowArgumentOutOfRangeException(nameof(vertexShader), vertexShader);
+                ThrowArgumentOutOfRangeException(vertexShader, nameof(vertexShader));
             }
 
             if ((pixelShader != null) && ((pixelShader.Kind != GraphicsShaderKind.Pixel) || (pixelShader.Device != device)))
             {
-                ThrowArgumentOutOfRangeException(nameof(pixelShader), pixelShader);;
+                ThrowArgumentOutOfRangeException(pixelShader, nameof(pixelShader));
+                ;
             }
 
             _device = device;

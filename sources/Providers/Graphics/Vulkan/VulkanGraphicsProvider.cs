@@ -221,7 +221,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                         ppEnabledExtensionNames = enabledExtensionNames,
                     };
 
-                    ThrowExternalExceptionIfNotSuccess(nameof(vkCreateInstance), vkCreateInstance(&instanceCreateInfo, pAllocator: null, (IntPtr*)&vulkanInstance));
+                    ThrowExternalExceptionIfNotSuccess(vkCreateInstance(&instanceCreateInfo, pAllocator: null, (IntPtr*)&vulkanInstance), nameof(vkCreateInstance));
                 }
 
                 if (DebugModeEnabled)
@@ -317,13 +317,13 @@ namespace TerraFX.Graphics.Providers.Vulkan
             static VkExtensionProperties[] GetExtensionProperties()
             {
                 uint extensionPropertiesCount = 0;
-                ThrowExternalExceptionIfNotSuccess(nameof(vkEnumerateInstanceExtensionProperties), vkEnumerateInstanceExtensionProperties(pLayerName: null, &extensionPropertiesCount, pProperties: null));
+                ThrowExternalExceptionIfNotSuccess(vkEnumerateInstanceExtensionProperties(pLayerName: null, &extensionPropertiesCount, pProperties: null), nameof(vkEnumerateInstanceExtensionProperties));
 
                 var extensionProperties = new VkExtensionProperties[extensionPropertiesCount];
 
                 fixed (VkExtensionProperties* pExtensionProperties = extensionProperties)
                 {
-                    ThrowExternalExceptionIfNotSuccess(nameof(vkEnumerateInstanceExtensionProperties), vkEnumerateInstanceExtensionProperties(pLayerName: null, &extensionPropertiesCount, pExtensionProperties));
+                    ThrowExternalExceptionIfNotSuccess(vkEnumerateInstanceExtensionProperties(pLayerName: null, &extensionPropertiesCount, pExtensionProperties), nameof(vkEnumerateInstanceExtensionProperties));
                 }
 
                 return extensionProperties;
@@ -332,13 +332,13 @@ namespace TerraFX.Graphics.Providers.Vulkan
             static VkLayerProperties[] GetLayerProperties()
             {
                 uint layerPropertiesCount = 0;
-                ThrowExternalExceptionIfNotSuccess(nameof(vkEnumerateInstanceLayerProperties), vkEnumerateInstanceLayerProperties(&layerPropertiesCount, pProperties: null));
+                ThrowExternalExceptionIfNotSuccess(vkEnumerateInstanceLayerProperties(&layerPropertiesCount, pProperties: null), nameof(vkEnumerateInstanceLayerProperties));
 
                 var layerProperties = new VkLayerProperties[layerPropertiesCount];
 
                 fixed (VkLayerProperties* pLayerProperties = layerProperties)
                 {
-                    ThrowExternalExceptionIfNotSuccess(nameof(vkEnumerateInstanceLayerProperties), vkEnumerateInstanceLayerProperties(&layerPropertiesCount, pLayerProperties));
+                    ThrowExternalExceptionIfNotSuccess(vkEnumerateInstanceLayerProperties(&layerPropertiesCount, pLayerProperties), nameof(vkEnumerateInstanceLayerProperties));
                 }
 
                 return layerProperties;
@@ -403,10 +403,10 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var instance = VulkanInstance;
 
             uint physicalDeviceCount;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkEnumeratePhysicalDevices), vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, pPhysicalDevices: null));
+            ThrowExternalExceptionIfNotSuccess(vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, pPhysicalDevices: null), nameof(vkEnumeratePhysicalDevices));
 
             var physicalDevices = stackalloc VkPhysicalDevice[unchecked((int)physicalDeviceCount)];
-            ThrowExternalExceptionIfNotSuccess(nameof(vkEnumeratePhysicalDevices), vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, (IntPtr*)physicalDevices));
+            ThrowExternalExceptionIfNotSuccess(vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, (IntPtr*)physicalDevices), nameof(vkEnumeratePhysicalDevices));
 
             var adapters = ImmutableArray.CreateBuilder<VulkanGraphicsAdapter>(unchecked((int)physicalDeviceCount));
 

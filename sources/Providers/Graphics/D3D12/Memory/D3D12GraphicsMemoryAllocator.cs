@@ -140,7 +140,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             if (index < 0)
             {
-                ThrowArgumentOutOfRangeException(nameof(cpuAccess), cpuAccess);
+                ThrowArgumentOutOfRangeException(cpuAccess, nameof(cpuAccess));
             }
             else if (!_supportsResourceHeapTier2)
             {

@@ -117,8 +117,8 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             var d3d12CommandAllocator = D3D12CommandAllocator;
 
-            ThrowExternalExceptionIfFailed(nameof(ID3D12CommandAllocator.Reset), d3d12CommandAllocator->Reset());
-            ThrowExternalExceptionIfFailed(nameof(ID3D12GraphicsCommandList.Reset), D3D12GraphicsCommandList->Reset(d3d12CommandAllocator, pInitialState: null));
+            ThrowExternalExceptionIfFailed(d3d12CommandAllocator->Reset(), nameof(ID3D12CommandAllocator.Reset));
+            ThrowExternalExceptionIfFailed(D3D12GraphicsCommandList->Reset(d3d12CommandAllocator, pInitialState: null), nameof(ID3D12GraphicsCommandList.Reset));
         }
 
         /// <inheritdoc />
@@ -402,11 +402,11 @@ namespace TerraFX.Graphics.Providers.D3D12
             var commandList = D3D12GraphicsCommandList;
 
             var commandQueue = Device.D3D12CommandQueue;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12GraphicsCommandList.Close), commandList->Close());
+            ThrowExternalExceptionIfFailed(commandList->Close(), nameof(ID3D12GraphicsCommandList.Close));
             commandQueue->ExecuteCommandLists(1, (ID3D12CommandList**)&commandList);
 
             var executeGraphicsFence = WaitForExecuteCompletionFence;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12CommandQueue.Signal), commandQueue->Signal(executeGraphicsFence.D3D12Fence, executeGraphicsFence.D3D12FenceSignalValue));
+            ThrowExternalExceptionIfFailed(commandQueue->Signal(executeGraphicsFence.D3D12Fence, executeGraphicsFence.D3D12FenceSignalValue), nameof(ID3D12CommandQueue.Signal));
 
             executeGraphicsFence.Wait();
             executeGraphicsFence.Reset();
@@ -448,7 +448,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             ID3D12CommandAllocator* d3d12CommandAllocator;
 
             var iid = IID_ID3D12CommandAllocator;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateCommandAllocator), Device.D3D12Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, &iid, (void**)&d3d12CommandAllocator));
+            ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, &iid, (void**)&d3d12CommandAllocator), nameof(ID3D12Device.CreateCommandAllocator));
 
             return d3d12CommandAllocator;
         }
@@ -460,11 +460,11 @@ namespace TerraFX.Graphics.Providers.D3D12
             ID3D12GraphicsCommandList* d3d12GraphicsCommandList;
 
             var iid = IID_ID3D12GraphicsCommandList;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateCommandList), Device.D3D12Device->CreateCommandList(nodeMask: 0, D3D12_COMMAND_LIST_TYPE_DIRECT, D3D12CommandAllocator, pInitialState: null, &iid, (void**)&d3d12GraphicsCommandList));
+            ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateCommandList(nodeMask: 0, D3D12_COMMAND_LIST_TYPE_DIRECT, D3D12CommandAllocator, pInitialState: null, &iid, (void**)&d3d12GraphicsCommandList), nameof(ID3D12Device.CreateCommandList));
 
             // Command lists are created in the recording state, but there is nothing
             // to record yet. The main loop expects it to be closed, so close it now.
-            ThrowExternalExceptionIfFailed(nameof(ID3D12GraphicsCommandList.Close), d3d12GraphicsCommandList->Close());
+            ThrowExternalExceptionIfFailed(d3d12GraphicsCommandList->Close(), nameof(ID3D12GraphicsCommandList.Close));
 
             return d3d12GraphicsCommandList;
         }
@@ -476,7 +476,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             ID3D12Resource* renderTargetResource;
 
             var iid = IID_ID3D12Resource;
-            ThrowExternalExceptionIfFailed(nameof(IDXGISwapChain.GetBuffer), Device.DxgiSwapChain->GetBuffer(unchecked((uint)Index), &iid, (void**)&renderTargetResource));
+            ThrowExternalExceptionIfFailed(Device.DxgiSwapChain->GetBuffer(unchecked((uint)Index), &iid, (void**)&renderTargetResource), nameof(IDXGISwapChain.GetBuffer));
 
             return renderTargetResource;
         }

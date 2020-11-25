@@ -154,7 +154,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                 };
 
                 var iid = IID_ID3D12PipelineState;
-                ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateGraphicsPipelineState), Device.D3D12Device->CreateGraphicsPipelineState(&pipelineStateDesc, &iid, (void**)&d3d12GraphicsPipelineState));
+                ThrowExternalExceptionIfFailed(Device.D3D12Device->CreateGraphicsPipelineState(&pipelineStateDesc, &iid, (void**)&d3d12GraphicsPipelineState), nameof(ID3D12Device.CreateGraphicsPipelineState));
             }
             return d3d12GraphicsPipelineState;
 

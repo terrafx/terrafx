@@ -86,7 +86,7 @@ namespace TerraFX.Samples
                             // todo: var span = TerraFX.Utilities.InteropUtilities.MarshalUtf8ToReadOnlySpan((sbyte*)pError->GetBufferPointer(), (int)pError->GetBufferSize());
                             var errorMsg = System.Text.Encoding.UTF8.GetString((byte*)pError->GetBufferPointer(), (int)pError->GetBufferSize());
                             Console.WriteLine(errorMsg);
-                            ThrowExternalException(nameof(D3DCompileFromFile), result);
+                            ThrowExternalException(result, nameof(D3DCompileFromFile));
                         }
 
                         var shaderBytecode = new ReadOnlySpan<byte>(d3dShaderBlob->GetBufferPointer(), (int)d3dShaderBlob->GetBufferSize());
@@ -153,7 +153,7 @@ namespace TerraFX.Samples
 
                     default:
                     {
-                        ThrowArgumentOutOfRangeException(nameof(graphicsShaderKind), graphicsShaderKind);
+                        ThrowArgumentOutOfRangeException(graphicsShaderKind, nameof(graphicsShaderKind));
                         d3d12CompileTarget = default;
                         break;
                     }
@@ -182,7 +182,7 @@ namespace TerraFX.Samples
 
                     default:
                     {
-                        ThrowArgumentOutOfRangeException(nameof(graphicsShaderKind), graphicsShaderKind);
+                        ThrowArgumentOutOfRangeException(graphicsShaderKind, nameof(graphicsShaderKind));
                         vulkanShaderStage = string.Empty;
                         break;
                     }
