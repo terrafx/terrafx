@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="Assets\Shaders\**\*.hlsl" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="Assets\Shaders\**\*.glsl" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\sources\ApplicationModel\TerraFX.ApplicationModel.csproj" />
     <ProjectReference Include="..\..\sources\Providers\Audio\PulseAudio\TerraFX.Audio.Providers.PulseAudio.csproj" />
     <ProjectReference Include="..\..\sources\Providers\Graphics\D3D12\TerraFX.Graphics.Providers.D3D12.csproj" />
