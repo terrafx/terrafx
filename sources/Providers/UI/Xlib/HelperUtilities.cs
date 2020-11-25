@@ -47,11 +47,11 @@ namespace TerraFX.UI.Providers.Xlib
             if (Environment.Is64BitProcess)
             {
                 clientEvent.data.l[0] = unchecked((nint)(uint)message);
-                clientEvent.data.l[1] = (nint)(uint)(message >> 32);
+                clientEvent.data.l[1] = (nint)(uint)((nuint)message >> 32);
                 Assert(clientEvent.data.l[1] == 0, Resources.ArgumentOutOfRangeExceptionMessage, nameof(message), message);
 
                 clientEvent.data.l[2] = unchecked((nint)(uint)data);
-                clientEvent.data.l[3] = (nint)(uint)(data >> 32);
+                clientEvent.data.l[3] = (nint)(uint)((nuint)data >> 32);
             }
             else
             {

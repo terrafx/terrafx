@@ -103,7 +103,7 @@ namespace TerraFX.UI.Providers.Xlib
                 // fields in Window are lazy.
 
                 userData = Environment.Is64BitProcess
-                         ? (xevent->xclient.data.l[3] << 32) | xevent->xclient.data.l[2]
+                         ? (xevent->xclient.data.l[3] << 32) | (nint)(uint)xevent->xclient.data.l[2]
                          : xevent->xclient.data.l[1];
 
                 _ = XChangeProperty(
