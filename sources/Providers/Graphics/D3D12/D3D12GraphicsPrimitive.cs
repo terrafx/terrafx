@@ -87,7 +87,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             var cbvSrvUavDescriptorHeapDesc = new D3D12_DESCRIPTOR_HEAP_DESC {
                 Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
-                NumDescriptors = numCbvSrvUavDescriptors,
+                NumDescriptors = Math.Max(1, numCbvSrvUavDescriptors),
                 Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE,
             };
 
