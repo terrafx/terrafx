@@ -85,15 +85,15 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             while (remainingMilliseconds > INFINITE)
             {
-                const uint millisecondsTimeout = INFINITE - 1;
+                const uint MillisecondsTimeout = INFINITE - 1;
 
-                if (TryWait(millisecondsTimeout))
+                if (TryWait(MillisecondsTimeout))
                 {
                     fenceSignalled = true;
                     break;
                 }
 
-                remainingMilliseconds -= millisecondsTimeout;
+                remainingMilliseconds -= MillisecondsTimeout;
             }
 
             return fenceSignalled || TryWait(unchecked((uint)remainingMilliseconds));

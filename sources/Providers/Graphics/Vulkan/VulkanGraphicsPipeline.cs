@@ -295,7 +295,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             }
         }
 
-        private VkFormat GetInputElementFormat(Type type)
+        private static VkFormat GetInputElementFormat(Type type)
         {
             var inputElementFormat = VK_FORMAT_UNDEFINED;
 

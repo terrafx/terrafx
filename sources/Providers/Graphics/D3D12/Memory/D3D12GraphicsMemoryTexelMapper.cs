@@ -3,40 +3,22 @@
 // This file includes code based on the Allocator class from https://github.com/GPUOpen-LibrariesAndSDKs/D3D12MemoryAllocator/
 // The original code is Copyright © Advanced Micro Devices, Inc. All rights reserved. Licensed under the MIT License (MIT).
 
-using System;
 using TerraFX.Interop;
-using TerraFX.Utilities;
-using static TerraFX.Interop.D3D12_HEAP_FLAGS;
-using static TerraFX.Interop.D3D12_HEAP_TYPE;
-using static TerraFX.Interop.D3D12_RESOURCE_FLAGS;
-using static TerraFX.Interop.D3D12_RESOURCE_HEAP_TIER;
 using static TerraFX.Interop.DXGI_FORMAT;
-using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
     /// <inheritdoc />
     public class D3D12GraphicsMemoryTexelMapper
     {
-        /// <summary>
-        /// Maps from the TerraFX TexelFormat to the DXGI_FORMAT
-        /// </summary>
-        /// <param name="texelFormat">The TerraFX TexelFormat to map.</param>
+        /// <summary>Maps from a texel format to the DXGI_FORMAT</summary>
+        /// <param name="texelFormat">The texel format to map.</param>
         /// <returns></returns>
-        public static TerraFX.Interop.DXGI_FORMAT Map(TexelFormat texelFormat)
-        {
-            switch (texelFormat)
-            {
-                case TexelFormat.R8G8B8A8_UNORM:
-                    return DXGI_FORMAT.DXGI_FORMAT_R8G8B8A8_UNORM;
-                case TexelFormat.R16_SINT:
-                    return DXGI_FORMAT.DXGI_FORMAT_R16_SINT;
-                case TexelFormat.R16G16UINT:
-                    return DXGI_FORMAT.DXGI_FORMAT_R16G16_UINT;
-                default:
-                    return DXGI_FORMAT.DXGI_FORMAT_UNKNOWN;
-            }
-        }
+        public static DXGI_FORMAT Map(TexelFormat texelFormat) => texelFormat switch {
+            TexelFormat.R8G8B8A8_UNORM => DXGI_FORMAT_R8G8B8A8_UNORM,
+            TexelFormat.R16_SINT => DXGI_FORMAT_R16_SINT,
+            TexelFormat.R16G16UINT => DXGI_FORMAT_R16G16_UINT,
+            _ => DXGI_FORMAT_UNKNOWN,
+        };
     }
 }

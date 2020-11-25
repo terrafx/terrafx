@@ -19,7 +19,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 GraphicsBufferKind.Constant => VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
                 _ => default,
             };
-            
+
             vulkanBufferUsageKind |= cpuAccess switch
             {
                 GraphicsResourceCpuAccess.Read => VK_BUFFER_USAGE_TRANSFER_DST_BIT,

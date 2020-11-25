@@ -128,7 +128,7 @@ namespace TerraFX.Graphics
         /// <exception cref="KeyNotFoundException"><paramref name="region" /> was not found in the collection.</exception>
         public void Free(in GraphicsMemoryBlockRegion region)
         {
-            _allocator.GetBudget(this, out GraphicsMemoryBudget budget);
+            _allocator.GetBudget(this, out var budget);
             var isBudgetExceeded = budget.EstimatedUsage >= budget.EstimatedBudget;
 
             using var mutex = new WriterLockSlim(_mutex, _allocator.IsExternallySynchronized);
@@ -142,14 +142,14 @@ namespace TerraFX.Graphics
             block.Free(in region);
             block.Validate();
 
-            nuint blockCount = (nuint)_blocks.Count;
-            ulong totalBlockSize = GetTotalBlockSize();
+            var blockCount = (nuint)_blocks.Count;
+            var totalBlockSize = GetTotalBlockSize();
 
             if (block.IsEmpty)
             {
                 if (((_emptyBlock is not null) || isBudgetExceeded) && (blockCount > _minimumBlockCount) && ((totalBlockSize - block.Size) >= _minimumSize))
                 {
-                    _blocks.Remove(block);
+                    _ = _blocks.Remove(block);
                 }
                 else
                 {
@@ -238,19 +238,19 @@ namespace TerraFX.Graphics
                 return true;
             }
 
-            ulong totalBlockSize = GetTotalBlockSize();
-            nuint blockCount = (nuint)_blocks.Count;
+            var totalBlockSize = GetTotalBlockSize();
+            var blockCount = (nuint)_blocks.Count;
 
             if (value < _minimumSize)
             {
                 _emptyBlock = null;
 
-                for (nuint index = blockCount; index-- != 0;)
+                for (var index = blockCount; index-- != 0;)
                 {
                     var block = _blocks[(int)index];
 
-                    ulong size = block.Size;
-                    bool isEmpty = block.IsEmpty;
+                    var size = block.Size;
+                    var isEmpty = block.IsEmpty;
 
                     if (isEmpty && ((totalBlockSize - size) >= value) && ((blockCount - 1) >= _minimumBlockCount))
                     {
@@ -266,13 +266,13 @@ namespace TerraFX.Graphics
             }
             else
             {
-                ulong minimumBlockSize = _blockMinimumSize;
+                var minimumBlockSize = _blockMinimumSize;
 
                 while (totalBlockSize < value)
                 {
                     if (blockCount < _maximumBlockCount)
                     {
-                        ulong blockSize = _blockPreferredSize;
+                        var blockSize = _blockPreferredSize;
 
                         if (blockSize != _blockMinimumSize)
                         {
@@ -282,7 +282,7 @@ namespace TerraFX.Graphics
                             }
                             else if (((blockCount + 1) < _maximumBlockCount) && ((totalBlockSize + blockSize + minimumBlockSize) > value))
                             {
-                                blockSize -= (minimumBlockSize + totalBlockSize + _blockPreferredSize - value);
+                                blockSize -= minimumBlockSize + totalBlockSize + _blockPreferredSize - value;
                             }
                         }
 
@@ -331,7 +331,7 @@ namespace TerraFX.Graphics
         {
             ulong result = 0;
 
-            for (nuint i = (nuint)_blocks.Count; unchecked(i--) != 0;)
+            for (var i = (nuint)_blocks.Count; unchecked(i--) != 0;)
             {
                 result = Math.Max(result, _blocks[(int)i].Size);
 
@@ -348,7 +348,7 @@ namespace TerraFX.Graphics
         {
             ulong result = 0;
 
-            for (nuint i = (nuint)_blocks.Count; i-- != 0;)
+            for (var i = (nuint)_blocks.Count; i-- != 0;)
             {
                 result += _blocks[(int)i].Size;
             }
@@ -364,12 +364,12 @@ namespace TerraFX.Graphics
             for (nuint i = 1; i < (nuint)_blocks.Count; ++i)
             {
                 var previousBlock = blocks[(int)(i - 1)];
-                var block = blocks[(int)(i)];
+                var block = blocks[(int)i];
 
                 if (previousBlock.TotalFreeRegionSize > block.TotalFreeRegionSize)
                 {
                     blocks[(int)(i - 1)] = block;
-                    blocks[(int)(i)] = previousBlock;
+                    blocks[(int)i] = previousBlock;
                     return;
                 }
             }
@@ -377,7 +377,7 @@ namespace TerraFX.Graphics
 
         private bool TryAllocateRegion(ulong size, ulong alignment, GraphicsMemoryAllocationFlags flags, out GraphicsMemoryBlockRegion region)
         {
-            if ((size + (2 * BlockMarginSize) > _blockPreferredSize))
+            if (size + (2 * BlockMarginSize) > _blockPreferredSize)
             {
                 // The requested size is larger than the maximum block size
                 Unsafe.SkipInit(out region);
@@ -392,7 +392,7 @@ namespace TerraFX.Graphics
                 ThrowArgumentOutOfRangeException(nameof(flags), flags);
             }
 
-            _allocator.GetBudget(this, out GraphicsMemoryBudget budget);
+            _allocator.GetBudget(this, out var budget);
 
             var availableMemory = (budget.EstimatedUsage < budget.EstimatedBudget) ? (budget.EstimatedBudget - budget.EstimatedUsage) : 0;
             var canCreateNewBlock = !useExistingBlock && ((nuint)_blocks.Count < _maximumBlockCount) && (availableMemory >= size);
@@ -403,7 +403,7 @@ namespace TerraFX.Graphics
             {
                 var currentBlock = _blocks[(int)index];
                 AssertNotNull(currentBlock, nameof(currentBlock));
-                    
+
                 if (currentBlock.TryAllocate(size, alignment, out region))
                 {
                     if (currentBlock == _emptyBlock)
@@ -422,16 +422,16 @@ namespace TerraFX.Graphics
                 return false;
             }
 
-            ulong blockSize = _blockPreferredSize;
+            var blockSize = _blockPreferredSize;
 
             if (_blockMinimumSize != _blockPreferredSize)
             {
                 // Allocate 1/8, 1/4, 1/2 as first blocks, ensuring we don't go smaller than the minimum
-                ulong largestBlockSize = GetLargestBlockSize();
+                var largestBlockSize = GetLargestBlockSize();
 
                 for (uint i = 0; i < 3; ++i)
                 {
-                    ulong smallerBlockSize = blockSize / 2;
+                    var smallerBlockSize = blockSize / 2;
 
                     if ((smallerBlockSize > largestBlockSize) && (smallerBlockSize >= (size * 2)))
                     {

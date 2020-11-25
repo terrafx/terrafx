@@ -14,7 +14,7 @@ namespace TerraFX.WinForms
     /// <summary>Defines a graphics surface usable by WinForms.</summary>
     public sealed unsafe class GraphicsSurface : IGraphicsSurface
     {
-        private static readonly IntPtr EntryPointModule = Marshal.GetHINSTANCE(Assembly.GetEntryAssembly()!.Modules.First());
+        private static readonly IntPtr s_entryPointModule = Marshal.GetHINSTANCE(Assembly.GetEntryAssembly()!.Modules.First());
 
         private readonly Control _control;
         private Vector2 _size;
@@ -33,7 +33,7 @@ namespace TerraFX.WinForms
         public event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged;
 
         /// <inheritdoc />
-        public IntPtr SurfaceContextHandle => EntryPointModule;
+        public IntPtr SurfaceContextHandle => s_entryPointModule;
 
         /// <inheritdoc />
         public IntPtr SurfaceHandle => _control.Handle;

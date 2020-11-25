@@ -40,10 +40,7 @@ namespace TerraFX.UnitTests.Numerics
 
         /// <summary>Ensures that <see cref="Vector4.operator+(Vector4)"/> returns its input unchanced.</summary>
         [Test]
-        public static void UnaryPlusReturnsUnchanged()
-        {
-            Assert.That(+Vector4.Zero == Vector4.Zero, Is.True);
-        }
+        public static void UnaryPlusReturnsUnchanged() => Assert.That(+Vector4.Zero == Vector4.Zero, Is.True);
 
         /// <summary>Ensures that <see cref="Vector4.operator-(Vector4)"/> returns the negation of its input.</summary>
         [Test]

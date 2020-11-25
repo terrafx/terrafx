@@ -14,7 +14,9 @@ namespace TerraFX.Graphics
     public abstract class GraphicsMemoryBlock<TMetadata> : GraphicsMemoryBlock
         where TMetadata : struct, GraphicsMemoryBlock.IMetadata
     {
+#pragma warning disable IDE0044
         private TMetadata _metadata;
+#pragma warning restore IDE0044
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsMemoryBlock{TMetadata}" /> class.</summary>
         /// <param name="collection">The block collection which contains the memory block.</param>

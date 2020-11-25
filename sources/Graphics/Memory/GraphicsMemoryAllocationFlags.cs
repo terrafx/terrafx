@@ -19,13 +19,13 @@ namespace TerraFX.Graphics
 
         /// <summary>Indicates the allocation should get its own dedicated memory block.</summary>
         /// <remarks>This flag cannot be combined with <see cref="ExistingBlock" />.</remarks>
-        DedicatedBlock = (1 << 0),
+        DedicatedBlock = 1 << 0,
 
         /// <summary>Indicates the allocation should only use an existing memory block.</summary>
         /// <remarks>This flag cannot be combined with <see cref="DedicatedBlock" />.</remarks>
-        ExistingBlock = (1 << 1),
+        ExistingBlock = 1 << 1,
 
         /// <summary>Indicates the allocation should only succeed if it doesn't exceed the memory budget.</summary>
-        WithinBudget = (1 << 2),
+        WithinBudget = 1 << 2,
     }
 }

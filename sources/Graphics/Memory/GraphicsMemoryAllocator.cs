@@ -74,11 +74,7 @@ namespace TerraFX.Graphics
 
             static T GetDataNameValue<T>(string dataName, T defaultValue)
             {
-                if (AppContext.GetData(dataName) is T value)
-                {
-                    return value;
-                }
-                return defaultValue;
+                return AppContext.GetData(dataName) is T value ? value : defaultValue;
             }
         }
 
@@ -119,9 +115,7 @@ namespace TerraFX.Graphics
         /// <param name="texelFormat">Optional parameter to specify the texel format.</param>
         /// <returns>A created graphics texture.</returns>
         /// <exception cref="ObjectDisposedException">The allocator has been disposed.</exception>
-        public abstract GraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, ulong alignment = 0,
-            GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None,
-            TerraFX.Graphics.TexelFormat texelFormat = default(TerraFX.Graphics.TexelFormat));
+        public abstract GraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, ulong alignment = 0, GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None, TexelFormat texelFormat = default);
 
         /// <summary>Gets the budget for a block collection.</summary>
         /// <param name="blockCollection">The block collection for which the budget should be retrieved.</param>

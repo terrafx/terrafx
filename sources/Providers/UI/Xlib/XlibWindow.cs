@@ -23,9 +23,9 @@ namespace TerraFX.UI.Providers.Xlib
         private readonly PropertySet _properties;
         private readonly FlowDirection _flowDirection;
         private readonly ReadingDirection _readingDirection;
+        private readonly string _title;
 
         private ValueLazy<nuint> _handle;
-        private string _title;
         private Rectangle _bounds;
         private Rectangle _restoredBounds;
         private WindowState _windowState;
@@ -332,7 +332,7 @@ namespace TerraFX.UI.Providers.Xlib
             _ = XSelectInput(
                 display,
                 window,
-                (VisibilityChangeMask | StructureNotifyMask)
+                VisibilityChangeMask | StructureNotifyMask
             );
 
             var wmDeleteWindowAtom = dispatchProvider.WmDeleteWindowAtom;

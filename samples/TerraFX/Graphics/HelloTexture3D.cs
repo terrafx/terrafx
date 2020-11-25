@@ -37,20 +37,18 @@ namespace TerraFX.Samples.Graphics
             base.Initialize(application);
 
             var graphicsDevice = GraphicsDevice;
+            var currentGraphicsContext = graphicsDevice.CurrentContext;
 
-            using (var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024)) // 2^16, minimum page size
-            using (var indexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024))
-            using (var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024 * 1024)) // 2^26, same as 4 * 256 * 256 * 256
-            {
-                var currentGraphicsContext = graphicsDevice.CurrentContext;
+            using var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024);
+            using var indexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024);
+            using var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024 * 1024);
 
-                currentGraphicsContext.BeginFrame();
-                _quadPrimitive = CreateQuadPrimitive(currentGraphicsContext, vertexStagingBuffer, indexStagingBuffer, textureStagingBuffer);
-                currentGraphicsContext.EndFrame();
+            currentGraphicsContext.BeginFrame();
+            _quadPrimitive = CreateQuadPrimitive(currentGraphicsContext, vertexStagingBuffer, indexStagingBuffer, textureStagingBuffer);
+            currentGraphicsContext.EndFrame();
 
-                graphicsDevice.Signal(currentGraphicsContext.Fence);
-                graphicsDevice.WaitForIdle();
-            }
+            graphicsDevice.Signal(currentGraphicsContext.Fence);
+            graphicsDevice.WaitForIdle();
         }
 
         protected override unsafe void Update(TimeSpan delta)
@@ -63,15 +61,15 @@ namespace TerraFX.Samples.Graphics
             var scaleY = scale255_256 / aspectRatio;
             var scaleZ = scale255_256;
 
-            const float translationSpeed = MathF.PI;
+            const float TranslationSpeed = MathF.PI;
 
-            float radians = _texturePosition;
+            var radians = _texturePosition;
             {
-                radians += (float)(translationSpeed * delta.TotalSeconds);
-                radians = radians % (2 * MathF.PI); 
+                radians += (float)(TranslationSpeed * delta.TotalSeconds);
+                radians %= 2 * MathF.PI;
             }
             _texturePosition = radians;
-            float z = scaleZ * (0.5f + 0.5f * MathF.Cos(radians));
+            var z = scaleZ * (0.5f + (0.5f * MathF.Cos(radians)));
 
             var constantBuffer = (GraphicsBuffer)_quadPrimitive.InputResources[0];
             var pConstantBuffer = constantBuffer.Map<Matrix4x4>();
@@ -115,24 +113,24 @@ namespace TerraFX.Samples.Graphics
                 var vertexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.None, (ulong)(sizeof(Texture3DVertex) * 4));
                 var pVertexBuffer = vertexStagingBuffer.Map<Texture3DVertex>();
 
-                var a = new Texture3DVertex {                        //  
-                    Position = new Vector3(-0.5f, 0.5f, 0.0f),       //   y          in this setup 
+                var a = new Texture3DVertex {                        //
+                    Position = new Vector3(-0.5f, 0.5f, 0.0f),       //   y          in this setup
                     UVW = new Vector3(0, 1, 0.5f),                   //   ^     z    the origin o
                 };                                                   //   |   /      is in the middle
                                                                      //   | /        of the rendered scene
                 var b = new Texture3DVertex {                        //   o------>x
-                    Position = new Vector3(0.5f, 0.5f, 0.0f),        //  
+                    Position = new Vector3(0.5f, 0.5f, 0.0f),        //
                     UVW = new Vector3(1, 1, 0.5f),                   //   a ----- b
                 };                                                   //   | \     |
                                                                      //   |   \   |
                 var c = new Texture3DVertex {                        //   |     \ |
                     Position = new Vector3(0.5f, -0.5f, 0.0f),       //   d-------c
-                    UVW = new Vector3(1, 0, 0.5f),                   //  
-                };                                                   //   0 ----- 1  
-                                                                     //   | \     |  
-                var d = new Texture3DVertex {                        //   |   \   |  
-                    Position = new Vector3(-0.5f, -0.5f, 0.0f),      //   |     \ |  
-                    UVW = new Vector3(0, 0, 0.5f),                   //   3-------2  
+                    UVW = new Vector3(1, 0, 0.5f),                   //
+                };                                                   //   0 ----- 1
+                                                                     //   | \     |
+                var d = new Texture3DVertex {                        //   |   \   |
+                    Position = new Vector3(-0.5f, -0.5f, 0.0f),      //   |     \ |
+                    UVW = new Vector3(0, 0, 0.5f),                   //   3-------2
                 };                                                   //
                 pVertexBuffer[0] = a;
                 pVertexBuffer[1] = b;
@@ -191,7 +189,7 @@ namespace TerraFX.Samples.Graphics
                 for (uint n = 0; n < TexturePixels; n++)
                 {
                     var x = n % TextureWidth;
-                    var y = (n % TextureDz) / TextureWidth;
+                    var y = n % TextureDz / TextureWidth;
                     var z = n / TextureDz;
 
                     pTextureData[n] = 0xFF000000 | (z << 16) | (y << 8) | (x << 0);

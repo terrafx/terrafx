@@ -34,10 +34,11 @@ namespace TerraFX.Samples.Graphics
 
     public class HelloSierpinski : HelloWindow
     {
+        private readonly int _recursionDepth;
+        private readonly SierpinskiShape _sierpinskiShape;
+
         private GraphicsPrimitive _pyramid = null!;
         private float _texturePosition;
-        private int _recursionDepth;
-        private SierpinskiShape _sierpinskiShape;
 
         public HelloSierpinski(string name, int recursionDepth, SierpinskiShape shape, params Assembly[] compositionAssemblies)
             : base(name, compositionAssemblies)
@@ -57,37 +58,36 @@ namespace TerraFX.Samples.Graphics
             base.Initialize(application);
 
             var graphicsDevice = GraphicsDevice;
+            var currentGraphicsContext = graphicsDevice.CurrentContext;
 
-            ulong vertices = 2 * 12 * (ulong)MathF.Pow(4, _recursionDepth);
-            ulong vertexBufferSize = vertices * SizeOf<PosNormTex3DVertex>();
-            ulong indexBufferSize = vertices * SizeOf<uint>(); // matches vertices count because vertices are replicated, three unique ones per triangle
-            using (var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, vertexBufferSize))
-            using (var indexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, indexBufferSize))
-            using (var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024 * 1024)) // 2^26, same as 4 * 256 * 256 * 256
-            {
-                var currentGraphicsContext = graphicsDevice.CurrentContext;
+            var vertices = 2 * 12 * (ulong)MathF.Pow(4, _recursionDepth);
+            var vertexBufferSize = vertices * SizeOf<PosNormTex3DVertex>();
+            var indexBufferSize = vertices * SizeOf<uint>(); // matches vertices count because vertices are replicated, three unique ones per triangle
 
-                currentGraphicsContext.BeginFrame();
-                _pyramid = CreateGraphicsPrimitive(currentGraphicsContext, vertexStagingBuffer, indexStagingBuffer, textureStagingBuffer);
-                currentGraphicsContext.EndFrame();
+            using var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, vertexBufferSize);
+            using var indexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, indexBufferSize);
+            using var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024 * 1024);
 
-                graphicsDevice.Signal(currentGraphicsContext.Fence);
-                graphicsDevice.WaitForIdle();
-            }
+            currentGraphicsContext.BeginFrame();
+            _pyramid = CreateGraphicsPrimitive(currentGraphicsContext, vertexStagingBuffer, indexStagingBuffer, textureStagingBuffer);
+            currentGraphicsContext.EndFrame();
+
+            graphicsDevice.Signal(currentGraphicsContext.Fence);
+            graphicsDevice.WaitForIdle();
         }
 
         protected override unsafe void Update(TimeSpan delta)
         {
-            const float rotationSpeed = 0.5f;
+            const float RotationSpeed = 0.5f;
 
-            float radians = _texturePosition;
+            var radians = _texturePosition;
             {
-                radians += (float)(rotationSpeed * delta.TotalSeconds);
-                radians = radians % (2 * MathF.PI);
+                radians += (float)(RotationSpeed * delta.TotalSeconds);
+                radians %= 2 * MathF.PI;
             }
             _texturePosition = radians;
-            float sin = MathF.Sin(radians);
-            float cos = MathF.Cos(radians);
+            var sin = MathF.Sin(radians);
+            var cos = MathF.Cos(radians);
 
             var constantBuffer = (GraphicsBuffer)_pyramid.InputResources[0];
             var pConstantBuffer = constantBuffer.Map<Matrix4x4>();
@@ -115,10 +115,10 @@ namespace TerraFX.Samples.Graphics
             var graphicsSurface = graphicsDevice.Surface;
 
             var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Sierpinski", "main", "main");
-            (List<Vector3> vertices, List<uint> indices) = (_sierpinskiShape == SierpinskiShape.Pyramid)
+            (var vertices, var indices) = (_sierpinskiShape == SierpinskiShape.Pyramid)
                 ? SierpinskiPyramid.CreateMeshTetrahedron(_recursionDepth)
                 : SierpinskiPyramid.CreateMeshQuad(_recursionDepth);
-            List<Vector3> normals = SierpinskiPyramid.MeshNormals(vertices);
+            var normals = SierpinskiPyramid.MeshNormals(vertices);
 
             var vertexBuffer = CreateVertexBuffer(vertices, normals, graphicsContext, vertexStagingBuffer);
             var indexBuffer = CreateIndexBuffer(indices, graphicsContext, indexStagingBuffer);
@@ -132,14 +132,14 @@ namespace TerraFX.Samples.Graphics
 
             static GraphicsBuffer CreateVertexBuffer(List<Vector3> vertices, List<Vector3> normals, GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer)
             {
-                int size = sizeof(PosNormTex3DVertex) * vertices.Count;
+                var size = sizeof(PosNormTex3DVertex) * vertices.Count;
                 var vertexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.None, (ulong)size);
                 var pVertexBuffer = vertexStagingBuffer.Map<PosNormTex3DVertex>();
 
                 // assumes the vertices are in a box from (-1,-1,-1) to (1,1,1)
                 var offset3D = new Vector3(1, 1, 1); // to move lower left corner to (0,0,0)
                 var scale3D = new Vector3(0.5f, 0.5f, 0.5f); // to scale to side length 1
-                for (int i = 0; i < vertices.Count; i++)
+                for (var i = 0; i < vertices.Count; i++)
                 {
                     var xyz = vertices[i];                // position
                     var normal = normals[i];              // normal
@@ -159,11 +159,11 @@ namespace TerraFX.Samples.Graphics
 
             static GraphicsBuffer CreateIndexBuffer(List<uint> indices, GraphicsContext graphicsContext, GraphicsBuffer indexStagingBuffer)
             {
-                int size = sizeof(uint) * indices.Count;
+                var size = sizeof(uint) * indices.Count;
                 var indexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Index, GraphicsResourceCpuAccess.None, (ulong)size);
                 var pIndexBuffer = indexStagingBuffer.Map<uint>();
 
-                for (int i = 0; i < indices.Count; i++)
+                for (var i = 0; i < indices.Count; i++)
                 {
                     pIndexBuffer[i] = indices[i];
                 }
@@ -200,7 +200,7 @@ namespace TerraFX.Samples.Graphics
                 for (uint n = 0; n < TexturePixels; n++)
                 {
                     var x = n % TextureWidth;
-                    var y = (n % TextureDz) / TextureWidth;
+                    var y = n % TextureDz / TextureWidth;
                     var z = n / TextureDz;
 
                     pTextureData[n] = 0xFF000000 | (z << 16) | (y << 8) | (x << 0);

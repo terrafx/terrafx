@@ -246,7 +246,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var pipeline = primitive.Pipeline;
             var pipelineSignature = pipeline.Signature;
             var vulkanPipeline = pipeline.VulkanPipeline;
-            var vertexBuffer = (VulkanGraphicsBuffer)(primitive.VertexBufferView.Buffer);
+            var vertexBuffer = (VulkanGraphicsBuffer)primitive.VertexBufferView.Buffer;
             var vulkanVertexBuffer = vertexBuffer.VulkanBuffer;
             var vulkanVertexBufferOffset = 0ul;
 
@@ -307,7 +307,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 vkCmdBindDescriptorSets(vulkanCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineSignature.VulkanPipelineLayout, firstSet: 0, 1, (ulong*)&vulkanDescriptorSet, dynamicOffsetCount: 0, pDynamicOffsets: null);
             }
 
-            var indexBuffer = (VulkanGraphicsBuffer)(primitive.IndexBufferView.Buffer);
+            var indexBuffer = (VulkanGraphicsBuffer)primitive.IndexBufferView.Buffer;
 
             if (indexBuffer != null)
             {

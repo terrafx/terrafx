@@ -21,7 +21,7 @@ namespace TerraFX.Samples.Audio
         public const double SineWaveRate = SineWaveFrequency * 2 * Math.PI / WellKnownSampleRates.CdAudio;
 
         // Current position in sine wave, in samples
-        private int samplePosition;
+        private int _samplePosition;
         private IAudioProvider? _provider;
 
         public PlaySampleAudio(string name, params Assembly[] compositionAssemblies)
@@ -109,7 +109,7 @@ namespace TerraFX.Samples.Audio
                 FlushResult result = default;
                 while (!result.IsCompleted)
                 {
-                    ComputeAudioWaveBlock(writer, ref samplePosition);
+                    ComputeAudioWaveBlock(writer, ref _samplePosition);
 
                     result = await writer.FlushAsync();
                 }
@@ -120,7 +120,7 @@ namespace TerraFX.Samples.Audio
                 var block = writer.GetSpan();
                 var buffer = MemoryMarshal.Cast<byte, short>(block);
 
-                for (int x = 0; x < buffer.Length; x += 2)
+                for (var x = 0; x < buffer.Length; x += 2)
                 {
                     var value = (short)(Math.Sin(samplePosition * SineWaveRate) * short.MaxValue);
 

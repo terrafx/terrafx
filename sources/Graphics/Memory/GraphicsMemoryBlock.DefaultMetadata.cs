@@ -158,12 +158,12 @@ namespace TerraFX.Graphics
 
                 for (var regionNode = _regions.First; regionNode is not null; regionNode = regionNode.Next)
                 {
-                    ref readonly GraphicsMemoryBlockRegion region = ref regionNode.ValueRef;
+                    ref readonly var region = ref regionNode.ValueRef;
 
                     // The node should immediately procede the previous
                     Assert(region.Offset == calculatedSize);
 
-                    var isCurrentRegionFree = (region.Kind == GraphicsMemoryBlockRegionKind.Free);
+                    var isCurrentRegionFree = region.Kind == GraphicsMemoryBlockRegionKind.Free;
 
                     // Two adjacent free regions are invalid, they should have been merged
                     Assert(!isPreviousRegionFree || !isCurrentRegionFree);
@@ -205,11 +205,11 @@ namespace TerraFX.Graphics
                 var freeRegionsBySize = CollectionsMarshal.AsSpan(_freeRegionsBySize);
 
                 nuint index = 0;
-                nuint endIndex = (nuint)freeRegionsBySize.Length;
+                var endIndex = (nuint)freeRegionsBySize.Length;
 
                 while (index < endIndex)
                 {
-                    nuint midIndex = (index + endIndex) / 2;
+                    var midIndex = (index + endIndex) / 2;
 
                     if (freeRegionsBySize[(int)midIndex].ValueRef.Size < size)
                     {
@@ -226,7 +226,7 @@ namespace TerraFX.Graphics
 
             private LinkedListNode<GraphicsMemoryBlockRegion> FreeRegion(LinkedListNode<GraphicsMemoryBlockRegion> regionNode)
             {
-                ref GraphicsMemoryBlockRegion region = ref regionNode.ValueRef;
+                ref var region = ref regionNode.ValueRef;
 
                 if (region.Kind == GraphicsMemoryBlockRegionKind.Free)
                 {
@@ -289,8 +289,8 @@ namespace TerraFX.Graphics
                 AssertNotNull(nextRegionNode, nameof(nextRegionNode));
                 Assert(nextRegionNode.ValueRef.Kind == GraphicsMemoryBlockRegionKind.Free);
 
-                ref GraphicsMemoryBlockRegion region = ref regionNode.ValueRef;
-                ref readonly GraphicsMemoryBlockRegion nextRegion = ref nextRegionNode.ValueRef;
+                ref var region = ref regionNode.ValueRef;
+                ref readonly var nextRegion = ref nextRegionNode.ValueRef;
 
                 region = region.WithSize(region.Size + nextRegion.Size);
                 ;
@@ -327,7 +327,7 @@ namespace TerraFX.Graphics
                 Assert(size > 0);
                 AssertNotNull(regionNode, nameof(regionNode));
 
-                ref GraphicsMemoryBlockRegion region = ref regionNode.ValueRef;
+                ref var region = ref regionNode.ValueRef;
                 Assert(region.Kind == GraphicsMemoryBlockRegionKind.Free);
 
                 if (region.Size < size)
@@ -348,10 +348,10 @@ namespace TerraFX.Graphics
                 offset = AlignUp(offset, alignment);
 
                 // Calculate padding at the beginning based on current offset.
-                ulong paddingBegin = offset - region.Offset;
+                var paddingBegin = offset - region.Offset;
 
                 // Calculate required margin at the end.
-                ulong requiredEndMargin = MarginSize;
+                var requiredEndMargin = MarginSize;
 
                 // Fail if requested size plus margin before and after is bigger than size of this region.
                 if ((paddingBegin + size + requiredEndMargin) > region.Size)
@@ -359,7 +359,7 @@ namespace TerraFX.Graphics
                     return false;
                 }
 
-                ulong paddingEnd = region.Size - paddingBegin - size;
+                var paddingEnd = region.Size - paddingBegin - size;
 
                 UnregisterFreeRegion(regionNode);
 
@@ -430,7 +430,7 @@ namespace TerraFX.Graphics
 
                 if (regionNode.ValueRef.Size >= MinimumFreeRegionSizeToRegister)
                 {
-                    for (nuint index = BinarySearchFirstRegionNodeWithSizeNotLessThan(regionNode.ValueRef.Size); index < (nuint)_freeRegionsBySize.Count; ++index)
+                    for (var index = BinarySearchFirstRegionNodeWithSizeNotLessThan(regionNode.ValueRef.Size); index < (nuint)_freeRegionsBySize.Count; ++index)
                     {
                         if (_freeRegionsBySize[(int)index] == regionNode)
                         {
@@ -453,7 +453,7 @@ namespace TerraFX.Graphics
 
                 for (nuint i = 0, count = (nuint)_freeRegionsBySize.Count; i < count; ++i)
                 {
-                    ref readonly GraphicsMemoryBlockRegion region = ref _freeRegionsBySize[(int)i].ValueRef;
+                    ref readonly var region = ref _freeRegionsBySize[(int)i].ValueRef;
 
                     Assert(region.Kind == GraphicsMemoryBlockRegionKind.Free);
                     Assert(region.Size >= MinimumFreeRegionSizeToRegister);

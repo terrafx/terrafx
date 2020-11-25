@@ -102,14 +102,9 @@ namespace TerraFX.UI.Providers.Xlib
                 // for xevent->xany.window. This allows some delayed initialization to occur since most of the
                 // fields in Window are lazy.
 
-                if (Environment.Is64BitProcess)
-                {
-                    userData = (xevent->xclient.data.l[3] << 32) | xevent->xclient.data.l[2];
-                }
-                else
-                {
-                    userData = xevent->xclient.data.l[1];
-                }
+                userData = Environment.Is64BitProcess
+                         ? (xevent->xclient.data.l[3] << 32) | xevent->xclient.data.l[2]
+                         : xevent->xclient.data.l[1];
 
                 _ = XChangeProperty(
                     xevent->xany.display,

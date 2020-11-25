@@ -10,7 +10,6 @@ using static TerraFX.Interop.D3D12_HEAP_FLAGS;
 using static TerraFX.Interop.D3D12_HEAP_TYPE;
 using static TerraFX.Interop.D3D12_RESOURCE_FLAGS;
 using static TerraFX.Interop.D3D12_RESOURCE_HEAP_TIER;
-using static TerraFX.Interop.DXGI_FORMAT;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
@@ -37,17 +36,13 @@ namespace TerraFX.Graphics.Providers.D3D12
                 blockMinimumSize = blockPreferredSize;
             }
 
-            if (supportsResourceHeapTier2)
-            {
-                _blockCollections = new D3D12GraphicsMemoryBlockCollection[3] {
+            _blockCollections = supportsResourceHeapTier2
+                ? new D3D12GraphicsMemoryBlockCollection[3] {
                     new D3D12GraphicsMemoryBlockCollection(blockMinimumSize, blockPreferredSize, BlockMarginSize, BlockMinimumFreeRegionSizeToRegister, this, minimumBlockCount: 0, maximumBlockCount: nuint.MaxValue, D3D12_HEAP_FLAG_NONE, D3D12_HEAP_TYPE_DEFAULT),
                     new D3D12GraphicsMemoryBlockCollection(blockMinimumSize, blockPreferredSize, BlockMarginSize, BlockMinimumFreeRegionSizeToRegister, this, minimumBlockCount: 0, maximumBlockCount: nuint.MaxValue, D3D12_HEAP_FLAG_NONE, D3D12_HEAP_TYPE_UPLOAD),
                     new D3D12GraphicsMemoryBlockCollection(blockMinimumSize, blockPreferredSize, BlockMarginSize, BlockMinimumFreeRegionSizeToRegister, this, minimumBlockCount: 0, maximumBlockCount: nuint.MaxValue, D3D12_HEAP_FLAG_NONE, D3D12_HEAP_TYPE_READBACK),
-                };
-            }
-            else
-            {
-                _blockCollections = new D3D12GraphicsMemoryBlockCollection[9] {
+                }
+                : new D3D12GraphicsMemoryBlockCollection[9] {
                     new D3D12GraphicsMemoryBlockCollection(blockMinimumSize, blockPreferredSize, BlockMarginSize, BlockMinimumFreeRegionSizeToRegister, this, minimumBlockCount: 0, maximumBlockCount: nuint.MaxValue, D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_DEFAULT),
                     new D3D12GraphicsMemoryBlockCollection(blockMinimumSize, blockPreferredSize, BlockMarginSize, BlockMinimumFreeRegionSizeToRegister, this, minimumBlockCount: 0, maximumBlockCount: nuint.MaxValue, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES, D3D12_HEAP_TYPE_DEFAULT),
                     new D3D12GraphicsMemoryBlockCollection(blockMinimumSize, blockPreferredSize, BlockMarginSize, BlockMinimumFreeRegionSizeToRegister, this, minimumBlockCount: 0, maximumBlockCount: nuint.MaxValue, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_DEFAULT),
@@ -58,7 +53,6 @@ namespace TerraFX.Graphics.Providers.D3D12
                     new D3D12GraphicsMemoryBlockCollection(blockMinimumSize, blockPreferredSize, BlockMarginSize, BlockMinimumFreeRegionSizeToRegister, this, minimumBlockCount: 0, maximumBlockCount: nuint.MaxValue, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES, D3D12_HEAP_TYPE_READBACK),
                     new D3D12GraphicsMemoryBlockCollection(blockMinimumSize, blockPreferredSize, BlockMarginSize, BlockMinimumFreeRegionSizeToRegister, this, minimumBlockCount: 0, maximumBlockCount: nuint.MaxValue, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES, D3D12_HEAP_TYPE_READBACK),
                 };
-            }
 
             _supportsResourceHeapTier2 = supportsResourceHeapTier2;
 
@@ -84,20 +78,17 @@ namespace TerraFX.Graphics.Providers.D3D12
             var resourceAllocationInfo = Device.D3D12Device->GetResourceAllocationInfo(visibleMask: 0, numResourceDescs: 1, &resourceDesc);
             ref readonly var blockCollection = ref _blockCollections[index];
 
-            if (!blockCollection.TryAllocate(resourceAllocationInfo.SizeInBytes, resourceAllocationInfo.Alignment, allocationFlags, out var region))
-            {
-                throw new OutOfMemoryException();
-            }
-
-            return new D3D12GraphicsBuffer(kind, cpuAccess, in region);
+            return !blockCollection.TryAllocate(resourceAllocationInfo.SizeInBytes, resourceAllocationInfo.Alignment, allocationFlags, out var region)
+                 ? new D3D12GraphicsBuffer(kind, cpuAccess, in region)
+                 : throw new OutOfMemoryException();
         }
 
         /// <inheritdoc />
         public override D3D12GraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, ulong alignment = 0,
             GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None,
-            TexelFormat texelFormat = default(TexelFormat))
+            TexelFormat texelFormat = default)
         {
-            DXGI_FORMAT dxgiFormat = D3D12GraphicsMemoryTexelMapper.Map(texelFormat);
+            var dxgiFormat = D3D12GraphicsMemoryTexelMapper.Map(texelFormat);
             var index = GetBlockCollectionIndex(cpuAccess, 1);
 
             var resourceDesc = kind switch {
@@ -110,22 +101,16 @@ namespace TerraFX.Graphics.Providers.D3D12
             var resourceAllocationInfo = Device.D3D12Device->GetResourceAllocationInfo(visibleMask: 0, numResourceDescs: 1, &resourceDesc);
             ref readonly var blockCollection = ref _blockCollections[index];
 
-            if (!blockCollection.TryAllocate(resourceAllocationInfo.SizeInBytes, resourceAllocationInfo.Alignment, allocationFlags, out var region))
-            {
-                throw new OutOfMemoryException();
-            }
-
-            return new D3D12GraphicsTexture(kind, cpuAccess, in region, width, height, depth);
+            return blockCollection.TryAllocate(resourceAllocationInfo.SizeInBytes, resourceAllocationInfo.Alignment, allocationFlags, out var region)
+                 ? new D3D12GraphicsTexture(kind, cpuAccess, in region, width, height, depth)
+                 : throw new OutOfMemoryException();
         }
 
         /// <inheritdoc />
         public override void GetBudget(GraphicsMemoryBlockCollection blockCollection, out GraphicsMemoryBudget budget) => GetBudget((D3D12GraphicsMemoryBlockCollection)blockCollection, out budget);
 
         /// <inheritdoc cref="GetBudget(GraphicsMemoryBlockCollection, out GraphicsMemoryBudget)" />
-        public void GetBudget(D3D12GraphicsMemoryBlockCollection blockCollection, out GraphicsMemoryBudget budget)
-        {
-            budget = new GraphicsMemoryBudget(estimatedBudget: ulong.MaxValue, estimatedUsage: 0, totalAllocatedRegionSize: 0, totalBlockSize: 0);
-        }
+        public void GetBudget(D3D12GraphicsMemoryBlockCollection blockCollection, out GraphicsMemoryBudget budget) => budget = new GraphicsMemoryBudget(estimatedBudget: ulong.MaxValue, estimatedUsage: 0, totalAllocatedRegionSize: 0, totalBlockSize: 0);
 
         /// <inheritdoc />
         protected override void Dispose(bool isDisposing)

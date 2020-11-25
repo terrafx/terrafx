@@ -10,7 +10,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
     /// <inheritdoc />
     public sealed class VulkanGraphicsMemoryBlockCollection : GraphicsMemoryBlockCollection
     {
-        private uint _vulkanMemoryTypeIndex;
+        private readonly uint _vulkanMemoryTypeIndex;
 
         internal VulkanGraphicsMemoryBlockCollection(ulong blockMinimumSize, ulong blockPreferredSize, ulong blockMarginSize, ulong blockMinimumFreeRegionSizeToRegister, GraphicsMemoryAllocator allocator, nuint minimumBlockCount, nuint maximumBlockCount, uint memoryTypeIndex)
             : base(blockMinimumSize, blockPreferredSize, blockMarginSize, blockMinimumFreeRegionSizeToRegister, allocator, minimumBlockCount, maximumBlockCount)

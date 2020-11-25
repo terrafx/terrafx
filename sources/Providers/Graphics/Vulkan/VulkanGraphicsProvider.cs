@@ -377,7 +377,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
                 // We don't want to fail if creating the debug report callback failed
                 var vkCreateDebugReportCallbackEXT = (delegate* unmanaged<IntPtr, VkDebugReportCallbackCreateInfoEXT*, VkAllocationCallbacks*, ulong*, VkResult>)vkGetInstanceProcAddr(instance, VKCREATEDEBUGREPORTCALLBACKEXT_FUNCTION_NAME.AsPointer());
-                vkCreateDebugReportCallbackEXT(instance, &debugReportCallbackCreateInfo, null, (ulong*)&vulkanDebugReportCallbackExt);
+                _ = vkCreateDebugReportCallbackEXT(instance, &debugReportCallbackCreateInfo, null, (ulong*)&vulkanDebugReportCallbackExt);
 
                 return vulkanDebugReportCallbackExt;
             }

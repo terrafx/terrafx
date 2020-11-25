@@ -325,7 +325,7 @@ namespace TerraFX.UI.Providers.Xlib
             }
         }
 
-        /// <summary>Gets the atom created to track the <see cref="System.IntPtr" /> type.</summary>
+        /// <summary>Gets the atom created to track the <see cref="IntPtr" /> type.</summary>
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public nuint SystemIntPtrAtom
         {

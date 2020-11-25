@@ -8,7 +8,6 @@ using System.Numerics;
 using TerraFX.Interop;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
-using static TerraFX.Interop.VkFormat;
 using static TerraFX.Interop.VkImageType;
 using static TerraFX.Interop.VkMemoryPropertyFlagBits;
 using static TerraFX.Interop.VkPhysicalDeviceType;
@@ -75,17 +74,13 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var index = GetBlockCollectionIndex(cpuAccess, memoryRequirements.memoryTypeBits);
             ref readonly var blockCollection = ref _blockCollections[index];
 
-            if (!blockCollection.TryAllocate(memoryRequirements.size, memoryRequirements.alignment, allocationFlags, out var region))
-            {
-                throw new OutOfMemoryException();
-            }
-            return new VulkanGraphicsBuffer(kind, cpuAccess, in region, vulkanBuffer);
+            return !blockCollection.TryAllocate(memoryRequirements.size, memoryRequirements.alignment, allocationFlags, out var region)
+                 ? new VulkanGraphicsBuffer(kind, cpuAccess, in region, vulkanBuffer)
+                 : throw new OutOfMemoryException();
         }
 
         /// <inheritdoc />
-        public override VulkanGraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, ulong alignment = 0,
-            GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None,
-            TexelFormat texelFormat = default(TexelFormat))
+        public override VulkanGraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, ulong alignment = 0, GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None, TexelFormat texelFormat = default)
         {
             var vulkanDevice = Device.VulkanDevice;
 
@@ -118,21 +113,16 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var index = GetBlockCollectionIndex(cpuAccess, memoryRequirements.memoryTypeBits);
             ref readonly var blockCollection = ref _blockCollections[index];
 
-            if (!blockCollection.TryAllocate(memoryRequirements.size, memoryRequirements.alignment, allocationFlags, out var region))
-            {
-                throw new OutOfMemoryException();
-            }
-            return new VulkanGraphicsTexture(kind, cpuAccess, in region, width, height, depth, vulkanImage);
+            return blockCollection.TryAllocate(memoryRequirements.size, memoryRequirements.alignment, allocationFlags, out var region)
+                 ? new VulkanGraphicsTexture(kind, cpuAccess, in region, width, height, depth, vulkanImage)
+                 : throw new OutOfMemoryException();
         }
 
         /// <inheritdoc />
         public override void GetBudget(GraphicsMemoryBlockCollection blockCollection, out GraphicsMemoryBudget budget) => GetBudget((VulkanGraphicsMemoryBlockCollection)blockCollection, out budget);
 
         /// <inheritdoc cref="GetBudget(GraphicsMemoryBlockCollection, out GraphicsMemoryBudget)" />
-        public void GetBudget(VulkanGraphicsMemoryBlockCollection blockCollection, out GraphicsMemoryBudget budget)
-        {
-            budget = new GraphicsMemoryBudget(estimatedBudget: ulong.MaxValue, estimatedUsage: 0, totalAllocatedRegionSize: 0, totalBlockSize: 0);
-        }
+        public void GetBudget(VulkanGraphicsMemoryBlockCollection blockCollection, out GraphicsMemoryBudget budget) => budget = new GraphicsMemoryBudget(estimatedBudget: ulong.MaxValue, estimatedUsage: 0, totalAllocatedRegionSize: 0, totalBlockSize: 0);
 
         /// <inheritdoc />
         protected override void Dispose(bool isDisposing)
