@@ -65,7 +65,7 @@ namespace TerraFX.Samples
             {
                 var assetName = $"{shaderName}{kind}.hlsl";
 
-                fixed (char* assetPath = GetAssetFullPath("Shaders", assetName))
+                fixed (char* assetPath = GetAssetFullPath("Shaders", shaderName, assetName))
                 fixed (sbyte* entryPoint = MarshalStringToUtf8(entryPointName))
                 {
                     var compileFlags = 0u;
@@ -108,7 +108,7 @@ namespace TerraFX.Samples
             else
             {
                 var assetName = $"{shaderName}{kind}.glsl";
-                var assetPath = GetAssetFullPath("Shaders", assetName);
+                var assetPath = GetAssetFullPath("Shaders", shaderName, assetName);
                 var assetOutput = Path.ChangeExtension(assetPath, "spirv");
 
                 var additionalArgs = string.Empty;
@@ -196,6 +196,6 @@ namespace TerraFX.Samples
 
         protected abstract void OnIdle(object? sender, ApplicationIdleEventArgs eventArgs);
 
-        private string GetAssetFullPath(string assetCategory, string assetName) => Path.Combine(_assemblyPath, "Assets", assetCategory, assetName);
+        private string GetAssetFullPath(string assetCategory, string assetFolder, string assetName) => Path.Combine(_assemblyPath, "Assets", assetCategory, assetFolder, assetName);
     }
 }

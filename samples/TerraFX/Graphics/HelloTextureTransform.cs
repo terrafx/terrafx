@@ -5,7 +5,6 @@ using System.Reflection;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
 using TerraFX.Numerics;
-using TerraFX.Utilities;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Samples.Graphics

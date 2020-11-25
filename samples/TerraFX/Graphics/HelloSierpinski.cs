@@ -2,11 +2,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reflection;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
-using TerraFX.Interop;
 using TerraFX.Numerics;
 using static TerraFX.Utilities.InteropUtilities;
 
