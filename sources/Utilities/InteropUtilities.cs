@@ -181,14 +181,14 @@ namespace TerraFX.Utilities
         /// <param name="maxLength">The maxmimum length of <paramref name="source" /> or <c>-1</c> if the maximum length is unknown.</param>
         /// <returns>A <see cref="ReadOnlySpan{UInt16}" /> that starts at <paramref name="source" /> and extends to <paramref name="maxLength" /> or the first null character, whichever comes first.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ReadOnlySpan<ushort> MarshalUtf16ToReadOnlySpan(ushort* source, int maxLength = -1) => (source != null) ? MarshalNullTerminatedStringUtf16(in *source, maxLength) : null;
+        public static ReadOnlySpan<ushort> MarshalUtf16ToReadOnlySpan(ushort* source, int maxLength = -1) => (source != null) ? MarshalUtf16ToReadOnlySpan(in *source, maxLength) : null;
 
         /// <summary>Marshals a null-terminated UTF16 string to a <see cref="ReadOnlySpan{UInt16}" />.</summary>
         /// <param name="source">The pointer to the null-terminated UTF16 string.</param>
         /// <param name="maxLength">The maxmimum length of <paramref name="source" /> or <c>-1</c> if the maximum length is unknown.</param>
         /// <returns>A <see cref="ReadOnlySpan{UInt16}" /> that starts at <paramref name="source" /> and extends to <paramref name="maxLength" /> or the first null character, whichever comes first.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ReadOnlySpan<ushort> MarshalNullTerminatedStringUtf16(in ushort source, int maxLength = -1)
+        public static ReadOnlySpan<ushort> MarshalUtf16ToReadOnlySpan(in ushort source, int maxLength = -1)
         {
             if (maxLength < 0)
             {

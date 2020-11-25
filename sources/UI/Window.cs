@@ -112,8 +112,20 @@ namespace TerraFX.UI
         /// <summary>Minimizes the instance.</summary>
         public abstract void Minimize();
 
+        /// <summary>Relocates the window to the specified location.</summary>
+        /// <param name="location">The new location for the window.</param>
+        public abstract void Relocate(Vector2 location);
+
+        /// <summary>Resizes the window to the specified size.</summary>
+        /// <param name="size">The new size for the window.</param>
+        public abstract void Resize(Vector2 size);
+
         /// <summary>Restores the instance.</summary>
         public abstract void Restore();
+
+        /// <summary>Sets the title to the specified value.</summary>
+        /// <param name="title">The new title for the window.</param>
+        public abstract void SetTitle(string title);
 
         /// <summary>Shows the instance.</summary>
         public abstract void Show();

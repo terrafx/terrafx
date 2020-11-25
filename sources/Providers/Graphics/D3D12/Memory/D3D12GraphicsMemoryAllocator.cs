@@ -78,7 +78,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             var resourceAllocationInfo = Device.D3D12Device->GetResourceAllocationInfo(visibleMask: 0, numResourceDescs: 1, &resourceDesc);
             ref readonly var blockCollection = ref _blockCollections[index];
 
-            return !blockCollection.TryAllocate(resourceAllocationInfo.SizeInBytes, resourceAllocationInfo.Alignment, allocationFlags, out var region)
+            return blockCollection.TryAllocate(resourceAllocationInfo.SizeInBytes, resourceAllocationInfo.Alignment, allocationFlags, out var region)
                  ? new D3D12GraphicsBuffer(kind, cpuAccess, in region)
                  : throw new OutOfMemoryException();
         }

@@ -166,12 +166,45 @@ namespace TerraFX.UI.Providers.Win32
         }
 
         /// <inheritdoc />
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public override void Relocate(Vector2 location)
+        {
+            if (_bounds.Location != location)
+            {
+                ThrowExternalExceptionIfFalse(MoveWindow(SurfaceHandle, (int)location.X, (int)location.Y, (int)_bounds.Width, (int)_bounds.Height, bRepaint: TRUE), nameof(MoveWindow));
+            }
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public override void Resize(Vector2 size)
+        {
+            if (_bounds.Size != size)
+            {
+                ThrowExternalExceptionIfFalse(MoveWindow(SurfaceHandle, (int)_bounds.X, (int)_bounds.Y, (int)size.X, (int)size.Y, bRepaint: TRUE), nameof(MoveWindow));
+            }
+        }
+
+        /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Restored" /> but the instance has already been disposed.</exception>
         public override void Restore()
         {
             if (_windowState != WindowState.Restored)
             {
                 _ = ShowWindow(SurfaceHandle, SW_RESTORE);
+            }
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public override void SetTitle(string title)
+        {
+            if (_title != title)
+            {
+                fixed (char* pTitle = title)
+                {
+                    ThrowExternalExceptionIfFalse(SetWindowTextW(SurfaceHandle, (ushort*)pTitle), nameof(SetWindowTextW));
+                }
             }
         }
 
