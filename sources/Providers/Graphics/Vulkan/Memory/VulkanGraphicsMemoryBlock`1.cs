@@ -41,7 +41,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             if (typeof(T) != typeof(VkDeviceMemory))
             {
-                ThrowArgumentExceptionForInvalidType(nameof(T), typeof(T));
+                ThrowArgumentExceptionForInvalidType(typeof(T), nameof(T));
             }
             return (T)(object)_vulkanDeviceMemory.Value;
         }
@@ -73,7 +73,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 allocationSize = Size,
                 memoryTypeIndex = collection.VulkanMemoryTypeIndex,
             };
-            ThrowExternalExceptionIfNotSuccess(nameof(vkAllocateMemory), vkAllocateMemory(vulkanDevice, &memoryAllocateInfo, pAllocator: null, (ulong*)&vulkanDeviceMemory));
+            ThrowExternalExceptionIfNotSuccess(vkAllocateMemory(vulkanDevice, &memoryAllocateInfo, pAllocator: null, (ulong*)&vulkanDeviceMemory), nameof(vkAllocateMemory));
 
             return vulkanDeviceMemory;
         }

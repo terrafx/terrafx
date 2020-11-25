@@ -99,15 +99,7 @@ namespace TerraFX.UI.Providers.Win32
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="IsActive" /> was <c>false</c> but the instance has already been disposed.</exception>
-        public override void Activate()
-        {
-            var succeeded = TryActivate();
-
-            if (succeeded == false)
-            {
-                ThrowExternalExceptionForLastError(nameof(SetForegroundWindow));
-            }
-        }
+        public override void Activate() => ThrowExternalExceptionIfFalse(TryActivate(), nameof(SetForegroundWindow));
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
@@ -195,12 +187,7 @@ namespace TerraFX.UI.Providers.Win32
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="IsActive" /> was <c>false</c> but the instance has already been disposed.</exception>
-        public override bool TryActivate()
-        {
-            _state.ThrowIfDisposedOrDisposing();
-
-            return _isActive || (SetForegroundWindow(SurfaceHandle) != FALSE);
-        }
+        public override bool TryActivate() => _isActive || (SetForegroundWindow(SurfaceHandle) != FALSE);
 
         internal nint ProcessWindowMessage(uint msg, nuint wParam, nint lParam)
         {
@@ -278,7 +265,7 @@ namespace TerraFX.UI.Providers.Win32
                     lpParam: GCHandle.ToIntPtr(((Win32WindowProvider)WindowProvider).NativeHandle).ToPointer()
                 );
             }
-            ThrowExternalExceptionIfZero(nameof(CreateWindowExW), hWnd);
+            ThrowExternalExceptionIfZero(hWnd, nameof(CreateWindowExW));
 
             return hWnd;
         }
@@ -314,7 +301,7 @@ namespace TerraFX.UI.Providers.Win32
 
             if (_handle.IsCreated)
             {
-                ThrowExternalExceptionIfFalse(nameof(DestroyWindow), DestroyWindow(_handle.Value));
+                ThrowExternalExceptionIfFalse(DestroyWindow(_handle.Value), nameof(DestroyWindow));
             }
         }
 

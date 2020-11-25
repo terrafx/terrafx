@@ -103,15 +103,7 @@ namespace TerraFX.UI.Providers.Xlib
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="IsActive" /> was <c>false</c> but the instance has already been disposed.</exception>
-        public override void Activate()
-        {
-            var succeeded = TryActivate();
-
-            if (succeeded == false)
-            {
-                ThrowExternalExceptionForLastError(nameof(XRaiseWindow));
-            }
-        }
+        public override void Activate() => ThrowExternalExceptionIfFalse(TryActivate(), nameof(XRaiseWindow));
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
@@ -188,7 +180,7 @@ namespace TerraFX.UI.Providers.Xlib
                 var handle = Handle;
 
                 XWindowAttributes windowAttributes;
-                ThrowExternalExceptionIfFailed(nameof(XGetWindowAttributes), XGetWindowAttributes(display, handle, &windowAttributes));
+                ThrowExternalExceptionIfFailed(XGetWindowAttributes(display, handle, &windowAttributes), nameof(XGetWindowAttributes));
 
                 _restoredBounds = new Rectangle(windowAttributes.x, windowAttributes.y, windowAttributes.width, windowAttributes.height);
 
@@ -212,11 +204,11 @@ namespace TerraFX.UI.Providers.Xlib
                 var handle = Handle;
 
                 XWindowAttributes windowAttributes;
-                ThrowExternalExceptionIfFailed(nameof(XGetWindowAttributes), XGetWindowAttributes(display, handle, &windowAttributes));
+                ThrowExternalExceptionIfFailed(XGetWindowAttributes(display, handle, &windowAttributes), nameof(XGetWindowAttributes));
 
                 var screenNumber = XScreenNumberOfScreen(windowAttributes.screen);
 
-                ThrowExternalExceptionIfZero(nameof(XIconifyWindow), XIconifyWindow(display, handle, screenNumber));
+                ThrowExternalExceptionIfZero(XIconifyWindow(display, handle, screenNumber), nameof(XIconifyWindow));
 
                 _windowState = WindowState.Minimized;
             }
@@ -258,7 +250,6 @@ namespace TerraFX.UI.Providers.Xlib
             {
                 _ = XRaiseWindow(XlibDispatchProvider.Instance.Display, Handle);
             }
-
             return true;
         }
 
@@ -327,7 +318,7 @@ namespace TerraFX.UI.Providers.Xlib
                 0,
                 null
             );
-            ThrowExternalExceptionIfZero(nameof(XCreateSimpleWindow), window);
+            ThrowExternalExceptionIfZero(window, nameof(XCreateSimpleWindow));
 
             _ = XSelectInput(
                 display,
@@ -336,7 +327,7 @@ namespace TerraFX.UI.Providers.Xlib
             );
 
             var wmDeleteWindowAtom = dispatchProvider.WmDeleteWindowAtom;
-            ThrowExternalExceptionIfZero(nameof(XSetWMProtocols), XSetWMProtocols(display, window, &wmDeleteWindowAtom, 1));
+            ThrowExternalExceptionIfZero(XSetWMProtocols(display, window, &wmDeleteWindowAtom, 1), nameof(XSetWMProtocols));
 
             SendClientMessage(
                 display,

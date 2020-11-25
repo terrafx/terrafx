@@ -90,7 +90,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             _state.ThrowIfDisposedOrDisposing();
 
             DXGI_ADAPTER_DESC1 adapterDesc;
-            ThrowExternalExceptionIfFailed(nameof(IDXGIAdapter1.GetDesc1), DxgiAdapter->GetDesc1(&adapterDesc));
+            ThrowExternalExceptionIfFailed(DxgiAdapter->GetDesc1(&adapterDesc), nameof(IDXGIAdapter1.GetDesc1));
             return adapterDesc;
         }
 

@@ -53,7 +53,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             };
 
             void* pDestination;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12Resource.Map), D3D12Resource->Map(Subresource: 0, &readRange, &pDestination));
+            ThrowExternalExceptionIfFailed(D3D12Resource->Map(Subresource: 0, &readRange, &pDestination), nameof(ID3D12Resource.Map));
 
             return (T*)pDestination;
         }
@@ -97,7 +97,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             var d3d12Device = Allocator.Device.D3D12Device;
             var d3d12Heap = Block.GetHandle<Pointer<ID3D12Heap>>();
 
-            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreatePlacedResource), d3d12Device->CreatePlacedResource(
+            ThrowExternalExceptionIfFailed(d3d12Device->CreatePlacedResource(
                 d3d12Heap,
                 memoryBlockRegion.Offset,
                 &bufferDesc,
@@ -105,7 +105,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                 pOptimizedClearValue: null,
                 &iid,
                 (void**)&d3d12Resource
-            ));
+            ), nameof(ID3D12Device.CreatePlacedResource));
 
             return d3d12Resource;
         }

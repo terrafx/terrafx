@@ -34,7 +34,7 @@ namespace TerraFX.Collections
             {
                 if (_action == NotifyCollectionChangedAction.Reset)
                 {
-                    ThrowInvalidOperationException(nameof(Action), Action);
+                    ThrowInvalidOperationException(Action, nameof(Action));
                 }
 
                 return _value;

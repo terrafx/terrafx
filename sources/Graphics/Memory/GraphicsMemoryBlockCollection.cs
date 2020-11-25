@@ -54,7 +54,7 @@ namespace TerraFX.Graphics
 
             if (blockPreferredSize < blockMinimumSize)
             {
-                ThrowArgumentOutOfRangeException(nameof(blockPreferredSize), blockPreferredSize);
+                ThrowArgumentOutOfRangeException(blockPreferredSize, nameof(blockPreferredSize));
             }
 
             ThrowIfNull(allocator, nameof(allocator));
@@ -63,7 +63,7 @@ namespace TerraFX.Graphics
 
             if (minimumBlockCount > maximumBlockCount)
             {
-                ThrowArgumentOutOfRangeException(nameof(minimumBlockCount), minimumBlockCount);
+                ThrowArgumentOutOfRangeException(minimumBlockCount, nameof(minimumBlockCount));
             }
 
             _blockMarginSize = blockMarginSize;
@@ -389,7 +389,7 @@ namespace TerraFX.Graphics
 
             if (useDedicatedBlock && useExistingBlock)
             {
-                ThrowArgumentOutOfRangeException(nameof(flags), flags);
+                ThrowArgumentOutOfRangeException(flags, nameof(flags));
             }
 
             _allocator.GetBudget(this, out var budget);

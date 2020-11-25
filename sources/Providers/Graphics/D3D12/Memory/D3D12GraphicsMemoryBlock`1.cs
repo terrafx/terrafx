@@ -41,7 +41,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         {
             if (typeof(T) != typeof(Pointer<ID3D12Heap>))
             {
-                ThrowArgumentExceptionForInvalidType(nameof(T), typeof(T));
+                ThrowArgumentExceptionForInvalidType(typeof(T), nameof(T));
             }
             return (T)(object)_d3d12Heap.Value;
         }
@@ -81,7 +81,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             var heapDesc = new D3D12_HEAP_DESC(Size, heapType, GetAlignment(heapFlags), heapFlags);
 
             var iid = IID_ID3D12Heap;
-            ThrowExternalExceptionIfFailed(nameof(ID3D12Device.CreateHeap), d3d12Device->CreateHeap(&heapDesc, &iid, (void**)&d3d12Heap));
+            ThrowExternalExceptionIfFailed(d3d12Device->CreateHeap(&heapDesc, &iid, (void**)&d3d12Heap), nameof(ID3D12Device.CreateHeap));
 
             return d3d12Heap;
         }

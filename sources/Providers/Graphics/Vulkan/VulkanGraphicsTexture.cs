@@ -33,7 +33,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             : base(kind, cpuAccess, in memoryBlockRegion, width, height, depth)
         {
             _vulkanImage = vulkanImage;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkBindImageMemory), vkBindImageMemory(Allocator.Device.VulkanDevice, vulkanImage, Block.GetHandle<VkDeviceMemory>(), memoryBlockRegion.Offset));
+            ThrowExternalExceptionIfNotSuccess(vkBindImageMemory(Allocator.Device.VulkanDevice, vulkanImage, Block.GetHandle<VkDeviceMemory>(), memoryBlockRegion.Offset), nameof(vkBindImageMemory));
 
             _vulkanImageView = new ValueLazy<VkImageView>(CreateVulkanImageView);
             _vulkanSampler = new ValueLazy<VkSampler>(CreateVulkanSampler);
@@ -72,7 +72,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var vulkanDeviceMemory = Block.GetHandle<VkDeviceMemory>();
 
             void* pDestination;
-            ThrowExternalExceptionIfNotSuccess(nameof(vkMapMemory), vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, &pDestination));
+            ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, &pDestination), nameof(vkMapMemory));
 
             if (readRangeLength != 0)
             {
@@ -87,7 +87,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     offset = offset,
                     size = size,
                 };
-                ThrowExternalExceptionIfNotSuccess(nameof(vkInvalidateMappedMemoryRanges), vkInvalidateMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange));
+                ThrowExternalExceptionIfNotSuccess(vkInvalidateMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange), nameof(vkInvalidateMappedMemoryRanges));
             }
             return (T*)pDestination;
         }
@@ -114,7 +114,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     offset = offset,
                     size = size,
                 };
-                ThrowExternalExceptionIfNotSuccess(nameof(vkFlushMappedMemoryRanges), vkFlushMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange));
+                ThrowExternalExceptionIfNotSuccess(vkFlushMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange), nameof(vkFlushMappedMemoryRanges));
             }
             vkUnmapMemory(vulkanDevice, vulkanDeviceMemory);
         }
@@ -172,7 +172,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 },
             };
 
-            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateImageView), vkCreateImageView(vulkanDevice, &imageViewCreateInfo, pAllocator: null, (ulong*)&vulkanImageView));
+            ThrowExternalExceptionIfNotSuccess(vkCreateImageView(vulkanDevice, &imageViewCreateInfo, pAllocator: null, (ulong*)&vulkanImageView), nameof(vkCreateImageView));
 
             return vulkanImageView;
         }
@@ -197,7 +197,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 borderColor = VK_BORDER_COLOR_INT_OPAQUE_WHITE
             };
 
-            ThrowExternalExceptionIfNotSuccess(nameof(vkCreateSampler), vkCreateSampler(vulkanDevice, &samplerCreateInfo, pAllocator: null, (ulong*)&vulkanSampler));
+            ThrowExternalExceptionIfNotSuccess(vkCreateSampler(vulkanDevice, &samplerCreateInfo, pAllocator: null, (ulong*)&vulkanSampler), nameof(vkCreateSampler));
 
             return vulkanSampler;
         }

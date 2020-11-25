@@ -11,41 +11,41 @@ namespace TerraFX.Utilities.UnitTests
     [TestFixture(Author = "Tanner Gooding", TestOf = typeof(ExceptionUtilities))]
     public static class ExceptionUtilitiesTests
     {
-        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowArgumentExceptionForInvalidType(string, Type)" /> static method.</summary>
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowArgumentExceptionForInvalidType(Type, string)" /> static method.</summary>
         [Test]
         public static void ThrowArgumentExceptionForInvalidType(
             [Values(null, "", "param")] string paramName,
             [Values(typeof(object), typeof(string), typeof(int))] Type paramType
         )
         {
-            Assert.That(() => ExceptionUtilities.ThrowArgumentExceptionForInvalidType(paramName, paramType),
+            Assert.That(() => ExceptionUtilities.ThrowArgumentExceptionForInvalidType(paramType, paramName),
                 Throws.InstanceOf<ArgumentException>()
                       .With.Property("ParamName").EqualTo(paramName)
             );
         }
 
-        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowArgumentOutOfRangeException(string, object)" /> static method.</summary>
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowArgumentOutOfRangeException(object, string)" /> static method.</summary>
         [Test]
         public static void ThrowArgumentOutOfRangeExceptionStringObjectTest(
             [Values(null, "", "param")] string paramName,
             [Values(null, "", "value")] object value
         )
         {
-            Assert.That(() => ExceptionUtilities.ThrowArgumentOutOfRangeException(paramName, value),
+            Assert.That(() => ExceptionUtilities.ThrowArgumentOutOfRangeException(value, paramName),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
                       .With.Property("ParamName").EqualTo(paramName)
                       .And.With.Property("ActualValue").EqualTo(value)
             );
         }
 
-        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowExternalException(string, int)" /> static method.</summary>
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowExternalException(int, string)" /> static method.</summary>
         [Test]
         public static void ThrowExternalExceptionStringInt32Test(
             [Values(null, "", "methodName")] string methodName,
             [Values(0, 1, unchecked((int)0x80000000))] int errorCode
         )
         {
-            Assert.That(() => ExceptionUtilities.ThrowExternalException(methodName, errorCode),
+            Assert.That(() => ExceptionUtilities.ThrowExternalException(errorCode, methodName),
                 Throws.InstanceOf<ExternalException>()
                       .With.Property("ErrorCode").EqualTo(errorCode)
             );
@@ -91,14 +91,14 @@ namespace TerraFX.Utilities.UnitTests
             );
         }
 
-        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowInvalidOperationException(string, object)" /> static method.</summary>
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowInvalidOperationException(object, string)" /> static method.</summary>
         [Test]
         public static void ThrowInvalidOperationExceptionStringObjectTest(
             [Values(null, "", "param")] string paramName,
             [Values(null, "", "value")] object value
         )
         {
-            Assert.That(() => ExceptionUtilities.ThrowInvalidOperationException(paramName, value),
+            Assert.That(() => ExceptionUtilities.ThrowInvalidOperationException(value, paramName),
                 Throws.InstanceOf<InvalidOperationException>()
             );
         }

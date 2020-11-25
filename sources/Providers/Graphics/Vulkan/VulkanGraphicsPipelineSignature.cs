@@ -149,7 +149,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     descriptorPoolCreateInfo.poolSizeCount = unchecked((uint)vulkanDescriptorPoolSizes.Length);
                     descriptorPoolCreateInfo.pPoolSizes = pVulkanDescriptorPoolSizes;
 
-                    ThrowExternalExceptionIfNotSuccess(nameof(vkCreateDescriptorPool), vkCreateDescriptorPool(Device.VulkanDevice, &descriptorPoolCreateInfo, pAllocator: null, (ulong*)&vulkanDescriptorPool));
+                    ThrowExternalExceptionIfNotSuccess(vkCreateDescriptorPool(Device.VulkanDevice, &descriptorPoolCreateInfo, pAllocator: null, (ulong*)&vulkanDescriptorPool), nameof(vkCreateDescriptorPool));
                 }
             }
 
@@ -171,7 +171,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     descriptorSetCount = 1,
                     pSetLayouts = (ulong*)&vulkanDescriptorSetLayout,
                 };
-                ThrowExternalExceptionIfNotSuccess(nameof(vkAllocateDescriptorSets), vkAllocateDescriptorSets(Device.VulkanDevice, &descriptorSetAllocateInfo, (ulong*)&vulkanDescriptorSet));
+                ThrowExternalExceptionIfNotSuccess(vkAllocateDescriptorSets(Device.VulkanDevice, &descriptorSetAllocateInfo, (ulong*)&vulkanDescriptorSet), nameof(vkAllocateDescriptorSets));
             }
 
             return vulkanDescriptorSet;
@@ -244,7 +244,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     descriptorSetLayoutCreateInfo.bindingCount = unchecked((uint)descriptorSetLayoutBindings.Length);
                     descriptorSetLayoutCreateInfo.pBindings = pDescriptorSetLayoutBindings;
 
-                    ThrowExternalExceptionIfNotSuccess(nameof(vkCreateDescriptorSetLayout), vkCreateDescriptorSetLayout(Device.VulkanDevice, &descriptorSetLayoutCreateInfo, pAllocator: null, (ulong*)&vulkanDescriptorSetLayout));
+                    ThrowExternalExceptionIfNotSuccess(vkCreateDescriptorSetLayout(Device.VulkanDevice, &descriptorSetLayoutCreateInfo, pAllocator: null, (ulong*)&vulkanDescriptorSetLayout), nameof(vkCreateDescriptorSetLayout));
                 }
             }
             else
@@ -291,7 +291,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 pipelineLayoutCreateInfo.pSetLayouts = (ulong*)&descriptorSetLayout;
             }
 
-            ThrowExternalExceptionIfNotSuccess(nameof(vkCreatePipelineLayout), vkCreatePipelineLayout(Device.VulkanDevice, &pipelineLayoutCreateInfo, pAllocator: null, (ulong*)&vulkanPipelineLayout));
+            ThrowExternalExceptionIfNotSuccess(vkCreatePipelineLayout(Device.VulkanDevice, &pipelineLayoutCreateInfo, pAllocator: null, (ulong*)&vulkanPipelineLayout), nameof(vkCreatePipelineLayout));
 
             return vulkanPipelineLayout;
         }

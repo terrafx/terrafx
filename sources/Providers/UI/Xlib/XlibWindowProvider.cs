@@ -125,7 +125,7 @@ namespace TerraFX.UI.Providers.Xlib
                 nuint bytesAfterReturn;
                 IntPtr* propReturn;
 
-                ThrowExternalExceptionIfFailed(nameof(XGetWindowProperty), XGetWindowProperty(
+                ThrowExternalExceptionIfFailed(XGetWindowProperty(
                     xevent->xany.display,
                     xevent->xany.window,
                     dispatchProvider.WindowWindowProviderAtom,
@@ -138,7 +138,7 @@ namespace TerraFX.UI.Providers.Xlib
                     &nitemsReturn,
                     &bytesAfterReturn,
                     (byte**)&propReturn
-                ));
+                ), nameof(XGetWindowProperty));
 
                 userData = *propReturn;
             }

@@ -256,7 +256,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     pipelineVertexInputStateCreateInfo.vertexAttributeDescriptionCount = unchecked((uint)vertexInputAttributeDescriptions.Length);
                     pipelineVertexInputStateCreateInfo.pVertexAttributeDescriptions = pVertexInputAttributeDescriptions;
 
-                    ThrowExternalExceptionIfNotSuccess(nameof(vkCreateGraphicsPipelines), vkCreateGraphicsPipelines(device.VulkanDevice, pipelineCache: VK_NULL_HANDLE, 1, &pipelineCreateInfo, pAllocator: null, (ulong*)&vulkanPipeline));
+                    ThrowExternalExceptionIfNotSuccess(vkCreateGraphicsPipelines(device.VulkanDevice, pipelineCache: VK_NULL_HANDLE, 1, &pipelineCreateInfo, pAllocator: null, (ulong*)&vulkanPipeline), nameof(vkCreateGraphicsPipelines));
                 }
 
                 return vulkanPipeline;

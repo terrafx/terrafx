@@ -43,11 +43,11 @@ namespace TerraFX.Graphics.Providers.Vulkan
             return (uint)vulkanImageUsageKind;
         }
 
-        public static void ThrowExternalExceptionIfNotSuccess(string methodName, VkResult result)
+        public static void ThrowExternalExceptionIfNotSuccess(VkResult result, string methodName)
         {
             if (result != VK_SUCCESS)
             {
-                ThrowExternalException(methodName, (int)result);
+                ThrowExternalException((int)result, methodName);
             }
         }
     }

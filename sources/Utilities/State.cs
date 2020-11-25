@@ -79,7 +79,7 @@ namespace TerraFX.Utilities
 
             if (state != from)
             {
-                ThrowInvalidOperationException(nameof(_value), _value);
+                ThrowInvalidOperationException(_value, nameof(_value));
             }
         }
 

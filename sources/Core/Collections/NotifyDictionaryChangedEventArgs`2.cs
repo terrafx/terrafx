@@ -39,7 +39,7 @@ namespace TerraFX.Collections
             {
                 if (_action == NotifyDictionaryChangedAction.Reset)
                 {
-                    ThrowInvalidOperationException(nameof(Action), Action);
+                    ThrowInvalidOperationException(Action, nameof(Action));
                 }
 
                 return _key;
@@ -54,7 +54,7 @@ namespace TerraFX.Collections
             {
                 if (_action != NotifyDictionaryChangedAction.ValueChanged)
                 {
-                    ThrowInvalidOperationException(nameof(Action), Action);
+                    ThrowInvalidOperationException(Action, nameof(Action));
                 }
 
                 return _oldValue;
@@ -69,7 +69,7 @@ namespace TerraFX.Collections
             {
                 if (_action != NotifyDictionaryChangedAction.ValueChanged)
                 {
-                    ThrowInvalidOperationException(nameof(Action), Action);
+                    ThrowInvalidOperationException(Action, nameof(Action));
                 }
 
                 return _newValue;

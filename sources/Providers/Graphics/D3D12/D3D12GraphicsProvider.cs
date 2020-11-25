@@ -101,7 +101,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             var createFlags = (DebugModeEnabled && TryEnableDebugMode()) ? DXGI_CREATE_FACTORY_DEBUG : 0u;
             var iid = IID_IDXGIFactory2;
-            ThrowExternalExceptionIfFailed(nameof(CreateDXGIFactory2), CreateDXGIFactory2(createFlags, &iid, (void**)&dxgiFactory));
+            ThrowExternalExceptionIfFailed(CreateDXGIFactory2(createFlags, &iid, (void**)&dxgiFactory), nameof(CreateDXGIFactory2));
 
             return dxgiFactory;
 
@@ -161,7 +161,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                     {
                         if (result != DXGI_ERROR_NOT_FOUND)
                         {
-                            ThrowExternalException(nameof(IDXGIFactory1.EnumAdapters1), result);
+                            ThrowExternalException(result, nameof(IDXGIFactory1.EnumAdapters1));
                         }
                         index = 0;
                     }
