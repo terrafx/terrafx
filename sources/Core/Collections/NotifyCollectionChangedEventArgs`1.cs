@@ -10,7 +10,7 @@ namespace TerraFX.Collections
     /// <typeparam name="T">The type of the items in the collection.</typeparam>
     public sealed class NotifyCollectionChangedEventArgs<T> : EventArgs
     {
-        private static readonly NotifyCollectionChangedEventArgs<T> Reset = new NotifyCollectionChangedEventArgs<T>(NotifyCollectionChangedAction.Reset);
+        private static readonly NotifyCollectionChangedEventArgs<T> s_reset = new NotifyCollectionChangedEventArgs<T>(NotifyCollectionChangedAction.Reset);
 
         private readonly NotifyCollectionChangedAction _action;
         private readonly T? _value;
@@ -53,6 +53,6 @@ namespace TerraFX.Collections
 
         /// <summary>Gets or creates an instance of the <see cref="NotifyCollectionChangedEventArgs{T}" /> class for the <see cref="NotifyCollectionChangedAction.Reset" /> action.</summary>
         /// <returns>An instance of the <see cref="NotifyCollectionChangedEventArgs{T}" /> class.</returns>
-        public static NotifyCollectionChangedEventArgs<T> ForResetAction() => Reset;
+        public static NotifyCollectionChangedEventArgs<T> ForResetAction() => s_reset;
     }
 }

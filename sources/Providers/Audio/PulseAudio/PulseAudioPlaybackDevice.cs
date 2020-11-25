@@ -26,7 +26,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
         private const int Running = 3;
         private const int Completed = 4;
 
-        private static readonly byte[] PlaybackName = Encoding.UTF8.GetBytes("Playback");
+        private static readonly byte[] s_playbackName = Encoding.UTF8.GetBytes("Playback");
 
         private readonly IntPtr _context;
         private readonly Pipe _sampleDataPipe;
@@ -85,7 +85,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
             spec.rate = (uint)Adapter.SampleRate;
 
             IntPtr stream;
-            fixed(byte* streamName = PlaybackName)
+            fixed(byte* streamName = s_playbackName)
             {
                 stream = pa_stream_new(_context, (sbyte*)streamName, &spec, null);
             }

@@ -171,7 +171,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             }
         }
 
-        private DXGI_FORMAT GetInputElementFormat(Type type)
+        private static DXGI_FORMAT GetInputElementFormat(Type type)
         {
             var inputElementFormat = DXGI_FORMAT_UNKNOWN;
 
@@ -191,7 +191,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             return inputElementFormat;
         }
 
-        private ReadOnlySpan<sbyte> GetInputElementSemanticName(GraphicsPipelineInputElementKind inputElementKind)
+        private static ReadOnlySpan<sbyte> GetInputElementSemanticName(GraphicsPipelineInputElementKind inputElementKind)
         {
             ReadOnlySpan<sbyte> inputElementSemanticName;
 

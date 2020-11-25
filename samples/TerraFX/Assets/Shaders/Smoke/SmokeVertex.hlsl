@@ -25,6 +25,6 @@ PSInput main(VSInput input)
     v4 = mul(v4, primitiveTransform);
     v4 = mul(v4, frameTransform);
     output.uvw = v4;
- 
+
     return output;
 }

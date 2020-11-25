@@ -87,7 +87,7 @@ namespace TerraFX.Graphics
 
         /// <inheritdoc />
         public bool Equals(GraphicsMemoryBlockRegion other)
-            => (this == other);
+            => this == other;
 
         /// <inheritdoc />
         public override int GetHashCode()

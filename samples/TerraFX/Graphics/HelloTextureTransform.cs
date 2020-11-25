@@ -36,33 +36,31 @@ namespace TerraFX.Samples.Graphics
             base.Initialize(application);
 
             var graphicsDevice = GraphicsDevice;
+            var currentGraphicsContext = graphicsDevice.CurrentContext;
 
-            using (var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024))
-            using (var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024 * 4))
-            {
-                var currentGraphicsContext = graphicsDevice.CurrentContext;
+            using var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024);
+            using var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024 * 4);
 
-                currentGraphicsContext.BeginFrame();
-                _trianglePrimitive = CreateTrianglePrimitive(currentGraphicsContext, vertexStagingBuffer, textureStagingBuffer);
-                currentGraphicsContext.EndFrame();
+            currentGraphicsContext.BeginFrame();
+            _trianglePrimitive = CreateTrianglePrimitive(currentGraphicsContext, vertexStagingBuffer, textureStagingBuffer);
+            currentGraphicsContext.EndFrame();
 
-                graphicsDevice.Signal(currentGraphicsContext.Fence);
-                graphicsDevice.WaitForIdle();
-            }
+            graphicsDevice.Signal(currentGraphicsContext.Fence);
+            graphicsDevice.WaitForIdle();
         }
 
         protected override unsafe void Update(TimeSpan delta)
         {
-            const float translationSpeed = MathF.PI;
+            const float TranslationSpeed = MathF.PI;
 
-            float radians = _trianglePrimitiveTranslationAngle;
+            var radians = _trianglePrimitiveTranslationAngle;
             {
-                radians += (float)(translationSpeed * delta.TotalSeconds);
-                radians = radians % (2 * MathF.PI); 
+                radians += (float)(TranslationSpeed * delta.TotalSeconds);
+                radians %= 2 * MathF.PI;
             }
             _trianglePrimitiveTranslationAngle = radians;
-            float x = 0.5f * MathF.Cos(radians);
-            float y = 0.5f * MathF.Sin(radians);
+            var x = 0.5f * MathF.Cos(radians);
+            var y = 0.5f * MathF.Sin(radians);
 
             var constantBuffer = (GraphicsBuffer)_trianglePrimitive.InputResources[0];
             var pConstantBuffer = constantBuffer.Map<Matrix4x4>();
@@ -127,14 +125,8 @@ namespace TerraFX.Samples.Graphics
                     var x = n % TextureWidth;
                     var y = n / TextureWidth;
 
-                    if ((x / CellWidth % 2) == (y / CellHeight % 2))
-                    {
-                        pTextureData[n] = 0xFF000000;
-                    }
-                    else
-                    {
-                        pTextureData[n] = 0xFFFFFFFF;
-                    }
+                    pTextureData[n] = (x / CellWidth % 2) == (y / CellHeight % 2)
+                                    ? 0xFF000000 : 0xFFFFFFFF;
                 }
 
                 textureStagingBuffer.Unmap(0..(int)TextureSize);

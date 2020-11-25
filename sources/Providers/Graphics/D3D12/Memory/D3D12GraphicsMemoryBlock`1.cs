@@ -61,8 +61,8 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private static ulong GetAlignment(D3D12_HEAP_FLAGS heapFlags)
         {
-            const D3D12_HEAP_FLAGS denyAllTexturesFlags = D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES | D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES;
-            var canContainAnyTextures = (heapFlags & denyAllTexturesFlags) != denyAllTexturesFlags;
+            const D3D12_HEAP_FLAGS DenyAllTexturesFlags = D3D12_HEAP_FLAG_DENY_NON_RT_DS_TEXTURES | D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES;
+            var canContainAnyTextures = (heapFlags & DenyAllTexturesFlags) != DenyAllTexturesFlags;
             return canContainAnyTextures ? D3D12_DEFAULT_MSAA_RESOURCE_PLACEMENT_ALIGNMENT : D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
         }
 

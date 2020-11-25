@@ -26,14 +26,9 @@ namespace TerraFX.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsPow2(ulong value)
         {
-            if (Popcnt.X64.IsSupported)
-            {
-                return Popcnt.X64.PopCount(value) == 1;
-            }
-            else
-            {
-                return ((value & (value - 1)) == 0) && (value != 0);
-            }
+            return Popcnt.X64.IsSupported
+                ? Popcnt.X64.PopCount(value) == 1
+                : ((value & (value - 1)) == 0) && (value != 0);
         }
     }
 }

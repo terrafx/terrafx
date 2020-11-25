@@ -30,9 +30,6 @@ namespace TerraFX.Utilities
         }
 
         /// <inheritdoc />
-        public void Dispose()
-        {
-            _mutex?.ExitWriteLock();
-        }
+        public void Dispose() => _mutex?.ExitWriteLock();
     }
 }

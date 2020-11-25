@@ -28,19 +28,17 @@ namespace TerraFX.Samples.Graphics
             base.Initialize(application);
 
             var graphicsDevice = GraphicsDevice;
+            var currentGraphicsContext = graphicsDevice.CurrentContext;
 
-            using (var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024))
-            using (var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024 * 4))
-            {
-                var currentGraphicsContext = graphicsDevice.CurrentContext;
+            using var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024);
+            using var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024 * 4);
 
-                currentGraphicsContext.BeginFrame();
-                _trianglePrimitive = CreateTrianglePrimitive(currentGraphicsContext, vertexStagingBuffer, textureStagingBuffer);
-                currentGraphicsContext.EndFrame();
+            currentGraphicsContext.BeginFrame();
+            _trianglePrimitive = CreateTrianglePrimitive(currentGraphicsContext, vertexStagingBuffer, textureStagingBuffer);
+            currentGraphicsContext.EndFrame();
 
-                graphicsDevice.Signal(currentGraphicsContext.Fence);
-                graphicsDevice.WaitForIdle();
-            }
+            graphicsDevice.Signal(currentGraphicsContext.Fence);
+            graphicsDevice.WaitForIdle();
         }
 
         protected override void Draw(GraphicsContext graphicsContext)
@@ -79,14 +77,8 @@ namespace TerraFX.Samples.Graphics
                     var x = n % TextureWidth;
                     var y = n / TextureWidth;
 
-                    if ((x / CellWidth % 2) == (y / CellHeight % 2))
-                    {
-                        pTextureData[n] = 0xFF000000;
-                    }
-                    else
-                    {
-                        pTextureData[n] = 0xFFFFFFFF;
-                    }
+                    pTextureData[n] = (x / CellWidth % 2) == (y / CellHeight % 2)
+                                    ? 0xFF000000 : 0xFFFFFFFF;
                 }
 
                 textureStagingBuffer.Unmap(0..(int)TextureSize);

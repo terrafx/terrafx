@@ -321,7 +321,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
         {
             var priorState = _state.BeginDispose();
 
-            if (priorState > Initialized && priorState < Stopping)
+            if (priorState is > Initialized and < Stopping)
             {
                 await StopAsyncInternalAsync();
             }

@@ -84,7 +84,7 @@ namespace TerraFX.Samples
                         if (FAILED(result))
                         {
                             // todo: var span = TerraFX.Utilities.InteropUtilities.MarshalUtf8ToReadOnlySpan((sbyte*)pError->GetBufferPointer(), (int)pError->GetBufferSize());
-                            string errorMsg = System.Text.Encoding.UTF8.GetString((byte*)pError->GetBufferPointer(), (int)pError->GetBufferSize());
+                            var errorMsg = System.Text.Encoding.UTF8.GetString((byte*)pError->GetBufferPointer(), (int)pError->GetBufferSize());
                             Console.WriteLine(errorMsg);
                             ThrowExternalException(nameof(D3DCompileFromFile), result);
                         }

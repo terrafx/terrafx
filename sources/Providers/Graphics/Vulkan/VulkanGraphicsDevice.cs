@@ -27,6 +27,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
     /// <inheritdoc />
     public sealed unsafe class VulkanGraphicsDevice : GraphicsDevice
     {
+        private readonly VulkanGraphicsContext[] _contexts;
         private readonly VulkanGraphicsFence _presentCompletionFence;
 
         private ValueLazy<VkQueue> _vulkanCommandQueue;
@@ -38,7 +39,6 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private ValueLazy<VkImage[]> _vulkanSwapchainImages;
         private ValueLazy<VulkanGraphicsMemoryAllocator> _memoryAllocator;
 
-        private VulkanGraphicsContext[] _contexts;
         private int _contextIndex;
         private VkFormat _vulkanSwapchainFormat;
 
@@ -256,9 +256,9 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 pQueuePriorities = &queuePriority,
             };
 
-            const int enabledExtensionNamesCount = 1;
+            const int EnabledExtensionNamesCount = 1;
 
-            var enabledExtensionNames = stackalloc sbyte*[enabledExtensionNamesCount] {
+            var enabledExtensionNames = stackalloc sbyte*[EnabledExtensionNamesCount] {
                 (sbyte*)VK_KHR_SWAPCHAIN_EXTENSION_NAME.AsPointer(),
             };
 
@@ -268,7 +268,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
                 queueCreateInfoCount = 1,
                 pQueueCreateInfos = &deviceQueueCreateInfo,
-                enabledExtensionCount = enabledExtensionNamesCount,
+                enabledExtensionCount = EnabledExtensionNamesCount,
                 ppEnabledExtensionNames = enabledExtensionNames,
                 pEnabledFeatures = &physicalDeviceFeatures,
             };
@@ -432,10 +432,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             return vulkanSwapchain;
         }
 
-        private void DisposeMemoryAllocator(VulkanGraphicsMemoryAllocator memoryAllocator)
-        {
-            memoryAllocator?.Dispose();
-        }
+        private void DisposeMemoryAllocator(VulkanGraphicsMemoryAllocator memoryAllocator) => memoryAllocator?.Dispose();
 
         private void DisposeVulkanDevice(VkDevice vulkanDevice)
         {

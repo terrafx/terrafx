@@ -20,6 +20,7 @@ namespace TerraFX.Graphics.Providers.D3D12
     /// <inheritdoc />
     public sealed unsafe class D3D12GraphicsDevice : GraphicsDevice
     {
+        private readonly D3D12GraphicsContext[] _contexts;
         private readonly D3D12GraphicsFence _idleFence;
 
         private ValueLazy<Pointer<ID3D12CommandQueue>> _d3d12CommandQueue;
@@ -30,7 +31,6 @@ namespace TerraFX.Graphics.Providers.D3D12
         private ValueLazy<D3D12GraphicsMemoryAllocator> _memoryAllocator;
         private ValueLazy<uint> _cbvSrvUavDescriptorHandleIncrementSize;
 
-        private D3D12GraphicsContext[] _contexts;
         private int _contextIndex;
         private DXGI_FORMAT _swapChainFormat;
 
@@ -304,10 +304,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         private uint GetCbvSrvUavDescriptorHandleIncrementSize()
             => D3D12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
-        private void DisposeMemoryAllocator(D3D12GraphicsMemoryAllocator memoryAllocator)
-        {
-            memoryAllocator?.Dispose();
-        }
+        private void DisposeMemoryAllocator(D3D12GraphicsMemoryAllocator memoryAllocator) => memoryAllocator?.Dispose();
 
         private D3D12_FEATURE_DATA_D3D12_OPTIONS GetD3D12Options()
         {

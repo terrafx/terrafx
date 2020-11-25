@@ -75,22 +75,10 @@ namespace TerraFX.Samples
 
         private static bool IsSupported(Sample sample)
         {
-            bool isSupported;
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                isSupported = !sample.CompositionAssemblies.Contains(s_audioProviderPulseAudio);
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                isSupported = !sample.CompositionAssemblies.Contains(s_graphicsProviderD3D12);
-            }
-            else
-            {
-                isSupported = false;
-            }
-
-            return isSupported;
+            return RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+                 ? !sample.CompositionAssemblies.Contains(s_audioProviderPulseAudio)
+                 : RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && !sample.CompositionAssemblies.Contains(s_graphicsProviderD3D12);
+            ;
         }
 
         private static bool Matches(string arg, params string[] keywords)
@@ -163,7 +151,7 @@ namespace TerraFX.Samples
         {
             Console.WriteLine($"Running: {sample.Name}");
             var thread = new Thread(() => Run(sample));
-            
+
             thread.Start();
             thread.Join();
         }

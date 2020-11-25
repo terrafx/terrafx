@@ -11,7 +11,7 @@ namespace TerraFX.Collections
     /// <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
     public sealed class NotifyDictionaryChangedEventArgs<TKey, TValue> : EventArgs
     {
-        private static readonly NotifyDictionaryChangedEventArgs<TKey, TValue> Reset = new NotifyDictionaryChangedEventArgs<TKey, TValue>(NotifyDictionaryChangedAction.Reset);
+        private static readonly NotifyDictionaryChangedEventArgs<TKey, TValue> s_reset = new NotifyDictionaryChangedEventArgs<TKey, TValue>(NotifyDictionaryChangedAction.Reset);
 
         private readonly NotifyDictionaryChangedAction _action;
         private readonly TKey? _key;
@@ -88,7 +88,7 @@ namespace TerraFX.Collections
 
         /// <summary>Gets or creates an instance of the <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> class for the <see cref="NotifyDictionaryChangedAction.Reset" /> action.</summary>
         /// <returns>An instance of the <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> class.</returns>
-        public static NotifyDictionaryChangedEventArgs<TKey, TValue> ForResetAction() => Reset;
+        public static NotifyDictionaryChangedEventArgs<TKey, TValue> ForResetAction() => s_reset;
 
         /// <summary>Gets or creates an instance of the <see cref="NotifyDictionaryChangedEventArgs{TKey, TValue}" /> class for the <see cref="NotifyDictionaryChangedAction.ValueChanged" /> action.</summary>
         /// <param name="key">The key of the item that caused the event.</param>
