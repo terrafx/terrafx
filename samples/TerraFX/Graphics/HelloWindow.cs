@@ -38,7 +38,9 @@ namespace TerraFX.Samples.Graphics
             ExceptionUtilities.ThrowIfNull(application, nameof(application));
 
             var windowProvider = application.GetService<WindowProvider>();
+
             _window = windowProvider.CreateWindow();
+            _window.SetTitle(Name);
             _window.Show();
 
             var graphicsProvider = application.GetService<GraphicsProvider>();

@@ -74,7 +74,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var index = GetBlockCollectionIndex(cpuAccess, memoryRequirements.memoryTypeBits);
             ref readonly var blockCollection = ref _blockCollections[index];
 
-            return !blockCollection.TryAllocate(memoryRequirements.size, memoryRequirements.alignment, allocationFlags, out var region)
+            return blockCollection.TryAllocate(memoryRequirements.size, memoryRequirements.alignment, allocationFlags, out var region)
                  ? new VulkanGraphicsBuffer(kind, cpuAccess, in region, vulkanBuffer)
                  : throw new OutOfMemoryException();
         }

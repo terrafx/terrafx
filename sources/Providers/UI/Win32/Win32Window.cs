@@ -166,12 +166,61 @@ namespace TerraFX.UI.Providers.Win32
         }
 
         /// <inheritdoc />
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public override void Relocate(Vector2 location)
+        {
+            if (_bounds.Location != location)
+            {
+                var rect = new RECT {
+                    left = (int)location.X,
+                    top = (int)location.Y,
+                    right = (int)_bounds.Width,
+                    bottom = (int)_bounds.Height,
+                };
+
+                ThrowExternalExceptionIfFalse(AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, bMenu: FALSE, WS_EX_OVERLAPPEDWINDOW), nameof(AdjustWindowRectEx));
+                ThrowExternalExceptionIfFalse(MoveWindow(SurfaceHandle, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, bRepaint: TRUE), nameof(MoveWindow));
+            }
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public override void Resize(Vector2 size)
+        {
+            if (_bounds.Size != size)
+            {
+                var rect = new RECT {
+                    left = (int)_bounds.X,
+                    top = (int)_bounds.Y,
+                    right = (int)size.X,
+                    bottom = (int)size.Y,
+                };
+
+                ThrowExternalExceptionIfFalse(AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, bMenu: FALSE, WS_EX_OVERLAPPEDWINDOW), nameof(AdjustWindowRectEx));
+                ThrowExternalExceptionIfFalse(MoveWindow(SurfaceHandle, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, bRepaint: TRUE), nameof(MoveWindow));
+            }
+        }
+
+        /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Restored" /> but the instance has already been disposed.</exception>
         public override void Restore()
         {
             if (_windowState != WindowState.Restored)
             {
                 _ = ShowWindow(SurfaceHandle, SW_RESTORE);
+            }
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public override void SetTitle(string title)
+        {
+            if (_title != title)
+            {
+                fixed (char* pTitle = title)
+                {
+                    ThrowExternalExceptionIfFalse(SetWindowTextW(SurfaceHandle, (ushort*)pTitle), nameof(SetWindowTextW));
+                }
             }
         }
 
@@ -255,10 +304,10 @@ namespace TerraFX.UI.Providers.Win32
                     (ushort*)((Win32WindowProvider)WindowProvider).ClassAtom,
                     (ushort*)lpWindowName,
                     WS_OVERLAPPEDWINDOW,
-                    X: float.IsNaN(Bounds.X) ? CW_USEDEFAULT : (int)Bounds.X,
-                    Y: float.IsNaN(Bounds.Y) ? CW_USEDEFAULT : (int)Bounds.Y,
-                    nWidth: float.IsNaN(Bounds.Width) ? CW_USEDEFAULT : (int)Bounds.Width,
-                    nHeight: float.IsNaN(Bounds.Height) ? CW_USEDEFAULT : (int)Bounds.Height,
+                    X: CW_USEDEFAULT,
+                    Y: CW_USEDEFAULT,
+                    nWidth: CW_USEDEFAULT,
+                    nHeight: CW_USEDEFAULT,
                     hWndParent: default,
                     hMenu: default,
                     hInstance: EntryPointModule,

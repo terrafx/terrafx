@@ -13,6 +13,7 @@ using static TerraFX.Interop.Xlib;
 using static TerraFX.UI.Providers.Xlib.HelperUtilities;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.InteropUtilities;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.UI.Providers.Xlib
@@ -23,7 +24,6 @@ namespace TerraFX.UI.Providers.Xlib
         private readonly PropertySet _properties;
         private readonly FlowDirection _flowDirection;
         private readonly ReadingDirection _readingDirection;
-        private readonly string _title;
 
         private ValueLazy<nuint> _handle;
         private Rectangle _bounds;
@@ -40,7 +40,6 @@ namespace TerraFX.UI.Providers.Xlib
             _handle = new ValueLazy<nuint>(CreateWindowHandle);
 
             _properties = new PropertySet();
-            _title = typeof(XlibWindow).FullName!;
             _bounds = new Rectangle(float.NaN, float.NaN, float.NaN, float.NaN);
             _flowDirection = FlowDirection.TopToBottom;
             _readingDirection = ReadingDirection.LeftToRight;
@@ -96,7 +95,26 @@ namespace TerraFX.UI.Providers.Xlib
         public override GraphicsSurfaceKind SurfaceKind => GraphicsSurfaceKind.Xlib;
 
         /// <inheritdoc />
-        public override string Title => _title;
+        public override string Title
+        {
+            get
+            {
+                sbyte* pTitle = null;
+
+                try
+                {
+                    _ = XFetchName(XlibDispatchProvider.Instance.Display, Handle, &pTitle);
+                    return MarshalUtf8ToReadOnlySpan(pTitle).AsString() ?? string.Empty;
+                }
+                finally
+                {
+                    if (pTitle != null)
+                    {
+                        _ = XFree(pTitle);
+                    }
+                }
+            }
+        }
 
         /// <inheritdoc />
         public override WindowState WindowState => _windowState;
@@ -215,6 +233,26 @@ namespace TerraFX.UI.Providers.Xlib
         }
 
         /// <inheritdoc />
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public override void Relocate(Vector2 location)
+        {
+            if (_bounds.Location != location)
+            {
+                _ = XMoveWindow(XlibDispatchProvider.Instance.Display, Handle, (int)location.X, (int)location.Y);
+            }
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public override void Resize(Vector2 size)
+        {
+            if (_bounds.Size != size)
+            {
+                _ = XResizeWindow(XlibDispatchProvider.Instance.Display, Handle, (uint)size.X, (uint)size.Y);
+            }
+        }
+
+        /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Restored" /> but the instance has already been disposed.</exception>
         public override void Restore()
         {
@@ -227,6 +265,16 @@ namespace TerraFX.UI.Providers.Xlib
 
                 Show();
                 _windowState = WindowState.Restored;
+            }
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public override void SetTitle(string title)
+        {
+            fixed (sbyte* pTitle = MarshalStringToUtf8(title))
+            {
+                _ = XStoreName(XlibDispatchProvider.Instance.Display, Handle, pTitle);
             }
         }
 
@@ -307,10 +355,10 @@ namespace TerraFX.UI.Providers.Xlib
             var window = XCreateWindow(
                 display,
                 rootWindow,
-                float.IsNaN(Bounds.X) ? (int)(screenWidth * 0.125f) : (int)Bounds.X,
-                float.IsNaN(Bounds.Y) ? (int)(screenHeight * 0.125f) : (int)Bounds.Y,
-                float.IsNaN(Bounds.Width) ? (uint)(screenWidth * 0.75f) : (uint)Bounds.Width,
-                float.IsNaN(Bounds.Height) ? (uint)(screenHeight * 0.75f) : (uint)Bounds.Height,
+                (int)(screenWidth * 0.125f),
+                (int)(screenHeight * 0.125f),
+                (uint)(screenWidth * 0.75f),
+                (uint)(screenHeight * 0.75f),
                 0,
                 (int)CopyFromParent,
                 InputOutput,
@@ -336,6 +384,11 @@ namespace TerraFX.UI.Providers.Xlib
                 message: dispatchProvider.WindowProviderCreateWindowAtom,
                 data: GCHandle.ToIntPtr(((XlibWindowProvider)WindowProvider).NativeHandle)
             );
+
+            fixed (sbyte* pTitle = MarshalStringToUtf8(typeof(XlibWindow).FullName!))
+            {
+                _ = XStoreName(display, window, pTitle);
+            }
 
             return window;
         }

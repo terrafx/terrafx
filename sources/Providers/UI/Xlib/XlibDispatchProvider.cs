@@ -280,7 +280,7 @@ namespace TerraFX.UI.Providers.Xlib
             get
             {
                 timespec timespec;
-                ThrowExternalExceptionIfZero(clock_gettime(CLOCK_MONOTONIC, &timespec), nameof(clock_gettime));
+                ThrowExternalExceptionIfFalse(clock_gettime(CLOCK_MONOTONIC, &timespec) == 0, nameof(clock_gettime));
 
                 const long NanosecondsPerSecond = TimeSpan.TicksPerSecond * 100;
                 Assert(NanosecondsPerSecond == 1000000000, Resources.ArgumentOutOfRangeExceptionMessage, nameof(NanosecondsPerSecond), NanosecondsPerSecond);
