@@ -10,9 +10,7 @@ namespace TerraFX.UI
     public abstract class DispatchProvider : IDisposable
     {
         /// <summary>Initializes a new instance of the <see cref="DispatchProvider" /> class.</summary>
-        protected DispatchProvider()
-        {
-        }
+        protected DispatchProvider() { }
 
         /// <summary>Gets the current <see cref="Timestamp" /> for the instance.</summary>
         public abstract Timestamp CurrentTimestamp { get; }

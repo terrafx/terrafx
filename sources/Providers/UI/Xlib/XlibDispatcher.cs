@@ -12,42 +12,31 @@ namespace TerraFX.UI.Providers.Xlib
     public sealed unsafe class XlibDispatcher : Dispatcher
     {
         internal XlibDispatcher(XlibDispatchProvider dispatchProvider, Thread parentThread)
-            : base(dispatchProvider, parentThread)
-        {
-        }
+            : base(dispatchProvider, parentThread) { }
 
         /// <inheritdoc />
         public override event EventHandler? ExitRequested;
+
+        /// <inheritdoc cref="Dispatcher.DispatchProvider" />
+        public new XlibDispatchProvider DispatchProvider => (XlibDispatchProvider)base.DispatchProvider;
 
         /// <inheritdoc />
         public override void DispatchPending()
         {
             ThrowIfNotThread(ParentThread);
+            var display = DispatchProvider.Display;
 
-            var display = ((XlibDispatchProvider)DispatchProvider).Display;
             while (XPending(display) != 0)
             {
                 XEvent xevent;
                 _ = XNextEvent(display, &xevent);
-
-                var isWmProtocolsEvent = (xevent.type == ClientMessage) && (xevent.xclient.format == 32) && (xevent.xclient.message_type == ((XlibDispatchProvider)DispatchProvider).WmProtocolsAtom);
-
-                if (!isWmProtocolsEvent || (xevent.xclient.data.l[0] != (nint)((XlibDispatchProvider)DispatchProvider).DispatcherExitRequestedAtom))
-                {
-                    XlibWindowProvider.ForwardWindowEvent(&xevent, isWmProtocolsEvent);
-                }
-                else
-                {
-                    OnExitRequested();
-                }
+                XlibWindowProvider.ForwardWindowEvent(&xevent);
             }
         }
 
-        private void OnExitRequested() => ExitRequested?.Invoke(this, EventArgs.Empty);
-
         /// <inheritdoc />
-        protected override void Dispose(bool isDisposing)
-        {
-        }
+        protected override void Dispose(bool isDisposing) { }
+
+        internal void OnExitRequested() => ExitRequested?.Invoke(this, EventArgs.Empty);
     }
 }

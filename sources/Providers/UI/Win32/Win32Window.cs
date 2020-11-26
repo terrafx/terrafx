@@ -21,39 +21,49 @@ namespace TerraFX.UI.Providers.Win32
     /// <summary>Defines a window.</summary>
     public sealed unsafe class Win32Window : Window
     {
-        private readonly PropertySet _properties;
         private readonly FlowDirection _flowDirection;
         private readonly ReadingDirection _readingDirection;
 
         private ValueLazy<HWND> _handle;
+        private ValueLazy<PropertySet> _properties;
+
         private string _title;
         private Rectangle _bounds;
+        private Rectangle _clientBounds;
+        private uint _extendedStyle;
+        private uint _style;
         private WindowState _windowState;
-        private State _state;
         private bool _isActive;
-        private bool _isEnabled;
-        private bool _isVisible;
+
+        private State _state;
 
         internal Win32Window(Win32WindowProvider windowProvider)
             : base(windowProvider, Thread.CurrentThread)
         {
-            _handle = new ValueLazy<HWND>(CreateWindowHandle);
-
-            _properties = new PropertySet();
-            _title = typeof(Win32Window).FullName!;
-            _bounds = new Rectangle(float.NaN, float.NaN, float.NaN, float.NaN);
             _flowDirection = FlowDirection.TopToBottom;
             _readingDirection = ReadingDirection.LeftToRight;
-            _isEnabled = true;
+
+            _handle = new ValueLazy<HWND>(CreateWindowHandle);
+            _properties = new ValueLazy<PropertySet>(CreateProperties);
+
+            _title = typeof(Win32Window).FullName!;
+            _bounds = new Rectangle(float.NaN, float.NaN, float.NaN, float.NaN);
+            _clientBounds = new Rectangle(float.NaN, float.NaN, float.NaN, float.NaN);
+            _extendedStyle = WS_EX_OVERLAPPEDWINDOW;
+            _style = WS_OVERLAPPEDWINDOW;
 
             _ = _state.Transition(to: Initialized);
         }
 
         /// <summary>Finalizes an instance of the <see cref="Win32Window" /> class.</summary>
         ~Win32Window()
-        {
-            Dispose(isDisposing: false);
-        }
+            => Dispose(isDisposing: false);
+
+        /// <inheritdoc />
+        public override event EventHandler<PropertyChangedEventArgs<Vector2>>? ClientLocationChanged;
+
+        /// <inheritdoc />
+        public override event EventHandler<PropertyChangedEventArgs<Vector2>>? ClientSizeChanged;
 
         /// <inheritdoc />
         public override event EventHandler<PropertyChangedEventArgs<Vector2>>? LocationChanged;
@@ -62,44 +72,70 @@ namespace TerraFX.UI.Providers.Win32
         public override event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged;
 
         /// <inheritdoc />
-        public override Rectangle Bounds => _bounds;
+        public override Rectangle Bounds
+            => _bounds;
 
         /// <inheritdoc />
-        public override FlowDirection FlowDirection => _flowDirection;
+        public override Rectangle ClientBounds
+            => _clientBounds;
 
         /// <inheritdoc />
-        public override bool IsActive => _isActive;
+        public override FlowDirection FlowDirection
+            => _flowDirection;
+
+        /// <summary>Gets the underlying <c>HWND</c> for the window.</summary>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public IntPtr Handle
+            => _handle.Value;
 
         /// <inheritdoc />
-        public override bool IsEnabled => _isEnabled;
+        public override bool IsActive
+            => _isActive;
 
         /// <inheritdoc />
-        public override bool IsVisible => _isVisible;
+        public override bool IsEnabled
+            => (_style & WS_DISABLED) == 0;
 
         /// <inheritdoc />
-        public override IPropertySet Properties => _properties;
+        public override bool IsVisible
+            => (_style & WS_VISIBLE) != 0;
 
         /// <inheritdoc />
-        public override ReadingDirection ReadingDirection => _readingDirection;
+        public override IPropertySet Properties
+            => _properties.Value;
 
         /// <inheritdoc />
-        public override IntPtr SurfaceContextHandle => EntryPointModule;
+        public override ReadingDirection ReadingDirection
+            => _readingDirection;
 
         /// <inheritdoc />
-        public override IntPtr SurfaceHandle => _handle.Value;
+        public override string Title
+            => _title;
+
+        /// <inheritdoc cref="Window.WindowProvider" />
+        public new Win32WindowProvider WindowProvider
+            => (Win32WindowProvider)base.WindowProvider;
 
         /// <inheritdoc />
-        public override GraphicsSurfaceKind SurfaceKind => GraphicsSurfaceKind.Win32;
+        public override WindowState WindowState
+            => _windowState;
 
         /// <inheritdoc />
-        public override string Title => _title;
+        protected override IntPtr SurfaceContextHandle
+            => EntryPointModule;
 
         /// <inheritdoc />
-        public override WindowState WindowState => _windowState;
+        protected override IntPtr SurfaceHandle
+            => Handle;
+
+        /// <inheritdoc />
+        protected override GraphicsSurfaceKind SurfaceKind
+            => GraphicsSurfaceKind.Win32;
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="IsActive" /> was <c>false</c> but the instance has already been disposed.</exception>
-        public override void Activate() => ThrowExternalExceptionIfFalse(TryActivate(), nameof(SetForegroundWindow));
+        public override void Activate()
+            => ThrowExternalExceptionIfFalse(TryActivate(), nameof(SetForegroundWindow));
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
@@ -111,7 +147,7 @@ namespace TerraFX.UI.Providers.Win32
         {
             if (_handle.IsCreated)
             {
-                _ = SendMessageW(SurfaceHandle, WM_CLOSE, wParam: 0, lParam: 0);
+                _ = SendMessageW(Handle, WM_CLOSE, wParam: 0, lParam: 0);
             }
         }
 
@@ -119,9 +155,9 @@ namespace TerraFX.UI.Providers.Win32
         /// <exception cref="ObjectDisposedException"><see cref="IsEnabled" /> was <c>true</c> but the instance has already been disposed.</exception>
         public override void Disable()
         {
-            if (_isEnabled)
+            if (IsEnabled)
             {
-                _ = EnableWindow(SurfaceHandle, FALSE);
+                _ = EnableWindow(Handle, FALSE);
             }
         }
 
@@ -129,9 +165,9 @@ namespace TerraFX.UI.Providers.Win32
         /// <exception cref="ObjectDisposedException"><see cref="IsEnabled" /> was <c>false</c> but the instance has already been disposed.</exception>
         public override void Enable()
         {
-            if (_isEnabled == false)
+            if (!IsEnabled)
             {
-                _ = EnableWindow(SurfaceHandle, TRUE);
+                _ = EnableWindow(Handle, TRUE);
             }
         }
 
@@ -139,9 +175,9 @@ namespace TerraFX.UI.Providers.Win32
         /// <exception cref="ObjectDisposedException"><see cref="IsVisible" /> was <c>true</c> but the instance has already been disposed.</exception>
         public override void Hide()
         {
-            if (_isVisible)
+            if (WindowState != WindowState.Hidden)
             {
-                _ = ShowWindow(SurfaceHandle, SW_HIDE);
+                _ = ShowWindow(Handle, SW_HIDE);
             }
         }
 
@@ -149,9 +185,9 @@ namespace TerraFX.UI.Providers.Win32
         /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Maximized" /> but the instance has already been disposed.</exception>
         public override void Maximize()
         {
-            if (_windowState != WindowState.Maximized)
+            if (WindowState != WindowState.Maximized)
             {
-                _ = ShowWindow(SurfaceHandle, SW_MAXIMIZE);
+                _ = ShowWindow(Handle, SW_MAXIMIZE);
             }
         }
 
@@ -159,9 +195,9 @@ namespace TerraFX.UI.Providers.Win32
         /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Minimized" /> but the instance has already been disposed.</exception>
         public override void Minimize()
         {
-            if (_windowState != WindowState.Minimized)
+            if (WindowState != WindowState.Minimized)
             {
-                _ = ShowWindow(SurfaceHandle, SW_MINIMIZE);
+                _ = ShowWindow(Handle, SW_MINIMIZE);
             }
         }
 
@@ -171,15 +207,34 @@ namespace TerraFX.UI.Providers.Win32
         {
             if (_bounds.Location != location)
             {
+                ThrowExternalExceptionIfFalse(MoveWindow(
+                    Handle,
+                    (int)location.X,
+                    (int)location.Y,
+                    (int)_bounds.Width,
+                    (int)_bounds.Height,
+                    bRepaint: TRUE
+                ), nameof(MoveWindow));
+            }
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public override void RelocateClient(Vector2 location)
+        {
+            if (_clientBounds.Location != location)
+            {
+                var clientSize = ClientSize;
+
                 var rect = new RECT {
                     left = (int)location.X,
                     top = (int)location.Y,
-                    right = (int)_bounds.Width,
-                    bottom = (int)_bounds.Height,
+                    right = (int)(location.X + clientSize.X),
+                    bottom = (int)(location.Y + clientSize.Y),
                 };
 
-                ThrowExternalExceptionIfFalse(AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, bMenu: FALSE, WS_EX_OVERLAPPEDWINDOW), nameof(AdjustWindowRectEx));
-                ThrowExternalExceptionIfFalse(MoveWindow(SurfaceHandle, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, bRepaint: TRUE), nameof(MoveWindow));
+                ThrowExternalExceptionIfFalse(AdjustWindowRectEx(&rect, _style, bMenu: FALSE, _extendedStyle), nameof(AdjustWindowRectEx));
+                ThrowExternalExceptionIfFalse(MoveWindow(Handle, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, bRepaint: TRUE), nameof(MoveWindow));
             }
         }
 
@@ -189,25 +244,44 @@ namespace TerraFX.UI.Providers.Win32
         {
             if (_bounds.Size != size)
             {
-                var rect = new RECT {
-                    left = (int)_bounds.X,
-                    top = (int)_bounds.Y,
-                    right = (int)(_bounds.X + size.X),
-                    bottom = (int)(_bounds.Y + size.Y),
-                };
-
-                ThrowExternalExceptionIfFalse(AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, bMenu: FALSE, WS_EX_OVERLAPPEDWINDOW), nameof(AdjustWindowRectEx));
-                ThrowExternalExceptionIfFalse(MoveWindow(SurfaceHandle, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, bRepaint: TRUE), nameof(MoveWindow));
+                ThrowExternalExceptionIfFalse(MoveWindow(
+                    Handle,
+                    (int)_bounds.X,
+                    (int)_bounds.Y,
+                    (int)size.X,
+                    (int)size.Y,
+                    bRepaint: TRUE
+                ), nameof(MoveWindow));
             }
         }
 
         /// <inheritdoc />
-        /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Restored" /> but the instance has already been disposed.</exception>
+        /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+        public override void ResizeClient(Vector2 size)
+        {
+            if (_clientBounds.Size != size)
+            {
+                var clientLocation = ClientLocation;
+
+                var rect = new RECT {
+                    left = (int)clientLocation.X,
+                    top = (int)clientLocation.Y,
+                    right = (int)(clientLocation.X + size.X),
+                    bottom = (int)(clientLocation.Y + size.Y),
+                };
+
+                ThrowExternalExceptionIfFalse(AdjustWindowRectEx(&rect, _style, bMenu: FALSE, _extendedStyle), nameof(AdjustWindowRectEx));
+                ThrowExternalExceptionIfFalse(MoveWindow(Handle, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, bRepaint: TRUE), nameof(MoveWindow));
+            }
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="ObjectDisposedException"><see cref="WindowState" /> was not <see cref="WindowState.Normal" /> but the instance has already been disposed.</exception>
         public override void Restore()
         {
-            if (_windowState != WindowState.Restored)
+            if (WindowState != WindowState.Normal)
             {
-                _ = ShowWindow(SurfaceHandle, SW_RESTORE);
+                _ = ShowWindow(Handle, SW_RESTORE);
             }
         }
 
@@ -217,9 +291,11 @@ namespace TerraFX.UI.Providers.Win32
         {
             if (_title != title)
             {
+                title ??= string.Empty;
+
                 fixed (char* pTitle = title)
                 {
-                    ThrowExternalExceptionIfFalse(SetWindowTextW(SurfaceHandle, (ushort*)pTitle), nameof(SetWindowTextW));
+                    ThrowExternalExceptionIfFalse(SetWindowTextW(Handle, (ushort*)pTitle), nameof(SetWindowTextW));
                 }
             }
         }
@@ -228,15 +304,16 @@ namespace TerraFX.UI.Providers.Win32
         /// <exception cref="ObjectDisposedException"><see cref="IsVisible" /> was <c>false</c> but the instance has already been disposed.</exception>
         public override void Show()
         {
-            if (_isVisible == false)
+            if (WindowState == WindowState.Hidden)
             {
-                _ = ShowWindow(SurfaceHandle, SW_SHOW);
+                _ = ShowWindow(Handle, SW_SHOW);
             }
         }
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="IsActive" /> was <c>false</c> but the instance has already been disposed.</exception>
-        public override bool TryActivate() => _isActive || (SetForegroundWindow(SurfaceHandle) != FALSE);
+        public override bool TryActivate()
+            => _isActive || (SetForegroundWindow(Handle) != FALSE);
 
         internal nint ProcessWindowMessage(uint msg, nuint wParam, nint lParam)
         {
@@ -284,12 +361,25 @@ namespace TerraFX.UI.Providers.Win32
                     return HandleWmShowWindow(wParam);
                 }
 
+                case WM_WINDOWPOSCHANGED:
+                {
+                    return HandleWmWindowPosChanged(wParam, lParam);
+                }
+
+                case WM_STYLECHANGED:
+                {
+                    return HandleWmStyleChanged(wParam, lParam);
+                }
+
                 default:
                 {
                     return DefWindowProcW(_handle.Value, msg, wParam, lParam);
                 }
             }
         }
+
+        private PropertySet CreateProperties()
+            => new PropertySet();
 
         private HWND CreateWindowHandle()
         {
@@ -300,10 +390,10 @@ namespace TerraFX.UI.Providers.Win32
             fixed (char* lpWindowName = _title)
             {
                 hWnd = CreateWindowExW(
-                    WS_EX_OVERLAPPEDWINDOW,
-                    (ushort*)((Win32WindowProvider)WindowProvider).ClassAtom,
+                    _extendedStyle,
+                    (ushort*)WindowProvider.ClassAtom,
                     (ushort*)lpWindowName,
-                    WS_OVERLAPPEDWINDOW,
+                    _style,
                     X: CW_USEDEFAULT,
                     Y: CW_USEDEFAULT,
                     nWidth: CW_USEDEFAULT,
@@ -311,7 +401,7 @@ namespace TerraFX.UI.Providers.Win32
                     hWndParent: default,
                     hMenu: default,
                     hInstance: EntryPointModule,
-                    lpParam: GCHandle.ToIntPtr(((Win32WindowProvider)WindowProvider).NativeHandle).ToPointer()
+                    lpParam: GCHandle.ToIntPtr(GCHandle.Alloc(this, GCHandleType.Normal)).ToPointer()
                 );
             }
             ThrowExternalExceptionIfZero(hWnd, nameof(CreateWindowExW));
@@ -395,24 +485,31 @@ namespace TerraFX.UI.Providers.Win32
 
         private nint HandleWmEnable(nuint wParam)
         {
-            _isEnabled = wParam != FALSE;
+            if (wParam != FALSE)
+            {
+                _style &= ~(uint)WS_DISABLED;
+            }
+            else
+            {
+                _style |= WS_DISABLED;
+            }
             return 0;
         }
 
         private nint HandleWmMove(nint lParam)
         {
-            var previousLocation = _bounds.Location;
-            var currentLocation = new Vector2(x: LOWORD((uint)lParam), y: HIWORD((uint)lParam));
+            var previousClientLocation = _clientBounds.Location;
+            var currentClientLocation = new Vector2(x: LOWORD((uint)lParam), y: HIWORD((uint)lParam));
 
-            _bounds = _bounds.WithLocation(currentLocation);
-            OnLocationChanged(previousLocation, currentLocation);
+            _clientBounds = _clientBounds.WithLocation(currentClientLocation);
+            OnClientLocationChanged(previousClientLocation, currentClientLocation);
 
             return 0;
         }
 
         private nint HandleWmSetText(nuint wParam, nint lParam)
         {
-            var result = DefWindowProcW(SurfaceHandle, WM_SETTEXT, wParam, lParam);
+            var result = DefWindowProcW(_handle.Value, WM_SETTEXT, wParam, lParam);
 
             if (result == TRUE)
             {
@@ -425,7 +522,14 @@ namespace TerraFX.UI.Providers.Win32
 
         private nint HandleWmShowWindow(nuint wParam)
         {
-            _isVisible = LOWORD((uint)wParam) != FALSE;
+            if (LOWORD((uint)wParam) != FALSE)
+            {
+                _style |= WS_VISIBLE;
+            }
+            else
+            {
+                _style &= ~(uint)WS_VISIBLE;
+            }
             return 0;
         }
 
@@ -434,18 +538,72 @@ namespace TerraFX.UI.Providers.Win32
             _windowState = (WindowState)(uint)wParam;
             Assert(Enum.IsDefined(typeof(WindowState), _windowState), Resources.ArgumentOutOfRangeExceptionMessage, nameof(wParam), wParam);
 
-            var previousSize = _bounds.Size;
-            var currentSize = new Vector2(x: LOWORD((uint)lParam), y: HIWORD((uint)lParam));
+            var previousClientSize = _clientBounds.Size;
+            var currentClientSize = new Vector2(x: LOWORD((uint)lParam), y: HIWORD((uint)lParam));
 
-            _bounds = _bounds.WithSize(currentSize);
-            OnSizeChanged(previousSize, currentSize);
+            _clientBounds = _clientBounds.WithSize(currentClientSize);
+            OnClientSizeChanged(previousClientSize, currentClientSize);
 
             return 0;
         }
 
+        private nint HandleWmStyleChanged(nuint wParam, nint lParam)
+        {
+            var styleStruct = (STYLESTRUCT*)lParam;
+
+            if ((nint)wParam == GWL_EXSTYLE)
+            {
+                _extendedStyle = styleStruct->styleNew;
+            }
+            else if ((nint)wParam == GWL_STYLE)
+            {
+                _style = styleStruct->styleNew;
+            }
+
+            return 0;
+        }
+
+        private nint HandleWmWindowPosChanged(nuint wParam, nint lParam)
+        {
+            var result = DefWindowProc(_handle.Value, WM_WINDOWPOSCHANGED, wParam, lParam);
+
+            var windowPos = (WINDOWPOS*)lParam;
+
+            var previousLocation = _bounds.Location;
+            var previousSize = _bounds.Size;
+
+            var currentLocation = new Vector2(windowPos->x, windowPos->y);
+            var currentSize = new Vector2(windowPos->cx, windowPos->cy);
+
+            _bounds = new Rectangle(currentLocation, currentSize);
+
+            OnLocationChanged(previousLocation, currentLocation);
+            OnSizeChanged(previousSize, currentSize);
+
+            return result;
+        }
+
+        private void OnClientLocationChanged(Vector2 previousClientLocation, Vector2 currentClientLocation)
+        {
+            if ((ClientLocationChanged != null) && (previousClientLocation != currentClientLocation))
+            {
+                var eventArgs = new PropertyChangedEventArgs<Vector2>(previousClientLocation, currentClientLocation);
+                ClientLocationChanged(this, eventArgs);
+            }
+        }
+
+        private void OnClientSizeChanged(Vector2 previousClientSize, Vector2 currentClientSize)
+        {
+            if ((ClientSizeChanged is not null) && (previousClientSize != currentClientSize))
+            {
+                var eventArgs = new PropertyChangedEventArgs<Vector2>(previousClientSize, currentClientSize);
+                ClientSizeChanged(this, eventArgs);
+            }
+        }
+
         private void OnLocationChanged(Vector2 previousLocation, Vector2 currentLocation)
         {
-            if (LocationChanged != null)
+            if ((LocationChanged != null) && (previousLocation != currentLocation))
             {
                 var eventArgs = new PropertyChangedEventArgs<Vector2>(previousLocation, currentLocation);
                 LocationChanged(this, eventArgs);
@@ -454,7 +612,7 @@ namespace TerraFX.UI.Providers.Win32
 
         private void OnSizeChanged(Vector2 previousSize, Vector2 currentSize)
         {
-            if (SizeChanged is not null)
+            if ((SizeChanged is not null) && (previousSize != currentSize))
             {
                 var eventArgs = new PropertyChangedEventArgs<Vector2>(previousSize, currentSize);
                 SizeChanged(this, eventArgs);

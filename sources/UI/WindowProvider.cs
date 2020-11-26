@@ -10,9 +10,7 @@ namespace TerraFX.UI
     public abstract class WindowProvider : IDisposable
     {
         /// <summary>Initializes a new instance of the <see cref="WindowProvider" /> class.</summary>
-        protected WindowProvider()
-        {
-        }
+        protected WindowProvider() { }
 
         /// <summary>Gets the <see cref="UI.DispatchProvider" /> for the instance.</summary>
         public abstract DispatchProvider DispatchProvider { get; }

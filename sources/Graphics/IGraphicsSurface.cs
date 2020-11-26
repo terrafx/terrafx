@@ -12,23 +12,23 @@ namespace TerraFX.Graphics
         event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged;
 
         /// <summary>Gets the height of the surface.</summary>
-        public float Height => Size.Y;
+        float Height => Size.Y;
 
         /// <summary>Gets the width of the surface.</summary>
-        public float Width => Size.X;
-
-        /// <summary>Gets the size of the surface.</summary>
-        Vector2 Size { get; }
+        float Width => Size.X;
 
         /// <summary>Gets a context handle for the surface.</summary>
         /// <exception cref="ObjectDisposedException">The surface has been disposed.</exception>
-        IntPtr SurfaceContextHandle { get; }
+        IntPtr ContextHandle { get; }
 
         /// <summary>Gets a handle for the surface.</summary>
         /// <exception cref="ObjectDisposedException">The surface has been disposed.</exception>
-        IntPtr SurfaceHandle { get; }
+        IntPtr Handle { get; }
 
         /// <summary>Gets the surface kind.</summary>
-        GraphicsSurfaceKind SurfaceKind { get; }
+        GraphicsSurfaceKind Kind { get; }
+
+        /// <summary>Gets the size of the surface.</summary>
+        Vector2 Size { get; }
     }
 }

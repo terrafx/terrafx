@@ -322,14 +322,14 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var adapter = Adapter;
             var vulkanInstance = adapter.Provider.VulkanInstance;
 
-            switch (Surface.SurfaceKind)
+            switch (Surface.Kind)
             {
                 case GraphicsSurfaceKind.Win32:
                 {
                     var surfaceCreateInfo = new VkWin32SurfaceCreateInfoKHR {
                         sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
-                        hinstance = Surface.SurfaceContextHandle,
-                        hwnd = Surface.SurfaceHandle,
+                        hinstance = Surface.ContextHandle,
+                        hwnd = Surface.Handle,
                     };
 
                     ThrowExternalExceptionIfNotSuccess(vkCreateWin32SurfaceKHR(vulkanInstance, &surfaceCreateInfo, pAllocator: null, (ulong*)&vulkanSurface), nameof(vkCreateWin32SurfaceKHR));
@@ -340,8 +340,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 {
                     var surfaceCreateInfo = new VkXlibSurfaceCreateInfoKHR {
                         sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
-                        dpy = Surface.SurfaceContextHandle,
-                        window = (nuint)(nint)Surface.SurfaceHandle,
+                        dpy = Surface.ContextHandle,
+                        window = (nuint)(nint)Surface.Handle,
                     };
 
                     ThrowExternalExceptionIfNotSuccess(vkCreateXlibSurfaceKHR(vulkanInstance, &surfaceCreateInfo, pAllocator: null, (ulong*)&vulkanSurface), nameof(vkCreateXlibSurfaceKHR));

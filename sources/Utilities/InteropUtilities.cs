@@ -116,6 +116,30 @@ namespace TerraFX.Utilities
         /// <param name="memory">The memory to free</param>
         public static void Free(void* memory) => Marshal.FreeHGlobal((IntPtr)memory);
 
+        /// <summary>Marshals a string to a null-terminated ASCII string.</summary>
+        /// <param name="source">The string for which to marshal.</param>
+        /// <returns>A null-terminated ASCII string that is equivalent to <paramref name="source" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ReadOnlySpan<sbyte> MarshalStringToAscii(string? source)
+        {
+            ReadOnlySpan<sbyte> result;
+
+            if (source is null)
+            {
+                result = null;
+            }
+            else
+            {
+                var maxLength = Encoding.ASCII.GetMaxByteCount(source.Length);
+                var bytes = new sbyte[maxLength + 1];
+
+                var length = Encoding.ASCII.GetBytes(source, MemoryMarshal.Cast<sbyte, byte>(bytes));
+                result = bytes.AsSpan(0, length);
+            }
+
+            return result;
+        }
+
         /// <summary>Marshals a string to a null-terminated UTF8 string.</summary>
         /// <param name="source">The string for which to marshal.</param>
         /// <returns>A null-terminated UTF8 string that is equivalent to <paramref name="source" />.</returns>
@@ -151,21 +175,21 @@ namespace TerraFX.Utilities
         /// <param name="maxLength">The maxmimum length of <paramref name="source" /> or <c>-1</c> if the maximum length is unknown.</param>
         /// <returns>A <see cref="ReadOnlySpan{SByte}" /> that starts at <paramref name="source" /> and extends to <paramref name="maxLength" /> or the first null character, whichever comes first.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ReadOnlySpan<sbyte> MarshalUtf8ToReadOnlySpan(sbyte* source, int maxLength = -1) => (source != null) ? MarshalUtf8ToReadOnlySpan(in *source, maxLength) : default;
+        public static ReadOnlySpan<sbyte> MarshalUtf8ToReadOnlySpan(sbyte* source, nint maxLength = -1) => (source != null) ? MarshalUtf8ToReadOnlySpan(in *source, maxLength) : default;
 
         /// <summary>Marshals a null-terminated UTF8 string to a <see cref="ReadOnlySpan{SByte}" />.</summary>
         /// <param name="source">The pointer to the null-terminated UTF8 string.</param>
         /// <param name="maxLength">The maxmimum length of <paramref name="source" /> or <c>-1</c> if the maximum length is unknown.</param>
         /// <returns>A <see cref="ReadOnlySpan{SByte}" /> that starts at <paramref name="source" /> and extends to <paramref name="maxLength" /> or the first null character, whichever comes first.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ReadOnlySpan<sbyte> MarshalUtf8ToReadOnlySpan(in sbyte source, int maxLength = -1)
+        public static ReadOnlySpan<sbyte> MarshalUtf8ToReadOnlySpan(in sbyte source, nint maxLength = -1)
         {
             if (maxLength < 0)
             {
                 maxLength = int.MaxValue;
             }
 
-            var span = MemoryMarshal.CreateReadOnlySpan(ref AsRef(in source), maxLength);
+            var span = MemoryMarshal.CreateReadOnlySpan(ref AsRef(in source), (int)maxLength);
             var length = span.IndexOf((sbyte)'\0');
 
             if (length != -1)
@@ -181,21 +205,21 @@ namespace TerraFX.Utilities
         /// <param name="maxLength">The maxmimum length of <paramref name="source" /> or <c>-1</c> if the maximum length is unknown.</param>
         /// <returns>A <see cref="ReadOnlySpan{UInt16}" /> that starts at <paramref name="source" /> and extends to <paramref name="maxLength" /> or the first null character, whichever comes first.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ReadOnlySpan<ushort> MarshalUtf16ToReadOnlySpan(ushort* source, int maxLength = -1) => (source != null) ? MarshalUtf16ToReadOnlySpan(in *source, maxLength) : null;
+        public static ReadOnlySpan<ushort> MarshalUtf16ToReadOnlySpan(ushort* source, nint maxLength = -1) => (source != null) ? MarshalUtf16ToReadOnlySpan(in *source, maxLength) : null;
 
         /// <summary>Marshals a null-terminated UTF16 string to a <see cref="ReadOnlySpan{UInt16}" />.</summary>
         /// <param name="source">The pointer to the null-terminated UTF16 string.</param>
         /// <param name="maxLength">The maxmimum length of <paramref name="source" /> or <c>-1</c> if the maximum length is unknown.</param>
         /// <returns>A <see cref="ReadOnlySpan{UInt16}" /> that starts at <paramref name="source" /> and extends to <paramref name="maxLength" /> or the first null character, whichever comes first.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ReadOnlySpan<ushort> MarshalUtf16ToReadOnlySpan(in ushort source, int maxLength = -1)
+        public static ReadOnlySpan<ushort> MarshalUtf16ToReadOnlySpan(in ushort source, nint maxLength = -1)
         {
             if (maxLength < 0)
             {
                 maxLength = int.MaxValue;
             }
 
-            var span = MemoryMarshal.CreateReadOnlySpan(ref AsRef(in source), maxLength);
+            var span = MemoryMarshal.CreateReadOnlySpan(ref AsRef(in source), (int)maxLength);
             var length = span.IndexOf('\0');
 
             if (length != -1)

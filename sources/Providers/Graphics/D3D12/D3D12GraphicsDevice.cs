@@ -258,7 +258,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             IDXGISwapChain3* dxgiSwapChain;
 
             var surface = Surface;
-            var surfaceHandle = surface.SurfaceHandle;
+            var surfaceHandle = surface.Handle;
 
             var swapChainDesc = new DXGI_SWAP_CHAIN_DESC1 {
                 Width = (uint)surface.Width,
@@ -273,7 +273,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             var provider = Adapter.Provider;
             var iid = IID_IDXGISwapChain3;
 
-            switch (surface.SurfaceKind)
+            switch (surface.Kind)
             {
                 case GraphicsSurfaceKind.Win32:
                 {

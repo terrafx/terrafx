@@ -20,6 +20,25 @@ namespace TerraFX.Utilities
             return (address + (alignment - 1)) & ~(alignment - 1);
         }
 
+        /// <summary>Computes <paramref name="dividend" /> / <paramref name="divisor" /> but rounds the result up, rather than down.</summary>
+        /// <param name="dividend">The value being divided by <paramref name="divisor" />.</param>
+        /// <param name="divisor">The value that is used to divide <paramref name="dividend" />.</param>
+        /// <returns>The quotient of <paramref name="dividend" /> / <paramref name="divisor" />, rounded up.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong DivideRoundingUp(uint dividend, uint divisor) => (dividend + divisor - 1) / divisor;
+
+        /// <summary>Computes the quotient and remainder of <paramref name="dividend" /> / <paramref name="divisor" />.</summary>
+        /// <param name="dividend">The value being divided by <paramref name="divisor" />.</param>
+        /// <param name="divisor">The value that is used to divide <paramref name="dividend" />.</param>
+        /// <returns>The quotient and remainder of <paramref name="dividend" /> / <paramref name="divisor" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static (nuint quotient, nuint remainder) DivRem(nuint dividend, nuint divisor)
+        {
+            var quotient = dividend / divisor;
+            var remainder = divisor - (quotient * divisor);
+            return (quotient, remainder);
+        }
+
         /// <summary>Determines whether a given value is a power of two.</summary>
         /// <param name="value">The value to check.</param>
         /// <returns><c>true</c> if <paramref name="value" /> is a power of two; otherwise, <c>false</c>.</returns>
