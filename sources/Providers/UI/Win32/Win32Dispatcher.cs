@@ -12,9 +12,7 @@ namespace TerraFX.UI.Providers.Win32
     public sealed unsafe class Win32Dispatcher : Dispatcher
     {
         internal Win32Dispatcher(Win32DispatchProvider dispatchProvider, Thread parentThread)
-            : base(dispatchProvider, parentThread)
-        {
-        }
+            : base(dispatchProvider, parentThread) { }
 
         /// <inheritdoc />
         public override event EventHandler? ExitRequested;
@@ -39,9 +37,7 @@ namespace TerraFX.UI.Providers.Win32
         }
 
         /// <inheritdoc />
-        protected override void Dispose(bool isDisposing)
-        {
-        }
+        protected override void Dispose(bool isDisposing) { }
 
         private void OnExitRequested() => ExitRequested?.Invoke(this, EventArgs.Empty);
     }

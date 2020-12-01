@@ -1,71 +1,107 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.	
 
 using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using TerraFX.Graphics.Geometry2D;
 using TerraFX.Interop;
-using TerraFX.Utilities;
 using static TerraFX.Interop.Xlib;
-using static TerraFX.Utilities.AssertionUtilities;
+using static TerraFX.UI.Providers.Xlib.XlibAtomId;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.UI.Providers.Xlib
 {
     internal static unsafe partial class HelperUtilities
     {
-        public static nuint CreateAtom(IntPtr display, ReadOnlySpan<byte> name)
-        {
-            var atom = XInternAtom(
-                display,
-                (sbyte*)Unsafe.AsPointer(ref MemoryMarshal.GetReference(name)),
-                False
-            );
-            ThrowExternalExceptionIfZero(atom, nameof(XInternAtom));
-            return atom;
-        }
+        public const int SourceApplication = 1;
 
-        public static void ThrowExternalExceptionIfFailed(int value, string methodName)
-        {
-            if (value != Success)
-            {
-                ThrowExternalException(value, methodName);
-            }
-        }
+#pragma warning disable IDE1006
+        public const int _NET_WM_ORIENTATION_HORZ = 0;
+        public const int _NET_WM_ORIENTATION_VERT = 1;
 
-        public static void SendClientMessage(IntPtr display, nuint window, nuint messageType, nuint message, nint data = default)
+        public const int _NET_WM_TOPLEFT = 0;
+        public const int _NET_WM_TOPRIGHT = 1;
+        public const int _NET_WM_BOTTOMRIGHT = 2;
+        public const int _NET_WM_BOTTOMLEFT = 3;
+
+        public const int _NET_WM_MOVERESIZE_SIZE_TOPLEFT = 0;
+        public const int _NET_WM_MOVERESIZE_SIZE_TOP = 1;
+        public const int _NET_WM_MOVERESIZE_SIZE_TOPRIGHT = 2;
+        public const int _NET_WM_MOVERESIZE_SIZE_RIGHT = 3;
+        public const int _NET_WM_MOVERESIZE_SIZE_BOTTOMRIGHT = 4;
+        public const int _NET_WM_MOVERESIZE_SIZE_BOTTOM = 5;
+        public const int _NET_WM_MOVERESIZE_SIZE_BOTTOMLEFT = 6;
+        public const int _NET_WM_MOVERESIZE_SIZE_LEFT = 7;
+        public const int _NET_WM_MOVERESIZE_MOVE = 8;
+        public const int _NET_WM_MOVERESIZE_SIZE_KEYBOARD = 9;
+        public const int _NET_WM_MOVERESIZE_MOVE_KEYBOARD = 10;
+        public const int _NET_WM_MOVERESIZE_CANCEL = 11;
+
+        public const int _NET_WM_STATE_REMOVE = 0;
+        public const int _NET_WM_STATE_ADD = 1;
+        public const int _NET_WM_STATE_TOGGLE = 2;
+#pragma warning restore IDE1006
+
+        public static void SendClientMessage(IntPtr display, nuint targetWindow, nint eventMask, nuint eventWindow, nuint messageType, nint data0 = 0, nint data1 = 0, nint data2 = 0, nint data3 = 0, nint data4 = 0)
         {
             var clientEvent = new XClientMessageEvent {
                 type = ClientMessage,
-                serial = 0,
                 send_event = True,
                 display = display,
-                window = window,
+                window = eventWindow,
                 message_type = messageType,
                 format = 32
             };
 
-            if (Environment.Is64BitProcess)
-            {
-                clientEvent.data.l[0] = unchecked((nint)(uint)message);
-                clientEvent.data.l[1] = (nint)(uint)((nuint)message >> 32);
-                Assert(clientEvent.data.l[1] == 0, Resources.ArgumentOutOfRangeExceptionMessage, nameof(message), message);
+            clientEvent.data.l[0] = data0;
+            clientEvent.data.l[1] = data1;
+            clientEvent.data.l[2] = data2;
+            clientEvent.data.l[3] = data3;
+            clientEvent.data.l[4] = data4;
 
-                clientEvent.data.l[2] = unchecked((nint)(uint)data);
-                clientEvent.data.l[3] = (nint)(uint)((nuint)data >> 32);
+            ThrowExternalExceptionIfZero(XSendEvent(
+                display,
+                targetWindow,
+                False,
+                eventMask,
+                (XEvent*)&clientEvent
+            ), nameof(XSendEvent));
+        }
+
+        public static void SetWindowTitle(XlibDispatchProvider dispatchProvider, IntPtr display, nuint window, string value)
+        {
+            if (dispatchProvider.GetAtomIsSupported(_NET_WM_NAME))
+            {
+                var utf8Title = MarshalStringToUtf8(value);
+
+                fixed (sbyte* pUtf8Title = utf8Title)
+                {
+                    _ = XChangeProperty(
+                        display,
+                        window,
+                        dispatchProvider.GetAtom(_NET_WM_NAME),
+                        dispatchProvider.GetAtom(UTF8_STRING),
+                        8,
+                        PropModeReplace,
+                        (byte*)pUtf8Title,
+                        utf8Title.Length
+                    );
+                }
             }
             else
             {
-                clientEvent.data.l[0] = (nint)message;
-                clientEvent.data.l[1] = data;
+                throw new NotImplementedException();
             }
+        }
 
-            ThrowExternalExceptionIfZero(XSendEvent(
-                clientEvent.display,
-                clientEvent.window,
-                False,
-                NoEventMask,
-                (XEvent*)&clientEvent
-            ), nameof(XSendEvent));
+        public static void ShowWindow(IntPtr display, nuint window, int initialState = NormalState)
+        {
+            var wmHints = new XWMHints {
+                flags = StateHint,
+                initial_state = initialState,
+            };
+            _ = XSetWMHints(display, window, &wmHints);
+
+            _ = XMapWindow(display, window);
         }
     }
 }

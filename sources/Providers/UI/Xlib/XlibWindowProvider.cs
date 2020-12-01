@@ -8,9 +8,10 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.Interop;
 using TerraFX.Utilities;
+using static TerraFX.UI.Providers.Xlib.XlibAtomId;
 using static TerraFX.Interop.Xlib;
-using static TerraFX.UI.Providers.Xlib.HelperUtilities;
 using static TerraFX.Utilities.AssertionUtilities;
+using static TerraFX.Utilities.InteropUtilities;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.UI.Providers.Xlib
@@ -37,14 +38,12 @@ namespace TerraFX.UI.Providers.Xlib
 
             _nativeHandle = new ValueLazy<GCHandle>(() => GCHandle.Alloc(this, GCHandleType.Normal));
             _windows = new ThreadLocal<Dictionary<nuint, XlibWindow>>(trackAllValues: true);
+
             _ = _state.Transition(to: Initialized);
         }
 
         /// <summary>Finalizes an instance of the <see cref="XlibWindowProvider" /> class.</summary>
-        ~XlibWindowProvider()
-        {
-            Dispose(isDisposing: false);
-        }
+        ~XlibWindowProvider() => Dispose(isDisposing: false);
 
         /// <inheritdoc />
         public override DispatchProvider DispatchProvider => XlibDispatchProvider.Instance;
@@ -75,99 +74,127 @@ namespace TerraFX.UI.Providers.Xlib
         public override Window CreateWindow()
         {
             _state.ThrowIfDisposedOrDisposing();
-
-            var windows = _windows.Value;
-
-            if (windows is null)
-            {
-                windows = new Dictionary<nuint, XlibWindow>(capacity: 4);
-                _windows.Value = windows;
-            }
-
-            var window = new XlibWindow(this);
-            _ = windows.TryAdd(window.Handle, window);
-
-            return window;
+            return new XlibWindow(this);
         }
 
-        internal static void ForwardWindowEvent(XEvent* xevent, bool isWmProtocolsEvent)
+        internal static void ForwardWindowEvent(XEvent* xevent)
         {
             nint userData;
+            GCHandle gcHandle;
+            XlibWindowProvider windowProvider;
+            Dictionary<nuint, XlibWindow>? windows;
+            XlibWindow? window;
+            bool forwardMessage;
 
-            var dispatchProvider = Xlib.XlibDispatchProvider.Instance;
+            var dispatchProvider = XlibDispatchProvider.Instance;
 
-            if (isWmProtocolsEvent && (xevent->xclient.data.l[0] == (nint)dispatchProvider.WindowProviderCreateWindowAtom))
+            if ((xevent->type == ClientMessage) && (xevent->xclient.format == 32) && ((xevent->xclient.message_type == dispatchProvider.GetAtom(_TERRAFX_CREATE_WINDOW)) || (xevent->xclient.message_type == dispatchProvider.GetAtom(_TERRAFX_DISPOSE_WINDOW))))
             {
-                // We allow the WindowProviderCreateWindowAtom message to be forwarded to the Window instance
-                // for xevent->xany.window. This allows some delayed initialization to occur since most of the
-                // fields in Window are lazy.
+                // We allow the create and dispose message to be forwarded to the Window instance for xevent->xany.window.
+                // This allows some delayed initialization to occur since most of the fields in Window are lazy.
 
                 userData = Environment.Is64BitProcess
-                         ? (xevent->xclient.data.l[3] << 32) | (nint)(uint)xevent->xclient.data.l[2]
-                         : xevent->xclient.data.l[1];
+                         ? (xevent->xclient.data.l[1] << 32) | (nint)(uint)xevent->xclient.data.l[0]
+                         : xevent->xclient.data.l[0];
 
-                _ = XChangeProperty(
-                    xevent->xany.display,
-                    xevent->xany.window,
-                    dispatchProvider.WindowWindowProviderAtom,
-                    dispatchProvider.SystemIntPtrAtom,
-                    8,
-                    PropModeReplace,
-                    (byte*)&userData,
-                    sizeof(nint)
-                );
+                // Unlike the WindowProvider GCHandle, the Window GCHandle is short lived and
+                // we want to free it after we add the relevant entries to the window map.
+
+                gcHandle = GCHandle.FromIntPtr(userData);
+                {
+                    window = (XlibWindow)gcHandle.Target!;
+                    windowProvider = window.WindowProvider;
+                    windows = windowProvider._windows.Value!;
+                }
+                gcHandle.Free();
+
+                if (xevent->xclient.message_type == dispatchProvider.GetAtom(_TERRAFX_CREATE_WINDOW))
+                {
+                    if (windows is null)
+                    {
+                        windows = new Dictionary<nuint, XlibWindow>(capacity: 4);
+                        windowProvider._windows.Value = windows;
+                    }
+                    windows.Add(xevent->xany.window, window);
+
+                    // We then want to ensure the window provider is registered as a property for fast
+                    // subsequent lookups. This proocess also allows everything to be lazily initialized.
+
+                    gcHandle = windowProvider.NativeHandle;
+                    userData = GCHandle.ToIntPtr(gcHandle);
+
+                    _ = XChangeProperty(
+                        xevent->xany.display,
+                        xevent->xany.window,
+                        dispatchProvider.GetAtom(_TERRAFX_WINDOWPROVIDER),
+                        dispatchProvider.GetAtom(_TERRAFX_NATIVE_INT),
+                        8,
+                        PropModeReplace,
+                        (byte*)&userData,
+                        sizeof(nint)
+                    );
+                }
+                else
+                {
+                    Assert(xevent->xclient.message_type == dispatchProvider.GetAtom(_TERRAFX_DISPOSE_WINDOW));
+                    _ = RemoveWindow(windows, xevent->xany.display, xevent->xany.window, dispatchProvider);
+                }
+
+                forwardMessage = true;
             }
             else
             {
-                nuint actualTypeReturn;
-                int actualFormatReturn;
-                nuint nitemsReturn;
-                nuint bytesAfterReturn;
-                IntPtr* propReturn;
+                nuint actualType;
+                int actualFormat;
+                nuint itemCount;
+                nuint bytesRemaining;
+                nint* pUserData;
 
-                ThrowExternalExceptionIfFailed(XGetWindowProperty(
+                // We don't check the result as there are various cases where this might fail
+                // For example, if the property doesn't exist or has already been deleted
+
+                _ = XGetWindowProperty(
                     xevent->xany.display,
                     xevent->xany.window,
-                    dispatchProvider.WindowWindowProviderAtom,
+                    dispatchProvider.GetAtom(_TERRAFX_WINDOWPROVIDER),
                     0,
-                    sizeof(nint),
+                    sizeof(nint) / sizeof(int),
                     False,
-                    dispatchProvider.SystemIntPtrAtom,
-                    &actualTypeReturn,
-                    &actualFormatReturn,
-                    &nitemsReturn,
-                    &bytesAfterReturn,
-                    (byte**)&propReturn
-                ), nameof(XGetWindowProperty));
+                    dispatchProvider.GetAtom(_TERRAFX_NATIVE_INT),
+                    &actualType,
+                    &actualFormat,
+                    &itemCount,
+                    &bytesRemaining,
+                    (byte**)&pUserData
+                );
 
-                userData = *propReturn;
-            }
+                if ((actualType == dispatchProvider.GetAtom(_TERRAFX_NATIVE_INT)) && (actualFormat == 8) && (itemCount == SizeOf<nuint>()) && (bytesRemaining == 0))
+                {
+                    userData = pUserData[0];
+                    gcHandle = GCHandle.FromIntPtr(userData);
 
-            XlibWindowProvider windowProvider = null!;
-            Dictionary<nuint, XlibWindow>? windows = null;
-            var forwardMessage = false;
-            XlibWindow? window = null;
+                    windowProvider = (XlibWindowProvider)gcHandle.Target!;
+                    windows = windowProvider._windows.Value!;
 
-            if (userData != 0)
-            {
-                windowProvider = (XlibWindowProvider)GCHandle.FromIntPtr(userData).Target!;
-                windows = windowProvider._windows.Value;
-                forwardMessage = (windows?.TryGetValue(xevent->xany.window, out window)).GetValueOrDefault();
+                    forwardMessage = windows.TryGetValue(xevent->xany.window, out window);
+                }
+                else
+                {
+                    windows = null;
+                    window = null;
+                    forwardMessage = false;
+                }
             }
 
             if (forwardMessage)
             {
-                Assert(windows != null, Resources.ArgumentNullExceptionMessage, nameof(windows));
-                Assert(window != null, Resources.ArgumentNullExceptionMessage, nameof(window));
+                Assert(windows is not null, Resources.ArgumentNullExceptionMessage, nameof(windows));
+                Assert(window is not null, Resources.ArgumentNullExceptionMessage, nameof(window));
 
-                window.ProcessWindowEvent(xevent, isWmProtocolsEvent);
+                window.ProcessWindowEvent(xevent);
 
-                if (isWmProtocolsEvent && (xevent->xclient.data.l[0] == (nint)dispatchProvider.WmDeleteWindowAtom))
+                if (xevent->type == DestroyNotify)
                 {
-                    // We forward the WM_DELETE_WINDOW message to the corresponding Window instance
-                    // so that it can still be properly disposed of in the scenario that the
-                    // xevent->xany.window was destroyed externally.
-
                     _ = RemoveWindow(windows, xevent->xany.display, xevent->xany.window, dispatchProvider);
                 }
             }
@@ -176,16 +203,11 @@ namespace TerraFX.UI.Providers.Xlib
         private static XlibWindow RemoveWindow(Dictionary<nuint, XlibWindow> windows, IntPtr display, nuint windowHandle, XlibDispatchProvider dispatchProvider)
         {
             _ = windows.Remove(windowHandle, out var window);
-            Assert(window != null, Resources.ArgumentNullExceptionMessage, nameof(window));
+            Assert(window is not null, Resources.ArgumentNullExceptionMessage, nameof(window));
 
             if (windows.Count == 0)
             {
-                SendClientMessage(
-                    display,
-                    windowHandle,
-                    messageType: dispatchProvider.WmProtocolsAtom,
-                    message: dispatchProvider.DispatcherExitRequestedAtom
-                );
+                dispatchProvider.DispatcherForCurrentThread.OnExitRequested();
             }
 
             return window;
@@ -216,13 +238,13 @@ namespace TerraFX.UI.Providers.Xlib
                 {
                     var windows = threadWindows[i];
 
-                    if (windows != null)
+                    if (windows is not null)
                     {
                         var windowHandles = windows.Keys;
 
                         foreach (var windowHandle in windowHandles)
                         {
-                            var dispatchProvider = Xlib.XlibDispatchProvider.Instance;
+                            var dispatchProvider = XlibDispatchProvider.Instance;
                             var window = RemoveWindow(windows, dispatchProvider.Display, windowHandle, dispatchProvider);
                             window.Dispose();
                         }

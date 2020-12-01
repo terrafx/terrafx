@@ -24,10 +24,10 @@ namespace TerraFX.UI.Providers.Win32
     {
         private const string VulkanRequiredExtensionNamesDataName = "TerraFX.Graphics.Providers.Vulkan.GraphicsProvider.RequiredExtensionNames";
 
-        /// <summary>A <see cref="HINSTANCE" /> to the entry point module.</summary>
-        public static readonly HINSTANCE EntryPointModule = GetModuleHandleW(lpModuleName: null);
+        /// <summary>A <c>HINSTANCE</c> to the entry point module.</summary>
+        public static readonly IntPtr EntryPointModule = GetModuleHandleW(lpModuleName: null);
 
-        private readonly ThreadLocal<Dictionary<HWND, Win32Window>> _windows;
+        private readonly ThreadLocal<Dictionary<IntPtr, Win32Window>> _windows;
 
         private ValueLazy<ushort> _classAtom;
         private ValueLazy<GCHandle> _nativeHandle;
@@ -45,15 +45,12 @@ namespace TerraFX.UI.Providers.Win32
             _classAtom = new ValueLazy<ushort>(CreateClassAtom);
             _nativeHandle = new ValueLazy<GCHandle>(CreateNativeHandle);
 
-            _windows = new ThreadLocal<Dictionary<HWND, Win32Window>>(trackAllValues: true);
+            _windows = new ThreadLocal<Dictionary<IntPtr, Win32Window>>(trackAllValues: true);
             _ = _state.Transition(to: Initialized);
         }
 
         /// <summary>Finalizes an instance of the <see cref="Win32WindowProvider" /> class.</summary>
-        ~Win32WindowProvider()
-        {
-            Dispose(isDisposing: false);
-        }
+        ~Win32WindowProvider() => Dispose(isDisposing: false);
 
         /// <summary>Gets the <c>ATOM</c> of the <see cref="WNDCLASSEXW" /> registered for the instance.</summary>
         public ushort ClassAtom
@@ -95,83 +92,100 @@ namespace TerraFX.UI.Providers.Win32
         public override Window CreateWindow()
         {
             _state.ThrowIfDisposedOrDisposing();
-
-            var windows = _windows.Value;
-
-            if (windows is null)
-            {
-                windows = new Dictionary<HWND, Win32Window>(capacity: 4);
-                _windows.Value = windows;
-            }
-
-            var window = new Win32Window(this);
-            _ = windows.TryAdd(window.SurfaceHandle, window);
-
-            return window;
+            return new Win32Window(this);
         }
 
         [UnmanagedCallersOnly]
         private static nint ForwardWindowMessage(IntPtr hWnd, uint msg, nuint wParam, nint lParam)
         {
-            return Impl(hWnd, msg, wParam, lParam);
+            nint userData;
+            GCHandle gcHandle;
+            Win32WindowProvider windowProvider;
+            Dictionary<IntPtr, Win32Window>? windows;
+            Win32Window? window;
+            bool forwardMessage;
 
-            static nint Impl(HWND hWnd, uint msg, nuint wParam, nint lParam)
+            if (msg == WM_CREATE)
             {
-                nint result, userData;
+                // We allow the WM_CREATE message to be forwarded to the Window instance
+                // for hWnd. This allows some delayed initialization to occur since most
+                // of the fields in Window are lazy.
 
-                if (msg == WM_CREATE)
+                var createStruct = (CREATESTRUCTW*)lParam;
+                userData = (nint)createStruct->lpCreateParams;
+
+                // Unlike the WindowProvider GCHandle, the Window GCHandle is short lived and
+                // we want to free it after we add the relevant entries to the window map.
+
+                gcHandle = GCHandle.FromIntPtr(userData);
                 {
-                    // We allow the WM_CREATE message to be forwarded to the Window instance
-                    // for hWnd. This allows some delayed initialization to occur since most
-                    // of the fields in Window are lazy.
-
-                    var createStruct = (CREATESTRUCTW*)lParam;
-                    userData = (nint)createStruct->lpCreateParams;
-                    _ = SetWindowLongPtrW(hWnd, GWLP_USERDATA, userData);
+                    window = (Win32Window)gcHandle.Target!;
+                    windowProvider = window.WindowProvider;
+                    windows = windowProvider._windows.Value!;
                 }
-                else
+                gcHandle.Free();
+
+                if (windows is null)
                 {
-                    userData = GetWindowLongPtrW(hWnd, GWLP_USERDATA);
+                    windows = new Dictionary<IntPtr, Win32Window>(capacity: 4);
+                    windowProvider._windows.Value = windows;
                 }
+                windows.Add(hWnd, window);
 
-                Win32WindowProvider windowProvider = null!;
-                Dictionary<HWND, Win32Window>? windows = null;
-                var forwardMessage = false;
-                Win32Window? window = null;
+                // We then want to ensure the window provider is registered as a property for fast
+                // subsequent lookups. This proocess also allows everything to be lazily initialized.
+
+                gcHandle = window.WindowProvider.NativeHandle;
+                userData = GCHandle.ToIntPtr(gcHandle);
+
+                _ = SetWindowLongPtrW(hWnd, GWLP_USERDATA, userData);
+
+                forwardMessage = false;
+            }
+            else
+            {
+                userData = GetWindowLongPtrW(hWnd, GWLP_USERDATA);
 
                 if (userData != 0)
                 {
-                    windowProvider = (Win32WindowProvider)GCHandle.FromIntPtr(userData).Target!;
-                    windows = windowProvider._windows.Value;
-                    forwardMessage = (windows?.TryGetValue(hWnd, out window)).GetValueOrDefault();
-                }
+                    gcHandle = GCHandle.FromIntPtr(userData);
 
-                if (forwardMessage)
-                {
-                    Assert(windows != null, Resources.ArgumentNullExceptionMessage, nameof(windows));
-                    Assert(window != null, Resources.ArgumentNullExceptionMessage, nameof(window));
+                    windowProvider = (Win32WindowProvider)gcHandle.Target!;
+                    windows = windowProvider._windows.Value!;
 
-                    result = window.ProcessWindowMessage(msg, wParam, lParam);
-
-                    if (msg == WM_DESTROY)
-                    {
-                        // We forward the WM_DESTROY message to the corresponding Window instance
-                        // so that it can still be properly disposed of in the scenario that the
-                        // hWnd was destroyed externally.
-
-                        _ = RemoveWindow(windows, hWnd);
-                    }
+                    forwardMessage = windows.TryGetValue(hWnd, out window);
                 }
                 else
                 {
-                    result = DefWindowProcW(hWnd, msg, wParam, lParam);
+                    windows = null;
+                    window = null;
+                    forwardMessage = false;
+                }
+            }
+
+            if (forwardMessage)
+            {
+                Assert(windows != null, Resources.ArgumentNullExceptionMessage, nameof(windows));
+                Assert(window != null, Resources.ArgumentNullExceptionMessage, nameof(window));
+
+                var result = window.ProcessWindowMessage(msg, wParam, lParam);
+
+                if (msg == WM_DESTROY)
+                {
+                    // We forward the WM_DESTROY message to the corresponding Window instance
+                    // so that it can still be properly disposed of in the scenario that the
+                    // hWnd was destroyed externally.
+
+                    _ = RemoveWindow(windows, hWnd);
                 }
 
                 return result;
             }
+
+            return DefWindowProcW(hWnd, msg, wParam, lParam);
         }
 
-        private static Win32Window RemoveWindow(Dictionary<HWND, Win32Window> windows, HWND hWnd)
+        private static Win32Window RemoveWindow(Dictionary<IntPtr, Win32Window> windows, IntPtr hWnd)
         {
             _ = windows.Remove(hWnd, out var window);
             Assert(window != null, Resources.ArgumentNullExceptionMessage, nameof(window));

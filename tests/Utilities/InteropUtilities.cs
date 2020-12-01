@@ -8,7 +8,7 @@ namespace TerraFX.Utilities.UnitTests
     [TestFixture(Author = "Tanner Gooding", TestOf = typeof(InteropUtilities))]
     public static unsafe class InteropUtilitiesTests
     {
-        /// <summary>Provides validation of the <see cref="InteropUtilities.MarshalUtf8ToReadOnlySpan(sbyte*, int)" /> static method.</summary>
+        /// <summary>Provides validation of the <see cref="InteropUtilities.MarshalUtf8ToReadOnlySpan(sbyte*, nint)" /> static method.</summary>
         [TestCase(null, -1, null)]
         [TestCase(null, +3, null)]
         [TestCase("", -1, "")]
@@ -24,7 +24,7 @@ namespace TerraFX.Utilities.UnitTests
             Assert.That(result, Is.EqualTo(expectedResult));
         }
 
-        /// <summary>Provides validation of the <see cref="InteropUtilities.MarshalUtf16ToReadOnlySpan(ushort*, int)" /> static method.</summary>
+        /// <summary>Provides validation of the <see cref="InteropUtilities.MarshalUtf16ToReadOnlySpan(ushort*, nint)" /> static method.</summary>
         [TestCase(null, -1, null)]
         [TestCase(null, +3, null)]
         [TestCase("", -1, "")]

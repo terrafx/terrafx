@@ -61,9 +61,7 @@ namespace TerraFX.UI.Providers.Win32
         }
 
         /// <inheritdoc />
-        protected override void Dispose(bool isDisposing)
-        {
-        }
+        protected override void Dispose(bool isDisposing) { }
 
         private static Win32DispatchProvider CreateDispatchProvider() => new Win32DispatchProvider();
 

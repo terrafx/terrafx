@@ -33,13 +33,13 @@ namespace TerraFX.WinForms
         public event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged;
 
         /// <inheritdoc />
-        public IntPtr SurfaceContextHandle => s_entryPointModule;
+        public IntPtr ContextHandle => s_entryPointModule;
 
         /// <inheritdoc />
-        public IntPtr SurfaceHandle => _control.Handle;
+        public IntPtr Handle => _control.Handle;
 
         /// <inheritdoc />
-        public GraphicsSurfaceKind SurfaceKind => GraphicsSurfaceKind.Win32;
+        public GraphicsSurfaceKind Kind => GraphicsSurfaceKind.Win32;
 
         /// <inheritdoc />
         public Vector2 Size => _size;

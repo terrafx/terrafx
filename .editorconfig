@@ -190,8 +190,8 @@ dotnet_sort_system_directives_first = true
 #   place operators at the beginning of the line when wrapping,
 #   error on suggest auto properties,
 #   require compound assignment,
-#   require conditional expression over assignment,
-#   require conditional expression over return,
+#   suggest conditional expression over assignment,
+#   suggest conditional expression over return,
 #   require inferred anonymous types,
 #   require inferred tuple names,
 #   require 'is null' checks over '== null',
@@ -224,8 +224,8 @@ dotnet_style_predefined_type_for_member_access = true:error
 dotnet_style_operator_placement_when_wrapping = beginning_of_line
 dotnet_style_prefer_auto_properties = false:error
 dotnet_style_prefer_compound_assignment = true:error
-dotnet_style_prefer_conditional_expression_over_assignment = true:error
-dotnet_style_prefer_conditional_expression_over_return = true:error
+dotnet_style_prefer_conditional_expression_over_assignment = true:suggestion
+dotnet_style_prefer_conditional_expression_over_return = true:suggestion
 dotnet_style_prefer_inferred_anonymous_type_member_names = true:error
 dotnet_style_prefer_inferred_tuple_names = true:error
 dotnet_style_prefer_is_null_check_over_reference_equality_method = true:error

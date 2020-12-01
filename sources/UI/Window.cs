@@ -30,67 +30,103 @@ namespace TerraFX.UI
             _parentThread = parentThread;
         }
 
+        /// <summary>Occurs when the <see cref="ClientLocation" /> property changes.</summary>
+        public abstract event EventHandler<PropertyChangedEventArgs<Vector2>>? ClientLocationChanged;
+
+        /// <summary>Occurs when the <see cref="ClientSize" /> property changes.</summary>
+        public abstract event EventHandler<PropertyChangedEventArgs<Vector2>>? ClientSizeChanged;
+
         /// <summary>Occurs when the <see cref="Location" /> property changes.</summary>
         public abstract event EventHandler<PropertyChangedEventArgs<Vector2>>? LocationChanged;
 
-        /// <inheritdoc />
+        /// <summary>Occurs when the <see cref="Size" /> property changes.</summary>
         public abstract event EventHandler<PropertyChangedEventArgs<Vector2>>? SizeChanged;
 
-        /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of the instance.</summary>
+        event EventHandler<PropertyChangedEventArgs<Vector2>>? IGraphicsSurface.SizeChanged
+        {
+            add
+            {
+                ClientSizeChanged += value;
+            }
+
+            remove
+            {
+                ClientSizeChanged -= value;
+            }
+        }
+
+        /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of the window.</summary>
         public abstract Rectangle Bounds { get; }
 
-        /// <summary>Gets <see cref="FlowDirection" /> for the instance.</summary>
+        /// <summary>Gets a <see cref="Rectangle" /> that represents the bounds of the client area for the window.</summary>
+        public abstract Rectangle ClientBounds { get; }
+
+        /// <summary>Gets a <see cref="Vector2" /> that represents the location of the client area for the window.</summary>
+        public Vector2 ClientLocation => ClientBounds.Location;
+
+        /// <summary>Gets a <see cref="Vector2" /> that represents the size of the client area for the window.</summary>
+        public Vector2 ClientSize => ClientBounds.Size;
+
+        /// <summary>Gets <see cref="FlowDirection" /> for the window.</summary>
         public abstract FlowDirection FlowDirection { get; }
 
-        /// <summary>Gets a value that indicates whether the instance is the active window.</summary>
+        /// <summary>Gets a value that indicates whether the window is the active window.</summary>
         public abstract bool IsActive { get; }
 
-        /// <summary>Gets a value that indicates whether the instance is enabled.</summary>
+        /// <summary>Gets a value that indicates whether the window is enabled.</summary>
         public abstract bool IsEnabled { get; }
 
-        /// <summary>Gets a value that indicates whether the instance is visible.</summary>
+        /// <summary>Gets a value that indicates whether the window is visible.</summary>
         public abstract bool IsVisible { get; }
 
-        /// <summary>Gets a <see cref="Vector2" /> that represents the location of the instance.</summary>
+        /// <summary>Gets a <see cref="Vector2" /> that represents the location of the window.</summary>
         public Vector2 Location => Bounds.Location;
 
-        /// <summary>Gets the <see cref="Thread" /> that was used to create the instance.</summary>
+        /// <summary>Gets the <see cref="Thread" /> that was used to create the window.</summary>
         public Thread ParentThread => _parentThread;
 
-        /// <summary>Gets the <see cref="IPropertySet" /> for the instance.</summary>
+        /// <summary>Gets the <see cref="IPropertySet" /> for the window.</summary>
         public abstract IPropertySet Properties { get; }
 
-        /// <summary>Gets the <see cref="ReadingDirection" /> for the instance.</summary>
+        /// <summary>Gets the <see cref="ReadingDirection" /> for the window.</summary>
         public abstract ReadingDirection ReadingDirection { get; }
 
-        /// <inheritdoc />
+        /// <summary>Gets a <see cref="Vector2" /> that represents the size of the window.</summary>
         public Vector2 Size => Bounds.Size;
 
-        /// <inheritdoc />
-        public abstract IntPtr SurfaceContextHandle { get; }
-
-        /// <inheritdoc />
-        public abstract IntPtr SurfaceHandle { get; }
-
-        /// <inheritdoc />
-        public abstract GraphicsSurfaceKind SurfaceKind { get; }
-
-        /// <summary>Gets the title for the instance.</summary>
+        /// <summary>Gets the title for the window.</summary>
         public abstract string Title { get; }
 
-        /// <summary>Gets the <see cref="UI.WindowProvider" /> for the instance.</summary>
+        /// <summary>Gets the <see cref="UI.WindowProvider" /> for the window.</summary>
         public WindowProvider WindowProvider => _windowProvider;
 
-        /// <summary>Gets the <see cref="WindowState" /> for the instance.</summary>
+        /// <summary>Gets the <see cref="WindowState" /> for the window.</summary>
         public abstract WindowState WindowState { get; }
 
-        /// <summary>Activates the instance.</summary>
+        /// <inheritdoc cref="IGraphicsSurface.ContextHandle" />
+        protected abstract IntPtr SurfaceContextHandle { get; }
+
+        /// <inheritdoc cref="IGraphicsSurface.Handle" />
+        protected abstract IntPtr SurfaceHandle { get; }
+
+        /// <inheritdoc cref="IGraphicsSurface.Kind" />
+        protected abstract GraphicsSurfaceKind SurfaceKind { get; }
+
+        IntPtr IGraphicsSurface.ContextHandle => SurfaceContextHandle;
+
+        IntPtr IGraphicsSurface.Handle => SurfaceHandle;
+
+        GraphicsSurfaceKind IGraphicsSurface.Kind => SurfaceKind;
+
+        Vector2 IGraphicsSurface.Size => ClientSize;
+
+        /// <summary>Activates the window.</summary>
         public abstract void Activate();
 
-        /// <summary>Closes the instance.</summary>
+        /// <summary>Closes the window.</summary>
         public abstract void Close();
 
-        /// <summary>Disables the instance.</summary>
+        /// <summary>Disables the window.</summary>
         public abstract void Disable();
 
         /// <inheritdoc />
@@ -100,38 +136,46 @@ namespace TerraFX.UI
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>Enables the instance.</summary>
+        /// <summary>Enables the window.</summary>
         public abstract void Enable();
 
-        /// <summary>Hides the instance.</summary>
+        /// <summary>Hides the window.</summary>
         public abstract void Hide();
 
-        /// <summary>Maximizes the instance.</summary>
+        /// <summary>Maximizes the window.</summary>
         public abstract void Maximize();
 
-        /// <summary>Minimizes the instance.</summary>
+        /// <summary>Minimizes the window.</summary>
         public abstract void Minimize();
 
         /// <summary>Relocates the window to the specified location.</summary>
         /// <param name="location">The new location for the window.</param>
         public abstract void Relocate(Vector2 location);
 
+        /// <summary>Relocates the client area for the window to the specified location.</summary>
+        /// <param name="location">The new location for the client area of the window.</param>
+        public abstract void RelocateClient(Vector2 location);
+
         /// <summary>Resizes the window to the specified size.</summary>
         /// <param name="size">The new size for the window.</param>
         public abstract void Resize(Vector2 size);
 
-        /// <summary>Restores the instance.</summary>
+        /// <summary>Resizes the client area for the window to the specified size.</summary>
+        /// <param name="size">The new size for the client area of the window.</param>
+        public abstract void ResizeClient(Vector2 size);
+
+        /// <summary>Restores the window.</summary>
         public abstract void Restore();
 
         /// <summary>Sets the title to the specified value.</summary>
         /// <param name="title">The new title for the window.</param>
         public abstract void SetTitle(string title);
 
-        /// <summary>Shows the instance.</summary>
+        /// <summary>Shows the window.</summary>
         public abstract void Show();
 
-        /// <summary>Tries to activate the instance.</summary>
-        /// <returns><c>true</c> if the instance was succesfully activated; otherwise, <c>false</c>.</returns>
+        /// <summary>Tries to activate the window.</summary>
+        /// <returns><c>true</c> if the window was succesfully activated; otherwise, <c>false</c>.</returns>
         public abstract bool TryActivate();
 
         /// <inheritdoc cref="Dispose()" />
