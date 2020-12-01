@@ -407,25 +407,30 @@ namespace TerraFX.UI.Providers.Win32
             ThrowExternalExceptionIfZero(hWnd, nameof(CreateWindowExW));
 
             // Set the initial bounds so that resizing and relocating before showing work as expected
+            // For GetClientRect, it always returns the position as (0, 0) annd so we need to remap
+            // the points to screen coordinates to ensure we are tracking the right location.
+
+            RECT clientRect;
+
+            ThrowExternalExceptionIfFalse(GetClientRect(hWnd, &clientRect), nameof(GetClientRect));
+            ThrowExternalExceptionIfFalse(MapWindowPoints(hWnd, HWND_DESKTOP, (POINT*)&clientRect, 2), nameof(MapWindowPoints));
+
+            _clientBounds = new Rectangle(
+                clientRect.left,
+                clientRect.top,
+                clientRect.right - clientRect.left,
+                clientRect.bottom - clientRect.top
+            );
 
             RECT rect;
 
-            ThrowExternalExceptionIfFalse(GetClientRect(hWnd, &rect), nameof(GetClientRect));
-
-            _clientBounds = new Rectangle(
-                rect.left,
-                rect.top,
-                rect.right - rect.left,
-                rect.bottom - rect.top
-            );
-
-            ThrowExternalExceptionIfFalse(AdjustWindowRectEx(&rect, _style, FALSE, _extendedStyle), nameof(AdjustWindowRectEx));
+            ThrowExternalExceptionIfFalse(GetWindowRect(hWnd, &rect), nameof(GetWindowRect));
 
             _bounds = new Rectangle(
                 rect.left,
                 rect.top,
-                rect.right - rect.left,
-                rect.bottom - rect.top
+                rect.right - clientRect.left,
+                rect.bottom - clientRect.top
             );
 
             return hWnd;
