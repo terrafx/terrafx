@@ -406,6 +406,28 @@ namespace TerraFX.UI.Providers.Win32
             }
             ThrowExternalExceptionIfZero(hWnd, nameof(CreateWindowExW));
 
+            // Set the initial bounds so that resizing and relocating before showing work as expected
+
+            RECT rect;
+
+            ThrowExternalExceptionIfFalse(GetClientRect(hWnd, &rect), nameof(GetClientRect));
+
+            _clientBounds = new Rectangle(
+                rect.left,
+                rect.top,
+                rect.right - rect.left,
+                rect.bottom - rect.top
+            );
+
+            ThrowExternalExceptionIfFalse(AdjustWindowRectEx(&rect, _style, FALSE, _extendedStyle), nameof(AdjustWindowRectEx));
+
+            _bounds = new Rectangle(
+                rect.left,
+                rect.top,
+                rect.right - rect.left,
+                rect.bottom - rect.top
+            );
+
             return hWnd;
         }
 
