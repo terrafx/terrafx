@@ -102,7 +102,13 @@ namespace TerraFX.Graphics
         /// <returns>A created graphics buffer.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="kind" /> is unsupported.</exception>
         /// <exception cref="ObjectDisposedException">The allocator has been disposed.</exception>
-        public abstract GraphicsBuffer CreateBuffer(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess, ulong size, ulong alignment = 0, GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None);
+        public GraphicsBuffer<IGraphicsMemoryRegionCollection<IGraphicsResource>.DefaultMetadata> CreateBuffer(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess, ulong size, ulong alignment = 0, GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None)
+            => CreateBuffer<IGraphicsMemoryRegionCollection<IGraphicsResource>.DefaultMetadata>(kind, cpuAccess, size, alignment, allocationFlags);
+
+        /// <inheritdoc cref="CreateBuffer(GraphicsBufferKind, GraphicsResourceCpuAccess, ulong, ulong, GraphicsMemoryAllocationFlags)" />
+        /// <typeparam name="TMetadata">The type used for metadata in the resource.</typeparam>
+        public abstract GraphicsBuffer<TMetadata> CreateBuffer<TMetadata>(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess, ulong size, ulong alignment = 0, GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None)
+            where TMetadata : struct, IGraphicsMemoryRegionCollection<IGraphicsResource>.IMetadata;
 
         /// <summary>Creates a new graphics texture.</summary>
         /// <param name="kind">The kind of graphics texture to create.</param>
@@ -115,7 +121,13 @@ namespace TerraFX.Graphics
         /// <param name="texelFormat">Optional parameter to specify the texel format.</param>
         /// <returns>A created graphics texture.</returns>
         /// <exception cref="ObjectDisposedException">The allocator has been disposed.</exception>
-        public abstract GraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, ulong alignment = 0, GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None, TexelFormat texelFormat = default);
+        public GraphicsTexture<IGraphicsMemoryRegionCollection<IGraphicsResource>.DefaultMetadata> CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, ulong alignment = 0, GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None, TexelFormat texelFormat = default)
+            => CreateTexture<IGraphicsMemoryRegionCollection<IGraphicsResource>.DefaultMetadata>(kind, cpuAccess, width, height, depth, alignment, allocationFlags, texelFormat);
+
+        /// <inheritdoc cref="CreateTexture(GraphicsTextureKind, GraphicsResourceCpuAccess, uint, uint, ushort, ulong, GraphicsMemoryAllocationFlags, TexelFormat)" />
+        /// <typeparam name="TMetadata">The type used for metadata in the resource.</typeparam>
+        public abstract GraphicsTexture<TMetadata> CreateTexture<TMetadata>(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, ulong alignment = 0, GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None, TexelFormat texelFormat = default)
+            where TMetadata : struct, IGraphicsMemoryRegionCollection<IGraphicsResource>.IMetadata;
 
         /// <summary>Gets the budget for a block collection.</summary>
         /// <param name="blockCollection">The block collection for which the budget should be retrieved.</param>

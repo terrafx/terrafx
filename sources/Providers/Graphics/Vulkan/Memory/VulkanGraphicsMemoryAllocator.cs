@@ -55,7 +55,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
 
         /// <inheritdoc />
-        public override VulkanGraphicsBuffer CreateBuffer(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess, ulong size, ulong alignment = 0, GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None)
+        public override VulkanGraphicsBuffer<TMetadata> CreateBuffer<TMetadata>(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess, ulong size, ulong alignment = 0, GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None)
         {
             var vulkanDevice = Device.VulkanDevice;
 
@@ -74,13 +74,12 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var index = GetBlockCollectionIndex(cpuAccess, memoryRequirements.memoryTypeBits);
             ref readonly var blockCollection = ref _blockCollections[index];
 
-            return blockCollection.TryAllocate(memoryRequirements.size, memoryRequirements.alignment, allocationFlags, out var region)
-                 ? new VulkanGraphicsBuffer(kind, cpuAccess, in region, vulkanBuffer)
-                 : throw new OutOfMemoryException();
+            var memoryBlockRegion = blockCollection.Allocate(memoryRequirements.size, memoryRequirements.alignment, allocationFlags);
+            return new VulkanGraphicsBuffer<TMetadata>(kind, cpuAccess, in memoryBlockRegion, vulkanBuffer);
         }
 
         /// <inheritdoc />
-        public override VulkanGraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, ulong alignment = 0, GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None, TexelFormat texelFormat = default)
+        public override VulkanGraphicsTexture<TMetadata> CreateTexture<TMetadata>(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, ulong alignment = 0, GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None, TexelFormat texelFormat = default)
         {
             var vulkanDevice = Device.VulkanDevice;
 
@@ -92,7 +91,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     GraphicsTextureKind.ThreeDimensional => VK_IMAGE_TYPE_3D,
                     _ => default,
                 },
-                format = VulkanGraphicsMemoryTexelMapper.Map(texelFormat),
+                format = Map(texelFormat),
                 extent = new VkExtent3D {
                     width = width,
                     height = height,
@@ -113,9 +112,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var index = GetBlockCollectionIndex(cpuAccess, memoryRequirements.memoryTypeBits);
             ref readonly var blockCollection = ref _blockCollections[index];
 
-            return blockCollection.TryAllocate(memoryRequirements.size, memoryRequirements.alignment, allocationFlags, out var region)
-                 ? new VulkanGraphicsTexture(kind, cpuAccess, in region, width, height, depth, vulkanImage)
-                 : throw new OutOfMemoryException();
+            var memoryBlockRegion = blockCollection.Allocate(memoryRequirements.size, memoryRequirements.alignment, allocationFlags);
+            return new VulkanGraphicsTexture<TMetadata>(kind, cpuAccess, in memoryBlockRegion, width, height, depth, vulkanImage);
         }
 
         /// <inheritdoc />

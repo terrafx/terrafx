@@ -65,16 +65,15 @@ namespace TerraFX.Graphics
 
         /// <summary>Creates a new graphics primitive for the device.</summary>
         /// <param name="pipeline">The pipeline used for rendering the graphics primitive.</param>
-        /// <param name="vertexBufferView">The buffer view which holds the vertices for the graphics primitive.</param>
-        /// <param name="indexBufferView">The buffer view which holds the indices for the graphics primitive or <c>default</c> if none exists.</param>
-        /// <param name="inputResources">The resources which hold the input data for the graphics primitive or an empty span if none exist.</param>
+        /// <param name="vertexBufferRegion">The buffer region which holds the vertices for the graphics primitive.</param>
+        /// <param name="indexBufferRegion">The buffer region which holds the indices for the graphics primitive or <c>default</c> if none exists.</param>
+        /// <param name="inputResourceRegions">The resources which hold the input data for the graphics primitive or an empty span if none exist.</param>
         /// <exception cref="ArgumentNullException"><paramref name="pipeline" /> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="vertexBufferView" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="pipeline" /> was not created for this device.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexBufferView" /> was not created for this device.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexBufferView" /> was not created for this device.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexBufferRegion" /> was not created for this device.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexBufferRegion" /> was not created for this device.</exception>
         /// <exception cref="ObjectDisposedException">The device has been disposed.</exception>
-        public abstract GraphicsPrimitive CreatePrimitive(GraphicsPipeline pipeline, in GraphicsBufferView vertexBufferView, in GraphicsBufferView indexBufferView = default, ReadOnlySpan<GraphicsResource> inputResources = default);
+        public abstract GraphicsPrimitive CreatePrimitive(GraphicsPipeline pipeline, in GraphicsMemoryRegion<IGraphicsResource> vertexBufferRegion, in GraphicsMemoryRegion<IGraphicsResource> indexBufferRegion = default, ReadOnlySpan<GraphicsMemoryRegion<IGraphicsResource>> inputResourceRegions = default);
 
         /// <summary>Creates a new graphics shader for the device.</summary>
         /// <param name="kind">The kind of graphics shader to create.</param>

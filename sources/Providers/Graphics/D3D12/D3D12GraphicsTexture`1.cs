@@ -13,14 +13,15 @@ using static TerraFX.Utilities.State;
 namespace TerraFX.Graphics.Providers.D3D12
 {
     /// <inheritdoc />
-    public sealed unsafe class D3D12GraphicsTexture : GraphicsTexture
+    public sealed unsafe class D3D12GraphicsTexture<TMetadata> : GraphicsTexture<TMetadata>, ID3D12GraphicsTexture
+        where TMetadata : struct, IGraphicsMemoryRegionCollection<IGraphicsResource>.IMetadata
     {
         private ValueLazy<Pointer<ID3D12Resource>> _d3d12Resource;
         private ValueLazy<D3D12_RESOURCE_STATES> _d3d12ResourceState;
 
         private State _state;
 
-        internal D3D12GraphicsTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, in GraphicsMemoryBlockRegion memoryBlockRegion, uint width, uint height, ushort depth)
+        internal D3D12GraphicsTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, in GraphicsMemoryRegion<IGraphicsMemoryBlock> memoryBlockRegion, uint width, uint height, ushort depth)
             : base(kind, cpuAccess, in memoryBlockRegion, width, height, depth)
         {
             _d3d12Resource = new ValueLazy<Pointer<ID3D12Resource>>(CreateD3D12Resource);
@@ -29,11 +30,14 @@ namespace TerraFX.Graphics.Providers.D3D12
             _ = _state.Transition(to: Initialized);
         }
 
-        /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsTexture" /> class.</summary>
+        /// <summary>Finalizes an instance of the <see cref="D3D12GraphicsTexture{TMetadata}" /> class.</summary>
         ~D3D12GraphicsTexture() => Dispose(isDisposing: true);
 
-        /// <inheritdoc cref="GraphicsResource.Allocator" />
+        /// <inheritdoc cref="IGraphicsResource.Allocator" />
         public new D3D12GraphicsMemoryAllocator Allocator => (D3D12GraphicsMemoryAllocator)base.Allocator;
+
+        /// <inheritdoc />
+        public new ID3D12GraphicsMemoryBlock Block => (ID3D12GraphicsMemoryBlock)base.Block;
 
         /// <summary>Gets the underlying <see cref="ID3D12Resource" /> for the texture.</summary>
         /// <exception cref="ExternalException">The call to <see cref="ID3D12Device.CreateCommittedResource(D3D12_HEAP_PROPERTIES*, D3D12_HEAP_FLAGS, D3D12_RESOURCE_DESC*, D3D12_RESOURCE_STATES, D3D12_CLEAR_VALUE*, Guid*, void**)" /> failed.</exception>
@@ -44,6 +48,75 @@ namespace TerraFX.Graphics.Providers.D3D12
         public D3D12_RESOURCE_STATES D3D12ResourceState => _d3d12ResourceState.Value;
 
         /// <inheritdoc />
+        /// <exception cref="ExternalException">The call to <see cref="ID3D12Resource.Map(uint, D3D12_RANGE*, void**)" /> failed.</exception>
+        public override T* Map<T>()
+        {
+            var readRange = default(D3D12_RANGE);
+
+            byte* pDestination;
+            ThrowExternalExceptionIfFailed(D3D12Resource->Map(Subresource: 0, &readRange, (void**)&pDestination), nameof(ID3D12Resource.Map));
+
+            return (T*)pDestination;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="ExternalException">The call to <see cref="ID3D12Resource.Map(uint, D3D12_RANGE*, void**)" /> failed.</exception>
+        public override T* Map<T>(nuint rangeOffset, nuint rangeLength)
+        {
+            var readRange = default(D3D12_RANGE);
+
+            byte* pDestination;
+            ThrowExternalExceptionIfFailed(D3D12Resource->Map(Subresource: 0, &readRange, (void**)&pDestination), nameof(ID3D12Resource.Map));
+
+            return (T*)(pDestination + rangeOffset);
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="ExternalException">The call to <see cref="ID3D12Resource.Map(uint, D3D12_RANGE*, void**)" /> failed.</exception>
+        public override T* MapForRead<T>()
+        {
+            byte* pDestination;
+            ThrowExternalExceptionIfFailed(D3D12Resource->Map(Subresource: 0, null, (void**)&pDestination), nameof(ID3D12Resource.Map));
+
+            return (T*)pDestination;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="ExternalException">The call to <see cref="ID3D12Resource.Map(uint, D3D12_RANGE*, void**)" /> failed.</exception>
+        public override T* MapForRead<T>(nuint readRangeOffset, nuint readRangeLength)
+        {
+            var readRange = new D3D12_RANGE {
+                Begin = readRangeOffset,
+                End = readRangeOffset + readRangeLength,
+            };
+
+            byte* pDestination;
+            ThrowExternalExceptionIfFailed(D3D12Resource->Map(Subresource: 0, &readRange, (void**)&pDestination), nameof(ID3D12Resource.Map));
+
+            return (T*)(pDestination + readRange.Begin);
+        }
+
+        /// <inheritdoc />
+        public override void Unmap()
+        {
+            var writtenRange = default(D3D12_RANGE);
+            D3D12Resource->Unmap(Subresource: 0, &writtenRange);
+        }
+
+        /// <inheritdoc />
+        public override void UnmapAndWrite() => D3D12Resource->Unmap(Subresource: 0, null);
+
+        /// <inheritdoc />
+        public override void UnmapAndWrite(nuint writtenRangeOffset, nuint writtenRangeLength)
+        {
+            var writtenRange = new D3D12_RANGE {
+                Begin = writtenRangeOffset,
+                End = writtenRangeOffset + writtenRangeLength,
+            };
+            D3D12Resource->Unmap(Subresource: 0, &writtenRange);
+        }
+
+        /// <inheritdoc />
         protected override void Dispose(bool isDisposing)
         {
             var priorState = _state.BeginDispose();
@@ -51,36 +124,10 @@ namespace TerraFX.Graphics.Providers.D3D12
             if (priorState < Disposing)
             {
                 _d3d12Resource.Dispose(ReleaseIfNotNull);
-                MemoryBlockRegion.Block.Free(in MemoryBlockRegion);
+                MemoryBlockRegion.Parent.Free(in MemoryBlockRegion);
             }
 
             _state.EndDispose();
-        }
-
-        /// <inheritdoc />
-        /// <exception cref="ExternalException">The call to <see cref="ID3D12Resource.Map(uint, D3D12_RANGE*, void**)" /> failed.</exception>
-        public override T* Map<T>(nuint readRangeOffset, nuint readRangeLength)
-        {
-            var readRange = new D3D12_RANGE {
-                Begin = readRangeOffset,
-                End = readRangeOffset + readRangeLength,
-            };
-
-            void* pDestination;
-            ThrowExternalExceptionIfFailed(D3D12Resource->Map(Subresource: 0, &readRange, &pDestination), nameof(ID3D12Resource.Map));
-
-            return (T*)pDestination;
-        }
-
-        /// <inheritdoc />
-        public override void Unmap(nuint writtenRangeOffset, nuint writtenRangeLength)
-        {
-            var writtenRange = new D3D12_RANGE {
-                Begin = writtenRangeOffset,
-                End = writtenRangeOffset + writtenRangeLength,
-            };
-
-            D3D12Resource->Unmap(Subresource: 0, &writtenRange);
         }
 
         private Pointer<ID3D12Resource> CreateD3D12Resource()
@@ -101,7 +148,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             var device = Allocator.Device;
             var d3d12Device = device.D3D12Device;
-            var d3d12Heap = Block.GetHandle<Pointer<ID3D12Heap>>();
+            var d3d12Heap = Block.D3D12Heap;
 
             ThrowExternalExceptionIfFailed(d3d12Device->CreatePlacedResource(
                 d3d12Heap,

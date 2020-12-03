@@ -2,7 +2,7 @@
 
 namespace TerraFX.Graphics
 {
-    /// <summary>Defines the CPU access capabilities for a <see cref="GraphicsResource" />.</summary>
+    /// <summary>Defines the CPU access capabilities for a <see cref="IGraphicsResource" />.</summary>
     public enum GraphicsResourceCpuAccess
     {
         /// <summary>The graphics resource has no CPU access, it is only accessible from the GPU.</summary>

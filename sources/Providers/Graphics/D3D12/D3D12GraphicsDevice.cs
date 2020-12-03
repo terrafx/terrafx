@@ -134,14 +134,14 @@ namespace TerraFX.Graphics.Providers.D3D12
         }
 
         /// <inheritdoc />
-        public override D3D12GraphicsPrimitive CreatePrimitive(GraphicsPipeline pipeline, in GraphicsBufferView vertexBufferView, in GraphicsBufferView indexBufferView = default, ReadOnlySpan<GraphicsResource> inputResources = default)
-            => CreatePrimitive((D3D12GraphicsPipeline)pipeline, in vertexBufferView, in indexBufferView, inputResources);
+        public override D3D12GraphicsPrimitive CreatePrimitive(GraphicsPipeline pipeline, in GraphicsMemoryRegion<IGraphicsResource> vertexBufferView, in GraphicsMemoryRegion<IGraphicsResource> indexBufferView = default, ReadOnlySpan<GraphicsMemoryRegion<IGraphicsResource>> inputResourceRegions = default)
+            => CreatePrimitive((D3D12GraphicsPipeline)pipeline, in vertexBufferView, in indexBufferView, inputResourceRegions);
 
-        /// <inheritdoc cref="CreatePrimitive(GraphicsPipeline, in GraphicsBufferView, in GraphicsBufferView, ReadOnlySpan{GraphicsResource})" />
-        private D3D12GraphicsPrimitive CreatePrimitive(D3D12GraphicsPipeline pipeline, in GraphicsBufferView vertexBufferView, in GraphicsBufferView indexBufferView, ReadOnlySpan<GraphicsResource> inputResources)
+        /// <inheritdoc cref="CreatePrimitive(GraphicsPipeline, in GraphicsMemoryRegion{IGraphicsResource}, in GraphicsMemoryRegion{IGraphicsResource}, ReadOnlySpan{GraphicsMemoryRegion{IGraphicsResource}})" />
+        private D3D12GraphicsPrimitive CreatePrimitive(D3D12GraphicsPipeline pipeline, in GraphicsMemoryRegion<IGraphicsResource> vertexBufferView, in GraphicsMemoryRegion<IGraphicsResource> indexBufferView, ReadOnlySpan<GraphicsMemoryRegion<IGraphicsResource>> inputResourceRegions)
         {
             _state.ThrowIfDisposedOrDisposing();
-            return new D3D12GraphicsPrimitive(this, pipeline, in vertexBufferView, in indexBufferView, inputResources);
+            return new D3D12GraphicsPrimitive(this, pipeline, in vertexBufferView, in indexBufferView, inputResourceRegions);
         }
 
         /// <inheritdoc />

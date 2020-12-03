@@ -26,13 +26,13 @@ namespace TerraFX.Graphics
         private readonly ulong _blockMinimumFreeRegionSizeToRegister;
         private readonly ulong _blockPreferredSize;
         private readonly GraphicsMemoryAllocator _allocator;
-        private readonly List<GraphicsMemoryBlock> _blocks;
+        private readonly List<IGraphicsMemoryBlock> _blocks;
         private readonly ReaderWriterLockSlim _mutex;
         private readonly nuint _maximumBlockCount;
         private readonly nuint _minimumBlockCount;
 
         private ulong _minimumSize;
-        private GraphicsMemoryBlock? _emptyBlock;
+        private IGraphicsMemoryBlock? _emptyBlock;
         private State _state;
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsMemoryBlockCollection" /> class.</summary>
@@ -71,7 +71,7 @@ namespace TerraFX.Graphics
             _blockMinimumFreeRegionSizeToRegister = blockMinimumFreeRegionSizeToRegister;
             _blockPreferredSize = blockPreferredSize;
             _allocator = allocator;
-            _blocks = new List<GraphicsMemoryBlock>();
+            _blocks = new List<IGraphicsMemoryBlock>();
             _mutex = new ReaderWriterLockSlim();
             _maximumBlockCount = maximumBlockCount;
             _minimumBlockCount = minimumBlockCount;
@@ -116,6 +116,25 @@ namespace TerraFX.Graphics
         /// <summary>Gets the minimum size of the collection, in bytes.</summary>
         public ulong MinimumSize => _minimumSize;
 
+        /// <summary>Allocates a region of memory in the collection.</summary>
+        /// <param name="size">The size of the region to allocate.</param>
+        /// <param name="alignment">The alignment of the region to allocate.</param>
+        /// <param name="flags">The flags that modify how the region is allocated.</param>
+        /// <returns>The allocated region.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not a <c>power of two</c>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="flags" /> has an invalid combination.</exception>
+        public GraphicsMemoryRegion<IGraphicsMemoryBlock> Allocate(ulong size, ulong alignment, GraphicsMemoryAllocationFlags flags)
+        {
+            var succeeded = TryAllocateRegion(size, alignment, flags, out var region);
+
+            if (!succeeded)
+            {
+                ThrowOutOfMemoryException();
+            }
+            return region;
+        }
+
         /// <inheritdoc />
         public void Dispose()
         {
@@ -126,13 +145,13 @@ namespace TerraFX.Graphics
         /// <summary>Frees a region from the collection.</summary>
         /// <param name="region">The region to be freed.</param>
         /// <exception cref="KeyNotFoundException"><paramref name="region" /> was not found in the collection.</exception>
-        public void Free(in GraphicsMemoryBlockRegion region)
+        public void Free(in GraphicsMemoryRegion<IGraphicsMemoryBlock> region)
         {
             _allocator.GetBudget(this, out var budget);
             var isBudgetExceeded = budget.EstimatedUsage >= budget.EstimatedBudget;
 
             using var mutex = new WriterLockSlim(_mutex, _allocator.IsExternallySynchronized);
-            var block = region.Block;
+            var block = region.Parent;
 
             if (!_blocks.Contains(block))
             {
@@ -179,7 +198,7 @@ namespace TerraFX.Graphics
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not a <c>power of two</c>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="flags" /> has an invalid combination.</exception>
-        public bool TryAllocate(ulong size, ulong alignment, GraphicsMemoryAllocationFlags flags, out GraphicsMemoryBlockRegion region)
+        public bool TryAllocate(ulong size, ulong alignment, GraphicsMemoryAllocationFlags flags, out GraphicsMemoryRegion<IGraphicsMemoryBlock> region)
         {
             using var mutex = new WriterLockSlim(_mutex, _allocator.IsExternallySynchronized);
             return TryAllocateRegion(size, alignment, flags, out region);
@@ -194,7 +213,7 @@ namespace TerraFX.Graphics
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is <c>zero</c>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not a <c>power of two</c>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="flags" /> has an invalid combination.</exception>
-        public bool TryAllocate(ulong size, ulong alignment, GraphicsMemoryAllocationFlags flags, Span<GraphicsMemoryBlockRegion> regions)
+        public bool TryAllocate(ulong size, ulong alignment, GraphicsMemoryAllocationFlags flags, Span<GraphicsMemoryRegion<IGraphicsMemoryBlock>> regions)
         {
             var succeeded = true;
             nuint index;
@@ -307,7 +326,13 @@ namespace TerraFX.Graphics
         /// <summary>Creates a new block for the collection.</summary>
         /// <param name="size">The size of the block, in bytes.</param>
         /// <returns>The created graphics memory block.</returns>
-        protected abstract GraphicsMemoryBlock CreateBlock(ulong size);
+        protected GraphicsMemoryBlock<IGraphicsMemoryRegionCollection<IGraphicsMemoryBlock>.DefaultMetadata> CreateBlock(ulong size)
+            => CreateBlock<IGraphicsMemoryRegionCollection<IGraphicsMemoryBlock>.DefaultMetadata>(size);
+
+        /// <inheritdoc cref="CreateBlock(ulong)" />
+        /// <typeparam name="TMetadata">The type used for metadata in the single block of memory.</typeparam>
+        protected abstract GraphicsMemoryBlock<TMetadata> CreateBlock<TMetadata>(ulong size)
+            where TMetadata : struct, IGraphicsMemoryRegionCollection<IGraphicsMemoryBlock>.IMetadata;
 
         /// <inheritdoc />
         protected virtual void Dispose(bool isDisposing)
@@ -375,7 +400,7 @@ namespace TerraFX.Graphics
             }
         }
 
-        private bool TryAllocateRegion(ulong size, ulong alignment, GraphicsMemoryAllocationFlags flags, out GraphicsMemoryBlockRegion region)
+        private bool TryAllocateRegion(ulong size, ulong alignment, GraphicsMemoryAllocationFlags flags, out GraphicsMemoryRegion<IGraphicsMemoryBlock> region)
         {
             if (size + (2 * BlockMarginSize) > _blockPreferredSize)
             {
@@ -404,7 +429,7 @@ namespace TerraFX.Graphics
                 var currentBlock = _blocks[(int)index];
                 AssertNotNull(currentBlock, nameof(currentBlock));
 
-                if (currentBlock.TryAllocate(size, alignment, out region))
+                if (currentBlock.TryAllocate(size, alignment, stride: 1, out region))
                 {
                     if (currentBlock == _emptyBlock)
                     {

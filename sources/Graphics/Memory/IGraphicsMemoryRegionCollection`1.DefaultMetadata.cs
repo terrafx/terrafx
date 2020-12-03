@@ -15,25 +15,25 @@ using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics
 {
-    public abstract partial class GraphicsMemoryBlock
+    public partial interface IGraphicsMemoryRegionCollection<TSelf>
     {
-        /// <summary>The default metadata for a single block of memory which can contain allocated or free regions.</summary>
+        /// <summary>The default metadata for a memory region collection.</summary>
         public struct DefaultMetadata : IMetadata
         {
             private ulong _size;
             private ulong _marginSize;
             private ulong _minimumFreeRegionSizeToRegister;
             private ulong _totalFreeRegionSize;
-            private GraphicsMemoryBlock _block;
-            private List<LinkedListNode<GraphicsMemoryBlockRegion>> _freeRegionsBySize;
-            private LinkedList<GraphicsMemoryBlockRegion> _regions;
+            private TSelf _collection;
+            private List<LinkedListNode<GraphicsMemoryRegion<TSelf>>> _freeRegionsBySize;
+            private LinkedList<GraphicsMemoryRegion<TSelf>> _regions;
             private uint _freeRegionCount;
 
             /// <inheritdoc />
             public nuint AllocatedRegionCount => ((nuint)(uint)_regions.Count) - _freeRegionCount;
 
             /// <inheritdoc />
-            public GraphicsMemoryBlock Block => _block;
+            public TSelf Collection => _collection;
 
             /// <inheritdoc />
             public bool IsEmpty => (_regions.Count == 1) && (_freeRegionCount == 1);
@@ -54,18 +54,31 @@ namespace TerraFX.Graphics
             public ulong TotalFreeRegionSize => _totalFreeRegionSize;
 
             /// <inheritdoc />
+            public GraphicsMemoryRegion<TSelf> Allocate(ulong size, ulong alignment, uint stride)
+            {
+                var result = TryAllocate(size, alignment, stride, out var region);
+
+                if (!result)
+                {
+                    ThrowOutOfMemoryException();
+                }
+                return region;
+            }
+
+            /// <inheritdoc />
             public void Clear()
             {
                 _freeRegionCount = 1;
                 _totalFreeRegionSize = Size;
                 _regions.Clear();
 
-                var region = new GraphicsMemoryBlockRegion(
-                    Block,
+                var region = new GraphicsMemoryRegion<TSelf>(
+                    Collection,
                     Size,
                     offset: 0,
                     alignment: 1,
-                    GraphicsMemoryBlockRegionKind.Free
+                    stride: 1,
+                    GraphicsMemoryRegionKind.Free
                 );
                 var regionNode = _regions.AddFirst(region);
 
@@ -74,7 +87,7 @@ namespace TerraFX.Graphics
             }
 
             /// <inheritdoc />
-            public void Free(in GraphicsMemoryBlockRegion region)
+            public void Free(in GraphicsMemoryRegion<TSelf> region)
             {
                 for (var regionNode = _regions.First; regionNode is not null; regionNode = regionNode.Next)
                 {
@@ -91,26 +104,27 @@ namespace TerraFX.Graphics
             }
 
             /// <inheritdoc />
-            public void Initialize(GraphicsMemoryBlock block, ulong size, ulong marginSize, ulong minimumFreeRegionSizeToRegister)
+            public void Initialize(TSelf collection, ulong size, ulong marginSize, ulong minimumFreeRegionSizeToRegister)
             {
-                ThrowIfNull(block, nameof(block));
+                ThrowIfNull(collection, nameof(collection));
                 ThrowIfZero(size, nameof(size));
 
                 _size = size;
                 _marginSize = marginSize;
                 _minimumFreeRegionSizeToRegister = minimumFreeRegionSizeToRegister;
-                _block = block;
-                _freeRegionsBySize = new List<LinkedListNode<GraphicsMemoryBlockRegion>>();
-                _regions = new LinkedList<GraphicsMemoryBlockRegion>();
+                _collection = collection;
+                _freeRegionsBySize = new List<LinkedListNode<GraphicsMemoryRegion<TSelf>>>();
+                _regions = new LinkedList<GraphicsMemoryRegion<TSelf>>();
 
                 Clear();
             }
 
             /// <inheritdoc />
-            public bool TryAllocate(ulong size, ulong alignment, out GraphicsMemoryBlockRegion region)
+            public bool TryAllocate(ulong size, ulong alignment, uint stride, out GraphicsMemoryRegion<TSelf> region)
             {
                 ThrowIfZero(size, nameof(size));
                 ThrowIfNotPow2(alignment, nameof(alignment));
+                ThrowIfZero(stride, nameof(stride));
 
                 Validate();
 
@@ -130,7 +144,7 @@ namespace TerraFX.Graphics
                     {
                         var regionNode = _freeRegionsBySize[(int)index];
 
-                        if (TryAllocate(size, alignment, regionNode))
+                        if (TryAllocate(size, alignment, stride, regionNode))
                         {
                             region = regionNode.ValueRef;
                             return true;
@@ -142,7 +156,8 @@ namespace TerraFX.Graphics
                 return false;
             }
 
-            /// <inheritdoc />
+            /// <inheritdoc cref="IMetadata.Validate" />
+            [Conditional("DEBUG")]
             public void Validate()
             {
                 Assert(_regions.Count != 0);
@@ -163,7 +178,7 @@ namespace TerraFX.Graphics
                     // The node should immediately procede the previous
                     Assert(region.Offset == calculatedSize);
 
-                    var isCurrentRegionFree = region.Kind == GraphicsMemoryBlockRegionKind.Free;
+                    var isCurrentRegionFree = region.Kind == GraphicsMemoryRegionKind.Free;
 
                     // Two adjacent free regions are invalid, they should have been merged
                     Assert(!isPreviousRegionFree || !isCurrentRegionFree);
@@ -224,16 +239,16 @@ namespace TerraFX.Graphics
                 return index;
             }
 
-            private LinkedListNode<GraphicsMemoryBlockRegion> FreeRegion(LinkedListNode<GraphicsMemoryBlockRegion> regionNode)
+            private LinkedListNode<GraphicsMemoryRegion<TSelf>> FreeRegion(LinkedListNode<GraphicsMemoryRegion<TSelf>> regionNode)
             {
                 ref var region = ref regionNode.ValueRef;
 
-                if (region.Kind == GraphicsMemoryBlockRegionKind.Free)
+                if (region.Kind == GraphicsMemoryRegionKind.Free)
                 {
                     return regionNode;
                 }
 
-                region = region.WithKind(GraphicsMemoryBlockRegionKind.Free);
+                region = region.WithKind(GraphicsMemoryRegionKind.Free);
 
                 // Update totals
                 ++_freeRegionCount;
@@ -245,14 +260,14 @@ namespace TerraFX.Graphics
 
                 var nextRegionNode = regionNode.Next;
 
-                if ((nextRegionNode is not null) && (nextRegionNode.ValueRef.Kind == GraphicsMemoryBlockRegionKind.Free))
+                if ((nextRegionNode is not null) && (nextRegionNode.ValueRef.Kind == GraphicsMemoryRegionKind.Free))
                 {
                     mergeWithNext = true;
                 }
 
                 var prevRegionNode = regionNode.Previous;
 
-                if ((prevRegionNode is not null) && (prevRegionNode.ValueRef.Kind == GraphicsMemoryBlockRegionKind.Free))
+                if ((prevRegionNode is not null) && (prevRegionNode.ValueRef.Kind == GraphicsMemoryRegionKind.Free))
                 {
                     mergeWithPrev = true;
                 }
@@ -279,15 +294,15 @@ namespace TerraFX.Graphics
                 }
             }
 
-            private void MergeFreeRegionWithNext(LinkedListNode<GraphicsMemoryBlockRegion> regionNode)
+            private void MergeFreeRegionWithNext(LinkedListNode<GraphicsMemoryRegion<TSelf>> regionNode)
             {
                 AssertNotNull(regionNode, nameof(regionNode));
-                Assert(regionNode.ValueRef.Kind == GraphicsMemoryBlockRegionKind.Free);
+                Assert(regionNode.ValueRef.Kind == GraphicsMemoryRegionKind.Free);
 
                 var nextRegionNode = regionNode.Next;
 
                 AssertNotNull(nextRegionNode, nameof(nextRegionNode));
-                Assert(nextRegionNode.ValueRef.Kind == GraphicsMemoryBlockRegionKind.Free);
+                Assert(nextRegionNode.ValueRef.Kind == GraphicsMemoryRegionKind.Free);
 
                 ref var region = ref regionNode.ValueRef;
                 ref readonly var nextRegion = ref nextRegionNode.ValueRef;
@@ -299,9 +314,9 @@ namespace TerraFX.Graphics
                 _regions.Remove(nextRegionNode);
             }
 
-            private void RegisterFreeRegion(LinkedListNode<GraphicsMemoryBlockRegion> regionNode)
+            private void RegisterFreeRegion(LinkedListNode<GraphicsMemoryRegion<TSelf>> regionNode)
             {
-                Assert(regionNode.ValueRef.Kind == GraphicsMemoryBlockRegionKind.Free);
+                Assert(regionNode.ValueRef.Kind == GraphicsMemoryRegionKind.Free);
                 Assert(regionNode.ValueRef.Size > 0);
 
                 ValidateFreeRegionsBySizeList();
@@ -322,13 +337,14 @@ namespace TerraFX.Graphics
                 ValidateFreeRegionsBySizeList();
             }
 
-            private bool TryAllocate(ulong size, ulong alignment, LinkedListNode<GraphicsMemoryBlockRegion> regionNode)
+            private bool TryAllocate(ulong size, ulong alignment, uint stride, LinkedListNode<GraphicsMemoryRegion<TSelf>> regionNode)
             {
                 Assert(size > 0);
                 AssertNotNull(regionNode, nameof(regionNode));
+                Assert(stride > 0);
 
                 ref var region = ref regionNode.ValueRef;
-                Assert(region.Kind == GraphicsMemoryBlockRegionKind.Free);
+                Assert(region.Kind == GraphicsMemoryRegionKind.Free);
 
                 if (region.Size < size)
                 {
@@ -363,24 +379,26 @@ namespace TerraFX.Graphics
 
                 UnregisterFreeRegion(regionNode);
 
-                region = new GraphicsMemoryBlockRegion(
-                    Block,
+                region = new GraphicsMemoryRegion<TSelf>(
+                    Collection,
                     size,
                     offset,
                     alignment,
-                    GraphicsMemoryBlockRegionKind.Allocated
+                    stride,
+                    GraphicsMemoryRegionKind.Allocated
                 );
 
                 if (paddingEnd != 0)
                 {
                     // If there are any free bytes remaining at the end, insert a new free region after the current one
 
-                    var paddingRegion = new GraphicsMemoryBlockRegion(
-                        Block,
+                    var paddingRegion = new GraphicsMemoryRegion<TSelf>(
+                        Collection,
                         paddingEnd,
                         offset + size,
                         alignment: 1,
-                        GraphicsMemoryBlockRegionKind.Free
+                        stride: 1,
+                        GraphicsMemoryRegionKind.Free
                     );
 
                     var paddingEndItem = _regions.AddAfter(regionNode, paddingRegion);
@@ -391,12 +409,13 @@ namespace TerraFX.Graphics
                 {
                     // If there are any free bytes remaining at the beginning, insert a new free region before the current one
 
-                    var paddingRegion = new GraphicsMemoryBlockRegion(
-                        Block,
+                    var paddingRegion = new GraphicsMemoryRegion<TSelf>(
+                        Collection,
                         paddingBegin,
                         offset - paddingBegin,
                         alignment: 1,
-                        GraphicsMemoryBlockRegionKind.Free
+                        stride: 1,
+                        GraphicsMemoryRegionKind.Free
                     );
 
                     var paddingBeginItem = _regions.AddBefore(regionNode, paddingRegion);
@@ -421,9 +440,9 @@ namespace TerraFX.Graphics
                 return true;
             }
 
-            private void UnregisterFreeRegion(LinkedListNode<GraphicsMemoryBlockRegion> regionNode)
+            private void UnregisterFreeRegion(LinkedListNode<GraphicsMemoryRegion<TSelf>> regionNode)
             {
-                Assert(regionNode.ValueRef.Kind == GraphicsMemoryBlockRegionKind.Free);
+                Assert(regionNode.ValueRef.Kind == GraphicsMemoryRegionKind.Free);
                 Assert(regionNode.ValueRef.Size > 0);
 
                 ValidateFreeRegionsBySizeList();
@@ -455,13 +474,15 @@ namespace TerraFX.Graphics
                 {
                     ref readonly var region = ref _freeRegionsBySize[(int)i].ValueRef;
 
-                    Assert(region.Kind == GraphicsMemoryBlockRegionKind.Free);
+                    Assert(region.Kind == GraphicsMemoryRegionKind.Free);
                     Assert(region.Size >= MinimumFreeRegionSizeToRegister);
                     Assert(region.Size >= lastRegionSize);
 
                     lastRegionSize = region.Size;
                 }
             }
+
+            void IMetadata.Validate() => Validate();
         }
     }
 }

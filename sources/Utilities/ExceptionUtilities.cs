@@ -308,6 +308,11 @@ namespace TerraFX.Utilities
             throw new ObjectDisposedException(objectName, message);
         }
 
+        /// <summary>Throws an instance of the <see cref="OutOfMemoryException" /> class.</summary>
+        /// <exception cref="OutOfMemoryException">Insufficient memory to continue the execution of the program.</exception>
+        [DoesNotReturn]
+        public static void ThrowOutOfMemoryException() => throw new OutOfMemoryException();
+
         /// <summary>Throws an instance of the <see cref="TimeoutException" /> class.</summary>
         /// <param name="timeout">The timeout that was reached.</param>
         /// <exception cref="TimeoutException">The timeout of <paramref name="timeout" /> was reached before the operation could be completed.</exception>

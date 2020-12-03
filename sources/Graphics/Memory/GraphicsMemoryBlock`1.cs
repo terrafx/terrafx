@@ -7,16 +7,21 @@
 // The original code is Copyright © Advanced Micro Devices, Inc. All rights reserved. Licensed under the MIT License (MIT).
 
 using System;
+using System.Diagnostics;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics
 {
     /// <summary>Defines a single block of memory which can contain allocated or free regions.</summary>
-    public abstract class GraphicsMemoryBlock<TMetadata> : GraphicsMemoryBlock
-        where TMetadata : struct, GraphicsMemoryBlock.IMetadata
+    /// <typeparam name="TMetadata">The type used for metadata in the single block of memory.</typeparam>
+    public abstract class GraphicsMemoryBlock<TMetadata> : IGraphicsMemoryBlock
+        where TMetadata : struct, IGraphicsMemoryRegionCollection<IGraphicsMemoryBlock>.IMetadata
     {
-#pragma warning disable IDE0044
+        private readonly GraphicsMemoryBlockCollection _collection;
+
+#pragma warning disable CS0649, IDE0044
         private TMetadata _metadata;
-#pragma warning restore IDE0044
+#pragma warning restore CS0649, IDE0044
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsMemoryBlock{TMetadata}" /> class.</summary>
         /// <param name="collection">The block collection which contains the memory block.</param>
@@ -26,43 +31,68 @@ namespace TerraFX.Graphics
         /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is zero.</exception>
         protected GraphicsMemoryBlock(GraphicsMemoryBlockCollection collection, ulong size, ulong marginSize, ulong minimumFreeRegionSizeToRegister)
-            : base(collection)
         {
-            _metadata = new TMetadata();
+            ThrowIfNull(collection, nameof(collection));
+
+            _collection = collection;
             _metadata.Initialize(this, size, marginSize, minimumFreeRegionSizeToRegister);
         }
 
         /// <inheritdoc />
-        public override nuint AllocatedRegionCount => _metadata.AllocatedRegionCount;
+        public nuint AllocatedRegionCount => _metadata.AllocatedRegionCount;
 
         /// <inheritdoc />
-        public override bool IsEmpty => _metadata.IsEmpty;
+        public GraphicsMemoryBlockCollection Collection => _collection;
 
         /// <inheritdoc />
-        public override ulong LargestFreeRegionSize => _metadata.LargestFreeRegionSize;
+        public bool IsEmpty => _metadata.IsEmpty;
 
         /// <inheritdoc />
-        public override ulong MarginSize => _metadata.MarginSize;
+        public ulong LargestFreeRegionSize => _metadata.LargestFreeRegionSize;
 
         /// <inheritdoc />
-        public override ulong MinimumFreeRegionSizeToRegister => _metadata.MinimumFreeRegionSizeToRegister;
+        public ulong MarginSize => _metadata.MarginSize;
 
         /// <inheritdoc />
-        public override ulong Size => _metadata.Size;
+        public ulong MinimumFreeRegionSizeToRegister => _metadata.MinimumFreeRegionSizeToRegister;
 
         /// <inheritdoc />
-        public override ulong TotalFreeRegionSize => _metadata.TotalFreeRegionSize;
+        public ulong Size => _metadata.Size;
 
         /// <inheritdoc />
-        public override void Clear() => _metadata.Clear();
+        public ulong TotalFreeRegionSize => _metadata.TotalFreeRegionSize;
+
+        /// <inheritdoc cref="IGraphicsMemoryRegionCollection{TSelf}.Allocate(ulong, ulong, uint)" />
+        public GraphicsMemoryRegion<IGraphicsMemoryBlock> Allocate(ulong size, ulong alignment) => _metadata.Allocate(size, alignment, stride: 1);
 
         /// <inheritdoc />
-        public override void Free(in GraphicsMemoryBlockRegion region) => _metadata.Free(in region);
+        public void Clear() => _metadata.Clear();
 
         /// <inheritdoc />
-        public override bool TryAllocate(ulong size, ulong alignment, out GraphicsMemoryBlockRegion region) => _metadata.TryAllocate(size, alignment, out region);
+        public void Dispose()
+        {
+            Dispose(isDisposing: true);
+            GC.SuppressFinalize(this);
+        }
 
         /// <inheritdoc />
-        public override void Validate() => _metadata.Validate();
+        public void Free(in GraphicsMemoryRegion<IGraphicsMemoryBlock> region) => _metadata.Free(in region);
+
+        /// <inheritdoc cref="IGraphicsMemoryRegionCollection{TSelf}.TryAllocate(ulong, ulong, uint, out GraphicsMemoryRegion{TSelf})" />
+        public bool TryAllocate(ulong size, ulong alignment, out GraphicsMemoryRegion<IGraphicsMemoryBlock> region) => _metadata.TryAllocate(size, alignment, stride: 1, out region);
+
+        /// <inheritdoc cref="IGraphicsMemoryRegionCollection{TSelf}.Validate" />
+        [Conditional("DEBUG")]
+        public void Validate() => _metadata.Validate();
+
+        /// <inheritdoc cref="Dispose()" />
+        /// <param name="isDisposing"><c>true</c> if the method was called from <see cref="Dispose()" />; otherwise, <c>false</c>.</param>
+        protected abstract void Dispose(bool isDisposing);
+
+        GraphicsMemoryRegion<IGraphicsMemoryBlock> IGraphicsMemoryRegionCollection<IGraphicsMemoryBlock>.Allocate(ulong size, ulong alignment, uint stride) => _metadata.Allocate(size, alignment, stride);
+
+        bool IGraphicsMemoryRegionCollection<IGraphicsMemoryBlock>.TryAllocate(ulong size, ulong alignment, uint stride, out GraphicsMemoryRegion<IGraphicsMemoryBlock> region) => _metadata.TryAllocate(size, alignment, stride, out region);
+
+        void IGraphicsMemoryRegionCollection<IGraphicsMemoryBlock>.Validate() => Validate();
     }
 }
