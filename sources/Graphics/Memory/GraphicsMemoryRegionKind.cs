@@ -8,13 +8,13 @@
 
 namespace TerraFX.Graphics
 {
-    /// <summary>Defines the kind of a memory block region.</summary>
-    public enum GraphicsMemoryBlockRegionKind
+    /// <summary>Defines the kind of a memory region.</summary>
+    public enum GraphicsMemoryRegionKind
     {
-        /// <summary>The memory block region is free.</summary>
+        /// <summary>The memory region is free.</summary>
         Free = 0,
 
-        /// <summary>The memory block region is allocated.</summary>
+        /// <summary>The memory region is allocated.</summary>
         Allocated = 1,
     }
 }

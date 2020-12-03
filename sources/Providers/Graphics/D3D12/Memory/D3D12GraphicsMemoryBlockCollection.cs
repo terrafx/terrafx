@@ -30,7 +30,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         public D3D12_HEAP_TYPE D3D12HeapType => _d3d12HeapType;
 
         /// <inheritdoc />
-        protected override GraphicsMemoryBlock CreateBlock(ulong size) => new D3D12GraphicsMemoryBlock<GraphicsMemoryBlock.DefaultMetadata>(
+        protected override D3D12GraphicsMemoryBlock<TMetadata> CreateBlock<TMetadata>(ulong size) => new D3D12GraphicsMemoryBlock<TMetadata>(
             collection: this,
             size,
             BlockMarginSize,

@@ -8,14 +8,13 @@ using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
-using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
     /// <inheritdoc />
-    public sealed unsafe class VulkanGraphicsMemoryBlock<TMetadata> : GraphicsMemoryBlock<TMetadata>
-        where TMetadata : struct, GraphicsMemoryBlock.IMetadata
+    public sealed unsafe class VulkanGraphicsMemoryBlock<TMetadata> : GraphicsMemoryBlock<TMetadata>, IVulkanGraphicsMemoryBlock
+        where TMetadata : struct, IGraphicsMemoryRegionCollection<IGraphicsMemoryBlock>.IMetadata
     {
         private ValueLazy<VkDeviceMemory> _vulkanDeviceMemory;
         private State _state;
@@ -33,18 +32,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <summary>Gets the <see cref="VkDeviceMemory" /> for the memory block.</summary>
         public VkDeviceMemory VulkanDeviceMemory => _vulkanDeviceMemory.Value;
 
-        /// <inheritdoc cref="GraphicsMemoryBlock.Collection" />
+        /// <inheritdoc cref="IGraphicsMemoryBlock.Collection" />
         public new VulkanGraphicsMemoryBlockCollection Collection => (VulkanGraphicsMemoryBlockCollection)base.Collection;
-
-        /// <inheritdoc />
-        public override T GetHandle<T>()
-        {
-            if (typeof(T) != typeof(VkDeviceMemory))
-            {
-                ThrowArgumentExceptionForInvalidType(typeof(T), nameof(T));
-            }
-            return (T)(object)_vulkanDeviceMemory.Value;
-        }
 
         /// <inheritdoc />
         protected override void Dispose(bool isDisposing)

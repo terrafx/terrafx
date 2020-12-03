@@ -46,17 +46,19 @@ namespace TerraFX.Samples.Graphics
             base.Draw(graphicsContext);
         }
 
-        private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer)
+        private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext, IGraphicsBuffer vertexStagingBuffer)
         {
             var graphicsDevice = GraphicsDevice;
             var graphicsSurface = graphicsDevice.Surface;
 
             var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Identity", "main", "main");
+
             var vertexBuffer = CreateVertexBuffer(graphicsContext, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
+            var vertexBufferRegion = vertexBuffer.Allocate(vertexBuffer.Size, alignment: 1, stride: SizeOf<IdentityVertex>());
 
-            return graphicsDevice.CreatePrimitive(graphicsPipeline, new GraphicsBufferView(vertexBuffer, vertexBuffer.Size, SizeOf<IdentityVertex>()));
+            return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion);
 
-            static GraphicsBuffer CreateVertexBuffer(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
+            static IGraphicsBuffer CreateVertexBuffer(GraphicsContext graphicsContext, IGraphicsBuffer vertexStagingBuffer, float aspectRatio)
             {
                 var vertexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.None, (ulong)(sizeof(IdentityVertex) * 3));
                 var pVertexBuffer = vertexStagingBuffer.Map<IdentityVertex>();

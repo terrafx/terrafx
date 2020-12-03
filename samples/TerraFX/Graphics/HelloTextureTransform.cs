@@ -62,7 +62,7 @@ namespace TerraFX.Samples.Graphics
             var x = 0.5f * MathF.Cos(radians);
             var y = 0.5f * MathF.Sin(radians);
 
-            var constantBuffer = (GraphicsBuffer)_trianglePrimitive.InputResources[0];
+            var constantBuffer = (IGraphicsBuffer)_trianglePrimitive.InputResourceRegions[0].Parent;
             var pConstantBuffer = constantBuffer.Map<Matrix4x4>();
 
             // Shaders take transposed matrices, so we want to set X.W
@@ -82,22 +82,31 @@ namespace TerraFX.Samples.Graphics
             base.Draw(graphicsContext);
         }
 
-        private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer textureStagingBuffer)
+        private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext, IGraphicsBuffer vertexStagingBuffer, IGraphicsBuffer textureStagingBuffer)
         {
             var graphicsDevice = GraphicsDevice;
             var graphicsSurface = graphicsDevice.Surface;
 
             var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "TextureTransform", "main", "main");
-            var vertexBuffer = CreateVertexBuffer(graphicsContext, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
 
-            var inputResources = new GraphicsResource[3] {
+            var vertexBuffer = CreateVertexBuffer(graphicsContext, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
+            var vertexBufferRegion = vertexBuffer.Allocate(vertexBuffer.Size, alignment: 1, stride: SizeOf<TextureVertex>());
+
+            var inputResources = new IGraphicsResource[3] {
                 CreateConstantBuffer(graphicsContext),
                 CreateConstantBuffer(graphicsContext),
                 CreateTexture2D(graphicsContext, textureStagingBuffer),
             };
-            return graphicsDevice.CreatePrimitive(graphicsPipeline, new GraphicsBufferView(vertexBuffer, vertexBuffer.Size, SizeOf<TextureVertex>()), indexBufferView: default, inputResources);
 
-            static GraphicsBuffer CreateConstantBuffer(GraphicsContext graphicsContext)
+            var inputResourceRegions = new GraphicsMemoryRegion<IGraphicsResource>[3] {
+                inputResources[0].Allocate(inputResources[0].Size, alignment: 1, stride: SizeOf<Matrix4x4>()),
+                inputResources[1].Allocate(inputResources[1].Size, alignment: 1, stride: SizeOf<Matrix4x4>()),
+                inputResources[2].Allocate(inputResources[2].Size, alignment: 1, stride: 1),
+            };
+
+            return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion, indexBufferRegion: default, inputResourceRegions);
+
+            static IGraphicsBuffer CreateConstantBuffer(GraphicsContext graphicsContext)
             {
                 var constantBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Constant, GraphicsResourceCpuAccess.Write, 256);
 
@@ -108,7 +117,7 @@ namespace TerraFX.Samples.Graphics
                 return constantBuffer;
             }
 
-            static GraphicsTexture CreateTexture2D(GraphicsContext graphicsContext, GraphicsBuffer textureStagingBuffer)
+            static IGraphicsTexture CreateTexture2D(GraphicsContext graphicsContext, IGraphicsBuffer textureStagingBuffer)
             {
                 const uint TextureWidth = 256;
                 const uint TextureHeight = 256;
@@ -135,7 +144,7 @@ namespace TerraFX.Samples.Graphics
                 return texture2D;
             }
 
-            static GraphicsBuffer CreateVertexBuffer(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
+            static IGraphicsBuffer CreateVertexBuffer(GraphicsContext graphicsContext, IGraphicsBuffer vertexStagingBuffer, float aspectRatio)
             {
                 var vertexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.None, (ulong)(sizeof(TextureVertex) * 3));
                 var pVertexBuffer = vertexStagingBuffer.Map<TextureVertex>();

@@ -43,6 +43,13 @@ namespace TerraFX.Graphics.Providers.Vulkan
             return (uint)vulkanImageUsageKind;
         }
 
+        public static VkFormat Map(TexelFormat texelFormat) => texelFormat switch {
+            TexelFormat.R8G8B8A8_UNORM => VkFormat.VK_FORMAT_R8G8B8A8_UNORM,
+            TexelFormat.R16_SINT => VkFormat.VK_FORMAT_R16_SINT,
+            TexelFormat.R16G16UINT => VkFormat.VK_FORMAT_R16G16_SINT,
+            _ => VkFormat.VK_FORMAT_UNDEFINED,
+        };
+
         public static void ThrowExternalExceptionIfNotSuccess(VkResult result, string methodName)
         {
             if (result != VK_SUCCESS)

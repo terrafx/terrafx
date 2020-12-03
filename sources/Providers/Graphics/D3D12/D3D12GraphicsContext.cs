@@ -122,15 +122,15 @@ namespace TerraFX.Graphics.Providers.D3D12
         }
 
         /// <inheritdoc />
-        public override void Copy(GraphicsBuffer destination, GraphicsBuffer source)
-        => Copy((D3D12GraphicsBuffer)destination, (D3D12GraphicsBuffer)source);
+        public override void Copy(IGraphicsBuffer destination, IGraphicsBuffer source)
+            => Copy((ID3D12GraphicsBuffer)destination, (ID3D12GraphicsBuffer)source);
 
         /// <inheritdoc />
-        public override void Copy(GraphicsTexture destination, GraphicsBuffer source)
-            => Copy((D3D12GraphicsTexture)destination, (D3D12GraphicsBuffer)source);
+        public override void Copy(IGraphicsTexture destination, IGraphicsBuffer source)
+            => Copy((ID3D12GraphicsTexture)destination, (ID3D12GraphicsBuffer)source);
 
-        /// <inheritdoc cref="Copy(GraphicsBuffer, GraphicsBuffer)" />
-        public void Copy(D3D12GraphicsBuffer destination, D3D12GraphicsBuffer source)
+        /// <inheritdoc cref="Copy(IGraphicsBuffer, IGraphicsBuffer)" />
+        public void Copy(ID3D12GraphicsBuffer destination, ID3D12GraphicsBuffer source)
         {
             ThrowIfNull(destination, nameof(destination));
             ThrowIfNull(source, nameof(source));
@@ -215,8 +215,8 @@ namespace TerraFX.Graphics.Providers.D3D12
             }
         }
 
-        /// <inheritdoc cref="Copy(GraphicsTexture, GraphicsBuffer)" />
-        public void Copy(D3D12GraphicsTexture destination, D3D12GraphicsBuffer source)
+        /// <inheritdoc cref="Copy(IGraphicsTexture, IGraphicsBuffer)" />
+        public void Copy(ID3D12GraphicsTexture destination, ID3D12GraphicsBuffer source)
         {
             ThrowIfNull(destination, nameof(destination));
             ThrowIfNull(source, nameof(source));
@@ -321,7 +321,6 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             var commandList = D3D12GraphicsCommandList;
             var pipeline = primitive.Pipeline;
-            ref readonly var vertexBufferView = ref primitive.VertexBufferView;
 
             commandList->SetGraphicsRootSignature(pipeline.Signature.D3D12RootSignature);
             commandList->SetPipelineState(pipeline.D3D12PipelineState);
@@ -331,29 +330,32 @@ namespace TerraFX.Graphics.Providers.D3D12
             };
             commandList->SetDescriptorHeaps(1, descriptorHeaps);
 
+            ref readonly var vertexBufferRegion = ref primitive.VertexBufferRegion;
+            var vertexBuffer = (ID3D12GraphicsBuffer)vertexBufferRegion.Parent;
+
             var d3d12VertexBufferView = new D3D12_VERTEX_BUFFER_VIEW {
-                BufferLocation = ((D3D12GraphicsBuffer)vertexBufferView.Buffer).D3D12Resource->GetGPUVirtualAddress(),
-                StrideInBytes = vertexBufferView.Stride,
-                SizeInBytes = (uint)vertexBufferView.Size,
+                BufferLocation = vertexBuffer.D3D12Resource->GetGPUVirtualAddress() + vertexBufferRegion.Offset,
+                StrideInBytes = vertexBufferRegion.Stride,
+                SizeInBytes = (uint)vertexBufferRegion.Size,
             };
             commandList->IASetVertexBuffers(StartSlot: 0, NumViews: 1, &d3d12VertexBufferView);
 
-            var inputResources = primitive.InputResources;
-            var inputResourcesLength = inputResources.Length;
+            var inputResourceRegions = primitive.InputResourceRegions;
+            var inputResourceRegionsLength = inputResourceRegions.Length;
 
             var rootDescriptorTableIndex = 0;
             var cbvSrvUavDescriptorHandleIncrementSize = Device.CbvSrvUavDescriptorHandleIncrementSize;
 
-            for (var index = 0; index < inputResourcesLength; index++)
+            for (var index = 0; index < inputResourceRegionsLength; index++)
             {
-                var inputResource = inputResources[index];
+                var inputResourceRegion = inputResourceRegions[index];
 
-                if (inputResource is D3D12GraphicsBuffer d3d12GraphicsBuffer)
+                if (inputResourceRegion.Parent is ID3D12GraphicsBuffer d3d12GraphicsBuffer)
                 {
                     var gpuVirtualAddress = d3d12GraphicsBuffer.D3D12Resource->GetGPUVirtualAddress();
-                    commandList->SetGraphicsRootConstantBufferView(unchecked((uint)index), gpuVirtualAddress);
+                    commandList->SetGraphicsRootConstantBufferView(unchecked((uint)index), gpuVirtualAddress + inputResourceRegion.Offset);
                 }
-                else if (inputResource is D3D12GraphicsTexture d3d12GraphicsTexture)
+                else if (inputResourceRegion.Parent is ID3D12GraphicsTexture d3d12GraphicsTexture)
                 {
                     var gpuDescriptorHandleForHeapStart = primitive.D3D12CbvSrvUavDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
                     commandList->SetGraphicsRootDescriptorTable(unchecked((uint)index), gpuDescriptorHandleForHeapStart.Offset(rootDescriptorTableIndex, cbvSrvUavDescriptorHandleIncrementSize));
@@ -361,11 +363,11 @@ namespace TerraFX.Graphics.Providers.D3D12
                 }
             }
 
-            ref readonly var indexBufferView = ref primitive.IndexBufferView;
+            ref readonly var indexBufferRegion = ref primitive.IndexBufferRegion;
 
-            if (indexBufferView.Buffer is not null)
+            if (indexBufferRegion.Parent is ID3D12GraphicsBuffer indexBuffer)
             {
-                var indexBufferStride = indexBufferView.Stride;
+                var indexBufferStride = indexBufferRegion.Stride;
                 var indexFormat = DXGI_FORMAT_R16_UINT;
 
                 if (indexBufferStride != 2)
@@ -375,17 +377,17 @@ namespace TerraFX.Graphics.Providers.D3D12
                 }
 
                 var d3d12IndexBufferView = new D3D12_INDEX_BUFFER_VIEW {
-                    BufferLocation = ((D3D12GraphicsBuffer)indexBufferView.Buffer).D3D12Resource->GetGPUVirtualAddress(),
-                    SizeInBytes = (uint)indexBufferView.Size,
+                    BufferLocation = indexBuffer.D3D12Resource->GetGPUVirtualAddress() + indexBufferRegion.Offset,
+                    SizeInBytes = (uint)indexBufferRegion.Size,
                     Format = indexFormat,
                 };
                 commandList->IASetIndexBuffer(&d3d12IndexBufferView);
 
-                commandList->DrawIndexedInstanced(IndexCountPerInstance: (uint)(indexBufferView.Size / indexBufferStride), InstanceCount: 1, StartIndexLocation: 0, BaseVertexLocation: 0, StartInstanceLocation: 0);
+                commandList->DrawIndexedInstanced(IndexCountPerInstance: (uint)(indexBufferRegion.Size / indexBufferStride), InstanceCount: 1, StartIndexLocation: 0, BaseVertexLocation: 0, StartInstanceLocation: 0);
             }
             else
             {
-                commandList->DrawInstanced(VertexCountPerInstance: (uint)(vertexBufferView.Size / vertexBufferView.Stride), InstanceCount: 1, StartVertexLocation: 0, StartInstanceLocation: 0);
+                commandList->DrawInstanced(VertexCountPerInstance: (uint)(vertexBufferRegion.Size / vertexBufferRegion.Stride), InstanceCount: 1, StartVertexLocation: 0, StartInstanceLocation: 0);
             }
         }
 

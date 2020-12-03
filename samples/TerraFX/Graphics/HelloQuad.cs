@@ -47,18 +47,22 @@ namespace TerraFX.Samples.Graphics
             base.Draw(graphicsContext);
         }
 
-        private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer indexStagingBuffer)
+        private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsContext graphicsContext, IGraphicsBuffer vertexStagingBuffer, IGraphicsBuffer indexStagingBuffer)
         {
             var graphicsDevice = GraphicsDevice;
             var graphicsSurface = graphicsDevice.Surface;
 
             var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Identity", "main", "main");
+
             var vertexBuffer = CreateVertexBuffer(graphicsContext, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
+            var vertexBufferRegion = vertexBuffer.Allocate(vertexBuffer.Size, alignment: 1, stride: SizeOf<IdentityVertex>());
+
             var indexBuffer = CreateIndexBuffer(graphicsContext, indexStagingBuffer);
+            var indexBufferRegion = indexBuffer.Allocate(indexBuffer.Size, alignment: 1, stride: sizeof(ushort));
 
-            return graphicsDevice.CreatePrimitive(graphicsPipeline, new GraphicsBufferView(vertexBuffer, vertexBuffer.Size, SizeOf<IdentityVertex>()), new GraphicsBufferView(indexBuffer, indexBuffer.Size, sizeof(ushort)));
+            return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion, indexBufferRegion);
 
-            static GraphicsBuffer CreateVertexBuffer(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
+            static IGraphicsBuffer CreateVertexBuffer(GraphicsContext graphicsContext, IGraphicsBuffer vertexStagingBuffer, float aspectRatio)
             {
                 var vertexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.None, (ulong)(sizeof(IdentityVertex) * 4));
                 var pVertexBuffer = vertexStagingBuffer.Map<IdentityVertex>();
@@ -93,7 +97,7 @@ namespace TerraFX.Samples.Graphics
                 return vertexBuffer;
             }
 
-            static GraphicsBuffer CreateIndexBuffer(GraphicsContext graphicsContext, GraphicsBuffer indexStagingBuffer)
+            static IGraphicsBuffer CreateIndexBuffer(GraphicsContext graphicsContext, IGraphicsBuffer indexStagingBuffer)
             {
                 var indexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Index, GraphicsResourceCpuAccess.None, sizeof(ushort) * 6);
                 var pIndexBuffer = indexStagingBuffer.Map<ushort>();

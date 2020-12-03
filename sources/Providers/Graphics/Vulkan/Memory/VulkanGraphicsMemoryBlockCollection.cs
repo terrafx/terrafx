@@ -25,7 +25,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         public uint VulkanMemoryTypeIndex => _vulkanMemoryTypeIndex;
 
         /// <inheritdoc />
-        protected override GraphicsMemoryBlock CreateBlock(ulong size) => new VulkanGraphicsMemoryBlock<GraphicsMemoryBlock.DefaultMetadata>(
+        protected override VulkanGraphicsMemoryBlock<TMetadata> CreateBlock<TMetadata>(ulong size) => new VulkanGraphicsMemoryBlock<TMetadata>(
             collection: this,
             size,
             BlockMarginSize,

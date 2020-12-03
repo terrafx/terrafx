@@ -8,14 +8,13 @@ using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.D3D12_HEAP_FLAGS;
 using static TerraFX.Interop.Windows;
-using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
     /// <inheritdoc />
-    public sealed unsafe class D3D12GraphicsMemoryBlock<TMetadata> : GraphicsMemoryBlock<TMetadata>
-        where TMetadata : struct, GraphicsMemoryBlock.IMetadata
+    public sealed unsafe class D3D12GraphicsMemoryBlock<TMetadata> : GraphicsMemoryBlock<TMetadata>, ID3D12GraphicsMemoryBlock
+        where TMetadata : struct, IGraphicsMemoryRegionCollection<IGraphicsMemoryBlock>.IMetadata
     {
         private ValueLazy<Pointer<ID3D12Heap>> _d3d12Heap;
         private State _state;
@@ -33,18 +32,8 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <summary>Gets the <see cref="ID3D12Heap" /> for the memory block.</summary>
         public ID3D12Heap* D3D12Heap => _d3d12Heap.Value;
 
-        /// <inheritdoc cref="GraphicsMemoryBlock.Collection" />
+        /// <inheritdoc cref="IGraphicsMemoryBlock.Collection" />
         public new D3D12GraphicsMemoryBlockCollection Collection => (D3D12GraphicsMemoryBlockCollection)base.Collection;
-
-        /// <inheritdoc />
-        public override T GetHandle<T>()
-        {
-            if (typeof(T) != typeof(Pointer<ID3D12Heap>))
-            {
-                ThrowArgumentExceptionForInvalidType(typeof(T), nameof(T));
-            }
-            return (T)(object)_d3d12Heap.Value;
-        }
 
         /// <inheritdoc />
         protected override void Dispose(bool isDisposing)

@@ -12,24 +12,28 @@ using static TerraFX.Utilities.State;
 namespace TerraFX.Graphics.Providers.Vulkan
 {
     /// <inheritdoc />
-    public sealed unsafe class VulkanGraphicsBuffer : GraphicsBuffer
+    public sealed unsafe class VulkanGraphicsBuffer<TMetadata> : GraphicsBuffer<TMetadata>, IVulkanGraphicsBuffer
+        where TMetadata : struct, IGraphicsMemoryRegionCollection<IGraphicsResource>.IMetadata
     {
         private VkBuffer _vulkanBuffer;
         private State _state;
 
-        internal VulkanGraphicsBuffer(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess, in GraphicsMemoryBlockRegion memoryBlockRegion, VkBuffer vulkanBuffer)
+        internal VulkanGraphicsBuffer(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess, in GraphicsMemoryRegion<IGraphicsMemoryBlock> memoryBlockRegion, VkBuffer vulkanBuffer)
             : base(kind, cpuAccess, in memoryBlockRegion)
         {
             _vulkanBuffer = vulkanBuffer;
-            ThrowExternalExceptionIfNotSuccess(vkBindBufferMemory(Allocator.Device.VulkanDevice, vulkanBuffer, Block.GetHandle<VkDeviceMemory>(), memoryBlockRegion.Offset), nameof(vkBindBufferMemory));
+            ThrowExternalExceptionIfNotSuccess(vkBindBufferMemory(Allocator.Device.VulkanDevice, vulkanBuffer, Block.VulkanDeviceMemory, memoryBlockRegion.Offset), nameof(vkBindBufferMemory));
             _ = _state.Transition(to: Initialized);
         }
 
-        /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsBuffer" /> class.</summary>
+        /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsBuffer{TMetadata}" /> class.</summary>
         ~VulkanGraphicsBuffer() => Dispose(isDisposing: true);
 
-        /// <inheritdoc cref="GraphicsResource.Allocator" />
+        /// <inheritdoc cref="IGraphicsResource.Allocator" />
         public new VulkanGraphicsMemoryAllocator Allocator => (VulkanGraphicsMemoryAllocator)base.Allocator;
+
+        /// <inheritdoc />
+        public new IVulkanGraphicsMemoryBlock Block => (IVulkanGraphicsMemoryBlock)base.Block;
 
         /// <summary>Gets the underlying <see cref="VkBuffer" /> for the buffer.</summary>
         /// <exception cref="ObjectDisposedException">The buffer has been disposed.</exception>
@@ -49,7 +53,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var device = Allocator.Device;
 
             var vulkanDevice = device.VulkanDevice;
-            var vulkanDeviceMemory = Block.GetHandle<VkDeviceMemory>();
+            var vulkanDeviceMemory = Block.VulkanDeviceMemory;
 
             void* pDestination;
             ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, &pDestination), nameof(vkMapMemory));
@@ -79,7 +83,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var device = Allocator.Device;
 
             var vulkanDevice = device.VulkanDevice;
-            var vulkanDeviceMemory = Block.GetHandle<VkDeviceMemory>();
+            var vulkanDeviceMemory = Block.VulkanDeviceMemory;
 
             if (writtenRangeLength != 0)
             {
@@ -107,7 +111,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             if (priorState < Disposing)
             {
                 DisposeVulkanBuffer(_vulkanBuffer);
-                MemoryBlockRegion.Block.Free(in MemoryBlockRegion);
+                MemoryBlockRegion.Parent.Free(in MemoryBlockRegion);
             }
 
             _state.EndDispose();

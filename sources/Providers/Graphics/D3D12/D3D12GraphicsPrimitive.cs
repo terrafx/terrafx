@@ -19,8 +19,8 @@ namespace TerraFX.Graphics.Providers.D3D12
         private ValueLazy<Pointer<ID3D12DescriptorHeap>> _d3d12CbvSrvUavDescriptorHeap;
         private State _state;
 
-        internal D3D12GraphicsPrimitive(D3D12GraphicsDevice device, D3D12GraphicsPipeline pipeline, in GraphicsBufferView vertexBufferView, in GraphicsBufferView indexBufferView, ReadOnlySpan<GraphicsResource> inputResources)
-            : base(device, pipeline, in vertexBufferView, in indexBufferView, inputResources)
+        internal D3D12GraphicsPrimitive(D3D12GraphicsDevice device, D3D12GraphicsPipeline pipeline, in GraphicsMemoryRegion<IGraphicsResource> vertexBufferRegion, in GraphicsMemoryRegion<IGraphicsResource> indexBufferRegion, ReadOnlySpan<GraphicsMemoryRegion<IGraphicsResource>> inputResourceRegion)
+            : base(device, pipeline, in vertexBufferRegion, in indexBufferRegion, inputResourceRegion)
         {
             _d3d12CbvSrvUavDescriptorHeap = new ValueLazy<Pointer<ID3D12DescriptorHeap>>(CreateD3D12CbvSrvUavDescriptorHeap);
             _ = _state.Transition(to: Initialized);
@@ -50,13 +50,13 @@ namespace TerraFX.Graphics.Providers.D3D12
 
                 Pipeline?.Dispose();
 
-                foreach (var inputResource in InputResources)
+                foreach (var inputResourceRegion in InputResourceRegions)
                 {
-                    inputResource?.Dispose();
+                    inputResourceRegion.Parent.Free(in inputResourceRegion);
                 }
 
-                VertexBufferView.Buffer?.Dispose();
-                IndexBufferView.Buffer?.Dispose();
+                VertexBufferRegion.Parent?.Dispose();
+                IndexBufferRegion.Parent?.Dispose();
             }
 
             _state.EndDispose();
@@ -67,15 +67,15 @@ namespace TerraFX.Graphics.Providers.D3D12
             _state.ThrowIfDisposedOrDisposing();
 
             var d3d12Device = Device.D3D12Device;
-            var inputResources = InputResources;
-            var inputResourcesLength = inputResources.Length;
+            var inputResourceRegions = InputResourceRegions;
+            var inputResourceRegionsLength = inputResourceRegions.Length;
             var numCbvSrvUavDescriptors = 0u;
 
-            for (var index = 0; index < inputResourcesLength; index++)
+            for (var index = 0; index < inputResourceRegionsLength; index++)
             {
-                var inputResource = inputResources[index];
+                var inputResource = inputResourceRegions[index];
 
-                if (inputResource is not D3D12GraphicsTexture)
+                if (inputResource.Parent is not ID3D12GraphicsTexture)
                 {
                     continue;
                 }
@@ -97,11 +97,11 @@ namespace TerraFX.Graphics.Providers.D3D12
             var cbvSrvUavDescriptorHandleIncrementSize = Device.CbvSrvUavDescriptorHandleIncrementSize;
             var cbvSrvUavDescriptorIndex = 0;
 
-            for (var index = 0; index < inputResourcesLength; index++)
+            for (var index = 0; index < inputResourceRegionsLength; index++)
             {
-                var inputResource = inputResources[index];
+                var inputResourceRegion = inputResourceRegions[index];
 
-                if (inputResource is not D3D12GraphicsTexture d3d12GraphicsTexture)
+                if (inputResourceRegion.Parent is not ID3D12GraphicsTexture graphicsTexture)
                 {
                     continue;
                 }
@@ -112,7 +112,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                     Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING,
                 };
 
-                switch (d3d12GraphicsTexture.Kind)
+                switch (graphicsTexture.Kind)
                 {
                     case GraphicsTextureKind.OneDimensional:
                     {
@@ -137,7 +137,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                 }
 
                 var cpuDescriptorHandleForHeapStart = cbvSrvUavDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-                d3d12Device->CreateShaderResourceView(d3d12GraphicsTexture.D3D12Resource, &shaderResourceViewDesc, cpuDescriptorHandleForHeapStart.Offset(cbvSrvUavDescriptorIndex, cbvSrvUavDescriptorHandleIncrementSize));
+                d3d12Device->CreateShaderResourceView(graphicsTexture.D3D12Resource, &shaderResourceViewDesc, cpuDescriptorHandleForHeapStart.Offset(cbvSrvUavDescriptorIndex, cbvSrvUavDescriptorHandleIncrementSize));
                 cbvSrvUavDescriptorIndex++;
             }
 

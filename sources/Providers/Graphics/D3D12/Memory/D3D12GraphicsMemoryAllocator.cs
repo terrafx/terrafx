@@ -6,6 +6,8 @@
 using System;
 using TerraFX.Interop;
 using TerraFX.Utilities;
+using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
+using static TerraFX.Interop.Windows;
 using static TerraFX.Interop.D3D12_HEAP_FLAGS;
 using static TerraFX.Interop.D3D12_HEAP_TYPE;
 using static TerraFX.Interop.D3D12_RESOURCE_FLAGS;
@@ -70,7 +72,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         public bool SupportsResourceHeapTier2 => _supportsResourceHeapTier2;
 
         /// <inheritdoc />
-        public override D3D12GraphicsBuffer CreateBuffer(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess, ulong size, ulong alignment = 0, GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None)
+        public override D3D12GraphicsBuffer<TMetadata> CreateBuffer<TMetadata>(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess, ulong size, ulong alignment = 0, GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None)
         {
             var index = GetBlockCollectionIndex(cpuAccess, 0);
 
@@ -78,17 +80,14 @@ namespace TerraFX.Graphics.Providers.D3D12
             var resourceAllocationInfo = Device.D3D12Device->GetResourceAllocationInfo(visibleMask: 0, numResourceDescs: 1, &resourceDesc);
             ref readonly var blockCollection = ref _blockCollections[index];
 
-            return blockCollection.TryAllocate(resourceAllocationInfo.SizeInBytes, resourceAllocationInfo.Alignment, allocationFlags, out var region)
-                 ? new D3D12GraphicsBuffer(kind, cpuAccess, in region)
-                 : throw new OutOfMemoryException();
+            var memoryBlockRegion = blockCollection.Allocate(resourceAllocationInfo.SizeInBytes, resourceAllocationInfo.Alignment, allocationFlags);
+            return new D3D12GraphicsBuffer<TMetadata>(kind, cpuAccess, in memoryBlockRegion);
         }
 
         /// <inheritdoc />
-        public override D3D12GraphicsTexture CreateTexture(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, ulong alignment = 0,
-            GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None,
-            TexelFormat texelFormat = default)
+        public override D3D12GraphicsTexture<TMetadata> CreateTexture<TMetadata>(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, ulong alignment = 0, GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None, TexelFormat texelFormat = default)
         {
-            var dxgiFormat = D3D12GraphicsMemoryTexelMapper.Map(texelFormat);
+            var dxgiFormat = Map(texelFormat);
             var index = GetBlockCollectionIndex(cpuAccess, 1);
 
             var resourceDesc = kind switch {
@@ -101,9 +100,8 @@ namespace TerraFX.Graphics.Providers.D3D12
             var resourceAllocationInfo = Device.D3D12Device->GetResourceAllocationInfo(visibleMask: 0, numResourceDescs: 1, &resourceDesc);
             ref readonly var blockCollection = ref _blockCollections[index];
 
-            return blockCollection.TryAllocate(resourceAllocationInfo.SizeInBytes, resourceAllocationInfo.Alignment, allocationFlags, out var region)
-                 ? new D3D12GraphicsTexture(kind, cpuAccess, in region, width, height, depth)
-                 : throw new OutOfMemoryException();
+            var memoryBlockRegion = blockCollection.Allocate(resourceAllocationInfo.SizeInBytes, resourceAllocationInfo.Alignment, allocationFlags);
+            return new D3D12GraphicsTexture<TMetadata>(kind, cpuAccess, in memoryBlockRegion, width, height, depth);
         }
 
         /// <inheritdoc />
