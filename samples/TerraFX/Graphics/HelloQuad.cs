@@ -11,6 +11,8 @@ namespace TerraFX.Samples.Graphics
     public sealed class HelloQuad : HelloWindow
     {
         private GraphicsPrimitive _quadPrimitive = null!;
+        private IGraphicsBuffer _indexBuffer = null!;
+        private IGraphicsBuffer _vertexBuffer = null!;
 
         public HelloQuad(string name, params Assembly[] compositionAssemblies)
             : base(name, compositionAssemblies)
@@ -20,6 +22,8 @@ namespace TerraFX.Samples.Graphics
         public override void Cleanup()
         {
             _quadPrimitive?.Dispose();
+            _indexBuffer?.Dispose();
+            _vertexBuffer?.Dispose();
             base.Cleanup();
         }
 
@@ -30,8 +34,11 @@ namespace TerraFX.Samples.Graphics
             var graphicsDevice = GraphicsDevice;
             var currentGraphicsContext = graphicsDevice.CurrentContext;
 
-            using var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024);
-            using var indexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024);
+            using var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
+            _vertexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.GpuOnly, 64 * 1024);
+
+            using var indexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
+            _indexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Index, GraphicsResourceCpuAccess.GpuOnly, 64 * 1024);
 
             currentGraphicsContext.BeginFrame();
             _quadPrimitive = CreateQuadPrimitive(currentGraphicsContext, vertexStagingBuffer, indexStagingBuffer);
@@ -54,66 +61,63 @@ namespace TerraFX.Samples.Graphics
 
             var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Identity", "main", "main");
 
-            var vertexBuffer = CreateVertexBuffer(graphicsContext, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
-            var vertexBufferRegion = vertexBuffer.Allocate(vertexBuffer.Size, alignment: 1, stride: SizeOf<IdentityVertex>());
+            var indexBuffer = _indexBuffer;
+            var vertexBuffer = _vertexBuffer;
 
-            var indexBuffer = CreateIndexBuffer(graphicsContext, indexStagingBuffer);
-            var indexBufferRegion = indexBuffer.Allocate(indexBuffer.Size, alignment: 1, stride: sizeof(ushort));
+            var vertexBufferRegion = CreateVertexBufferRegion(graphicsContext, vertexBuffer, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
+            graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
+
+            var indexBufferRegion = CreateIndexBufferRegion(graphicsContext, indexBuffer, indexStagingBuffer);
+            graphicsContext.Copy(indexBuffer, indexStagingBuffer);
 
             return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion, indexBufferRegion);
 
-            static IGraphicsBuffer CreateVertexBuffer(GraphicsContext graphicsContext, IGraphicsBuffer vertexStagingBuffer, float aspectRatio)
+            static GraphicsMemoryRegion<IGraphicsResource> CreateIndexBufferRegion(GraphicsContext graphicsContext, IGraphicsBuffer indexBuffer, IGraphicsBuffer indexStagingBuffer)
             {
-                var vertexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.None, (ulong)(sizeof(IdentityVertex) * 4));
-                var pVertexBuffer = vertexStagingBuffer.Map<IdentityVertex>();
+                var indexBufferRegion = indexBuffer.Allocate(SizeOf<ushort>() * 6, alignment: 2, stride: SizeOf<ushort>());
+                var pIndexBuffer = indexStagingBuffer.Map<ushort>(in indexBufferRegion);
 
-                var a = new IdentityVertex {                                         //
-                    Position = new Vector3(-0.25f, 0.25f * aspectRatio, 0.0f),       //   y          in this setup
-                    Color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f),                     //   ^     z    the origin o
-                };                                                                   //   |   /      is in the middle
-                                                                                     //   | /        of the rendered scene
-                var b = new IdentityVertex {                                         //   o------>x
-                    Position = new Vector3(0.25f, 0.25f * aspectRatio, 0.0f),        //
-                    Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f),                     //   a ----- b
-                };                                                                   //   | \     |
-                                                                                     //   |   \   |
-                var c = new IdentityVertex {                                         //   |     \ |
-                    Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),       //   d-------c
-                    Color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f),                     //
-                };                                                                   //   0 ----- 1
-                                                                                     //   | \     |
-                var d = new IdentityVertex {                                         //   |   \   |
-                    Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),      //   |     \ |
-                    Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f),                     //   3-------2
-                };                                                                   //
-                pVertexBuffer[0] = a;
-                pVertexBuffer[1] = b;
-                pVertexBuffer[2] = c;
-                pVertexBuffer[3] = d;
+                // clockwise when looking at the triangle from the outside
 
-                vertexStagingBuffer.Unmap(0..(sizeof(IdentityVertex) * 4));
-                graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
+                pIndexBuffer[0] = 0;
+                pIndexBuffer[1] = 1;
+                pIndexBuffer[2] = 2;
 
-                return vertexBuffer;
+                pIndexBuffer[3] = 0;
+                pIndexBuffer[4] = 2;
+                pIndexBuffer[5] = 3;
+
+                indexStagingBuffer.UnmapAndWrite(in indexBufferRegion);
+                return indexBufferRegion;
             }
 
-            static IGraphicsBuffer CreateIndexBuffer(GraphicsContext graphicsContext, IGraphicsBuffer indexStagingBuffer)
+            static GraphicsMemoryRegion<IGraphicsResource> CreateVertexBufferRegion(GraphicsContext graphicsContext, IGraphicsBuffer vertexBuffer, IGraphicsBuffer vertexStagingBuffer, float aspectRatio)
             {
-                var indexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Index, GraphicsResourceCpuAccess.None, sizeof(ushort) * 6);
-                var pIndexBuffer = indexStagingBuffer.Map<ushort>();
+                var vertexBufferRegion = vertexBuffer.Allocate(SizeOf<IdentityVertex>() * 4, alignment: 16, stride: SizeOf<IdentityVertex>());
+                var pVertexBuffer = vertexStagingBuffer.Map<IdentityVertex>(in vertexBufferRegion);
 
-                pIndexBuffer[0] = 0; // a
-                pIndexBuffer[1] = 1; // b
-                pIndexBuffer[2] = 2; // d
+                pVertexBuffer[0] = new IdentityVertex {                         //
+                    Position = new Vector3(-0.25f, 0.25f * aspectRatio, 0.0f),  //   y          in this setup
+                    Color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f),                //   ^     z    the origin o
+                };                                                              //   |   /      is in the middle
+                                                                                //   | /        of the rendered scene
+                pVertexBuffer[1] = new IdentityVertex {                         //   o------>x
+                    Position = new Vector3(0.25f, 0.25f * aspectRatio, 0.0f),   //
+                    Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f),                //   0 ----- 1
+                };                                                              //   | \     |
+                                                                                //   |   \   |
+                pVertexBuffer[2] = new IdentityVertex {                         //   |     \ |
+                    Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),  //   3-------2
+                    Color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f),                //
+                };
 
-                pIndexBuffer[3] = 0; // b
-                pIndexBuffer[4] = 2; // c
-                pIndexBuffer[5] = 3; // d
+                pVertexBuffer[3] = new IdentityVertex {
+                    Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
+                    Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f),
+                };
 
-                indexStagingBuffer.Unmap(0..(sizeof(ushort) * 6));
-                graphicsContext.Copy(indexBuffer, indexStagingBuffer);
-
-                return indexBuffer;
+                vertexStagingBuffer.UnmapAndWrite(in vertexBufferRegion);
+                return vertexBufferRegion;
             }
 
             GraphicsPipeline CreateGraphicsPipeline(GraphicsDevice graphicsDevice, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)

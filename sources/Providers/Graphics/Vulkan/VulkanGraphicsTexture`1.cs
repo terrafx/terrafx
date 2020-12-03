@@ -68,7 +68,37 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(IntPtr, ulong, ulong, ulong, uint, void**)" /> failed.</exception>
-        public override T* Map<T>(nuint readRangeOffset, nuint readRangeLength)
+        public override T* Map<T>()
+        {
+            var device = Allocator.Device;
+
+            var vulkanDevice = device.VulkanDevice;
+            var vulkanDeviceMemory = Block.VulkanDeviceMemory;
+
+            byte* pDestination;
+            ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination), nameof(vkMapMemory));
+
+            return (T*)pDestination;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(IntPtr, ulong, ulong, ulong, uint, void**)" /> failed.</exception>
+        public override T* Map<T>(nuint rangeOffset, nuint rangeLength)
+        {
+            var device = Allocator.Device;
+
+            var vulkanDevice = device.VulkanDevice;
+            var vulkanDeviceMemory = Block.VulkanDeviceMemory;
+
+            byte* pDestination;
+            ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination), nameof(vkMapMemory));
+
+            return (T*)(pDestination + rangeOffset);
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(IntPtr, ulong, ulong, ulong, uint, void**)" /> failed.</exception>
+        public override T* MapForRead<T>()
         {
             var device = Allocator.Device;
 
@@ -77,6 +107,34 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             void* pDestination;
             ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, &pDestination), nameof(vkMapMemory));
+
+            var nonCoherentAtomSize = device.Adapter.VulkanPhysicalDeviceProperties.limits.nonCoherentAtomSize;
+
+            var offset = Offset;
+            var size = (Size + nonCoherentAtomSize - 1) & ~(nonCoherentAtomSize - 1);
+
+            var mappedMemoryRange = new VkMappedMemoryRange {
+                sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
+                memory = vulkanDeviceMemory,
+                offset = offset,
+                size = size,
+            };
+            ThrowExternalExceptionIfNotSuccess(vkInvalidateMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange), nameof(vkInvalidateMappedMemoryRanges));
+
+            return (T*)pDestination;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="ExternalException">The call to <see cref="vkMapMemory(IntPtr, ulong, ulong, ulong, uint, void**)" /> failed.</exception>
+        public override T* MapForRead<T>(nuint readRangeOffset, nuint readRangeLength)
+        {
+            var device = Allocator.Device;
+
+            var vulkanDevice = device.VulkanDevice;
+            var vulkanDeviceMemory = Block.VulkanDeviceMemory;
+
+            byte* pDestination;
+            ThrowExternalExceptionIfNotSuccess(vkMapMemory(vulkanDevice, vulkanDeviceMemory, Offset, Size, flags: 0, (void**)&pDestination), nameof(vkMapMemory));
 
             if (readRangeLength != 0)
             {
@@ -93,12 +151,49 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 };
                 ThrowExternalExceptionIfNotSuccess(vkInvalidateMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange), nameof(vkInvalidateMappedMemoryRanges));
             }
-            return (T*)pDestination;
+            return (T*)(pDestination + readRangeOffset);
         }
 
         /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(IntPtr, uint, VkMappedMemoryRange*)" /> failed.</exception>
-        public override void Unmap(nuint writtenRangeOffset, nuint writtenRangeLength)
+        public override void Unmap()
+        {
+            var device = Allocator.Device;
+
+            var vulkanDevice = device.VulkanDevice;
+            var vulkanDeviceMemory = Block.VulkanDeviceMemory;
+
+            vkUnmapMemory(vulkanDevice, vulkanDeviceMemory);
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(IntPtr, uint, VkMappedMemoryRange*)" /> failed.</exception>
+        public override void UnmapAndWrite()
+        {
+            var device = Allocator.Device;
+
+            var vulkanDevice = device.VulkanDevice;
+            var vulkanDeviceMemory = Block.VulkanDeviceMemory;
+
+            var nonCoherentAtomSize = device.Adapter.VulkanPhysicalDeviceProperties.limits.nonCoherentAtomSize;
+
+            var offset = Offset;
+            var size = (Size + nonCoherentAtomSize - 1) & ~(nonCoherentAtomSize - 1);
+
+            var mappedMemoryRange = new VkMappedMemoryRange {
+                sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
+                memory = vulkanDeviceMemory,
+                offset = offset,
+                size = size,
+            };
+            ThrowExternalExceptionIfNotSuccess(vkFlushMappedMemoryRanges(vulkanDevice, 1, &mappedMemoryRange), nameof(vkFlushMappedMemoryRanges));
+
+            vkUnmapMemory(vulkanDevice, vulkanDeviceMemory);
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="ExternalException">The call to <see cref="vkFlushMappedMemoryRanges(IntPtr, uint, VkMappedMemoryRange*)" /> failed.</exception>
+        public override void UnmapAndWrite(nuint writtenRangeOffset, nuint writtenRangeLength)
         {
             var device = Allocator.Device;
 

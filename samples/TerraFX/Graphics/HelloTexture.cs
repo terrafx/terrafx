@@ -11,6 +11,7 @@ namespace TerraFX.Samples.Graphics
     public sealed class HelloTexture : HelloWindow
     {
         private GraphicsPrimitive _trianglePrimitive = null!;
+        private IGraphicsBuffer _vertexBuffer = null!;
 
         public HelloTexture(string name, params Assembly[] compositionAssemblies)
             : base(name, compositionAssemblies)
@@ -20,6 +21,7 @@ namespace TerraFX.Samples.Graphics
         public override void Cleanup()
         {
             _trianglePrimitive?.Dispose();
+            _vertexBuffer?.Dispose();
             base.Cleanup();
         }
 
@@ -30,8 +32,10 @@ namespace TerraFX.Samples.Graphics
             var graphicsDevice = GraphicsDevice;
             var currentGraphicsContext = graphicsDevice.CurrentContext;
 
-            using var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024);
-            using var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024 * 4);
+            using var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
+            using var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024 * 4);
+
+            _vertexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.GpuOnly, 64 * 1024);
 
             currentGraphicsContext.BeginFrame();
             _trianglePrimitive = CreateTrianglePrimitive(currentGraphicsContext, vertexStagingBuffer, textureStagingBuffer);
@@ -54,30 +58,27 @@ namespace TerraFX.Samples.Graphics
 
             var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Texture", "main", "main");
 
-            var vertexBuffer = CreateVertexBuffer(graphicsContext, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
-            var vertexBufferRegion = vertexBuffer.Allocate(vertexBuffer.Size, alignment: 1, stride: SizeOf<TextureVertex>());
+            var vertexBuffer = _vertexBuffer;
 
-            var inputResources = new IGraphicsResource[1] {
-                CreateTexture2D(graphicsContext, textureStagingBuffer),
-            };
+            var vertexBufferRegion = CreateVertexBufferRegion(graphicsContext, vertexBuffer, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
+            graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
 
             var inputResourceRegions = new GraphicsMemoryRegion<IGraphicsResource>[1] {
-                inputResources[0].Allocate(inputResources[0].Size, alignment: 1, stride: 1),
+                CreateTexture2DRegion(graphicsContext, textureStagingBuffer)
             };
-
             return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion, indexBufferRegion: default, inputResourceRegions);
 
-            static IGraphicsTexture CreateTexture2D(GraphicsContext graphicsContext, IGraphicsBuffer textureStagingBuffer)
+            static GraphicsMemoryRegion<IGraphicsResource> CreateTexture2DRegion(GraphicsContext graphicsContext, IGraphicsBuffer textureStagingBuffer)
             {
                 const uint TextureWidth = 256;
                 const uint TextureHeight = 256;
                 const uint TexturePixels = TextureWidth * TextureHeight;
-                const uint TextureSize = TexturePixels * 4;
                 const uint CellWidth = TextureWidth / 8;
                 const uint CellHeight = TextureHeight / 8;
 
                 var texture2D = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.TwoDimensional, GraphicsResourceCpuAccess.None, TextureWidth, TextureHeight);
-                var pTextureData = textureStagingBuffer.Map<uint>();
+                var texture2DRegion = texture2D.Allocate(texture2D.Size, alignment: 4, stride: sizeof(uint));
+                var pTextureData = textureStagingBuffer.Map<uint>(in texture2DRegion);
 
                 for (uint n = 0; n < TexturePixels; n++)
                 {
@@ -88,36 +89,34 @@ namespace TerraFX.Samples.Graphics
                                     ? 0xFF000000 : 0xFFFFFFFF;
                 }
 
-                textureStagingBuffer.Unmap(0..(int)TextureSize);
+                textureStagingBuffer.UnmapAndWrite(in texture2DRegion);
                 graphicsContext.Copy(texture2D, textureStagingBuffer);
 
-                return texture2D;
+                return texture2DRegion;
             }
 
-            static IGraphicsBuffer CreateVertexBuffer(GraphicsContext graphicsContext, IGraphicsBuffer vertexStagingBuffer, float aspectRatio)
+            static GraphicsMemoryRegion<IGraphicsResource> CreateVertexBufferRegion(GraphicsContext graphicsContext, IGraphicsBuffer vertexBuffer, IGraphicsBuffer vertexStagingBuffer, float aspectRatio)
             {
-                var vertexBuffer = graphicsContext.Device.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.None, (ulong)(sizeof(TextureVertex) * 3));
-                var pVertexBuffer = vertexStagingBuffer.Map<TextureVertex>();
+                var vertexBufferRegion = vertexBuffer.Allocate(SizeOf<TextureVertex>() * 3, alignment: 16, stride: SizeOf<TextureVertex>());
+                var pVertexBuffer = vertexStagingBuffer.Map<TextureVertex>(in vertexBufferRegion);
 
                 pVertexBuffer[0] = new TextureVertex {
                     Position = new Vector3(0.0f, 0.25f * aspectRatio, 0.0f),
-                    UV = new Vector2(0.5f, 1.0f),
+                    UV = new Vector2(1.0f, 0.0f)
                 };
 
                 pVertexBuffer[1] = new TextureVertex {
                     Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),
-                    UV = new Vector2(1.0f, 0.0f),
+                    UV = new Vector2(0.0f, 1.0f)
                 };
 
                 pVertexBuffer[2] = new TextureVertex {
                     Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
-                    UV = new Vector2(0.0f, 0.0f),
+                    UV = new Vector2(0.0f, 0.0f)
                 };
 
-                vertexStagingBuffer.Unmap(0..(sizeof(TextureVertex) * 3));
-                graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
-
-                return vertexBuffer;
+                vertexStagingBuffer.UnmapAndWrite(in vertexBufferRegion);
+                return vertexBufferRegion;
             }
 
             GraphicsPipeline CreateGraphicsPipeline(GraphicsDevice graphicsDevice, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)

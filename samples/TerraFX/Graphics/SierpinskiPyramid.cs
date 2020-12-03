@@ -8,7 +8,6 @@ namespace TerraFX.Samples.Graphics
 {
     internal class SierpinskiPyramid
     {
-        #region Tetrahedron
         internal static (List<Vector3> vertices, List<uint> indices) CreateMeshTetrahedron(int recursionDepth)
         {
             var scale = 1.0f;
@@ -42,9 +41,7 @@ namespace TerraFX.Samples.Graphics
             return (vertices, indices);
         }
 
-        private static void TetrahedronRecursion(int recursionDepth
-            , Vector3 a, Vector3 b, Vector3 c, Vector3 d
-            , List<Vector3> vertices, List<uint> indices)
+        private static void TetrahedronRecursion(int recursionDepth, Vector3 a, Vector3 b, Vector3 c, Vector3 d, List<Vector3> vertices, List<uint> indices)
         {
             //         d
             //         .
@@ -79,9 +76,7 @@ namespace TerraFX.Samples.Graphics
             }
         }
 
-        private static void BaseCaseTetrahedron(
-            Vector3 a, Vector3 b, Vector3 c, Vector3 d
-            , List<Vector3> vertices, List<uint> indices)
+        private static void BaseCaseTetrahedron(Vector3 a, Vector3 b, Vector3 c, Vector3 d, List<Vector3> vertices, List<uint> indices)
         {
             //         d
             //         .
@@ -110,9 +105,7 @@ namespace TerraFX.Samples.Graphics
                 indices.Add((uint)(i + j));
             }
         }
-        #endregion Tetrahedron
 
-        #region Quad
         internal static (List<Vector3> vertices, List<uint> indices) CreateMeshQuad(int recursionDepth)
         {
             var r = 0.99f;
@@ -137,9 +130,7 @@ namespace TerraFX.Samples.Graphics
             return (vertices, indices);
         }
 
-        private static void QuadRecursion(int recursionDepth
-            , Vector3 a, Vector3 b, Vector3 c, Vector3 d
-            , List<Vector3> vertices, List<uint> indices)
+        private static void QuadRecursion(int recursionDepth, Vector3 a, Vector3 b, Vector3 c, Vector3 d, List<Vector3> vertices, List<uint> indices)
         {
             //
             //  a-e---f-b    y          in this setup
@@ -177,9 +168,7 @@ namespace TerraFX.Samples.Graphics
             }
         }
 
-        private static void BaseCaseQuad(
-            Vector3 a, Vector3 b, Vector3 c, Vector3 d
-            , List<Vector3> vertices, List<uint> indices)
+        private static void BaseCaseQuad(Vector3 a, Vector3 b, Vector3 c, Vector3 d, List<Vector3> vertices, List<uint> indices)
         {
             //
             //  a-------b    y          in this setup
@@ -203,9 +192,7 @@ namespace TerraFX.Samples.Graphics
                 indices.Add((uint)(i + j));
             }
         }
-        #endregion Quad
 
-        #region Normals
         internal static List<Vector3> MeshNormals(List<Vector3> vertices)
         {
             var n4 = new Vector3[4];
@@ -226,6 +213,5 @@ namespace TerraFX.Samples.Graphics
 
             return normals;
         }
-        #endregion Normals
     }
 }

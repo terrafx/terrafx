@@ -111,47 +111,71 @@ namespace TerraFX.Graphics
         /// <inheritdoc />
         public void Free(in GraphicsMemoryRegion<IGraphicsResource> region) => _metadata.Free(in region);
 
-        /// <summary>Maps the resource into CPU memory.</summary>
-        /// <typeparam name="T">The type of data contained by the resource.</typeparam>
-        /// <returns>A pointer to the mapped resource.</returns>
-        /// <remarks>This overload should be used when no memory will be read.</remarks>
-        public T* Map<T>()
-            where T : unmanaged => Map<T>(0, 0);
+        /// <inheritdoc />
+        public abstract T* Map<T>()
+            where T : unmanaged;
 
-        /// <summary>Maps the resource into CPU memory.</summary>
-        /// <typeparam name="T">The type of data contained by the resource.</typeparam>
-        /// <param name="readRange">The range of memory that will be read.</param>
-        /// <returns>A pointer to the mapped resource.</returns>
-        public T* Map<T>(Range readRange)
+        /// <inheritdoc />
+        public T* Map<T>(in GraphicsMemoryRegion<IGraphicsResource> region)
+            where T : unmanaged => Map<T>((nuint)region.Offset, (nuint)region.Size);
+
+        /// <inheritdoc />
+        public T* Map<T>(Range range)
+            where T : unmanaged
+        {
+            var size = (Size < int.MaxValue) ? (int)Size : int.MaxValue;
+            var (rangeOffset, rangeLength) = range.GetOffsetAndLength(size);
+            return Map<T>((nuint)rangeOffset, (nuint)rangeLength);
+        }
+
+        /// <inheritdoc />
+        public abstract T* Map<T>(nuint rangeOffset, nuint rangeLength)
+            where T : unmanaged;
+
+        /// <inheritdoc />
+        public abstract T* MapForRead<T>()
+            where T : unmanaged;
+
+        /// <inheritdoc />
+        public T* MapForRead<T>(in GraphicsMemoryRegion<IGraphicsResource> readRegion)
+            where T : unmanaged => Map<T>((nuint)readRegion.Offset, (nuint)readRegion.Size);
+
+        /// <inheritdoc />
+        public T* MapForRead<T>(Range readRange)
             where T : unmanaged
         {
             var size = (Size < int.MaxValue) ? (int)Size : int.MaxValue;
             var (readRangeOffset, readRangeLength) = readRange.GetOffsetAndLength(size);
-            return Map<T>((nuint)readRangeOffset, (nuint)readRangeLength);
+            return MapForRead<T>((nuint)readRangeOffset, (nuint)readRangeLength);
         }
 
         /// <inheritdoc />
-        public abstract T* Map<T>(nuint readRangeOffset, nuint readRangeLength)
+        public abstract T* MapForRead<T>(nuint readRangeOffset, nuint readRangeLength)
             where T : unmanaged;
 
         /// <inheritdoc />
         public bool TryAllocate(ulong size, ulong alignment, uint stride, out GraphicsMemoryRegion<IGraphicsResource> region) => _metadata.TryAllocate(size, alignment, stride, out region);
 
-        /// <summary>Unmaps the resource from CPU memory.</summary>
-        /// <remarks>This overload should be used when no memory was written.</remarks>
-        public void Unmap() => Unmap(0, 0);
+        /// <inheritdoc />
+        public abstract void Unmap();
 
-        /// <summary>Unmaps the resource from CPU memory.</summary>
-        /// <param name="writtenRange">The range of memory which was written.</param>
-        public void Unmap(Range writtenRange)
+        /// <inheritdoc />
+        public abstract void UnmapAndWrite();
+
+        /// <inheritdoc />
+        public void UnmapAndWrite(in GraphicsMemoryRegion<IGraphicsResource> writtenRegion)
+            => UnmapAndWrite((nuint)writtenRegion.Offset, (nuint)writtenRegion.Size);
+
+        /// <inheritdoc />
+        public void UnmapAndWrite(Range writtenRange)
         {
             var size = (Size < int.MaxValue) ? (int)Size : int.MaxValue;
             var (writtenRangeOffset, writtenRangeLength) = writtenRange.GetOffsetAndLength(size);
-            Unmap((nuint)writtenRangeOffset, (nuint)writtenRangeLength);
+            UnmapAndWrite((nuint)writtenRangeOffset, (nuint)writtenRangeLength);
         }
 
         /// <inheritdoc />
-        public abstract void Unmap(nuint writtenRangeOffset, nuint writtenRangeLength);
+        public abstract void UnmapAndWrite(nuint writtenRangeOffset, nuint writtenRangeLength);
 
         /// <inheritdoc />
         [Conditional("DEBUG")]

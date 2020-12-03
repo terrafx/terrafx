@@ -49,27 +49,70 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         /// <inheritdoc />
         /// <exception cref="ExternalException">The call to <see cref="ID3D12Resource.Map(uint, D3D12_RANGE*, void**)" /> failed.</exception>
-        public override T* Map<T>(nuint readRangeOffset, nuint readRangeLength)
+        public override T* Map<T>()
+        {
+            var readRange = default(D3D12_RANGE);
+
+            byte* pDestination;
+            ThrowExternalExceptionIfFailed(D3D12Resource->Map(Subresource: 0, &readRange, (void**)&pDestination), nameof(ID3D12Resource.Map));
+
+            return (T*)pDestination;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="ExternalException">The call to <see cref="ID3D12Resource.Map(uint, D3D12_RANGE*, void**)" /> failed.</exception>
+        public override T* Map<T>(nuint rangeOffset, nuint rangeLength)
+        {
+            var readRange = default(D3D12_RANGE);
+
+            byte* pDestination;
+            ThrowExternalExceptionIfFailed(D3D12Resource->Map(Subresource: 0, &readRange, (void**)&pDestination), nameof(ID3D12Resource.Map));
+
+            return (T*)(pDestination + rangeOffset);
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="ExternalException">The call to <see cref="ID3D12Resource.Map(uint, D3D12_RANGE*, void**)" /> failed.</exception>
+        public override T* MapForRead<T>()
+        {
+            byte* pDestination;
+            ThrowExternalExceptionIfFailed(D3D12Resource->Map(Subresource: 0, null, (void**)&pDestination), nameof(ID3D12Resource.Map));
+
+            return (T*)pDestination;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="ExternalException">The call to <see cref="ID3D12Resource.Map(uint, D3D12_RANGE*, void**)" /> failed.</exception>
+        public override T* MapForRead<T>(nuint readRangeOffset, nuint readRangeLength)
         {
             var readRange = new D3D12_RANGE {
                 Begin = readRangeOffset,
                 End = readRangeOffset + readRangeLength,
             };
 
-            void* pDestination;
-            ThrowExternalExceptionIfFailed(D3D12Resource->Map(Subresource: 0, &readRange, &pDestination), nameof(ID3D12Resource.Map));
+            byte* pDestination;
+            ThrowExternalExceptionIfFailed(D3D12Resource->Map(Subresource: 0, &readRange, (void**)&pDestination), nameof(ID3D12Resource.Map));
 
-            return (T*)pDestination;
+            return (T*)(pDestination + readRange.Begin);
         }
 
         /// <inheritdoc />
-        public override void Unmap(nuint writtenRangeOffset, nuint writtenRangeLength)
+        public override void Unmap()
+        {
+            var writtenRange = default(D3D12_RANGE);
+            D3D12Resource->Unmap(Subresource: 0, &writtenRange);
+        }
+
+        /// <inheritdoc />
+        public override void UnmapAndWrite() => D3D12Resource->Unmap(Subresource: 0, null);
+
+        /// <inheritdoc />
+        public override void UnmapAndWrite(nuint writtenRangeOffset, nuint writtenRangeLength)
         {
             var writtenRange = new D3D12_RANGE {
                 Begin = writtenRangeOffset,
                 End = writtenRangeOffset + writtenRangeLength,
             };
-
             D3D12Resource->Unmap(Subresource: 0, &writtenRange);
         }
 
