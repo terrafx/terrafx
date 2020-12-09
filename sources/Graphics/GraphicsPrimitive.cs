@@ -10,15 +10,19 @@ namespace TerraFX.Graphics
     {
         private readonly GraphicsDevice _device;
         private readonly GraphicsPipeline _pipeline;
-        private readonly GraphicsMemoryRegion<IGraphicsResource> _vertexBufferRegion;
-        private readonly GraphicsMemoryRegion<IGraphicsResource> _indexBufferRegion;
-        private readonly GraphicsMemoryRegion<IGraphicsResource>[] _inputResourceRegions;
+        private readonly GraphicsMemoryRegion<GraphicsResource> _vertexBufferRegion;
+        private readonly GraphicsMemoryRegion<GraphicsResource> _indexBufferRegion;
+        private readonly GraphicsMemoryRegion<GraphicsResource>[] _inputResourceRegions;
+        private readonly uint _vertexBufferStride;
+        private readonly uint _indexBufferStride;
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsPrimitive" /> class.</summary>
         /// <param name="device">The device for which the primitive was created.</param>
         /// <param name="pipeline">The pipeline used for rendering the primitive.</param>
         /// <param name="vertexBufferRegion">The buffer region which holds the vertices for the primitive.</param>
+        /// <param name="vertexBufferStride">The stride of the vertices in <paramref name="vertexBufferRegion" />.</param>
         /// <param name="indexBufferRegion">The buffer region which holds the indices for the primitive or <c>default</c> if none exists.</param>
+        /// <param name="indexBufferStride">The stride of the indices in <paramref name="indexBufferRegion" />.</param>
         /// <param name="inputResourceRegions">The resource regions which hold the input data for the primitive or an empty span if none exist.</param>
         /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="pipeline" /> is <c>null</c>.</exception>
@@ -26,22 +30,22 @@ namespace TerraFX.Graphics
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="pipeline" /> was not created for <paramref name="device" />.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexBufferRegion" /> was not created for <paramref name="device" />.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexBufferRegion" /> was not created for <paramref name="device" />.</exception>
-        protected GraphicsPrimitive(GraphicsDevice device, GraphicsPipeline pipeline, in GraphicsMemoryRegion<IGraphicsResource> vertexBufferRegion, in GraphicsMemoryRegion<IGraphicsResource> indexBufferRegion, ReadOnlySpan<GraphicsMemoryRegion<IGraphicsResource>> inputResourceRegions)
+        protected GraphicsPrimitive(GraphicsDevice device, GraphicsPipeline pipeline, in GraphicsMemoryRegion<GraphicsResource> vertexBufferRegion, uint vertexBufferStride, in GraphicsMemoryRegion<GraphicsResource> indexBufferRegion, uint indexBufferStride, ReadOnlySpan<GraphicsMemoryRegion<GraphicsResource>> inputResourceRegions)
         {
             ThrowIfNull(pipeline, nameof(pipeline));
-            ThrowIfNull(vertexBufferRegion.Parent, nameof(vertexBufferRegion));
+            ThrowIfNull(vertexBufferRegion.Collection, nameof(vertexBufferRegion));
 
             if (pipeline.Device != device)
             {
                 ThrowArgumentOutOfRangeException(pipeline, nameof(pipeline));
             }
 
-            if (vertexBufferRegion.Parent.Allocator.Device != device)
+            if (vertexBufferRegion.Collection.Allocator.Device != device)
             {
                 ThrowArgumentOutOfRangeException(vertexBufferRegion, nameof(vertexBufferRegion));
             }
 
-            if ((indexBufferRegion.Parent is not null) && (indexBufferRegion.Parent.Allocator.Device != device))
+            if ((indexBufferRegion.Collection is not null) && (indexBufferRegion.Collection.Allocator.Device != device))
             {
                 ThrowArgumentOutOfRangeException(indexBufferRegion, nameof(indexBufferRegion));
             }
@@ -52,22 +56,31 @@ namespace TerraFX.Graphics
             _vertexBufferRegion = vertexBufferRegion;
             _indexBufferRegion = indexBufferRegion;
             _inputResourceRegions = inputResourceRegions.ToArray();
+
+            _vertexBufferStride = vertexBufferStride;
+            _indexBufferStride = indexBufferStride;
         }
 
         /// <summary>Gets the device for which the pipeline was created.</summary>
         public GraphicsDevice Device => _device;
 
-        /// <summary>Gets the resource regions which hold the input data for the primitive or <see cref="ReadOnlySpan{T}.Empty" /> if none exist.</summary>
-        public ReadOnlySpan<GraphicsMemoryRegion<IGraphicsResource>> InputResourceRegions => _inputResourceRegions;
-
         /// <summary>Gets the buffer region which holds the indices for the primitive or <c>default</c> if none exists.</summary>
-        public ref readonly GraphicsMemoryRegion<IGraphicsResource> IndexBufferRegion => ref _indexBufferRegion;
+        public ref readonly GraphicsMemoryRegion<GraphicsResource> IndexBufferRegion => ref _indexBufferRegion;
+
+        /// <summary>Gets the stride of the index buffer region, in bytes.</summary>
+        public uint IndexBufferStride => _indexBufferStride;
+
+        /// <summary>Gets the resource regions which hold the input data for the primitive or <see cref="ReadOnlySpan{T}.Empty" /> if none exist.</summary>
+        public ReadOnlySpan<GraphicsMemoryRegion<GraphicsResource>> InputResourceRegions => _inputResourceRegions;
 
         /// <summary>Gets the pipeline used for rendering the primitive.</summary>
         public GraphicsPipeline Pipeline => _pipeline;
 
         /// <summary>Gets the buffer region which holds the vertices for the primitive.</summary>
-        public ref readonly GraphicsMemoryRegion<IGraphicsResource> VertexBufferRegion => ref _vertexBufferRegion;
+        public ref readonly GraphicsMemoryRegion<GraphicsResource> VertexBufferRegion => ref _vertexBufferRegion;
+
+        /// <summary>Gets the stride of the vertex buffer region, in bytes.</summary>
+        public uint VertexBufferStride => _vertexBufferStride;
 
         /// <inheritdoc />
         public void Dispose()

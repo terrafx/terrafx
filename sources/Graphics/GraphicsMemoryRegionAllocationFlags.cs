@@ -10,22 +10,22 @@ using System;
 
 namespace TerraFX.Graphics
 {
-    /// <summary>Defines flags that modify how a region of memory is allocated.</summary>
+    /// <summary>Defines flags that modify how a memory region is allocated.</summary>
     [Flags]
-    public enum GraphicsMemoryAllocationFlags
+    public enum GraphicsMemoryRegionAllocationFlags
     {
         /// <summary>No flags are specified.</summary>
         None = 0,
 
-        /// <summary>Indicates the allocation should get its own dedicated memory block.</summary>
-        /// <remarks>This flag cannot be combined with <see cref="ExistingBlock" />.</remarks>
-        DedicatedBlock = 1 << 0,
+        /// <summary>Indicates the region should get its own dedicated collection.</summary>
+        /// <remarks>This flag cannot be combined with <see cref="ExistingCollection" />.</remarks>
+        DedicatedCollection = 1 << 0,
 
-        /// <summary>Indicates the allocation should only use an existing memory block.</summary>
-        /// <remarks>This flag cannot be combined with <see cref="DedicatedBlock" />.</remarks>
-        ExistingBlock = 1 << 1,
+        /// <summary>Indicates the region should only come from an existing collection.</summary>
+        /// <remarks>This flag cannot be combined with <see cref="DedicatedCollection" />.</remarks>
+        ExistingCollection = 1 << 1,
 
-        /// <summary>Indicates the allocation should only succeed if it doesn't exceed the memory budget.</summary>
+        /// <summary>Indicates the region should only be allocated if it doesn't exceed the memory budget.</summary>
         WithinBudget = 1 << 2,
     }
 }

@@ -203,7 +203,8 @@ namespace TerraFX.UI.Providers.Win32
             var desktopWindowHandle = GetDesktopWindow();
 
             var desktopClassName = stackalloc ushort[256]; // 256 is the maximum length of WNDCLASSEX.lpszClassName
-            ThrowExternalExceptionIfZero(GetClassNameW(desktopWindowHandle, desktopClassName, 256), nameof(GetClassNameW));
+            var desktopClassNameLength = GetClassNameW(desktopWindowHandle, desktopClassName, 256);
+            ThrowExternalExceptionIf(desktopClassNameLength == 0, nameof(GetClassNameW));
 
             WNDCLASSEXW desktopWindowClass;
 
@@ -247,7 +248,7 @@ namespace TerraFX.UI.Providers.Win32
 
                     classAtom = RegisterClassExW(&wndClassEx);
                 }
-                ThrowExternalExceptionIfZero(classAtom, nameof(RegisterClassExW));
+                ThrowExternalExceptionIf(classAtom == 0, nameof(RegisterClassExW));
             }
             return classAtom;
         }

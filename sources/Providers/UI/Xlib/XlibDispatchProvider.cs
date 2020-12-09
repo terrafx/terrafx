@@ -62,7 +62,7 @@ namespace TerraFX.UI.Providers.Xlib
             get
             {
                 timespec timespec;
-                ThrowExternalExceptionIfFalse(clock_gettime(CLOCK_MONOTONIC, &timespec) == 0, nameof(clock_gettime));
+                ThrowExternalExceptionIf(clock_gettime(CLOCK_MONOTONIC, &timespec) != 0, nameof(clock_gettime));
 
                 const long NanosecondsPerSecond = TimeSpan.TicksPerSecond * 100;
                 Assert(NanosecondsPerSecond == 1000000000, Resources.ArgumentOutOfRangeExceptionMessage, nameof(NanosecondsPerSecond), NanosecondsPerSecond);
@@ -115,7 +115,7 @@ namespace TerraFX.UI.Providers.Xlib
         private static IntPtr CreateDisplayHandle()
         {
             var display = XOpenDisplay(null);
-            ThrowExternalExceptionIfZero(display, nameof(XOpenDisplay));
+            ThrowExternalExceptionIf(display == (nint)0, nameof(XOpenDisplay));
 
             _ = XSetErrorHandler(&HandleXlibError);
             _ = XSetIOErrorHandler(&HandleXlibIOError);
@@ -243,13 +243,15 @@ namespace TerraFX.UI.Providers.Xlib
                     (sbyte*)XlibAtomName.WM_STATE.AsPointer(),
                 };
 
-                ThrowExternalExceptionIfZero(XInternAtoms(
+                var status = XInternAtoms(
                     Display,
                     atomNames,
                     (int)AtomIdCount,
                     False,
                     pAtoms
-                ), nameof(XInternAtoms));
+                );
+
+                ThrowExternalExceptionIf(status == 0, nameof(XInternAtoms));
             }
 
             return atoms;

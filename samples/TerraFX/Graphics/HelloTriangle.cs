@@ -12,7 +12,7 @@ namespace TerraFX.Samples.Graphics
     public sealed class HelloTriangle : HelloWindow
     {
         private GraphicsPrimitive _trianglePrimitive = null!;
-        private IGraphicsBuffer _vertexBuffer = null!;
+        private GraphicsBuffer _vertexBuffer = null!;
 
         public HelloTriangle(string name, params Assembly[] compositionAssemblies)
             : base(name, compositionAssemblies)
@@ -51,7 +51,7 @@ namespace TerraFX.Samples.Graphics
             base.Draw(graphicsContext);
         }
 
-        private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext, IGraphicsBuffer vertexStagingBuffer)
+        private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer)
         {
             var graphicsDevice = GraphicsDevice;
             var graphicsSurface = graphicsDevice.Surface;
@@ -62,11 +62,11 @@ namespace TerraFX.Samples.Graphics
             var vertexBufferRegion = CreateVertexBufferRegion(graphicsContext, vertexBuffer, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
             graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
 
-            return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion);
+            return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion, SizeOf<IdentityVertex>());
 
-            static GraphicsMemoryRegion<IGraphicsResource> CreateVertexBufferRegion(GraphicsContext graphicsContext, IGraphicsBuffer vertexBuffer, IGraphicsBuffer vertexStagingBuffer, float aspectRatio)
+            static GraphicsMemoryRegion<GraphicsResource> CreateVertexBufferRegion(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
             {
-                var vertexBufferRegion = vertexBuffer.Allocate(SizeOf<IdentityVertex>() * 3, alignment: 16, stride: SizeOf<IdentityVertex>());
+                var vertexBufferRegion = vertexBuffer.Allocate(SizeOf<IdentityVertex>() * 3, alignment: 16);
                 var pVertexBuffer = vertexStagingBuffer.Map<IdentityVertex>(in vertexBufferRegion);
 
                 pVertexBuffer[0] = new IdentityVertex {

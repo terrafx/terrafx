@@ -58,13 +58,15 @@ namespace TerraFX.UI.Providers.Xlib
             clientEvent.data.l[3] = data3;
             clientEvent.data.l[4] = data4;
 
-            ThrowExternalExceptionIfZero(XSendEvent(
+            var status = XSendEvent(
                 display,
                 targetWindow,
                 False,
                 eventMask,
                 (XEvent*)&clientEvent
-            ), nameof(XSendEvent));
+            );
+
+            ThrowExternalExceptionIf(status == 0, nameof(XSendEvent));
         }
 
         public static void SetWindowTitle(XlibDispatchProvider dispatchProvider, IntPtr display, nuint window, string value)

@@ -1,5 +1,8 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+// This file includes code based on the MemoryBlock class from https://github.com/GPUOpen-LibrariesAndSDKs/D3D12MemoryAllocator/
+// The original code is Copyright © Advanced Micro Devices, Inc. All rights reserved. Licensed under the MIT License (MIT).
+
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using static TerraFX.Utilities.State;
@@ -7,23 +10,23 @@ using static TerraFX.Utilities.State;
 namespace TerraFX.Graphics.Providers.D3D12
 {
     /// <inheritdoc />
-    public sealed unsafe class D3D12GraphicsBuffer<TMetadata> : D3D12GraphicsBuffer
-        where TMetadata : struct, IGraphicsMemoryRegionCollection<GraphicsResource>.IMetadata
+    public sealed unsafe class D3D12GraphicsMemoryBlock<TMetadata> : D3D12GraphicsMemoryBlock
+        where TMetadata : struct, IGraphicsMemoryRegionCollection<GraphicsMemoryBlock>.IMetadata
     {
 #pragma warning disable IDE0044
         private TMetadata _metadata;
 #pragma warning restore IDE0044
 
-        internal D3D12GraphicsBuffer(GraphicsBufferKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess)
-            : base(kind, in blockRegion, cpuAccess)
+        internal D3D12GraphicsMemoryBlock(D3D12GraphicsMemoryBlockCollection collection, ulong size)
+            : base(collection)
         {
-            var block = blockRegion.Collection;
+            ref readonly var allocatorSettings = ref collection.Allocator.Settings;
 
-            var minimumAllocatedRegionMarginSize = block.MinimumAllocatedRegionMarginSize;
-            var minimumFreeRegionSizeToRegister = block.MinimumFreeRegionSizeToRegister;
+            var minimumAllocatedRegionMarginSize = allocatorSettings.MinimumAllocatedRegionMarginSize.GetValueOrDefault();
+            var minimumFreeRegionSizeToRegister = allocatorSettings.MinimumFreeRegionSizeToRegister;
 
             _metadata = new TMetadata();
-            _metadata.Initialize(this, blockRegion.Size, minimumAllocatedRegionMarginSize, minimumFreeRegionSizeToRegister);
+            _metadata.Initialize(this, size, minimumAllocatedRegionMarginSize, minimumFreeRegionSizeToRegister);
 
             _ = _state.Transition(to: Initialized);
         }
@@ -45,19 +48,23 @@ namespace TerraFX.Graphics.Providers.D3D12
             => _metadata.LargestFreeRegionSize;
 
         /// <inheritdoc />
+        public override ulong MinimumAllocatedRegionMarginSize
+            => _metadata.MinimumAllocatedRegionMarginSize;
+
+        /// <inheritdoc />
         public override ulong MinimumFreeRegionSizeToRegister
             => _metadata.MinimumFreeRegionSizeToRegister;
 
         /// <inheritdoc />
-        public override ulong MinimumAllocatedRegionMarginSize
-            => _metadata.MinimumAllocatedRegionMarginSize;
+        public override ulong Size
+            => _metadata.Size;
 
         /// <inheritdoc />
         public override ulong TotalFreeRegionSize
             => _metadata.TotalFreeRegionSize;
 
         /// <inheritdoc />
-        public override GraphicsMemoryRegion<GraphicsResource> Allocate(ulong size, ulong alignment = 1)
+        public override GraphicsMemoryRegion<GraphicsMemoryBlock> Allocate(ulong size, ulong alignment = 1)
             => _metadata.Allocate(size, alignment);
 
         /// <inheritdoc />
@@ -65,15 +72,15 @@ namespace TerraFX.Graphics.Providers.D3D12
             => _metadata.Clear();
 
         /// <inheritdoc />
-        public override void Free(in GraphicsMemoryRegion<GraphicsResource> region)
+        public override void Free(in GraphicsMemoryRegion<GraphicsMemoryBlock> region)
             => _metadata.Free(in region);
 
         /// <inheritdoc />
-        public override IEnumerator<GraphicsMemoryRegion<GraphicsResource>> GetEnumerator()
+        public override IEnumerator<GraphicsMemoryRegion<GraphicsMemoryBlock>> GetEnumerator()
             => _metadata.GetEnumerator();
 
         /// <inheritdoc />
-        public override bool TryAllocate(ulong size, [Optional, DefaultParameterValue(1UL)] ulong alignment, out GraphicsMemoryRegion<GraphicsResource> region)
+        public override bool TryAllocate(ulong size, [Optional, DefaultParameterValue(1UL)] ulong alignment, out GraphicsMemoryRegion<GraphicsMemoryBlock> region)
             => _metadata.TryAllocate(size, alignment, out region);
     }
 }

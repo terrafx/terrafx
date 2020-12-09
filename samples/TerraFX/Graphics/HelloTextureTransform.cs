@@ -18,8 +18,8 @@ namespace TerraFX.Samples.Graphics
     public sealed class HelloTextureTransform : HelloWindow
     {
         private GraphicsPrimitive _trianglePrimitive = null!;
-        private IGraphicsBuffer _constantBuffer = null!;
-        private IGraphicsBuffer _vertexBuffer = null!;
+        private GraphicsBuffer _constantBuffer = null!;
+        private GraphicsBuffer _vertexBuffer = null!;
         private float _trianglePrimitiveTranslationAngle;
 
         public HelloTextureTransform(string name, params Assembly[] compositionAssemblies)
@@ -91,7 +91,7 @@ namespace TerraFX.Samples.Graphics
             base.Draw(graphicsContext);
         }
 
-        private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext, IGraphicsBuffer vertexStagingBuffer, IGraphicsBuffer textureStagingBuffer)
+        private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer textureStagingBuffer)
         {
             var graphicsDevice = GraphicsDevice;
             var graphicsSurface = graphicsDevice.Surface;
@@ -104,16 +104,16 @@ namespace TerraFX.Samples.Graphics
             var vertexBufferRegion = CreateVertexBufferRegion(graphicsContext, vertexBuffer, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
             graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
 
-            var inputResourceRegions = new GraphicsMemoryRegion<IGraphicsResource>[3] {
+            var inputResourceRegions = new GraphicsMemoryRegion<GraphicsResource>[3] {
                 CreateConstantBufferRegion(graphicsContext, constantBuffer),
                 CreateConstantBufferRegion(graphicsContext, constantBuffer),
                 CreateTexture2DRegion(graphicsContext, textureStagingBuffer),
             };
-            return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion, indexBufferRegion: default, inputResourceRegions);
+            return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion, SizeOf<TextureVertex>(), inputResourceRegions: inputResourceRegions);
 
-            static GraphicsMemoryRegion<IGraphicsResource> CreateConstantBufferRegion(GraphicsContext graphicsContext, IGraphicsBuffer constantBuffer)
+            static GraphicsMemoryRegion<GraphicsResource> CreateConstantBufferRegion(GraphicsContext graphicsContext, GraphicsBuffer constantBuffer)
             {
-                var constantBufferRegion = constantBuffer.Allocate(SizeOf<Matrix4x4>(), alignment: 256, stride: SizeOf<Matrix4x4>());
+                var constantBufferRegion = constantBuffer.Allocate(SizeOf<Matrix4x4>(), alignment: 256);
                 var pConstantBuffer = constantBuffer.Map<Matrix4x4>(in constantBufferRegion);
 
                 pConstantBuffer[0] = Matrix4x4.Identity;
@@ -122,7 +122,7 @@ namespace TerraFX.Samples.Graphics
                 return constantBufferRegion;
             }
 
-            static GraphicsMemoryRegion<IGraphicsResource> CreateTexture2DRegion(GraphicsContext graphicsContext, IGraphicsBuffer textureStagingBuffer)
+            static GraphicsMemoryRegion<GraphicsResource> CreateTexture2DRegion(GraphicsContext graphicsContext, GraphicsBuffer textureStagingBuffer)
             {
                 const uint TextureWidth = 256;
                 const uint TextureHeight = 256;
@@ -131,7 +131,7 @@ namespace TerraFX.Samples.Graphics
                 const uint CellHeight = TextureHeight / 8;
 
                 var texture2D = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.TwoDimensional, GraphicsResourceCpuAccess.None, TextureWidth, TextureHeight);
-                var texture2DRegion = texture2D.Allocate(texture2D.Size, alignment: 4, stride: sizeof(uint));
+                var texture2DRegion = texture2D.Allocate(texture2D.Size, alignment: 4);
                 var pTextureData = textureStagingBuffer.Map<uint>(in texture2DRegion);
 
                 for (uint n = 0; n < TexturePixels; n++)
@@ -149,9 +149,9 @@ namespace TerraFX.Samples.Graphics
                 return texture2DRegion;
             }
 
-            static GraphicsMemoryRegion<IGraphicsResource> CreateVertexBufferRegion(GraphicsContext graphicsContext, IGraphicsBuffer vertexBuffer, IGraphicsBuffer vertexStagingBuffer, float aspectRatio)
+            static GraphicsMemoryRegion<GraphicsResource> CreateVertexBufferRegion(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
             {
-                var vertexBufferRegion = vertexBuffer.Allocate(SizeOf<TextureVertex>() * 3, alignment: 16, stride: SizeOf<TextureVertex>());
+                var vertexBufferRegion = vertexBuffer.Allocate(SizeOf<TextureVertex>() * 3, alignment: 16);
                 var pVertexBuffer = vertexStagingBuffer.Map<TextureVertex>(in vertexBufferRegion);
 
                 pVertexBuffer[0] = new TextureVertex {

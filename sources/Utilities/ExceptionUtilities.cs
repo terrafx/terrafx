@@ -7,7 +7,6 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
-using static TerraFX.Utilities.IntegerUtilities;
 
 namespace TerraFX.Utilities
 {
@@ -52,61 +51,9 @@ namespace TerraFX.Utilities
         /// <param name="methodName">The name of the method that caused the exception.</param>
         /// <exception cref="ExternalException"><paramref name="methodName" /> failed with an exit code of <see cref="Marshal.GetLastWin32Error()" />.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowExternalExceptionIfFalse(bool value, string methodName)
+        public static void ThrowExternalExceptionIf(bool value, string methodName)
         {
-            if (value == false)
-            {
-                ThrowExternalExceptionForLastError(methodName);
-            }
-        }
-
-        /// <summary>Throws an instance of the <see cref="ExternalException" /> class if <paramref name="value" /> is <c>0</c>.</summary>
-        /// <param name="value">The value to be checked for <c>0</c>.</param>
-        /// <param name="methodName">The name of the method that caused the exception.</param>
-        /// <exception cref="ExternalException"><paramref name="methodName" /> failed with an exit code of <see cref="Marshal.GetLastWin32Error()" />.</exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowExternalExceptionIfZero(int value, string methodName)
-        {
-            if (value == 0)
-            {
-                ThrowExternalExceptionForLastError(methodName);
-            }
-        }
-
-        /// <summary>Throws an instance of the <see cref="ExternalException" /> class if <paramref name="value" /> is <c>0</c>.</summary>
-        /// <param name="value">The value to be checked for <c>0</c>.</param>
-        /// <param name="methodName">The name of the method that caused the exception.</param>
-        /// <exception cref="ExternalException"><paramref name="methodName" /> failed with an exit code of <see cref="Marshal.GetLastWin32Error()" />.</exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowExternalExceptionIfZero(uint value, string methodName)
-        {
-            if (value == 0)
-            {
-                ThrowExternalExceptionForLastError(methodName);
-            }
-        }
-
-        /// <summary>Throws an instance of the <see cref="ExternalException" /> class if <paramref name="value" /> is <c>0</c>.</summary>
-        /// <param name="value">The value to be checked for <c>0</c>.</param>
-        /// <param name="methodName">The name of the method that caused the exception.</param>
-        /// <exception cref="ExternalException"><paramref name="methodName" /> failed with an exit code of <see cref="Marshal.GetLastWin32Error()" />.</exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowExternalExceptionIfZero(nint value, string methodName)
-        {
-            if (value == 0)
-            {
-                ThrowExternalExceptionForLastError(methodName);
-            }
-        }
-
-        /// <summary>Throws an instance of the <see cref="ExternalException" /> class if <paramref name="value" /> is <c>0</c>.</summary>
-        /// <param name="value">The value to be checked for <c>0</c>.</param>
-        /// <param name="methodName">The name of the method that caused the exception.</param>
-        /// <exception cref="ExternalException"><paramref name="methodName" /> failed with an exit code of <see cref="Marshal.GetLastWin32Error()" />.</exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowExternalExceptionIfZero(nuint value, string methodName)
-        {
-            if (value == 0)
+            if (value)
             {
                 ThrowExternalExceptionForLastError(methodName);
             }
@@ -134,27 +81,14 @@ namespace TerraFX.Utilities
             throw new ExternalException(message, hresult);
         }
 
-        /// <summary>Throws a <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>false</c>.</summary>
-        /// <param name="value">The value to be checked if <c>false</c>.</param>
+        /// <summary>Throws a <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>true</c>.</summary>
+        /// <param name="value">The value to be checked.</param>
         /// <param name="paramName">The name of the parameter being checked.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>false</c>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowIfFalse(bool value, string paramName)
+        public static void ThrowIf(bool value, string paramName)
         {
-            if (!value)
-            {
-                ThrowArgumentOutOfRangeException(value, paramName);
-            }
-        }
-
-        /// <summary>Throws a <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>negative</c>.</summary>
-        /// <param name="value">The value to be checked if <c>negative</c>.</param>
-        /// <param name="paramName">The name of the parameter being checked.</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>negative</c>.</exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowIfNegative(int value, string paramName)
-        {
-            if (value < 0)
+            if (value)
             {
                 ThrowArgumentOutOfRangeException(value, paramName);
             }
@@ -201,45 +135,6 @@ namespace TerraFX.Utilities
             if (currentThread != thread)
             {
                 ThrowInvalidOperationException(currentThread, nameof(Thread.CurrentThread));
-            }
-        }
-
-        /// <summary>Throws a <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not a <c>power of two</c>.</summary>
-        /// <param name="value">The value to be checked for <c>power of two</c>.</param>
-        /// <param name="paramName">The name of the parameter being checked.</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not a <c>power of two</c>.</exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowIfNotPow2(ulong value, string paramName)
-        {
-            if (!IsPow2(value))
-            {
-                ThrowArgumentOutOfRangeException(value, paramName);
-            }
-        }
-
-        /// <summary>Throws a <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>zero</c>.</summary>
-        /// <param name="value">The value to be checked for <c>zero</c>.</param>
-        /// <param name="paramName">The name of the parameter being checked.</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>zero</c>.</exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowIfZero(uint value, string paramName)
-        {
-            if (value == 0)
-            {
-                ThrowArgumentOutOfRangeException(value, paramName);
-            }
-        }
-
-        /// <summary>Throws a <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <c>zero</c>.</summary>
-        /// <param name="value">The value to be checked for <c>zero</c>.</param>
-        /// <param name="paramName">The name of the parameter being checked.</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is <c>zero</c>.</exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowIfZero(ulong value, string paramName)
-        {
-            if (value == 0)
-            {
-                ThrowArgumentOutOfRangeException(value, paramName);
             }
         }
 

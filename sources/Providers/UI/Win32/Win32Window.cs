@@ -135,7 +135,7 @@ namespace TerraFX.UI.Providers.Win32
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="IsActive" /> was <c>false</c> but the instance has already been disposed.</exception>
         public override void Activate()
-            => ThrowExternalExceptionIfFalse(TryActivate(), nameof(SetForegroundWindow));
+            => ThrowExternalExceptionIf(TryActivate() == false, nameof(SetForegroundWindow));
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
@@ -404,7 +404,7 @@ namespace TerraFX.UI.Providers.Win32
                     lpParam: GCHandle.ToIntPtr(GCHandle.Alloc(this, GCHandleType.Normal)).ToPointer()
                 );
             }
-            ThrowExternalExceptionIfZero(hWnd, nameof(CreateWindowExW));
+            ThrowExternalExceptionIf(hWnd == null, nameof(CreateWindowExW));
 
             // Set the initial bounds so that resizing and relocating before showing work as expected
             // For GetClientRect, it always returns the position as (0, 0) annd so we need to remap

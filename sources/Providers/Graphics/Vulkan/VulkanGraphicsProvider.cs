@@ -68,8 +68,6 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// </remarks>
         public const string RequiredLayerNamesDataName = "TerraFX.Graphics.Providers.Vulkan.GraphicsProvider.RequiredLayerNames";
 
-        private static readonly delegate* unmanaged<uint, VkDebugReportObjectTypeEXT, ulong, nuint, int, sbyte*, sbyte*, void*, uint> s_vulkanDebugReportCallback = (delegate* unmanaged<uint, VkDebugReportObjectTypeEXT, ulong, nuint, int, sbyte*, sbyte*, void*, uint>)(delegate*<uint, VkDebugReportObjectTypeEXT, ulong, nuint, int, sbyte*, sbyte*, void*, uint>)&VulkanDebugReportCallback;
-
         private readonly string _engineName;
         private readonly string[] _requiredExtensionNames;
         private readonly string[] _optionalExtensionNames;
@@ -150,6 +148,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <exception cref="ObjectDisposedException">The provider has been disposed.</exception>
         public VkInstance VulkanInstance => _vulkanInstance.Value;
 
+        [UnmanagedCallersOnly]
         private static uint VulkanDebugReportCallback(uint flags, VkDebugReportObjectTypeEXT objectType, ulong @object, nuint location, int messageCode, sbyte* pLayerPrefix, sbyte* pMessage, void* pUserData)
         {
             var message = MarshalUtf8ToReadOnlySpan(pMessage).AsString();
@@ -372,7 +371,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 var debugReportCallbackCreateInfo = new VkDebugReportCallbackCreateInfoEXT {
                     sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT,
                     flags = (uint)(VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT | VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT),
-                    pfnCallback = s_vulkanDebugReportCallback,
+                    pfnCallback = &VulkanDebugReportCallback,
                 };
 
                 // We don't want to fail if creating the debug report callback failed
