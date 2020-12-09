@@ -94,7 +94,7 @@ namespace TerraFX.UI.Providers.Xlib
                 // This allows some delayed initialization to occur since most of the fields in Window are lazy.
 
                 userData = Environment.Is64BitProcess
-                         ? (xevent->xclient.data.l[1] << 32) | (nint)(uint)xevent->xclient.data.l[0]
+                         ? (xevent->xclient.data.l[1] << 32) | unchecked((nint)(uint)xevent->xclient.data.l[0])
                          : xevent->xclient.data.l[0];
 
                 // Unlike the WindowProvider GCHandle, the Window GCHandle is short lived and

@@ -665,7 +665,7 @@ namespace TerraFX.UI.Providers.Xlib
                 NoEventMask,
                 window,
                 dispatchProvider.GetAtom(_TERRAFX_CREATE_WINDOW),
-                (nint)(uint)gcHandlePtr,
+                unchecked((nint)(uint)gcHandlePtr),
                 (nint)(gcHandlePtr >> 32)
             );
 
@@ -696,7 +696,7 @@ namespace TerraFX.UI.Providers.Xlib
                     NoEventMask,
                     window,
                     dispatchProvider.GetAtom(_TERRAFX_DISPOSE_WINDOW),
-                    (nint)(uint)gcHandlePtr,
+                    unchecked((nint)(uint)gcHandlePtr),
                     (nint)(gcHandlePtr >> 32)
                 );
 
