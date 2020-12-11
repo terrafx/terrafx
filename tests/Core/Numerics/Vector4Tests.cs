@@ -3,7 +3,7 @@ using TerraFX.Numerics;
 
 namespace TerraFX.UnitTests.Numerics
 {
-    /// <summary>Unit tests for <see cref="Vector4"/>.</summary>
+    /// <summary>Unit tests for <see cref="Vector4" />.</summary>
     public class Vector4Tests
     {
         /// <summary>Ensures that a vector's components are equal to the parameters used to construct one.</summary>
@@ -38,11 +38,11 @@ namespace TerraFX.UnitTests.Numerics
             Assert.That(new Vector4(0, 0, 0, 0) != new Vector4(1, 1, 1, 1), Is.True);
         }
 
-        /// <summary>Ensures that <see cref="Vector4.operator+(Vector4)"/> returns its input unchanced.</summary>
+        /// <summary>Ensures that <see cref="Vector4.operator+(Vector4)" /> returns its input unchanced.</summary>
         [Test]
         public static void UnaryPlusReturnsUnchanged() => Assert.That(+Vector4.Zero == Vector4.Zero, Is.True);
 
-        /// <summary>Ensures that <see cref="Vector4.operator-(Vector4)"/> returns the negation of its input.</summary>
+        /// <summary>Ensures that <see cref="Vector4.operator-(Vector4)" /> returns the negation of its input.</summary>
         [Test]
         public static void UnaryNegationReturnsNegative()
         {
@@ -51,7 +51,7 @@ namespace TerraFX.UnitTests.Numerics
             Assert.That(vector, Is.EqualTo(new Vector4(-1, -1, -1, -1)));
         }
 
-        /// <summary>Ensures that <see cref="Vector4.operator+(Vector4,Vector4)"/> returns the vector sum of its components.</summary>
+        /// <summary>Ensures that <see cref="Vector4.operator+(Vector4,Vector4)" /> returns the vector sum of its components.</summary>
         [Test]
         public static void AdditionReturnsSumOfValues()
         {
@@ -60,7 +60,7 @@ namespace TerraFX.UnitTests.Numerics
             Assert.That(vector, Is.EqualTo(new Vector4(2, 4, 6, 8)));
         }
 
-        /// <summary>Ensures that <see cref="Vector4.operator-(Vector4,Vector4)"/> returns the vector difference of its components.</summary>
+        /// <summary>Ensures that <see cref="Vector4.operator-(Vector4,Vector4)" /> returns the vector difference of its components.</summary>
         [Test]
         public static void SubtractionReturnsDifferenceOfValues()
         {
@@ -69,7 +69,7 @@ namespace TerraFX.UnitTests.Numerics
             Assert.That(vector, Is.EqualTo(new Vector4(3, 1, -1, -3)));
         }
 
-        /// <summary>Ensures that <see cref="Vector4.operator*(Vector4,Vector4)"/> returns the vector product of its components.</summary>
+        /// <summary>Ensures that <see cref="Vector4.operator*(Vector4,Vector4)" /> returns the vector product of its components.</summary>
         [Test]
         public static void VectorMultiplicationReturnsProductOfValues()
         {
@@ -78,7 +78,7 @@ namespace TerraFX.UnitTests.Numerics
             Assert.That(vector, Is.EqualTo(new Vector4(4, 6, 6, 4)));
         }
 
-        /// <summary>Ensures that <see cref="Vector4.operator/(Vector4,Vector4)"/> returns the vector division of its components.</summary>
+        /// <summary>Ensures that <see cref="Vector4.operator/(Vector4,Vector4)" /> returns the vector division of its components.</summary>
         [Test]
         public static void VectorDivisionReturnsDivisionOfValues()
         {
@@ -87,7 +87,7 @@ namespace TerraFX.UnitTests.Numerics
             Assert.That(vector, Is.EqualTo(new Vector4(2, 2, 2, 2)));
         }
 
-        /// <summary>Ensures that <see cref="Vector4.operator*(Vector4,float)"/> returns a vector with each component multiplied by the given float.</summary>
+        /// <summary>Ensures that <see cref="Vector4.operator*(Vector4,float)" /> returns a vector with each component multiplied by the given float.</summary>
         [Test]
         public static void ScalarMultiplicationReturnValuesScaled()
         {
@@ -96,7 +96,7 @@ namespace TerraFX.UnitTests.Numerics
             Assert.That(vector, Is.EqualTo(new Vector4(5, 10, 15, 20)));
         }
 
-        /// <summary>Ensures that <see cref="Vector4.operator/(Vector4,float)"/> returns a vector with each component divided by the given float.</summary>
+        /// <summary>Ensures that <see cref="Vector4.operator/(Vector4,float)" /> returns a vector with each component divided by the given float.</summary>
         [Test]
         public static void ScalarDivisionReturnsValuesScaled()
         {
@@ -105,7 +105,7 @@ namespace TerraFX.UnitTests.Numerics
             Assert.That(vector, Is.EqualTo(new Vector4(1, 2, 3, 4)));
         }
 
-        /// <summary>Ensures that <see cref="Vector4.Dot(Vector4,Vector4)"/> returns the scalar product of both input vectors.</summary>
+        /// <summary>Ensures that <see cref="Vector4.Dot(Vector4,Vector4)" /> returns the scalar product of both input vectors.</summary>
         [Test]
         public static void DotProductReturnsScalarProduct()
         {
@@ -114,7 +114,7 @@ namespace TerraFX.UnitTests.Numerics
             Assert.That(product, Is.EqualTo(3.0f));
         }
 
-        /// <summary>Ensures that <see cref="Vector4.Normalize(Vector4)"/> returns a unit vector.</summary>
+        /// <summary>Ensures that <see cref="Vector4.Normalize(Vector4)" /> returns a unit vector.</summary>
         [Test]
         public static void NormalizeReturnsUnitVector()
         {
@@ -124,14 +124,14 @@ namespace TerraFX.UnitTests.Numerics
             Assert.That(Vector4.Normalize(new Vector4(0, 0, 0, 5)), Is.EqualTo(new Vector4(0, 0, 0, 1)));
         }
 
-        /// <summary>Ensures that <see cref="Vector4.Length"/> and <see cref="Vector4.LengthSquared"/> return the magnitude and squared magnitude of the input vector.</summary>
+        /// <summary>Ensures that <see cref="Vector4.Length" /> and <see cref="Vector4.LengthSquared" /> return the magnitude and squared magnitude of the input vector.</summary>
         [Test]
         public static void LengthReturnsMagnitudeOfVector()
         {
             var vector = new Vector4(0, 5, 0, 0);
 
-            Assert.That(vector.Length, Is.EqualTo(5));
-            Assert.That(vector.LengthSquared, Is.EqualTo(25));
+            Assert.That(Vector4.Length(vector), Is.EqualTo(5));
+            Assert.That(Vector4.LengthSquared(vector), Is.EqualTo(25));
         }
     }
 }

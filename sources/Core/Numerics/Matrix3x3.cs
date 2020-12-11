@@ -12,6 +12,9 @@ namespace TerraFX.Numerics
         /// <summary>Defines the identity matrix.</summary>
         public static readonly Matrix3x3 Identity = new Matrix3x3(Vector3.UnitX, Vector3.UnitY, Vector3.UnitZ);
 
+        /// <summary>Defines the all zeros matrix.</summary>
+        public static readonly Matrix3x3 Zero = new Matrix3x3(Vector3.Zero, Vector3.Zero, Vector3.Zero);
+
         private readonly Vector3 _x;
         private readonly Vector3 _y;
         private readonly Vector3 _z;
@@ -91,8 +94,15 @@ namespace TerraFX.Numerics
             return hashCode.ToHashCode();
         }
 
+        /// <summary>A rounded version of this <see cref="Matrix3x3" />.</summary>
+        /// <param name="m">The matrix to round.</param>
+        /// <param name="numDigits">The number of fractional digits to round to. By default 4.</param>
+        /// <returns>The resulting rounded <see cref="Matrix3x3" />.</returns>
+        public static Matrix3x3 Round(Matrix3x3 m, int numDigits = 4) => new Matrix3x3(Vector3.Round(m.X, numDigits), Vector3.Round(m.Y, numDigits), Vector3.Round(m.Z, numDigits));
+
         /// <inheritdoc />
         public override string ToString() => ToString(format: null, formatProvider: null);
+
 
         /// <inheritdoc />
         public string ToString(string? format, IFormatProvider? formatProvider)
@@ -110,6 +120,16 @@ namespace TerraFX.Numerics
                 .Append(Z.ToString(format, formatProvider))
                 .Append('>')
                 .ToString();
+        }
+
+        /// <summary>Creates a transposed version of this <see cref="Matrix3x3" />.</summary>
+        /// <returns>The transposed <see cref="Matrix3x3" />.</returns>
+        public static Matrix3x3 Transpose(Matrix3x3 m)
+        {
+            return new Matrix3x3(
+                new Vector3(m.X.X, m.Y.X, m.Z.X),
+                new Vector3(m.X.Y, m.Y.Y, m.Z.Y),
+                new Vector3(m.X.Z, m.Y.Z, m.Z.Z));
         }
     }
 }
