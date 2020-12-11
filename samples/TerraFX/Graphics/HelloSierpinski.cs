@@ -37,9 +37,9 @@ namespace TerraFX.Samples.Graphics
             base.Cleanup();
         }
 
-        public override void Initialize(Application application)
+        public override void Initialize(Application application, TimeSpan timeout)
         {
-            base.Initialize(application);
+            base.Initialize(application, timeout);
 
             var graphicsDevice = GraphicsDevice;
             var currentGraphicsContext = graphicsDevice.CurrentContext;

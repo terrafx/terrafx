@@ -22,7 +22,7 @@ namespace TerraFX.Samples.Audio
             _provider = null;
         }
 
-        public override void Initialize(Application application)
+        public override void Initialize(Application application, TimeSpan timeout)
         {
             _provider = application.GetService<IAudioProvider>();
 
@@ -32,7 +32,7 @@ namespace TerraFX.Samples.Audio
                 task.AsTask().Wait();
             }
 
-            base.Initialize(application);
+            base.Initialize(application, timeout);
         }
 
         public override void Cleanup()

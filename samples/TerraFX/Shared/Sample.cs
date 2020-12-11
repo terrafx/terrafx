@@ -23,6 +23,7 @@ namespace TerraFX.Samples
         private readonly string _assemblyPath;
         private readonly string _name;
         private readonly Assembly[] _compositionAssemblies;
+        private TimeSpan _timeout;
 
         protected Sample(string name, Assembly[] compositionAssemblies)
         {
@@ -49,6 +50,8 @@ namespace TerraFX.Samples
 
         public string Name => _name;
 
+        public TimeSpan Timeout => _timeout;
+
         public virtual void Cleanup() { }
 
         public void Dispose()
@@ -57,7 +60,10 @@ namespace TerraFX.Samples
             GC.SuppressFinalize(this);
         }
 
-        public virtual void Initialize(Application application) => application.Idle += OnIdle;
+        public virtual void Initialize(Application application, TimeSpan timeout) {
+            _timeout = timeout;
+            application.Idle += OnIdle;
+        }
 
         protected unsafe GraphicsShader CompileShader(GraphicsDevice graphicsDevice, GraphicsShaderKind kind, string shaderName, string entryPointName)
         {

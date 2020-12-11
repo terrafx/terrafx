@@ -33,7 +33,7 @@ namespace TerraFX.Samples.Graphics
             base.Cleanup();
         }
 
-        public override void Initialize(Application application)
+        public override void Initialize(Application application, TimeSpan timeout)
         {
             ExceptionUtilities.ThrowIfNull(application, nameof(application));
 
@@ -48,7 +48,7 @@ namespace TerraFX.Samples.Graphics
 
             _graphicsDevice = graphicsAdapter.CreateDevice(_window, contextCount: 2);
 
-            base.Initialize(application);
+            base.Initialize(application, timeout);
         }
 
         protected virtual void Draw(GraphicsContext graphicsContext) { }
@@ -61,7 +61,7 @@ namespace TerraFX.Samples.Graphics
 
             _elapsedTime += eventArgs.Delta;
 
-            if (_elapsedTime.TotalSeconds >= 2.5)
+            if (_elapsedTime >= Timeout)
             {
                 var application = (Application)sender;
                 application.RequestExit();

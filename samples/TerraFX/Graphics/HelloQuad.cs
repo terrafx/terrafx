@@ -1,5 +1,6 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+using System;
 using System.Reflection;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
@@ -27,9 +28,9 @@ namespace TerraFX.Samples.Graphics
             base.Cleanup();
         }
 
-        public override void Initialize(Application application)
+        public override void Initialize(Application application, TimeSpan timeout)
         {
-            base.Initialize(application);
+            base.Initialize(application, timeout);
 
             var graphicsDevice = GraphicsDevice;
             var currentGraphicsContext = graphicsDevice.CurrentContext;
