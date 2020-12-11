@@ -104,10 +104,10 @@ namespace TerraFX.Samples
             }
         }
 
-        private static void Run(Sample sample)
+        private static void Run(Sample sample, TimeSpan timeout)
         {
             using var application = new Application(sample.CompositionAssemblies);
-            sample.Initialize(application);
+            sample.Initialize(application, timeout);
 
             application.Run();
             sample.Cleanup();
@@ -119,26 +119,30 @@ namespace TerraFX.Samples
 
             if (args.Any((arg) => Matches(arg, "all")))
             {
-                foreach (var sample in s_samples)
+                var samples = s_samples;
+                foreach (var sample in samples)
                 {
                     if (IsSupported(sample))
                     {
-                        RunSample(sample);
+                        RunSample(sample, TimeSpan.FromSeconds(2.5));
                         ranAnySamples = true;
                     }
                 }
             }
-
+            else
+            {
+                var samples = s_samples;
             foreach (var arg in args)
             {
-                foreach (var sample in s_samples.Where((sample) => arg.Equals(sample.Name, StringComparison.OrdinalIgnoreCase)))
+                    foreach (var sample in samples.Where((sample) => arg.Equals(sample.Name, StringComparison.OrdinalIgnoreCase)))
                 {
                     if (IsSupported(sample))
                     {
-                        RunSample(sample);
+                            RunSample(sample, TimeSpan.MaxValue);
                         ranAnySamples = true;
                     }
                 }
+            }
             }
 
             if (ranAnySamples == false)
@@ -147,10 +151,10 @@ namespace TerraFX.Samples
             }
         }
 
-        private static void RunSample(Sample sample)
+        private static void RunSample(Sample sample, TimeSpan timeout)
         {
             Console.WriteLine($"Running: {sample.Name}");
-            var thread = new Thread(() => Run(sample));
+            var thread = new Thread(() => Run(sample, timeout));
 
             thread.Start();
             thread.Join();
