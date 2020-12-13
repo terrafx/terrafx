@@ -87,11 +87,11 @@ namespace TerraFX.Numerics
         /// <returns>The result of subtracting <paramref name="right" /> from <paramref name="left" />.</returns>
         public static Quaternion operator -(Quaternion left, Quaternion right) => new Quaternion(left._q - right._q);
 
-        /// <summary>Multiplies two specified <see cref="Quaternion" /> values.</summary>
+        /// <summary>Multiplies two specified <see cref="Quaternion" /> values. Is the same as <seealso cref="Quaternion.Concatenate" />.</summary>
         /// <param name="left">The first value to multiply.</param>
         /// <param name="right">The second value to multiply.</param>
         /// <returns>The result of multiplying <paramref name="left" /> by <paramref name="right" />.</returns>
-        public static Quaternion operator *(Quaternion left, Quaternion right) => new Quaternion(left._q * right._q);
+        public static Quaternion operator *(Quaternion left, Quaternion right) => Quaternion.Concatenate(left, right);
 
         /// <summary>Divides two specified <see cref="Quaternion" /> values component by component.</summary>
         /// <param name="left">The dividend.</param>
@@ -243,19 +243,25 @@ namespace TerraFX.Numerics
 
         /// <summary>
         /// Creates a new <see cref="Quaternion" /> by concatenating 'this' with the given one.
-        /// The result will have the combined effect of the rotations and scalings in both source Quaternions.
+        /// The result will have the combined effect of the rotations in both source Quaternions.
         /// </summary>
         /// <param name="q">The left Quaternion for this operation.</param>
         /// <param name="r">The right Quaternion to concatenate.</param>
         /// <returns>The combined Quaternion.</returns>
         public static Quaternion Concatenate(Quaternion q, Quaternion r)
         {
-            var a = new Vector3(q.X, q.Y, q.Z);
-            var b = new Vector3(r.X, r.Y, r.Z);
-            var c = a * r.W;
-            c += b * q.W;
-            c += Vector3.Cross(b, a);
-            var resultQ = Normalize(new Quaternion(c.X, c.Y, c.Z, (q.W * r.W) - Vector3.Dot(a, b)));
+            // from XMQuaternionMultiply at https://github.com/microsoft/DirectXMath/blob/master/Inc/DirectXMathMisc.inl#L82
+            // (r.x * +q.w) + (r.y * +q.z) + (r.z * -q.y) + (r.w * +q.x),
+            // (r.x * -q.z) + (r.y * +q.w) + (r.z * +q.x) + (r.w * +q.y),
+            // (r.x * +q.y) + (r.y * -q.x) + (r.z * +q.w) + (r.w * +q.z),
+            // (r.x * -q.x) + (r.y * -q.y) + (r.z * -q.z) + (r.w * +q.w)
+
+            var resultQ = new Quaternion(
+                Quaternion.Dot(r, new Quaternion(+q.W, +q.Z, -q.Y, +q.X)),
+                Quaternion.Dot(r, new Quaternion(-q.Z, +q.W, +q.X, +q.Y)),
+                Quaternion.Dot(r, new Quaternion(+q.Y, -q.X, +q.W, +q.Z)),
+                Quaternion.Dot(r, new Quaternion(-q.X, -q.Y, -q.Z, +q.W))
+            );
             return resultQ;
         }
 
