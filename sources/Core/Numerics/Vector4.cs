@@ -80,12 +80,10 @@ namespace TerraFX.Numerics
         public float W => _w;
 
         /// <summary>Gets the square-rooted length of the vector.</summary>
-        /// <param name="vector">The <see cref="Vector4" /> for this operation.</param>
-        public static float Length(Vector4 vector) => MathF.Sqrt(Vector4.LengthSquared(vector));
+        public float Length => MathF.Sqrt(LengthSquared);
 
         /// <summary>Gets the squared length of the vector.</summary>
-        /// <param name="vector">The <see cref="Vector4" /> for this operation.</param>
-        public static float LengthSquared(Vector4 vector) => Dot(vector, vector);
+        public float LengthSquared => Dot(this, this);
 
         /// <summary>Compares two <see cref="Vector4" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="Vector4" /> to compare with <paramref name="right" />.</param>
@@ -172,7 +170,7 @@ namespace TerraFX.Numerics
         /// <summary>Computes the normalized value of the given <see cref="Vector4" /> value.</summary>
         /// <param name="value">The value to normalize.</param>
         /// <returns>The unit vector of <paramref name="value" />.</returns>
-        public static Vector4 Normalize(Vector4 value) => value / Vector4.Length(value);
+        public static Vector4 Normalize(Vector4 value) => value / value.Length;
 
         /// <summary>Creates a new <see cref="Vector4" /> instance with <see cref="X" /> set to the specified value.</summary>
         /// <param name="value">The new value of the x-dimension.</param>

@@ -137,8 +137,8 @@ namespace TerraFX.UnitTests.Numerics
         {
             var vector = new Vector3(0, 5, 0);
 
-            Assert.That(Vector3.Length(vector), Is.EqualTo(5));
-            Assert.That(Vector3.LengthSquared(vector), Is.EqualTo(25));
+            Assert.That(vector.Length, Is.EqualTo(5));
+            Assert.That(vector.LengthSquared, Is.EqualTo(25));
         }
 
         /// <summary>Ensures that <see cref="Vector3" /> and <see cref="Matrix3x3" /> multiply properly.</summary>

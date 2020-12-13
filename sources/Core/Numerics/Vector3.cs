@@ -59,12 +59,10 @@ namespace TerraFX.Numerics
         public float Z => _z;
 
         /// <summary>Gets the square-rooted length of the vector.</summary>
-        /// <param name="vector">The <see cref="Vector3" /> for this operation.</param>
-        public static float Length(Vector3 vector) => MathF.Sqrt(Vector3.LengthSquared(vector));
+        public float Length => MathF.Sqrt(LengthSquared);
 
         /// <summary>Gets the squared length of the vector.</summary>
-        /// <param name="vector">The <see cref="Vector3" /> for this operation.</param>
-        public static float LengthSquared(Vector3 vector) => Dot(vector, vector);
+        public float LengthSquared => Dot(this, this);
 
         /// <summary>Compares two <see cref="Vector3" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="Vector3" /> to compare with <paramref name="right" />.</param>
@@ -154,7 +152,7 @@ namespace TerraFX.Numerics
         /// <summary>Computes the normalized value of the given <see cref="Vector3" /> value.</summary>
         /// <param name="value">The value to normalize.</param>
         /// <returns>The unit vector of <paramref name="value" />.</returns>
-        public static Vector3 Normalize(Vector3 value) => value / Vector3.Length(value);
+        public static Vector3 Normalize(Vector3 value) => value / value.Length;
 
         /// <summary>Computes the <see cref="Vector3" /> that for each component has the maximum value out of this and v.</summary>
         /// <param name="v">The <see cref="Vector3" /> for this operation.</param>
@@ -213,6 +211,18 @@ namespace TerraFX.Numerics
             }
             return hashCode.ToHashCode();
         }
+
+        /// <summary>The given <see cref="Vector3" /> rotated by this <see cref="Quaternion" />.</summary>
+        /// <param name="q">The <see cref="Quaternion" /> for this operation.</param>
+        /// <param name="v">The <see cref="Vector3" /> to rotate.</param>
+        /// <returns>The resulting rotated <see cref="Vector3" />.</returns>
+        public static Vector3 Rotate(Vector3 v, Quaternion q) => v * Quaternion.ToMatrix3x3(q);
+
+        /// <summary>The given <see cref="Vector3" /> rotated by the inverse of this <see cref="Quaternion" />.</summary>
+        /// <param name="q">The <see cref="Quaternion" /> for this operation.</param>
+        /// <param name="v">The <see cref="Vector3" /> to rotate.</param>
+        /// <returns>The resulting rotated <see cref="Vector3" />.</returns>
+        public static Vector3 RotateInverse(Vector3 v, Quaternion q) => v * Quaternion.ToMatrix3x3(Quaternion.Invert(q));
 
         /// <summary>Matrix-Vector multiplication between the left <see cref="Matrix3x3" /> and right <see cref="Vector3" />.</summary>
         /// <param name="v">The vector to multiply.</param>

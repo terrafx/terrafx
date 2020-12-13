@@ -45,6 +45,14 @@ namespace TerraFX.Numerics
         /// <summary>Gets the value of the w-component.</summary>
         public float W => _q.W;
 
+        /// <summary>Computes the length of this <see cref="Quaternion" />.</summary>
+        /// <returns>The length of this <see cref="Quaternion" />.</returns>
+        public float Length => _q.Length;
+
+        /// <summary>Computes the squared length of this <see cref="Quaternion" />.</summary>
+        /// <returns>The squared length of this <see cref="Quaternion" />.</returns>
+        public float LengthSquared => _q.LengthSquared;
+
         /// <summary>Compares two <see cref="Quaternion" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="Quaternion" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="Quaternion" /> to compare with <paramref name="left" />.</param>
@@ -211,7 +219,7 @@ namespace TerraFX.Numerics
         /// otherwise the Matrix3x3 is a rotation + scaling matrix.</summary>
         /// <param name="q">The Quaternion for this operation.</param>
         /// <returns>The resulting <see cref="Matrix3x3" />.</returns>
-        public static Matrix3x3 ToMatrix4x4(Quaternion q)
+        public static Matrix4x4 ToMatrix4x4(Quaternion q)
         {
             var w2 = q.W * q.W;
             var x2 = q.X * q.X;
@@ -267,36 +275,14 @@ namespace TerraFX.Numerics
         /// <returns>The resulting inverse <see cref="Quaternion" />.</returns>
         public static Quaternion Invert(Quaternion q)
         {
-            var l2 = NormSquared(q);
+            var l2 = q.LengthSquared;
             return new Quaternion(-q.X / l2, -q.Y / l2, -q.Z / l2, q.W / l2);
         }
-
-        /// <summary>The squared norm of this <see cref="Quaternion" />.</summary>
-        /// <param name="q">The Quaternion for this operation.</param>
-        /// <returns>The resulting squared norm.</returns>
-        public static float NormSquared(Quaternion q) => Vector4.LengthSquared(q._q);
-
-        /// <summary>The norm of this <see cref="Quaternion" /> with the given other one.</summary>
-        /// <param name="q">The Quaternion for this operation.</param>
-        /// <returns>The resulting norm.</returns>
-        public static float Norm(Quaternion q) => Vector4.Length(q._q);
 
         /// <summary>The unit length version of this <see cref="Quaternion" /> with the given other one.</summary>
         /// <param name="q">The Quaternion for this operation.</param>
         /// <returns>The resulting unit length <see cref="Quaternion" />.</returns>
         public static Quaternion Normalize(Quaternion q) => new Quaternion(Vector4.Normalize(q._q));
-
-        /// <summary>The given <see cref="Vector3" /> rotated by this <see cref="Quaternion" />.</summary>
-        /// <param name="q">The Quaternion for this operation.</param>
-        /// <param name="v">The vertor to rotate.</param>
-        /// <returns>The resulting rotated <see cref="Vector3" />.</returns>
-        public static Vector3 Rotate(Quaternion q, Vector3 v) => v * ToMatrix3x3(q);
-
-        /// <summary>The given <see cref="Vector3" /> rotated by the inverse of this <see cref="Quaternion" />.</summary>
-        /// <param name="q">The Quaternion for this operation.</param>
-        /// <param name="v">The vertor to rotate.</param>
-        /// <returns>The resulting rotated <see cref="Vector3" />.</returns>
-        public static Vector3 RotateBack(Quaternion q, Vector3 v) => v * ToMatrix3x3(Invert(q));
 
         /// <summary>A new  <see cref="Quaternion" /> that embodies rotation about the given axis by the given angle in radians.</summary>
         /// <param name="axis">The rotation axis. It will be normalized before use.</param>

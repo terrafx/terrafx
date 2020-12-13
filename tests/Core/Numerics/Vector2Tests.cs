@@ -124,8 +124,8 @@ namespace TerraFX.UnitTests.Numerics
         {
             var vector = new Vector2(0, 5);
 
-            Assert.That(Vector2.Length(vector), Is.EqualTo(5));
-            Assert.That(Vector2.LengthSquared(vector), Is.EqualTo(25));
+            Assert.That(vector.Length, Is.EqualTo(5));
+            Assert.That(vector.LengthSquared, Is.EqualTo(25));
         }
     }
 }

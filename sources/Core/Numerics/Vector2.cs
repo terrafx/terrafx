@@ -48,13 +48,13 @@ namespace TerraFX.Numerics
         /// <summary>Gets the value of the y-dimension.</summary>
         public float Y => _y;
 
+
         /// <summary>Gets the square-rooted length of the vector.</summary>
-        /// <param name="vector">The <see cref="Vector2" /> for this operation.</param>
-        public static float Length(Vector2 vector) => MathF.Sqrt(Vector2.LengthSquared(vector));
+        public float Length => MathF.Sqrt(LengthSquared);
 
         /// <summary>Gets the squared length of the vector.</summary>
-        /// <param name="vector">The <see cref="Vector2" /> for this operation.</param>
-        public static float LengthSquared(Vector2 vector) => Dot(vector, vector);
+        public float LengthSquared => Dot(this, this);
+
 
         /// <summary>Compares two <see cref="Vector2" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="Vector2" /> to compare with <paramref name="right" />.</param>
@@ -131,7 +131,7 @@ namespace TerraFX.Numerics
         /// <summary>Computes the normalized value of the given <see cref="Vector2" /> value.</summary>
         /// <param name="value">The value to normalize.</param>
         /// <returns>The unit vector of <paramref name="value" />.</returns>
-        public static Vector2 Normalize(Vector2 value) => value / Vector2.Length(value);
+        public static Vector2 Normalize(Vector2 value) => value / value.Length;
 
         /// <summary>Creates a new <see cref="Vector2" /> instance with <see cref="X" /> set to the specified value.</summary>
         /// <param name="value">The new value of the x-dimension.</param>
