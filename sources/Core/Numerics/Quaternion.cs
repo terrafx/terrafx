@@ -111,7 +111,57 @@ namespace TerraFX.Numerics
         /// <returns>The result of multiplying each component of <paramref name="left" /> by <paramref name="right" />.</returns>
         public static Quaternion operator /(Quaternion left, float right) => new Quaternion(left._q / right);
 
-        // -- equality and similarity --
+        /// <summary>
+        /// Creates a new <see cref="Quaternion" /> by concatenating 'this' with the given one.
+        /// The result will have the combined effect of the rotations in both source Quaternions.
+        /// </summary>
+        /// <param name="q">The left Quaternion for this operation.</param>
+        /// <param name="r">The right Quaternion to concatenate.</param>
+        /// <returns>The combined Quaternion.</returns>
+        public static Quaternion Concatenate(Quaternion q, Quaternion r)
+        {
+            // from XMQuaternionMultiply at https://github.com/microsoft/DirectXMath/blob/master/Inc/DirectXMathMisc.inl#L82
+            // (r.x * +q.w) + (r.y * +q.z) + (r.z * -q.y) + (r.w * +q.x),
+            // (r.x * -q.z) + (r.y * +q.w) + (r.z * +q.x) + (r.w * +q.y),
+            // (r.x * +q.y) + (r.y * -q.x) + (r.z * +q.w) + (r.w * +q.z),
+            // (r.x * -q.x) + (r.y * -q.y) + (r.z * -q.z) + (r.w * +q.w)
+
+            var resultQ = new Quaternion(
+                Quaternion.Dot(r, new Quaternion(+q.W, +q.Z, -q.Y, +q.X)),
+                Quaternion.Dot(r, new Quaternion(-q.Z, +q.W, +q.X, +q.Y)),
+                Quaternion.Dot(r, new Quaternion(+q.Y, -q.X, +q.W, +q.Z)),
+                Quaternion.Dot(r, new Quaternion(-q.X, -q.Y, -q.Z, +q.W))
+            );
+            return resultQ;
+        }
+
+        /// <summary>The Conjugate of a <see cref="Quaternion" />.</summary>
+        /// <param name="q">The Quaternion for this operation.</param>
+        /// <returns>The resulting Conjugate.</returns>
+        public static Quaternion Conjugate(Quaternion q) => new Quaternion(-q.X, -q.Y, -q.Z, q.W);
+
+        /// <summary>A new  <see cref="Quaternion" /> that embodies rotation about the given axis by the given angle in radians.</summary>
+        /// <param name="axis">The rotation axis. It will be normalized before use.</param>
+        /// <param name="radians">The rotation angle in radians.</param>
+        /// <returns></returns>
+        public static Quaternion CreateFromAxisAngle(Vector3 axis, float radians)
+        {
+            var unitAxis = Vector3.Normalize(axis);
+            var scale = MathF.Sin(radians / 2.0f);
+            var q = new Quaternion(
+                scale * unitAxis.X,
+                scale * unitAxis.Y,
+                scale * unitAxis.Z,
+                MathF.Cos(radians / 2)
+            );
+            return q;
+        }
+
+        /// <summary>The dot product of this <see cref="Quaternion" /> with the given other one.</summary>
+        /// <param name="q">The left Quaternion for this operation.</param>
+        /// <param name="r">The right Quaternion for this operation.</param>
+        /// <returns>The resulting dot product <see cref="Quaternion" />.</returns>
+        public static float Dot(Quaternion q, Quaternion r) => Vector4.Dot(q._q, r._q);
 
         /// <inheritdoc />
         public override bool Equals(object? obj) => (obj is Quaternion other) && Equals(other);
@@ -127,7 +177,14 @@ namespace TerraFX.Numerics
         /// <returns>True if similar, false otherwise.</returns>
         public static bool EqualEstimate(Quaternion left, Quaternion right, Quaternion epsilon) => Vector4.EqualEstimate(left._q, right._q, epsilon._q);
 
-        // -- state reporting (GetHashCode, ToString) --
+        /// <summary>The inverse of this <see cref="Quaternion" /> with the given other one.</summary>
+        /// <param name="q">The Quaternion for this operation.</param>
+        /// <returns>The resulting inverse <see cref="Quaternion" />.</returns>
+        public static Quaternion Invert(Quaternion q)
+        {
+            var l2 = q.LengthSquared;
+            return new Quaternion(-q.X / l2, -q.Y / l2, -q.Z / l2, q.W / l2);
+        }
 
         /// <inheritdoc />
         public override int GetHashCode()
@@ -142,53 +199,22 @@ namespace TerraFX.Numerics
             return hashCode.ToHashCode();
         }
 
-        /// <inheritdoc />
-        public override string ToString() => ToString(format: null, formatProvider: null);
+        /// <summary>Computes the <see cref="Quaternion" /> that for each component has the maximum value out of this and v.</summary>
+        /// <param name="q">The <see cref="Quaternion" /> for this operation.</param>
+        /// <param name="other">The other <see cref="Quaternion" /> to compute the max with.</param>
+        /// <returns>The resulting new instance.</returns>
+        public static Quaternion Max(Quaternion q, Quaternion other) => new Quaternion(Vector4.Max(q._q, other._q));
 
-        /// <inheritdoc />
-        public string ToString(string? format, IFormatProvider? formatProvider)
-        {
-            var separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
+        /// <summary>Computes the <see cref="Quaternion" /> that for each component has the minimum value out of this and v.</summary>
+        /// <param name="q">The <see cref="Quaternion" /> for this operation.</param>
+        /// <param name="other">The other <see cref="Quaternion" /> to compute the min with.</param>
+        /// <returns>The resulting new instance.</returns>
+        public static Quaternion Min(Quaternion q, Quaternion other) => new Quaternion(Vector4.Max(q._q, other._q));
 
-            return new StringBuilder(9 + (separator.Length * 3))
-                .Append('<')
-                .Append(X.ToString(format, formatProvider))
-                .Append(separator)
-                .Append(' ')
-                .Append(Y.ToString(format, formatProvider))
-                .Append(separator)
-                .Append(' ')
-                .Append(Z.ToString(format, formatProvider))
-                .Append(separator)
-                .Append(' ')
-                .Append(W.ToString(format, formatProvider))
-                .Append('>')
-                .ToString();
-        }
-
-        // -- new instance with some member changed (With*) --
-
-        /// <summary>Creates a new <see cref="Quaternion" /> instance with <see cref="X" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the x-component.</param>
-        /// <returns>A new <see cref="Quaternion" /> instance with <see cref="X" /> set to <paramref name="value" />.</returns>
-        public Quaternion WithX(float value) => new Quaternion(value, Y, Z, W);
-
-        /// <summary>Creates a new <see cref="Quaternion" /> instance with <see cref="Y" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the y-component.</param>
-        /// <returns>A new <see cref="Quaternion" /> instance with <see cref="Y" /> set to <paramref name="value" />.</returns>
-        public Quaternion WithY(float value) => new Quaternion(X, value, Z, W);
-
-        /// <summary>Creates a new <see cref="Quaternion" /> instance with <see cref="Z" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the z-component.</param>
-        /// <returns>A new <see cref="Quaternion" /> instance with <see cref="Z" /> set to <paramref name="value" />.</returns>
-        public Quaternion WithZ(float value) => new Quaternion(X, Y, value, W);
-
-        /// <summary>Creates a new <see cref="Quaternion" /> instance with <see cref="W" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the w-component.</param>
-        /// <returns>A new <see cref="Quaternion" /> instance with <see cref="W" /> set to <paramref name="value" />.</returns>
-        public Quaternion WithW(float value) => new Quaternion(X, Y, Z, value);
-
-        // -- conversion to other formats (ToMatrix) --
+        /// <summary>The unit length version of this <see cref="Quaternion" /> with the given other one.</summary>
+        /// <param name="q">The Quaternion for this operation.</param>
+        /// <returns>The resulting unit length <see cref="Quaternion" />.</returns>
+        public static Quaternion Normalize(Quaternion q) => new Quaternion(Vector4.Normalize(q._q));
 
         /// <summary>The  <see cref="Matrix3x3" /> that corresponds to this <see cref="Quaternion" />.
         /// If this Quaternion is normalized, then the Matrix3x3 is a rotation only matrix,
@@ -239,84 +265,48 @@ namespace TerraFX.Numerics
             return m;
         }
 
-        // -- math --
+        /// <inheritdoc />
+        public override string ToString() => ToString(format: null, formatProvider: null);
 
-        /// <summary>
-        /// Creates a new <see cref="Quaternion" /> by concatenating 'this' with the given one.
-        /// The result will have the combined effect of the rotations in both source Quaternions.
-        /// </summary>
-        /// <param name="q">The left Quaternion for this operation.</param>
-        /// <param name="r">The right Quaternion to concatenate.</param>
-        /// <returns>The combined Quaternion.</returns>
-        public static Quaternion Concatenate(Quaternion q, Quaternion r)
+        /// <inheritdoc />
+        public string ToString(string? format, IFormatProvider? formatProvider)
         {
-            // from XMQuaternionMultiply at https://github.com/microsoft/DirectXMath/blob/master/Inc/DirectXMathMisc.inl#L82
-            // (r.x * +q.w) + (r.y * +q.z) + (r.z * -q.y) + (r.w * +q.x),
-            // (r.x * -q.z) + (r.y * +q.w) + (r.z * +q.x) + (r.w * +q.y),
-            // (r.x * +q.y) + (r.y * -q.x) + (r.z * +q.w) + (r.w * +q.z),
-            // (r.x * -q.x) + (r.y * -q.y) + (r.z * -q.z) + (r.w * +q.w)
+            var separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
 
-            var resultQ = new Quaternion(
-                Quaternion.Dot(r, new Quaternion(+q.W, +q.Z, -q.Y, +q.X)),
-                Quaternion.Dot(r, new Quaternion(-q.Z, +q.W, +q.X, +q.Y)),
-                Quaternion.Dot(r, new Quaternion(+q.Y, -q.X, +q.W, +q.Z)),
-                Quaternion.Dot(r, new Quaternion(-q.X, -q.Y, -q.Z, +q.W))
-            );
-            return resultQ;
+            return new StringBuilder(9 + (separator.Length * 3))
+                .Append('<')
+                .Append(X.ToString(format, formatProvider))
+                .Append(separator)
+                .Append(' ')
+                .Append(Y.ToString(format, formatProvider))
+                .Append(separator)
+                .Append(' ')
+                .Append(Z.ToString(format, formatProvider))
+                .Append(separator)
+                .Append(' ')
+                .Append(W.ToString(format, formatProvider))
+                .Append('>')
+                .ToString();
         }
 
-        /// <summary>The Conjugate of a <see cref="Quaternion" />.</summary>
-        /// <param name="q">The Quaternion for this operation.</param>
-        /// <returns>The resulting Conjugate.</returns>
-        public static Quaternion Conjugate(Quaternion q) => new Quaternion(-q.X, -q.Y, -q.Z, q.W);
+        /// <summary>Creates a new <see cref="Quaternion" /> instance with <see cref="X" /> set to the specified value.</summary>
+        /// <param name="value">The new value of the x-component.</param>
+        /// <returns>A new <see cref="Quaternion" /> instance with <see cref="X" /> set to <paramref name="value" />.</returns>
+        public Quaternion WithX(float value) => new Quaternion(value, Y, Z, W);
 
-        /// <summary>The dot product of this <see cref="Quaternion" /> with the given other one.</summary>
-        /// <param name="q">The left Quaternion for this operation.</param>
-        /// <param name="r">The right Quaternion for this operation.</param>
-        /// <returns>The resulting dot product <see cref="Quaternion" />.</returns>
-        public static float Dot(Quaternion q, Quaternion r) => Vector4.Dot(q._q, r._q);
+        /// <summary>Creates a new <see cref="Quaternion" /> instance with <see cref="Y" /> set to the specified value.</summary>
+        /// <param name="value">The new value of the y-component.</param>
+        /// <returns>A new <see cref="Quaternion" /> instance with <see cref="Y" /> set to <paramref name="value" />.</returns>
+        public Quaternion WithY(float value) => new Quaternion(X, value, Z, W);
 
-        /// <summary>The inverse of this <see cref="Quaternion" /> with the given other one.</summary>
-        /// <param name="q">The Quaternion for this operation.</param>
-        /// <returns>The resulting inverse <see cref="Quaternion" />.</returns>
-        public static Quaternion Invert(Quaternion q)
-        {
-            var l2 = q.LengthSquared;
-            return new Quaternion(-q.X / l2, -q.Y / l2, -q.Z / l2, q.W / l2);
-        }
+        /// <summary>Creates a new <see cref="Quaternion" /> instance with <see cref="Z" /> set to the specified value.</summary>
+        /// <param name="value">The new value of the z-component.</param>
+        /// <returns>A new <see cref="Quaternion" /> instance with <see cref="Z" /> set to <paramref name="value" />.</returns>
+        public Quaternion WithZ(float value) => new Quaternion(X, Y, value, W);
 
-        /// <summary>The unit length version of this <see cref="Quaternion" /> with the given other one.</summary>
-        /// <param name="q">The Quaternion for this operation.</param>
-        /// <returns>The resulting unit length <see cref="Quaternion" />.</returns>
-        public static Quaternion Normalize(Quaternion q) => new Quaternion(Vector4.Normalize(q._q));
-
-        /// <summary>Computes the <see cref="Quaternion" /> that for each component has the maximum value out of this and v.</summary>
-        /// <param name="q">The <see cref="Quaternion" /> for this operation.</param>
-        /// <param name="other">The other <see cref="Quaternion" /> to compute the max with.</param>
-        /// <returns>The resulting new instance.</returns>
-        public static Quaternion Max(Quaternion q, Quaternion other) => new Quaternion(Vector4.Max(q._q, other._q));
-
-        /// <summary>Computes the <see cref="Quaternion" /> that for each component has the minimum value out of this and v.</summary>
-        /// <param name="q">The <see cref="Quaternion" /> for this operation.</param>
-        /// <param name="other">The other <see cref="Quaternion" /> to compute the min with.</param>
-        /// <returns>The resulting new instance.</returns>
-        public static Quaternion Min(Quaternion q, Quaternion other) => new Quaternion(Vector4.Max(q._q, other._q));
-
-        /// <summary>A new  <see cref="Quaternion" /> that embodies rotation about the given axis by the given angle in radians.</summary>
-        /// <param name="axis">The rotation axis. It will be normalized before use.</param>
-        /// <param name="radians">The rotation angle in radians.</param>
-        /// <returns></returns>
-        public static Quaternion CreateFromAxisAngle(Vector3 axis, float radians)
-        {
-            var unitAxis = Vector3.Normalize(axis);
-            var scale = MathF.Sin(radians / 2.0f);
-            var q = new Quaternion(
-                scale * unitAxis.X,
-                scale * unitAxis.Y,
-                scale * unitAxis.Z,
-                MathF.Cos(radians / 2)
-            );
-            return q;
-        }
+        /// <summary>Creates a new <see cref="Quaternion" /> instance with <see cref="W" /> set to the specified value.</summary>
+        /// <param name="value">The new value of the w-component.</param>
+        /// <returns>A new <see cref="Quaternion" /> instance with <see cref="W" /> set to <paramref name="value" />.</returns>
+        public Quaternion WithW(float value) => new Quaternion(X, Y, Z, value);
     }
 }
