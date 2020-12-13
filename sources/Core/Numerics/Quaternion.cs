@@ -137,7 +137,6 @@ namespace TerraFX.Numerics
         /// <inheritdoc />
         public override string ToString() => ToString(format: null, formatProvider: null);
 
-
         /// <inheritdoc />
         public string ToString(string? format, IFormatProvider? formatProvider)
         {
@@ -204,6 +203,31 @@ namespace TerraFX.Numerics
             var y = new Vector3(xy - wz, w2 - x2 + y2 - z2, wx + yz);
             var z = new Vector3(wy + xz, yz - wx, w2 - x2 - y2 + z2);
             var m = new Matrix3x3(x, y, z);
+            return m;
+        }
+
+        /// <summary>The  <see cref="Matrix3x3" /> that corresponds to this <see cref="Quaternion" />.
+        /// If this Quaternion is normalized, then the Matrix3x3 is a rotation only matrix,
+        /// otherwise the Matrix3x3 is a rotation + scaling matrix.</summary>
+        /// <param name="q">The Quaternion for this operation.</param>
+        /// <returns>The resulting <see cref="Matrix3x3" />.</returns>
+        public static Matrix3x3 ToMatrix4x4(Quaternion q)
+        {
+            var w2 = q.W * q.W;
+            var x2 = q.X * q.X;
+            var y2 = q.Y * q.Y;
+            var z2 = q.Z * q.Z;
+            var wz = 2 * q.W * q.Z;
+            var xz = 2 * q.X * q.Z;
+            var xy = 2 * q.X * q.Y;
+            var wx = 2 * q.W * q.X;
+            var wy = 2 * q.W * q.Y;
+            var yz = 2 * q.Y * q.Z;
+            var x = new Vector4(w2 + x2 - y2 - z2, wz + xy, xz - wy, 0);
+            var y = new Vector4(xy - wz, w2 - x2 + y2 - z2, wx + yz, 0);
+            var z = new Vector4(wy + xz, yz - wx, w2 - x2 - y2 + z2, 0);
+            var w = new Vector4(0, 0, 0, 1);
+            var m = new Matrix4x4(x, y, z, w);
             return m;
         }
 
