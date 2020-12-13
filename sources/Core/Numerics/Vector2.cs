@@ -128,33 +128,6 @@ namespace TerraFX.Numerics
         /// <returns>The result of adding the multiplication of each component of <paramref name="left" /> by each component of <paramref name="right" />.</returns>
         public static float Dot(Vector2 left, Vector2 right) => (left.X * right.X) + (left.Y * right.Y);
 
-        /// <summary>Computes the normalized value of the given <see cref="Vector2" /> value.</summary>
-        /// <param name="value">The value to normalize.</param>
-        /// <returns>The unit vector of <paramref name="value" />.</returns>
-        public static Vector2 Normalize(Vector2 value) => value / value.Length;
-
-        /// <summary>Computes the <see cref="Vector2" /> that for each component has the maximum value out of this and v.</summary>
-        /// <param name="v">The <see cref="Vector2" /> for this operation.</param>
-        /// <param name="other">The other <see cref="Vector2" /> to compute the max with.</param>
-        /// <returns>The resulting new instance.</returns>
-        public static Vector2 Max(Vector2 v, Vector2 other) => new Vector2(MathF.Max(v.X, other.X), MathF.Max(v.Y, other.Y));
-
-        /// <summary>Computes the <see cref="Vector2" /> that for each component has the minimum value out of this and v.</summary>
-        /// <param name="v">The <see cref="Vector2" /> for this operation.</param>
-        /// <param name="other">The other <see cref="Vector2" /> to compute the min with.</param>
-        /// <returns>The resulting new instance.</returns>
-        public static Vector2 Min(Vector2 v, Vector2 other) => new Vector2(MathF.Min(v.X, other.X), MathF.Min(v.Y, other.Y));
-
-        /// <summary>Creates a new <see cref="Vector2" /> instance with <see cref="X" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the x-dimension.</param>
-        /// <returns>A new <see cref="Vector2" /> instance with <see cref="X" /> set to <paramref name="value" />.</returns>
-        public Vector2 WithX(float value) => new Vector2(value, Y);
-
-        /// <summary>Creates a new <see cref="Vector2" /> instance with <see cref="Y" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the y-dimension.</param>
-        /// <returns>A new <see cref="Vector2" /> instance with <see cref="Y" /> set to <paramref name="value" />.</returns>
-        public Vector2 WithY(float value) => new Vector2(X, value);
-
         /// <inheritdoc />
         public override bool Equals(object? obj) => (obj is Vector2 other) && Equals(other);
 
@@ -184,6 +157,23 @@ namespace TerraFX.Numerics
             return hashCode.ToHashCode();
         }
 
+        /// <summary>Computes the normalized value of the given <see cref="Vector2" /> value.</summary>
+        /// <param name="value">The value to normalize.</param>
+        /// <returns>The unit vector of <paramref name="value" />.</returns>
+        public static Vector2 Normalize(Vector2 value) => value / value.Length;
+
+        /// <summary>Computes the <see cref="Vector2" /> that for each component has the maximum value out of this and v.</summary>
+        /// <param name="left">The <see cref="Vector2" /> for this operation.</param>
+        /// <param name="right">The other <see cref="Vector2" /> to compute the max with.</param>
+        /// <returns>The resulting new instance.</returns>
+        public static Vector2 Max(Vector2 left, Vector2 right) => new Vector2(MathF.Max(left.X, right.X), MathF.Max(left.Y, right.Y));
+
+        /// <summary>Computes the <see cref="Vector2" /> that for each component has the minimum value out of this and v.</summary>
+        /// <param name="left">The <see cref="Vector2" /> for this operation.</param>
+        /// <param name="right">The other <see cref="Vector2" /> to compute the min with.</param>
+        /// <returns>The resulting new instance.</returns>
+        public static Vector2 Min(Vector2 left, Vector2 right) => new Vector2(MathF.Min(left.X, right.X), MathF.Min(left.Y, right.Y));
+
         /// <inheritdoc />
         public override string ToString() => ToString(format: null, formatProvider: null);
 
@@ -201,5 +191,15 @@ namespace TerraFX.Numerics
                 .Append('>')
                 .ToString();
         }
+
+        /// <summary>Creates a new <see cref="Vector2" /> instance with <see cref="X" /> set to the specified value.</summary>
+        /// <param name="value">The new value of the x-dimension.</param>
+        /// <returns>A new <see cref="Vector2" /> instance with <see cref="X" /> set to <paramref name="value" />.</returns>
+        public Vector2 WithX(float value) => new Vector2(value, Y);
+
+        /// <summary>Creates a new <see cref="Vector2" /> instance with <see cref="Y" /> set to the specified value.</summary>
+        /// <param name="value">The new value of the y-dimension.</param>
+        /// <returns>A new <see cref="Vector2" /> instance with <see cref="Y" /> set to <paramref name="value" />.</returns>
+        public Vector2 WithY(float value) => new Vector2(X, value);
     }
 }

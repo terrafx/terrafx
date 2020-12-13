@@ -126,6 +126,16 @@ namespace TerraFX.Numerics
         /// <returns>The result of multiplying each component of <paramref name="left" /> by <paramref name="right" />.</returns>
         public static Vector3 operator *(Vector3 left, float right) => new Vector3(left.X * right, left.Y * right, left.Z * right);
 
+        /// <summary>Matrix-Vector multiplication between the left <see cref="Matrix3x3" /> and right <see cref="Vector3" />.</summary>
+        /// <param name="left">The vector to multiply.</param>
+        /// <param name="right">The matrix for multiplcation.</param>
+        /// <returns>The resulting transformed <see cref="Vector3" />.</returns>
+        public static Vector3 operator *(Vector3 left, Matrix3x3 right) => new Vector3(
+            (left.X * right.X.X) + (left.Y * right.Y.X) + (left.Z * right.Z.X),
+            (left.X * right.X.Y) + (left.Y * right.Y.Y) + (left.Z * right.Z.Y),
+            (left.X * right.X.Z) + (left.Y * right.Y.Z) + (left.Z * right.Z.Z)
+        );
+
         /// <summary>Divides each component of a <see cref="Vector3" /> value by a given <see cref="float" /> value.</summary>
         /// <param name="left">The dividend.</param>
         /// <param name="right">The divisor to divide each component by.</param>
@@ -149,37 +159,11 @@ namespace TerraFX.Numerics
         /// <returns>The result of adding the multiplication of each component of <paramref name="left" /> by each component of <paramref name="right" />.</returns>
         public static float Dot(Vector3 left, Vector3 right) => (left.X * right.X) + (left.Y * right.Y) + (left.Z * right.Z);
 
-        /// <summary>Computes the normalized value of the given <see cref="Vector3" /> value.</summary>
-        /// <param name="value">The value to normalize.</param>
-        /// <returns>The unit vector of <paramref name="value" />.</returns>
-        public static Vector3 Normalize(Vector3 value) => value / value.Length;
+        /// <inheritdoc />
+        public override bool Equals(object? obj) => (obj is Vector3 other) && Equals(other);
 
-        /// <summary>Computes the <see cref="Vector3" /> that for each component has the maximum value out of this and v.</summary>
-        /// <param name="v">The <see cref="Vector3" /> for this operation.</param>
-        /// <param name="other">The other <see cref="Vector3" /> to compute the max with.</param>
-        /// <returns>The resulting new instance.</returns>
-        public static Vector3 Max(Vector3 v, Vector3 other) => new Vector3(MathF.Max(v.X, other.X), MathF.Max(v.Y, other.Y), MathF.Max(v.Z, other.Z));
-
-        /// <summary>Computes the <see cref="Vector3" /> that for each component has the minimum value out of this and v.</summary>
-        /// <param name="v">The <see cref="Vector3" /> for this operation.</param>
-        /// <param name="other">The other <see cref="Vector3" /> to compute the min with.</param>
-        /// <returns>The resulting new instance.</returns>
-        public static Vector3 Min(Vector3 v, Vector3 other) => new Vector3(MathF.Min(v.X, other.X), MathF.Min(v.Y, other.Y), MathF.Min(v.Z, other.Z));
-
-        /// <summary>Creates a new <see cref="Vector3" /> instance with <see cref="X" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the x-dimension.</param>
-        /// <returns>A new <see cref="Vector3" /> instance with <see cref="X" /> set to <paramref name="value" />.</returns>
-        public Vector3 WithX(float value) => new Vector3(value, Y, Z);
-
-        /// <summary>Creates a new <see cref="Vector3" /> instance with <see cref="Y" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the y-dimension.</param>
-        /// <returns>A new <see cref="Vector3" /> instance with <see cref="Y" /> set to <paramref name="value" />.</returns>
-        public Vector3 WithY(float value) => new Vector3(X, value, Z);
-
-        /// <summary>Creates a new <see cref="Vector3" /> instance with <see cref="Z" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the z-dimension.</param>
-        /// <returns>A new <see cref="Vector3" /> instance with <see cref="Z" /> set to <paramref name="value" />.</returns>
-        public Vector3 WithZ(float value) => new Vector3(X, Y, value);
+        /// <inheritdoc />
+        public bool Equals(Vector3 other) => this == other;
 
         /// <summary>Tests if two <see cref="Vector3" /> instances have sufficiently similar values to see them as equivalent.
         /// Use this to compare values that might be affected by differences in rounding the least significant bits.</summary>
@@ -195,12 +179,6 @@ namespace TerraFX.Numerics
         }
 
         /// <inheritdoc />
-        public override bool Equals(object? obj) => (obj is Vector3 other) && Equals(other);
-
-        /// <inheritdoc />
-        public bool Equals(Vector3 other) => this == other;
-
-        /// <inheritdoc />
         public override int GetHashCode()
         {
             var hashCode = new HashCode();
@@ -212,47 +190,34 @@ namespace TerraFX.Numerics
             return hashCode.ToHashCode();
         }
 
+        /// <summary>Computes the normalized value of the given <see cref="Vector3" /> value.</summary>
+        /// <param name="value">The value to normalize.</param>
+        /// <returns>The unit vector of <paramref name="value" />.</returns>
+        public static Vector3 Normalize(Vector3 value) => value / value.Length;
+
+        /// <summary>Computes the <see cref="Vector3" /> that for each component has the maximum value out of this and v.</summary>
+        /// <param name="left">The <see cref="Vector3" /> for this operation.</param>
+        /// <param name="right">The other <see cref="Vector3" /> to compute the max with.</param>
+        /// <returns>The resulting new instance.</returns>
+        public static Vector3 Max(Vector3 left, Vector3 right) => new Vector3(MathF.Max(left.X, right.X), MathF.Max(left.Y, right.Y), MathF.Max(left.Z, right.Z));
+
+        /// <summary>Computes the <see cref="Vector3" /> that for each component has the minimum value out of this and v.</summary>
+        /// <param name="left">The <see cref="Vector3" /> for this operation.</param>
+        /// <param name="right">The other <see cref="Vector3" /> to compute the min with.</param>
+        /// <returns>The resulting new instance.</returns>
+        public static Vector3 Min(Vector3 left, Vector3 right) => new Vector3(MathF.Min(left.X, right.X), MathF.Min(left.Y, right.Y), MathF.Min(left.Z, right.Z));
+
         /// <summary>The given <see cref="Vector3" /> rotated by this <see cref="Quaternion" />.</summary>
-        /// <param name="q">The <see cref="Quaternion" /> for this operation.</param>
-        /// <param name="v">The <see cref="Vector3" /> to rotate.</param>
+         /// <param name="value">The <see cref="Vector3" /> to rotate.</param>
+       /// <param name="rotation">The <see cref="Quaternion" /> for this operation.</param>
         /// <returns>The resulting rotated <see cref="Vector3" />.</returns>
-        public static Vector3 Rotate(Vector3 v, Quaternion q) => v * Quaternion.ToMatrix3x3(q);
+        public static Vector3 Rotate(Vector3 value, Quaternion rotation) => value * Quaternion.ToMatrix3x3(rotation);
 
         /// <summary>The given <see cref="Vector3" /> rotated by the inverse of this <see cref="Quaternion" />.</summary>
-        /// <param name="q">The <see cref="Quaternion" /> for this operation.</param>
-        /// <param name="v">The <see cref="Vector3" /> to rotate.</param>
+        /// <param name="value">The <see cref="Vector3" /> to rotate.</param>
+        /// <param name="rotation">The <see cref="Quaternion" /> for this operation.</param>
         /// <returns>The resulting rotated <see cref="Vector3" />.</returns>
-        public static Vector3 RotateInverse(Vector3 v, Quaternion q) => v * Quaternion.ToMatrix3x3(Quaternion.Invert(q));
-
-        /// <summary>Matrix-Vector multiplication between the left <see cref="Matrix3x3" /> and right <see cref="Vector3" />.</summary>
-        /// <param name="v">The vector to multiply.</param>
-        /// <param name="m">The matrix for multiplcation.</param>
-        /// <returns>The resulting transformed <see cref="Vector3" />.</returns>
-        public static Vector3 operator *(Vector3 v, Matrix3x3 m) => new Vector3(
-            (v.X * m.X.X) + (v.Y * m.Y.X) + (v.Z * m.Z.X),
-            (v.X * m.X.Y) + (v.Y * m.Y.Y) + (v.Z * m.Z.Y),
-            (v.X * m.X.Z) + (v.Y * m.Y.Z) + (v.Z * m.Z.Z)
-        );
-
-        /// <summary>Matrix-Vector multiplication between the left <see cref="Matrix4x4" /> and right <see cref="Vector3" />.</summary>
-        /// <param name="v">The <see cref="Vector3" /> for this operation.</param>
-        /// <param name="m">The <see cref="Matrix4x4" /> to multiply.</param>
-        /// <returns>The resulting transformed <see cref="Vector3" />.</returns>
-        public static Vector3 MapPosition(Vector3 v, Matrix4x4 m) => new Vector3(
-            (v.X * m.X.X) + (v.Y * m.Y.X) + (v.Z * m.Z.X) + m.W.X,
-            (v.X * m.X.Y) + (v.Y * m.Y.Y) + (v.Z * m.Z.Y) + m.W.Y,
-            (v.X * m.X.Z) + (v.Y * m.Y.Z) + (v.Z * m.Z.Z) + m.W.Z
-        );
-
-        /// <summary>Matrix-Vector multiplication between the left <see cref="Matrix4x4" /> and right <see cref="Vector3" />.</summary>
-        /// <param name="v">The <see cref="Vector3" /> for this operation.</param>
-        /// <param name="m">The <see cref="Matrix4x4" /> to multiply.</param>
-        /// <returns>The resulting transformed <see cref="Vector3" />.</returns>
-        public static Vector3 MapDirection(Vector3 v, Matrix4x4 m) => new Vector3(
-            (v.X * m.X.X) + (v.Y * m.Y.X) + (v.Z * m.Z.X),
-            (v.X * m.X.Y) + (v.Y * m.Y.Y) + (v.Z * m.Z.Y),
-            (v.X * m.X.Z) + (v.Y * m.Y.Z) + (v.Z * m.Z.Z)
-        );
+        public static Vector3 RotateInverse(Vector3 value, Quaternion rotation) => value * Quaternion.ToMatrix3x3(Quaternion.Invert(rotation));
 
         /// <inheritdoc />
         public override string ToString() => ToString(format: null, formatProvider: null);
@@ -274,5 +239,40 @@ namespace TerraFX.Numerics
                 .Append('>')
                 .ToString();
         }
+
+        /// <summary>Matrix-Vector multiplication between the left <see cref="Matrix4x4" /> and right <see cref="Vector3" />.</summary>
+        /// <param name="value">The <see cref="Vector3" /> for this operation.</param>
+        /// <param name="matrix">The <see cref="Matrix4x4" /> to multiply.</param>
+        /// <returns>The resulting transformed <see cref="Vector3" />.</returns>
+        public static Vector3 Transform(Vector3 value, Matrix4x4 matrix) => new Vector3(
+            (value.X * matrix.X.X) + (value.Y * matrix.Y.X) + (value.Z * matrix.Z.X) + matrix.W.X,
+            (value.X * matrix.X.Y) + (value.Y * matrix.Y.Y) + (value.Z * matrix.Z.Y) + matrix.W.Y,
+            (value.X * matrix.X.Z) + (value.Y * matrix.Y.Z) + (value.Z * matrix.Z.Z) + matrix.W.Z
+        );
+
+        /// <summary>Matrix-Vector multiplication between the left <see cref="Matrix4x4" /> and right <see cref="Vector3" />.</summary>
+        /// <param name="value">The <see cref="Vector3" /> for this operation.</param>
+        /// <param name="rotation">The <see cref="Matrix4x4" /> to multiply.</param>
+        /// <returns>The resulting transformed <see cref="Vector3" />.</returns>
+        public static Vector3 TransformNormal(Vector3 value, Matrix4x4 rotation) => new Vector3(
+            (value.X * rotation.X.X) + (value.Y * rotation.Y.X) + (value.Z * rotation.Z.X),
+            (value.X * rotation.X.Y) + (value.Y * rotation.Y.Y) + (value.Z * rotation.Z.Y),
+            (value.X * rotation.X.Z) + (value.Y * rotation.Y.Z) + (value.Z * rotation.Z.Z)
+        );
+
+        /// <summary>Creates a new <see cref="Vector3" /> instance with <see cref="X" /> set to the specified value.</summary>
+        /// <param name="value">The new value of the x-dimension.</param>
+        /// <returns>A new <see cref="Vector3" /> instance with <see cref="X" /> set to <paramref name="value" />.</returns>
+        public Vector3 WithX(float value) => new Vector3(value, Y, Z);
+
+        /// <summary>Creates a new <see cref="Vector3" /> instance with <see cref="Y" /> set to the specified value.</summary>
+        /// <param name="value">The new value of the y-dimension.</param>
+        /// <returns>A new <see cref="Vector3" /> instance with <see cref="Y" /> set to <paramref name="value" />.</returns>
+        public Vector3 WithY(float value) => new Vector3(X, value, Z);
+
+        /// <summary>Creates a new <see cref="Vector3" /> instance with <see cref="Z" /> set to the specified value.</summary>
+        /// <param name="value">The new value of the z-dimension.</param>
+        /// <returns>A new <see cref="Vector3" /> instance with <see cref="Z" /> set to <paramref name="value" />.</returns>
+        public Vector3 WithZ(float value) => new Vector3(X, Y, value);
     }
 }

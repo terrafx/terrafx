@@ -190,8 +190,8 @@ namespace TerraFX.UnitTests.Numerics
         {
             var v = new Vector3(1.0f, 2.0f, 3.0f);
             var mIdentity = Matrix4x4.Identity;
-            var a = Vector3.MapPosition(v, mIdentity);
-            var b = Vector3.MapPosition(Vector3.MapPosition(v, mIdentity), mIdentity);
+            var a = Vector3.Transform(v, mIdentity);
+            var b = Vector3.Transform(Vector3.Transform(v, mIdentity), mIdentity);
 
             Assert.That(a, Is.EqualTo(v));
             Assert.That(b, Is.EqualTo(v));
@@ -218,13 +218,13 @@ namespace TerraFX.UnitTests.Numerics
                 new Vector4(0.0f, 0.0f, 1.0f, 0.0f),
                 new Vector4(-1.0f, 0.0f, 0.0f, 0.0f));
 
-            var i = Vector3.MapDirection(x, mZ90);
+            var i = Vector3.TransformNormal(x, mZ90);
             Assert.That(i, Is.EqualTo(y));
 
-            var j = Vector3.MapDirection(x, mY90);
+            var j = Vector3.TransformNormal(x, mY90);
             Assert.That(j, Is.EqualTo(z));
 
-            var k = Vector3.MapDirection(y, mX90);
+            var k = Vector3.TransformNormal(y, mX90);
             Assert.That(k, Is.EqualTo(z));
         }
     }

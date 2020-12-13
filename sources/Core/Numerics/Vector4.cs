@@ -57,13 +57,13 @@ namespace TerraFX.Numerics
         }
 
         /// <summary>Initializes a new instance of the <see cref="Vector4" /> struct.</summary>
-        /// <param name="v3">The value of the x,y and z-dimensions.</param>
+        /// <param name="vector">The value of the x,y and z-dimensions.</param>
         /// <param name="w">The value of the w-dimension.</param>
-        public Vector4(Vector3 v3, float w)
+        public Vector4(Vector3 vector, float w)
         {
-            _x = v3.X;
-            _y = v3.Y;
-            _z = v3.Z;
+            _x = vector.X;
+            _y = vector.Y;
+            _z = vector.Z;
             _w = w;
         }
 
@@ -156,64 +156,16 @@ namespace TerraFX.Numerics
         public static Vector4 operator /(Vector4 left, float right) => new Vector4(left.X / right, left.Y / right, left.Z / right, left.W / right);
 
         /// <summary>Multiplies each component of a <see cref="Vector4" /> value by a given <see cref="float" /> value.</summary>
-        /// <param name="v">The vector to multiply.</param>
-        /// <param name="m">The value to multiply each component by.</param>
-        /// <returns>The result of multiplying each component of <paramref name="v" /> by <paramref name="m" />.</returns>
-        public static Vector4 operator *(Vector4 v, Matrix4x4 m) => MapPosition(v, m);
+        /// <param name="value">The vector to multiply.</param>
+        /// <param name="matrix">The value to multiply each component by.</param>
+        /// <returns>The result of multiplying each component of <paramref name="value" /> by <paramref name="matrix" />.</returns>
+        public static Vector4 operator *(Vector4 value, Matrix4x4 matrix) => Transform(value, matrix);
 
         /// <summary>Calculates the dot product of two <see cref="Vector4" /> values.</summary>
         /// <param name="left">The first value to dot.</param>
         /// <param name="right">The second value to dot.</param>
         /// <returns>The result of adding the multiplication of each component of <paramref name="left" /> by each component of <paramref name="right" />.</returns>
         public static float Dot(Vector4 left, Vector4 right) => (left.X * right.X) + (left.Y * right.Y) + (left.Z * right.Z) + (left.W * right.W);
-
-        /// <summary>Computes the normalized value of the given <see cref="Vector4" /> value.</summary>
-        /// <param name="value">The value to normalize.</param>
-        /// <returns>The unit vector of <paramref name="value" />.</returns>
-        public static Vector4 Normalize(Vector4 value) => value / value.Length;
-
-        /// <summary>Computes the <see cref="Vector4" /> that for each component has the maximum value out of this and v.</summary>
-        /// <param name="v">The <see cref="Vector4" /> for this operation.</param>
-        /// <param name="other">The other <see cref="Vector4" /> to compute the max with.</param>
-        /// <returns>The resulting new instance.</returns>
-        public static Vector4 Max(Vector4 v, Vector4 other) => new Vector4(MathF.Max(v.X, other.X), MathF.Max(v.Y, other.Y), MathF.Max(v.Z, other.Z), MathF.Min(v.W, other.W));
-
-        /// <summary>Computes the <see cref="Vector4" /> that for each component has the minimum value out of this and v.</summary>
-        /// <param name="v">The <see cref="Vector4" /> for this operation.</param>
-        /// <param name="other">The other <see cref="Vector4" /> to compute the min with.</param>
-        /// <returns>The resulting new instance.</returns>
-        public static Vector4 Min(Vector4 v, Vector4 other) => new Vector4(MathF.Min(v.X, other.X), MathF.Min(v.Y, other.Y), MathF.Min(v.Z, other.Z), MathF.Min(v.W, other.W));
-
-        /// <summary>Creates a new <see cref="Vector4" /> instance with <see cref="X" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the x-dimension.</param>
-        /// <returns>A new <see cref="Vector4" /> instance with <see cref="X" /> set to <paramref name="value" />.</returns>
-        public Vector4 WithX(float value) => new Vector4(value, Y, Z, W);
-
-        /// <summary>Creates a new <see cref="Vector4" /> instance with <see cref="Y" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the y-dimension.</param>
-        /// <returns>A new <see cref="Vector4" /> instance with <see cref="Y" /> set to <paramref name="value" />.</returns>
-        public Vector4 WithY(float value) => new Vector4(X, value, Z, W);
-
-        /// <summary>Creates a new <see cref="Vector4" /> instance with <see cref="Z" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the z-dimension.</param>
-        /// <returns>A new <see cref="Vector4" /> instance with <see cref="Z" /> set to <paramref name="value" />.</returns>
-        public Vector4 WithZ(float value) => new Vector4(X, Y, value, W);
-
-        /// <summary>Creates a new <see cref="Vector4" /> instance with <see cref="W" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the w-dimension.</param>
-        /// <returns>A new <see cref="Vector4" /> instance with <see cref="W" /> set to <paramref name="value" />.</returns>
-        public Vector4 WithW(float value) => new Vector4(X, Y, Z, value);
-
-        /// <summary>Matrix-Vector multiplication between the left <see cref="Matrix4x4" /> and right <see cref="Vector4" />.</summary>
-        /// <param name="v">The <see cref="Vector4" /> for this operation.</param>
-        /// <param name="m">The <see cref="Matrix4x4" /> to multiply.</param>
-        /// <returns>The resulting transformed <see cref="Vector4" />.</returns>
-        public static Vector4 MapPosition(Vector4 v, Matrix4x4 m) => new Vector4(
-            (v.X * m.X.X) + (v.Y * m.Y.X) + (v.Z * m.Z.X) + (v.W * m.W.X),
-            (v.X * m.X.Y) + (v.Y * m.Y.Y) + (v.Z * m.Z.Y) + (v.W * m.W.Y),
-            (v.X * m.X.Z) + (v.Y * m.Y.Z) + (v.Z * m.Z.Z) + (v.W * m.W.Z),
-            (v.X * m.X.W) + (v.Y * m.Y.W) + (v.Z * m.Z.W) + (v.W * m.W.W)
-        );
 
         /// <inheritdoc />
         public override bool Equals(object? obj) => (obj is Vector4 other) && Equals(other);
@@ -248,6 +200,23 @@ namespace TerraFX.Numerics
             return hashCode.ToHashCode();
         }
 
+        /// <summary>Computes the <see cref="Vector4" /> that for each component has the maximum value out of this and v.</summary>
+        /// <param name="left">The <see cref="Vector4" /> for this operation.</param>
+        /// <param name="right">The other <see cref="Vector4" /> to compute the max with.</param>
+        /// <returns>The resulting new instance.</returns>
+        public static Vector4 Max(Vector4 left, Vector4 right) => new Vector4(MathF.Max(left.X, right.X), MathF.Max(left.Y, right.Y), MathF.Max(left.Z, right.Z), MathF.Min(left.W, right.W));
+
+        /// <summary>Computes the <see cref="Vector4" /> that for each component has the minimum value out of this and v.</summary>
+        /// <param name="left">The <see cref="Vector4" /> for this operation.</param>
+        /// <param name="right">The other <see cref="Vector4" /> to compute the min with.</param>
+        /// <returns>The resulting new instance.</returns>
+        public static Vector4 Min(Vector4 left, Vector4 right) => new Vector4(MathF.Min(left.X, right.X), MathF.Min(left.Y, right.Y), MathF.Min(left.Z, right.Z), MathF.Min(left.W, right.W));
+
+        /// <summary>Computes the normalized value of the given <see cref="Vector4" /> value.</summary>
+        /// <param name="value">The value to normalize.</param>
+        /// <returns>The unit vector of <paramref name="value" />.</returns>
+        public static Vector4 Normalize(Vector4 value) => value / value.Length;
+
         /// <inheritdoc />
         public override string ToString() => ToString(format: null, formatProvider: null);
 
@@ -272,5 +241,36 @@ namespace TerraFX.Numerics
                 .Append('>')
                 .ToString();
         }
+
+        /// <summary>Matrix-Vector multiplication between the left <see cref="Matrix4x4" /> and right <see cref="Vector4" />.</summary>
+        /// <param name="value">The <see cref="Vector4" /> for this operation.</param>
+        /// <param name="matrix">The <see cref="Matrix4x4" /> to multiply.</param>
+        /// <returns>The resulting transformed <see cref="Vector4" />.</returns>
+        public static Vector4 Transform(Vector4 value, Matrix4x4 matrix) => new Vector4(
+            (value.X * matrix.X.X) + (value.Y * matrix.Y.X) + (value.Z * matrix.Z.X) + (value.W * matrix.W.X),
+            (value.X * matrix.X.Y) + (value.Y * matrix.Y.Y) + (value.Z * matrix.Z.Y) + (value.W * matrix.W.Y),
+            (value.X * matrix.X.Z) + (value.Y * matrix.Y.Z) + (value.Z * matrix.Z.Z) + (value.W * matrix.W.Z),
+            (value.X * matrix.X.W) + (value.Y * matrix.Y.W) + (value.Z * matrix.Z.W) + (value.W * matrix.W.W)
+        );
+
+        /// <summary>Creates a new <see cref="Vector4" /> instance with <see cref="X" /> set to the specified value.</summary>
+        /// <param name="value">The new value of the x-dimension.</param>
+        /// <returns>A new <see cref="Vector4" /> instance with <see cref="X" /> set to <paramref name="value" />.</returns>
+        public Vector4 WithX(float value) => new Vector4(value, Y, Z, W);
+
+        /// <summary>Creates a new <see cref="Vector4" /> instance with <see cref="Y" /> set to the specified value.</summary>
+        /// <param name="value">The new value of the y-dimension.</param>
+        /// <returns>A new <see cref="Vector4" /> instance with <see cref="Y" /> set to <paramref name="value" />.</returns>
+        public Vector4 WithY(float value) => new Vector4(X, value, Z, W);
+
+        /// <summary>Creates a new <see cref="Vector4" /> instance with <see cref="Z" /> set to the specified value.</summary>
+        /// <param name="value">The new value of the z-dimension.</param>
+        /// <returns>A new <see cref="Vector4" /> instance with <see cref="Z" /> set to <paramref name="value" />.</returns>
+        public Vector4 WithZ(float value) => new Vector4(X, Y, value, W);
+
+        /// <summary>Creates a new <see cref="Vector4" /> instance with <see cref="W" /> set to the specified value.</summary>
+        /// <param name="value">The new value of the w-dimension.</param>
+        /// <returns>A new <see cref="Vector4" /> instance with <see cref="W" /> set to <paramref name="value" />.</returns>
+        public Vector4 WithW(float value) => new Vector4(X, Y, Z, value);
     }
 }
