@@ -14,10 +14,7 @@ namespace TerraFX.Numerics
         /// <summary>Defines a <see cref="Quaternion" /> that represents the Identity mapping.</summary>
         public static readonly Quaternion Identity = new Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
 
-        private readonly float _x;
-        private readonly float _y;
-        private readonly float _z;
-        private readonly float _w;
+        private readonly Vector4 _q;
 
         /// <summary>Initializes a new instance of the <see cref="Quaternion" /> struct.</summary>
         /// <param name="x">The value of the x-component.</param>
@@ -26,47 +23,39 @@ namespace TerraFX.Numerics
         /// <param name="w">The value of the w-component.</param>
         public Quaternion(float x, float y, float z, float w)
         {
-            _x = x;
-            _y = y;
-            _z = z;
-            _w = w;
+            _q = new Vector4(x, y, z, w);
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="Quaternion" /> struct.</summary>
+        /// <param name="q">The <see cref="Vector4" /> q that should be interpreted as <see cref="Quaternion" />.</param>
+        public Quaternion(Vector4 q)
+        {
+            _q = q;
         }
 
         /// <summary>Gets the value of the x-component.</summary>
-        public float X => _x;
+        public float X => _q.X;
 
         /// <summary>Gets the value of the y-component.</summary>
-        public float Y => _y;
+        public float Y => _q.Y;
 
         /// <summary>Gets the value of the z-component.</summary>
-        public float Z => _z;
+        public float Z => _q.Z;
 
         /// <summary>Gets the value of the w-component.</summary>
-        public float W => _w;
+        public float W => _q.W;
 
         /// <summary>Compares two <see cref="Quaternion" /> instances to determine equality.</summary>
         /// <param name="left">The <see cref="Quaternion" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="Quaternion" /> to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
-        public static bool operator ==(Quaternion left, Quaternion right)
-        {
-            return (left.X == right.X)
-                && (left.Y == right.Y)
-                && (left.Z == right.Z)
-                && (left.W == right.W);
-        }
+        public static bool operator ==(Quaternion left, Quaternion right) => left._q == right._q;
 
         /// <summary>Compares two <see cref="Quaternion" /> instances to determine inequality.</summary>
         /// <param name="left">The <see cref="Quaternion" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="Quaternion" /> to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
-        public static bool operator !=(Quaternion left, Quaternion right)
-        {
-            return (left.X != right.X)
-                || (left.Y != right.Y)
-                || (left.Z != right.Z)
-                || (left.W != right.W);
-        }
+        public static bool operator !=(Quaternion left, Quaternion right) => left._q != right._q;
 
         /// <summary>Returns the value of the <see cref="Quaternion" /> operand (the sign of the operand is unchanged).</summary>
         /// <param name="value">The operand to return</param>
@@ -82,37 +71,37 @@ namespace TerraFX.Numerics
         /// <param name="left">The first value to add.</param>
         /// <param name="right">The second value to add.</param>
         /// <returns>The result of adding <paramref name="left" /> and <paramref name="right" />.</returns>
-        public static Quaternion operator +(Quaternion left, Quaternion right) => new Quaternion(left.X + right.X, left.Y + right.Y, left.Z + right.Z, left.W + right.W);
+        public static Quaternion operator +(Quaternion left, Quaternion right) => new Quaternion(left._q + right._q);
 
         /// <summary>Subtracts two specified <see cref="Quaternion" /> values.</summary>
         /// <param name="left">The minuend.</param>
         /// <param name="right">The subtrahend.</param>
         /// <returns>The result of subtracting <paramref name="right" /> from <paramref name="left" />.</returns>
-        public static Quaternion operator -(Quaternion left, Quaternion right) => new Quaternion(left.X - right.X, left.Y - right.Y, left.Z - right.Z, left.W - right.W);
+        public static Quaternion operator -(Quaternion left, Quaternion right) => new Quaternion(left._q - right._q);
 
         /// <summary>Multiplies two specified <see cref="Quaternion" /> values.</summary>
         /// <param name="left">The first value to multiply.</param>
         /// <param name="right">The second value to multiply.</param>
         /// <returns>The result of multiplying <paramref name="left" /> by <paramref name="right" />.</returns>
-        public static Quaternion operator *(Quaternion left, Quaternion right) => new Quaternion(left.X * right.X, left.Y * right.Y, left.Z * right.Z, left.W * right.W);
+        public static Quaternion operator *(Quaternion left, Quaternion right) => new Quaternion(left._q * right._q);
 
         /// <summary>Divides two specified <see cref="Quaternion" /> values component by component.</summary>
         /// <param name="left">The dividend.</param>
         /// <param name="right">The divisor.</param>
         /// <returns>The result of dividing <paramref name="left" /> by <paramref name="right" />.</returns>
-        public static Quaternion operator /(Quaternion left, Quaternion right) => new Quaternion(left.X / right.X, left.Y / right.Y, left.Z / right.Z, left.W / right.W);
+        public static Quaternion operator /(Quaternion left, Quaternion right) => new Quaternion(left._q / right._q);
 
         /// <summary>Multiplies each component of a <see cref="Quaternion" /> value by a given <see cref="float" /> value.</summary>
         /// <param name="left">The vector to multiply.</param>
         /// <param name="right">The value to multiply each component by.</param>
         /// <returns>The result of multiplying each component of <paramref name="left" /> by <paramref name="right" />.</returns>
-        public static Quaternion operator *(Quaternion left, float right) => new Quaternion(left.X * right, left.Y * right, left.Z * right, left.W * right);
+        public static Quaternion operator *(Quaternion left, float right) => new Quaternion(left._q * right);
 
         /// <summary>Divides each component of a <see cref="Quaternion" /> value by a given <see cref="float" /> value.</summary>
         /// <param name="left">The dividend.</param>
         /// <param name="right">The divisor to divide each component by.</param>
         /// <returns>The result of multiplying each component of <paramref name="left" /> by <paramref name="right" />.</returns>
-        public static Quaternion operator /(Quaternion left, float right) => new Quaternion(left.X / right, left.Y / right, left.Z / right, left.W / right);
+        public static Quaternion operator /(Quaternion left, float right) => new Quaternion(left._q / right);
 
         // -- equality and similarity --
 
@@ -128,11 +117,7 @@ namespace TerraFX.Numerics
         /// <param name="right">The right instance to compare.</param>
         /// <param name="epsilon">The threshold below which they are sufficiently similar.</param>
         /// <returns>True if similar, false otherwise.</returns>
-        public static bool EqualEstimate(Quaternion left, Quaternion right, float epsilon)
-        {
-            var diffNorm2 = NormSquared(right - left);
-            return diffNorm2 < epsilon;
-        }
+        public static bool EqualEstimate(Quaternion left, Quaternion right, Quaternion epsilon) => Vector4.EqualEstimate(left._q, right._q, epsilon._q);
 
         // -- state reporting (GetHashCode, ToString) --
 
@@ -238,7 +223,7 @@ namespace TerraFX.Numerics
             var c = a * r.W;
             c += b * q.W;
             c += Vector3.Cross(b, a);
-            var resultQ = Normalize(new Quaternion(c.X, c.Y, c.Z, (q.W * r.W) - Vector3.Dot(a, b)), 1e-6f);
+            var resultQ = Normalize(new Quaternion(c.X, c.Y, c.Z, (q.W * r.W) - Vector3.Dot(a, b)));
             return resultQ;
         }
 
@@ -251,7 +236,7 @@ namespace TerraFX.Numerics
         /// <param name="q">The left Quaternion for this operation.</param>
         /// <param name="r">The right Quaternion for this operation.</param>
         /// <returns>The resulting dot product <see cref="Quaternion" />.</returns>
-        public static Quaternion Dot(Quaternion q, Quaternion r) => new Quaternion(q.X * r.X, q.Y * r.Y, q.Z * r.Z, q.W * r.W);
+        public static float Dot(Quaternion q, Quaternion r) => Vector4.Dot(q._q, r._q);
 
         /// <summary>The inverse of this <see cref="Quaternion" /> with the given other one.</summary>
         /// <param name="q">The Quaternion for this operation.</param>
@@ -265,33 +250,17 @@ namespace TerraFX.Numerics
         /// <summary>The squared norm of this <see cref="Quaternion" />.</summary>
         /// <param name="q">The Quaternion for this operation.</param>
         /// <returns>The resulting squared norm.</returns>
-        public static float NormSquared(Quaternion q)
-        {
-            var d = Dot(q, q);
-            var norm2 = d.X + d.Y + d.Z + d.W;
-            return norm2;
-        }
+        public static float NormSquared(Quaternion q) => Vector4.LengthSquared(q._q);
 
         /// <summary>The norm of this <see cref="Quaternion" /> with the given other one.</summary>
         /// <param name="q">The Quaternion for this operation.</param>
         /// <returns>The resulting norm.</returns>
-        public static float Norm(Quaternion q) => MathF.Sqrt(NormSquared(q));
+        public static float Norm(Quaternion q) => Vector4.Length(q._q);
 
         /// <summary>The unit length version of this <see cref="Quaternion" /> with the given other one.</summary>
         /// <param name="q">The Quaternion for this operation.</param>
-        /// <param name="epsilon">The threshold below which standard normalzation is replaced by returning Identity instead.</param>
         /// <returns>The resulting unit length <see cref="Quaternion" />.</returns>
-        public static Quaternion Normalize(Quaternion q, float epsilon)
-        {
-            var norm = Norm(q);
-            return norm > epsilon ? q / norm : Quaternion.Identity;
-        }
-
-        /// <summary>A rounded version of this <see cref="Quaternion" />.</summary>
-        /// <param name="q">The Quaternion for this operation.</param>
-        /// <param name="numDigits">The number of fractional digits to round to. By default 4.</param>
-        /// <returns>The resulting rounded <see cref="Quaternion" />.</returns>
-        public static Quaternion Round(Quaternion q, int numDigits = 4) => new Quaternion(MathF.Round(q.X, numDigits), MathF.Round(q.Y, numDigits), MathF.Round(q.Z, numDigits), MathF.Round(q.W, numDigits));
+        public static Quaternion Normalize(Quaternion q) => new Quaternion(Vector4.Normalize(q._q));
 
         /// <summary>The given <see cref="Vector3" /> rotated by this <see cref="Quaternion" />.</summary>
         /// <param name="q">The Quaternion for this operation.</param>
