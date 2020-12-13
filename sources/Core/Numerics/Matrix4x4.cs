@@ -76,32 +76,24 @@ namespace TerraFX.Numerics
         /// <returns>The matrix multiplication result.</returns>
         public static Matrix4x4 operator *(Matrix4x4 left, Matrix4x4 right)
         {
+            var transposed = Transpose(right);
+
             return new Matrix4x4(
-                new Vector4(
-                    (left.X.X * right.X.X) + (left.X.Y * right.Y.X) + (left.X.Z * right.Z.X) + (left.X.W * right.W.X),
-                    (left.Y.X * right.X.X) + (left.Y.Y * right.Y.X) + (left.Y.Z * right.Z.X) + (left.Y.W * right.W.X),
-                    (left.Z.X * right.X.X) + (left.Z.Y * right.Y.X) + (left.Z.Z * right.Z.X) + (left.Z.W * right.W.X),
-                    (left.W.X * right.X.X) + (left.W.Y * right.Y.X) + (left.W.Z * right.Z.X) + (left.W.W * right.W.X)
-                ),
-                new Vector4(
-                    (left.X.X * right.X.Y) + (left.X.Y * right.Y.Y) + (left.X.Z * right.Z.Y) + (left.X.W * right.W.Y),
-                    (left.Y.X * right.X.Y) + (left.Y.Y * right.Y.Y) + (left.Y.Z * right.Z.Y) + (left.Y.W * right.W.Y),
-                    (left.Z.X * right.X.Y) + (left.Z.Y * right.Y.Y) + (left.Z.Z * right.Z.Y) + (left.Z.W * right.W.Y),
-                    (left.W.X * right.X.Y) + (left.W.Y * right.Y.Y) + (left.W.Z * right.Z.Y) + (left.W.W * right.W.Y)
-                ),
-                new Vector4(
-                    (left.X.X * right.X.Z) + (left.X.Y * right.Y.Z) + (left.X.Z * right.Z.Z) + (left.X.W * right.W.Z),
-                    (left.Y.X * right.X.Z) + (left.Y.Y * right.Y.Z) + (left.Y.Z * right.Z.Z) + (left.Y.W * right.W.Z),
-                    (left.Z.X * right.X.Z) + (left.Z.Y * right.Y.Z) + (left.Z.Z * right.Z.Z) + (left.Z.W * right.W.Z),
-                    (left.W.X * right.X.Z) + (left.W.Y * right.Y.Z) + (left.W.Z * right.Z.Z) + (left.W.W * right.W.Z)
-                ),
-                new Vector4(
-                    (left.X.X * right.X.W) + (left.X.Y * right.Y.W) + (left.X.Z * right.Z.W) + (left.X.W * right.W.W),
-                    (left.Y.X * right.X.W) + (left.Y.Y * right.Y.W) + (left.Y.Z * right.Z.W) + (left.Y.W * right.W.W),
-                    (left.Z.X * right.X.W) + (left.Z.Y * right.Y.W) + (left.Z.Z * right.Z.W) + (left.Z.W * right.W.W),
-                    (left.W.X * right.X.W) + (left.W.Y * right.Y.W) + (left.W.Z * right.Z.W) + (left.W.W * right.W.W)
-                )
+                DotRows(left, transposed.X),
+                DotRows(left, transposed.Y),
+                DotRows(left, transposed.Z),
+                DotRows(left, transposed.W)
             );
+
+            static Vector4 DotRows(Matrix4x4 left, Vector4 right)
+            {
+                return new Vector4(
+                    Vector4.Dot(left.X, right),
+                    Vector4.Dot(left.Y, right),
+                    Vector4.Dot(left.Z, right),
+                    Vector4.Dot(left.W, right)
+                );
+            }
         }
 
         /// <summary>Creates a new <see cref="Matrix4x4" /> instance with <see cref="X" /> set to the specified value.</summary>

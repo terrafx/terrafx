@@ -65,25 +65,24 @@ namespace TerraFX.Numerics
         /// <param name="left">The <see cref="Matrix3x3" /> to multiply with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="Matrix3x3" /> to multiply with <paramref name="left" />.</param>
         /// <returns>The matrix multiplication result.</returns>
-        public static Matrix3x3 operator *(Matrix3x3 left, Matrix4x4 right)
+        public static Matrix3x3 operator *(Matrix3x3 left, Matrix3x3 right)
         {
+            var transposed = Transpose(right);
+
             return new Matrix3x3(
-                new Vector3(
-                    (left.X.X * right.X.X) + (left.X.Y * right.Y.X) + (left.X.Z * right.Z.X),
-                    (left.Y.X * right.X.X) + (left.Y.Y * right.Y.X) + (left.Y.Z * right.Z.X),
-                    (left.Z.X * right.X.X) + (left.Z.Y * right.Y.X) + (left.Z.Z * right.Z.X)
-                ),
-                new Vector3(
-                    (left.X.X * right.X.Y) + (left.X.Y * right.Y.Y) + (left.X.Z * right.Z.Y),
-                    (left.Y.X * right.X.Y) + (left.Y.Y * right.Y.Y) + (left.Y.Z * right.Z.Y),
-                    (left.Z.X * right.X.Y) + (left.Z.Y * right.Y.Y) + (left.Z.Z * right.Z.Y)
-                ),
-                new Vector3(
-                    (left.X.X * right.X.Z) + (left.X.Y * right.Y.Z) + (left.X.Z * right.Z.Z),
-                    (left.Y.X * right.X.Z) + (left.Y.Y * right.Y.Z) + (left.Y.Z * right.Z.Z),
-                    (left.Z.X * right.X.Z) + (left.Z.Y * right.Y.Z) + (left.Z.Z * right.Z.Z)
-                )
+                DotRows(left, transposed.X),
+                DotRows(left, transposed.Y),
+                DotRows(left, transposed.Z)
             );
+
+            static Vector3 DotRows(Matrix3x3 left, Vector3 right)
+            {
+                return new Vector3(
+                    Vector3.Dot(left.X, right),
+                    Vector3.Dot(left.Y, right),
+                    Vector3.Dot(left.Z, right)
+                );
+            }
         }
 
         /// <summary>Creates a new <see cref="Matrix3x3" /> instance with <see cref="X" /> set to the specified value.</summary>
