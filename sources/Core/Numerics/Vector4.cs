@@ -213,15 +213,16 @@ namespace TerraFX.Numerics
 
         /// <summary>Tests if two <see cref="Vector4" /> instances have sufficiently similar values to see them as equivalent.
         /// Use this to compare values that might be affected by differences in rounding the least significant bits.</summary>
-        /// <param name="other">The other instance to compare.</param>
-        /// <param name="errorTolerance">The threshold below which they are sufficiently similar.</param>
+        /// <param name="left">The left instance to compare.</param>
+        /// <param name="right">The right instance to compare.</param>
+        /// <param name="epsilon">The threshold below which they are sufficiently similar.</param>
         /// <returns><c>True</c> if similar, <c>False</c> otherwise.</returns>
-        public bool IsSimilarTo(Vector4 other, float errorTolerance = FloatUtilities.ErrorTolerance)
+        public static bool EqualEstimate(Vector4 left, Vector4 right, Vector4 epsilon)
         {
-            return X.IsSimilarTo(other.X, errorTolerance)
-                && Y.IsSimilarTo(other.Y, errorTolerance)
-                && Z.IsSimilarTo(other.Z, errorTolerance)
-                && W.IsSimilarTo(other.W, errorTolerance);
+            return FloatUtilities.EqualEstimate(left.X, right.X, epsilon.X)
+                && FloatUtilities.EqualEstimate(left.Y, right.Y, epsilon.Y)
+                && FloatUtilities.EqualEstimate(left.Z, right.Z, epsilon.Z)
+                && FloatUtilities.EqualEstimate(left.W, right.W, epsilon.W);
         }
 
         /// <inheritdoc />

@@ -124,13 +124,14 @@ namespace TerraFX.Numerics
 
         /// <summary>Tests if two <see cref="Quaternion" /> instances have sufficiently similar values to see them as equivalent.
         /// Use this to compare values that might be affected by differences in rounding the least significant bits.</summary>
-        /// <param name="q">The other Quaternion to compare.</param>
-        /// <param name="errorTolerance">The threshold below which they are sufficiently similar.</param>
+        /// <param name="left">The left instance to compare.</param>
+        /// <param name="right">The right instance to compare.</param>
+        /// <param name="epsilon">The threshold below which they are sufficiently similar.</param>
         /// <returns>True if similar, false otherwise.</returns>
-        public bool IsSimilarTo(Quaternion q, float errorTolerance = FloatUtilities.ErrorTolerance)
+        public static bool EqualEstimate(Quaternion left, Quaternion right, float epsilon)
         {
-            var diffNorm2 = NormSquared(this - q);
-            return diffNorm2 < errorTolerance;
+            var diffNorm2 = NormSquared(right - left);
+            return diffNorm2 < epsilon;
         }
 
         // -- state reporting (GetHashCode, ToString) --
@@ -237,7 +238,7 @@ namespace TerraFX.Numerics
             var c = a * r.W;
             c += b * q.W;
             c += Vector3.Cross(b, a);
-            var resultQ = Normalize(new Quaternion(c.X, c.Y, c.Z, (q.W * r.W) - Vector3.Dot(a, b)));
+            var resultQ = Normalize(new Quaternion(c.X, c.Y, c.Z, (q.W * r.W) - Vector3.Dot(a, b)), 1e-6f);
             return resultQ;
         }
 
@@ -278,12 +279,12 @@ namespace TerraFX.Numerics
 
         /// <summary>The unit length version of this <see cref="Quaternion" /> with the given other one.</summary>
         /// <param name="q">The Quaternion for this operation.</param>
-        /// <param name="errorTolerance">The threshold below which standard normalzation is replaced by returning Identity instead.</param>
+        /// <param name="epsilon">The threshold below which standard normalzation is replaced by returning Identity instead.</param>
         /// <returns>The resulting unit length <see cref="Quaternion" />.</returns>
-        public static Quaternion Normalize(Quaternion q, float errorTolerance = FloatUtilities.ErrorTolerance)
+        public static Quaternion Normalize(Quaternion q, float epsilon)
         {
             var norm = Norm(q);
-            return norm > errorTolerance ? q / norm : Quaternion.Identity;
+            return norm > epsilon ? q / norm : Quaternion.Identity;
         }
 
         /// <summary>A rounded version of this <see cref="Quaternion" />.</summary>

@@ -31,10 +31,10 @@ namespace TerraFX.Utilities
 
         /// <summary>Tests if two <see cref="float"/> instances have sufficiently similar values to see them as equivalent.
         /// Use this to compare values that might be affected by differences in rounding the least significant bits.</summary>
-        /// <param name="me">The first insance to compare.</param>
-        /// <param name="other">The other instance to compare.</param>
-        /// <param name="errorTolerance">The threshold below which they are sufficiently similar.</param>
+        /// <param name="left">The first insance to compare.</param>
+        /// <param name="right">The other instance to compare.</param>
+        /// <param name="epsilon">The threshold below which they are sufficiently similar.</param>
         /// <returns><c>true</c> if similar, <c>false</c> otherwise.</returns>
-        public static bool IsSimilarTo(this float me, float other, float errorTolerance = ErrorTolerance) => MathF.Abs(me - other) < errorTolerance;
+        public static bool EqualEstimate(this float left, float right, float epsilon) => MathF.Abs(right - left) < epsilon;
     }
 }

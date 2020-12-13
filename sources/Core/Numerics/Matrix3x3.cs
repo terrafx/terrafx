@@ -107,6 +107,19 @@ namespace TerraFX.Numerics
         /// <inheritdoc />
         public bool Equals(Matrix3x3 other) => this == other;
 
+        /// <summary>Tests if two <see cref="Matrix4x4" /> instances have sufficiently similar values to see them as equivalent.
+        /// Use this to compare values that might be affected by differences in rounding the least significant bits.</summary>
+        /// <param name="left">The left instance to compare.</param>
+        /// <param name="right">The right instance to compare.</param>
+        /// <param name="epsilon">The threshold below which they are sufficiently similar.</param>
+        /// <returns><c>True</c> if similar, <c>False</c> otherwise.</returns>
+        public static bool EqualEstimate(Matrix3x3 left, Matrix3x3 right, Matrix3x3 epsilon)
+        {
+            return Vector3.EqualEstimate(left.X, right.X, epsilon.X)
+                && Vector3.EqualEstimate(left.Y, right.Y, epsilon.Y)
+                && Vector3.EqualEstimate(left.Z, right.Z, epsilon.Z);
+        }
+
         /// <inheritdoc />
         public override int GetHashCode()
         {
