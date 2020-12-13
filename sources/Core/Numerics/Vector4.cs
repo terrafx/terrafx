@@ -237,12 +237,6 @@ namespace TerraFX.Numerics
             return hashCode.ToHashCode();
         }
 
-        /// <summary>A rounded version of this <see cref="Vector4" />.</summary>
-        /// <param name="v">The <see cref="Vector4" /> for this operation.</param>
-        /// <param name="numDigits">The number of fractional digits to round to. By default 4.</param>
-        /// <returns>The resulting rounded <see cref="Vector4" />.</returns>
-        public static Vector4 Round(Vector4 v, int numDigits = 4) => new Vector4(MathF.Round(v.X, numDigits), MathF.Round(v.Y, numDigits), MathF.Round(v.Z, numDigits), MathF.Round(v.W, numDigits));
-
         /// <inheritdoc />
         public override string ToString() => ToString(format: null, formatProvider: null);
 

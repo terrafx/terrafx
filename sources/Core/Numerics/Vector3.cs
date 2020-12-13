@@ -243,12 +243,6 @@ namespace TerraFX.Numerics
             (v.X * m.X.Z) + (v.Y * m.Y.Z) + (v.Z * m.Z.Z)
         );
 
-        /// <summary>A rounded version of this <see cref="Vector3" />.</summary>
-        /// <param name="v">The <see cref="Vector3" /> for this operation.</param>
-        /// <param name="numDigits">The number of fractional digits to round to. By default 4.</param>
-        /// <returns>The resulting rounded <see cref="Vector3" />.</returns>
-        public static Vector3 Round(Vector3 v, int numDigits = 4) => new Vector3(MathF.Round(v.X, numDigits), MathF.Round(v.Y, numDigits), MathF.Round(v.Z, numDigits));
-
         /// <inheritdoc />
         public override string ToString() => ToString(format: null, formatProvider: null);
 
