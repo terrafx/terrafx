@@ -316,7 +316,8 @@ namespace TerraFX.Numerics
                 scale * unitAxis.X,
                 scale * unitAxis.Y,
                 scale * unitAxis.Z,
-                MathF.Cos(radians / 2));
+                MathF.Cos(radians / 2)
+            );
             return q;
         }
     }

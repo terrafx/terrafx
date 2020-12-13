@@ -202,7 +202,8 @@ namespace TerraFX.Numerics
             (v.X * m.X.X) + (v.Y * m.Y.X) + (v.Z * m.Z.X) + (v.W * m.W.X),
             (v.X * m.X.Y) + (v.Y * m.Y.Y) + (v.Z * m.Z.Y) + (v.W * m.W.Y),
             (v.X * m.X.Z) + (v.Y * m.Y.Z) + (v.Z * m.Z.Z) + (v.W * m.W.Z),
-            (v.X * m.X.W) + (v.Y * m.Y.W) + (v.Z * m.Z.W) + (v.W * m.W.W));
+            (v.X * m.X.W) + (v.Y * m.Y.W) + (v.Z * m.Z.W) + (v.W * m.W.W)
+        );
 
         /// <inheritdoc />
         public override bool Equals(object? obj) => (obj is Vector4 other) && Equals(other);

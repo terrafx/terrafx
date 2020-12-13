@@ -61,6 +61,31 @@ namespace TerraFX.Numerics
                 || (left.Z != right.Z);
         }
 
+        /// <summary>Multiplies two <see cref="Matrix3x3" /> instances.</summary>
+        /// <param name="left">The <see cref="Matrix3x3" /> to multiply with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="Matrix3x3" /> to multiply with <paramref name="left" />.</param>
+        /// <returns>The matrix multiplication result.</returns>
+        public static Matrix3x3 operator *(Matrix3x3 left, Matrix4x4 right)
+        {
+            return new Matrix3x3(
+                new Vector3(
+                    (left.X.X * right.X.X) + (left.X.Y * right.Y.X) + (left.X.Z * right.Z.X),
+                    (left.Y.X * right.X.X) + (left.Y.Y * right.Y.X) + (left.Y.Z * right.Z.X),
+                    (left.Z.X * right.X.X) + (left.Z.Y * right.Y.X) + (left.Z.Z * right.Z.X)
+                ),
+                new Vector3(
+                    (left.X.X * right.X.Y) + (left.X.Y * right.Y.Y) + (left.X.Z * right.Z.Y),
+                    (left.Y.X * right.X.Y) + (left.Y.Y * right.Y.Y) + (left.Y.Z * right.Z.Y),
+                    (left.Z.X * right.X.Y) + (left.Z.Y * right.Y.Y) + (left.Z.Z * right.Z.Y)
+                ),
+                new Vector3(
+                    (left.X.X * right.X.Z) + (left.X.Y * right.Y.Z) + (left.X.Z * right.Z.Z),
+                    (left.Y.X * right.X.Z) + (left.Y.Y * right.Y.Z) + (left.Y.Z * right.Z.Z),
+                    (left.Z.X * right.X.Z) + (left.Z.Y * right.Y.Z) + (left.Z.Z * right.Z.Z)
+                )
+            );
+        }
+
         /// <summary>Creates a new <see cref="Matrix3x3" /> instance with <see cref="X" /> set to the specified value.</summary>
         /// <param name="value">The new value of the x-dimension.</param>
         /// <returns>A new <see cref="Matrix3x3" /> instance with <see cref="X" /> set to <paramref name="value" />.</returns>
@@ -94,15 +119,8 @@ namespace TerraFX.Numerics
             return hashCode.ToHashCode();
         }
 
-        /// <summary>A rounded version of this <see cref="Matrix3x3" />.</summary>
-        /// <param name="m">The matrix to round.</param>
-        /// <param name="numDigits">The number of fractional digits to round to. By default 4.</param>
-        /// <returns>The resulting rounded <see cref="Matrix3x3" />.</returns>
-        public static Matrix3x3 Round(Matrix3x3 m, int numDigits = 4) => new Matrix3x3(Vector3.Round(m.X, numDigits), Vector3.Round(m.Y, numDigits), Vector3.Round(m.Z, numDigits));
-
         /// <inheritdoc />
         public override string ToString() => ToString(format: null, formatProvider: null);
-
 
         /// <inheritdoc />
         public string ToString(string? format, IFormatProvider? formatProvider)
@@ -129,7 +147,8 @@ namespace TerraFX.Numerics
             return new Matrix3x3(
                 new Vector3(m.X.X, m.Y.X, m.Z.X),
                 new Vector3(m.X.Y, m.Y.Y, m.Z.Y),
-                new Vector3(m.X.Z, m.Y.Z, m.Z.Z));
+                new Vector3(m.X.Z, m.Y.Z, m.Z.Z)
+            );
         }
     }
 }

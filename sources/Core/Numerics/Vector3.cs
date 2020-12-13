@@ -220,7 +220,8 @@ namespace TerraFX.Numerics
         public static Vector3 operator *(Vector3 v, Matrix3x3 m) => new Vector3(
             (v.X * m.X.X) + (v.Y * m.Y.X) + (v.Z * m.Z.X),
             (v.X * m.X.Y) + (v.Y * m.Y.Y) + (v.Z * m.Z.Y),
-            (v.X * m.X.Z) + (v.Y * m.Y.Z) + (v.Z * m.Z.Z));
+            (v.X * m.X.Z) + (v.Y * m.Y.Z) + (v.Z * m.Z.Z)
+        );
 
         /// <summary>Matrix-Vector multiplication between the left <see cref="Matrix4x4" /> and right <see cref="Vector3" />.</summary>
         /// <param name="v">The <see cref="Vector3" /> for this operation.</param>
@@ -229,7 +230,8 @@ namespace TerraFX.Numerics
         public static Vector3 MapPosition(Vector3 v, Matrix4x4 m) => new Vector3(
             (v.X * m.X.X) + (v.Y * m.Y.X) + (v.Z * m.Z.X) + m.W.X,
             (v.X * m.X.Y) + (v.Y * m.Y.Y) + (v.Z * m.Z.Y) + m.W.Y,
-            (v.X * m.X.Z) + (v.Y * m.Y.Z) + (v.Z * m.Z.Z) + m.W.Z);
+            (v.X * m.X.Z) + (v.Y * m.Y.Z) + (v.Z * m.Z.Z) + m.W.Z
+        );
 
         /// <summary>Matrix-Vector multiplication between the left <see cref="Matrix4x4" /> and right <see cref="Vector3" />.</summary>
         /// <param name="v">The <see cref="Vector3" /> for this operation.</param>
@@ -238,7 +240,8 @@ namespace TerraFX.Numerics
         public static Vector3 MapDirection(Vector3 v, Matrix4x4 m) => new Vector3(
             (v.X * m.X.X) + (v.Y * m.Y.X) + (v.Z * m.Z.X),
             (v.X * m.X.Y) + (v.Y * m.Y.Y) + (v.Z * m.Z.Y),
-            (v.X * m.X.Z) + (v.Y * m.Y.Z) + (v.Z * m.Z.Z));
+            (v.X * m.X.Z) + (v.Y * m.Y.Z) + (v.Z * m.Z.Z)
+        );
 
         /// <summary>A rounded version of this <see cref="Vector3" />.</summary>
         /// <param name="v">The <see cref="Vector3" /> for this operation.</param>
