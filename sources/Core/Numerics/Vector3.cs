@@ -158,13 +158,13 @@ namespace TerraFX.Numerics
         /// <param name="v">The <see cref="Vector3" /> for this operation.</param>
         /// <param name="other">The other <see cref="Vector3" /> to compute the max with.</param>
         /// <returns>The resulting new instance.</returns>
-        public static Vector3 MaxWith(Vector3 v, Vector3 other) => new Vector3(MathF.Max(v.X, other.X), MathF.Max(v.Y, other.Y), MathF.Max(v.Z, other.Z));
+        public static Vector3 Max(Vector3 v, Vector3 other) => new Vector3(MathF.Max(v.X, other.X), MathF.Max(v.Y, other.Y), MathF.Max(v.Z, other.Z));
 
         /// <summary>Computes the <see cref="Vector3" /> that for each component has the minimum value out of this and v.</summary>
         /// <param name="v">The <see cref="Vector3" /> for this operation.</param>
         /// <param name="other">The other <see cref="Vector3" /> to compute the min with.</param>
         /// <returns>The resulting new instance.</returns>
-        public static Vector3 MinWith(Vector3 v, Vector3 other) => new Vector3(MathF.Min(v.X, other.X), MathF.Min(v.Y, other.Y), MathF.Min(v.Z, other.Z));
+        public static Vector3 Min(Vector3 v, Vector3 other) => new Vector3(MathF.Min(v.X, other.X), MathF.Min(v.Y, other.Y), MathF.Min(v.Z, other.Z));
 
         /// <summary>Creates a new <see cref="Vector3" /> instance with <see cref="X" /> set to the specified value.</summary>
         /// <param name="value">The new value of the x-dimension.</param>

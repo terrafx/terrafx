@@ -284,11 +284,23 @@ namespace TerraFX.Numerics
         /// <returns>The resulting unit length <see cref="Quaternion" />.</returns>
         public static Quaternion Normalize(Quaternion q) => new Quaternion(Vector4.Normalize(q._q));
 
+        /// <summary>Computes the <see cref="Quaternion" /> that for each component has the maximum value out of this and v.</summary>
+        /// <param name="q">The <see cref="Quaternion" /> for this operation.</param>
+        /// <param name="other">The other <see cref="Quaternion" /> to compute the max with.</param>
+        /// <returns>The resulting new instance.</returns>
+        public static Quaternion Max(Quaternion q, Quaternion other) => new Quaternion(Vector4.Max(q._q, other._q));
+
+        /// <summary>Computes the <see cref="Quaternion" /> that for each component has the minimum value out of this and v.</summary>
+        /// <param name="q">The <see cref="Quaternion" /> for this operation.</param>
+        /// <param name="other">The other <see cref="Quaternion" /> to compute the min with.</param>
+        /// <returns>The resulting new instance.</returns>
+        public static Quaternion Min(Quaternion q, Quaternion other) => new Quaternion(Vector4.Max(q._q, other._q));
+
         /// <summary>A new  <see cref="Quaternion" /> that embodies rotation about the given axis by the given angle in radians.</summary>
         /// <param name="axis">The rotation axis. It will be normalized before use.</param>
         /// <param name="radians">The rotation angle in radians.</param>
         /// <returns></returns>
-        public static Quaternion RotationAroundAxis(Vector3 axis, float radians)
+        public static Quaternion CreateFromAxisAngle(Vector3 axis, float radians)
         {
             var unitAxis = Vector3.Normalize(axis);
             var scale = MathF.Sin(radians / 2.0f);

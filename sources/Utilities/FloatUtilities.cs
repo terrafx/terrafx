@@ -7,10 +7,6 @@ namespace TerraFX.Utilities
     /// <summary>Provides a set of methods for manipulating floating-point values.</summary>
     public static class FloatUtilities
     {
-
-        /// <summary>A <see cref="float" /> value very close to zero, but large enough to not be a rounding mistake.</summary>
-        public const float ErrorTolerance = 1e-12f;
-
         /// <summary>Clamps a <see cref="float" /> value to be between a minimum and maximum value.</summary>
         /// <param name="value">The value to restrict.</param>
         /// <param name="min">The minimum value (inclusive).</param>
