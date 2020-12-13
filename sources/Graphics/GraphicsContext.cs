@@ -19,7 +19,7 @@ namespace TerraFX.Graphics
         protected GraphicsContext(GraphicsDevice device, int index)
         {
             ThrowIfNull(device, nameof(device));
-            ThrowIfNegative(index, nameof(index));
+            ThrowIf(index < 0, nameof(index));
 
             _device = device;
             _index = index;
@@ -57,7 +57,7 @@ namespace TerraFX.Graphics
         /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="source" /> is <c>null</c>.</exception>
         /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
-        public abstract void Copy(IGraphicsBuffer destination, IGraphicsBuffer source);
+        public abstract void Copy(GraphicsBuffer destination, GraphicsBuffer source);
 
         /// <summary>Copies the contents of a buffer to a two-dimensional texture.</summary>
         /// <param name="destination">The destination two-dimensional texture.</param>
@@ -65,7 +65,7 @@ namespace TerraFX.Graphics
         /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="source" /> is <c>null</c>.</exception>
         /// <exception cref="ObjectDisposedException">The context has been disposed.</exception>
-        public abstract void Copy(IGraphicsTexture destination, IGraphicsBuffer source);
+        public abstract void Copy(GraphicsTexture destination, GraphicsBuffer source);
 
         /// <summary>Draws a primitive to the render surface.</summary>
         /// <param name="primitive">The primitive to draw.</param>

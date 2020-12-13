@@ -147,15 +147,15 @@ namespace TerraFX.Graphics.Providers.Vulkan
         }
 
         /// <inheritdoc />
-        public override void Copy(IGraphicsBuffer destination, IGraphicsBuffer source)
-            => Copy((IVulkanGraphicsBuffer)destination, (IVulkanGraphicsBuffer)source);
+        public override void Copy(GraphicsBuffer destination, GraphicsBuffer source)
+            => Copy((VulkanGraphicsBuffer)destination, (VulkanGraphicsBuffer)source);
 
         /// <inheritdoc />
-        public override void Copy(IGraphicsTexture destination, IGraphicsBuffer source)
-            => Copy((IVulkanGraphicsTexture)destination, (IVulkanGraphicsBuffer)source);
+        public override void Copy(GraphicsTexture destination, GraphicsBuffer source)
+            => Copy((VulkanGraphicsTexture)destination, (VulkanGraphicsBuffer)source);
 
-        /// <inheritdoc cref="Copy(IGraphicsBuffer, IGraphicsBuffer)" />
-        public void Copy(IVulkanGraphicsBuffer destination, IVulkanGraphicsBuffer source)
+        /// <inheritdoc cref="Copy(GraphicsBuffer, GraphicsBuffer)" />
+        public void Copy(VulkanGraphicsBuffer destination, VulkanGraphicsBuffer source)
         {
             ThrowIfNull(destination, nameof(destination));
             ThrowIfNull(source, nameof(source));
@@ -168,8 +168,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
             vkCmdCopyBuffer(VulkanCommandBuffer, source.VulkanBuffer, destination.VulkanBuffer, 1, &vulkanBufferCopy);
         }
 
-        /// <inheritdoc cref="Copy(IGraphicsTexture, IGraphicsBuffer)" />
-        public void Copy(IVulkanGraphicsTexture destination, IVulkanGraphicsBuffer source)
+        /// <inheritdoc cref="Copy(GraphicsTexture, GraphicsBuffer)" />
+        public void Copy(VulkanGraphicsTexture destination, VulkanGraphicsBuffer source)
         {
             ThrowIfNull(destination, nameof(destination));
             ThrowIfNull(source, nameof(source));
@@ -250,7 +250,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             vkCmdBindPipeline(vulkanCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanPipeline);
 
             ref readonly var vertexBufferRegion = ref primitive.VertexBufferRegion;
-            var vertexBuffer = (IVulkanGraphicsBuffer)vertexBufferRegion.Parent;
+            var vertexBuffer = (VulkanGraphicsBuffer)vertexBufferRegion.Collection;
             var vulkanVertexBuffer = vertexBuffer.VulkanBuffer;
             var vulkanVertexBufferOffset = vertexBufferRegion.Offset;
 
@@ -269,7 +269,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
                     VkWriteDescriptorSet writeDescriptorSet;
 
-                    if (inputResourceRegion.Parent is IVulkanGraphicsBuffer vulkanGraphicsBuffer)
+                    if (inputResourceRegion.Collection is VulkanGraphicsBuffer vulkanGraphicsBuffer)
                     {
                         var descriptorBufferInfo = new VkDescriptorBufferInfo {
                             buffer = vulkanGraphicsBuffer.VulkanBuffer,
@@ -286,7 +286,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                             pBufferInfo = &descriptorBufferInfo,
                         };
                     }
-                    else if (inputResourceRegion.Parent is IVulkanGraphicsTexture vulkanGraphicsTexture)
+                    else if (inputResourceRegion.Collection is VulkanGraphicsTexture vulkanGraphicsTexture)
                     {
                         var descriptorImageInfo = new VkDescriptorImageInfo {
                             sampler = vulkanGraphicsTexture.VulkanSampler,
@@ -312,9 +312,9 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             ref readonly var indexBufferRegion = ref primitive.IndexBufferRegion;
 
-            if (indexBufferRegion.Parent is IVulkanGraphicsBuffer indexBuffer)
+            if (indexBufferRegion.Collection is VulkanGraphicsBuffer indexBuffer)
             {
-                var indexBufferStride = indexBufferRegion.Stride;
+                var indexBufferStride = primitive.IndexBufferStride;
                 var indexType = VK_INDEX_TYPE_UINT16;
 
                 if (indexBufferStride != 2)
@@ -328,7 +328,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             }
             else
             {
-                vkCmdDraw(vulkanCommandBuffer, vertexCount: (uint)(vertexBufferRegion.Size / vertexBufferRegion.Stride), instanceCount: 1, firstVertex: 0, firstInstance: 0);
+                vkCmdDraw(vulkanCommandBuffer, vertexCount: (uint)(vertexBufferRegion.Size / primitive.VertexBufferStride), instanceCount: 1, firstVertex: 0, firstInstance: 0);
             }
         }
 

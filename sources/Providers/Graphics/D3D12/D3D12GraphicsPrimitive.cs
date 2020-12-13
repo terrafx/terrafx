@@ -19,8 +19,8 @@ namespace TerraFX.Graphics.Providers.D3D12
         private ValueLazy<Pointer<ID3D12DescriptorHeap>> _d3d12CbvSrvUavDescriptorHeap;
         private State _state;
 
-        internal D3D12GraphicsPrimitive(D3D12GraphicsDevice device, D3D12GraphicsPipeline pipeline, in GraphicsMemoryRegion<IGraphicsResource> vertexBufferRegion, in GraphicsMemoryRegion<IGraphicsResource> indexBufferRegion, ReadOnlySpan<GraphicsMemoryRegion<IGraphicsResource>> inputResourceRegion)
-            : base(device, pipeline, in vertexBufferRegion, in indexBufferRegion, inputResourceRegion)
+        internal D3D12GraphicsPrimitive(D3D12GraphicsDevice device, D3D12GraphicsPipeline pipeline, in GraphicsMemoryRegion<GraphicsResource> vertexBufferRegion, uint vertexBufferStride, in GraphicsMemoryRegion<GraphicsResource> indexBufferRegion, uint indexBufferStride, ReadOnlySpan<GraphicsMemoryRegion<GraphicsResource>> inputResourceRegion)
+            : base(device, pipeline, in vertexBufferRegion, vertexBufferStride, in indexBufferRegion, indexBufferStride, inputResourceRegion)
         {
             _d3d12CbvSrvUavDescriptorHeap = new ValueLazy<Pointer<ID3D12DescriptorHeap>>(CreateD3D12CbvSrvUavDescriptorHeap);
             _ = _state.Transition(to: Initialized);
@@ -52,11 +52,11 @@ namespace TerraFX.Graphics.Providers.D3D12
 
                 foreach (var inputResourceRegion in InputResourceRegions)
                 {
-                    inputResourceRegion.Parent.Free(in inputResourceRegion);
+                    inputResourceRegion.Collection.Free(in inputResourceRegion);
                 }
 
-                VertexBufferRegion.Parent?.Dispose();
-                IndexBufferRegion.Parent?.Dispose();
+                VertexBufferRegion.Collection?.Dispose();
+                IndexBufferRegion.Collection?.Dispose();
             }
 
             _state.EndDispose();
@@ -75,7 +75,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             {
                 var inputResource = inputResourceRegions[index];
 
-                if (inputResource.Parent is not ID3D12GraphicsTexture)
+                if (inputResource.Collection is not D3D12GraphicsTexture)
                 {
                     continue;
                 }
@@ -101,7 +101,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             {
                 var inputResourceRegion = inputResourceRegions[index];
 
-                if (inputResourceRegion.Parent is not ID3D12GraphicsTexture graphicsTexture)
+                if (inputResourceRegion.Collection is not D3D12GraphicsTexture graphicsTexture)
                 {
                     continue;
                 }

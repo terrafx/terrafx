@@ -139,7 +139,7 @@ namespace TerraFX.UI.Providers.Xlib
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="IsActive" /> was <c>false</c> but the instance has already been disposed.</exception>
         public override void Activate()
-            => ThrowExternalExceptionIfFalse(TryActivate(), nameof(XRaiseWindow));
+            => ThrowExternalExceptionIf(TryActivate() == false, nameof(XRaiseWindow));
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
@@ -219,11 +219,13 @@ namespace TerraFX.UI.Providers.Xlib
             {
                 var dispatchProvider = XlibDispatchProvider.Instance;
 
-                ThrowExternalExceptionIfZero(XWithdrawWindow(
+                var status = XWithdrawWindow(
                     dispatchProvider.Display,
                     Handle,
                     XScreenNumberOfScreen(dispatchProvider.DefaultScreen)
-                ), nameof(XWithdrawWindow));
+                );
+
+                ThrowExternalExceptionIf(status == 0, nameof(XWithdrawWindow));
             }
         }
 
@@ -290,11 +292,13 @@ namespace TerraFX.UI.Providers.Xlib
                     ShowWindow(display, window, IconicState);
                 }
 
-                ThrowExternalExceptionIfZero(XIconifyWindow(
+                var status = XIconifyWindow(
                     display,
                     window,
                     XScreenNumberOfScreen(dispatchProvider.DefaultScreen)
-                ), nameof(XIconifyWindow));
+                );
+
+                ThrowExternalExceptionIf(status == 0, nameof(XIconifyWindow));
             }
         }
 
@@ -640,7 +644,7 @@ namespace TerraFX.UI.Providers.Xlib
                 0,
                 null
             );
-            ThrowExternalExceptionIfZero(window, nameof(XCreateWindow));
+            ThrowExternalExceptionIf(window == 0, nameof(XCreateWindow));
 
             _ = XSelectInput(
                 display,
@@ -654,7 +658,8 @@ namespace TerraFX.UI.Providers.Xlib
                 dispatchProvider.GetAtom(WM_DELETE_WINDOW)
             };
 
-            ThrowExternalExceptionIfZero(XSetWMProtocols(display, window, wmProtocols, WmProtocolCount), nameof(XSetWMProtocols));
+            var status = XSetWMProtocols(display, window, wmProtocols, WmProtocolCount);
+            ThrowExternalExceptionIf(status == 0, nameof(XSetWMProtocols));
 
             var gcHandle = GCHandle.Alloc(this, GCHandleType.Normal);
             var gcHandlePtr = (nuint)(nint)GCHandle.ToIntPtr(gcHandle);
@@ -746,7 +751,7 @@ namespace TerraFX.UI.Providers.Xlib
 
                 nuint child;
 
-                ThrowExternalExceptionIfZero(XTranslateCoordinates(
+                var status = XTranslateCoordinates(
                     xconfigure->display,
                     xconfigure->window,
                     XlibDispatchProvider.Instance.DefaultRootWindow,
@@ -755,7 +760,9 @@ namespace TerraFX.UI.Providers.Xlib
                     &xconfigure->x,
                     &xconfigure->y,
                     &child
-                ), nameof(XTranslateCoordinates));
+                );
+
+                ThrowExternalExceptionIf(status == 0, nameof(XTranslateCoordinates));
             }
 
             var currentClientLocation = new Vector2(xconfigure->x, xconfigure->y);

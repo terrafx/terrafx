@@ -149,14 +149,14 @@ namespace TerraFX.Graphics.Providers.Vulkan
         }
 
         /// <inheritdoc />
-        public override VulkanGraphicsPrimitive CreatePrimitive(GraphicsPipeline pipeline, in GraphicsMemoryRegion<IGraphicsResource> vertexBufferView, in GraphicsMemoryRegion<IGraphicsResource> indexBufferView = default, ReadOnlySpan<GraphicsMemoryRegion<IGraphicsResource>> inputResourceRegions = default)
-            => CreatePrimitive((VulkanGraphicsPipeline)pipeline, in vertexBufferView, in indexBufferView, inputResourceRegions);
+        public override VulkanGraphicsPrimitive CreatePrimitive(GraphicsPipeline pipeline, in GraphicsMemoryRegion<GraphicsResource> vertexBufferView, uint vertexBufferStride, in GraphicsMemoryRegion<GraphicsResource> indexBufferView = default, uint indexBufferStride = 0, ReadOnlySpan<GraphicsMemoryRegion<GraphicsResource>> inputResourceRegions = default)
+            => CreatePrimitive((VulkanGraphicsPipeline)pipeline, in vertexBufferView, vertexBufferStride, in indexBufferView, indexBufferStride, inputResourceRegions);
 
-        /// <inheritdoc cref="CreatePrimitive(GraphicsPipeline, in GraphicsMemoryRegion{IGraphicsResource}, in GraphicsMemoryRegion{IGraphicsResource}, ReadOnlySpan{GraphicsMemoryRegion{IGraphicsResource}})" />
-        public VulkanGraphicsPrimitive CreatePrimitive(VulkanGraphicsPipeline pipeline, in GraphicsMemoryRegion<IGraphicsResource> vertexBufferView, in GraphicsMemoryRegion<IGraphicsResource> indexBufferView, ReadOnlySpan<GraphicsMemoryRegion<IGraphicsResource>> inputResourceRegions)
+        /// <inheritdoc cref="CreatePrimitive(GraphicsPipeline, in GraphicsMemoryRegion{GraphicsResource}, uint, in GraphicsMemoryRegion{GraphicsResource}, uint, ReadOnlySpan{GraphicsMemoryRegion{GraphicsResource}})" />
+        public VulkanGraphicsPrimitive CreatePrimitive(VulkanGraphicsPipeline pipeline, in GraphicsMemoryRegion<GraphicsResource> vertexBufferView, uint vertexBufferStride, in GraphicsMemoryRegion<GraphicsResource> indexBufferView, uint indexBufferStride, ReadOnlySpan<GraphicsMemoryRegion<GraphicsResource>> inputResourceRegions)
         {
             _state.ThrowIfDisposedOrDisposing();
-            return new VulkanGraphicsPrimitive(this, pipeline, in vertexBufferView, in indexBufferView, inputResourceRegions);
+            return new VulkanGraphicsPrimitive(this, pipeline, in vertexBufferView, vertexBufferStride, in indexBufferView, indexBufferStride, inputResourceRegions);
         }
 
         /// <inheritdoc />
@@ -241,7 +241,10 @@ namespace TerraFX.Graphics.Providers.Vulkan
         }
 
         private VulkanGraphicsMemoryAllocator CreateMemoryAllocator()
-            => new VulkanGraphicsMemoryAllocator(this, blockPreferredSize: 0);
+        {
+            var allocatorSettings = default(GraphicsMemoryAllocatorSettings);
+            return new VulkanGraphicsMemoryAllocator(this, in allocatorSettings);
+        }
 
         private VkDevice CreateVulkanDevice()
         {

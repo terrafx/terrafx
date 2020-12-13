@@ -12,8 +12,8 @@ namespace TerraFX.Samples.Graphics
     public sealed class HelloQuad : HelloWindow
     {
         private GraphicsPrimitive _quadPrimitive = null!;
-        private IGraphicsBuffer _indexBuffer = null!;
-        private IGraphicsBuffer _vertexBuffer = null!;
+        private GraphicsBuffer _indexBuffer = null!;
+        private GraphicsBuffer _vertexBuffer = null!;
 
         public HelloQuad(string name, params Assembly[] compositionAssemblies)
             : base(name, compositionAssemblies)
@@ -55,7 +55,7 @@ namespace TerraFX.Samples.Graphics
             base.Draw(graphicsContext);
         }
 
-        private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsContext graphicsContext, IGraphicsBuffer vertexStagingBuffer, IGraphicsBuffer indexStagingBuffer)
+        private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer indexStagingBuffer)
         {
             var graphicsDevice = GraphicsDevice;
             var graphicsSurface = graphicsDevice.Surface;
@@ -71,11 +71,11 @@ namespace TerraFX.Samples.Graphics
             var indexBufferRegion = CreateIndexBufferRegion(graphicsContext, indexBuffer, indexStagingBuffer);
             graphicsContext.Copy(indexBuffer, indexStagingBuffer);
 
-            return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion, indexBufferRegion);
+            return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion, SizeOf<IdentityVertex>(), indexBufferRegion, SizeOf<ushort>());
 
-            static GraphicsMemoryRegion<IGraphicsResource> CreateIndexBufferRegion(GraphicsContext graphicsContext, IGraphicsBuffer indexBuffer, IGraphicsBuffer indexStagingBuffer)
+            static GraphicsMemoryRegion<GraphicsResource> CreateIndexBufferRegion(GraphicsContext graphicsContext, GraphicsBuffer indexBuffer, GraphicsBuffer indexStagingBuffer)
             {
-                var indexBufferRegion = indexBuffer.Allocate(SizeOf<ushort>() * 6, alignment: 2, stride: SizeOf<ushort>());
+                var indexBufferRegion = indexBuffer.Allocate(SizeOf<ushort>() * 6, alignment: 2);
                 var pIndexBuffer = indexStagingBuffer.Map<ushort>(in indexBufferRegion);
 
                 // clockwise when looking at the triangle from the outside
@@ -92,9 +92,9 @@ namespace TerraFX.Samples.Graphics
                 return indexBufferRegion;
             }
 
-            static GraphicsMemoryRegion<IGraphicsResource> CreateVertexBufferRegion(GraphicsContext graphicsContext, IGraphicsBuffer vertexBuffer, IGraphicsBuffer vertexStagingBuffer, float aspectRatio)
+            static GraphicsMemoryRegion<GraphicsResource> CreateVertexBufferRegion(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
             {
-                var vertexBufferRegion = vertexBuffer.Allocate(SizeOf<IdentityVertex>() * 4, alignment: 16, stride: SizeOf<IdentityVertex>());
+                var vertexBufferRegion = vertexBuffer.Allocate(SizeOf<IdentityVertex>() * 4, alignment: 16);
                 var pVertexBuffer = vertexStagingBuffer.Map<IdentityVertex>(in vertexBufferRegion);
 
                 pVertexBuffer[0] = new IdentityVertex {                         //

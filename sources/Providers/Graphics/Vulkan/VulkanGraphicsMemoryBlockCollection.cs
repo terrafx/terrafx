@@ -3,6 +3,8 @@
 // This file includes code based on the VmaBlockVector struct from https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator
 // The original code is Copyright © Advanced Micro Devices, Inc. All rights reserved. Licensed under the MIT License (MIT).
 
+using System;
+using System.Reflection;
 using TerraFX.Interop;
 
 namespace TerraFX.Graphics.Providers.Vulkan
@@ -12,8 +14,8 @@ namespace TerraFX.Graphics.Providers.Vulkan
     {
         private readonly uint _vulkanMemoryTypeIndex;
 
-        internal VulkanGraphicsMemoryBlockCollection(ulong blockMinimumSize, ulong blockPreferredSize, ulong blockMarginSize, ulong blockMinimumFreeRegionSizeToRegister, GraphicsMemoryAllocator allocator, nuint minimumBlockCount, nuint maximumBlockCount, uint memoryTypeIndex)
-            : base(blockMinimumSize, blockPreferredSize, blockMarginSize, blockMinimumFreeRegionSizeToRegister, allocator, minimumBlockCount, maximumBlockCount)
+        internal VulkanGraphicsMemoryBlockCollection(VulkanGraphicsMemoryAllocator allocator, uint memoryTypeIndex)
+            : base(allocator)
         {
             _vulkanMemoryTypeIndex = memoryTypeIndex;
         }
@@ -25,11 +27,13 @@ namespace TerraFX.Graphics.Providers.Vulkan
         public uint VulkanMemoryTypeIndex => _vulkanMemoryTypeIndex;
 
         /// <inheritdoc />
-        protected override VulkanGraphicsMemoryBlock<TMetadata> CreateBlock<TMetadata>(ulong size) => new VulkanGraphicsMemoryBlock<TMetadata>(
-            collection: this,
-            size,
-            BlockMarginSize,
-            BlockMinimumFreeRegionSizeToRegister
-        );
+        protected override VulkanGraphicsMemoryBlock CreateBlock(ulong size) => (VulkanGraphicsMemoryBlock)Activator.CreateInstance(
+            typeof(VulkanGraphicsMemoryBlock<>).MakeGenericType(Allocator.Settings.RegionCollectionMetadataType!),
+            bindingAttr: BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.CreateInstance,
+            binder: null,
+            args: new object[] { this, size },
+            culture: null,
+            activationAttributes: null
+        )!;
     }
 }

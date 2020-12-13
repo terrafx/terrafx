@@ -122,15 +122,15 @@ namespace TerraFX.Graphics.Providers.D3D12
         }
 
         /// <inheritdoc />
-        public override void Copy(IGraphicsBuffer destination, IGraphicsBuffer source)
-            => Copy((ID3D12GraphicsBuffer)destination, (ID3D12GraphicsBuffer)source);
+        public override void Copy(GraphicsBuffer destination, GraphicsBuffer source)
+            => Copy((D3D12GraphicsBuffer)destination, (D3D12GraphicsBuffer)source);
 
         /// <inheritdoc />
-        public override void Copy(IGraphicsTexture destination, IGraphicsBuffer source)
-            => Copy((ID3D12GraphicsTexture)destination, (ID3D12GraphicsBuffer)source);
+        public override void Copy(GraphicsTexture destination, GraphicsBuffer source)
+            => Copy((D3D12GraphicsTexture)destination, (D3D12GraphicsBuffer)source);
 
-        /// <inheritdoc cref="Copy(IGraphicsBuffer, IGraphicsBuffer)" />
-        public void Copy(ID3D12GraphicsBuffer destination, ID3D12GraphicsBuffer source)
+        /// <inheritdoc cref="Copy(GraphicsBuffer, GraphicsBuffer)" />
+        public void Copy(D3D12GraphicsBuffer destination, D3D12GraphicsBuffer source)
         {
             ThrowIfNull(destination, nameof(destination));
             ThrowIfNull(source, nameof(source));
@@ -215,8 +215,8 @@ namespace TerraFX.Graphics.Providers.D3D12
             }
         }
 
-        /// <inheritdoc cref="Copy(IGraphicsTexture, IGraphicsBuffer)" />
-        public void Copy(ID3D12GraphicsTexture destination, ID3D12GraphicsBuffer source)
+        /// <inheritdoc cref="Copy(GraphicsTexture, GraphicsBuffer)" />
+        public void Copy(D3D12GraphicsTexture destination, D3D12GraphicsBuffer source)
         {
             ThrowIfNull(destination, nameof(destination));
             ThrowIfNull(source, nameof(source));
@@ -331,11 +331,11 @@ namespace TerraFX.Graphics.Providers.D3D12
             commandList->SetDescriptorHeaps(1, descriptorHeaps);
 
             ref readonly var vertexBufferRegion = ref primitive.VertexBufferRegion;
-            var vertexBuffer = (ID3D12GraphicsBuffer)vertexBufferRegion.Parent;
+            var vertexBuffer = (D3D12GraphicsBuffer)vertexBufferRegion.Collection;
 
             var d3d12VertexBufferView = new D3D12_VERTEX_BUFFER_VIEW {
                 BufferLocation = vertexBuffer.D3D12Resource->GetGPUVirtualAddress() + vertexBufferRegion.Offset,
-                StrideInBytes = vertexBufferRegion.Stride,
+                StrideInBytes = primitive.VertexBufferStride,
                 SizeInBytes = (uint)vertexBufferRegion.Size,
             };
             commandList->IASetVertexBuffers(StartSlot: 0, NumViews: 1, &d3d12VertexBufferView);
@@ -350,12 +350,12 @@ namespace TerraFX.Graphics.Providers.D3D12
             {
                 var inputResourceRegion = inputResourceRegions[index];
 
-                if (inputResourceRegion.Parent is ID3D12GraphicsBuffer d3d12GraphicsBuffer)
+                if (inputResourceRegion.Collection is D3D12GraphicsBuffer d3d12GraphicsBuffer)
                 {
                     var gpuVirtualAddress = d3d12GraphicsBuffer.D3D12Resource->GetGPUVirtualAddress();
                     commandList->SetGraphicsRootConstantBufferView(unchecked((uint)index), gpuVirtualAddress + inputResourceRegion.Offset);
                 }
-                else if (inputResourceRegion.Parent is ID3D12GraphicsTexture d3d12GraphicsTexture)
+                else if (inputResourceRegion.Collection is D3D12GraphicsTexture d3d12GraphicsTexture)
                 {
                     var gpuDescriptorHandleForHeapStart = primitive.D3D12CbvSrvUavDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
                     commandList->SetGraphicsRootDescriptorTable(unchecked((uint)index), gpuDescriptorHandleForHeapStart.Offset(rootDescriptorTableIndex, cbvSrvUavDescriptorHandleIncrementSize));
@@ -365,9 +365,9 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             ref readonly var indexBufferRegion = ref primitive.IndexBufferRegion;
 
-            if (indexBufferRegion.Parent is ID3D12GraphicsBuffer indexBuffer)
+            if (indexBufferRegion.Collection is D3D12GraphicsBuffer indexBuffer)
             {
-                var indexBufferStride = indexBufferRegion.Stride;
+                var indexBufferStride = primitive.IndexBufferStride;
                 var indexFormat = DXGI_FORMAT_R16_UINT;
 
                 if (indexBufferStride != 2)
@@ -387,7 +387,7 @@ namespace TerraFX.Graphics.Providers.D3D12
             }
             else
             {
-                commandList->DrawInstanced(VertexCountPerInstance: (uint)(vertexBufferRegion.Size / vertexBufferRegion.Stride), InstanceCount: 1, StartVertexLocation: 0, StartInstanceLocation: 0);
+                commandList->DrawInstanced(VertexCountPerInstance: (uint)(vertexBufferRegion.Size / primitive.VertexBufferStride), InstanceCount: 1, StartVertexLocation: 0, StartInstanceLocation: 0);
             }
         }
 

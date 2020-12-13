@@ -13,17 +13,15 @@ using static TerraFX.Utilities.State;
 namespace TerraFX.Graphics.Providers.Vulkan
 {
     /// <inheritdoc />
-    public sealed unsafe class VulkanGraphicsMemoryBlock<TMetadata> : GraphicsMemoryBlock<TMetadata>, IVulkanGraphicsMemoryBlock
-        where TMetadata : struct, IGraphicsMemoryRegionCollection<IGraphicsMemoryBlock>.IMetadata
+    public abstract unsafe class VulkanGraphicsMemoryBlock : GraphicsMemoryBlock
     {
         private ValueLazy<VkDeviceMemory> _vulkanDeviceMemory;
-        private State _state;
+        private protected State _state;
 
-        internal VulkanGraphicsMemoryBlock(VulkanGraphicsMemoryBlockCollection collection, ulong size, ulong marginSize, ulong minimumFreeRegionSizeToRegister)
-            : base(collection, size, marginSize, minimumFreeRegionSizeToRegister)
+        private protected VulkanGraphicsMemoryBlock(VulkanGraphicsMemoryBlockCollection collection)
+            : base(collection)
         {
             _vulkanDeviceMemory = new ValueLazy<VkDeviceMemory>(CreateVulkanDeviceMemory);
-            _ = _state.Transition(to: Initialized);
         }
 
         /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsMemoryBlock{TMetadata}" /> class.</summary>
@@ -32,7 +30,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <summary>Gets the <see cref="VkDeviceMemory" /> for the memory block.</summary>
         public VkDeviceMemory VulkanDeviceMemory => _vulkanDeviceMemory.Value;
 
-        /// <inheritdoc cref="IGraphicsMemoryBlock.Collection" />
+        /// <inheritdoc cref="GraphicsMemoryBlock.Collection" />
         public new VulkanGraphicsMemoryBlockCollection Collection => (VulkanGraphicsMemoryBlockCollection)base.Collection;
 
         /// <inheritdoc />

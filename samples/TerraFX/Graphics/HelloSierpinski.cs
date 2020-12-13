@@ -16,9 +16,9 @@ namespace TerraFX.Samples.Graphics
         private readonly SierpinskiShape _sierpinskiShape;
 
         private GraphicsPrimitive _pyramid = null!;
-        private IGraphicsBuffer _constantBuffer = null!;
-        private IGraphicsBuffer _indexBuffer = null!;
-        private IGraphicsBuffer _vertexBuffer = null!;
+        private GraphicsBuffer _constantBuffer = null!;
+        private GraphicsBuffer _indexBuffer = null!;
+        private GraphicsBuffer _vertexBuffer = null!;
         private float _texturePosition;
 
         public HelloSierpinski(string name, int recursionDepth, SierpinskiShape shape, params Assembly[] compositionAssemblies)
@@ -99,7 +99,7 @@ namespace TerraFX.Samples.Graphics
             base.Draw(graphicsContext);
         }
 
-        private unsafe GraphicsPrimitive CreateGraphicsPrimitive(GraphicsContext graphicsContext, IGraphicsBuffer vertexStagingBuffer, IGraphicsBuffer indexStagingBuffer, IGraphicsBuffer textureStagingBuffer)
+        private unsafe GraphicsPrimitive CreateGraphicsPrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer indexStagingBuffer, GraphicsBuffer textureStagingBuffer)
         {
             var graphicsDevice = GraphicsDevice;
             var graphicsSurface = graphicsDevice.Surface;
@@ -119,16 +119,16 @@ namespace TerraFX.Samples.Graphics
             var indexBufferRegion = CreateIndexBufferRegion(graphicsContext, indexBuffer, indexStagingBuffer, indices);
             graphicsContext.Copy(indexBuffer, indexStagingBuffer);
 
-            var inputResourceRegions = new GraphicsMemoryRegion<IGraphicsResource>[3] {
+            var inputResourceRegions = new GraphicsMemoryRegion<GraphicsResource>[3] {
                 CreateConstantBufferRegion(graphicsContext, constantBuffer),
                 CreateConstantBufferRegion(graphicsContext, constantBuffer),
                 CreateTexture3DRegion(graphicsContext, textureStagingBuffer),
             };
-            return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion, indexBufferRegion, inputResourceRegions);
+            return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion, SizeOf<PosNormTex3DVertex>(), indexBufferRegion, SizeOf<uint>(), inputResourceRegions);
 
-            static GraphicsMemoryRegion<IGraphicsResource> CreateConstantBufferRegion(GraphicsContext graphicsContext, IGraphicsBuffer constantBuffer)
+            static GraphicsMemoryRegion<GraphicsResource> CreateConstantBufferRegion(GraphicsContext graphicsContext, GraphicsBuffer constantBuffer)
             {
-                var constantBufferRegion = constantBuffer.Allocate(SizeOf<Matrix4x4>(), alignment: 256, stride: SizeOf<Matrix4x4>());
+                var constantBufferRegion = constantBuffer.Allocate(SizeOf<Matrix4x4>(), alignment: 256);
                 var pConstantBuffer = constantBuffer.Map<Matrix4x4>(in constantBufferRegion);
 
                 pConstantBuffer[0] = Matrix4x4.Identity;
@@ -137,9 +137,9 @@ namespace TerraFX.Samples.Graphics
                 return constantBufferRegion;
             }
 
-            static GraphicsMemoryRegion<IGraphicsResource> CreateIndexBufferRegion(GraphicsContext graphicsContext, IGraphicsBuffer indexBuffer, IGraphicsBuffer indexStagingBuffer, List<uint> indices)
+            static GraphicsMemoryRegion<GraphicsResource> CreateIndexBufferRegion(GraphicsContext graphicsContext, GraphicsBuffer indexBuffer, GraphicsBuffer indexStagingBuffer, List<uint> indices)
             {
-                var indexBufferRegion = indexBuffer.Allocate(SizeOf<uint>() * (uint)indices.Count, alignment: 4, stride: SizeOf<uint>());
+                var indexBufferRegion = indexBuffer.Allocate(SizeOf<uint>() * (uint)indices.Count, alignment: 4);
                 var pIndexBuffer = indexStagingBuffer.Map<uint>(in indexBufferRegion);
 
                 for (var i = 0; i < indices.Count; i++)
@@ -151,7 +151,7 @@ namespace TerraFX.Samples.Graphics
                 return indexBufferRegion;
             }
 
-            static GraphicsMemoryRegion<IGraphicsResource> CreateTexture3DRegion(GraphicsContext graphicsContext, IGraphicsBuffer textureStagingBuffer)
+            static GraphicsMemoryRegion<GraphicsResource> CreateTexture3DRegion(GraphicsContext graphicsContext, GraphicsBuffer textureStagingBuffer)
             {
                 const uint TextureWidth = 256;
                 const uint TextureHeight = 256;
@@ -160,7 +160,7 @@ namespace TerraFX.Samples.Graphics
                 const uint TexturePixels = TextureDz * TextureDepth;
 
                 var texture3D = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.ThreeDimensional, GraphicsResourceCpuAccess.None, TextureWidth, TextureHeight, TextureDepth);
-                var texture3DRegion = texture3D.Allocate(texture3D.Size, alignment: 4, stride: sizeof(uint));
+                var texture3DRegion = texture3D.Allocate(texture3D.Size, alignment: 4);
                 var pTextureData = textureStagingBuffer.Map<uint>(in texture3DRegion);
 
                 for (uint n = 0; n < TexturePixels; n++)
@@ -178,9 +178,9 @@ namespace TerraFX.Samples.Graphics
                 return texture3DRegion;
             }
 
-            static GraphicsMemoryRegion<IGraphicsResource> CreateVertexBufferRegion(GraphicsContext graphicsContext, IGraphicsBuffer vertexBuffer, IGraphicsBuffer vertexStagingBuffer, List<Vector3> vertices, List<Vector3> normals)
+            static GraphicsMemoryRegion<GraphicsResource> CreateVertexBufferRegion(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer vertexStagingBuffer, List<Vector3> vertices, List<Vector3> normals)
             {
-                var vertexBufferRegion = vertexBuffer.Allocate(SizeOf<PosNormTex3DVertex>() * (uint)vertices.Count, alignment: 16, stride: SizeOf<PosNormTex3DVertex>());
+                var vertexBufferRegion = vertexBuffer.Allocate(SizeOf<PosNormTex3DVertex>() * (uint)vertices.Count, alignment: 16);
                 var pVertexBuffer = vertexStagingBuffer.Map<PosNormTex3DVertex>(in vertexBufferRegion);
 
                 // assumes the vertices are in a box from (-1,-1,-1) to (1,1,1)

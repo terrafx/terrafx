@@ -12,8 +12,8 @@ namespace TerraFX.Samples.Graphics
     public sealed class HelloTransform : HelloWindow
     {
         private GraphicsPrimitive _trianglePrimitive = null!;
-        private IGraphicsBuffer _constantBuffer = null!;
-        private IGraphicsBuffer _vertexBuffer = null!;
+        private GraphicsBuffer _constantBuffer = null!;
+        private GraphicsBuffer _vertexBuffer = null!;
         private float _trianglePrimitiveTranslationX;
 
         public HelloTransform(string name, params Assembly[] compositionAssemblies)
@@ -83,7 +83,7 @@ namespace TerraFX.Samples.Graphics
             constantBuffer.UnmapAndWrite(in constantBufferRegion);
         }
 
-        private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext, IGraphicsBuffer vertexStagingBuffer)
+        private unsafe GraphicsPrimitive CreateTrianglePrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer)
         {
             var graphicsDevice = GraphicsDevice;
             var graphicsSurface = graphicsDevice.Surface;
@@ -96,15 +96,15 @@ namespace TerraFX.Samples.Graphics
             var vertexBufferRegion = CreateVertexBufferRegion(graphicsContext, vertexBuffer, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
             graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
 
-            var inputResourceRegions = new GraphicsMemoryRegion<IGraphicsResource>[2] {
+            var inputResourceRegions = new GraphicsMemoryRegion<GraphicsResource>[2] {
                 CreateConstantBufferRegion(graphicsContext, constantBuffer),
                 CreateConstantBufferRegion(graphicsContext, constantBuffer),
             };
-            return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion, indexBufferRegion: default, inputResourceRegions);
+            return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion, SizeOf<IdentityVertex>(), inputResourceRegions: inputResourceRegions);
 
-            static GraphicsMemoryRegion<IGraphicsResource> CreateConstantBufferRegion(GraphicsContext graphicsContext, IGraphicsBuffer constantBuffer)
+            static GraphicsMemoryRegion<GraphicsResource> CreateConstantBufferRegion(GraphicsContext graphicsContext, GraphicsBuffer constantBuffer)
             {
-                var constantBufferRegion = constantBuffer.Allocate(SizeOf<Matrix4x4>(), alignment: 256, stride: SizeOf<Matrix4x4>());
+                var constantBufferRegion = constantBuffer.Allocate(SizeOf<Matrix4x4>(), alignment: 256);
                 var pConstantBuffer = constantBuffer.Map<Matrix4x4>(in constantBufferRegion);
 
                 pConstantBuffer[0] = Matrix4x4.Identity;
@@ -113,9 +113,9 @@ namespace TerraFX.Samples.Graphics
                 return constantBufferRegion;
             }
 
-            static GraphicsMemoryRegion<IGraphicsResource> CreateVertexBufferRegion(GraphicsContext graphicsContext, IGraphicsBuffer vertexBuffer, IGraphicsBuffer vertexStagingBuffer, float aspectRatio)
+            static GraphicsMemoryRegion<GraphicsResource> CreateVertexBufferRegion(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
             {
-                var vertexBufferRegion = vertexBuffer.Allocate(SizeOf<IdentityVertex>() * 3, alignment: 16, stride: SizeOf<IdentityVertex>());
+                var vertexBufferRegion = vertexBuffer.Allocate(SizeOf<IdentityVertex>() * 3, alignment: 16);
                 var pVertexBuffer = vertexStagingBuffer.Map<IdentityVertex>(in vertexBufferRegion);
 
                 pVertexBuffer[0] = new IdentityVertex {

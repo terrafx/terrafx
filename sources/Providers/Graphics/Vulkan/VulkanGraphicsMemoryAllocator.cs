@@ -4,6 +4,7 @@
 // The original code is Copyright © Advanced Micro Devices, Inc. All rights reserved. Licensed under the MIT License (MIT).
 
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 using TerraFX.Interop;
 using TerraFX.Utilities;
@@ -24,24 +25,15 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private readonly VulkanGraphicsMemoryBlockCollection[] _blockCollections;
         private State _state;
 
-        internal VulkanGraphicsMemoryAllocator(VulkanGraphicsDevice device, ulong blockPreferredSize)
-            : base(device, blockPreferredSize)
+        internal VulkanGraphicsMemoryAllocator(VulkanGraphicsDevice device, in GraphicsMemoryAllocatorSettings settings)
+            : base(device, in settings)
         {
-            blockPreferredSize = BlockPreferredSize;
-
-            var blockMinimumSize = blockPreferredSize >> 3;
-
-            if (blockMinimumSize == 0)
-            {
-                blockMinimumSize = blockPreferredSize;
-            }
-
             var memoryTypeCount = Device.Adapter.VulkanPhysicalDeviceMemoryProperties.memoryTypeCount;
             _blockCollections = new VulkanGraphicsMemoryBlockCollection[memoryTypeCount];
 
             for (uint memoryTypeIndex = 0; memoryTypeIndex < memoryTypeCount; memoryTypeIndex++)
             {
-                _blockCollections[memoryTypeIndex] = new VulkanGraphicsMemoryBlockCollection(blockMinimumSize, blockPreferredSize, BlockMarginSize, BlockMinimumFreeRegionSizeToRegister, this, minimumBlockCount: 0, maximumBlockCount: nuint.MaxValue, memoryTypeIndex);
+                _blockCollections[memoryTypeIndex] = new VulkanGraphicsMemoryBlockCollection(this, memoryTypeIndex);
             }
 
             // TODO: UpdateBudget
@@ -51,11 +43,14 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <summary>Finalizes an instance of the <see cref="VulkanGraphicsMemoryAllocator" /> class.</summary>
         ~VulkanGraphicsMemoryAllocator() => Dispose(isDisposing: true);
 
+        /// <inheritdoc />
+        public override int Count => _blockCollections.Length;
+
         /// <inheritdoc cref="GraphicsMemoryAllocator.Device" />
         public new VulkanGraphicsDevice Device => (VulkanGraphicsDevice)base.Device;
 
         /// <inheritdoc />
-        public override VulkanGraphicsBuffer<TMetadata> CreateBuffer<TMetadata>(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess, ulong size, ulong alignment = 0, GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None)
+        public override VulkanGraphicsBuffer<TMetadata> CreateBuffer<TMetadata>(GraphicsBufferKind kind, GraphicsResourceCpuAccess cpuAccess, ulong size, GraphicsMemoryRegionAllocationFlags allocationFlags = GraphicsMemoryRegionAllocationFlags.None)
         {
             var vulkanDevice = Device.VulkanDevice;
 
@@ -74,12 +69,12 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var index = GetBlockCollectionIndex(cpuAccess, memoryRequirements.memoryTypeBits);
             ref readonly var blockCollection = ref _blockCollections[index];
 
-            var memoryBlockRegion = blockCollection.Allocate(memoryRequirements.size, memoryRequirements.alignment, allocationFlags);
-            return new VulkanGraphicsBuffer<TMetadata>(kind, cpuAccess, in memoryBlockRegion, vulkanBuffer);
+            var blockRegion = blockCollection.Allocate(memoryRequirements.size, memoryRequirements.alignment, allocationFlags);
+            return new VulkanGraphicsBuffer<TMetadata>(kind, in blockRegion, cpuAccess, vulkanBuffer);
         }
 
         /// <inheritdoc />
-        public override VulkanGraphicsTexture<TMetadata> CreateTexture<TMetadata>(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, ulong alignment = 0, GraphicsMemoryAllocationFlags allocationFlags = GraphicsMemoryAllocationFlags.None, TexelFormat texelFormat = default)
+        public override VulkanGraphicsTexture<TMetadata> CreateTexture<TMetadata>(GraphicsTextureKind kind, GraphicsResourceCpuAccess cpuAccess, uint width, uint height = 1, ushort depth = 1, GraphicsMemoryRegionAllocationFlags allocationFlags = GraphicsMemoryRegionAllocationFlags.None, TexelFormat texelFormat = default)
         {
             var vulkanDevice = Device.VulkanDevice;
 
@@ -112,15 +107,23 @@ namespace TerraFX.Graphics.Providers.Vulkan
             var index = GetBlockCollectionIndex(cpuAccess, memoryRequirements.memoryTypeBits);
             ref readonly var blockCollection = ref _blockCollections[index];
 
-            var memoryBlockRegion = blockCollection.Allocate(memoryRequirements.size, memoryRequirements.alignment, allocationFlags);
-            return new VulkanGraphicsTexture<TMetadata>(kind, cpuAccess, in memoryBlockRegion, width, height, depth, vulkanImage);
+            var blockRegion = blockCollection.Allocate(memoryRequirements.size, memoryRequirements.alignment, allocationFlags);
+            return new VulkanGraphicsTexture<TMetadata>(kind, in blockRegion, cpuAccess, width, height, depth, vulkanImage);
         }
 
         /// <inheritdoc />
         public override void GetBudget(GraphicsMemoryBlockCollection blockCollection, out GraphicsMemoryBudget budget) => GetBudget((VulkanGraphicsMemoryBlockCollection)blockCollection, out budget);
 
         /// <inheritdoc cref="GetBudget(GraphicsMemoryBlockCollection, out GraphicsMemoryBudget)" />
-        public void GetBudget(VulkanGraphicsMemoryBlockCollection blockCollection, out GraphicsMemoryBudget budget) => budget = new GraphicsMemoryBudget(estimatedBudget: ulong.MaxValue, estimatedUsage: 0, totalAllocatedRegionSize: 0, totalBlockSize: 0);
+        public void GetBudget(VulkanGraphicsMemoryBlockCollection blockCollection, out GraphicsMemoryBudget budget) => budget = new GraphicsMemoryBudget {
+            EstimatedBudget = ulong.MaxValue,
+            EstimatedUsage = 0,
+            TotalAllocatedRegionSize = 0,
+            TotalBlockSize = 0,
+        };
+
+        /// <inheritdoc />
+        public override IEnumerator<VulkanGraphicsMemoryBlockCollection> GetEnumerator() => throw new NotImplementedException();
 
         /// <inheritdoc />
         protected override void Dispose(bool isDisposing)
