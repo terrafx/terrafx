@@ -12,6 +12,9 @@ namespace TerraFX.Numerics
         /// <summary>Defines the identity matrix.</summary>
         public static readonly Matrix3x3 Identity = new Matrix3x3(Vector3.UnitX, Vector3.UnitY, Vector3.UnitZ);
 
+        /// <summary>Defines the all zeros matrix.</summary>
+        public static readonly Matrix3x3 Zero = new Matrix3x3(Vector3.Zero, Vector3.Zero, Vector3.Zero);
+
         private readonly Vector3 _x;
         private readonly Vector3 _y;
         private readonly Vector3 _z;
@@ -58,6 +61,30 @@ namespace TerraFX.Numerics
                 || (left.Z != right.Z);
         }
 
+        /// <summary>Multiplies two <see cref="Matrix3x3" /> instances.</summary>
+        /// <param name="left">The <see cref="Matrix3x3" /> to multiply with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="Matrix3x3" /> to multiply with <paramref name="left" />.</param>
+        /// <returns>The matrix multiplication result.</returns>
+        public static Matrix3x3 operator *(Matrix3x3 left, Matrix3x3 right)
+        {
+            var transposed = Transpose(right);
+
+            return new Matrix3x3(
+                DotRows(left, transposed.X),
+                DotRows(left, transposed.Y),
+                DotRows(left, transposed.Z)
+            );
+
+            static Vector3 DotRows(Matrix3x3 left, Vector3 right)
+            {
+                return new Vector3(
+                    Vector3.Dot(left.X, right),
+                    Vector3.Dot(left.Y, right),
+                    Vector3.Dot(left.Z, right)
+                );
+            }
+        }
+
         /// <summary>Creates a new <see cref="Matrix3x3" /> instance with <see cref="X" /> set to the specified value.</summary>
         /// <param name="value">The new value of the x-dimension.</param>
         /// <returns>A new <see cref="Matrix3x3" /> instance with <see cref="X" /> set to <paramref name="value" />.</returns>
@@ -78,6 +105,19 @@ namespace TerraFX.Numerics
 
         /// <inheritdoc />
         public bool Equals(Matrix3x3 other) => this == other;
+
+        /// <summary>Tests if two <see cref="Matrix4x4" /> instances have sufficiently similar values to see them as equivalent.
+        /// Use this to compare values that might be affected by differences in rounding the least significant bits.</summary>
+        /// <param name="left">The left instance to compare.</param>
+        /// <param name="right">The right instance to compare.</param>
+        /// <param name="epsilon">The threshold below which they are sufficiently similar.</param>
+        /// <returns><c>True</c> if similar, <c>False</c> otherwise.</returns>
+        public static bool EqualEstimate(Matrix3x3 left, Matrix3x3 right, Matrix3x3 epsilon)
+        {
+            return Vector3.EqualEstimate(left.X, right.X, epsilon.X)
+                && Vector3.EqualEstimate(left.Y, right.Y, epsilon.Y)
+                && Vector3.EqualEstimate(left.Z, right.Z, epsilon.Z);
+        }
 
         /// <inheritdoc />
         public override int GetHashCode()
@@ -110,6 +150,17 @@ namespace TerraFX.Numerics
                 .Append(Z.ToString(format, formatProvider))
                 .Append('>')
                 .ToString();
+        }
+
+        /// <summary>Creates a transposed version of this <see cref="Matrix3x3" />.</summary>
+        /// <returns>The transposed <see cref="Matrix3x3" />.</returns>
+        public static Matrix3x3 Transpose(Matrix3x3 value)
+        {
+            return new Matrix3x3(
+                new Vector3(value.X.X, value.Y.X, value.Z.X),
+                new Vector3(value.X.Y, value.Y.Y, value.Z.Y),
+                new Vector3(value.X.Z, value.Y.Z, value.Z.Z)
+            );
         }
     }
 }
