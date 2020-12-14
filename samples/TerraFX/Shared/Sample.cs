@@ -60,7 +60,8 @@ namespace TerraFX.Samples
             GC.SuppressFinalize(this);
         }
 
-        public virtual void Initialize(Application application, TimeSpan timeout) {
+        public virtual void Initialize(Application application, TimeSpan timeout)
+        {
             _timeout = timeout;
             application.Idle += OnIdle;
         }

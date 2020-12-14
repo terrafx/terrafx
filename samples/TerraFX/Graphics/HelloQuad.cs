@@ -4,6 +4,7 @@ using System;
 using System.Reflection;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
+using TerraFX.Graphics.Geometry2D;
 using TerraFX.Numerics;
 using static TerraFX.Utilities.InteropUtilities;
 
@@ -28,9 +29,14 @@ namespace TerraFX.Samples.Graphics
             base.Cleanup();
         }
 
-        public override void Initialize(Application application, TimeSpan timeout)
+        /// <summary>Initializes the GUI for this sample.</summary>
+        /// <param name="application">The hosting <see cref="Application" />.</param>
+        /// <param name="timeout">The <see cref="TimeSpan" /> after which this sample should stop running.</param>
+        /// <param name="windowBounds">The <see cref="Rectangle" /> that defines the initial window bounds.
+        /// Note that it is a mix of outer window location and inner client rect size.</param>
+        public override void Initialize(Application application, TimeSpan timeout, Rectangle windowBounds = default)
         {
-            base.Initialize(application, timeout);
+            base.Initialize(application, timeout, windowBounds);
 
             var graphicsDevice = GraphicsDevice;
             var currentGraphicsContext = graphicsDevice.CurrentContext;

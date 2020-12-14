@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
+using TerraFX.Graphics.Geometry2D;
 using TerraFX.UI;
 using TerraFX.Utilities;
 
@@ -33,7 +34,17 @@ namespace TerraFX.Samples.Graphics
             base.Cleanup();
         }
 
-        public override void Initialize(Application application, TimeSpan timeout)
+        /// <summary>Initializes the GUI for this sample.</summary>
+        /// <param name="application">The hosting <see cref="Application" />.</param>
+        /// <param name="timeout">The <see cref="TimeSpan" /> after which this sample should stop running.</param>
+        public override void Initialize(Application application, TimeSpan timeout) => Initialize(application, timeout, windowBounds: default);
+
+        /// <summary>Initializes the GUI for this sample.</summary>
+        /// <param name="application">The hosting <see cref="Application" />.</param>
+        /// <param name="timeout">The <see cref="TimeSpan" /> after which this sample should stop running.</param>
+        /// <param name="windowBounds">The <see cref="Rectangle" /> that defines the initial window bounds.
+        /// Note that it is a mix of outer window location and inner client rect size.</param>
+        public virtual void Initialize(Application application, TimeSpan timeout, Rectangle windowBounds = default)
         {
             ExceptionUtilities.ThrowIfNull(application, nameof(application));
 
@@ -41,6 +52,11 @@ namespace TerraFX.Samples.Graphics
 
             _window = windowProvider.CreateWindow();
             _window.SetTitle(Name);
+            if (windowBounds != default)
+            {
+                _window.Relocate(windowBounds.Location);
+                _window.ResizeClient(windowBounds.Size);
+            }
             _window.Show();
 
             var graphicsProvider = application.GetService<GraphicsProvider>();

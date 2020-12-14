@@ -7,6 +7,8 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.ApplicationModel;
+using TerraFX.Graphics.Geometry2D;
+using TerraFX.Numerics;
 using TerraFX.Samples.Audio;
 using TerraFX.Samples.Graphics;
 
@@ -104,10 +106,17 @@ namespace TerraFX.Samples
             }
         }
 
-        private static void Run(Sample sample, TimeSpan timeout)
+        private static void Run(Sample sample, TimeSpan timeout, Rectangle windowBounds)
         {
             using var application = new Application(sample.CompositionAssemblies);
-            sample.Initialize(application, timeout);
+            if (sample is HelloWindow window)
+            {
+                window.Initialize(application, timeout, windowBounds);
+            }
+            else
+            {
+                sample.Initialize(application, timeout);
+            }
 
             application.Run();
             sample.Cleanup();
@@ -117,6 +126,35 @@ namespace TerraFX.Samples
         {
             var ranAnySamples = false;
 
+            // initial window bounds from the commandline. Either width+height or location x+y and width+height
+            var windowBounds = default(Rectangle);
+            if (args.Any((arg) => Matches(arg, "windowBounds")))
+            {
+                var argsList = args.ToList();
+                var index = argsList.IndexOf("windowBounds");
+                (float a, float b, float c, float d) = (-1, -1, -1, -1);
+                (var aOk, var bOk, var cOk, var dOk) = (false, false, false, false);
+                if (argsList.Count >= index + 2)
+                {
+                    aOk = float.TryParse(argsList[++index], out a);
+                    bOk = float.TryParse(argsList[++index], out b);
+                }
+                if (argsList.Count >= index + 2)
+                {
+                    cOk = float.TryParse(argsList[++index], out c);
+                    dOk = float.TryParse(argsList[++index], out d);
+                }
+                if (aOk && bOk && cOk && dOk)
+                {
+                    windowBounds = new Rectangle(a, b, c, d);
+                }
+                else if (aOk && bOk)
+                {
+                    windowBounds = new Rectangle(0, 0, c, d);
+                }
+            }
+
+
             if (args.Any((arg) => Matches(arg, "all")))
             {
                 var samples = s_samples;
@@ -124,7 +162,7 @@ namespace TerraFX.Samples
                 {
                     if (IsSupported(sample))
                     {
-                        RunSample(sample, TimeSpan.FromSeconds(2.5));
+                        RunSample(sample, TimeSpan.FromSeconds(2.5), windowBounds);
                         ranAnySamples = true;
                     }
                 }
@@ -132,17 +170,17 @@ namespace TerraFX.Samples
             else
             {
                 var samples = s_samples;
-            foreach (var arg in args)
-            {
-                    foreach (var sample in samples.Where((sample) => arg.Equals(sample.Name, StringComparison.OrdinalIgnoreCase)))
+                foreach (var arg in args)
                 {
-                    if (IsSupported(sample))
+                    foreach (var sample in samples.Where((sample) => arg.Equals(sample.Name, StringComparison.OrdinalIgnoreCase)))
                     {
-                            RunSample(sample, TimeSpan.MaxValue);
-                        ranAnySamples = true;
+                        if (IsSupported(sample))
+                        {
+                            RunSample(sample, TimeSpan.MaxValue, windowBounds);
+                            ranAnySamples = true;
+                        }
                     }
                 }
-            }
             }
 
             if (ranAnySamples == false)
@@ -151,10 +189,10 @@ namespace TerraFX.Samples
             }
         }
 
-        private static void RunSample(Sample sample, TimeSpan timeout)
+        private static void RunSample(Sample sample, TimeSpan timeout, Rectangle windowBounds)
         {
             Console.WriteLine($"Running: {sample.Name}");
-            var thread = new Thread(() => Run(sample, timeout));
+            var thread = new Thread(() => Run(sample, timeout, windowBounds));
 
             thread.Start();
             thread.Join();
