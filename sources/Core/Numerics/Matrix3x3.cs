@@ -154,12 +154,12 @@ namespace TerraFX.Numerics
 
         /// <summary>Creates a transposed version of this <see cref="Matrix3x3" />.</summary>
         /// <returns>The transposed <see cref="Matrix3x3" />.</returns>
-        public static Matrix3x3 Transpose(Matrix3x3 m)
+        public static Matrix3x3 Transpose(Matrix3x3 value)
         {
             return new Matrix3x3(
-                new Vector3(m.X.X, m.Y.X, m.Z.X),
-                new Vector3(m.X.Y, m.Y.Y, m.Z.Y),
-                new Vector3(m.X.Z, m.Y.Z, m.Z.Z)
+                new Vector3(value.X.X, value.Y.X, value.Z.X),
+                new Vector3(value.X.Y, value.Y.Y, value.Z.Y),
+                new Vector3(value.X.Z, value.Y.Z, value.Z.Z)
             );
         }
     }

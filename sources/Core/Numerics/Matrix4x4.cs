@@ -175,13 +175,13 @@ namespace TerraFX.Numerics
 
         /// <summary>Creates a transposed version of this <see cref="Matrix4x4" />.</summary>
         /// <returns>The transposed <see cref="Matrix4x4" />.</returns>
-        public static Matrix4x4 Transpose(Matrix4x4 m)
+        public static Matrix4x4 Transpose(Matrix4x4 value)
         {
             return new Matrix4x4(
-                new Vector4(m.X.X, m.Y.X, m.Z.X, m.W.X),
-                new Vector4(m.X.Y, m.Y.Y, m.Z.Y, m.W.Y),
-                new Vector4(m.X.Z, m.Y.Z, m.Z.Z, m.W.Z),
-                new Vector4(m.X.W, m.Y.W, m.Z.W, m.W.W)
+                new Vector4(value.X.X, value.Y.X, value.Z.X, value.W.X),
+                new Vector4(value.X.Y, value.Y.Y, value.Z.Y, value.W.Y),
+                new Vector4(value.X.Z, value.Y.Z, value.Z.Z, value.W.Z),
+                new Vector4(value.X.W, value.Y.W, value.Z.W, value.W.W)
             );
         }
     }

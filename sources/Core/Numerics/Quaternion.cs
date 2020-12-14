@@ -87,17 +87,32 @@ namespace TerraFX.Numerics
         /// <returns>The result of subtracting <paramref name="right" /> from <paramref name="left" />.</returns>
         public static Quaternion operator -(Quaternion left, Quaternion right) => new Quaternion(left._value - right._value);
 
-        /// <summary>Multiplies two specified <see cref="Quaternion" /> values. Is the same as <seealso cref="Quaternion.Concatenate" /> with reversed operand order.</summary>
+        /// <summary>Multiplies two specified <see cref="Quaternion" /> values.</summary>
         /// <param name="left">The first value to multiply.</param>
         /// <param name="right">The second value to multiply.</param>
         /// <returns>The result of multiplying <paramref name="left" /> by <paramref name="right" />.</returns>
-        public static Quaternion operator *(Quaternion left, Quaternion right) => Quaternion.Concatenate(right, left);
+        public static Quaternion operator *(Quaternion left, Quaternion right)
+        {
+            // from XMQuaternionMultiply at https://github.com/microsoft/DirectXMath/blob/master/Inc/DirectXMathMisc.inl#L82
+            // (r.x * +l.w) + (r.y * +l.z) + (r.z * -l.y) + (r.w * +l.x),
+            // (r.x * -l.z) + (r.y * +l.w) + (r.z * +l.x) + (r.w * +l.y),
+            // (r.x * +l.y) + (r.y * -l.x) + (r.z * +l.w) + (r.w * +l.z),
+            // (r.x * -l.x) + (r.y * -l.y) + (r.z * -l.z) + (r.w * +l.w)
 
-        /// <summary>Divides two specified <see cref="Quaternion" /> values component by component.</summary>
-        /// <param name="left">The dividend.</param>
-        /// <param name="right">The divisor.</param>
-        /// <returns>The result of dividing <paramref name="left" /> by <paramref name="right" />.</returns>
-        public static Quaternion operator /(Quaternion left, Quaternion right) => new Quaternion(left._value / right._value);
+            var resultQ = new Quaternion(
+                Quaternion.Dot(left, new Quaternion(+right.W, +right.Z, -right.Y, +right.X)),
+                Quaternion.Dot(left, new Quaternion(-right.Z, +right.W, +right.X, +right.Y)),
+                Quaternion.Dot(left, new Quaternion(+right.Y, -right.X, +right.W, +right.Z)),
+                Quaternion.Dot(left, new Quaternion(-right.X, -right.Y, -right.Z, +right.W))
+            );
+            return resultQ;
+        }
+
+    /// <summary>Divides two specified <see cref="Quaternion" /> values component by component.</summary>
+    /// <param name="left">The dividend.</param>
+    /// <param name="right">The divisor.</param>
+    /// <returns>The result of dividing <paramref name="left" /> by <paramref name="right" />.</returns>
+    public static Quaternion operator /(Quaternion left, Quaternion right) => new Quaternion(left._value / right._value);
 
         /// <summary>Multiplies each component of a <see cref="Quaternion" /> value by a given <see cref="float" /> value.</summary>
         /// <param name="left">The vector to multiply.</param>
@@ -114,26 +129,12 @@ namespace TerraFX.Numerics
         /// <summary>
         /// Creates a new <see cref="Quaternion" /> by concatenating 'this' with the given one.
         /// The result will have the combined effect of the rotations in both source Quaternions.
+        /// Is the same as <seealso cref="Quaternion.operator *(Quaternion, Quaternion)" /> with reversed operand order.
         /// </summary>
         /// <param name="left">The left Quaternion for this operation.</param>
         /// <param name="right">The right Quaternion to concatenate.</param>
         /// <returns>The combined Quaternion.</returns>
-        public static Quaternion Concatenate(Quaternion left, Quaternion right)
-        {
-            // from XMQuaternionMultiply at https://github.com/microsoft/DirectXMath/blob/master/Inc/DirectXMathMisc.inl#L82
-            // (r.x * +l.w) + (r.y * +l.z) + (r.z * -l.y) + (r.w * +l.x),
-            // (r.x * -l.z) + (r.y * +l.w) + (r.z * +l.x) + (r.w * +l.y),
-            // (r.x * +l.y) + (r.y * -l.x) + (r.z * +l.w) + (r.w * +l.z),
-            // (r.x * -l.x) + (r.y * -l.y) + (r.z * -l.z) + (r.w * +l.w)
-
-            var resultQ = new Quaternion(
-                Quaternion.Dot(left, new Quaternion(+right.W, +right.Z, -right.Y, +right.X)),
-                Quaternion.Dot(left, new Quaternion(-right.Z, +right.W, +right.X, +right.Y)),
-                Quaternion.Dot(left, new Quaternion(+right.Y, -right.X, +right.W, +right.Z)),
-                Quaternion.Dot(left, new Quaternion(-right.X, -right.Y, -right.Z, +right.W))
-            );
-            return resultQ;
-        }
+        public static Quaternion Concatenate(Quaternion left, Quaternion right) => right * left;
 
         /// <summary>The Conjugate of a <see cref="Quaternion" />.</summary>
         /// <param name="value">The Quaternion for this operation.</param>
