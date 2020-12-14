@@ -106,7 +106,7 @@ namespace TerraFX.Samples
             }
         }
 
-        private static void Run(Sample sample, TimeSpan timeout, Rectangle windowBounds)
+        private static void Run(Sample sample, TimeSpan timeout, Rectangle? windowBounds)
         {
             using var application = new Application(sample.CompositionAssemblies);
             if (sample is HelloWindow window)
@@ -126,34 +126,39 @@ namespace TerraFX.Samples
         {
             var ranAnySamples = false;
 
-            // initial window bounds from the commandline. Either width+height or location x+y and width+height
+            // initial window bounds from the command line.
+            // -windowLocation x y and/or -windowSize w h
             var windowBounds = default(Rectangle);
-            if (args.Any((arg) => Matches(arg, "windowBounds")))
+            if (args.Any((arg) => Matches(arg, "-windowLocation")) || args.Any((arg) => Matches(arg, "-windowSize")))
             {
                 var argsList = args.ToList();
-                var index = argsList.IndexOf("windowBounds");
-                (float a, float b, float c, float d) = (-1, -1, -1, -1);
-                (var aOk, var bOk, var cOk, var dOk) = (false, false, false, false);
-                if (argsList.Count >= index + 2)
+                var index = argsList.IndexOf("-windowLocation");
+                (float x, float y, float w, float h) = (-1, -1, -1, -1);
+                (var xOk, var yOk, var wOk, var hOk) = (false, false, false, false);
+                if (index != -1 && argsList.Count >= index + 2)
                 {
-                    aOk = float.TryParse(argsList[++index], out a);
-                    bOk = float.TryParse(argsList[++index], out b);
+                    xOk = float.TryParse(argsList[++index], out x);
+                    yOk = float.TryParse(argsList[++index], out y);
                 }
-                if (argsList.Count >= index + 2)
+                index = argsList.IndexOf("-windowSize");
+                if (index != -1 && argsList.Count >= index + 2)
                 {
-                    cOk = float.TryParse(argsList[++index], out c);
-                    dOk = float.TryParse(argsList[++index], out d);
+                    wOk = float.TryParse(argsList[++index], out w);
+                    hOk = float.TryParse(argsList[++index], out h);
                 }
-                if (aOk && bOk && cOk && dOk)
+                if (xOk && yOk && wOk && hOk)
                 {
-                    windowBounds = new Rectangle(a, b, c, d);
+                    windowBounds = new Rectangle(x, y, w, h);
                 }
-                else if (aOk && bOk)
+                else if (xOk && yOk)
                 {
-                    windowBounds = new Rectangle(0, 0, c, d);
+                    windowBounds = new Rectangle(x, y, 0, 0);
+                }
+                else if (wOk && hOk)
+                {
+                    windowBounds = new Rectangle(0, 0, w, h);
                 }
             }
-
 
             if (args.Any((arg) => Matches(arg, "all")))
             {
@@ -189,7 +194,7 @@ namespace TerraFX.Samples
             }
         }
 
-        private static void RunSample(Sample sample, TimeSpan timeout, Rectangle windowBounds)
+        private static void RunSample(Sample sample, TimeSpan timeout, Rectangle? windowBounds)
         {
             Console.WriteLine($"Running: {sample.Name}");
             var thread = new Thread(() => Run(sample, timeout, windowBounds));

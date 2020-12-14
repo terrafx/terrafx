@@ -37,14 +37,14 @@ namespace TerraFX.Samples.Graphics
         /// <summary>Initializes the GUI for this sample.</summary>
         /// <param name="application">The hosting <see cref="Application" />.</param>
         /// <param name="timeout">The <see cref="TimeSpan" /> after which this sample should stop running.</param>
-        public override void Initialize(Application application, TimeSpan timeout) => Initialize(application, timeout, windowBounds: default);
+        public override void Initialize(Application application, TimeSpan timeout) => Initialize(application, timeout, windowBounds: null);
 
         /// <summary>Initializes the GUI for this sample.</summary>
         /// <param name="application">The hosting <see cref="Application" />.</param>
         /// <param name="timeout">The <see cref="TimeSpan" /> after which this sample should stop running.</param>
         /// <param name="windowBounds">The <see cref="Rectangle" /> that defines the initial window bounds.
         /// Note that it is a mix of outer window location and inner client rect size.</param>
-        public virtual void Initialize(Application application, TimeSpan timeout, Rectangle windowBounds = default)
+        public virtual void Initialize(Application application, TimeSpan timeout, Rectangle? windowBounds = null)
         {
             ExceptionUtilities.ThrowIfNull(application, nameof(application));
 
@@ -52,10 +52,16 @@ namespace TerraFX.Samples.Graphics
 
             _window = windowProvider.CreateWindow();
             _window.SetTitle(Name);
-            if (windowBounds != default)
+            if (windowBounds.HasValue)
             {
-                _window.Relocate(windowBounds.Location);
-                _window.ResizeClient(windowBounds.Size);
+                if (windowBounds.Value.Location != default)
+                {
+                    _window.Relocate(windowBounds.Value.Location);
+                }
+                if (windowBounds.Value.Size != default)
+                {
+                    _window.ResizeClient(windowBounds.Value.Size);
+                }
             }
             _window.Show();
 

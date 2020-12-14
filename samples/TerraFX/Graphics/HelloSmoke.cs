@@ -40,7 +40,7 @@ namespace TerraFX.Samples.Graphics
         /// <param name="timeout">The <see cref="TimeSpan" /> after which this sample should stop running.</param>
         /// <param name="windowBounds">The <see cref="Rectangle" /> that defines the initial window bounds.
         /// Note that it is a mix of outer window location and inner client rect size.</param>
-        public override void Initialize(Application application, TimeSpan timeout, Rectangle windowBounds = default)
+        public override void Initialize(Application application, TimeSpan timeout, Rectangle? windowBounds = null)
         {
             base.Initialize(application, timeout, windowBounds);
 
