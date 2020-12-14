@@ -108,11 +108,11 @@ namespace TerraFX.Numerics
             return resultQ;
         }
 
-    /// <summary>Divides two specified <see cref="Quaternion" /> values component by component.</summary>
-    /// <param name="left">The dividend.</param>
-    /// <param name="right">The divisor.</param>
-    /// <returns>The result of dividing <paramref name="left" /> by <paramref name="right" />.</returns>
-    public static Quaternion operator /(Quaternion left, Quaternion right) => new Quaternion(left._value / right._value);
+        /// <summary>Divides two specified <see cref="Quaternion" /> values component by component.</summary>
+        /// <param name="left">The dividend.</param>
+        /// <param name="right">The divisor.</param>
+        /// <returns>The result of dividing <paramref name="left" /> by <paramref name="right" />.</returns>
+        public static Quaternion operator /(Quaternion left, Quaternion right) => new Quaternion(left._value / right._value);
 
         /// <summary>Multiplies each component of a <see cref="Quaternion" /> value by a given <see cref="float" /> value.</summary>
         /// <param name="left">The vector to multiply.</param>
