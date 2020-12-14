@@ -51,46 +51,6 @@ namespace TerraFX.Graphics.Geometry3D
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
         public static bool operator !=(Box left, Box right) => left.Size != right.Size;
 
-        // -- equality and similarity --
-
-        /// <inheritdoc />
-        public override bool Equals(object? obj) => (obj is Box other) && Equals(other);
-
-        /// <inheritdoc />
-        public bool Equals(Box other) => this == other;
-
-        /// <summary>Tests if two <see cref="Box" /> instances have sufficiently similar values to see them as equivalent.
-        /// Use this to compare values that might be affected by differences in rounding the least significant bits.</summary>
-        /// <param name="other">The other instance to compare.</param>
-        /// <param name="errorTolerance">The threshold below which they are sufficiently similar.</param>
-        /// <returns>True if similar, false otherwise.</returns>
-        public bool IsSimilarTo(Box other, float errorTolerance = FloatUtilities.ErrorTolerance) => Size.IsSimilarTo(other.Size, errorTolerance);
-
-        // -- state reporting (GetHashCode, ToString) --
-
-        /// <inheritdoc />
-        public override int GetHashCode()
-        {
-            var hashCode = new HashCode();
-            {
-                hashCode.Add(Size);
-            }
-            return hashCode.ToHashCode();
-        }
-
-        /// <inheritdoc />
-        public override string ToString() => ToString(format: null, formatProvider: null);
-
-        /// <inheritdoc />
-        public string ToString(string? format, IFormatProvider? formatProvider)
-        {
-            return new StringBuilder(3)
-                .Append('<')
-                .Append("Size" + Size.ToString(format, formatProvider))
-                .Append('>')
-                .ToString();
-        }
-
         /// <summary>Computes the center of mass of the given <see cref="Box" /> instance.</summary>
         /// <param name="box">The <see cref="Box" /> for which to compute the corners.</param>
         /// <returns>The center of mass of the <see cref="Box" />.</returns>
@@ -131,23 +91,56 @@ namespace TerraFX.Graphics.Geometry3D
             return corners;
         }
 
-        // -- new instance with some member changed (With*) --
+        /// <inheritdoc />
+        public override bool Equals(object? obj) => (obj is Box other) && Equals(other);
+
+        /// <inheritdoc />
+        public bool Equals(Box other) => this == other;
+
+        /// <summary>Tests if two <see cref="Quaternion" /> instances have sufficiently similar values to see them as equivalent.
+        /// Use this to compare values that might be affected by differences in rounding the least significant bits.</summary>
+        /// <param name="left">The left instance to compare.</param>
+        /// <param name="right">The right instance to compare.</param>
+        /// <param name="epsilon">The threshold below which they are sufficiently similar.</param>
+        /// <returns>True if similar, false otherwise.</returns>
+        public static bool EqualEstimate(Box left, Box right, Box epsilon) => Vector3.EqualEstimate(left._size, right._size, epsilon._size);
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            var hashCode = new HashCode();
+            {
+                hashCode.Add(Size);
+            }
+            return hashCode.ToHashCode();
+        }
+
+        /// <summary>Computes the largest <see cref="Box" /> that is fully contained in both, 'this' and 'box'.</summary>
+        /// <param name="other">The other <see cref="Box" /> to consider.</param>
+        /// <returns>The resulting new instance.</returns>
+        public Box Intersection(Box other) => new Box(Vector3.Min(Size, other.Size));
+
+        /// <inheritdoc />
+        public override string ToString() => ToString(format: null, formatProvider: null);
+
+        /// <inheritdoc />
+        public string ToString(string? format, IFormatProvider? formatProvider)
+        {
+            return new StringBuilder(3)
+                .Append('<')
+                .Append("Size" + Size.ToString(format, formatProvider))
+                .Append('>')
+                .ToString();
+        }
+
+        /// <summary>Computes the smallest <see cref="Box" /> that can fit both, 'this' and 'box'.</summary>
+        /// <param name="other">The other <see cref="Box" /> to fit.</param>
+        /// <returns>The resulting new instance.</returns>
+        public Box Union(Box other) => new Box(Vector3.Max(Size, other.Size));
 
         /// <summary>Creates a new <see cref="Box" /> instance with <see cref="Size" /> set to the specified value.</summary>
         /// <param name="value">The new size of the instance.</param>
         /// <returns>A new <see cref="Box" /> instance with <see cref="Size" /> set to <paramref name="value" />.</returns>
         public Box WithSize(Vector3 value) => new Box(value);
-
-        // -- math --
-
-        /// <summary>Computes the smallest <see cref="Box" /> that can fit both, 'this' and 'box'.</summary>
-        /// <param name="other">The other <see cref="Box" /> to fit.</param>
-        /// <returns>The resulting new instance.</returns>
-        public Box Union(Box other) => new Box(Vector3.MaxWith(Size, other.Size));
-
-        /// <summary>Computes the largest <see cref="Box" /> that is fully contained in both, 'this' and 'box'.</summary>
-        /// <param name="other">The other <see cref="Box" /> to consider.</param>
-        /// <returns>The resulting new instance.</returns>
-        public Box Intersection(Box other) => new Box(Vector3.MinWith(Size, other.Size));
     }
 }

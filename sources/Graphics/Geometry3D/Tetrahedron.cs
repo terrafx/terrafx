@@ -56,46 +56,6 @@ namespace TerraFX.Graphics.Geometry3D
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
         public static bool operator !=(Tetrahedron left, Tetrahedron right) => left.Size != right.Size;
 
-        // -- equality and similarity --
-
-        /// <inheritdoc />
-        public override bool Equals(object? obj) => (obj is Tetrahedron other) && Equals(other);
-
-        /// <inheritdoc />
-        public bool Equals(Tetrahedron other) => this == other;
-
-        /// <summary>Tests if two <see cref="Tetrahedron" /> instances have sufficiently similar values to see them as equivalent.
-        /// Use this to compare values that might be affected by differences in rounding the least significant bits.</summary>
-        /// <param name="other">The other instance to compare.</param>
-        /// <param name="errorTolerance">The threshold below which they are sufficiently similar.</param>
-        /// <returns>True if similar, false otherwise.</returns>
-        public bool IsSimilarTo(Tetrahedron other, float errorTolerance = FloatUtilities.ErrorTolerance) => Size.IsSimilarTo(other.Size, errorTolerance);
-
-        // -- state reporting (GetHashCode, ToString) --
-
-        /// <inheritdoc />
-        public override int GetHashCode()
-        {
-            var hashCode = new HashCode();
-            {
-                hashCode.Add(Size);
-            }
-            return hashCode.ToHashCode();
-        }
-
-        /// <inheritdoc />
-        public override string ToString() => ToString(format: null, formatProvider: null);
-
-        /// <inheritdoc />
-        public string ToString(string? format, IFormatProvider? formatProvider)
-        {
-            return new StringBuilder(3)
-                .Append('<')
-                .Append("Size" + Size.ToString(format, formatProvider))
-                .Append('>')
-                .ToString();
-        }
-
         /// <summary>Creates an array of the 8 corners of the given <see cref="Tetrahedron" /> instance.</summary>
         /// <param name="tetrahedron">The <see cref="Tetrahedron" /> for which to compute the corners.</param>
         /// <returns>The array of corners, each of type <see cref="Vector3" />.</returns>
@@ -131,7 +91,42 @@ namespace TerraFX.Graphics.Geometry3D
             return corners;
         }
 
-        // -- new instance with some member changed (With*) --
+        /// <inheritdoc />
+        public override bool Equals(object? obj) => (obj is Tetrahedron other) && Equals(other);
+
+        /// <inheritdoc />
+        public bool Equals(Tetrahedron other) => this == other;
+
+        /// <summary>Tests if two <see cref="Tetrahedron" /> instances have sufficiently similar values to see them as equivalent.
+        /// Use this to compare values that might be affected by differences in rounding the least significant bits.</summary>
+        /// <param name="left">The left instance to compare.</param>
+        /// <param name="right">The right instance to compare.</param>
+        /// <param name="epsilon">The threshold below which they are sufficiently similar.</param>
+        /// <returns>True if similar, false otherwise.</returns>
+        public static bool EqualEstimate(Tetrahedron left, Tetrahedron right, Tetrahedron epsilon) => Vector3.EqualEstimate(left._size, right._size, epsilon._size);
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            var hashCode = new HashCode();
+            {
+                hashCode.Add(Size);
+            }
+            return hashCode.ToHashCode();
+        }
+
+        /// <inheritdoc />
+        public override string ToString() => ToString(format: null, formatProvider: null);
+
+        /// <inheritdoc />
+        public string ToString(string? format, IFormatProvider? formatProvider)
+        {
+            return new StringBuilder(3)
+                .Append('<')
+                .Append("Size" + Size.ToString(format, formatProvider))
+                .Append('>')
+                .ToString();
+        }
 
         /// <summary>Creates a new <see cref="Tetrahedron" /> instance with <see cref="Size" /> set to the specified value.</summary>
         /// <param name="value">The new size of the instance.</param>
