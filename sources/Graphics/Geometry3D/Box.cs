@@ -97,7 +97,7 @@ namespace TerraFX.Graphics.Geometry3D
         /// <inheritdoc />
         public bool Equals(Box other) => this == other;
 
-        /// <summary>Tests if two <see cref="Quaternion" /> instances have sufficiently similar values to see them as equivalent.
+        /// <summary>Tests if two <see cref="Box" /> instances have sufficiently similar values to see them as equivalent.
         /// Use this to compare values that might be affected by differences in rounding the least significant bits.</summary>
         /// <param name="left">The left instance to compare.</param>
         /// <param name="right">The right instance to compare.</param>

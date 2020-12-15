@@ -16,8 +16,8 @@ namespace TerraFX.Graphics.Geometry3D
     /// Specifically, those x,y,z sizes refer to a box into which the Tetrahedron is inscribed.
     /// Only the back bottom edge of the box is also an edge of the Tetrahedron.
     /// The other two corners are at the midpoint of the bottom front edge and the center of the top face.
-    /// Note that this makes very intuitive use of the size of the bounding box,
-    /// but does not result in a center of mass at the origin.</summary>
+    /// Note that this makes very intuitive use of the size of the bounding box.
+    /// The box is shifted up such that the tetrahedron center of mass at the origin.</summary>
     public readonly struct Tetrahedron : IEquatable<Tetrahedron>, IFormattable
     {
         /// <summary>Defines an equal sided <see cref="Tetrahedron" /> with edges that are unit length.</summary>
