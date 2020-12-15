@@ -16,6 +16,9 @@ namespace TerraFX.Numerics
         /// <summary>Defines the all zeros matrix.</summary>
         public static readonly Matrix4x4 Zero = new Matrix4x4(Vector4.Zero, Vector4.Zero, Vector4.Zero, Vector4.Zero);
 
+        /// <summary>Defines the all ones matrix.</summary>
+        public static readonly Matrix4x4 One = new Matrix4x4(Vector4.One, Vector4.One, Vector4.One, Vector4.One);
+
         private readonly Vector4 _x;
         private readonly Vector4 _y;
         private readonly Vector4 _z;
@@ -68,6 +71,20 @@ namespace TerraFX.Numerics
                 || (left.Y != right.Y)
                 || (left.Z != right.Z)
                 || (left.W != right.W);
+        }
+
+        /// <summary>Multiplies a <see cref="Matrix4x4" /> with a <see cref="float" />.</summary>
+        /// <param name="left">The <see cref="Matrix4x4" /> to multiply with <paramref name="right" />.</param>
+        /// <param name="right">The <see cref="float" /> to multiply with <paramref name="left" />.</param>
+        /// <returns>The matrix multiplication result.</returns>
+        public static Matrix4x4 operator *(Matrix4x4 left, float right)
+        {
+            return new Matrix4x4(
+                left.X * right,
+                left.Y * right,
+                left.Z * right,
+                left.W * right
+            );
         }
 
         /// <summary>Multiplies two <see cref="Matrix4x4" /> instances.</summary>
