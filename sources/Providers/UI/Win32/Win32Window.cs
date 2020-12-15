@@ -578,11 +578,11 @@ namespace TerraFX.UI.Providers.Win32
         {
             var styleStruct = (STYLESTRUCT*)lParam;
 
-            if ((nint)wParam == GWL_EXSTYLE)
+            if (unchecked((nint)wParam) == GWL_EXSTYLE)
             {
                 _extendedStyle = styleStruct->styleNew;
             }
-            else if ((nint)wParam == GWL_STYLE)
+            else if (unchecked((nint)wParam) == GWL_STYLE)
             {
                 _style = styleStruct->styleNew;
             }
