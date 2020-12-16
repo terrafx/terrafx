@@ -106,12 +106,12 @@ namespace TerraFX.Samples
             }
         }
 
-        private static void Run(Sample sample, TimeSpan timeout, Rectangle? windowBounds)
+        private static void Run(Sample sample, TimeSpan timeout, Vector2? windowLocation, Vector2? windowSize)
         {
             using var application = new Application(sample.CompositionAssemblies);
             if (sample is HelloWindow window)
             {
-                window.Initialize(application, timeout, windowBounds);
+                window.Initialize(application, timeout, windowLocation, windowSize);
             }
             else
             {
@@ -128,35 +128,38 @@ namespace TerraFX.Samples
 
             // initial window bounds from the command line.
             // -windowLocation x y and/or -windowSize w h
-            var windowBounds = default(Rectangle);
-            if (args.Any((arg) => Matches(arg, "-windowLocation")) || args.Any((arg) => Matches(arg, "-windowSize")))
+            Vector2? windowLocation = null;
+            if (args.Any((arg) => Matches(arg, "-windowLocation")))
             {
                 var argsList = args.ToList();
                 var index = argsList.IndexOf("-windowLocation");
-                (float x, float y, float w, float h) = (-1, -1, -1, -1);
-                (var xOk, var yOk, var wOk, var hOk) = (false, false, false, false);
+                (float x, float y) = (-1, -1);
+                (var xOk, var yOk) = (false, false);
                 if (index != -1 && argsList.Count >= index + 2)
                 {
                     xOk = float.TryParse(argsList[++index], out x);
                     yOk = float.TryParse(argsList[++index], out y);
                 }
-                index = argsList.IndexOf("-windowSize");
+                if (xOk && yOk)
+                {
+                    windowLocation = new Vector2(x, y);
+                }
+            }
+            Vector2? windowSize = null;
+            if (args.Any((arg) => Matches(arg, "-windowSize")))
+            {
+                var argsList = args.ToList();
+                var index = argsList.IndexOf("-windowSize");
+                (float w, float h) = (-1, -1);
+                (var wOk, var hOk) = (false, false);
                 if (index != -1 && argsList.Count >= index + 2)
                 {
                     wOk = float.TryParse(argsList[++index], out w);
                     hOk = float.TryParse(argsList[++index], out h);
                 }
-                if (xOk && yOk && wOk && hOk)
+                if (wOk && hOk)
                 {
-                    windowBounds = new Rectangle(x, y, w, h);
-                }
-                else if (xOk && yOk)
-                {
-                    windowBounds = new Rectangle(x, y, 0, 0);
-                }
-                else if (wOk && hOk)
-                {
-                    windowBounds = new Rectangle(0, 0, w, h);
+                    windowSize = new Vector2(w, h);
                 }
             }
 
@@ -167,7 +170,7 @@ namespace TerraFX.Samples
                 {
                     if (IsSupported(sample))
                     {
-                        RunSample(sample, TimeSpan.FromSeconds(2.5), windowBounds);
+                        RunSample(sample, TimeSpan.FromSeconds(2.5), windowLocation, windowSize);
                         ranAnySamples = true;
                     }
                 }
@@ -181,7 +184,7 @@ namespace TerraFX.Samples
                     {
                         if (IsSupported(sample))
                         {
-                            RunSample(sample, TimeSpan.MaxValue, windowBounds);
+                            RunSample(sample, TimeSpan.MaxValue, windowLocation, windowSize);
                             ranAnySamples = true;
                         }
                     }
@@ -194,10 +197,10 @@ namespace TerraFX.Samples
             }
         }
 
-        private static void RunSample(Sample sample, TimeSpan timeout, Rectangle? windowBounds)
+        private static void RunSample(Sample sample, TimeSpan timeout, Vector2? windowLocation, Vector2? windowSize)
         {
             Console.WriteLine($"Running: {sample.Name}");
-            var thread = new Thread(() => Run(sample, timeout, windowBounds));
+            var thread = new Thread(() => Run(sample, timeout, windowLocation, windowSize));
 
             thread.Start();
             thread.Join();

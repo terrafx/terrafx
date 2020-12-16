@@ -33,11 +33,11 @@ namespace TerraFX.Samples.Graphics
         /// <summary>Initializes the GUI for this sample.</summary>
         /// <param name="application">The hosting <see cref="Application" />.</param>
         /// <param name="timeout">The <see cref="TimeSpan" /> after which this sample should stop running.</param>
-        /// <param name="windowBounds">The <see cref="Rectangle" /> that defines the initial window bounds.
-        /// Note that it is a mix of outer window location and inner client rect size.</param>
-        public override void Initialize(Application application, TimeSpan timeout, Rectangle? windowBounds = null)
+        /// <param name="windowLocation">The <see cref="Vector2" /> that defines the initial window location.</param>
+        /// <param name="windowSize">The <see cref="Vector2" /> that defines the initial window client rectangle size.</param>
+        public override void Initialize(Application application, TimeSpan timeout, Vector2? windowLocation, Vector2? windowSize)
         {
-            base.Initialize(application, timeout, windowBounds);
+            base.Initialize(application, timeout, windowLocation, windowSize);
 
             var graphicsDevice = GraphicsDevice;
             var currentGraphicsContext = graphicsDevice.CurrentContext;

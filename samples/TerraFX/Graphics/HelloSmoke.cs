@@ -38,11 +38,11 @@ namespace TerraFX.Samples.Graphics
         /// <summary>Initializes the GUI for this sample.</summary>
         /// <param name="application">The hosting <see cref="Application" />.</param>
         /// <param name="timeout">The <see cref="TimeSpan" /> after which this sample should stop running.</param>
-        /// <param name="windowBounds">The <see cref="Rectangle" /> that defines the initial window bounds.
-        /// Note that it is a mix of outer window location and inner client rect size.</param>
-        public override void Initialize(Application application, TimeSpan timeout, Rectangle? windowBounds = null)
+        /// <param name="windowLocation">The <see cref="Vector2" /> that defines the initial window location.</param>
+        /// <param name="windowSize">The <see cref="Vector2" /> that defines the initial window client rectangle size.</param>
+        public override void Initialize(Application application, TimeSpan timeout, Vector2? windowLocation, Vector2? windowSize)
         {
-            base.Initialize(application, timeout, windowBounds);
+            base.Initialize(application, timeout, windowLocation, windowSize);
 
             var graphicsDevice = GraphicsDevice;
             var currentGraphicsContext = graphicsDevice.CurrentContext;
@@ -81,8 +81,8 @@ namespace TerraFX.Samples.Graphics
             // Shaders take transposed matrices, so we want to set X.W
             pConstantBuffer[0] = new Matrix4x4(
                 new Vector4(0.5f, 0.0f, 0.0f, 0.5f),      // *0.5f and +0.5f since the input vertex coordinates are in range [-1, 1]  but output texture coordinates needs to be [0, 1]
-                new Vector4(0.0f, 0.5f, 0.0f, 0.5f-dydz), // *0.5f and +0.5f as above, -dydz to slide the view of the texture vertically each frame
-                new Vector4(0.0f, 0.0f, 0.5f, dydz/5.0f), // +dydz to slide the start of the compositing ray in depth each frame
+                new Vector4(0.0f, 0.5f, 0.0f, 0.5f - dydz), // *0.5f and +0.5f as above, -dydz to slide the view of the texture vertically each frame
+                new Vector4(0.0f, 0.0f, 0.5f, dydz / 5.0f), // +dydz to slide the start of the compositing ray in depth each frame
                 new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
             );
 
