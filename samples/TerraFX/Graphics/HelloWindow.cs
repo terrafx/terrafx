@@ -55,11 +55,11 @@ namespace TerraFX.Samples.Graphics
             _window.SetTitle(Name);
             if (windowLocation.HasValue)
             {
-                _window.Relocate(windowLocation.Value);
+                _window.Relocate(windowLocation.GetValueOrDefault());
             }
             if (windowSize.HasValue)
             {
-                _window.ResizeClient(windowSize.Value);
+                _window.ResizeClient(windowSize.GetValueOrDefault());
             }
             _window.Show();
 
