@@ -8,11 +8,17 @@ using TerraFX.Utilities;
 
 namespace TerraFX.Numerics
 {
-    /// <summary>Defines a quaternion.</summary>
+    /// <summary>Defines a Quaternion that can be used as efficient means to represent a rotation in 3D.</summary>
     public readonly struct Quaternion : IEquatable<Quaternion>, IFormattable
     {
         /// <summary>Defines a <see cref="Quaternion" /> that represents the Identity mapping.</summary>
         public static readonly Quaternion Identity = new Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+
+        /// <summary>Defines a <see cref="Quaternion" /> that has zeros for all components.</summary>
+        public static readonly Quaternion Zero = new Quaternion(0.0f, 0.0f, 0.0f, 0.0f);
+
+        /// <summary>Defines a <see cref="Quaternion" /> that has ones for all components.</summary>
+        public static readonly Quaternion One = new Quaternion(1.0f, 1.0f, 1.0f, 1.0f);
 
         private readonly Vector4 _value;
 

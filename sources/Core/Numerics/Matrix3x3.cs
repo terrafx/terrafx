@@ -15,6 +15,9 @@ namespace TerraFX.Numerics
         /// <summary>Defines the all zeros matrix.</summary>
         public static readonly Matrix3x3 Zero = new Matrix3x3(Vector3.Zero, Vector3.Zero, Vector3.Zero);
 
+        /// <summary>Defines the all ones matrix.</summary>
+        public static readonly Matrix3x3 One = new Matrix3x3(Vector3.One, Vector3.One, Vector3.One);
+
         private readonly Vector3 _x;
         private readonly Vector3 _y;
         private readonly Vector3 _z;
