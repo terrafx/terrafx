@@ -40,10 +40,11 @@ namespace TerraFX.Samples.Graphics
 
             var graphicsDevice = GraphicsDevice;
             var currentGraphicsContext = graphicsDevice.CurrentContext;
+            var textureSize = 64 * 1024 * 16 * (_isQuickAndDirty ? 1 : 64);
 
             using var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
             using var indexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
-            using var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024 * 1024);
+            using var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, (ulong)textureSize);
 
             _constantBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Constant, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
             _indexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Index, GraphicsResourceCpuAccess.GpuOnly, 64 * 1024);
@@ -75,8 +76,8 @@ namespace TerraFX.Samples.Graphics
             // Shaders take transposed matrices, so we want to set X.W
             pConstantBuffer[0] = new Matrix4x4(
                 new Vector4(0.5f, 0.0f, 0.0f, 0.5f),      // *0.5f and +0.5f since the input vertex coordinates are in range [-1, 1]  but output texture coordinates needs to be [0, 1]
-                new Vector4(0.0f, 0.5f, 0.0f, 0.5f-dydz), // *0.5f and +0.5f as above, -dydz to slide the view of the texture vertically each frame
-                new Vector4(0.0f, 0.0f, 0.5f, dydz/5.0f), // +dydz to slide the start of the compositing ray in depth each frame
+                new Vector4(0.0f, 0.5f, 0.0f, 0.5f - dydz), // *0.5f and +0.5f as above, -dydz to slide the view of the texture vertically each frame
+                new Vector4(0.0f, 0.0f, 0.5f, dydz / 5.0f), // +dydz to slide the start of the compositing ray in depth each frame
                 new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
             );
 
@@ -143,32 +144,33 @@ namespace TerraFX.Samples.Graphics
                 return indexBufferRegion;
             }
 
-            static GraphicsMemoryRegion<GraphicsResource> CreateTexture3DRegion(GraphicsContext graphicsContext, GraphicsBuffer textureStagingBuffer, bool isQuickAndDirty)
+            GraphicsMemoryRegion<GraphicsResource> CreateTexture3DRegion(GraphicsContext graphicsContext, GraphicsBuffer textureStagingBuffer, bool isQuickAndDirty)
             {
-                const uint TextureWidth = 256;
-                const uint TextureHeight = 256;
-                const ushort TextureDepth = 256;
-                const uint TextureDz = TextureWidth * TextureHeight;
-                const uint TexturePixels = TextureDz * TextureDepth;
+                uint textureWidth = isQuickAndDirty ? 64 : 256;
+                uint textureHeight = isQuickAndDirty ? 64 : 256;
+                ushort textureDepth = isQuickAndDirty ? 64 : 256;
+                var textureDz = textureWidth * textureHeight;
+                var texturePixels = textureDz * textureDepth;
 
-                var texture3D = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.ThreeDimensional, GraphicsResourceCpuAccess.None, TextureWidth, TextureHeight, TextureDepth, texelFormat: TexelFormat.R8G8B8A8_UNORM);
+                var texture3D = graphicsContext.Device.MemoryAllocator.CreateTexture(GraphicsTextureKind.ThreeDimensional, GraphicsResourceCpuAccess.None, textureWidth, textureHeight, textureDepth, texelFormat: TexelFormat.R8G8B8A8_UNORM);
                 var texture3DRegion = texture3D.Allocate(texture3D.Size, alignment: 4);
                 var pTextureData = textureStagingBuffer.Map<uint>(in texture3DRegion);
 
                 var random = new Random(Seed: 1);
 
+                var isOnBlurring = true;
                 // start with random speckles
-                for (uint n = 0; n < TexturePixels; n++)
+                for (uint n = 0; n < texturePixels; n++)
                 {
                     // convert n to indices
-                    float x = n % TextureWidth;
-                    float y = n % TextureDz / TextureWidth;
-                    float z = n / TextureDz;
+                    float x = n % textureWidth;
+                    float y = n % textureDz / textureWidth;
+                    float z = n / textureDz;
 
                     // convert indices to fractions in the range [0, 1)
-                    x /= TextureWidth;
-                    y /= TextureHeight;
-                    z /= TextureHeight;
+                    x /= textureWidth;
+                    y /= textureHeight;
+                    z /= textureHeight;
 
                     // make x,z relative to texture center
                     x -= 0.5f;
@@ -186,7 +188,7 @@ namespace TerraFX.Samples.Graphics
 
                     // random value scaled by the above
                     var rand = (float)random.NextDouble();
-                    if (!isQuickAndDirty && (rand < 0.99))
+                    if (isOnBlurring && (rand < 0.99))
                     {
                         rand = 0;
                     }
@@ -194,116 +196,117 @@ namespace TerraFX.Samples.Graphics
                     pTextureData[n] = (uint)(value | (value << 8) | (value << 16) | (value << 24));
                 }
 
-                if (!isQuickAndDirty)
+                if (isOnBlurring)
                 {
                     // now smear them out to smooth smoke splotches
 
-                    const uint Dy = TextureWidth;
-                    const uint Dz = Dy * TextureHeight;
+                    var dy = textureWidth;
+                    var dz = dy * textureHeight;
+                    var falloffFactor = _isQuickAndDirty ? 0.9f : 0.95f;
 
-                    for (var z = 0; z < TextureDepth; z++)
+                    for (var z = 0; z < textureDepth; z++)
                     {
-                        for (var y = 0; y < TextureHeight; y++)
+                        for (var y = 0; y < textureHeight; y++)
                         {
-                            for (var x = 1; x < TextureWidth; x++)
+                            for (var x = 1; x < textureWidth; x++)
                             {
-                                var n = x + (y * Dy) + (z * Dz);
-                                if ((pTextureData[n] & 0xFF) < 0.9f * (pTextureData[n - 1] & 0xFF))
+                                var n = x + (y * dy) + (z * dz);
+                                if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n - 1] & 0xFF))
                                 {
-                                    uint value = (byte)(0.9f * (pTextureData[n - 1] & 0xFF));
+                                    uint value = (byte)(falloffFactor * (pTextureData[n - 1] & 0xFF));
                                     pTextureData[n] = (uint)(value | (value << 8) | (value << 16) | (value << 24));
                                 }
                             }
-                            for (var x = (int)TextureWidth - 2; x >= 0; x--)
+                            for (var x = (int)textureWidth - 2; x >= 0; x--)
                             {
-                                var n = x + (y * Dy) + (z * Dz);
-                                if ((pTextureData[n] & 0xFF) < 0.9f * (pTextureData[n + 1] & 0xFF))
+                                var n = x + (y * dy) + (z * dz);
+                                if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n + 1] & 0xFF))
                                 {
-                                    uint value = (byte)(0.9f * (pTextureData[n + 1] & 0xFF));
+                                    uint value = (byte)(falloffFactor * (pTextureData[n + 1] & 0xFF));
                                     pTextureData[n] = (uint)(value | (value << 8) | (value << 16) | (value << 24));
                                 }
                             }
                         }
                     }
-                    for (var z = 0; z < TextureDepth; z++)
+                    for (var z = 0; z < textureDepth; z++)
                     {
-                        for (var x = 0; x < TextureWidth; x++)
+                        for (var x = 0; x < textureWidth; x++)
                         {
-                            for (var y = 1; y < TextureHeight; y++)
+                            for (var y = 1; y < textureHeight; y++)
                             {
-                                var n = x + (y * Dy) + (z * Dz);
-                                if ((pTextureData[n] & 0xFF) < 0.9f * (pTextureData[n - Dy] & 0xFF))
+                                var n = x + (y * dy) + (z * dz);
+                                if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n - dy] & 0xFF))
                                 {
-                                    uint value = (byte)(0.9f * (pTextureData[n - Dy] & 0xFF));
+                                    uint value = (byte)(falloffFactor * (pTextureData[n - dy] & 0xFF));
                                     pTextureData[n] = (uint)(value | (value << 8) | (value << 16) | (value << 24));
                                 }
                             }
                             for (var y = 0; y <= 0; y++)
                             {
-                                var n = x + (y * Dy) + (z * Dz);
-                                if ((pTextureData[n] & 0xFF) < 0.9f * (pTextureData[n - Dy + Dz] & 0xFF))
+                                var n = x + (y * dy) + (z * dz);
+                                if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n - dy + dz] & 0xFF))
                                 {
-                                    uint value = (byte)(0.9f * (pTextureData[n - Dy + Dz] & 0xFF));
+                                    uint value = (byte)(falloffFactor * (pTextureData[n - dy + dz] & 0xFF));
                                     pTextureData[n] = (uint)(value | (value << 8) | (value << 16) | (value << 24));
                                 }
                             }
-                            for (var y = 1; y < TextureHeight; y++)
+                            for (var y = 1; y < textureHeight; y++)
                             {
-                                var n = x + (y * Dy) + (z * Dz);
-                                if ((pTextureData[n] & 0xFF) < 0.9f * (pTextureData[n - Dy] & 0xFF))
+                                var n = x + (y * dy) + (z * dz);
+                                if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n - dy] & 0xFF))
                                 {
-                                    uint value = (byte)(0.9f * (pTextureData[n - Dy] & 0xFF));
+                                    uint value = (byte)(falloffFactor * (pTextureData[n - dy] & 0xFF));
                                     pTextureData[n] = (uint)(value | (value << 8) | (value << 16) | (value << 24));
                                 }
                             }
-                            for (var y = (int)TextureHeight - 2; y >= 0; y--)
+                            for (var y = (int)textureHeight - 2; y >= 0; y--)
                             {
-                                var n = x + (y * Dy) + (z * Dz);
-                                if ((pTextureData[n] & 0xFF) < 0.9f * (pTextureData[n + Dy] & 0xFF))
+                                var n = x + (y * dy) + (z * dz);
+                                if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n + dy] & 0xFF))
                                 {
-                                    uint value = (byte)(0.9f * (pTextureData[n + Dy] & 0xFF));
+                                    uint value = (byte)(falloffFactor * (pTextureData[n + dy] & 0xFF));
                                     pTextureData[n] = (uint)(value | (value << 8) | (value << 16) | (value << 24));
                                 }
                             }
-                            for (var y = (int)TextureHeight - 1; y >= (int)TextureHeight - 1; y--)
+                            for (var y = (int)textureHeight - 1; y >= (int)textureHeight - 1; y--)
                             {
-                                var n = x + (y * Dy) + (z * Dz);
-                                if ((pTextureData[n] & 0xFF) < 0.9f * (pTextureData[n + Dy - Dz] & 0xFF))
+                                var n = x + (y * dy) + (z * dz);
+                                if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n + dy - dz] & 0xFF))
                                 {
-                                    uint value = (byte)(0.9f * (pTextureData[n + Dy - Dz] & 0xFF));
+                                    uint value = (byte)(falloffFactor * (pTextureData[n + dy - dz] & 0xFF));
                                     pTextureData[n] = (uint)(value | (value << 8) | (value << 16) | (value << 24));
                                 }
                             }
-                            for (var y = (int)TextureHeight - 2; y >= 0; y--)
+                            for (var y = (int)textureHeight - 2; y >= 0; y--)
                             {
-                                var n = x + (y * Dy) + (z * Dz);
-                                if ((pTextureData[n] & 0xFF) < 0.9f * (pTextureData[n + Dy] & 0xFF))
+                                var n = x + (y * dy) + (z * dz);
+                                if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n + dy] & 0xFF))
                                 {
-                                    uint value = (byte)(0.9f * (pTextureData[n + Dy] & 0xFF));
+                                    uint value = (byte)(falloffFactor * (pTextureData[n + dy] & 0xFF));
                                     pTextureData[n] = (uint)(value | (value << 8) | (value << 16) | (value << 24));
                                 }
                             }
                         }
                     }
-                    for (var y = 0; y < TextureHeight; y++)
+                    for (var y = 0; y < textureHeight; y++)
                     {
-                        for (var x = 0; x < TextureWidth; x++)
+                        for (var x = 0; x < textureWidth; x++)
                         {
-                            for (var z = 1; z < TextureDepth; z++)
+                            for (var z = 1; z < textureDepth; z++)
                             {
-                                var n = x + (y * Dy) + (z * Dz);
-                                if ((pTextureData[n] & 0xFF) < 0.9f * (pTextureData[n - Dz] & 0xFF))
+                                var n = x + (y * dy) + (z * dz);
+                                if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n - dz] & 0xFF))
                                 {
-                                    uint value = (byte)(0.9f * (pTextureData[n - 1] & 0xFF));
+                                    uint value = (byte)(falloffFactor * (pTextureData[n - 1] & 0xFF));
                                     pTextureData[n] = (uint)(value | (value << 8) | (value << 16) | (value << 24));
                                 }
                             }
-                            for (var z = (int)TextureDepth - 0; z >= 0; z--)
+                            for (var z = (int)textureDepth - 0; z >= 0; z--)
                             {
-                                var n = x + (y * Dy) + (z * Dz);
-                                if ((pTextureData[n] & 0xFF) < 0.9f * (pTextureData[n + Dz] & 0xFF))
+                                var n = x + (y * dy) + (z * dz);
+                                if ((pTextureData[n] & 0xFF) < falloffFactor * (pTextureData[n + dz] & 0xFF))
                                 {
-                                    uint value = (byte)(0.9f * (pTextureData[n + 1] & 0xFF));
+                                    uint value = (byte)(falloffFactor * (pTextureData[n + 1] & 0xFF));
                                     pTextureData[n] = (uint)(value | (value << 8) | (value << 16) | (value << 24));
                                 }
                             }
