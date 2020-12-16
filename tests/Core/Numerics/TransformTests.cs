@@ -82,13 +82,15 @@ namespace TerraFX.UnitTests.Numerics
             Vector3 translation)
         {
             var a = new Transform(rotation, scale, translation);
+            var b = new Transform(-rotation, -scale, -translation);
+            var epsilon = Transform.One * 1e-7f;
 
-            Assert.That(Transform.Inverse(a) == -a, Is.True);
+            Assert.That((-a).EqualEstimate(b, epsilon), Is.True);
         }
 
         /// <summary>Ensures that <see cref="Transform.operator+(Transform,Transform)" /> returns the concatenation of its components.</summary>
         [Test, TestCaseSource(nameof(TransformConstructorData))]
-        public static void AdditionReturnsConcatenationOfValues(
+        public static void AdditionReturnsComponentSum(
             Quaternion rotation,
             Vector3 scale,
             Vector3 translation)
@@ -96,12 +98,12 @@ namespace TerraFX.UnitTests.Numerics
             var a = new Transform(rotation, scale, translation);
             var b = new Transform(rotation.WithY(1), scale, translation);
 
-            Assert.That(a + b == Transform.Concatenate(a, b), Is.True);
+            Assert.That(a + b == new Transform(a.Rotation + b.Rotation, a.Scale + b.Scale, a.Translation + b.Translation), Is.True);
         }
 
         /// <summary>Ensures that <see cref="Transform.operator-(Transform,Transform)" /> returns the concatenation of the inverse of the second component.</summary>
         [Test, TestCaseSource(nameof(TransformConstructorData))]
-        public static void SubtractionReturnsConcatenationOfInverseValues(
+        public static void SubtractionReturnsComponentDifference(
             Quaternion rotation,
             Vector3 scale,
             Vector3 translation)
@@ -109,7 +111,7 @@ namespace TerraFX.UnitTests.Numerics
             var a = new Transform(rotation, scale, translation);
             var b = new Transform(rotation.WithY(1), scale, translation);
 
-            Assert.That(a - b == Transform.Concatenate(a, Transform.Inverse(b)), Is.True);
+            Assert.That(a - b == new Transform(a.Rotation - b.Rotation, a.Scale - b.Scale, a.Translation - b.Translation), Is.True);
         }
 
         /// <summary>Ensures that Inverse() returns the inverse.</summary>

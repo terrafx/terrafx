@@ -32,13 +32,20 @@ namespace TerraFX.Numerics
         /// <summary>Rotation center in target space, typically in world space coordinates.</summary>
         private readonly Vector3 _translation;
 
-        /// <summary>Initializes a new instance of the <see cref="Transform" /> struct.
-        /// <seealso cref="Quaternion.operator *(Quaternion, Quaternion)" /> with </summary>
+        /// <summary>Initializes a new instance of the <see cref="Transform" /> struct from individual components.</summary>
         public Transform(Quaternion rotation, Vector3 scale, Vector3 translation)
         {
             _rotation = Quaternion.Normalize(rotation);
             _scale = scale;
             _translation = translation;
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="Transform" /> struct from a tuple of its components</summary>
+        public Transform((Quaternion rotation, Vector3 scale, Vector3 translation) components)
+        {
+            _rotation = Quaternion.Normalize(components.rotation);
+            _scale = components.scale;
+            _translation = components.translation;
         }
 
         /// <summary>The rotation from source space to target space.</summary>
@@ -78,21 +85,39 @@ namespace TerraFX.Numerics
         public static Transform operator +(Transform value) => value;
 
         /// <summary>Negates the value of the specified <see cref="Transform" /> operand.</summary>
-        /// <param name="value">The value to invert.</param>
-        /// <returns>The result of <paramref name="value" /> inverted.</returns>
-        public static Transform operator -(Transform value) => Inverse(value);
+        /// <param name="value">The value to negate.</param>
+        /// <returns>The result of <paramref name="value" /> negated.</returns>
+        public static Transform operator -(Transform value) => new Transform(-value.Rotation, -value.Scale, -value.Translation);
 
         /// <summary>Adds two specified <see cref="Transform" /> values.</summary>
         /// <param name="left">The first value to add.</param>
         /// <param name="right">The second value to add.</param>
         /// <returns>The result of adding <paramref name="left" /> and <paramref name="right" />.</returns>
-        public static Transform operator +(Transform left, Transform right) => Concatenate(left, right);
+        public static Transform operator +(Transform left, Transform right) => new Transform(left.Rotation + right.Rotation, left.Scale + right.Scale, left.Translation + right.Translation);
 
         /// <summary>Subtracts two specified <see cref="Transform" /> values.</summary>
         /// <param name="left">The minuend.</param>
         /// <param name="right">The subtrahend.</param>
         /// <returns>The result of subtracting <paramref name="right" /> from <paramref name="left" />.</returns>
-        public static Transform operator -(Transform left, Transform right) => Concatenate(left, Inverse(right));
+        public static Transform operator -(Transform left, Transform right) => new Transform(left.Rotation - right.Rotation, left.Scale - right.Scale, left.Translation - right.Translation);
+
+        /// <summary>Multiplies each component of a <see cref="Transform" /> value by a given <see cref="float" /> value.</summary>
+        /// <param name="left">The first value to multiply.</param>
+        /// <param name="right">The value to multiply each component by.</param>
+        /// <returns>The result of multiplying each component of <paramref name="left" /> by <paramref name="right" />.</returns>
+        public static Transform operator *(Transform left, float right) => new Transform(left.Rotation * right, left.Scale * right, left.Translation * right);
+
+        /// <summary>Multiplies two specified <see cref="Transform" /> values.</summary>
+        /// <param name="left">The first value to multiply.</param>
+        /// <param name="right">The second value to multiply.</param>
+        /// <returns>The result of multiplying <paramref name="left" /> by <paramref name="right" />.</returns>
+        public static Transform operator *(Transform left, Transform right) => new Transform(left.Rotation * right.Rotation, left.Scale * right.Scale, left.Translation * right.Translation);
+
+        /// <summary>Divides two specified <see cref="Transform" /> values.</summary>
+        /// <param name="left">The dividend.</param>
+        /// <param name="right">The divisor.</param>
+        /// <returns>The result of dividing <paramref name="left" /> by <paramref name="right" />.</returns>
+        public static Transform operator /(Transform left, Transform right) => new Transform(left.Rotation / right.Rotation, left.Scale / right.Scale, left.Translation / right.Translation);
 
         /// <summary>A new <see cref="Transform" /> with an incrementally added rotation about the given axis in the target coordinate system.</summary>
         /// <param name="t">The transform for this operation.</param>
