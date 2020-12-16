@@ -4,6 +4,7 @@ using System;
 using System.Reflection;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
+using TerraFX.Graphics.Geometry2D;
 using TerraFX.Numerics;
 using static TerraFX.Utilities.InteropUtilities;
 
@@ -29,9 +30,14 @@ namespace TerraFX.Samples.Graphics
             base.Cleanup();
         }
 
-        public override void Initialize(Application application, TimeSpan timeout)
+        /// <summary>Initializes the GUI for this sample.</summary>
+        /// <param name="application">The hosting <see cref="Application" />.</param>
+        /// <param name="timeout">The <see cref="TimeSpan" /> after which this sample should stop running.</param>
+        /// <param name="windowLocation">The <see cref="Vector2" /> that defines the initial window location.</param>
+        /// <param name="windowSize">The <see cref="Vector2" /> that defines the initial window client rectangle size.</param>
+        public override void Initialize(Application application, TimeSpan timeout, Vector2? windowLocation, Vector2? windowSize)
         {
-            base.Initialize(application, timeout);
+            base.Initialize(application, timeout, windowLocation, windowSize);
 
             var graphicsDevice = GraphicsDevice;
             var currentGraphicsContext = graphicsDevice.CurrentContext;

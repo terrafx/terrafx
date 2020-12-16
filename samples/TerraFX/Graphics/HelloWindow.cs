@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
+using TerraFX.Graphics.Geometry2D;
+using TerraFX.Numerics;
 using TerraFX.UI;
 using TerraFX.Utilities;
 
@@ -33,7 +35,17 @@ namespace TerraFX.Samples.Graphics
             base.Cleanup();
         }
 
-        public override void Initialize(Application application, TimeSpan timeout)
+        /// <summary>Initializes the GUI for this sample.</summary>
+        /// <param name="application">The hosting <see cref="Application" />.</param>
+        /// <param name="timeout">The <see cref="TimeSpan" /> after which this sample should stop running.</param>
+        public override void Initialize(Application application, TimeSpan timeout) => Initialize(application, timeout, null, null);
+
+        /// <summary>Initializes the GUI for this sample.</summary>
+        /// <param name="application">The hosting <see cref="Application" />.</param>
+        /// <param name="timeout">The <see cref="TimeSpan" /> after which this sample should stop running.</param>
+        /// <param name="windowLocation">The <see cref="Vector2" /> that defines the initial window location.</param>
+        /// <param name="windowSize">The <see cref="Vector2" /> that defines the initial window client rectangle size.</param>
+        public virtual void Initialize(Application application, TimeSpan timeout, Vector2? windowLocation, Vector2? windowSize)
         {
             ExceptionUtilities.ThrowIfNull(application, nameof(application));
 
@@ -41,6 +53,14 @@ namespace TerraFX.Samples.Graphics
 
             _window = windowProvider.CreateWindow();
             _window.SetTitle(Name);
+            if (windowLocation.HasValue)
+            {
+                _window.Relocate(windowLocation.GetValueOrDefault());
+            }
+            if (windowSize.HasValue)
+            {
+                _window.ResizeClient(windowSize.GetValueOrDefault());
+            }
             _window.Show();
 
             var graphicsProvider = application.GetService<GraphicsProvider>();
