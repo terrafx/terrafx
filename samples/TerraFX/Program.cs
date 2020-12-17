@@ -45,6 +45,9 @@ namespace TerraFX.Samples
             new HelloTexture3D("D3D12.HelloTexture3D", s_graphicsProviderD3D12),
             new HelloTexture3D("Vulkan.HelloTexture3D", s_graphicsProviderVulkan),
 
+            new HelloTexture1D2D3D("D3D12.HelloTexture1D2D3D", s_graphicsProviderD3D12),
+            new HelloTexture1D2D3D("Vulkan.HelloTexture1D2D3D", s_graphicsProviderVulkan),
+
             new HelloSmoke("D3D12.HelloSmoke", true, s_graphicsProviderD3D12),
             new HelloSmoke("Vulkan.HelloSmoke", true, s_graphicsProviderVulkan),
 
@@ -92,6 +95,7 @@ namespace TerraFX.Samples
         {
             Console.WriteLine("General Options");
             Console.WriteLine("    ALL:     Indicates that all samples should be run.");
+            Console.WriteLine("    -aspectRatio=square:     Indicates that the sample windows should have a square client area.");
             Console.WriteLine();
 
             Console.WriteLine("Available Samples - Can specify multiple");
@@ -124,6 +128,11 @@ namespace TerraFX.Samples
         private static void RunSamples(string[] args)
         {
             var ranAnySamples = false;
+            var initialWindowRect = default(Rectangle);
+            if (args.Any((arg) => Matches(arg, "square")))
+            {
+                initialWindowRect = new Rectangle(Vector2.One * 64, Vector2.One * 500);
+            }
 
             // initial window bounds from the command line.
             // -windowLocation x y and/or -windowSize w h

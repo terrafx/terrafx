@@ -173,8 +173,13 @@ namespace TerraFX.Samples.Graphics
                     var x = n % TextureWidth;
                     var y = n % TextureDz / TextureWidth;
                     var z = n / TextureDz;
-
-                    pTextureData[n] = 0xFF000000 | (z << 16) | (y << 8) | (x << 0);
+                    unchecked
+                    {
+                        pTextureData[n] = (uint)(x << 0)     // r
+                                        | (uint)(y << 8)     // g
+                                        | (uint)(z << 16)    // b
+                                        | (uint)(0xFF << 24);// a
+                    }
                 }
 
                 textureStagingBuffer.UnmapAndWrite(in texture3DRegion);

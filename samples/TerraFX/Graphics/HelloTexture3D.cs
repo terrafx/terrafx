@@ -50,9 +50,14 @@ namespace TerraFX.Samples.Graphics
             var graphicsDevice = GraphicsDevice;
             var currentGraphicsContext = graphicsDevice.CurrentContext;
 
-            using var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
-            using var indexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
-            using var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024 * 1024);
+            ulong texture3DSize = sizeof(uint) * 256 * 256 * 256;
+            using var vertexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024);
+            using var indexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024);
+            using var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, texture3DSize);
+
+            currentGraphicsContext.BeginFrame();
+            _quadPrimitive = CreateQuadPrimitive(currentGraphicsContext, vertexStagingBuffer, indexStagingBuffer, textureStagingBuffer);
+            currentGraphicsContext.EndFrame();
 
             _constantBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Constant, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
             _indexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Index, GraphicsResourceCpuAccess.GpuOnly, 64 * 1024);
@@ -68,23 +73,14 @@ namespace TerraFX.Samples.Graphics
 
         protected override unsafe void Update(TimeSpan delta)
         {
-            var graphicsDevice = GraphicsDevice;
-            var graphicsSurface = graphicsDevice.Surface;
-            var scale255_256 = 255f / 256f;
-            var aspectRatio = graphicsSurface.Width / graphicsSurface.Height;
-            var scaleX = scale255_256;
-            var scaleY = scale255_256 / aspectRatio;
-            var scaleZ = scale255_256;
-
             const float TranslationSpeed = MathF.PI;
-
             var radians = _texturePosition;
             {
                 radians += (float)(TranslationSpeed * delta.TotalSeconds);
                 radians %= MathF.Tau;
             }
             _texturePosition = radians;
-            var z = scaleZ * (0.5f + (0.5f * MathF.Cos(radians)));
+            var z = 0.5f + (0.5f * MathF.Cos(radians));
 
             var constantBufferRegion = _quadPrimitive.InputResourceRegions[1];
             var constantBuffer = _constantBuffer;
@@ -92,9 +88,9 @@ namespace TerraFX.Samples.Graphics
 
             // Shaders take transposed matrices, so we want to set X.W
             pConstantBuffer[0] = new Matrix4x4(
-                new Vector4(scaleX, 0.0f, 0.0f, 0.5f), // +0.5 since the input coordinates are in range [-.5, .5]  but output needs to be [0, 1]
-                new Vector4(0.0f, scaleY, 0.0f, 0.5f), // +0.5 since the input coordinates are in range [-.5, .5]  but output needs to be [0, 1]
-                new Vector4(0.0f, 0.0f, 1.0f, z),
+                new Vector4(0.5f, 0.0f, 0.0f, 0.5f), // *0.5f and +0.5f since the input vertex coordinates are in range [-1, 1]  but output texture coordinates needs to be [0, 1]
+                new Vector4(0.0f, 0.5f, 0.0f, 0.5f), // *0.5f and +0.5f as above
+                new Vector4(0.0f, 0.0f, 0.5f, z),    // z to slide the depth of the sampling plane each frame
                 new Vector4(0.0f, 0.0f, 0.0f, 1.0f)
             );
 
@@ -179,7 +175,11 @@ namespace TerraFX.Samples.Graphics
                     var y = n % TextureDz / TextureWidth;
                     var z = n / TextureDz;
 
-                    pTextureData[n] = 0xFF000000 | (z << 16) | (y << 8) | (x << 0);
+                    pTextureData[n]
+                        = (UInt32)(x << 0)     // r
+                        | (UInt32)(y << 8)     // g
+                        | (UInt32)(z << 16)    // b
+                        | 0xFF00_0000;         // a
                 }
 
                 textureStagingBuffer.UnmapAndWrite(in texture3DRegion);
