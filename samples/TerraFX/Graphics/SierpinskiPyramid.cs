@@ -207,7 +207,7 @@ namespace TerraFX.Samples.Graphics
             for (var i = 0; i < vertices.Count; i += 3)
             {
                 // same normal for all three triangle vertices to ensure flat shaded surfaces
-                var n = n4[i % 4];
+                var n = n4[i / 3 % 4];
                 normals.AddRange(new Vector3[] { n, n, n });
             }
 

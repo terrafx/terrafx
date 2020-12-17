@@ -11,7 +11,7 @@ using TerraFX.Utilities;
 namespace TerraFX.Numerics
 {
     /// <summary>Defines a four-dimensional Euclidean vector.</summary>
-    public readonly struct Vector4 : IEquatable<Vector4>, IFormattable
+    public readonly struct Vector4 : IEquatable<Vector4>, IEqualEstimate<Vector4>, IFormattable
     {
         /// <summary>Defines a <see cref="Vector4" /> where all components are zero.</summary>
         public static readonly Vector4 Zero = new Vector4(0.0f, 0.0f, 0.0f, 0.0f);
@@ -254,6 +254,19 @@ namespace TerraFX.Numerics
 
         /// <inheritdoc />
         public bool Equals(Vector4 other) => this == other;
+
+        /// <summary>Tests if two <see cref="Vector4" /> instances (this and right) have sufficiently similar values to see them as equivalent.
+        /// Use this to compare values that might be affected by differences in rounding the least significant bits.</summary>
+        /// <param name="right">The right instance to compare.</param>
+        /// <param name="epsilon">The threshold below which they are sufficiently similar.</param>
+        /// <returns><c>True</c> if similar, <c>False</c> otherwise.</returns>
+        public bool EqualEstimate(Vector4 right, Vector4 epsilon)
+        {
+            return FloatUtilities.EqualEstimate(X, right.X, epsilon.X)
+                && FloatUtilities.EqualEstimate(Y, right.Y, epsilon.Y)
+                && FloatUtilities.EqualEstimate(Z, right.Z, epsilon.Z)
+                && FloatUtilities.EqualEstimate(W, right.W, epsilon.W);
+        }
 
         /// <inheritdoc />
         public override int GetHashCode() => HashCode.Combine(X, Y, Z, W);

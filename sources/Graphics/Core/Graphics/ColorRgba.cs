@@ -3,6 +3,8 @@
 using System;
 using System.Globalization;
 using System.Text;
+using TerraFX.Numerics;
+using TerraFX.Utilities;
 
 namespace TerraFX.Graphics
 {
@@ -83,6 +85,11 @@ namespace TerraFX.Graphics
         /// <returns>A new <see cref="ColorRgba" /> instance with <see cref="Red" /> set to <paramref name="value" />.</returns>
         public ColorRgba WithRed(float value) => new ColorRgba(value, Green, Blue, Alpha);
 
+        /// <summary>Creates a new <see cref="Vector4" /> instance from the giver instance.</summary>
+        /// <param name="c">The color to convert to <see cref="Vector4" />.</param>
+        /// <returns>A new <see cref="Vector4" /> instance.</returns> 
+        public static Vector4 ToVector4(ColorRgba c) => new Vector4(c.Red, c.Green, c.Blue, c.Alpha);
+
         /// <inheritdoc />
         public override bool Equals(object? obj) => (obj is ColorRgba other) && Equals(other);
 
@@ -100,6 +107,19 @@ namespace TerraFX.Graphics
                 hashCode.Add(Alpha);
             }
             return hashCode.ToHashCode();
+        }
+
+        /// <summary>Tests if two <see cref="ColorRgba" /> instances (this and right) have sufficiently similar values to see them as equivalent.
+        /// Use this to compare values that might be affected by differences in rounding the least significant bits.</summary>
+        /// <param name="right">The right instance to compare.</param>
+        /// <param name="epsilon">The threshold below which they are sufficiently similar.</param>
+        /// <returns><c>true</c> if similar, <c>false</c> otherwise.</returns>
+        public bool EqualEstimate(ColorRgba right, ColorRgba epsilon)
+        {
+            return FloatUtilities.EqualEstimate(Red, right.Red, epsilon.Red)
+                && FloatUtilities.EqualEstimate(Green, right.Green, epsilon.Green)
+                && FloatUtilities.EqualEstimate(Blue, right.Blue, epsilon.Blue)
+                && FloatUtilities.EqualEstimate(Alpha, right.Alpha, epsilon.Alpha);
         }
 
         /// <inheritdoc />

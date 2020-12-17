@@ -170,9 +170,9 @@ namespace TerraFX.UnitTests.Numerics
             var mc = new Matrix4x4(new Vector4(1, 0, 0, 0), new Vector4(0, 0, 1, 0), new Vector4(0, -1, 0, 0), new Vector4(1, 2, 3, 1));
             var epsilon = Matrix4x4.One * 1e-6f;
 
-            Assert.That(Matrix4x4.CreateFromTransform(a) == Matrix4x4.Identity, Is.True);
-            Assert.That(Matrix4x4.EqualsEstimate(Matrix4x4.CreateFromTransform(b), mb, epsilon), Is.True);
-            Assert.That(Matrix4x4.EqualsEstimate(Matrix4x4.CreateFromTransform(c), mc, epsilon), Is.True);
+            Assert.That(Transform.ToMatrix4x4(a) == Matrix4x4.Identity, Is.True);
+            Assert.That(Transform.ToMatrix4x4(b).EqualEstimate(mb, epsilon), Is.True);
+            Assert.That(Transform.ToMatrix4x4(c).EqualEstimate(mc, epsilon), Is.True);
         }
 
         /// <summary>Ensures that <see cref="Transform" /> with 90 degree rotations switches to the correct axes.
@@ -192,9 +192,9 @@ namespace TerraFX.UnitTests.Numerics
             var xx = z * Matrix4x4.CreateFromTransform(zToX);
             var epsilon = Vector4.One * 1e-6f;
 
-            Assert.That(Vector4.EqualsEstimate(xx, x, epsilon), Is.True);
-            Assert.That(Vector4.EqualsEstimate(yy, y, epsilon), Is.True);
-            Assert.That(Vector4.EqualsEstimate(zz, z, epsilon), Is.True);
+            Assert.That(xx.EqualEstimate(x, epsilon), Is.True);
+            Assert.That(yy.EqualEstimate(y, epsilon), Is.True);
+            Assert.That(zz.EqualEstimate(z, epsilon), Is.True);
         }
     }
 }

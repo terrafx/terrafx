@@ -268,6 +268,18 @@ namespace TerraFX.Numerics
         /// <inheritdoc />
         public bool Equals(Transform other) => this == other;
 
+        /// <summary>Tests if two <see cref="Transform" /> instances (this and right) have sufficiently similar values to see them as equivalent.
+        /// Use this to compare values that might be affected by differences in rounding the least significant bits.</summary>
+        /// <param name="right">The right instance to compare.</param>
+        /// <param name="epsilon">The threshold below which they are sufficiently similar.</param>
+        /// <returns><c>True</c> if similar, <c>False</c> otherwise.</returns>
+        public bool EqualEstimate(Transform right, Transform epsilon)
+        {
+            return Rotation.EqualEstimate(right.Rotation, epsilon.Rotation)
+                && Scale.EqualEstimate(right.Scale, epsilon.Scale)
+                && Translation.EqualEstimate(right.Translation, epsilon.Translation);
+        }
+
         /// <inheritdoc />
         public override int GetHashCode() => HashCode.Combine(Scale, Rotation, Translation);
 

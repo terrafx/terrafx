@@ -11,7 +11,7 @@ using TerraFX.Utilities;
 namespace TerraFX.Numerics
 {
     /// <summary>Defines a two-dimensional Euclidean vector.</summary>
-    public readonly struct Vector2 : IEquatable<Vector2>, IFormattable
+    public readonly struct Vector2 : IEquatable<Vector2>, IEqualEstimate<Vector2>, IFormattable
     {
         /// <summary>Defines a <see cref="Vector2" /> where all components are zero.</summary>
         public static readonly Vector2 Zero = new Vector2(0.0f, 0.0f);
@@ -184,6 +184,17 @@ namespace TerraFX.Numerics
 
         /// <inheritdoc />
         public bool Equals(Vector2 other) => this == other;
+
+        /// <summary>Tests if two <see cref="Vector2" /> instances (this and right) have sufficiently similar values to see them as equivalent.
+        /// Use this to compare values that might be affected by differences in rounding the least significant bits.</summary>
+        /// <param name="right">The right instance to compare.</param>
+        /// <param name="epsilon">The threshold below which they are sufficiently similar.</param>
+        /// <returns><c>True</c> if similar, <c>False</c> otherwise.</returns>
+        public bool EqualEstimate(Vector2 right, Vector2 epsilon)
+        {
+            return FloatUtilities.EqualEstimate(X, right.X, epsilon.X)
+                && FloatUtilities.EqualEstimate(Y, right.Y, epsilon.Y);
+        }
 
         /// <inheritdoc />
         public override int GetHashCode() => HashCode.Combine(X, Y);

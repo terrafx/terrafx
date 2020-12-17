@@ -36,6 +36,9 @@ namespace TerraFX.Samples
             new HelloTransform("D3D12.HelloTransform", s_graphicsProviderD3D12),
             new HelloTransform("Vulkan.HelloTransform", s_graphicsProviderVulkan),
 
+            new HelloModelViewProjection("D3D12.HelloModelViewProjection", s_graphicsProviderD3D12),
+            new HelloModelViewProjection("Vulkan.HelloModelViewProjection", s_graphicsProviderVulkan),
+
             new HelloTexture("D3D12.HelloTexture", s_graphicsProviderD3D12),
             new HelloTexture("Vulkan.HelloTexture", s_graphicsProviderVulkan),
 

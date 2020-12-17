@@ -10,7 +10,7 @@ using System.Text;
 namespace TerraFX.Numerics
 {
     /// <summary>Defines a 3x3 row-major matrix.</summary>
-    public readonly struct Matrix3x3 : IEquatable<Matrix3x3>, IFormattable
+    public readonly struct Matrix3x3 : IEquatable<Matrix3x3>, IEqualEstimate<Matrix3x3>, IFormattable
     {
         /// <summary>Defines the identity matrix.</summary>
         public static readonly Matrix3x3 Identity = new Matrix3x3(Vector3.UnitX, Vector3.UnitY, Vector3.UnitZ);
@@ -145,6 +145,18 @@ namespace TerraFX.Numerics
 
         /// <inheritdoc />
         public bool Equals(Matrix3x3 other) => this == other;
+
+        /// <summary>Tests if two <see cref="Matrix4x4" /> instances (this and right) have sufficiently similar values to see them as equivalent.
+        /// Use this to compare values that might be affected by differences in rounding the least significant bits.</summary>
+        /// <param name="right">The right instance to compare.</param>
+        /// <param name="epsilon">The threshold below which they are sufficiently similar.</param>
+        /// <returns><c>True</c> if similar, <c>False</c> otherwise.</returns>
+        public bool EqualEstimate(Matrix3x3 right, Matrix3x3 epsilon)
+        {
+            return X.EqualEstimate(right.X, epsilon.X)
+                && Y.EqualEstimate(right.Y, epsilon.Y)
+                && Z.EqualEstimate(right.Z, epsilon.Z);
+        }
 
         /// <inheritdoc />
         public override int GetHashCode() => HashCode.Combine(X, Y, Z);
