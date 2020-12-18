@@ -3,10 +3,8 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
-using TerraFX.Graphics.Geometry2D;
 using TerraFX.Numerics;
 using TerraFX.UI;
 using TerraFX.Utilities;
@@ -95,18 +93,8 @@ namespace TerraFX.Samples.Graphics
                 var seconds = (uint)_elapsedTime.TotalSeconds;
                 if (_secondsOfLastFpsUpdate < seconds)
                 {
-                    var fps = " " + eventArgs.FramesPerSecond + "fps";
-                    var regEx = new Regex(@" \d+fps");
-                    string newTitle = null!;
-                    if (_secondsOfLastFpsUpdate == 0)
-                    {
-                        newTitle = Window.Title + fps;
-                    }
-                    else if (regEx.IsMatch(Window.Title))
-                    {
-                        newTitle = regEx.Replace(Window.Title, fps);
-                    }
-                    if (newTitle != null && Window.Title != newTitle)
+                    var newTitle = $"{Name} ({eventArgs.FramesPerSecond} fps)";
+                    if (Window.Title != newTitle)
                     {
                         Window.SetTitle(newTitle);
                     }
