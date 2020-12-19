@@ -94,10 +94,7 @@ namespace TerraFX.Samples.Graphics
                 if (_secondsOfLastFpsUpdate < seconds)
                 {
                     var newTitle = $"{Name} ({eventArgs.FramesPerSecond} fps)";
-                    if (Window.Title != newTitle)
-                    {
-                        Window.SetTitle(newTitle);
-                    }
+                    Window.SetTitle(newTitle);
                     _secondsOfLastFpsUpdate = seconds;
                 }
 
