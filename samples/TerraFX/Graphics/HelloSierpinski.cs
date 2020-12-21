@@ -173,12 +173,11 @@ namespace TerraFX.Samples.Graphics
                     var x = n % TextureWidth;
                     var y = n % TextureDz / TextureWidth;
                     var z = n / TextureDz;
-                    unchecked
                     {
-                        pTextureData[n] = (uint)(x << 0)     // r
-                                        | (uint)(y << 8)     // g
-                                        | (uint)(z << 16)    // b
-                                        | (uint)(0xFF << 24);// a
+                        pTextureData[n] = (uint)(x << 0)      // r
+                                        | (uint)(y << 8)      // g
+                                        | (uint)(z << 16)     // b
+                                        | (uint)(0xFFu << 24);// a
                     }
                 }
 

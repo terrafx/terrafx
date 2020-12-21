@@ -55,10 +55,6 @@ namespace TerraFX.Samples.Graphics
             using var indexStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, 64 * 1024);
             using var textureStagingBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Default, GraphicsResourceCpuAccess.Write, texture3DSize);
 
-            currentGraphicsContext.BeginFrame();
-            _quadPrimitive = CreateQuadPrimitive(currentGraphicsContext, vertexStagingBuffer, indexStagingBuffer, textureStagingBuffer);
-            currentGraphicsContext.EndFrame();
-
             _constantBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Constant, GraphicsResourceCpuAccess.CpuToGpu, 64 * 1024);
             _indexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Index, GraphicsResourceCpuAccess.GpuOnly, 64 * 1024);
             _vertexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Vertex, GraphicsResourceCpuAccess.GpuOnly, 64 * 1024);
@@ -69,6 +65,12 @@ namespace TerraFX.Samples.Graphics
 
             graphicsDevice.Signal(currentGraphicsContext.Fence);
             graphicsDevice.WaitForIdle();
+        }
+
+        protected override void Draw(GraphicsContext graphicsContext)
+        {
+            graphicsContext.Draw(_quadPrimitive);
+            base.Draw(graphicsContext);
         }
 
         protected override unsafe void Update(TimeSpan delta)
@@ -95,12 +97,6 @@ namespace TerraFX.Samples.Graphics
             );
 
             constantBuffer.UnmapAndWrite(in constantBufferRegion);
-        }
-
-        protected override void Draw(GraphicsContext graphicsContext)
-        {
-            graphicsContext.Draw(_quadPrimitive);
-            base.Draw(graphicsContext);
         }
 
         private unsafe GraphicsPrimitive CreateQuadPrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer indexStagingBuffer, GraphicsBuffer textureStagingBuffer)
@@ -176,10 +172,10 @@ namespace TerraFX.Samples.Graphics
                     var z = n / TextureDz;
 
                     pTextureData[n]
-                        = (UInt32)(x << 0)     // r
-                        | (UInt32)(y << 8)     // g
-                        | (UInt32)(z << 16)    // b
-                        | 0xFF00_0000;         // a
+                        = (uint)(x << 0)       // r
+                        | (uint)(y << 8)       // g
+                        | (uint)(z << 16)      // b
+                        | (uint)(0xFFu << 24); // a
                 }
 
                 textureStagingBuffer.UnmapAndWrite(in texture3DRegion);

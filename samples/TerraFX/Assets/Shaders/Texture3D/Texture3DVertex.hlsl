@@ -1,6 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 #include "Texture3DTypes.hlsl"
+
 cbuffer PerFrameInput : register(b0)
 {
     matrix frameTransform;
