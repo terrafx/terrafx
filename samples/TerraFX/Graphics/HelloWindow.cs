@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
-using TerraFX.Graphics.Geometry2D;
 using TerraFX.Numerics;
 using TerraFX.UI;
 using TerraFX.Utilities;
@@ -17,6 +16,7 @@ namespace TerraFX.Samples.Graphics
         private GraphicsDevice _graphicsDevice = null!;
         private Window _window = null!;
         private TimeSpan _elapsedTime;
+        private uint _secondsOfLastFpsUpdate;
 
         public HelloWindow(string name, params Assembly[] compositionAssemblies)
             : base(name, compositionAssemblies)
@@ -89,6 +89,16 @@ namespace TerraFX.Samples.Graphics
 
             if (_window.IsVisible)
             {
+                // add current fps to the end of the Window Title
+                var seconds = (uint)_elapsedTime.TotalSeconds;
+                if (_secondsOfLastFpsUpdate < seconds)
+                {
+                    var newTitle = $"{Name} ({eventArgs.FramesPerSecond} fps)";
+                    Window.SetTitle(newTitle);
+                    _secondsOfLastFpsUpdate = seconds;
+                }
+
+                // update the rendering
                 var currentGraphicsContext = _graphicsDevice.CurrentContext;
                 currentGraphicsContext.BeginFrame();
 
