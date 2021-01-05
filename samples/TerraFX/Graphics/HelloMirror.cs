@@ -4,15 +4,21 @@ using System;
 using System.Reflection;
 using TerraFX.ApplicationModel;
 using TerraFX.Graphics;
-using TerraFX.Graphics.Geometry2D;
 using TerraFX.Numerics;
 using static TerraFX.Utilities.InteropUtilities;
 
 namespace TerraFX.Samples.Graphics
 {
+    /// <summary>
+    /// This sample demonstrates the use of two rendering passes of a simple scene with a triangle in front of a mirror.
+    /// 1) the scene is rendered as seen in the mirror and with a render target that is an off-screen texture
+    /// 2) the scene is rendered 'normal' as seen from the main camera and into the framebuffer.
+    ///      There are two objects, the triangle from the first pass and a mirror - a quad with the first pass render result as a texture.
+    /// </summary>
     public sealed class HelloMirror : HelloWindow
     {
-        private GraphicsPrimitive _mirrorPrimitive = null!;
+        private GraphicsPrimitive _mirrorView = null!; // the scene as viewed from the mirror, just a triangle, to be rendered into the texture used for the mirror in the main view
+        private GraphicsPrimitive _mainView = null!;   // the scene as viewed from the main camera, a triangle and a quad for the mirror and the mirror view as texture for the quad
         private GraphicsBuffer _indexBuffer = null!;
         private GraphicsBuffer _vertexBuffer = null!;
 
@@ -23,7 +29,8 @@ namespace TerraFX.Samples.Graphics
 
         public override void Cleanup()
         {
-            _mirrorPrimitive?.Dispose();
+            _mirrorView?.Dispose();
+            _mainView?.Dispose();
             _indexBuffer?.Dispose();
             _vertexBuffer?.Dispose();
             base.Cleanup();
@@ -49,7 +56,8 @@ namespace TerraFX.Samples.Graphics
             _indexBuffer = graphicsDevice.MemoryAllocator.CreateBuffer(GraphicsBufferKind.Index, GraphicsResourceCpuAccess.GpuOnly, 64 * 1024);
 
             currentGraphicsContext.BeginFrame();
-            _mirrorPrimitive = CreateMirrorPrimitive(currentGraphicsContext, vertexStagingBuffer, indexStagingBuffer, textureStagingBuffer);
+            _mirrorView = CreateMirrorViewPrimitive(currentGraphicsContext, vertexStagingBuffer);
+            _mainView = CreateMainViewPrimitive(currentGraphicsContext, vertexStagingBuffer, indexStagingBuffer, textureStagingBuffer);
             currentGraphicsContext.EndFrame();
 
             graphicsDevice.Signal(currentGraphicsContext.Fence);
@@ -58,11 +66,73 @@ namespace TerraFX.Samples.Graphics
 
         protected override void Draw(GraphicsContext graphicsContext)
         {
-            graphicsContext.Draw(_mirrorPrimitive);
+            graphicsContext.Draw(_mainView);
+            graphicsContext.Draw(_mirrorView);
             base.Draw(graphicsContext);
         }
 
-        private unsafe GraphicsPrimitive CreateMirrorPrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer indexStagingBuffer, GraphicsBuffer textureStagingBuffer)
+        private unsafe GraphicsPrimitive CreateMirrorViewPrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer)
+        {
+            var graphicsDevice = GraphicsDevice;
+            var graphicsSurface = graphicsDevice.Surface;
+
+            var graphicsPipeline = CreateGraphicsPipeline(graphicsDevice, "Identity", "main", "main");
+            var vertexBuffer = _vertexBuffer;
+
+            var vertexBufferRegion = CreateVertexBufferRegion(graphicsContext, vertexBuffer, vertexStagingBuffer, aspectRatio: graphicsSurface.Width / graphicsSurface.Height);
+            graphicsContext.Copy(vertexBuffer, vertexStagingBuffer);
+
+            return graphicsDevice.CreatePrimitive(graphicsPipeline, vertexBufferRegion, SizeOf<IdentityVertex>());
+
+            static GraphicsMemoryRegion<GraphicsResource> CreateVertexBufferRegion(GraphicsContext graphicsContext, GraphicsBuffer vertexBuffer, GraphicsBuffer vertexStagingBuffer, float aspectRatio)
+            {
+                var vertexBufferRegion = vertexBuffer.Allocate(SizeOf<IdentityVertex>() * 3, alignment: 16);
+                var pVertexBuffer = vertexStagingBuffer.Map<IdentityVertex>(in vertexBufferRegion);
+
+                pVertexBuffer[0] = new IdentityVertex {
+                    Position = new Vector3(0.0f, 0.25f * aspectRatio, 0.0f),
+                    Color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f)
+                };
+
+                pVertexBuffer[1] = new IdentityVertex {
+                    Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.0f),
+                    Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f)
+                };
+
+                pVertexBuffer[2] = new IdentityVertex {
+                    Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
+                    Color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f)
+                };
+
+                vertexStagingBuffer.UnmapAndWrite(in vertexBufferRegion);
+                return vertexBufferRegion;
+            }
+
+            GraphicsPipeline CreateGraphicsPipeline(GraphicsDevice graphicsDevice, string shaderName, string vertexShaderEntryPoint, string pixelShaderEntryPoint)
+            {
+                var signature = CreateGraphicsPipelineSignature(graphicsDevice);
+                var vertexShader = CompileShader(graphicsDevice, GraphicsShaderKind.Vertex, shaderName, vertexShaderEntryPoint);
+                var pixelShader = CompileShader(graphicsDevice, GraphicsShaderKind.Pixel, shaderName, pixelShaderEntryPoint);
+
+                return graphicsDevice.CreatePipeline(signature, vertexShader, pixelShader);
+            }
+
+            static GraphicsPipelineSignature CreateGraphicsPipelineSignature(GraphicsDevice graphicsDevice)
+            {
+                var inputs = new GraphicsPipelineInput[1] {
+                    new GraphicsPipelineInput(
+                        new GraphicsPipelineInputElement[2] {
+                            new GraphicsPipelineInputElement(typeof(Vector3), GraphicsPipelineInputElementKind.Position, size: 12),
+                            new GraphicsPipelineInputElement(typeof(Vector4), GraphicsPipelineInputElementKind.Color, size: 16),
+                        }
+                    ),
+                };
+
+                return graphicsDevice.CreatePipelineSignature(inputs);
+            }
+        }
+
+        private unsafe GraphicsPrimitive CreateMainViewPrimitive(GraphicsContext graphicsContext, GraphicsBuffer vertexStagingBuffer, GraphicsBuffer indexStagingBuffer, GraphicsBuffer textureStagingBuffer)
         {
             var graphicsDevice = GraphicsDevice;
             var graphicsSurface = graphicsDevice.Surface;
@@ -135,22 +205,22 @@ namespace TerraFX.Samples.Graphics
                 var pVertexBuffer = vertexStagingBuffer.Map<TextureVertex>(in vertexBufferRegion);
 
                 pVertexBuffer[0] = new TextureVertex {                          //
-                    Position = new Vector3(-0.25f, 0.25f * aspectRatio, 0.0f),  //   y          in this setup
+                    Position = new Vector3(-0.5f, 0.25f * aspectRatio, 0.1f),   //   y          in this setup
                     UV = new Vector2(0.0f, 0.0f),                               //   ^     z    the origin o
                 };                                                              //   |   /      is in the middle
                                                                                 //   | /        of the rendered scene
                 pVertexBuffer[1] = new TextureVertex {                          //   o------>x
-                    Position = new Vector3(0.25f, 0.25f * aspectRatio, 0.5f),   //
+                    Position = new Vector3(0.0f, 0.25f * aspectRatio, 0.5f),    //
                     UV = new Vector2(1.0f, 0.0f),                               //   0 ----- 1
                 };                                                              //   | \     |
                                                                                 //   |   \   |
                 pVertexBuffer[2] = new TextureVertex {                          //   |     \ |
-                    Position = new Vector3(0.25f, -0.25f * aspectRatio, 0.5f),  //   3-------2
+                    Position = new Vector3(0.0f, -0.25f * aspectRatio, 0.5f),   //   3-------2
                     UV = new Vector2(1.0f, 1.0f),                               //
                 };
 
                 pVertexBuffer[3] = new TextureVertex {
-                    Position = new Vector3(-0.25f, -0.25f * aspectRatio, 0.0f),
+                    Position = new Vector3(-0.5f, -0.25f * aspectRatio, 0.1f),
                     UV = new Vector2(0.0f, 1.0f),
                 };
 
