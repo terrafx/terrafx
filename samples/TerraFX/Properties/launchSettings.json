@@ -2,7 +2,7 @@
   "profiles": {
     "TerraFX.Samples": {
       "commandName": "Project",
-      "commandLineArgs": "all",
+      "commandLineArgs": "D3D12.HelloMirror",
       "nativeDebugging": true
     }
   }
