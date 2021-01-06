@@ -12,29 +12,28 @@ using TerraFX.Utilities;
 namespace TerraFX.Graphics.Geometry3D
 {
     /// <summary>Defines a 3D Box via its size along x, y, z, meaning width, height and depth.
-    /// It is assumed to be centered on the origin, such that it covers all eight quadrants equally.</summary>
+    /// It is assumed to be axis aligned and centered on Location,
+    /// such that if Location is (0,0,0) the Box covers all eight quadrants equally.</summary>
     public readonly struct Box : IEquatable<Box>, IFormattable
     {
         /// <summary>Defines a <see cref="Box" /> of unit length.</summary>
         public static readonly Box One = new Box(Vector3.One);
 
+        private readonly Vector3 _location;
         private readonly Vector3 _size;
 
         /// <summary>Initializes a new instance of the <see cref="Box" /> struct.</summary>
-        /// <param name="size">The size of the instance.</param>
-        public Box(Vector3 size = default)
+        /// <param name="size">The size for this instance.</param>
+        /// <param name="location">The location for this instance.</param>
+        public Box(Vector3 size = default, Vector3 location = default)
         {
+            _location = location;
             _size = size;
         }
 
-        /// <summary>Initializes a new instance of the <see cref="Box" /> struct.</summary>
-        /// <param name="sizeX">The x-coordinate of the instance.</param>
-        /// <param name="sizeY">The y-coordinate of the instance.</param>
-        /// <param name="sizeZ">The y-coordinate of the instance.</param>
-        public Box(float sizeX, float sizeY, float sizeZ)
-        {
-            _size = new Vector3(sizeX, sizeY, sizeZ);
-        }
+        /// <summary>Gets the location of the instance.
+        /// Note that it is assumed that Location is also the center of the Box.</summary>
+        public Vector3 Location => _location;
 
         /// <summary>Gets the size of the instance.</summary>
         public Vector3 Size => _size;
@@ -43,18 +42,13 @@ namespace TerraFX.Graphics.Geometry3D
         /// <param name="left">The <see cref="Box" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="Box" /> to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
-        public static bool operator ==(Box left, Box right) => left.Size == right.Size;
+        public static bool operator ==(Box left, Box right) => left.Size == right.Size && left.Location == right.Location;
 
         /// <summary>Compares two <see cref="Box" /> instances to determine inequality.</summary>
         /// <param name="left">The <see cref="Box" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="Box" /> to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
-        public static bool operator !=(Box left, Box right) => left.Size != right.Size;
-
-        /// <summary>Computes the center of mass of the given <see cref="Box" /> instance.</summary>
-        /// <param name="box">The <see cref="Box" /> for which to compute the corners.</param>
-        /// <returns>The center of mass of the <see cref="Box" />.</returns>
-        public static Vector3 Center(Box box) => Vector3.Zero;
+        public static bool operator !=(Box left, Box right) => !(left == right);
 
         /// <summary>Creates an array of the 8 corners of the given <see cref="Box" /> instance.</summary>
         /// <param name="box">The box for which to compute the corners.</param>
@@ -78,18 +72,29 @@ namespace TerraFX.Graphics.Geometry3D
             //  |.      |/
             //  a-------b   ---X
 
-            var a = new Vector3(nx, ny, nz);
-            var b = new Vector3(px, ny, nz);
-            var c = new Vector3(nx, py, nz);
-            var d = new Vector3(px, py, nz);
-            var e = new Vector3(nx, ny, pz);
-            var f = new Vector3(px, ny, pz);
-            var g = new Vector3(nx, py, pz);
-            var h = new Vector3(px, py, pz);
+            var a = new Vector3(nx, ny, nz) + box.Location;
+            var b = new Vector3(px, ny, nz) + box.Location;
+            var c = new Vector3(nx, py, nz) + box.Location;
+            var d = new Vector3(px, py, nz) + box.Location;
+            var e = new Vector3(nx, ny, pz) + box.Location;
+            var f = new Vector3(px, ny, pz) + box.Location;
+            var g = new Vector3(nx, py, pz) + box.Location;
+            var h = new Vector3(px, py, pz) + box.Location;
 
             var corners = new Vector3[8] { a, b, c, d, e, f, g, h };
             return corners;
         }
+
+        /// <summary>
+        /// The minimum coordinate value corner of the box (left, bottom, front).
+        /// </summary>
+        /// <returns>The position of the minimum corner.</returns>
+        public Vector3 CornerMin() => Location - (Size / 2);
+        /// <summary>
+        /// The maximum coordinate value corner of the box (right, top, back).
+        /// </summary>
+        /// <returns>The position of the maximum corner.</returns>
+        public Vector3 CornerMax() => Location + (Size / 2);
 
         /// <inheritdoc />
         public override bool Equals(object? obj) => (obj is Box other) && Equals(other);
@@ -103,22 +108,40 @@ namespace TerraFX.Graphics.Geometry3D
         /// <param name="right">The right instance to compare.</param>
         /// <param name="epsilon">The threshold below which they are sufficiently similar.</param>
         /// <returns>True if similar, false otherwise.</returns>
-        public static bool EqualEstimate(Box left, Box right, Box epsilon) => Vector3.EqualEstimate(left._size, right._size, epsilon._size);
+        public static bool EqualEstimate(Box left, Box right, Box epsilon) => Vector3.EqualEstimate(left._size, right._size, epsilon._size) && Vector3.EqualEstimate(left._location, right._location, epsilon._location);
 
         /// <inheritdoc />
         public override int GetHashCode()
         {
             var hashCode = new HashCode();
             {
+                hashCode.Add(Location);
                 hashCode.Add(Size);
             }
             return hashCode.ToHashCode();
         }
 
-        /// <summary>Computes the largest <see cref="Box" /> that is fully contained in both, 'this' and 'box'.</summary>
+        /// <summary>Computes the largest <see cref="Box" /> that is fully contained in both, 'this' and 'other'.</summary>
         /// <param name="other">The other <see cref="Box" /> to consider.</param>
         /// <returns>The resulting new instance.</returns>
-        public Box Intersection(Box other) => new Box(Vector3.Min(Size, other.Size));
+        public Box Intersection(Box other)
+        {
+            Box intersectionBox = default;
+            if (Location.X + (Size.X / 2) < other.Location.X - (Size.X / 2) ||
+                Location.X - (Size.X / 2) > other.Location.X + (Size.X / 2) ||
+                Location.Y + (Size.Y / 2) < other.Location.Y - (Size.Y / 2) ||
+                Location.Y - (Size.Y / 2) > other.Location.Y + (Size.Y / 2) ||
+                Location.Z + (Size.Z / 2) < other.Location.Z - (Size.Z / 2) ||
+                Location.Z - (Size.Z / 2) > other.Location.Z + (Size.Z / 2))
+            {
+                return intersectionBox;
+            }
+
+            var cornerMin = Vector3.Max(CornerMin(), other.CornerMin());
+            var cornerMax = Vector3.Min(CornerMax(), other.CornerMax());
+            intersectionBox = new Box(cornerMax - cornerMin, (cornerMax + cornerMin) / 2);
+            return intersectionBox;
+        }
 
         /// <inheritdoc />
         public override string ToString() => ToString(format: null, formatProvider: null);
@@ -136,11 +159,22 @@ namespace TerraFX.Graphics.Geometry3D
         /// <summary>Computes the smallest <see cref="Box" /> that can fit both, 'this' and 'box'.</summary>
         /// <param name="other">The other <see cref="Box" /> to fit.</param>
         /// <returns>The resulting new instance.</returns>
-        public Box Union(Box other) => new Box(Vector3.Max(Size, other.Size));
+        public Box Union(Box other)
+        {
+            var cornerMin = Vector3.Min(CornerMin(), other.CornerMin());
+            var cornerMax = Vector3.Max(CornerMax(), other.CornerMax());
+            var intersectionBox = new Box(cornerMax - cornerMin, (cornerMax + cornerMin) / 2);
+            return intersectionBox;
+        }
+
+        /// <summary>Creates a new <see cref="Box" /> instance with <see cref="Location" /> set to the specified value.</summary>
+        /// <param name="value">The new location of the instance.</param>
+        /// <returns>A new <see cref="Box" /> instance with <see cref="Location" /> set to <paramref name="value" />.</returns>
+        public Box WithLocation(Vector3 value) => new Box(Size, value);
 
         /// <summary>Creates a new <see cref="Box" /> instance with <see cref="Size" /> set to the specified value.</summary>
         /// <param name="value">The new size of the instance.</param>
         /// <returns>A new <see cref="Box" /> instance with <see cref="Size" /> set to <paramref name="value" />.</returns>
-        public Box WithSize(Vector3 value) => new Box(value);
+        public Box WithSize(Vector3 value) => new Box(value, Location);
     }
 }
