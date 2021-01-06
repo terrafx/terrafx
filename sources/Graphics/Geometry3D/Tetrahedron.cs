@@ -17,29 +17,27 @@ namespace TerraFX.Graphics.Geometry3D
     /// Only the back bottom edge of the box is also an edge of the Tetrahedron.
     /// The other two corners are at the midpoint of the bottom front edge and the center of the top face.
     /// Note that this makes very intuitive use of the size of the bounding box.
-    /// The box is shifted up such that the tetrahedron center of mass at the origin.</summary>
+    /// The box is shifted up such that the tetrahedron center of mass is at _location.</summary>
     public readonly struct Tetrahedron : IEquatable<Tetrahedron>, IFormattable
     {
         /// <summary>Defines an equal sided <see cref="Tetrahedron" /> with edges that are unit length.</summary>
         public static readonly Tetrahedron One = new Tetrahedron(new Vector3(1, 0.86602544f, 0.75f));
 
+        private readonly Vector3 _location;
         private readonly Vector3 _size;
 
         /// <summary>Initializes a new instance of the <see cref="Tetrahedron" /> struct.</summary>
-        /// <param name="size">The size of the instance.</param>
-        public Tetrahedron(Vector3 size = default)
+        /// <param name="size">The size for the instance.</param>
+        /// <param name="location">The location for the instance.</param>
+        public Tetrahedron(Vector3 size = default, Vector3 location = default)
         {
+            _location = location;
             _size = size;
         }
 
-        /// <summary>Initializes a new instance of the <see cref="Tetrahedron" /> struct.</summary>
-        /// <param name="sizeX">The x-coordinate of the instance.</param>
-        /// <param name="sizeY">The y-coordinate of the instance.</param>
-        /// <param name="sizeZ">The y-coordinate of the instance.</param>
-        public Tetrahedron(float sizeX, float sizeY, float sizeZ)
-        {
-            _size = new Vector3(sizeX, sizeY, sizeZ);
-        }
+        /// <summary>Gets the location of the instance.
+        /// Note that it is assumed that Location is also the center of the Tetrahedron.</summary>
+        public Vector3 Location => _location;
 
         /// <summary>Gets the size of the instance.</summary>
         public Vector3 Size => _size;
@@ -48,13 +46,13 @@ namespace TerraFX.Graphics.Geometry3D
         /// <param name="left">The <see cref="Tetrahedron" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="Tetrahedron" /> to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
-        public static bool operator ==(Tetrahedron left, Tetrahedron right) => left.Size == right.Size;
+        public static bool operator ==(Tetrahedron left, Tetrahedron right) => left.Size == right.Size && left.Location == right.Location;
 
         /// <summary>Compares two <see cref="Tetrahedron" /> instances to determine inequality.</summary>
         /// <param name="left">The <see cref="Tetrahedron" /> to compare with <paramref name="right" />.</param>
         /// <param name="right">The <see cref="Tetrahedron" /> to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
-        public static bool operator !=(Tetrahedron left, Tetrahedron right) => left.Size != right.Size;
+        public static bool operator !=(Tetrahedron left, Tetrahedron right) => !(left == right);
 
         /// <summary>Creates an array of the 8 corners of the given <see cref="Tetrahedron" /> instance.</summary>
         /// <param name="tetrahedron">The <see cref="Tetrahedron" /> for which to compute the corners.</param>
@@ -81,7 +79,7 @@ namespace TerraFX.Graphics.Geometry3D
             //         '
             //         c
 
-            var shiftCenterToOrigin = new Vector3(0, 0.25f * ny, 0.5f * pz);
+            var shiftCenterToOrigin = new Vector3(0, 0.25f * ny, 0.5f * pz) + tetrahedron.Location;
             var a = shiftCenterToOrigin + new Vector3(nx, py, nz);
             var b = shiftCenterToOrigin + new Vector3(px, py, nz);
             var c = shiftCenterToOrigin + new Vector3(0, ny, nz);
@@ -103,13 +101,16 @@ namespace TerraFX.Graphics.Geometry3D
         /// <param name="right">The right instance to compare.</param>
         /// <param name="epsilon">The threshold below which they are sufficiently similar.</param>
         /// <returns>True if similar, false otherwise.</returns>
-        public static bool EqualEstimate(Tetrahedron left, Tetrahedron right, Tetrahedron epsilon) => Vector3.EqualEstimate(left._size, right._size, epsilon._size);
+        public static bool EqualEstimate(Tetrahedron left, Tetrahedron right, Tetrahedron epsilon)
+            => Vector3.EqualEstimate(left._size, right._size, epsilon._size)
+            && Vector3.EqualEstimate(left._location, right._location, epsilon._location);
 
         /// <inheritdoc />
         public override int GetHashCode()
         {
             var hashCode = new HashCode();
             {
+                hashCode.Add(Location);
                 hashCode.Add(Size);
             }
             return hashCode.ToHashCode();
@@ -121,16 +122,22 @@ namespace TerraFX.Graphics.Geometry3D
         /// <inheritdoc />
         public string ToString(string? format, IFormatProvider? formatProvider)
         {
-            return new StringBuilder(3)
+            return new StringBuilder(4)
                 .Append('<')
                 .Append("Size" + Size.ToString(format, formatProvider))
+                .Append("@" + Location.ToString(format, formatProvider))
                 .Append('>')
                 .ToString();
         }
 
+        /// <summary>Creates a new <see cref="Tetrahedron" /> instance with <see cref="Location" /> set to the specified value.</summary>
+        /// <param name="value">The new location of the instance.</param>
+        /// <returns>A new <see cref="Box" /> instance with <see cref="Location" /> set to <paramref name="value" />.</returns>
+        public Tetrahedron WithLocation(Vector3 value) => new Tetrahedron(Size, value);
+
         /// <summary>Creates a new <see cref="Tetrahedron" /> instance with <see cref="Size" /> set to the specified value.</summary>
         /// <param name="value">The new size of the instance.</param>
         /// <returns>A new <see cref="Tetrahedron" /> instance with <see cref="Size" /> set to <paramref name="value" />.</returns>
-        public Tetrahedron WithSize(Vector3 value) => new Tetrahedron(value);
+        public Tetrahedron WithSize(Vector3 value) => new Tetrahedron(value, Location);
     }
 }

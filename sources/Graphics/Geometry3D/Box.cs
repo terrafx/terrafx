@@ -108,7 +108,9 @@ namespace TerraFX.Graphics.Geometry3D
         /// <param name="right">The right instance to compare.</param>
         /// <param name="epsilon">The threshold below which they are sufficiently similar.</param>
         /// <returns>True if similar, false otherwise.</returns>
-        public static bool EqualEstimate(Box left, Box right, Box epsilon) => Vector3.EqualEstimate(left._size, right._size, epsilon._size) && Vector3.EqualEstimate(left._location, right._location, epsilon._location);
+        public static bool EqualEstimate(Box left, Box right, Box epsilon)
+            => Vector3.EqualEstimate(left._size, right._size, epsilon._size)
+            && Vector3.EqualEstimate(left._location, right._location, epsilon._location);
 
         /// <inheritdoc />
         public override int GetHashCode()
@@ -149,9 +151,10 @@ namespace TerraFX.Graphics.Geometry3D
         /// <inheritdoc />
         public string ToString(string? format, IFormatProvider? formatProvider)
         {
-            return new StringBuilder(3)
+            return new StringBuilder(4)
                 .Append('<')
                 .Append("Size" + Size.ToString(format, formatProvider))
+                .Append("@" + Location.ToString(format, formatProvider))
                 .Append('>')
                 .ToString();
         }
