@@ -16,6 +16,7 @@ using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.VkVertexInputRate;
 using static TerraFX.Interop.Vulkan;
 using static TerraFX.Utilities.InteropUtilities;
+using static TerraFX.Utilities.MemoryUtilities;
 using static TerraFX.Utilities.State;
 using TerraFX.Numerics;
 
@@ -175,7 +176,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                         sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
                         stage = VK_SHADER_STAGE_VERTEX_BIT,
                         module = vertexShader.VulkanShaderModule,
-                        pName = (sbyte*)Allocate(entryPointNameLength),
+                        pName = AllocateArray<sbyte>(entryPointNameLength),
                     };
 
                     var destination = new Span<sbyte>(pipelineShaderStageCreateInfos[shaderIndex].pName, (int)entryPointNameLength);
@@ -237,7 +238,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                         sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
                         stage = VK_SHADER_STAGE_FRAGMENT_BIT,
                         module = pixelShader.VulkanShaderModule,
-                        pName = (sbyte*)Allocate(entryPointNameLength),
+                        pName = AllocateArray<sbyte>(entryPointNameLength),
                     };
 
                     var destination = new Span<sbyte>(pipelineShaderStageCreateInfos[shaderIndex].pName, (int)entryPointNameLength);
@@ -266,11 +267,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 for (uint index = 0; index < pipelineShaderStageCreateInfosCount; index++)
                 {
                     var entryPointName = pipelineShaderStageCreateInfos[index].pName;
-
-                    if (entryPointName != null)
-                    {
-                        Free(entryPointName);
-                    }
+                    Free(entryPointName);
                 }
             }
 

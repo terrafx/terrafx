@@ -6,7 +6,9 @@ using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
+using static TerraFX.Utilities.IntegerUtilities;
 using static TerraFX.Utilities.InteropUtilities;
+using static TerraFX.Utilities.MemoryUtilities;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.Vulkan
@@ -27,7 +29,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             _vulkanShaderModuleCreateInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
             _vulkanShaderModuleCreateInfo.codeSize = bytecodeLength;
-            _vulkanShaderModuleCreateInfo.pCode = (uint*)Allocate(bytecodeLength);
+            _vulkanShaderModuleCreateInfo.pCode = AllocateArray<uint>(AlignUp(bytecodeLength, SizeOf<nuint>()));
 
             var destination = new Span<byte>(_vulkanShaderModuleCreateInfo.pCode, (int)bytecodeLength);
             bytecode.CopyTo(destination);
@@ -86,11 +88,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private void DisposeVulkanShaderModuleCreateInfo()
         {
             var code = _vulkanShaderModuleCreateInfo.pCode;
-
-            if (code != null)
-            {
-                Free(code);
-            }
+            Free(code);
         }
     }
 }

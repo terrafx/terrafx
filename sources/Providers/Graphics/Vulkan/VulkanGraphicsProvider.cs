@@ -16,6 +16,7 @@ using static TerraFX.Interop.VkDebugReportFlagBitsEXT;
 using static TerraFX.Interop.Vulkan;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.InteropUtilities;
+using static TerraFX.Utilities.MemoryUtilities;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.Vulkan
@@ -232,35 +233,12 @@ namespace TerraFX.Graphics.Providers.Vulkan
             }
             finally
             {
-                if (enabledLayerNames != null)
-                {
-                    Free(enabledLayerNames);
-                }
-
-                if (optionalLayerNamesBuffer != null)
-                {
-                    Free(optionalLayerNamesBuffer);
-                }
-
-                if (requiredLayerNamesBuffer != null)
-                {
-                    Free(requiredLayerNamesBuffer);
-                }
-
-                if (enabledExtensionNames != null)
-                {
-                    Free(enabledExtensionNames);
-                }
-
-                if (optionalExtensionNamesBuffer != null)
-                {
-                    Free(optionalExtensionNamesBuffer);
-                }
-
-                if (requiredExtensionNamesBuffer != null)
-                {
-                    Free(requiredExtensionNamesBuffer);
-                }
+                Free(enabledLayerNames);
+                Free(optionalLayerNamesBuffer);
+                Free(requiredLayerNamesBuffer);
+                Free(enabledExtensionNames);
+                Free(optionalExtensionNamesBuffer);
+                Free(requiredExtensionNamesBuffer);
             }
 
             static uint EnableProperties(sbyte* propertyNames, int propertyNamesCount, int propertySize, string[] requiredNames, string[] optionalNames, out sbyte* requiredNamesBuffer, out sbyte* optionalNamesBuffer, out sbyte** enabledNames)
@@ -268,7 +246,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 var requiredNamesCount = MarshalNames(requiredNames, out requiredNamesBuffer);
                 var optionalNamesCount = MarshalNames(optionalNames, out optionalNamesBuffer);
 
-                enabledNames = (sbyte**)Allocate((nuint)((requiredNamesCount + optionalNamesCount) * sizeof(sbyte*)));
+                enabledNames = (sbyte**)AllocateArray<nuint>((nuint)(requiredNamesCount + optionalNamesCount));
 
                 var enabledPropertyCount = EnablePropertiesByName(propertyNames, propertyNamesCount, propertySize, requiredNamesBuffer, requiredNamesCount, enabledNames);
 
@@ -346,7 +324,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             static int MarshalNames(string[] names, out sbyte* namesBuffer)
             {
                 nuint sizePerEntry = SizeOf<nuint>() + VK_MAX_EXTENSION_NAME_SIZE;
-                namesBuffer = (sbyte*)Allocate((nuint)names.Length * sizePerEntry);
+                namesBuffer = AllocateArray<sbyte>((nuint)names.Length * sizePerEntry);
 
                 var pCurrent = namesBuffer;
 
