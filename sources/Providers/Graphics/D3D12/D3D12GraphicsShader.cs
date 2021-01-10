@@ -3,7 +3,7 @@
 using System;
 using TerraFX.Interop;
 using TerraFX.Utilities;
-using static TerraFX.Utilities.InteropUtilities;
+using static TerraFX.Utilities.MemoryUtilities;
 using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.D3D12
@@ -57,11 +57,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         private void DisposeD3D12ShaderBytecode()
         {
             var shaderBytecode = _d3d12ShaderBytecode.pShaderBytecode;
-
-            if (shaderBytecode is not null)
-            {
-                Free(shaderBytecode);
-            }
+            Free(shaderBytecode);
         }
     }
 }
