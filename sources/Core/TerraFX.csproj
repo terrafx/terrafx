@@ -7,11 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Update="Collections\PropertySet.DebugView.cs" DependentUpon="PropertySet.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Utilities\TerraFX.Utilities.csproj" />
+    <PackageReference Include="TerraFX.Interop.Mimalloc" />
   </ItemGroup>
 
 </Project>
