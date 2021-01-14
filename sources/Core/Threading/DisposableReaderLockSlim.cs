@@ -16,7 +16,7 @@ namespace TerraFX.Threading
         /// <param name="isExternallySynchronized"><c>false</c> if a read lock on <paramref name="mutex" /> should be acquired; otherwise, <c>true</c>.</param>
         public DisposableReaderLockSlim(ReaderWriterLockSlim mutex, bool isExternallySynchronized)
         {
-            AssertNotNull(mutex, nameof(mutex));
+            AssertNotNull(mutex);
 
             if (!isExternallySynchronized)
             {

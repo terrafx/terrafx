@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.Threading;
+using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -108,7 +109,7 @@ namespace TerraFX.Graphics
 
             if (!succeeded)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(size);
             }
             return region;
         }
@@ -136,7 +137,7 @@ namespace TerraFX.Graphics
 
             if (blockIndex == -1)
             {
-                ThrowKeyNotFoundException(nameof(region));
+                ThrowKeyNotFoundException(region, nameof(blocks));
             }
 
             block.Free(in region);
@@ -358,7 +359,7 @@ namespace TerraFX.Graphics
             }
 
             _minimumSize = minimumSize;
-            Assert(_size == size);
+            Assert(AssertionsEnabled && (_size == size));
 
             return true;
         }
@@ -509,7 +510,7 @@ namespace TerraFX.Graphics
 
             if (useDedicatedBlock && useExistingBlock)
             {
-                ThrowArgumentOutOfRangeException(flags, nameof(flags));
+                ThrowForInvalidFlagsCombination(nameof(flags));
             }
 
             _allocator.GetBudget(this, out var budget);
@@ -530,7 +531,7 @@ namespace TerraFX.Graphics
                 for (var blockIndex = 0; blockIndex < blocksLength; ++blockIndex)
                 {
                     var currentBlock = blocks[blockIndex];
-                    AssertNotNull(currentBlock, nameof(currentBlock));
+                    AssertNotNull(currentBlock);
 
                     if (currentBlock.TryAllocate(size, alignment, out region))
                     {

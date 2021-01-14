@@ -96,7 +96,7 @@ namespace TerraFX
         /// <exception cref="ObjectDisposedException">The lazy value has been disposed.</exception>
         public void Reset(Func<T> factory)
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(ValueLazy<T>));
             ThrowIfNull(factory, nameof(factory));
 
             _factory = factory;
@@ -105,7 +105,7 @@ namespace TerraFX
 
         private void CreateValue()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(ValueLazy<T>));
 
             var spinWait = new SpinWait();
 
@@ -115,7 +115,7 @@ namespace TerraFX
 
                 if (previousState == Initialized)
                 {
-                    AssertNotNull(_factory, nameof(_factory));
+                    AssertNotNull(_factory);
 
                     _value = _factory();
                     _state.Transition(from: Creating, to: Created);

@@ -9,6 +9,7 @@ using System.Threading;
 using TerraFX.Interop;
 using TerraFX.Threading;
 using static TerraFX.Interop.Windows;
+using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.UI.Providers.Win32.HelperUtilities;
 using static TerraFX.Utilities.AssertionUtilities;
@@ -57,7 +58,7 @@ namespace TerraFX.UI.Providers.Win32
         {
             get
             {
-                ThrowIfDisposedOrDisposing(_state);
+                ThrowIfDisposedOrDisposing(_state, nameof(Win32WindowProvider));
                 return _classAtom.Value;
             }
         }
@@ -82,7 +83,7 @@ namespace TerraFX.UI.Providers.Win32
         {
             get
             {
-                ThrowIfDisposedOrDisposing(_state);
+                ThrowIfDisposedOrDisposing(_state, nameof(Win32WindowProvider));
                 return _windows.Value?.Values ?? Enumerable.Empty<Win32Window>();
             }
         }
@@ -91,7 +92,7 @@ namespace TerraFX.UI.Providers.Win32
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public override Window CreateWindow()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(Win32WindowProvider));
             return new Win32Window(this);
         }
 
@@ -165,8 +166,8 @@ namespace TerraFX.UI.Providers.Win32
 
             if (forwardMessage)
             {
-                Assert(windows != null, Resources.ArgumentNullExceptionMessage, nameof(windows));
-                Assert(window != null, Resources.ArgumentNullExceptionMessage, nameof(window));
+                AssertNotNull(windows);
+                AssertNotNull(window);
 
                 var result = window.ProcessWindowMessage(msg, wParam, lParam);
 
@@ -188,7 +189,7 @@ namespace TerraFX.UI.Providers.Win32
         private static Win32Window RemoveWindow(Dictionary<IntPtr, Win32Window> windows, IntPtr hWnd)
         {
             _ = windows.Remove(hWnd, out var window);
-            Assert(window != null, Resources.ArgumentNullExceptionMessage, nameof(window));
+            AssertNotNull(window);
 
             if (windows.Count == 0)
             {
@@ -203,8 +204,7 @@ namespace TerraFX.UI.Providers.Win32
             var desktopWindowHandle = GetDesktopWindow();
 
             var desktopClassName = stackalloc ushort[256]; // 256 is the maximum length of WNDCLASSEX.lpszClassName
-            var desktopClassNameLength = GetClassNameW(desktopWindowHandle, desktopClassName, 256);
-            ThrowExternalExceptionIf(desktopClassNameLength == 0, nameof(GetClassNameW));
+            ThrowForLastErrorIfZero(GetClassNameW(desktopWindowHandle, desktopClassName, 256), nameof(GetClassNameW));
 
             WNDCLASSEXW desktopWindowClass;
 
@@ -227,7 +227,7 @@ namespace TerraFX.UI.Providers.Win32
                 // Currently, we are well below this limit and should be hitting 74 characters + the null terminator
 
                 var className = $"{GetType().FullName}.{EntryPointModule:X16}.{GetHashCode():X8}";
-                Assert(className.Length < byte.MaxValue, Resources.ArgumentOutOfRangeExceptionMessage, nameof(className), className);
+                Assert(AssertionsEnabled && (className.Length < byte.MaxValue));
 
                 fixed (char* lpszClassName = className)
                 {
@@ -248,7 +248,7 @@ namespace TerraFX.UI.Providers.Win32
 
                     classAtom = RegisterClassExW(&wndClassEx);
                 }
-                ThrowExternalExceptionIf(classAtom == 0, nameof(RegisterClassExW));
+                ThrowForLastErrorIfZero(classAtom, nameof(RegisterClassExW));
             }
             return classAtom;
         }
@@ -313,7 +313,7 @@ namespace TerraFX.UI.Providers.Win32
                             window.Dispose();
                         }
 
-                        Assert(windows.Count == 0, Resources.ArgumentOutOfRangeExceptionMessage, nameof(windows.Count), windows.Count);
+                        Assert(AssertionsEnabled && (windows.Count == 0));
                     }
                 }
 

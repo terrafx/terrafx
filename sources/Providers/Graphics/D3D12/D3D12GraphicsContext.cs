@@ -12,6 +12,7 @@ using static TerraFX.Interop.D3D12_RESOURCE_STATES;
 using static TerraFX.Interop.D3D12_RTV_DIMENSION;
 using static TerraFX.Interop.DXGI_FORMAT;
 using static TerraFX.Interop.Windows;
+using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -372,7 +373,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
                 if (indexBufferStride != 2)
                 {
-                    Assert(indexBufferStride == 4, "Index Buffer has an unsupported stride.");
+                    Assert(AssertionsEnabled && (indexBufferStride == 4));
                     indexFormat = DXGI_FORMAT_R32_UINT;
                 }
 
@@ -445,7 +446,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12CommandAllocator> CreateD3D12CommandAllocator()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsContext));
 
             ID3D12CommandAllocator* d3d12CommandAllocator;
 
@@ -457,7 +458,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12GraphicsCommandList> CreateD3D12GraphicsCommandList()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsContext));
 
             ID3D12GraphicsCommandList* d3d12GraphicsCommandList;
 
@@ -473,7 +474,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12Resource> CreateD3D12RenderTargetResource()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsContext));
 
             ID3D12Resource* renderTargetResource;
 
@@ -485,7 +486,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private D3D12_CPU_DESCRIPTOR_HANDLE CreateD3D12RenderTargetDescriptor()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsContext));
 
             D3D12_CPU_DESCRIPTOR_HANDLE renderTargetViewHandle;
 

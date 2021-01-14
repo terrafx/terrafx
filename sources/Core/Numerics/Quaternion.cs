@@ -7,7 +7,6 @@ using System;
 using System.Globalization;
 using System.Text;
 using TerraFX.Utilities;
-using static TerraFX.Utilities.AssertionUtilities;
 
 namespace TerraFX.Numerics
 {
@@ -79,7 +78,7 @@ namespace TerraFX.Numerics
         /// <returns><paramref name="value" /></returns>
         public static Quaternion operator +(Quaternion value) => value;
 
-        /// <summary>Negates a quaternion.</summary>
+        /// <summary>Computes the negation of a quaternion.</summary>
         /// <param name="value">The quaternion to negate.</param>
         /// <returns>The negation of <paramref name="value" />.</returns>
         public static Quaternion operator -(Quaternion value) => value * -1;

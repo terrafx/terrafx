@@ -150,7 +150,7 @@ namespace TerraFX.ApplicationModel
 
         private CompositionHost CreateCompositionHost()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(Application));
 
             var containerConfiguration = new ContainerConfiguration();
             {

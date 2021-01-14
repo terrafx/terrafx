@@ -18,6 +18,7 @@ using static TerraFX.Interop.VkPipelineStageFlagBits;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.VkSubpassContents;
 using static TerraFX.Interop.Vulkan;
+using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -319,7 +320,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
                 if (indexBufferStride != 2)
                 {
-                    Assert(indexBufferStride == 4, "Index Buffer has an unsupported stride.");
+                    Assert(AssertionsEnabled && (indexBufferStride == 4));
                     indexType = VK_INDEX_TYPE_UINT32;
                 }
                 vkCmdBindIndexBuffer(vulkanCommandBuffer, indexBuffer.VulkanBuffer, indexBufferRegion.Offset, indexType);

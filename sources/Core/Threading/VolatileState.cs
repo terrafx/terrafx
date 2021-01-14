@@ -1,7 +1,9 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using TerraFX.Runtime;
 using static System.Threading.Interlocked;
+using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
@@ -42,7 +44,7 @@ namespace TerraFX.Threading
         public void EndDispose()
         {
             var previousState = Transition(to: Disposed);
-            Assert(previousState == Disposing, Resources.InvalidOperationExceptionMessage, nameof(previousState), _value);
+            Assert(AssertionsEnabled && (previousState == Disposing));
         }
 
         /// <summary>Transititions the object to a new state.</summary>
@@ -53,14 +55,15 @@ namespace TerraFX.Threading
         /// <summary>Transititions the object to a new state.</summary>
         /// <param name="from">The state to transition from.</param>
         /// <param name="to">The state to transition to.</param>
-        /// <exception cref="InvalidOperationException">The state of the object is not <paramref name="from" />.</exception>
+        /// <exception cref="InvalidOperationException">Transitioning the state from '<paramref name="from" />' to '<paramref name="to" />' failed.</exception>
         public void Transition(uint from, uint to)
         {
             var state = TryTransition(from, to);
 
             if (state != from)
             {
-                ThrowInvalidOperationException(_value, nameof(_value));
+                var message = string.Format(Resources.StateTransitionFailureMessage, from, to);
+                ThrowInvalidOperationException(message);
             }
         }
 

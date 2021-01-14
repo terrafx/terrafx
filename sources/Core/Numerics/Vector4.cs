@@ -113,7 +113,7 @@ namespace TerraFX.Numerics
         /// <returns><paramref name="value" /></returns>
         public static Vector4 operator +(Vector4 value) => value;
 
-        /// <summary>Negates a vector.</summary>
+        /// <summary>Computes the negation of a vector.</summary>
         /// <param name="value">The vector to negate.</param>
         /// <returns>The negation of <paramref name="value" />.</returns>
         public static Vector4 operator -(Vector4 value) => value * -1;

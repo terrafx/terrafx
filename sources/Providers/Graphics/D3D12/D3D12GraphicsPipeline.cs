@@ -76,7 +76,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12PipelineState> CreateD3D12GraphicsPipelineState()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsPipeline));
 
             ID3D12PipelineState* d3d12GraphicsPipelineState;
 

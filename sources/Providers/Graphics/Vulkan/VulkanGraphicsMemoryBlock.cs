@@ -49,7 +49,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private VkDeviceMemory CreateVulkanDeviceMemory()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsMemoryBlock));
 
             VkDeviceMemory vulkanDeviceMemory;
 

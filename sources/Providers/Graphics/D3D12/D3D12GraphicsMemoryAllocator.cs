@@ -13,8 +13,9 @@ using static TerraFX.Interop.D3D12_HEAP_TYPE;
 using static TerraFX.Interop.D3D12_RESOURCE_FLAGS;
 using static TerraFX.Interop.D3D12_RESOURCE_HEAP_TIER;
 using static TerraFX.Interop.Windows;
+using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
-using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.AssertionUtilities;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
@@ -144,11 +145,9 @@ namespace TerraFX.Graphics.Providers.D3D12
                 _ => -1,
             };
 
-            if (index < 0)
-            {
-                ThrowArgumentOutOfRangeException(cpuAccess, nameof(cpuAccess));
-            }
-            else if (!_supportsResourceHeapTier2)
+            Assert(AssertionsEnabled && (index >= 0));
+
+            if (!_supportsResourceHeapTier2)
             {
                 // Scale to account for resource kind
                 index *= 3;

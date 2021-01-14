@@ -3,6 +3,7 @@
 using System;
 using System.Runtime.InteropServices;
 using TerraFX.Interop;
+using TerraFX.Runtime;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Audio.Providers.PulseAudio
@@ -91,7 +92,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
                 case pa_sample_format.PA_SAMPLE_INVALID:
                 default:
                 {
-                    ThrowInvalidOperationException(Resources.InvalidSampleFormatMessage);
+                    ThrowForInvalidKind(nameof(format), format);
                     break;
                 }
             }

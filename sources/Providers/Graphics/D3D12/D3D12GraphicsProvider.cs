@@ -95,7 +95,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<IDXGIFactory2> CreateDxgiFactory()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsProvider));
 
             IDXGIFactory2* dxgiFactory;
 
@@ -142,7 +142,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private ImmutableArray<D3D12GraphicsAdapter> GetAdapters()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsProvider));
 
             var adapters = ImmutableArray.CreateBuilder<D3D12GraphicsAdapter>();
 
@@ -161,7 +161,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                     {
                         if (result != DXGI_ERROR_NOT_FOUND)
                         {
-                            ThrowExternalException(result, nameof(IDXGIFactory1.EnumAdapters1));
+                            ThrowExternalException(nameof(IDXGIFactory1.EnumAdapters1), result);
                         }
                         index = 0;
                     }

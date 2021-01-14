@@ -3,6 +3,7 @@
 using System.Runtime.CompilerServices;
 using static TerraFX.Interop.Mimalloc;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Utilities
 {
@@ -20,7 +21,7 @@ namespace TerraFX.Utilities
 
             if (result == null)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(size);
             }
             return result;
         }
@@ -37,7 +38,7 @@ namespace TerraFX.Utilities
 
             if (result == null)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(size);
             }
             return result;
         }
@@ -55,7 +56,7 @@ namespace TerraFX.Utilities
 
             if (result == null)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(size);
             }
             return result;
         }
@@ -72,7 +73,7 @@ namespace TerraFX.Utilities
 
             if (result == null)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(SizeOf<T>());
             }
             return result;
         }
@@ -90,7 +91,7 @@ namespace TerraFX.Utilities
 
             if (result == null)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(SizeOf<T>());
             }
             return result;
         }
@@ -109,7 +110,7 @@ namespace TerraFX.Utilities
 
             if (result == null)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(SizeOf<T>());
             }
             return result;
         }
@@ -126,7 +127,7 @@ namespace TerraFX.Utilities
 
             if (result == null)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(count, size);
             }
             return result;
         }
@@ -144,7 +145,7 @@ namespace TerraFX.Utilities
 
             if (result == null)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(count, size);
             }
             return result;
         }
@@ -163,7 +164,7 @@ namespace TerraFX.Utilities
 
             if (result == null)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(count, size);
             }
             return result;
         }
@@ -181,7 +182,7 @@ namespace TerraFX.Utilities
 
             if (result == null)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(count, SizeOf<T>());
             }
             return result;
         }
@@ -200,7 +201,7 @@ namespace TerraFX.Utilities
 
             if (result == null)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(count, SizeOf<T>());
             }
             return result;
         }
@@ -220,7 +221,7 @@ namespace TerraFX.Utilities
 
             if (result == null)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(count, SizeOf<T>());
             }
             return result;
         }
@@ -241,7 +242,7 @@ namespace TerraFX.Utilities
 
             if (result == null)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(newSize);
             }
             return result;
         }
@@ -259,7 +260,7 @@ namespace TerraFX.Utilities
 
             if (result == null)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(newSize);
             }
             return result;
         }
@@ -278,7 +279,7 @@ namespace TerraFX.Utilities
 
             if (result == null)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(newSize);
             }
             return result;
         }
@@ -296,7 +297,7 @@ namespace TerraFX.Utilities
 
             if (result == null)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(SizeOf<T>());
             }
             return result;
         }
@@ -315,7 +316,7 @@ namespace TerraFX.Utilities
 
             if (result == null)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(SizeOf<T>());
             }
             return result;
         }
@@ -335,7 +336,7 @@ namespace TerraFX.Utilities
 
             if (result == null)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(SizeOf<T>());
             }
             return result;
         }
@@ -353,7 +354,7 @@ namespace TerraFX.Utilities
 
             if (result == null)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(newCount, newSize);
             }
             return result;
         }
@@ -372,7 +373,7 @@ namespace TerraFX.Utilities
 
             if (result == null)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(newCount, newSize);
             }
             return result;
         }
@@ -392,7 +393,7 @@ namespace TerraFX.Utilities
 
             if (result == null)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(newCount, newSize);
             }
             return result;
         }
@@ -411,7 +412,7 @@ namespace TerraFX.Utilities
 
             if (result == null)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(newCount, SizeOf<T>());
             }
             return result;
         }
@@ -431,7 +432,7 @@ namespace TerraFX.Utilities
 
             if (result == null)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(newCount, SizeOf<T>());
             }
             return result;
         }
@@ -452,7 +453,7 @@ namespace TerraFX.Utilities
 
             if (result == null)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(newCount, SizeOf<T>());
             }
             return result;
         }

@@ -235,7 +235,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private VkImageView CreateVulkanImageView()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsTexture));
 
             VkImageView vulkanImageView;
 
@@ -276,7 +276,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private VkSampler CreateVulkanSampler()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsTexture));
 
             VkSampler vulkanSampler;
 

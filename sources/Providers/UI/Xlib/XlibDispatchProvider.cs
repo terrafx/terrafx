@@ -11,6 +11,7 @@ using TerraFX.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Interop.Libc;
 using static TerraFX.Interop.Xlib;
+using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.UI.Providers.Xlib.XlibAtomId;
 using static TerraFX.Utilities.AssertionUtilities;
@@ -63,10 +64,10 @@ namespace TerraFX.UI.Providers.Xlib
             get
             {
                 timespec timespec;
-                ThrowExternalExceptionIf(clock_gettime(CLOCK_MONOTONIC, &timespec) != 0, nameof(clock_gettime));
+                ThrowForLastErrorIfNotZero(clock_gettime(CLOCK_MONOTONIC, &timespec), nameof(clock_gettime));
 
                 const long NanosecondsPerSecond = TimeSpan.TicksPerSecond * 100;
-                Assert(NanosecondsPerSecond == 1000000000, Resources.ArgumentOutOfRangeExceptionMessage, nameof(NanosecondsPerSecond), NanosecondsPerSecond);
+                Assert(AssertionsEnabled && (NanosecondsPerSecond == 1000000000));
 
                 var ticks = (long)timespec.tv_sec;
                 {
@@ -116,7 +117,7 @@ namespace TerraFX.UI.Providers.Xlib
         private static IntPtr CreateDisplayHandle()
         {
             var display = XOpenDisplay(null);
-            ThrowExternalExceptionIf(display == (nint)0, nameof(XOpenDisplay));
+            ThrowForLastErrorIfZero(display, nameof(XOpenDisplay));
 
             _ = XSetErrorHandler(&HandleXlibError);
             _ = XSetIOErrorHandler(&HandleXlibIOError);
@@ -137,7 +138,7 @@ namespace TerraFX.UI.Providers.Xlib
 
             if ((errorCode != XlibErrorCode.BadWindow) || (requestCode != XlibRequestCode.GetProperty))
             {
-                ThrowExternalException((int)errorCode, requestCode.ToString());
+                ThrowExternalException(requestCode.ToString(), (int)errorCode);
             }
 
             return 0;
@@ -244,15 +245,13 @@ namespace TerraFX.UI.Providers.Xlib
                     (sbyte*)XlibAtomName.WM_STATE.AsPointer(),
                 };
 
-                var status = XInternAtoms(
+                ThrowForLastErrorIfZero(XInternAtoms(
                     Display,
                     atomNames,
                     (int)AtomIdCount,
                     False,
                     pAtoms
-                );
-
-                ThrowExternalExceptionIf(status == 0, nameof(XInternAtoms));
+                ), nameof(XInternAtoms));
             }
 
             return atoms;

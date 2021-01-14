@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using TerraFX.Interop;
+using TerraFX.Runtime;
 using TerraFX.Threading;
 using static TerraFX.Interop.pa_context_flags;
 using static TerraFX.Interop.pa_context_state;
@@ -79,16 +80,13 @@ namespace TerraFX.Audio.Providers.PulseAudio
         /// <inheritdoc/>
         public async ValueTask StartAsync(CancellationToken cancellationToken = default)
         {
-            if (_state.TryTransition(from: Initialized, to: Starting) != Initialized)
-            {
-                ThrowInvalidOperationException(Resources.ProviderAlreadyStartedMessage);
-            }
+            _state.Transition(from: Initialized, to: Starting);
 
             unsafe
             {
                 if (pa_context_connect(Context, null, PA_CONTEXT_NOFLAGS, null) < 0)
                 {
-                    ThrowExternalException(pa_context_errno(Context), nameof(StartAsync));
+                    ThrowExternalException(nameof(StartAsync), pa_context_errno(Context));
                 }
             }
 
@@ -139,7 +137,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
             {
                 if (retval == 0)
                 {
-                    ThrowExternalException(status, nameof(RunMainLoopIteration));
+                    ThrowExternalException(nameof(RunMainLoopIteration), status);
                 }
 
                 return true;
@@ -169,15 +167,10 @@ namespace TerraFX.Audio.Providers.PulseAudio
         /// <inheritdoc/>
         public async ValueTask StopAsync(CancellationToken cancellationToken = default)
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(AudioProvider));
 
-            if (_state.TryTransition(from: Running, to: Stopping) != Running)
-            {
-                ThrowInvalidOperationException(string.Format(Resources.ProviderCannotBeStoppedMessage, _state));
-            }
-
+            _state.Transition(from: Running, to: Stopping);
             await StopAsyncInternalAsync(cancellationToken);
-
             _ = _state.Transition(to: Initialized);
         }
 
@@ -226,13 +219,14 @@ namespace TerraFX.Audio.Providers.PulseAudio
         /// </returns>
         public unsafe PulseAudioAdapterEnumerable EnumerateAudioDevices()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(AudioProvider));
+
             if (_state != Running)
             {
-                ThrowInvalidOperationException(Resources.CannotEnumerateAudioDevicesWhenNotRunningMessage);
+                ThrowForInvalidState(nameof(Running));
             }
 
-            Assert(_mainLoopThread != null, "Mainloop should not be null");
+            AssertNotNull(_mainLoopThread);
 
             var handle = GCHandle.Alloc(new AudioDeviceEnumeratorHelper());
             var userdata = (void*)GCHandle.ToIntPtr(handle);

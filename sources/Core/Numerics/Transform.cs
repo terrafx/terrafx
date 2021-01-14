@@ -68,7 +68,7 @@ namespace TerraFX.Numerics
         /// <returns><paramref name="value" /></returns>
         public static Transform operator +(Transform value) => value;
 
-        /// <summary>Negates a transform.</summary>
+        /// <summary>Computes the negation of a transform.</summary>
         /// <param name="value">The transform to negate.</param>
         /// <returns>The negation of <paramref name="value" />.</returns>
         public static Transform operator -(Transform value) => new Transform(

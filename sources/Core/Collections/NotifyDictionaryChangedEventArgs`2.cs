@@ -1,8 +1,8 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
-using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Collections
 {
@@ -20,7 +20,7 @@ namespace TerraFX.Collections
 
         private NotifyDictionaryChangedEventArgs(NotifyDictionaryChangedAction action, TKey? key = default, TValue? oldValue = default, TValue? newValue = default)
         {
-            Assert(Enum.IsDefined(typeof(NotifyDictionaryChangedAction), action));
+            Assert(AssertionsEnabled && Enum.IsDefined(action));
 
             _action = action;
             _key = key;
@@ -32,46 +32,34 @@ namespace TerraFX.Collections
         public NotifyDictionaryChangedAction Action => _action;
 
         /// <summary>Gets the key of the item that caused the event.</summary>
-        /// <exception cref="InvalidOperationException"><see cref="Action" /> is not <see cref="NotifyDictionaryChangedAction.Add" />, <see cref="NotifyDictionaryChangedAction.Remove" />, or <see cref="NotifyDictionaryChangedAction.ValueChanged" />.</exception>
+        /// <remarks>The value may not be valid if <see cref="Action" /> is <see cref="NotifyDictionaryChangedAction.Reset" />.</remarks>
         public TKey? Key
         {
             get
             {
-                if (_action == NotifyDictionaryChangedAction.Reset)
-                {
-                    ThrowInvalidOperationException(Action, nameof(Action));
-                }
-
+                Assert(AssertionsEnabled && (_action != NotifyDictionaryChangedAction.Reset));
                 return _key;
             }
         }
 
         /// <summary>Gets the old value of the item that caused the event.</summary>
-        /// <exception cref="InvalidOperationException"><see cref="Action" /> is not <see cref="NotifyDictionaryChangedAction.ValueChanged" />.</exception>
+        /// <remarks>The value may not be valid if <see cref="Action" /> is not <see cref="NotifyDictionaryChangedAction.ValueChanged" />.</remarks>
         public TValue? OldValue
         {
             get
             {
-                if (_action != NotifyDictionaryChangedAction.ValueChanged)
-                {
-                    ThrowInvalidOperationException(Action, nameof(Action));
-                }
-
+                Assert(AssertionsEnabled && (_action == NotifyDictionaryChangedAction.ValueChanged));
                 return _oldValue;
             }
         }
 
         /// <summary>Gets the new value of the item that caused the event.</summary>
-        /// <exception cref="InvalidOperationException"><see cref="Action" /> is not <see cref="NotifyDictionaryChangedAction.ValueChanged" />.</exception>
+        /// <remarks>The value may not be valid if <see cref="Action" /> is not <see cref="NotifyDictionaryChangedAction.ValueChanged" />.</remarks>
         public TValue? NewValue
         {
             get
             {
-                if (_action != NotifyDictionaryChangedAction.ValueChanged)
-                {
-                    ThrowInvalidOperationException(Action, nameof(Action));
-                }
-
+                Assert(AssertionsEnabled && (_action == NotifyDictionaryChangedAction.ValueChanged));
                 return _newValue;
             }
         }

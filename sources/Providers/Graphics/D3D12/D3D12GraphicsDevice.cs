@@ -122,14 +122,14 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private D3D12GraphicsPipeline CreatePipeline(D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader)
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
             return new D3D12GraphicsPipeline(this, signature, vertexShader, pixelShader);
         }
 
         /// <inheritdoc />
         public override D3D12GraphicsPipelineSignature CreatePipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResource> resources = default)
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
             return new D3D12GraphicsPipelineSignature(this, inputs, resources);
         }
 
@@ -140,14 +140,14 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <inheritdoc cref="CreatePrimitive(GraphicsPipeline, in GraphicsMemoryRegion{GraphicsResource}, uint, in GraphicsMemoryRegion{GraphicsResource}, uint, ReadOnlySpan{GraphicsMemoryRegion{GraphicsResource}})" />
         private D3D12GraphicsPrimitive CreatePrimitive(D3D12GraphicsPipeline pipeline, in GraphicsMemoryRegion<GraphicsResource> vertexBufferView, uint vertexBufferStride, in GraphicsMemoryRegion<GraphicsResource> indexBufferView, uint indexBufferStride, ReadOnlySpan<GraphicsMemoryRegion<GraphicsResource>> inputResourceRegions)
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
             return new D3D12GraphicsPrimitive(this, pipeline, in vertexBufferView, vertexBufferStride, in indexBufferView, indexBufferStride, inputResourceRegions);
         }
 
         /// <inheritdoc />
         public override D3D12GraphicsShader CreateShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
             return new D3D12GraphicsShader(this, kind, bytecode, entryPointName);
         }
 
@@ -211,7 +211,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12CommandQueue> CreateD3D12CommandQueue()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
 
             ID3D12CommandQueue* d3d12CommandQueue;
 
@@ -224,7 +224,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12Device> CreateD3D12Device()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
 
             ID3D12Device* d3d12Device;
 
@@ -236,7 +236,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12DescriptorHeap> CreateD3D12RenderTargetDescriptorHeap()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
 
             ID3D12DescriptorHeap* renderTargetDescriptorHeap;
 
@@ -253,7 +253,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<IDXGISwapChain3> CreateDxgiSwapChain()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
 
             IDXGISwapChain3* dxgiSwapChain;
 
@@ -283,7 +283,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
                 default:
                 {
-                    ThrowInvalidOperationException(surface, nameof(surface));
+                    ThrowForUnsupportedSurfaceKind(surface.Kind.ToString());
                     dxgiSwapChain = null;
                     break;
                 }
@@ -311,7 +311,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private D3D12_FEATURE_DATA_D3D12_OPTIONS GetD3D12Options()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsDevice));
 
             D3D12_FEATURE_DATA_D3D12_OPTIONS d3d12Options;
             ThrowExternalExceptionIfFailed(D3D12Device->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &d3d12Options, SizeOf<D3D12_FEATURE_DATA_D3D12_OPTIONS>()), nameof(ID3D12Device.CheckFeatureSupport));

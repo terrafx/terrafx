@@ -58,7 +58,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12Heap> CreateD3D12Heap()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsMemoryBlock));
 
             ID3D12Heap* d3d12Heap;
 

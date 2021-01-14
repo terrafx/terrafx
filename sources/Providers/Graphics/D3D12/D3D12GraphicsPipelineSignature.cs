@@ -53,7 +53,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12RootSignature> CreateD3D12RootSignature()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsPipelineSignature));
 
             ID3DBlob* rootSignatureBlob = null;
             ID3DBlob* rootSignatureErrorBlob = null;

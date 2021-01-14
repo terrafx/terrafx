@@ -40,7 +40,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             get
             {
-                ThrowIfDisposedOrDisposing(_state);
+                ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsBuffer));
                 return _vulkanBuffer;
             }
         }

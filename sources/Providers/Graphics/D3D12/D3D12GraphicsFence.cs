@@ -7,6 +7,7 @@ using TerraFX.Threading;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.D3D12_FENCE_FLAGS;
 using static TerraFX.Interop.Windows;
+using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -65,10 +66,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <inheritdoc />
         public override bool TryWait(int millisecondsTimeout = -1)
         {
-            if (millisecondsTimeout < Timeout.Infinite)
-            {
-                ThrowArgumentOutOfRangeException(millisecondsTimeout, nameof(millisecondsTimeout));
-            }
+            Assert(AssertionsEnabled && (millisecondsTimeout >= Timeout.Infinite));
             return TryWait(unchecked((uint)millisecondsTimeout));
         }
 
@@ -76,11 +74,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         public override bool TryWait(TimeSpan timeout)
         {
             var remainingMilliseconds = (long)timeout.TotalMilliseconds;
-
-            if (remainingMilliseconds < Timeout.Infinite)
-            {
-                ThrowArgumentOutOfRangeException(timeout, nameof(timeout));
-            }
+            Assert(AssertionsEnabled && (remainingMilliseconds >= Timeout.Infinite));
 
             var fenceSignalled = false;
 
@@ -134,7 +128,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             if (eventHandle == null)
             {
-                ThrowExternalExceptionForLastHRESULT(nameof(CreateEventW));
+                ThrowForLastError(nameof(CreateEventW));
             }
 
             return eventHandle;
@@ -169,7 +163,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                 }
                 else if (result != WAIT_TIMEOUT)
                 {
-                    ThrowExternalExceptionForLastError(nameof(WaitForSingleObject));
+                    ThrowForLastError(nameof(WaitForSingleObject));
                 }
             }
 

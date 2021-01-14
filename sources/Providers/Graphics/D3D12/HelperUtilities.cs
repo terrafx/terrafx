@@ -35,7 +35,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         {
             if (FAILED(hr))
             {
-                ThrowExternalException(hr, methodName);
+                ThrowExternalException(methodName, hr);
             }
         }
     }

@@ -26,7 +26,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         internal VulkanGraphicsAdapter(VulkanGraphicsProvider provider, VkPhysicalDevice vulkanPhysicalDevice)
             : base(provider)
         {
-            AssertNotNull(vulkanPhysicalDevice, nameof(vulkanPhysicalDevice));
+            AssertNotNull(vulkanPhysicalDevice);
 
             _vulkanPhysicalDevice = vulkanPhysicalDevice;
 
@@ -55,7 +55,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             get
             {
-                ThrowIfDisposedOrDisposing(_state);
+                ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsAdapter));
                 return _vulkanPhysicalDevice;
             }
         }
@@ -74,7 +74,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <inheritdoc cref="CreateDevice(IGraphicsSurface, int)" />
         public VulkanGraphicsDevice CreateVulkanGraphicsDevice(IGraphicsSurface surface, int contextCount)
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsAdapter));
             return new VulkanGraphicsDevice(this, surface, contextCount);
         }
 
@@ -88,13 +88,13 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private string GetName()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsAdapter));
             return MarshalUtf8ToReadOnlySpan(in VulkanPhysicalDeviceProperties.deviceName[0], 256).AsString() ?? string.Empty;
         }
 
         private VkPhysicalDeviceMemoryProperties GetVulkanPhysicalDeviceMemoryProperties()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsAdapter));
 
             VkPhysicalDeviceMemoryProperties physicalDeviceMemoryProperties;
             vkGetPhysicalDeviceMemoryProperties(VulkanPhysicalDevice, &physicalDeviceMemoryProperties);
@@ -103,7 +103,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private VkPhysicalDeviceProperties GetVulkanPhysicalDeviceProperties()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsAdapter));
 
             VkPhysicalDeviceProperties physicalDeviceProperties;
             vkGetPhysicalDeviceProperties(VulkanPhysicalDevice, &physicalDeviceProperties);

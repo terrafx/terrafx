@@ -47,7 +47,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         {
             get
             {
-                ThrowIfDisposedOrDisposing(_state);
+                ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsAdapter));
                 return _dxgiAdapter;
             }
         }
@@ -69,7 +69,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <inheritdoc />
         public override D3D12GraphicsDevice CreateDevice(IGraphicsSurface surface, int contextCount)
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsAdapter));
             return new D3D12GraphicsDevice(this, surface, contextCount);
         }
 
@@ -88,7 +88,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private DXGI_ADAPTER_DESC1 GetDxgiAdapterDesc()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsAdapter));
 
             DXGI_ADAPTER_DESC1 adapterDesc;
             ThrowExternalExceptionIfFailed(DxgiAdapter->GetDesc1(&adapterDesc), nameof(IDXGIAdapter1.GetDesc1));
@@ -97,7 +97,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private string GetName()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsAdapter));
             return MarshalUtf16ToReadOnlySpan(in DxgiAdapterDesc.Description[0], 128).AsString() ?? string.Empty;
         }
     }

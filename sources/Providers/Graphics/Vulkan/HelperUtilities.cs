@@ -54,7 +54,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             if (result != VK_SUCCESS)
             {
-                ThrowExternalException((int)result, methodName);
+                ThrowExternalException(methodName, (int)result);
             }
         }
     }

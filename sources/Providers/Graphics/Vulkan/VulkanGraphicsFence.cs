@@ -9,6 +9,7 @@ using static TerraFX.Interop.VkFenceCreateFlagBits;
 using static TerraFX.Interop.VkResult;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
+using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -53,10 +54,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <inheritdoc />
         public override bool TryWait(int millisecondsTimeout = -1)
         {
-            if (millisecondsTimeout < Timeout.Infinite)
-            {
-                ThrowArgumentOutOfRangeException(millisecondsTimeout, nameof(millisecondsTimeout));
-            }
+            Assert(AssertionsEnabled && (millisecondsTimeout >= Timeout.Infinite));
             return TryWait(unchecked((ulong)millisecondsTimeout));
         }
 
@@ -64,12 +62,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         public override bool TryWait(TimeSpan timeout)
         {
             var millisecondsTimeout = (long)timeout.TotalMilliseconds;
-
-            if (millisecondsTimeout < Timeout.Infinite)
-            {
-                ThrowArgumentOutOfRangeException(timeout, nameof(timeout));
-            }
-
+            Assert(AssertionsEnabled && (millisecondsTimeout >= Timeout.Infinite));
             return TryWait(unchecked((ulong)millisecondsTimeout));
         }
 
@@ -88,7 +81,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private VkFence CreateVulkanFence()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsFence));
 
             VkFence vulkanFence;
 
@@ -127,7 +120,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 }
                 else if (result != VK_TIMEOUT)
                 {
-                    ThrowExternalException((int)result, nameof(vkWaitForFences));
+                    ThrowExternalException(nameof(vkWaitForFences), (int)result);
                 }
             }
 

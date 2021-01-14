@@ -117,58 +117,73 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ArgumentExceptionForInvalidTypeMessage" xml:space="preserve">
-    <value>{0} is an instance of {1}</value>
+  <data name="AllocationFailedMessage" xml:space="preserve">
+    <value>The allocation of '{0}' bytes failed</value>
   </data>
-  <data name="ArgumentNullExceptionMessage" xml:space="preserve">
-    <value>{0} is null</value>
+  <data name="ArrayAllocationFailedMessage" xml:space="preserve">
+    <value>The allocation of '{0}'x'{1}' bytes failed</value>
   </data>
-  <data name="ArgumentOutOfRangeExceptionMessage" xml:space="preserve">
-    <value>{0} has a value of {1}</value>
+  <data name="AssertionsDisabledMessage" xml:space="preserve">
+    <value>TerraFX based assertions are disabled</value>
   </data>
-  <data name="CannotEnumerateAudioDevicesWhenNotRunningMessage" xml:space="preserve">
-    <value>Cannot enumerate audio devices when not running</value>
+  <data name="InvalidFlagCombinationMessage" xml:space="preserve">
+    <value>'{0}' has an invalid flag combination</value>
   </data>
-  <data name="CouldNotConnectPlaybackStreamMessage" xml:space="preserve">
-    <value>Could not connect stream for playback</value>
+  <data name="InvalidKeyMessage" xml:space="preserve">
+    <value>'{0}' is not a valid key to '{1}'</value>
   </data>
-  <data name="DeviceAlreadyStartedMessage" xml:space="preserve">
-    <value>Device is already started</value>
+  <data name="InvalidKindMessage" xml:space="preserve">
+    <value>The kind for '{0}' is not '{1}'</value>
   </data>
-  <data name="DeviceNotCompletedMessage" xml:space="preserve">
-    <value>Device is not completed</value>
+  <data name="InvalidParentMessage" xml:space="preserve">
+    <value>'{0}' is incompatible as it belongs to a different parent</value>
   </data>
-  <data name="ExternalExceptionMessage" xml:space="preserve">
-    <value>{0} failed with an error code of {1}</value>
+  <data name="InvalidStateMessage" xml:space="preserve">
+    <value>The current state is not '{0}'</value>
   </data>
-  <data name="InvalidOperationExceptionMessage" xml:space="preserve">
-    <value>{0} has a value of {1}</value>
+  <data name="InvalidThreadMessage" xml:space="preserve">
+    <value>The current thread is not '{0}'</value>
   </data>
-  <data name="InvalidSampleFormatMessage" xml:space="preserve">
-    <value>Invalid sample format</value>
+  <data name="InvalidTypeMessage" xml:space="preserve">
+    <value>'{0}' is not an instance of '{1}'</value>
   </data>
-  <data name="IOExceptionMessage" xml:space="preserve">
-    <value>An I/O error occurred</value>
+  <data name="MethodTimeoutMessage" xml:space="preserve">
+    <value>'{0}' failed to complete within '{1}' ms</value>
   </data>
-  <data name="KeyNotFoundExceptionMessage" xml:space="preserve">
-    <value>{0} was not found in the collection</value>
+  <data name="MissingRequiredFeaturesMessage" xml:space="preserve">
+    <value>One or more of the required features is not available</value>
   </data>
-  <data name="NotSupportedExceptionForMissingFeatureMessage" xml:space="preserve">
-    <value>One or more of the requested {0} is unavailable</value>
+  <data name="NotImplementedMessage" xml:space="preserve">
+    <value>The given code path is not currently implemented</value>
   </data>
-  <data name="NotSupportedExceptionForReadOnlyCollectionMessage" xml:space="preserve">
-    <value>The collection is read-only</value>
+  <data name="ObjectDisposedOrDisposingMessage" xml:space="preserve">
+    <value>'{0}' is disposed or being disposed</value>
   </data>
-  <data name="ObjectDisposedExceptionMessage" xml:space="preserve">
-    <value>{0} is disposed</value>
+  <data name="ObjectNotDisposingMessage" xml:space="preserve">
+    <value>'{0}' is not currently being disposed</value>
   </data>
-  <data name="ProviderAlreadyStartedMessage" xml:space="preserve">
-    <value>Provider is already started</value>
+  <data name="PreviousStateNotDisposingMessage" xml:space="preserve">
+    <value>The previous state was not 'Disposing'</value>
   </data>
-  <data name="ProviderCannotBeStoppedMessage" xml:space="preserve">
-    <value>Provider cannot be stopped in the {0} state</value>
+  <data name="StateTransitionFailureMessage" xml:space="preserve">
+    <value>Transitioning the state from '{0}' to '{1}' failed</value>
   </data>
-  <data name="TimeoutExceptionMessage" xml:space="preserve">
-    <value>The timeout of {0} was reached before the operation could be completed</value>
+  <data name="UnmanagedMethodFailedMessage" xml:space="preserve">
+    <value>'{0}' failed with an error code of '{1}'</value>
+  </data>
+  <data name="UnsupportedSurfaceKindMessage" xml:space="preserve">
+    <value>'{0}' is not a supported GraphicsSurfaceKind</value>
+  </data>
+  <data name="ValueIsNegativeMessage" xml:space="preserve">
+    <value>'{0}' is negative</value>
+  </data>
+  <data name="ValueIsNullMessage" xml:space="preserve">
+    <value>'{0}' is null</value>
+  </data>
+  <data name="ValueIsNotPow2Message" xml:space="preserve">
+    <value>'{0}' is not a power of two</value>
+  </data>
+  <data name="ValueIsZeroMessage" xml:space="preserve">
+    <value>'{0}' is zero</value>
   </data>
 </root>

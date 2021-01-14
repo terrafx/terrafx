@@ -80,7 +80,7 @@ namespace TerraFX.Numerics
         /// <returns><paramref name="value" /></returns>
         public static Vector2 operator +(Vector2 value) => value;
 
-        /// <summary>Negates a vector.</summary>
+        /// <summary>Computes the negation of a vector.</summary>
         /// <param name="value">The vector to negate.</param>
         /// <returns>The negation of <paramref name="value" />.</returns>
         public static Vector2 operator -(Vector2 value) => value * -1;

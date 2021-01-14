@@ -175,7 +175,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private VkInstance CreateVulkanInstance()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsProvider));
 
             sbyte* requiredExtensionNamesBuffer = null;
             sbyte* optionalExtensionNamesBuffer = null;
@@ -255,7 +255,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
                 if (enabledPropertyCount != requiredNamesCount)
                 {
-                    ThrowNotSupportedExceptionForMissingFeature(nameof(VkExtensionProperties));
+                    ThrowForMissingFeature();
                 }
                 enabledPropertyCount += EnablePropertiesByName(propertyNames, propertyNamesCount, propertySize, optionalNamesBuffer, optionalNamesCount, enabledNames + enabledPropertyCount);
 
@@ -378,7 +378,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private ImmutableArray<VulkanGraphicsAdapter> GetGraphicsAdapters()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsProvider));
 
             var instance = VulkanInstance;
 

@@ -3,7 +3,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics.X86;
-using static TerraFX.Configuration;
+using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 
 namespace TerraFX.Utilities
@@ -22,7 +22,7 @@ namespace TerraFX.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint AlignUp(uint address, uint alignment)
         {
-            Assert(IsPow2(alignment));
+            Assert(AssertionsEnabled && IsPow2(alignment));
             return (address + (alignment - 1)) & ~(alignment - 1);
         }
 
@@ -33,7 +33,7 @@ namespace TerraFX.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong AlignUp(ulong address, ulong alignment)
         {
-            Assert(IsPow2(alignment));
+            Assert(AssertionsEnabled && IsPow2(alignment));
             return (address + (alignment - 1)) & ~(alignment - 1);
         }
 
@@ -44,7 +44,7 @@ namespace TerraFX.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static nuint AlignUp(nuint address, nuint alignment)
         {
-            Assert(IsPow2(alignment));
+            Assert(AssertionsEnabled && IsPow2(alignment));
             return (address + (alignment - 1)) & ~(alignment - 1);
         }
 

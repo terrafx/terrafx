@@ -133,7 +133,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12Resource> CreateD3D12Resource()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsBuffer));
 
             ID3D12Resource* d3d12Resource;
 

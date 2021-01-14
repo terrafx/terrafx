@@ -12,7 +12,6 @@ namespace TerraFX.Collections
     /// <summary>Represents a string to object dictionary that provides notifications when its contents are changed.</summary>
     [DebuggerDisplay("Count = {Count}")]
     [DebuggerTypeProxy(typeof(DictionaryDebugView<string, object>))]
-    [Serializable]
     public sealed partial class PropertySet : IPropertySet
     {
         private readonly IDictionary<string, object> _items;

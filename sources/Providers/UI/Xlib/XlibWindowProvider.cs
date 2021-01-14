@@ -9,6 +9,7 @@ using System.Threading;
 using TerraFX.Interop;
 using TerraFX.Threading;
 using static TerraFX.Interop.Xlib;
+using static TerraFX.Runtime.Configuration;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.UI.Providers.Xlib.XlibAtomId;
 using static TerraFX.Utilities.AssertionUtilities;
@@ -65,7 +66,7 @@ namespace TerraFX.UI.Providers.Xlib
         {
             get
             {
-                ThrowIfDisposedOrDisposing(_state);
+                ThrowIfDisposedOrDisposing(_state, nameof(XlibWindowProvider));
                 return _windows.Value?.Values ?? Enumerable.Empty<XlibWindow>();
             }
         }
@@ -74,7 +75,7 @@ namespace TerraFX.UI.Providers.Xlib
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public override Window CreateWindow()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(XlibWindowProvider));
             return new XlibWindow(this);
         }
 
@@ -137,7 +138,7 @@ namespace TerraFX.UI.Providers.Xlib
                 }
                 else
                 {
-                    Assert(xevent->xclient.message_type == dispatchProvider.GetAtom(_TERRAFX_DISPOSE_WINDOW));
+                    Assert(AssertionsEnabled && (xevent->xclient.message_type == dispatchProvider.GetAtom(_TERRAFX_DISPOSE_WINDOW)));
                     _ = RemoveWindow(windows, xevent->xany.display, xevent->xany.window, dispatchProvider);
                 }
 
@@ -189,8 +190,8 @@ namespace TerraFX.UI.Providers.Xlib
 
             if (forwardMessage)
             {
-                Assert(windows is not null, Resources.ArgumentNullExceptionMessage, nameof(windows));
-                Assert(window is not null, Resources.ArgumentNullExceptionMessage, nameof(window));
+                AssertNotNull(windows);
+                AssertNotNull(window);
 
                 window.ProcessWindowEvent(xevent);
 
@@ -204,7 +205,7 @@ namespace TerraFX.UI.Providers.Xlib
         private static XlibWindow RemoveWindow(Dictionary<nuint, XlibWindow> windows, IntPtr display, nuint windowHandle, XlibDispatchProvider dispatchProvider)
         {
             _ = windows.Remove(windowHandle, out var window);
-            Assert(window is not null, Resources.ArgumentNullExceptionMessage, nameof(window));
+            AssertNotNull(window);
 
             if (windows.Count == 0)
             {
@@ -250,7 +251,7 @@ namespace TerraFX.UI.Providers.Xlib
                             window.Dispose();
                         }
 
-                        Assert(windows.Count == 0, Resources.ArgumentOutOfRangeExceptionMessage, nameof(windows.Count), windows.Count);
+                        Assert(AssertionsEnabled && (windows.Count == 0));
                     }
                 }
 

@@ -65,7 +65,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12DescriptorHeap> CreateD3D12CbvSrvUavDescriptorHeap()
         {
-            ThrowIfDisposedOrDisposing(_state);
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsPrimitive));
 
             var d3d12Device = Device.D3D12Device;
             var inputResourceRegions = InputResourceRegions;
