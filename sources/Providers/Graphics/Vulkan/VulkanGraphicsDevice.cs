@@ -203,7 +203,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <inheritdoc />
         public override void WaitForIdle()
         {
-            if (_vulkanDevice.IsCreated)
+            if (_vulkanDevice.IsValueCreated)
             {
                 ThrowExternalExceptionIfNotSuccess(vkDeviceWaitIdle(_vulkanDevice.Value), nameof(vkDeviceWaitIdle));
             }
@@ -258,7 +258,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             const int EnabledExtensionNamesCount = 1;
 
             var enabledExtensionNames = stackalloc sbyte*[EnabledExtensionNamesCount] {
-                (sbyte*)VK_KHR_SWAPCHAIN_EXTENSION_NAME.AsPointer(),
+                (sbyte*)VK_KHR_SWAPCHAIN_EXTENSION_NAME.GetPointer(),
             };
 
             var physicalDeviceFeatures = new VkPhysicalDeviceFeatures();
@@ -539,12 +539,12 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             WaitForIdle();
 
-            if (_vulkanSwapchainImages.IsCreated)
+            if (_vulkanSwapchainImages.IsValueCreated)
             {
                 _vulkanSwapchainImages.Reset(GetVulkanSwapchainImages);
             }
 
-            if (_vulkanSwapchain.IsCreated)
+            if (_vulkanSwapchain.IsValueCreated)
             {
                 vkDestroySwapchainKHR(_vulkanDevice.Value, _vulkanSwapchain.Value, pAllocator: null);
                 _vulkanSwapchain.Reset(CreateVulkanSwapchain);

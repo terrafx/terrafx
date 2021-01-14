@@ -232,7 +232,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
                     pa_stream_unref(_stream.Value);
                 }
 
-                if (_writeDelegateHandle.IsCreated)
+                if (_writeDelegateHandle.IsValueCreated)
                 {
                     _writeDelegateHandle.Value.Free();
                 }

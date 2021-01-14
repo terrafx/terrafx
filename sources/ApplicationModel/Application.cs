@@ -163,7 +163,7 @@ namespace TerraFX.ApplicationModel
         {
             AssertDisposing(_state);
 
-            if (isDisposing && _compositionHost.IsCreated)
+            if (isDisposing && _compositionHost.IsValueCreated)
             {
                 _compositionHost.Value.Dispose();
             }

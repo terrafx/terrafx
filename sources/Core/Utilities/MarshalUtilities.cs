@@ -11,35 +11,41 @@ namespace TerraFX.Utilities
     /// <summary>Provides a set of methods to supplement or replace <see cref="Marshal" />.</summary>
     public static unsafe class MarshalUtilities
     {
-        /// <summary>Gets a string for a given <see cref="ReadOnlySpan{SByte}" />.</summary>
-        /// <param name="source">The <see cref="ReadOnlySpan{SByte}" /> for which to create the string.</param>
-        /// <returns>A string created from <paramref name="source" />.</returns>
+        /// <summary>Gets a string for a given span.</summary>
+        /// <param name="span">The span for which to create the string.</param>
+        /// <returns>A string created from <paramref name="span" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string? AsString(this ReadOnlySpan<sbyte> source)
+        public static string? GetString(this ReadOnlySpan<sbyte> span)
         {
-            string? result = null;
+            string? result;
 
-            if (source.AsPointer() != null)
+            if (span.GetPointer() != null)
             {
-                var bytes = MemoryMarshal.Cast<sbyte, byte>(source);
-                result = Encoding.UTF8.GetString(bytes);
+                result = Encoding.UTF8.GetString(span.As<sbyte, byte>());
+            }
+            else
+            {
+                result = null;
             }
 
             return result;
         }
 
-        /// <summary>Gets a string for a given <see cref="ReadOnlySpan{UInt16}" />.</summary>
-        /// <param name="source">The <see cref="ReadOnlySpan{UInt16}" /> for which to create the string.</param>
-        /// <returns>A string created from <paramref name="source" />.</returns>
+        /// <summary>Gets a string for a given span.</summary>
+        /// <param name="span">The span for which to create the string.</param>
+        /// <returns>A string created from <paramref name="span" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string? AsString(this ReadOnlySpan<ushort> source)
+        public static string? GetString(this ReadOnlySpan<ushort> span)
         {
-            string? result = null;
+            string? result;
 
-            if (source.AsPointer() != null)
+            if (span.GetPointer() != null)
             {
-                var chars = MemoryMarshal.Cast<ushort, char>(source);
-                result = new string(chars);
+                result = new string(span.As<ushort, char>());
+            }
+            else
+            {
+                result = null;
             }
 
             return result;
@@ -52,114 +58,151 @@ namespace TerraFX.Utilities
         /// <param name="source">The string for which to marshal.</param>
         /// <returns>A null-terminated ASCII string that is equivalent to <paramref name="source" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ReadOnlySpan<sbyte> MarshalStringToAscii(string? source)
+        public static ReadOnlySpan<sbyte> GetAsciiSpan(this string? source)
         {
-            ReadOnlySpan<sbyte> result;
+            ReadOnlySpan<byte> result;
 
-            if (source is null)
-            {
-                result = null;
-            }
-            else
+            if (source is not null)
             {
                 var maxLength = Encoding.ASCII.GetMaxByteCount(source.Length);
-                var bytes = new sbyte[maxLength + 1];
+                var bytes = new byte[maxLength + 1];
 
-                var length = Encoding.ASCII.GetBytes(source, MemoryMarshal.Cast<sbyte, byte>(bytes));
+                var length = Encoding.ASCII.GetBytes(source, bytes);
                 result = bytes.AsSpan(0, length);
-            }
 
-            return result;
-        }
-
-        /// <summary>Marshals a string to a null-terminated UTF8 string.</summary>
-        /// <param name="source">The string for which to marshal.</param>
-        /// <returns>A null-terminated UTF8 string that is equivalent to <paramref name="source" />.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ReadOnlySpan<sbyte> MarshalStringToUtf8(string? source)
-        {
-            ReadOnlySpan<sbyte> result;
-
-            if (source is null)
-            {
-                result = null;
             }
             else
             {
-                var maxLength = Encoding.UTF8.GetMaxByteCount(source.Length);
-                var bytes = new sbyte[maxLength + 1];
+                result = null;
+            }
 
-                var length = Encoding.UTF8.GetBytes(source, MemoryMarshal.Cast<sbyte, byte>(bytes));
+            return result.As<byte, sbyte>();
+        }
+
+        /// <summary>Gets a span for a null-terminated ASCII character sequence.</summary>
+        /// <param name="source">The pointer to a null-terminated ASCII character sequence.</param>
+        /// <param name="maxLength">The maxmimum length of <paramref name="source" /> or <c>-1</c> if the maximum length is unknown.</param>
+        /// <returns>A span that starts at <paramref name="source" /> and extends to <paramref name="maxLength" /> or the first null character, whichever comes first.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ReadOnlySpan<sbyte> GetAsciiSpan(sbyte* source, int maxLength = -1)
+            => GetUtf8Span(source, maxLength);
+
+        /// <summary>Gets a span for a null-terminated ASCII character sequence.</summary>
+        /// <param name="source">The reference to a null-terminated ASCII character sequence.</param>
+        /// <param name="maxLength">The maxmimum length of <paramref name="source" /> or <c>-1</c> if the maximum length is unknown.</param>
+        /// <returns>A span that starts at <paramref name="source" /> and extends to <paramref name="maxLength" /> or the first null character, whichever comes first.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ReadOnlySpan<sbyte> GetAsciiSpan(in sbyte source, int maxLength = -1)
+            => GetUtf8Span(in source, maxLength);
+
+        /// <summary>Gets a null-terminated sequence of UTF8 characters for a string.</summary>
+        /// <param name="source">The string for which to get the null-terminated UTF8 character sequence.</param>
+        /// <returns>A null-terminated UTF8 character sequence created from <paramref name="source" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ReadOnlySpan<sbyte> GetUtf8Span(this string? source)
+        {
+            ReadOnlySpan<byte> result;
+
+            if (source is not null)
+            {
+                var maxLength = Encoding.UTF8.GetMaxByteCount(source.Length);
+                var bytes = new byte[maxLength + 1];
+
+                var length = Encoding.UTF8.GetBytes(source, bytes);
                 result = bytes.AsSpan(0, length);
+            }
+            else
+            {
+                result = null;
+            }
+
+            return result.As<byte, sbyte>();
+        }
+
+        /// <summary>Gets a span for a null-terminated UTF8 character sequence.</summary>
+        /// <param name="source">The pointer to a null-terminated UTF8 character sequence.</param>
+        /// <param name="maxLength">The maxmimum length of <paramref name="source" /> or <c>-1</c> if the maximum length is unknown.</param>
+        /// <returns>A span that starts at <paramref name="source" /> and extends to <paramref name="maxLength" /> or the first null character, whichever comes first.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ReadOnlySpan<sbyte> GetUtf8Span(sbyte* source, int maxLength = -1)
+            => (source != null) ? GetUtf8Span(in source[0], maxLength) : null;
+
+        /// <summary>Gets a span for a null-terminated UTF8 character sequence.</summary>
+        /// <param name="source">The reference to a null-terminated UTF8 character sequence.</param>
+        /// <param name="maxLength">The maxmimum length of <paramref name="source" /> or <c>-1</c> if the maximum length is unknown.</param>
+        /// <returns>A span that starts at <paramref name="source" /> and extends to <paramref name="maxLength" /> or the first null character, whichever comes first.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ReadOnlySpan<sbyte> GetUtf8Span(in sbyte source, int maxLength = -1)
+        {
+            ReadOnlySpan<sbyte> result;
+
+            if (IsNullRef(in source))
+            {
+                if (maxLength < 0)
+                {
+                    maxLength = int.MaxValue;
+                }
+
+                result = CreateReadOnlySpan(in source, maxLength);
+                var length = result.IndexOf((sbyte)'\0');
+
+                if (length != 1)
+                {
+                    result = result.Slice(0, length);
+                }
+            }
+            else
+            {
+                result = null;
             }
 
             return result;
         }
 
-        /// <summary>Marshals a string to a null-terminated UTF16 string.</summary>
-        /// <param name="source">The string for which to marshal.</param>
-        /// <returns>A null-terminated UTF16 string that is equivalent to <paramref name="source" />.</returns>
+        /// <summary>Gets a null-terminated sequence of UTF16 characters for a string.</summary>
+        /// <param name="source">The string for which to get the null-terminated UTF16 character sequence.</param>
+        /// <returns>A null-terminated UTF16 character sequence created from <paramref name="source" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ReadOnlySpan<ushort> MarshalStringToUtf16(string? source) => MemoryMarshal.Cast<char, ushort>(source.AsSpan());
-
-        /// <summary>Marshals a null-terminated UTF8 string to a <see cref="ReadOnlySpan{SByte}" />.</summary>
-        /// <param name="source">The pointer to the null-terminated UTF8 string.</param>
-        /// <param name="maxLength">The maxmimum length of <paramref name="source" /> or <c>-1</c> if the maximum length is unknown.</param>
-        /// <returns>A <see cref="ReadOnlySpan{SByte}" /> that starts at <paramref name="source" /> and extends to <paramref name="maxLength" /> or the first null character, whichever comes first.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ReadOnlySpan<sbyte> MarshalUtf8ToReadOnlySpan(sbyte* source, nint maxLength = -1) => (source != null) ? MarshalUtf8ToReadOnlySpan(in *source, maxLength) : default;
-
-        /// <summary>Marshals a null-terminated UTF8 string to a <see cref="ReadOnlySpan{SByte}" />.</summary>
-        /// <param name="source">The pointer to the null-terminated UTF8 string.</param>
-        /// <param name="maxLength">The maxmimum length of <paramref name="source" /> or <c>-1</c> if the maximum length is unknown.</param>
-        /// <returns>A <see cref="ReadOnlySpan{SByte}" /> that starts at <paramref name="source" /> and extends to <paramref name="maxLength" /> or the first null character, whichever comes first.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ReadOnlySpan<sbyte> MarshalUtf8ToReadOnlySpan(in sbyte source, nint maxLength = -1)
-        {
-            if (maxLength < 0)
-            {
-                maxLength = int.MaxValue;
-            }
-
-            var span = MemoryMarshal.CreateReadOnlySpan(ref AsRef(in source), (int)maxLength);
-            var length = span.IndexOf((sbyte)'\0');
-
-            if (length != -1)
-            {
-                span = span.Slice(0, length);
-            }
-
-            return span;
-        }
+        public static ReadOnlySpan<ushort> GetUtf16Span(this string? source) => source.AsSpan().As<char, ushort>();
 
         /// <summary>Marshals a null-terminated UTF16 string to a <see cref="ReadOnlySpan{UInt16}" />.</summary>
-        /// <param name="source">The pointer to the null-terminated UTF16 string.</param>
+        /// <param name="source">The pointer to a null-terminated UTF16 string.</param>
         /// <param name="maxLength">The maxmimum length of <paramref name="source" /> or <c>-1</c> if the maximum length is unknown.</param>
         /// <returns>A <see cref="ReadOnlySpan{UInt16}" /> that starts at <paramref name="source" /> and extends to <paramref name="maxLength" /> or the first null character, whichever comes first.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ReadOnlySpan<ushort> MarshalUtf16ToReadOnlySpan(ushort* source, nint maxLength = -1) => (source != null) ? MarshalUtf16ToReadOnlySpan(in *source, maxLength) : null;
+        public static ReadOnlySpan<ushort> GetUtf16Span(ushort* source, int maxLength = -1)
+            => (source != null) ? GetUtf16Span(in source[0], maxLength) : null;
 
         /// <summary>Marshals a null-terminated UTF16 string to a <see cref="ReadOnlySpan{UInt16}" />.</summary>
-        /// <param name="source">The pointer to the null-terminated UTF16 string.</param>
+        /// <param name="source">The reference to a null-terminated UTF16 string.</param>
         /// <param name="maxLength">The maxmimum length of <paramref name="source" /> or <c>-1</c> if the maximum length is unknown.</param>
         /// <returns>A <see cref="ReadOnlySpan{UInt16}" /> that starts at <paramref name="source" /> and extends to <paramref name="maxLength" /> or the first null character, whichever comes first.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ReadOnlySpan<ushort> MarshalUtf16ToReadOnlySpan(in ushort source, nint maxLength = -1)
+        public static ReadOnlySpan<ushort> GetUtf16Span(in ushort source, int maxLength = -1)
         {
-            if (maxLength < 0)
+            ReadOnlySpan<ushort> result;
+
+            if (IsNullRef(in source))
             {
-                maxLength = int.MaxValue;
+                if (maxLength < 0)
+                {
+                    maxLength = int.MaxValue;
+                }
+
+                result = CreateReadOnlySpan(in source, maxLength);
+                var length = result.IndexOf('\0');
+
+                if (length != 1)
+                {
+                    result = result.Slice(0, length);
+                }
+            }
+            else
+            {
+                result = null;
             }
 
-            var span = MemoryMarshal.CreateReadOnlySpan(ref AsRef(in source), (int)maxLength);
-            var length = span.IndexOf('\0');
-
-            if (length != -1)
-            {
-                span = span.Slice(0, length);
-            }
-
-            return span;
+            return result;
         }
     }
 }

@@ -3,78 +3,129 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using static TerraFX.Runtime.Configuration;
+using static TerraFX.Utilities.AssertionUtilities;
 
 namespace TerraFX.Utilities
 {
     /// <summary>Provides a set of methods to supplement or replace <see cref="Unsafe" /> and <see cref="MemoryMarshal" />.</summary>
     public static unsafe class UnsafeUtilities
     {
-        /// <summary>Gets the underlying pointer for a <typeparamref name="T" /> reference.</summary>
-        /// <typeparam name="T">The type of <paramref name="source" />.</typeparam>
-        /// <param name="source">The reference for which to get the underlying pointer.</param>
-        /// <returns>The underlying pointer for <paramref name="source" />.</returns>
+        /// <inheritdoc cref="Unsafe.As{TFrom, TTo}(ref TFrom)" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ref TTo As<TFrom, TTo>(ref TFrom source)
+            => ref Unsafe.As<TFrom, TTo>(ref source);
+
+        /// <inheritdoc cref="Unsafe.As{TFrom, TTo}(ref TFrom)" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Span<TTo> As<TFrom, TTo>(this Span<TFrom> span)
+            where TFrom : unmanaged
+            where TTo : unmanaged
+        {
+            Assert(AssertionsEnabled && (SizeOf<TFrom>() == SizeOf<TTo>()));
+            return CreateSpan(ref As<TFrom, TTo>(ref span.GetReference()), span.Length);
+        }
+
+        /// <inheritdoc cref="Unsafe.As{TFrom, TTo}(ref TFrom)" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ReadOnlySpan<TTo> As<TFrom, TTo>(this ReadOnlySpan<TFrom> span)
+            where TFrom : unmanaged
+            where TTo : unmanaged
+        {
+            Assert(AssertionsEnabled && (SizeOf<TFrom>() == SizeOf<TTo>()));
+            return CreateReadOnlySpan(in AsReadonly<TFrom, TTo>(in span.GetReference()), span.Length);
+        }
+
+        /// <inheritdoc cref="Unsafe.AsPointer{T}(ref T)" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T* AsPointer<T>(ref T source)
             where T : unmanaged => (T*)Unsafe.AsPointer(ref source);
 
-        /// <summary>Gets the underlying pointer for a <see cref="Span{T}" />.</summary>
-        /// <typeparam name="T">The type of elements contained in <paramref name="source" />.</typeparam>
-        /// <param name="source">The span for which to get the underlying pointer.</param>
-        /// <returns>The underlying pointer for <paramref name="source" />.</returns>
-        public static T* AsPointer<T>(this Span<T> source)
-            where T : unmanaged => AsPointer(ref source.AsRef());
-
-        /// <summary>Gets the underlying pointer for a <see cref="ReadOnlySpan{T}" />.</summary>
-        /// <typeparam name="T">The type of elements contained in <paramref name="source" />.</typeparam>
-        /// <param name="source">The span for which to get the underlying pointer.</param>
-        /// <returns>The underlying pointer for <paramref name="source" />.</returns>
-        public static T* AsPointer<T>(this ReadOnlySpan<T> source)
-            where T : unmanaged => AsPointer(ref source.AsRef());
-
-        /// <summary>Gets a reference of <typeparamref name="T" /> from a given <see cref="IntPtr" />.</summary>
-        /// <typeparam name="T">The type of the reference.</typeparam>
-        /// <param name="source">The <see cref="IntPtr" /> for which to get the reference.</param>
-        /// <returns>A reference of <typeparamref name="T" /> from <paramref name="source" />.</returns>
+        /// <inheritdoc cref="Unsafe.As{TFrom, TTo}(ref TFrom)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ref T AsRef<T>(IntPtr source) => ref Unsafe.AsRef<T>((void*)source);
+        public static ref readonly TTo AsReadonly<TFrom, TTo>(in TFrom source)
+            => ref Unsafe.As<TFrom, TTo>(ref AsRef(in source));
 
-        /// <summary>Gets a reference of <typeparamref name="T" /> from a given <see cref="UIntPtr" />.</summary>
+        /// <summary>Reinterprets the given native integer as a reference.</summary>
         /// <typeparam name="T">The type of the reference.</typeparam>
-        /// <param name="source">The <see cref="UIntPtr" /> for which to get the reference.</param>
-        /// <returns>A reference of <typeparamref name="T" /> from <paramref name="source" />.</returns>
+        /// <param name="source">The native integer to reinterpret.</param>
+        /// <returns>A reference to a value of type <typeparamref name="T" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ref T AsRef<T>(UIntPtr source) => ref Unsafe.AsRef<T>((void*)source);
+        public static ref T AsRef<T>(nint source) => ref Unsafe.AsRef<T>((void*)source);
 
-        /// <summary>Gets a reference of <typeparamref name="T" /> from a given pointer.</summary>
+        /// <summary>Reinterprets the given native unsigned integer as a reference.</summary>
         /// <typeparam name="T">The type of the reference.</typeparam>
-        /// <param name="source">The pointer for which to get the reference.</param>
-        /// <returns>A reference of <typeparamref name="T" /> from <paramref name="source" />.</returns>
+        /// <param name="source">The native unsigned integer to reinterpret.</param>
+        /// <returns>A reference to a value of type <typeparamref name="T" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ref T AsRef<T>(void* source) => ref Unsafe.AsRef<T>(source);
+        public static ref T AsRef<T>(nuint source) => ref Unsafe.AsRef<T>((void*)source);
 
-        /// <summary>Gets a reference of <typeparamref name="T" /> from a given readonly reference.</summary>
-        /// <typeparam name="T">The type of <paramref name="source" />.</typeparam>
-        /// <param name="source">The readonly reference for which to get the reference.</param>
-        /// <returns>A reference of <typeparamref name="T" /> from <paramref name="source" />.</returns>
+        /// <inheritdoc cref="Unsafe.AsRef{T}(in T)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref T AsRef<T>(in T source) => ref Unsafe.AsRef(in source);
 
-        /// <summary>Gets the underlying reference for a <see cref="Span{T}" />.</summary>
-        /// <typeparam name="T">The type of elements contained in <paramref name="source" />.</typeparam>
-        /// <param name="source">The span for which to get the underlying reference.</param>
-        /// <returns>The underlying reference for <paramref name="source" />.</returns>
+        /// <inheritdoc cref="Unsafe.AsRef{T}(void*)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ref T AsRef<T>(this Span<T> source) => ref MemoryMarshal.GetReference(source);
+        public static ref T AsRef<T>(void* source) => ref Unsafe.AsRef<T>(source);
 
-        /// <summary>Gets the underlying reference for a <see cref="ReadOnlySpan{T}" />.</summary>
-        /// <typeparam name="T">The type of elements contained in <paramref name="source" />.</typeparam>
-        /// <param name="source">The span for which to get the underlying reference.</param>
-        /// <returns>The underlying reference for <paramref name="source" />.</returns>
+        /// <summary>Reinterprets the readonly span as a writeable span.</summary>
+        /// <typeparam name="T">The type of items in <paramref name="span" /></typeparam>
+        /// <param name="span">The readonly span to reinterpret.</param>
+        /// <returns>A writeable span that points to the same items as <paramref name="span" />.</returns>
+        public static Span<T> AsSpan<T>(this ReadOnlySpan<T> span)
+            => MemoryMarshal.CreateSpan(ref AsRef(in span.GetReference()), span.Length);
+
+        /// <inheritdoc cref="MemoryMarshal.Cast{TFrom, TTo}(Span{TFrom})" />
+        public static Span<TTo> Cast<TFrom, TTo>(this Span<TFrom> span)
+            where TFrom : struct
+            where TTo : struct
+        {
+            return MemoryMarshal.Cast<TFrom, TTo>(span);
+        }
+
+        /// <inheritdoc cref="MemoryMarshal.Cast{TFrom, TTo}(ReadOnlySpan{TFrom})" />
+        public static ReadOnlySpan<TTo> Cast<TFrom, TTo>(this ReadOnlySpan<TFrom> span)
+            where TFrom : struct
+            where TTo : struct
+        {
+            return MemoryMarshal.Cast<TFrom, TTo>(span);
+        }
+
+        /// <inheritdoc cref="MemoryMarshal.CreateSpan{T}(ref T, int)" />
+        public static Span<T> CreateSpan<T>(ref T reference, int length) => MemoryMarshal.CreateSpan(ref reference, length);
+
+        /// <inheritdoc cref="MemoryMarshal.CreateReadOnlySpan{T}(ref T, int)" />
+        public static ReadOnlySpan<T> CreateReadOnlySpan<T>(in T reference, int length) => MemoryMarshal.CreateReadOnlySpan(ref AsRef(in reference), length);
+
+        /// <summary>Returns a pointer to the element of the span at index zero.</summary>
+        /// <typeparam name="T">The type of items in <paramref name="span" />.</typeparam>
+        /// <param name="span">The span from which the pointer is retrieved.</param>
+        /// <returns>A pointer to the item at index zero of <paramref name="span" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ref T AsRef<T>(this ReadOnlySpan<T> source) => ref MemoryMarshal.GetReference(source);
+        public static T* GetPointer<T>(this Span<T> span)
+            where T : unmanaged => AsPointer(ref span.GetReference());
 
-        /// <summary>Gets the size of <typeparamref name="T" />.</summary>
-        /// <typeparam name="T">The type for which to get the size.</typeparam>
-        /// <returns>The size of <typeparamref name="T" />.</returns>
+        /// <summary>Returns a pointer to the element of the span at index zero.</summary>
+        /// <typeparam name="T">The type of items in <paramref name="span" />.</typeparam>
+        /// <param name="span">The span from which the pointer is retrieved.</param>
+        /// <returns>A pointer to the item at index zero of <paramref name="span" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T* GetPointer<T>(this ReadOnlySpan<T> span)
+            where T : unmanaged => AsPointer(ref AsRef(in span.GetReference()));
+
+        /// <inheritdoc cref="MemoryMarshal.GetReference{T}(Span{T})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ref T GetReference<T>(this Span<T> span) => ref MemoryMarshal.GetReference(span);
+
+        /// <inheritdoc cref="MemoryMarshal.GetReference{T}(ReadOnlySpan{T})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ref readonly T GetReference<T>(this ReadOnlySpan<T> span) => ref MemoryMarshal.GetReference(span);
+
+        /// <inheritdoc cref="Unsafe.IsNullRef{T}(ref T)" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNullRef<T>(in T source) => Unsafe.IsNullRef(ref AsRef(in source));
+
+        /// <inheritdoc cref="Unsafe.SizeOf{T}" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint SizeOf<T>() => unchecked((uint)Unsafe.SizeOf<T>());
     }

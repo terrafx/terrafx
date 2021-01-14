@@ -89,7 +89,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private string GetName()
         {
             ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsAdapter));
-            return MarshalUtf8ToReadOnlySpan(in VulkanPhysicalDeviceProperties.deviceName[0], 256).AsString() ?? string.Empty;
+            return GetUtf8Span(in VulkanPhysicalDeviceProperties.deviceName[0], 256).GetString() ?? string.Empty;
         }
 
         private VkPhysicalDeviceMemoryProperties GetVulkanPhysicalDeviceMemoryProperties()

@@ -74,7 +74,7 @@ namespace TerraFX.Samples
                 var assetName = $"{shaderName}{kind}.hlsl";
 
                 fixed (char* assetPath = GetAssetFullPath("Shaders", shaderName, assetName))
-                fixed (sbyte* entryPoint = MarshalStringToUtf8(entryPointName))
+                fixed (sbyte* entryPoint = entryPointName.GetUtf8Span())
                 {
                     var compileFlags = 0u;
 
@@ -87,7 +87,7 @@ namespace TerraFX.Samples
 
                     try
                     {
-                        var result = D3DCompileFromFile((ushort*)assetPath, pDefines: null, (ID3DInclude*)D3D_COMPILE_STANDARD_FILE_INCLUDE, entryPoint, GetD3D12CompileTarget(kind).AsPointer(), compileFlags, Flags2: 0, &d3dShaderBlob, ppErrorMsgs: &pError);
+                        var result = D3DCompileFromFile((ushort*)assetPath, pDefines: null, (ID3DInclude*)D3D_COMPILE_STANDARD_FILE_INCLUDE, entryPoint, GetD3D12CompileTarget(kind).GetPointer(), compileFlags, Flags2: 0, &d3dShaderBlob, ppErrorMsgs: &pError);
 
                         if (FAILED(result))
                         {

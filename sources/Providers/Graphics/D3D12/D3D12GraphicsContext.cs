@@ -435,7 +435,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         internal void OnGraphicsSurfaceSizeChanged(object? sender, PropertyChangedEventArgs<Vector2> eventArgs)
         {
-            if (_d3d12RenderTargetView.IsCreated)
+            if (_d3d12RenderTargetView.IsValueCreated)
             {
                 _d3d12RenderTargetView.Reset(CreateD3D12RenderTargetDescriptor);
 

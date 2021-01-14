@@ -54,7 +54,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             if (priorState < Disposing)
             {
-                if (_adapters.IsCreated)
+                if (_adapters.IsValueCreated)
                 {
                     foreach (var adapter in _adapters.Value)
                     {

@@ -155,7 +155,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         [UnmanagedCallersOnly]
         private static uint VulkanDebugReportCallback(uint flags, VkDebugReportObjectTypeEXT objectType, ulong @object, nuint location, int messageCode, sbyte* pLayerPrefix, sbyte* pMessage, void* pUserData)
         {
-            var message = MarshalUtf8ToReadOnlySpan(pMessage).AsString();
+            var message = GetUtf8Span(pMessage).GetString();
             Debug.WriteLine(message);
             return VK_FALSE;
         }
@@ -205,7 +205,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     enabledLayerCount = EnableProperties((sbyte*)pLayerProperties, layerProperties.Length, sizeof(VkLayerProperties), _requiredLayerNames, _optionalLayerNames, out requiredLayerNamesBuffer, out optionalLayerNamesBuffer, out enabledLayerNames);
                 }
 
-                fixed (sbyte* engineName = MarshalStringToUtf8(_engineName))
+                fixed (sbyte* engineName = _engineName.GetUtf8Span())
                 {
                     var applicationInfo = new VkApplicationInfo {
                         sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
@@ -356,7 +356,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 };
 
                 // We don't want to fail if creating the debug report callback failed
-                var vkCreateDebugReportCallbackEXT = (delegate* unmanaged<IntPtr, VkDebugReportCallbackCreateInfoEXT*, VkAllocationCallbacks*, ulong*, VkResult>)vkGetInstanceProcAddr(instance, VKCREATEDEBUGREPORTCALLBACKEXT_FUNCTION_NAME.AsPointer());
+                var vkCreateDebugReportCallbackEXT = (delegate* unmanaged<IntPtr, VkDebugReportCallbackCreateInfoEXT*, VkAllocationCallbacks*, ulong*, VkResult>)vkGetInstanceProcAddr(instance, VKCREATEDEBUGREPORTCALLBACKEXT_FUNCTION_NAME.GetPointer());
                 _ = vkCreateDebugReportCallbackEXT(instance, &debugReportCallbackCreateInfo, null, (ulong*)&vulkanDebugReportCallbackExt);
 
                 return vulkanDebugReportCallbackExt;
@@ -369,7 +369,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             if (_vulkanDebugReportCallbackExt != VK_NULL_HANDLE)
             {
-                var vkDestroyDebugReportCallbackEXT = (delegate* unmanaged<IntPtr, VkDebugReportCallbackEXT, VkAllocationCallbacks*, void>)vkGetInstanceProcAddr(vulkanInstance, VKDESTROYDEBUGREPORTCALLBACKEXT_FUNCTION_NAME.AsPointer());
+                var vkDestroyDebugReportCallbackEXT = (delegate* unmanaged<IntPtr, VkDebugReportCallbackEXT, VkAllocationCallbacks*, void>)vkGetInstanceProcAddr(vulkanInstance, VKDESTROYDEBUGREPORTCALLBACKEXT_FUNCTION_NAME.GetPointer());
                 vkDestroyDebugReportCallbackEXT(vulkanInstance, _vulkanDebugReportCallbackExt, null);
             }
 

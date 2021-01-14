@@ -151,7 +151,7 @@ namespace TerraFX.UI.Providers.Win32
         /// </remarks>
         public override void Close()
         {
-            if (_handle.IsCreated)
+            if (_handle.IsValueCreated)
             {
                 _ = SendMessageW(Handle, WM_CLOSE, wParam: 0, lParam: 0);
             }
@@ -471,7 +471,7 @@ namespace TerraFX.UI.Providers.Win32
             AssertThread(ParentThread);
             AssertDisposing(_state);
 
-            if (_handle.IsCreated)
+            if (_handle.IsValueCreated)
             {
                 ThrowExternalExceptionIfFalse(DestroyWindow(_handle.Value), nameof(DestroyWindow));
             }

@@ -156,7 +156,7 @@ namespace TerraFX.UI.Providers.Xlib
         /// </remarks>
         public override void Close()
         {
-            if (_handle.IsCreated)
+            if (_handle.IsValueCreated)
             {
                 var dispatchProvider = XlibDispatchProvider.Instance;
                 var display = dispatchProvider.Display;
@@ -692,7 +692,7 @@ namespace TerraFX.UI.Providers.Xlib
             AssertThread(ParentThread);
             AssertDisposing(_state);
 
-            if (_handle.IsCreated)
+            if (_handle.IsValueCreated)
             {
                 var dispatchProvider = XlibDispatchProvider.Instance;
                 var display = dispatchProvider.Display;
@@ -1075,7 +1075,7 @@ namespace TerraFX.UI.Providers.Xlib
 
                 if ((actualType == dispatchProvider.GetAtom(UTF8_STRING)) && (actualFormat == 8) && (bytesRemaining == 0))
                 {
-                    _title = MarshalUtf8ToReadOnlySpan(wmName, (int)itemCount).AsString() ?? string.Empty;
+                    _title = GetUtf8Span(wmName, checked((int)itemCount)).GetString() ?? string.Empty;
                 }
                 else
                 {

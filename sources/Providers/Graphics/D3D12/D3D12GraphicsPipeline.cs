@@ -125,7 +125,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                             var inputElement = inputElements[inputElementIndex];
 
                             inputElementDescs[inputElementsIndex] = new D3D12_INPUT_ELEMENT_DESC {
-                                SemanticName = GetInputElementSemanticName(inputElement.Kind).AsPointer(),
+                                SemanticName = GetInputElementSemanticName(inputElement.Kind).GetPointer(),
                                 Format = GetInputElementFormat(inputElement.Type),
                                 InputSlot = unchecked((uint)inputSlotIndex),
                                 AlignedByteOffset = inputLayoutStride,

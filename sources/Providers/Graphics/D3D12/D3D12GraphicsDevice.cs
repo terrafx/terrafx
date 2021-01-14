@@ -171,7 +171,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <inheritdoc />
         public override void WaitForIdle()
         {
-            if (_d3d12CommandQueue.IsCreated)
+            if (_d3d12CommandQueue.IsValueCreated)
             {
                 var waitForIdleGraphicsFence = WaitForIdleGraphicsFence;
 
@@ -327,7 +327,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                 ((D3D12GraphicsContext)context).OnGraphicsSurfaceSizeChanged(sender, eventArgs);
             }
 
-            if (_dxgiSwapChain.IsCreated)
+            if (_dxgiSwapChain.IsValueCreated)
             {
                 var surface = Surface;
                 ThrowExternalExceptionIfFailed(DxgiSwapChain->ResizeBuffers((uint)Contexts.Length, (uint)surface.Width, (uint)surface.Height, DXGI_FORMAT_R8G8B8A8_UNORM, SwapChainFlags: 0), nameof(IDXGISwapChain.ResizeBuffers));

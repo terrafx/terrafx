@@ -70,7 +70,7 @@ namespace TerraFX.UI.Providers.Xlib
         {
             if (dispatchProvider.GetAtomIsSupported(_NET_WM_NAME))
             {
-                var utf8Title = MarshalStringToUtf8(value);
+                var utf8Title = value.GetUtf8Span();
 
                 fixed (sbyte* pUtf8Title = utf8Title)
                 {

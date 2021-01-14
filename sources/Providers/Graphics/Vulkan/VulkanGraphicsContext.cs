@@ -376,7 +376,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         internal void OnGraphicsSurfaceSizeChanged(object? sender, PropertyChangedEventArgs<Vector2> eventArgs)
         {
-            if (_vulkanFramebuffer.IsCreated)
+            if (_vulkanFramebuffer.IsValueCreated)
             {
                 var vulkanFramebuffer = _vulkanFramebuffer.Value;
 
@@ -388,7 +388,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 _vulkanFramebuffer.Reset(CreateVulkanFramebuffer);
             }
 
-            if (_vulkanSwapChainImageView.IsCreated)
+            if (_vulkanSwapChainImageView.IsValueCreated)
             {
                 var vulkanSwapChainImageView = _vulkanSwapChainImageView.Value;
 

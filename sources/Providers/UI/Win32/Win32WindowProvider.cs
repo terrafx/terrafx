@@ -274,7 +274,7 @@ namespace TerraFX.UI.Providers.Win32
         {
             AssertDisposing(_state);
 
-            if (_classAtom.IsCreated)
+            if (_classAtom.IsValueCreated)
             {
                 ThrowExternalExceptionIfFalse(UnregisterClassW((ushort*)_classAtom.Value, EntryPointModule), nameof(UnregisterClassW));
             }
@@ -284,7 +284,7 @@ namespace TerraFX.UI.Providers.Win32
         {
             AssertDisposing(_state);
 
-            if (_nativeHandle.IsCreated)
+            if (_nativeHandle.IsValueCreated)
             {
                 _nativeHandle.Value.Free();
             }

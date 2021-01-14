@@ -98,7 +98,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         private string GetName()
         {
             ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsAdapter));
-            return MarshalUtf16ToReadOnlySpan(in DxgiAdapterDesc.Description[0], 128).AsString() ?? string.Empty;
+            return GetUtf16Span(in DxgiAdapterDesc.Description[0], 128).GetString() ?? string.Empty;
         }
     }
 }
