@@ -11,7 +11,8 @@ using TerraFX.Graphics;
 using TerraFX.Interop;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.InteropUtilities;
+using static TerraFX.Utilities.MarshalUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Samples
 {

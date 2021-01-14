@@ -3,12 +3,12 @@
 using System;
 using System.Threading;
 using TerraFX.Interop;
-using TerraFX.Utilities;
+using TerraFX.Threading;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.D3D12_FENCE_FLAGS;
 using static TerraFX.Interop.Windows;
+using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
@@ -20,7 +20,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private ulong _d3d12FenceSignalValue;
 
-        private State _state;
+        private VolatileState _state;
 
         internal D3D12GraphicsFence(D3D12GraphicsDevice device)
             : base(device)

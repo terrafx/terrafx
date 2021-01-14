@@ -8,14 +8,14 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TerraFX.Interop;
-using TerraFX.Utilities;
+using TerraFX.Threading;
 using static TerraFX.Interop.pa_sample_format;
 using static TerraFX.Interop.pa_seek_mode;
 using static TerraFX.Interop.pa_stream_flags;
 using static TerraFX.Interop.Pulse;
+using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.State;
 
 namespace TerraFX.Audio.Providers.PulseAudio
 {
@@ -35,7 +35,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
         private readonly unsafe delegate* unmanaged<IntPtr, nuint, void*, void> _writeDelegate;
         private readonly ManualResetValueTaskSource<int> _writeRequest;
 
-        private State _state;
+        private VolatileState _state;
 
         /// <inheritdoc />
         public IAudioAdapter Adapter { get; }

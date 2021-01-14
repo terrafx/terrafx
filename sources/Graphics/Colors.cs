@@ -1,9 +1,5 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using System;
-using System.Globalization;
-using System.Text;
-
 namespace TerraFX.Graphics
 {
     /// <summary><see cref="Colors" /> defines standard colors using names and RGB values from https://www.w3.org/TR/css-color-3 .</summary>

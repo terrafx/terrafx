@@ -3,7 +3,7 @@
 using System;
 using TerraFX.Interop;
 using TerraFX.Numerics;
-using TerraFX.Utilities;
+using TerraFX.Threading;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
 using static TerraFX.Interop.VkAccessFlagBits;
 using static TerraFX.Interop.VkCommandPoolCreateFlagBits;
@@ -18,9 +18,9 @@ using static TerraFX.Interop.VkPipelineStageFlagBits;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.VkSubpassContents;
 using static TerraFX.Interop.Vulkan;
+using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
@@ -35,7 +35,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private ValueLazy<VkFramebuffer> _vulkanFramebuffer;
         private ValueLazy<VkImageView> _vulkanSwapChainImageView;
 
-        private State _state;
+        private VolatileState _state;
 
         internal VulkanGraphicsContext(VulkanGraphicsDevice device, int index)
             : base(device, index)

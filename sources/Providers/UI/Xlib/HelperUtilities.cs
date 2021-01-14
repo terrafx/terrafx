@@ -1,12 +1,11 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.	
 
 using System;
-using TerraFX.Graphics.Geometry2D;
 using TerraFX.Interop;
 using static TerraFX.Interop.Xlib;
 using static TerraFX.UI.Providers.Xlib.XlibAtomId;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.InteropUtilities;
+using static TerraFX.Utilities.MarshalUtilities;
 
 namespace TerraFX.UI.Providers.Xlib
 {

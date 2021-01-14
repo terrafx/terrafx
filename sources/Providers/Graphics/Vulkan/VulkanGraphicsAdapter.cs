@@ -2,11 +2,12 @@
 
 using System;
 using TerraFX.Interop;
+using TerraFX.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Interop.Vulkan;
+using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
-using static TerraFX.Utilities.InteropUtilities;
-using static TerraFX.Utilities.State;
+using static TerraFX.Utilities.MarshalUtilities;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
@@ -19,7 +20,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private ValueLazy<VkPhysicalDeviceMemoryProperties> _vulkanPhysicalDeviceMemoryProperties;
         private ValueLazy<string> _name;
 
-        private State _state;
+        private VolatileState _state;
 
         internal VulkanGraphicsAdapter(VulkanGraphicsProvider provider, VkPhysicalDevice vulkanPhysicalDevice)
             : base(provider)

@@ -3,7 +3,7 @@
 using System;
 using TerraFX.Interop;
 using TerraFX.Numerics;
-using TerraFX.Utilities;
+using TerraFX.Threading;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.D3D_FEATURE_LEVEL;
 using static TerraFX.Interop.D3D12_DESCRIPTOR_HEAP_TYPE;
@@ -11,9 +11,9 @@ using static TerraFX.Interop.D3D12_FEATURE;
 using static TerraFX.Interop.DXGI_FORMAT;
 using static TerraFX.Interop.DXGI_SWAP_EFFECT;
 using static TerraFX.Interop.Windows;
+using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.InteropUtilities;
-using static TerraFX.Utilities.State;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
@@ -34,7 +34,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         private int _contextIndex;
         private DXGI_FORMAT _swapChainFormat;
 
-        private State _state;
+        private VolatileState _state;
 
         internal D3D12GraphicsDevice(D3D12GraphicsAdapter adapter, IGraphicsSurface surface, int contextCount)
             : base(adapter, surface)

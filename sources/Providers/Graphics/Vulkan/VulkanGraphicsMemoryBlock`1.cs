@@ -5,7 +5,7 @@
 
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using static TerraFX.Utilities.State;
+using static TerraFX.Threading.VolatileState;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {

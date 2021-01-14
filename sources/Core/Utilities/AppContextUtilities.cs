@@ -4,7 +4,7 @@ using System;
 
 namespace TerraFX.Utilities
 {
-    /// <summary>Provides a set of methods for getting or setting <see cref="AppContext" /> values.</summary>
+    /// <summary>Provides a set of methods to supplement <see cref="AppContext" />.</summary>
     public static unsafe class AppContextUtilities
     {
         /// <summary>Gets the value of the app context data associated with a given name or a default value if none exists.</summary>

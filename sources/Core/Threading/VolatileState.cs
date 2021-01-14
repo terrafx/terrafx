@@ -6,10 +6,10 @@ using static System.Threading.Interlocked;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
-namespace TerraFX.Utilities
+namespace TerraFX.Threading
 {
     /// <summary>Defines the state for an object.</summary>
-    public struct State
+    public struct VolatileState
     {
         /// <summary>The object is uninitialized.</summary>
         public const int Uninitialized = 0;
@@ -31,17 +31,17 @@ namespace TerraFX.Utilities
         /// <summary>Gets a value that indicates whether the object is not being disposed and is not already disposed.</summary>
         public bool IsNotDisposedOrDisposing => _value < Disposing;
 
-        /// <summary>Implicitly converts a <see cref="State" /> to a <see cref="uint" />.</summary>
-        /// <param name="state">The <see cref="State" /> to convert.</param>
-        public static implicit operator int(State state) => state._value;
+        /// <summary>Implicitly converts a <see cref="VolatileState" /> to a <see cref="uint" />.</summary>
+        /// <param name="state">The <see cref="VolatileState" /> to convert.</param>
+        public static implicit operator int(VolatileState state) => state._value;
 
         /// <summary>Asserts that the object is being disposed.</summary>
         [Conditional("DEBUG")]
-        public void AssertDisposing() => Assert(_value == Disposing, Resources.InvalidOperationExceptionMessage, nameof(State), _value);
+        public void AssertDisposing() => Assert(_value == Disposing, Resources.InvalidOperationExceptionMessage, nameof(VolatileState), _value);
 
         /// <summary>Asserts that the object is not being disposed and is not already disposed.</summary>
         [Conditional("DEBUG")]
-        public void AssertNotDisposedOrDisposing() => Assert(IsNotDisposedOrDisposing, Resources.InvalidOperationExceptionMessage, nameof(State), _value);
+        public void AssertNotDisposedOrDisposing() => Assert(IsNotDisposedOrDisposing, Resources.InvalidOperationExceptionMessage, nameof(VolatileState), _value);
 
         /// <summary>Begins a dispose block.</summary>
         /// <returns>The state prior to entering the dispose block.</returns>
@@ -60,7 +60,7 @@ namespace TerraFX.Utilities
         {
             if (IsDisposedOrDisposing)
             {
-                ThrowObjectDisposedException(nameof(State));
+                ThrowObjectDisposedException(nameof(VolatileState));
             }
         }
 

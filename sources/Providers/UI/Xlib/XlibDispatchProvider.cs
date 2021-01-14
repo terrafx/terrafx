@@ -7,15 +7,16 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.Interop;
+using TerraFX.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Interop.Libc;
 using static TerraFX.Interop.Xlib;
+using static TerraFX.Threading.VolatileState;
 using static TerraFX.UI.Providers.Xlib.XlibAtomId;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.IntegerUtilities;
-using static TerraFX.Utilities.InteropUtilities;
-using static TerraFX.Utilities.State;
+using static TerraFX.Utilities.MathUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.UI.Providers.Xlib
 {
@@ -34,7 +35,7 @@ namespace TerraFX.UI.Providers.Xlib
         private ValueLazy<IntPtr> _display;
         private ValueLazy<nuint[]> _supportedAtoms;
 
-        private State _state;
+        private VolatileState _state;
 
         private XlibDispatchProvider()
         {

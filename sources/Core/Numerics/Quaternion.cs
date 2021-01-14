@@ -2,9 +2,7 @@
 
 using System;
 using System.Globalization;
-using System.Resources;
 using System.Text;
-using TerraFX.Utilities;
 
 namespace TerraFX.Numerics
 {

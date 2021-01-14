@@ -5,11 +5,11 @@ using NUnit.Framework;
 
 namespace TerraFX.Utilities.UnitTests
 {
-    /// <summary>Provides a set of tests covering the <see cref="FloatUtilities" /> static class.</summary>
-    [TestFixture(Author = "Tanner Gooding", TestOf = typeof(FloatUtilities))]
+    /// <summary>Provides a set of tests covering the <see cref="MathUtilities" /> static class.</summary>
+    [TestFixture(Author = "Tanner Gooding", TestOf = typeof(MathUtilities))]
     public static class FloatUtilitiesTests
     {
-        /// <summary>Provides validation of the <see cref="FloatUtilities.Clamp(float, float, float)" /> static method.</summary>
+        /// <summary>Provides validation of the <see cref="MathUtilities.Clamp(float, float, float)" /> static method.</summary>
         [TestCase( float.NegativeInfinity,  float.NegativeInfinity,  float.NegativeInfinity,  float.NegativeInfinity)]
         [TestCase( float.NegativeInfinity,  float.NegativeInfinity, -3.14159265f,             float.NegativeInfinity)]
         [TestCase( float.NegativeInfinity,  float.NegativeInfinity, -1.0f,                    float.NegativeInfinity)]
@@ -741,7 +741,7 @@ namespace TerraFX.Utilities.UnitTests
         [TestCase( float.PositiveInfinity,  float.PositiveInfinity,  float.PositiveInfinity,  float.PositiveInfinity)]
         public static void ClampSingleSingleSingleTest(float value, float min, float max, float expectedResult)
         {
-            var result = FloatUtilities.Clamp(value, min, max);
+            var result = MathUtilities.Clamp(value, min, max);
             var resultBits = BitConverter.SingleToInt32Bits(result);
             var expectedResultBits = BitConverter.SingleToInt32Bits(expectedResult);
 

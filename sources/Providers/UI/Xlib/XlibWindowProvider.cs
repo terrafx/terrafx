@@ -7,12 +7,12 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.Interop;
-using TerraFX.Utilities;
-using static TerraFX.UI.Providers.Xlib.XlibAtomId;
+using TerraFX.Threading;
 using static TerraFX.Interop.Xlib;
+using static TerraFX.Threading.VolatileState;
+using static TerraFX.UI.Providers.Xlib.XlibAtomId;
 using static TerraFX.Utilities.AssertionUtilities;
-using static TerraFX.Utilities.InteropUtilities;
-using static TerraFX.Utilities.State;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.UI.Providers.Xlib
 {
@@ -26,7 +26,7 @@ namespace TerraFX.UI.Providers.Xlib
         private readonly ThreadLocal<Dictionary<nuint, XlibWindow>> _windows;
 
         private ValueLazy<GCHandle> _nativeHandle;
-        private State _state;
+        private VolatileState _state;
 
         /// <summary>Initializes a new instance of the <see cref="XlibWindowProvider" /> class.</summary>
         [ImportingConstructor]

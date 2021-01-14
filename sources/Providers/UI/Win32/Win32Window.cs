@@ -8,13 +8,13 @@ using TerraFX.Graphics;
 using TerraFX.Graphics.Geometry2D;
 using TerraFX.Interop;
 using TerraFX.Numerics;
-using TerraFX.Utilities;
+using TerraFX.Threading;
 using static TerraFX.Interop.Windows;
+using static TerraFX.Threading.VolatileState;
 using static TerraFX.UI.Providers.Win32.HelperUtilities;
 using static TerraFX.UI.Providers.Win32.Win32WindowProvider;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.State;
 
 namespace TerraFX.UI.Providers.Win32
 {
@@ -35,7 +35,7 @@ namespace TerraFX.UI.Providers.Win32
         private WindowState _windowState;
         private bool _isActive;
 
-        private State _state;
+        private VolatileState _state;
 
         internal Win32Window(Win32WindowProvider windowProvider)
             : base(windowProvider, Thread.CurrentThread)

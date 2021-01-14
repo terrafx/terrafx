@@ -3,6 +3,7 @@
 using System;
 using TerraFX.Interop;
 using TerraFX.Numerics;
+using TerraFX.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
 using static TerraFX.Interop.VkAttachmentLoadOp;
@@ -19,8 +20,8 @@ using static TerraFX.Interop.VkSampleCountFlagBits;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.VkSurfaceTransformFlagBitsKHR;
 using static TerraFX.Interop.Vulkan;
+using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
@@ -42,7 +43,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private int _contextIndex;
         private VkFormat _vulkanSwapchainFormat;
 
-        private State _state;
+        private VolatileState _state;
 
         internal VulkanGraphicsDevice(VulkanGraphicsAdapter adapter, IGraphicsSurface surface, int contextCount)
             : base(adapter, surface)

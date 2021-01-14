@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace TerraFX.Utilities
 {
-    /// <summary>Provides a set of methods for asserting conditions.</summary>
+    /// <summary>Provides a set of methods to supplement <see cref="Debug" />.</summary>
     public static unsafe class AssertionUtilities
     {
         /// <summary>Asserts that a condition is <c>true</c>.</summary>

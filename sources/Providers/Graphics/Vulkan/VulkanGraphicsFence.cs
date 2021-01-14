@@ -3,14 +3,14 @@
 using System;
 using System.Threading;
 using TerraFX.Interop;
-using TerraFX.Utilities;
+using TerraFX.Threading;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
 using static TerraFX.Interop.VkFenceCreateFlagBits;
 using static TerraFX.Interop.VkResult;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
+using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
@@ -19,7 +19,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
     {
         private ValueLazy<VkFence> _vulkanFence;
 
-        private State _state;
+        private VolatileState _state;
 
         internal VulkanGraphicsFence(VulkanGraphicsDevice device)
             : base(device)

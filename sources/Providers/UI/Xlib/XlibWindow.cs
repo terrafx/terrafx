@@ -8,14 +8,15 @@ using TerraFX.Graphics;
 using TerraFX.Graphics.Geometry2D;
 using TerraFX.Interop;
 using TerraFX.Numerics;
+using TerraFX.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Interop.Xlib;
+using static TerraFX.Threading.VolatileState;
 using static TerraFX.UI.Providers.Xlib.HelperUtilities;
 using static TerraFX.UI.Providers.Xlib.XlibAtomId;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.InteropUtilities;
-using static TerraFX.Utilities.State;
+using static TerraFX.Utilities.MarshalUtilities;
 
 namespace TerraFX.UI.Providers.Xlib
 {
@@ -39,7 +40,7 @@ namespace TerraFX.UI.Providers.Xlib
         private bool _isEnabled;
         private bool _isVisible;
 
-        private State _state;
+        private VolatileState _state;
 
         internal XlibWindow(XlibWindowProvider windowProvider)
             : base(windowProvider, Thread.CurrentThread)

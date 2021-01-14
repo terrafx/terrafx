@@ -2,7 +2,8 @@
 
 using System;
 using TerraFX.Interop;
-using TerraFX.Utilities;
+using TerraFX.Numerics;
+using TerraFX.Threading;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
 using static TerraFX.Interop.VkDescriptorPoolCreateFlagBits;
 using static TerraFX.Interop.VkDescriptorType;
@@ -10,8 +11,7 @@ using static TerraFX.Interop.VkFormat;
 using static TerraFX.Interop.VkShaderStageFlagBits;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
-using static TerraFX.Utilities.State;
-using TerraFX.Numerics;
+using static TerraFX.Threading.VolatileState;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
@@ -23,7 +23,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private ValueLazy<VkDescriptorSetLayout> _vulkanDescriptorSetLayout;
         private ValueLazy<VkPipelineLayout> _vulkanPipelineLayout;
 
-        private State _state;
+        private VolatileState _state;
 
         internal VulkanGraphicsPipelineSignature(VulkanGraphicsDevice device, ReadOnlySpan<GraphicsPipelineInput> inputs, ReadOnlySpan<GraphicsPipelineResource> resources)
             : base(device, inputs, resources)

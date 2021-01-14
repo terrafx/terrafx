@@ -7,13 +7,13 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.Interop;
-using TerraFX.Utilities;
+using TerraFX.Threading;
 using static TerraFX.Interop.Windows;
+using static TerraFX.Threading.VolatileState;
 using static TerraFX.UI.Providers.Win32.HelperUtilities;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.InteropUtilities;
-using static TerraFX.Utilities.State;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.UI.Providers.Win32
 {
@@ -32,7 +32,7 @@ namespace TerraFX.UI.Providers.Win32
         private ValueLazy<ushort> _classAtom;
         private ValueLazy<GCHandle> _nativeHandle;
 
-        private State _state;
+        private VolatileState _state;
 
         /// <summary>Initializes a new instance of the <see cref="Win32WindowProvider" /> class.</summary>
         [ImportingConstructor]

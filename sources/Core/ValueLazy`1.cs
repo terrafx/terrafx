@@ -4,11 +4,12 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
+using TerraFX.Threading;
+using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.State;
 
-namespace TerraFX.Utilities
+namespace TerraFX
 {
     /// <summary>Provides support for lazily initializing values.</summary>
     /// <typeparam name="T">The type of the value being lazily initialized.</typeparam>
@@ -19,7 +20,7 @@ namespace TerraFX.Utilities
 
         private Func<T>? _factory;
         private T _value;
-        private State _state;
+        private VolatileState _state;
 
         /// <summary>Initializes a new instance of the <see cref="ValueLazy{T}" /> struct.</summary>
         /// <param name="factory">The factory method to call when initializing the value.</param>

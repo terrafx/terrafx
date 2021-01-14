@@ -4,10 +4,10 @@ using System;
 using System.Composition.Hosting;
 using System.Reflection;
 using System.Threading;
+using TerraFX.Threading;
 using TerraFX.UI;
-using TerraFX.Utilities;
+using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.State;
 
 namespace TerraFX.ApplicationModel
 {
@@ -22,7 +22,7 @@ namespace TerraFX.ApplicationModel
         private readonly Thread _parentThread;
         private ValueLazy<CompositionHost> _compositionHost;
 
-        private State _state;
+        private VolatileState _state;
 
         /// <summary>Initializes a new instance of the <see cref="Application" /> class.</summary>
         /// <param name="compositionAssemblies">The <see cref="Assembly" /> instances to search for type exports.</param>

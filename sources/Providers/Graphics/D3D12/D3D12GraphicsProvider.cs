@@ -6,12 +6,12 @@ using System.Collections.Immutable;
 using System.Composition;
 using System.Runtime.InteropServices;
 using TerraFX.Interop;
-using TerraFX.Utilities;
+using TerraFX.Threading;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.DXGI_DEBUG_RLO_FLAGS;
 using static TerraFX.Interop.Windows;
+using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
@@ -23,7 +23,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         private ValueLazy<Pointer<IDXGIFactory2>> _dxgiFactory;
         private ValueLazy<ImmutableArray<D3D12GraphicsAdapter>> _adapters;
 
-        private State _state;
+        private VolatileState _state;
 
         /// <summary>Initializes a new instance of the <see cref="D3D12GraphicsProvider" /> class.</summary>
         [ImportingConstructor]

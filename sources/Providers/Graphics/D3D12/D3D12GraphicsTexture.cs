@@ -3,12 +3,12 @@
 using System;
 using System.Runtime.InteropServices;
 using TerraFX.Interop;
-using TerraFX.Utilities;
+using TerraFX.Threading;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.D3D12_RESOURCE_STATES;
 using static TerraFX.Interop.DXGI_FORMAT;
 using static TerraFX.Interop.Windows;
-using static TerraFX.Utilities.State;
+using static TerraFX.Threading.VolatileState;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
@@ -18,7 +18,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         private ValueLazy<Pointer<ID3D12Resource>> _d3d12Resource;
         private ValueLazy<D3D12_RESOURCE_STATES> _d3d12ResourceState;
 
-        private protected State _state;
+        private protected VolatileState _state;
 
         internal D3D12GraphicsTexture(GraphicsTextureKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess, uint width, uint height, ushort depth)
             : base(kind, in blockRegion, cpuAccess, width, height, depth)

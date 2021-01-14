@@ -7,13 +7,13 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using TerraFX.Interop;
-using TerraFX.Utilities;
+using TerraFX.Threading;
 using static TerraFX.Interop.pa_context_flags;
 using static TerraFX.Interop.pa_context_state;
 using static TerraFX.Interop.Pulse;
+using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.State;
 
 namespace TerraFX.Audio.Providers.PulseAudio
 {
@@ -31,7 +31,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
         private readonly SemaphoreSlim _mainLoopMutex;
 
         private Thread? _mainLoopThread;
-        private State _state;
+        private VolatileState _state;
 
         /// <summary>Initializes a new instance of the <see cref="AudioProvider" /> class.</summary>
         [ImportingConstructor]

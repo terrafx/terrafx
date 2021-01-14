@@ -173,9 +173,9 @@ namespace TerraFX.Numerics
         /// <returns><c>True</c> if similar, <c>False</c> otherwise.</returns>
         public static bool EqualEstimate(Vector3 left, Vector3 right, Vector3 epsilon)
         {
-            return FloatUtilities.EqualEstimate(left.X, right.X, epsilon.X)
-                && FloatUtilities.EqualEstimate(left.Y, right.Y, epsilon.Y)
-                && FloatUtilities.EqualEstimate(left.Z, right.Z, epsilon.Z);
+            return MathUtilities.EqualEstimate(left.X, right.X, epsilon.X)
+                && MathUtilities.EqualEstimate(left.Y, right.Y, epsilon.Y)
+                && MathUtilities.EqualEstimate(left.Z, right.Z, epsilon.Z);
         }
 
         /// <inheritdoc />

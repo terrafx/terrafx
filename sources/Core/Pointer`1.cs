@@ -2,7 +2,7 @@
 
 using System;
 
-namespace TerraFX.Utilities
+namespace TerraFX
 {
     /// <summary>Wraps a <typeparamref name="T" /> pointer so it can be used as a generic type parameter.</summary>
     /// <typeparam name="T">The type of the pointer being wrapped.</typeparam>
@@ -40,7 +40,7 @@ namespace TerraFX.Utilities
         public static bool operator !=(Pointer<T> l, Pointer<T> r) => !(l == r);
 
         /// <inheritdoc />
-        public override bool Equals(object? obj) => (obj is Pointer<T> other) && Equals(other);
+        public override bool Equals(object? obj) => obj is Pointer<T> other && Equals(other);
 
         /// <inheritdoc />
         public bool Equals(Pointer<T> other) => this == other;

@@ -4,11 +4,11 @@ using NUnit.Framework;
 
 namespace TerraFX.Utilities.UnitTests
 {
-    /// <summary>Provides a set of tests covering the <see cref="InteropUtilities" /> static class.</summary>
-    [TestFixture(Author = "Tanner Gooding", TestOf = typeof(InteropUtilities))]
+    /// <summary>Provides a set of tests covering the <see cref="MarshalUtilities" /> static class.</summary>
+    [TestFixture(Author = "Tanner Gooding", TestOf = typeof(MarshalUtilities))]
     public static unsafe class InteropUtilitiesTests
     {
-        /// <summary>Provides validation of the <see cref="InteropUtilities.MarshalUtf8ToReadOnlySpan(sbyte*, nint)" /> static method.</summary>
+        /// <summary>Provides validation of the <see cref="MarshalUtilities.MarshalUtf8ToReadOnlySpan(sbyte*, nint)" /> static method.</summary>
         [TestCase(null, -1, null)]
         [TestCase(null, +3, null)]
         [TestCase("", -1, "")]
@@ -19,12 +19,12 @@ namespace TerraFX.Utilities.UnitTests
         [TestCase("para\0m", +3, "par")]
         public static void MarshalUtf8ToReadOnlySpan(string value, int maxLength, string expectedResult)
         {
-            var span = InteropUtilities.MarshalStringToUtf8(value);
-            var result = InteropUtilities.MarshalUtf8ToReadOnlySpan(span.AsPointer(), maxLength).AsString();
+            var span = MarshalUtilities.MarshalStringToUtf8(value);
+            var result = MarshalUtilities.MarshalUtf8ToReadOnlySpan(span.AsPointer(), maxLength).AsString();
             Assert.That(result, Is.EqualTo(expectedResult));
         }
 
-        /// <summary>Provides validation of the <see cref="InteropUtilities.MarshalUtf16ToReadOnlySpan(ushort*, nint)" /> static method.</summary>
+        /// <summary>Provides validation of the <see cref="MarshalUtilities.MarshalUtf16ToReadOnlySpan(ushort*, nint)" /> static method.</summary>
         [TestCase(null, -1, null)]
         [TestCase(null, +3, null)]
         [TestCase("", -1, "")]
@@ -35,8 +35,8 @@ namespace TerraFX.Utilities.UnitTests
         [TestCase("para\0m", +3, "par")]
         public static void MarshalUtf16ToReadOnlySpan(string value, int maxLength, string expectedResult)
         {
-            var span = InteropUtilities.MarshalStringToUtf16(value);
-            var result = InteropUtilities.MarshalUtf16ToReadOnlySpan(span.AsPointer(), maxLength).AsString();
+            var span = MarshalUtilities.MarshalStringToUtf16(value);
+            var result = MarshalUtilities.MarshalUtf16ToReadOnlySpan(span.AsPointer(), maxLength).AsString();
             Assert.That(result, Is.EqualTo(expectedResult));
         }
     }

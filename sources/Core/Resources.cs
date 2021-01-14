@@ -3,7 +3,7 @@
 using System.Globalization;
 using System.Resources;
 
-namespace TerraFX.Utilities
+namespace TerraFX
 {
     /// <summary>Provides a set of methods for looking up localized resources.</summary>
     public static class Resources

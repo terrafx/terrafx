@@ -3,11 +3,12 @@
 using System;
 using System.Runtime.InteropServices;
 using TerraFX.Interop;
+using TerraFX.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
+using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.InteropUtilities;
-using static TerraFX.Utilities.State;
+using static TerraFX.Utilities.MarshalUtilities;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
@@ -19,7 +20,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         private ValueLazy<DXGI_ADAPTER_DESC1> _dxgiAdapterDesc;
         private ValueLazy<string> _name;
 
-        private State _state;
+        private VolatileState _state;
 
         internal D3D12GraphicsAdapter(D3D12GraphicsProvider provider, IDXGIAdapter1* dxgiAdapter)
             : base(provider)

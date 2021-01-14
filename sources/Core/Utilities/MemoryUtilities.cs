@@ -6,7 +6,7 @@ using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Utilities
 {
-    /// <summary>Provides a set of methods for simplifying memory management code.</summary>
+    /// <summary>Provides a set of methods for interacting with unmanaged memory.</summary>
     public static unsafe class MemoryUtilities
     {
         /// <summary>Allocates a chunk of unmanaged memory.</summary>

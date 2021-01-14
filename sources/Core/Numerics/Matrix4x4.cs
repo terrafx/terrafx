@@ -3,7 +3,6 @@
 using System;
 using System.Globalization;
 using System.Text;
-using TerraFX.Utilities;
 
 namespace TerraFX.Numerics
 {

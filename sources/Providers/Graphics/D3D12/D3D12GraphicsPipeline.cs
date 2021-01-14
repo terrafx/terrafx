@@ -3,12 +3,13 @@
 using System;
 using TerraFX.Interop;
 using TerraFX.Numerics;
+using TerraFX.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.D3D12_PRIMITIVE_TOPOLOGY_TYPE;
 using static TerraFX.Interop.DXGI_FORMAT;
 using static TerraFX.Interop.Windows;
-using static TerraFX.Utilities.State;
+using static TerraFX.Threading.VolatileState;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
@@ -16,7 +17,7 @@ namespace TerraFX.Graphics.Providers.D3D12
     public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
     {
         private ValueLazy<Pointer<ID3D12PipelineState>> _d3d12PipelineState;
-        private State _state;
+        private VolatileState _state;
 
         internal D3D12GraphicsPipeline(D3D12GraphicsDevice device, D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader)
             : base(device, signature, vertexShader, pixelShader)

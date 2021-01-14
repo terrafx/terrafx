@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.ApplicationModel;
-using TerraFX.Graphics.Geometry2D;
 using TerraFX.Numerics;
 using TerraFX.Samples.Audio;
 using TerraFX.Samples.Graphics;

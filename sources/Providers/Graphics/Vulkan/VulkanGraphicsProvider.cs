@@ -9,15 +9,17 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using TerraFX.Interop;
+using TerraFX.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
-using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.VkDebugReportFlagBitsEXT;
+using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
+using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.InteropUtilities;
+using static TerraFX.Utilities.MarshalUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
-using static TerraFX.Utilities.State;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
@@ -80,7 +82,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private VkDebugReportCallbackEXT _vulkanDebugReportCallbackExt;
 
-        private State _state;
+        private VolatileState _state;
 
         /// <summary>Initializes a new instance of the <see cref="VulkanGraphicsProvider" /> class.</summary>
         [ImportingConstructor]

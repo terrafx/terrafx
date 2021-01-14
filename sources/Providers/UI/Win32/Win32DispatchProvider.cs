@@ -5,7 +5,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.Interop;
-using TerraFX.Utilities;
 using static TerraFX.Interop.Windows;
 using static TerraFX.UI.Providers.Win32.HelperUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;

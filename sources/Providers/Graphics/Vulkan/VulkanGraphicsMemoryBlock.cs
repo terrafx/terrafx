@@ -4,11 +4,11 @@
 // The original code is Copyright © Advanced Micro Devices, Inc. All rights reserved. Licensed under the MIT License (MIT).
 
 using TerraFX.Interop;
-using TerraFX.Utilities;
+using TerraFX.Threading;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
-using static TerraFX.Utilities.State;
+using static TerraFX.Threading.VolatileState;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
@@ -16,7 +16,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
     public abstract unsafe class VulkanGraphicsMemoryBlock : GraphicsMemoryBlock
     {
         private ValueLazy<VkDeviceMemory> _vulkanDeviceMemory;
-        private protected State _state;
+        private protected VolatileState _state;
 
         private protected VulkanGraphicsMemoryBlock(VulkanGraphicsMemoryBlockCollection collection)
             : base(collection)
