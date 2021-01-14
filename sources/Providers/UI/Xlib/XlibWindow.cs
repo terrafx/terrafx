@@ -685,7 +685,7 @@ namespace TerraFX.UI.Providers.Xlib
         private void DisposeWindowHandle()
         {
             Assert(Thread.CurrentThread == ParentThread, Resources.InvalidOperationExceptionMessage, nameof(Thread.CurrentThread), Thread.CurrentThread);
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (_handle.IsCreated)
             {

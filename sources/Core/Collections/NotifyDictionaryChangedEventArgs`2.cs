@@ -1,7 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Diagnostics;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Collections
@@ -20,7 +20,7 @@ namespace TerraFX.Collections
 
         private NotifyDictionaryChangedEventArgs(NotifyDictionaryChangedAction action, TKey? key = default, TValue? oldValue = default, TValue? newValue = default)
         {
-            Debug.Assert(Enum.IsDefined(typeof(NotifyDictionaryChangedAction), action));
+            Assert(Enum.IsDefined(typeof(NotifyDictionaryChangedAction), action));
 
             _action = action;
             _key = key;

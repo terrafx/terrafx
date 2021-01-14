@@ -2,6 +2,7 @@
 
 using System;
 using System.Diagnostics;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Collections
@@ -17,7 +18,7 @@ namespace TerraFX.Collections
 
         private NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, T? value = default)
         {
-            Debug.Assert(Enum.IsDefined(typeof(NotifyCollectionChangedAction), action));
+            Assert(Enum.IsDefined(typeof(NotifyCollectionChangedAction), action));
 
             _action = action;
             _value = value;

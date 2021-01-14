@@ -57,7 +57,7 @@ namespace TerraFX.UI.Providers.Win32
         {
             get
             {
-                _state.ThrowIfDisposedOrDisposing();
+                ThrowIfDisposedOrDisposing(_state);
                 return _classAtom.Value;
             }
         }
@@ -71,7 +71,7 @@ namespace TerraFX.UI.Providers.Win32
         {
             get
             {
-                _state.AssertNotDisposedOrDisposing();
+                AssertNotDisposedOrDisposing(_state);
                 return _nativeHandle.Value;
             }
         }
@@ -82,7 +82,7 @@ namespace TerraFX.UI.Providers.Win32
         {
             get
             {
-                _state.ThrowIfDisposedOrDisposing();
+                ThrowIfDisposedOrDisposing(_state);
                 return _windows.Value?.Values ?? Enumerable.Empty<Win32Window>();
             }
         }
@@ -91,7 +91,7 @@ namespace TerraFX.UI.Providers.Win32
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public override Window CreateWindow()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
             return new Win32Window(this);
         }
 
@@ -219,7 +219,7 @@ namespace TerraFX.UI.Providers.Win32
 
         private ushort CreateClassAtom()
         {
-            _state.AssertNotDisposedOrDisposing();
+            AssertNotDisposedOrDisposing(_state);
 
             ushort classAtom;
             {
@@ -272,7 +272,7 @@ namespace TerraFX.UI.Providers.Win32
 
         private void DisposeClassAtom()
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (_classAtom.IsCreated)
             {
@@ -282,7 +282,7 @@ namespace TerraFX.UI.Providers.Win32
 
         private void DisposeNativeHandle()
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (_nativeHandle.IsCreated)
             {
@@ -292,7 +292,7 @@ namespace TerraFX.UI.Providers.Win32
 
         private void DisposeWindows(bool isDisposing)
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (isDisposing)
             {

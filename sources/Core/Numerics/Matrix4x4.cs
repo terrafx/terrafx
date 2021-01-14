@@ -1,5 +1,8 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+// This file includes code based on code from https://github.com/microsoft/DirectXMath
+// The original code is Copyright © Microsoft. All rights reserved. Licensed under the MIT License (MIT).
+
 using System;
 using System.Globalization;
 using System.Text;
@@ -48,48 +51,41 @@ namespace TerraFX.Numerics
         /// <summary>Gets the value of the w-dimension.</summary>
         public Vector4 W => _w;
 
-        /// <summary>Compares two <see cref="Matrix4x4" /> instances to determine equality.</summary>
-        /// <param name="left">The <see cref="Matrix4x4" /> to compare with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="Matrix4x4" /> to compare with <paramref name="left" />.</param>
+        /// <summary>Compares two matrices to determine equality.</summary>
+        /// <param name="left">The matrix to compare with <paramref name="right" />.</param>
+        /// <param name="right">The matrix to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
         public static bool operator ==(Matrix4x4 left, Matrix4x4 right)
-        {
-            return (left.X == right.X)
-                && (left.Y == right.Y)
-                && (left.Z == right.Z)
-                && (left.W == right.W);
-        }
+            => (left.X == right.X)
+            && (left.Y == right.Y)
+            && (left.Z == right.Z)
+            && (left.W == right.W);
 
-        /// <summary>Compares two <see cref="Matrix4x4" /> instances to determine inequality.</summary>
-        /// <param name="left">The <see cref="Matrix4x4" /> to compare with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="Matrix4x4" /> to compare with <paramref name="left" />.</param>
+        /// <summary>Compares two matrices to determine inequality.</summary>
+        /// <param name="left">The matrix to compare with <paramref name="right" />.</param>
+        /// <param name="right">The matrix to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
         public static bool operator !=(Matrix4x4 left, Matrix4x4 right)
-        {
-            return (left.X != right.X)
-                || (left.Y != right.Y)
-                || (left.Z != right.Z)
-                || (left.W != right.W);
-        }
+            => (left.X != right.X)
+            || (left.Y != right.Y)
+            || (left.Z != right.Z)
+            || (left.W != right.W);
 
-        /// <summary>Multiplies a <see cref="Matrix4x4" /> with a <see cref="float" />.</summary>
-        /// <param name="left">The <see cref="Matrix4x4" /> to multiply with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="float" /> to multiply with <paramref name="left" />.</param>
-        /// <returns>The matrix multiplication result.</returns>
-        public static Matrix4x4 operator *(Matrix4x4 left, float right)
-        {
-            return new Matrix4x4(
-                left.X * right,
-                left.Y * right,
-                left.Z * right,
-                left.W * right
-            );
-        }
+        /// <summary>Computes the product of a matrix and a float.</summary>
+        /// <param name="left">The matrix to multiply by <paramref name="right" />.</param>
+        /// <param name="right">The float which is used to multiply <paramref name="left" />.</param>
+        /// <returns>The product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+        public static Matrix4x4 operator *(Matrix4x4 left, float right) => new Matrix4x4(
+            left.X * right,
+            left.Y * right,
+            left.Z * right,
+            left.W * right
+        );
 
-        /// <summary>Multiplies two <see cref="Matrix4x4" /> instances.</summary>
-        /// <param name="left">The <see cref="Matrix4x4" /> to multiply with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="Matrix4x4" /> to multiply with <paramref name="left" />.</param>
-        /// <returns>The matrix multiplication result.</returns>
+        /// <summary>Computes the product of two matrices.</summary>
+        /// <param name="left">The matrix to multiply by <paramref name="right" />.</param>
+        /// <param name="right">The matrix which is used to multiply <paramref name="left" />.</param>
+        /// <returns>The product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
         public static Matrix4x4 operator *(Matrix4x4 left, Matrix4x4 right)
         {
             var transposed = Transpose(right);
@@ -112,25 +108,66 @@ namespace TerraFX.Numerics
             }
         }
 
-        /// <summary>Creates a new <see cref="Matrix4x4" /> instance with <see cref="X" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the x-dimension.</param>
-        /// <returns>A new <see cref="Matrix4x4" /> instance with <see cref="X" /> set to <paramref name="value" />.</returns>
-        public Matrix4x4 WithX(Vector4 value) => new Matrix4x4(value, Y, Z, W);
+        /// <summary>Creates a matrix from a rotation.</summary>
+        /// <param name="rotation">The rotation of the matrix.</param>
+        /// <returns>A matrix that represents <paramref name="rotation" />.</returns>
+        public static Matrix4x4 CreateFromRotation(Quaternion rotation)
+        {
+            var w2 = rotation.W * rotation.W;
+            var x2 = rotation.X * rotation.X;
+            var y2 = rotation.Y * rotation.Y;
+            var z2 = rotation.Z * rotation.Z;
 
-        /// <summary>Creates a new <see cref="Matrix4x4" /> instance with <see cref="Y" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the y-dimension.</param>
-        /// <returns>A new <see cref="Matrix4x4" /> instance with <see cref="Y" /> set to <paramref name="value" />.</returns>
-        public Matrix4x4 WithY(Vector4 value) => new Matrix4x4(X, value, Z, W);
+            var wz = 2 * rotation.W * rotation.Z;
+            var xz = 2 * rotation.X * rotation.Z;
+            var xy = 2 * rotation.X * rotation.Y;
+            var wx = 2 * rotation.W * rotation.X;
+            var wy = 2 * rotation.W * rotation.Y;
+            var yz = 2 * rotation.Y * rotation.Z;
 
-        /// <summary>Creates a new <see cref="Matrix4x4" /> instance with <see cref="Z" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the z-dimension.</param>
-        /// <returns>A new <see cref="Matrix4x4" /> instance with <see cref="Z" /> set to <paramref name="value" />.</returns>
-        public Matrix4x4 WithZ(Vector4 value) => new Matrix4x4(X, Y, value, W);
+            return new Matrix4x4(
+                new Vector4(w2 + x2 - y2 - z2, wz + xy, xz - wy, 0),
+                new Vector4(xy - wz, w2 - x2 + y2 - z2, wx + yz, 0),
+                new Vector4(wy + xz, yz - wx, w2 - x2 - y2 + z2, 0),
+                Vector4.UnitW
+            );
+        }
 
-        /// <summary>Creates a new <see cref="Matrix4x4" /> instance with <see cref="W" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the w-dimension.</param>
-        /// <returns>A new <see cref="Matrix4x4" /> instance with <see cref="W" /> set to <paramref name="value" />.</returns>
-        public Matrix4x4 WithW(Vector4 value) => new Matrix4x4(X, Y, Z, value);
+        /// <summary>Creates a matrix from a transform.</summary>
+        /// <param name="transform">The transform of the matrix.</param>
+        /// <returns>A matrix that represents <paramref name="transform" />.</returns>
+        public static Matrix4x4 CreateFromTransform(Transform transform)
+        {
+            var rotation3x3 = Matrix3x3.CreateFromRotation(transform.Rotation);
+
+            var x = new Vector4(rotation3x3.X * transform.Scale.X, 0.0f);
+            var y = new Vector4(rotation3x3.Y * transform.Scale.Y, 0.0f);
+            var z = new Vector4(rotation3x3.Z * transform.Scale.Z, 0.0f);
+            var w = new Vector4(transform.Translation.X, transform.Translation.Y, transform.Translation.Z, 1.0f);
+
+            return new Matrix4x4(x, y, z, w);
+        }
+
+        /// <summary>Compares two matrices to determine approximate equality.</summary>
+        /// <param name="left">The matrix to compare with <paramref name="right" />.</param>
+        /// <param name="right">The matrix to compare with <paramref name="left" />.</param>
+        /// <param name="epsilon">The maximum (exclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
+        public static bool EqualsEstimate(Matrix4x4 left, Matrix4x4 right, Matrix4x4 epsilon)
+            => Vector4.EqualsEstimate(left.X, right.X, epsilon.X)
+            && Vector4.EqualsEstimate(left.Y, right.Y, epsilon.Y)
+            && Vector4.EqualsEstimate(left.Z, right.Z, epsilon.Z)
+            && Vector4.EqualsEstimate(left.W, right.W, epsilon.W);
+
+        /// <summary>Transposes a matrix.</summary>
+        /// <param name="value">The matrix to transpose.</param>
+        /// <returns>The transposition of <paramref name="value" />.</returns>
+        public static Matrix4x4 Transpose(Matrix4x4 value) => new Matrix4x4(
+            new Vector4(value.X.X, value.Y.X, value.Z.X, value.W.X),
+            new Vector4(value.X.Y, value.Y.Y, value.Z.Y, value.W.Y),
+            new Vector4(value.X.Z, value.Y.Z, value.Z.Z, value.W.Z),
+            new Vector4(value.X.W, value.Y.W, value.Z.W, value.W.W)
+        );
 
         /// <inheritdoc />
         public override bool Equals(object? obj) => (obj is Matrix4x4 other) && Equals(other);
@@ -138,32 +175,8 @@ namespace TerraFX.Numerics
         /// <inheritdoc />
         public bool Equals(Matrix4x4 other) => this == other;
 
-        /// <summary>Tests if two <see cref="Matrix4x4" /> instances have sufficiently similar values to see them as equivalent.
-        /// Use this to compare values that might be affected by differences in rounding the least significant bits.</summary>
-        /// <param name="left">The left instance to compare.</param>
-        /// <param name="right">The right instance to compare.</param>
-        /// <param name="epsilon">The threshold below which they are sufficiently similar.</param>
-        /// <returns><c>True</c> if similar, <c>False</c> otherwise.</returns>
-        public static bool EqualEstimate(Matrix4x4 left, Matrix4x4 right, Matrix4x4 epsilon)
-        {
-            return Vector4.EqualEstimate(left.X, right.X, epsilon.X)
-                && Vector4.EqualEstimate(left.Y, right.Y, epsilon.Y)
-                && Vector4.EqualEstimate(left.Z, right.Z, epsilon.Z)
-                && Vector4.EqualEstimate(left.W, right.W, epsilon.W);
-        }
-
         /// <inheritdoc />
-        public override int GetHashCode()
-        {
-            var hashCode = new HashCode();
-            {
-                hashCode.Add(X);
-                hashCode.Add(Y);
-                hashCode.Add(Z);
-                hashCode.Add(W);
-            }
-            return hashCode.ToHashCode();
-        }
+        public override int GetHashCode() => HashCode.Combine(X, Y, Z, W);
 
         /// <inheritdoc />
         public override string ToString() => ToString(format: null, formatProvider: null);
@@ -189,16 +202,24 @@ namespace TerraFX.Numerics
                 .ToString();
         }
 
-        /// <summary>Creates a transposed version of this <see cref="Matrix4x4" />.</summary>
-        /// <returns>The transposed <see cref="Matrix4x4" />.</returns>
-        public static Matrix4x4 Transpose(Matrix4x4 value)
-        {
-            return new Matrix4x4(
-                new Vector4(value.X.X, value.Y.X, value.Z.X, value.W.X),
-                new Vector4(value.X.Y, value.Y.Y, value.Z.Y, value.W.Y),
-                new Vector4(value.X.Z, value.Y.Z, value.Z.Z, value.W.Z),
-                new Vector4(value.X.W, value.Y.W, value.Z.W, value.W.W)
-            );
-        }
+        /// <summary>Creates a new <see cref="Matrix4x4" /> instance with <see cref="X" /> set to the specified value.</summary>
+        /// <param name="x">The new value of the x-dimension.</param>
+        /// <returns>A new <see cref="Matrix4x4" /> instance with <see cref="X" /> set to <paramref name="x" />.</returns>
+        public Matrix4x4 WithX(Vector4 x) => new Matrix4x4(x, Y, Z, W);
+
+        /// <summary>Creates a new <see cref="Matrix4x4" /> instance with <see cref="Y" /> set to the specified value.</summary>
+        /// <param name="y">The new value of the y-dimension.</param>
+        /// <returns>A new <see cref="Matrix4x4" /> instance with <see cref="Y" /> set to <paramref name="y" />.</returns>
+        public Matrix4x4 WithY(Vector4 y) => new Matrix4x4(X, y, Z, W);
+
+        /// <summary>Creates a new <see cref="Matrix4x4" /> instance with <see cref="Z" /> set to the specified value.</summary>
+        /// <param name="z">The new value of the z-dimension.</param>
+        /// <returns>A new <see cref="Matrix4x4" /> instance with <see cref="Z" /> set to <paramref name="z" />.</returns>
+        public Matrix4x4 WithZ(Vector4 z) => new Matrix4x4(X, Y, z, W);
+
+        /// <summary>Creates a new <see cref="Matrix4x4" /> instance with <see cref="W" /> set to the specified value.</summary>
+        /// <param name="w">The new value of the w-dimension.</param>
+        /// <returns>A new <see cref="Matrix4x4" /> instance with <see cref="W" /> set to <paramref name="w" />.</returns>
+        public Matrix4x4 WithW(Vector4 w) => new Matrix4x4(X, Y, Z, w);
     }
 }

@@ -9,6 +9,7 @@ using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.D3D12_HEAP_FLAGS;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
@@ -57,7 +58,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12Heap> CreateD3D12Heap()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
 
             ID3D12Heap* d3d12Heap;
 

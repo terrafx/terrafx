@@ -10,6 +10,7 @@ using static TerraFX.Interop.D3D12_PRIMITIVE_TOPOLOGY_TYPE;
 using static TerraFX.Interop.DXGI_FORMAT;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
@@ -75,7 +76,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12PipelineState> CreateD3D12GraphicsPipelineState()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
 
             ID3D12PipelineState* d3d12GraphicsPipelineState;
 

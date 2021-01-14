@@ -8,6 +8,7 @@ using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
@@ -39,7 +40,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             get
             {
-                _state.ThrowIfDisposedOrDisposing();
+                ThrowIfDisposedOrDisposing(_state);
                 return _vulkanBuffer;
             }
         }

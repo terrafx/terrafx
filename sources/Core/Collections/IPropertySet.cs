@@ -2,7 +2,7 @@
 
 namespace TerraFX.Collections
 {
-    /// <summary>Defines a <see cref="string" />-<see cref="object" /> dictionary that provides notifications when its contents are changed.</summary>
+    /// <summary>Defines a string to object dictionary that provides notifications when its contents are changed.</summary>
     public interface IPropertySet : IObservableDictionary<string, object>
     {
     }

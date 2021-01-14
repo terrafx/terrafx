@@ -12,6 +12,7 @@ using static TerraFX.Interop.Xlib;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.UI.Providers.Xlib.XlibAtomId;
 using static TerraFX.Utilities.AssertionUtilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.UI.Providers.Xlib
@@ -53,7 +54,7 @@ namespace TerraFX.UI.Providers.Xlib
         {
             get
             {
-                _state.AssertNotDisposedOrDisposing();
+                AssertNotDisposedOrDisposing(_state);
                 return _nativeHandle.Value;
             }
         }
@@ -64,7 +65,7 @@ namespace TerraFX.UI.Providers.Xlib
         {
             get
             {
-                _state.ThrowIfDisposedOrDisposing();
+                ThrowIfDisposedOrDisposing(_state);
                 return _windows.Value?.Values ?? Enumerable.Empty<XlibWindow>();
             }
         }
@@ -73,7 +74,7 @@ namespace TerraFX.UI.Providers.Xlib
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public override Window CreateWindow()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
             return new XlibWindow(this);
         }
 
@@ -228,7 +229,7 @@ namespace TerraFX.UI.Providers.Xlib
 
         private void DisposeWindows(bool isDisposing)
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (isDisposing)
             {

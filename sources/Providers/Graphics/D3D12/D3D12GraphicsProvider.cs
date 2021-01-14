@@ -95,7 +95,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<IDXGIFactory2> CreateDxgiFactory()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
 
             IDXGIFactory2* dxgiFactory;
 
@@ -142,7 +142,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private ImmutableArray<D3D12GraphicsAdapter> GetAdapters()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
 
             var adapters = ImmutableArray.CreateBuilder<D3D12GraphicsAdapter>();
 

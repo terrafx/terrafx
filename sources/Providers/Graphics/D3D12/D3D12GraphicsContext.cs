@@ -445,7 +445,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12CommandAllocator> CreateD3D12CommandAllocator()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
 
             ID3D12CommandAllocator* d3d12CommandAllocator;
 
@@ -457,7 +457,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12GraphicsCommandList> CreateD3D12GraphicsCommandList()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
 
             ID3D12GraphicsCommandList* d3d12GraphicsCommandList;
 
@@ -473,7 +473,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12Resource> CreateD3D12RenderTargetResource()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
 
             ID3D12Resource* renderTargetResource;
 
@@ -485,7 +485,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private D3D12_CPU_DESCRIPTOR_HANDLE CreateD3D12RenderTargetDescriptor()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
 
             D3D12_CPU_DESCRIPTOR_HANDLE renderTargetViewHandle;
 

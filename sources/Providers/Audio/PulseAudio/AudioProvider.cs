@@ -130,7 +130,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
         // Runs an iteration of the main loop. Returns true to indicate exit request.
         private unsafe bool RunMainLoopIteration()
         {
-            _state.AssertNotDisposedOrDisposing();
+            AssertNotDisposedOrDisposing(_state);
 
             var retval = 0;
             var status = pa_mainloop_iterate(MainLoop, 1, &retval);
@@ -169,7 +169,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
         /// <inheritdoc/>
         public async ValueTask StopAsync(CancellationToken cancellationToken = default)
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
 
             if (_state.TryTransition(from: Running, to: Stopping) != Running)
             {
@@ -226,7 +226,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
         /// </returns>
         public unsafe PulseAudioAdapterEnumerable EnumerateAudioDevices()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
             if (_state != Running)
             {
                 ThrowInvalidOperationException(Resources.CannotEnumerateAudioDevicesWhenNotRunningMessage);

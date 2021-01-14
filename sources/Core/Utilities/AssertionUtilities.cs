@@ -3,6 +3,7 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using TerraFX.Threading;
 
 namespace TerraFX.Utilities
 {
@@ -85,6 +86,16 @@ namespace TerraFX.Utilities
                 Debug.Assert(condition, message);
             }
         }
+
+        /// <summary>Asserts that the state is <see cref="VolatileState.Disposing" />.</summary>
+        /// <param name="state">The state to assert.</param>
+        [Conditional("DEBUG")]
+        public static void AssertDisposing(VolatileState state) => Assert(state == VolatileState.Disposing, Resources.InvalidOperationExceptionMessage, nameof(VolatileState), state);
+
+        /// <summary>Asserts that the state is not <see cref="VolatileState.Disposed" /> or <see cref="VolatileState.Disposing" />.</summary>
+        /// <param name="state">The state to assert.</param>
+        [Conditional("DEBUG")]
+        public static void AssertNotDisposedOrDisposing(VolatileState state) => Assert(state.IsNotDisposedOrDisposing, Resources.InvalidOperationExceptionMessage, nameof(VolatileState), state);
 
         /// <summary>Asserts that <paramref name="value" /> is not <c>null</c>.</summary>
         /// <typeparam name="T">The type of <paramref name="value" />.</typeparam>

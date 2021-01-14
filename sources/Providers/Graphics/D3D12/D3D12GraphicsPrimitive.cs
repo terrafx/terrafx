@@ -10,6 +10,7 @@ using static TerraFX.Interop.D3D12_SRV_DIMENSION;
 using static TerraFX.Interop.DXGI_FORMAT;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
@@ -64,7 +65,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12DescriptorHeap> CreateD3D12CbvSrvUavDescriptorHeap()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
 
             var d3d12Device = Device.D3D12Device;
             var inputResourceRegions = InputResourceRegions;

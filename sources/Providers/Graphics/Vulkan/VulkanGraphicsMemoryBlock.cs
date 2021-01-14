@@ -9,6 +9,7 @@ using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
@@ -48,7 +49,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private VkDeviceMemory CreateVulkanDeviceMemory()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
 
             VkDeviceMemory vulkanDeviceMemory;
 

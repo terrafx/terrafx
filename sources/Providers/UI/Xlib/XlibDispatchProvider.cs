@@ -325,7 +325,7 @@ namespace TerraFX.UI.Providers.Xlib
 
         private void DisposeDisplay()
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (_display.IsCreated)
             {

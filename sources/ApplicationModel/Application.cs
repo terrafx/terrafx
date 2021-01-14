@@ -7,6 +7,7 @@ using System.Threading;
 using TerraFX.Threading;
 using TerraFX.UI;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.ApplicationModel
@@ -149,7 +150,7 @@ namespace TerraFX.ApplicationModel
 
         private CompositionHost CreateCompositionHost()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
 
             var containerConfiguration = new ContainerConfiguration();
             {
@@ -160,7 +161,7 @@ namespace TerraFX.ApplicationModel
 
         private void DisposeCompositionHost(bool isDisposing)
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (isDisposing && _compositionHost.IsCreated)
             {

@@ -480,7 +480,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private void DisposeVulkanCommandBuffer(VkCommandBuffer vulkanCommandBuffer)
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (vulkanCommandBuffer != null)
             {
@@ -490,7 +490,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private void DisposeVulkanCommandPool(VkCommandPool vulkanCommandPool)
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (vulkanCommandPool != VK_NULL_HANDLE)
             {
@@ -500,7 +500,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private void DisposeVulkanFramebuffer(VkFramebuffer vulkanFramebuffer)
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (vulkanFramebuffer != VK_NULL_HANDLE)
             {
@@ -510,7 +510,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private void DisposeVulkanSwapChainImageView(VkImageView vulkanSwapchainImageView)
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (vulkanSwapchainImageView != VK_NULL_HANDLE)
             {

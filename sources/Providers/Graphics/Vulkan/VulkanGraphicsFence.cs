@@ -10,6 +10,7 @@ using static TerraFX.Interop.VkResult;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics.Providers.Vulkan
@@ -87,7 +88,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private VkFence CreateVulkanFence()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
 
             VkFence vulkanFence;
 
@@ -103,7 +104,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private void DisposeVulkanFence(VkFence vulkanFence)
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (vulkanFence != VK_NULL_HANDLE)
             {

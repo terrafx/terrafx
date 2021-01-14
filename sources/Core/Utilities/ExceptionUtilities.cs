@@ -7,6 +7,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
+using TerraFX.Threading;
 
 namespace TerraFX.Utilities
 {
@@ -91,6 +92,16 @@ namespace TerraFX.Utilities
             if (value)
             {
                 ThrowArgumentOutOfRangeException(value, paramName);
+            }
+        }
+
+        /// <summary>Throws a <see cref="ObjectDisposedException" /> if the state is <see cref="VolatileState.Disposed" /> or <see cref="VolatileState.Disposing" />.</summary>
+        /// <exception cref="ObjectDisposedException">The object is either being disposed or is already disposed.</exception>
+        public static void ThrowIfDisposedOrDisposing(VolatileState state)
+        {
+            if (state.IsDisposedOrDisposing)
+            {
+                ThrowObjectDisposedException(nameof(state));
             }
         }
 

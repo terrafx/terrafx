@@ -7,6 +7,7 @@ using TerraFX.Utilities;
 using static TerraFX.Interop.Vulkan;
 using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
+using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MarshalUtilities;
 
 namespace TerraFX.Graphics.Providers.Vulkan
@@ -54,7 +55,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             get
             {
-                _state.ThrowIfDisposedOrDisposing();
+                ThrowIfDisposedOrDisposing(_state);
                 return _vulkanPhysicalDevice;
             }
         }
@@ -73,7 +74,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <inheritdoc cref="CreateDevice(IGraphicsSurface, int)" />
         public VulkanGraphicsDevice CreateVulkanGraphicsDevice(IGraphicsSurface surface, int contextCount)
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
             return new VulkanGraphicsDevice(this, surface, contextCount);
         }
 
@@ -87,13 +88,13 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private string GetName()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
             return MarshalUtf8ToReadOnlySpan(in VulkanPhysicalDeviceProperties.deviceName[0], 256).AsString() ?? string.Empty;
         }
 
         private VkPhysicalDeviceMemoryProperties GetVulkanPhysicalDeviceMemoryProperties()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
 
             VkPhysicalDeviceMemoryProperties physicalDeviceMemoryProperties;
             vkGetPhysicalDeviceMemoryProperties(VulkanPhysicalDevice, &physicalDeviceMemoryProperties);
@@ -102,7 +103,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private VkPhysicalDeviceProperties GetVulkanPhysicalDeviceProperties()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
 
             VkPhysicalDeviceProperties physicalDeviceProperties;
             vkGetPhysicalDeviceProperties(VulkanPhysicalDevice, &physicalDeviceProperties);

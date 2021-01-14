@@ -85,7 +85,7 @@ namespace TerraFX.UnitTests.Numerics
             var b = new Transform(-rotation, -scale, -translation);
             var epsilon = Transform.One * 1e-7f;
 
-            Assert.That((-a).EqualEstimate(b, epsilon), Is.True);
+            Assert.That(Transform.EqualsEstimate(-a, b, epsilon), Is.True);
         }
 
         /// <summary>Ensures that <see cref="Transform.operator+(Transform,Transform)" /> returns the concatenation of its components.</summary>
@@ -126,9 +126,9 @@ namespace TerraFX.UnitTests.Numerics
             var j = new Transform(new Quaternion(-s05, 0, 0, s05), new Vector3(1, 0.5f, 1 / 3f), new Vector3(-4, -5, -6));
 
             var epsilon = new Transform(Quaternion.One * 1e-7f, Vector3.One * 1e-7f, Vector3.One * 1e-7f);
-            Assert.That(Transform.Inverse(a) == i, Is.True);
-            Assert.That(Transform.Inverse(b).EqualEstimate(j, epsilon), Is.True);
-            Assert.That(Transform.Inverse(Transform.Inverse(b)).EqualEstimate(b, epsilon), Is.True);
+            Assert.That(Transform.Invert(a) == i, Is.True);
+            Assert.That(Transform.EqualsEstimate(Transform.Invert(b), j, epsilon), Is.True);
+            Assert.That(Transform.EqualsEstimate(Transform.Invert(Transform.Invert(b)), b, epsilon), Is.True);
         }
 
 
@@ -155,7 +155,7 @@ namespace TerraFX.UnitTests.Numerics
             Assert.That(Transform.Concatenate(a, e) == e, Is.True); // Identity + Rotation = Rotation
             Assert.That(Transform.Concatenate(a, f) == f, Is.True); // Identity + Rotation = Rotation
             Assert.That(Transform.Concatenate(e, f) == a, Is.True); // Rotation+90 + Rotation-90 = Identity
-            Assert.That(Transform.Concatenate(g, g).EqualEstimate(e, epsilon), Is.True); // Rotation+45 + Rotation+45 = Rotation+90
+            Assert.That(Transform.EqualsEstimate(Transform.Concatenate(g, g), e, epsilon), Is.True); // Rotation+45 + Rotation+45 = Rotation+90
         }
 
         /// <summary>Ensures that ToMatrix4x4() returns the matching Matrix4x4.</summary>
@@ -171,9 +171,9 @@ namespace TerraFX.UnitTests.Numerics
             var mc = new Matrix4x4(new Vector4(1, 0, 0, 0), new Vector4(0, 0, 1, 0), new Vector4(0, -1, 0, 0), new Vector4(1, 2, 3, 1));
             var epsilon = Matrix4x4.One * 1e-6f;
 
-            Assert.That(Transform.ToMatrix4x4(a) == Matrix4x4.Identity, Is.True);
-            Assert.That(Matrix4x4.EqualEstimate(Transform.ToMatrix4x4(b), mb, epsilon), Is.True);
-            Assert.That(Matrix4x4.EqualEstimate(Transform.ToMatrix4x4(c), mc, epsilon), Is.True);
+            Assert.That(Matrix4x4.CreateFromTransform(a) == Matrix4x4.Identity, Is.True);
+            Assert.That(Matrix4x4.EqualsEstimate(Matrix4x4.CreateFromTransform(b), mb, epsilon), Is.True);
+            Assert.That(Matrix4x4.EqualsEstimate(Matrix4x4.CreateFromTransform(c), mc, epsilon), Is.True);
         }
 
         /// <summary>Ensures that <see cref="Transform" /> with 90 degree rotations switches to the correct axes.
@@ -188,14 +188,14 @@ namespace TerraFX.UnitTests.Numerics
             var x = new Vector4(1f, 0f, 0f, 0f);
             var y = new Vector4(0f, 1f, 0f, 0f);
             var z = new Vector4(0f, 0f, 1f, 0f);
-            var yy = x * Transform.ToMatrix4x4(xToY);
-            var zz = y * Transform.ToMatrix4x4(yToZ);
-            var xx = z * Transform.ToMatrix4x4(zToX);
+            var yy = x * Matrix4x4.CreateFromTransform(xToY);
+            var zz = y * Matrix4x4.CreateFromTransform(yToZ);
+            var xx = z * Matrix4x4.CreateFromTransform(zToX);
             var epsilon = Vector4.One * 1e-6f;
 
-            Assert.That(Vector4.EqualEstimate(xx, x, epsilon), Is.True);
-            Assert.That(Vector4.EqualEstimate(yy, y, epsilon), Is.True);
-            Assert.That(Vector4.EqualEstimate(zz, z, epsilon), Is.True);
+            Assert.That(Vector4.EqualsEstimate(xx, x, epsilon), Is.True);
+            Assert.That(Vector4.EqualsEstimate(yy, y, epsilon), Is.True);
+            Assert.That(Vector4.EqualsEstimate(zz, z, epsilon), Is.True);
         }
     }
 }

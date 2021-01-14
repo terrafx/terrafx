@@ -8,6 +8,7 @@ using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.D3D12_FENCE_FLAGS;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics.Providers.D3D12
@@ -115,7 +116,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12Fence> CreateD3D12Fence()
         {
-            _state.AssertNotDisposedOrDisposing();
+            AssertNotDisposedOrDisposing(_state);
 
             ID3D12Fence* d3d12Fence;
 
@@ -127,7 +128,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private HANDLE CreateEventHandle()
         {
-            _state.AssertNotDisposedOrDisposing();
+            AssertNotDisposedOrDisposing(_state);
 
             HANDLE eventHandle = CreateEventW(lpEventAttributes: null, bManualReset: FALSE, bInitialState: FALSE, lpName: null);
 
@@ -141,7 +142,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private void DisposeEventHandle(HANDLE eventHandle)
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (eventHandle != null)
             {

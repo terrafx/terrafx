@@ -15,6 +15,7 @@ using static TerraFX.Interop.VkSamplerMipmapMode;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
@@ -234,7 +235,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private VkImageView CreateVulkanImageView()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
 
             VkImageView vulkanImageView;
 
@@ -275,7 +276,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private VkSampler CreateVulkanSampler()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
 
             VkSampler vulkanSampler;
 

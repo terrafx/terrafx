@@ -9,7 +9,7 @@ namespace TerraFX.Collections
     /// <typeparam name="T">The type of the items in the collection.</typeparam>
     public interface INotifyCollectionChanged<T>
     {
-        /// <summary>Occurs when the underlying <see cref="ICollection{T}" /> changes.</summary>
+        /// <summary>Occurs when the underlying collection changes.</summary>
         event EventHandler<NotifyCollectionChangedEventArgs<T>>? CollectionChanged;
     }
 }

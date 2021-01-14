@@ -9,6 +9,7 @@ using static TerraFX.Interop.D3D12_RESOURCE_FLAGS;
 using static TerraFX.Interop.D3D12_RESOURCE_STATES;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
@@ -132,7 +133,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12Resource> CreateD3D12Resource()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
 
             ID3D12Resource* d3d12Resource;
 

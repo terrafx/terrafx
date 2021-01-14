@@ -21,6 +21,7 @@ using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.VkSurfaceTransformFlagBitsKHR;
 using static TerraFX.Interop.Vulkan;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics.Providers.Vulkan
@@ -138,14 +139,14 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <inheritdoc cref="CreatePipeline(GraphicsPipelineSignature, GraphicsShader?, GraphicsShader?)" />
         public VulkanGraphicsPipeline CreatePipeline(VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader = null, VulkanGraphicsShader? pixelShader = null)
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
             return new VulkanGraphicsPipeline(this, signature, vertexShader, pixelShader);
         }
 
         /// <inheritdoc />
         public override GraphicsPipelineSignature CreatePipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResource> resources = default)
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
             return new VulkanGraphicsPipelineSignature(this, inputs, resources);
         }
 
@@ -156,14 +157,14 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <inheritdoc cref="CreatePrimitive(GraphicsPipeline, in GraphicsMemoryRegion{GraphicsResource}, uint, in GraphicsMemoryRegion{GraphicsResource}, uint, ReadOnlySpan{GraphicsMemoryRegion{GraphicsResource}})" />
         public VulkanGraphicsPrimitive CreatePrimitive(VulkanGraphicsPipeline pipeline, in GraphicsMemoryRegion<GraphicsResource> vertexBufferView, uint vertexBufferStride, in GraphicsMemoryRegion<GraphicsResource> indexBufferView, uint indexBufferStride, ReadOnlySpan<GraphicsMemoryRegion<GraphicsResource>> inputResourceRegions)
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
             return new VulkanGraphicsPrimitive(this, pipeline, in vertexBufferView, vertexBufferStride, in indexBufferView, indexBufferStride, inputResourceRegions);
         }
 
         /// <inheritdoc />
         public override VulkanGraphicsShader CreateShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
             return new VulkanGraphicsShader(this, kind, bytecode, entryPointName);
         }
 
@@ -440,7 +441,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private void DisposeVulkanDevice(VkDevice vulkanDevice)
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (vulkanDevice != null)
             {
@@ -450,7 +451,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private void DisposeVulkanRenderPass(VkRenderPass vulkanRenderPass)
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (vulkanRenderPass != VK_NULL_HANDLE)
             {
@@ -460,7 +461,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private void DisposeVulkanSurface(VkSurfaceKHR vulkanSurface)
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (vulkanSurface != VK_NULL_HANDLE)
             {
@@ -470,7 +471,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private void DisposeVulkanSwapchain(VkSwapchainKHR vulkanSwapchain)
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (vulkanSwapchain != VK_NULL_HANDLE)
             {

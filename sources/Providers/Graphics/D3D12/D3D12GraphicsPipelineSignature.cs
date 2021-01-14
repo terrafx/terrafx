@@ -10,6 +10,7 @@ using static TerraFX.Interop.D3D12_ROOT_SIGNATURE_FLAGS;
 using static TerraFX.Interop.D3D12_SHADER_VISIBILITY;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
@@ -52,7 +53,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12RootSignature> CreateD3D12RootSignature()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state);
 
             ID3DBlob* rootSignatureBlob = null;
             ID3DBlob* rootSignatureErrorBlob = null;
