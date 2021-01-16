@@ -13,7 +13,6 @@
       "sources\\Providers\\UI\\Win32\\TerraFX.UI.Providers.Win32.csproj",
       "sources\\Providers\\UI\\Xlib\\TerraFX.UI.Providers.Xlib.csproj",
       "sources\\UI\\TerraFX.UI.csproj",
-      "sources\\Utilities\\TerraFX.Utilities.csproj",
       "tests\\ApplicationModel\\TerraFX.ApplicationModel.UnitTests.csproj",
       "tests\\Core\\TerraFX.UnitTests.csproj",
       "tests\\Graphics\\TerraFX.Graphics.UnitTests.csproj",
@@ -22,8 +21,7 @@
       "tests\\Provider\\Graphics\\Vulkan\\TerraFX.Graphics.Providers.Vulkan.UnitTests.csproj",
       "tests\\Provider\\UI\\Win32\\TerraFX.UI.Providers.Win32.UnitTests.csproj",
       "tests\\Provider\\UI\\Xlib\\TerraFX.UI.Providers.Xlib.UnitTests.csproj",
-      "tests\\UI\\TerraFX.UI.UnitTests.csproj",
-      "tests\\Utilities\\TerraFX.Utilities.UnitTests.csproj"
+      "tests\\UI\\TerraFX.UI.UnitTests.csproj"
     ]
   }
 }
