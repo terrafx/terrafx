@@ -1,12 +1,11 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.	
 
 using System;
-using TerraFX.Graphics.Geometry2D;
 using TerraFX.Interop;
 using static TerraFX.Interop.Xlib;
 using static TerraFX.UI.Providers.Xlib.XlibAtomId;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.InteropUtilities;
+using static TerraFX.Utilities.MarshalUtilities;
 
 namespace TerraFX.UI.Providers.Xlib
 {
@@ -58,22 +57,20 @@ namespace TerraFX.UI.Providers.Xlib
             clientEvent.data.l[3] = data3;
             clientEvent.data.l[4] = data4;
 
-            var status = XSendEvent(
+            ThrowForLastErrorIfZero(XSendEvent(
                 display,
                 targetWindow,
                 False,
                 eventMask,
                 (XEvent*)&clientEvent
-            );
-
-            ThrowExternalExceptionIf(status == 0, nameof(XSendEvent));
+            ), nameof(XSendEvent));
         }
 
         public static void SetWindowTitle(XlibDispatchProvider dispatchProvider, IntPtr display, nuint window, string value)
         {
             if (dispatchProvider.GetAtomIsSupported(_NET_WM_NAME))
             {
-                var utf8Title = MarshalStringToUtf8(value);
+                var utf8Title = value.GetUtf8Span();
 
                 fixed (sbyte* pUtf8Title = utf8Title)
                 {

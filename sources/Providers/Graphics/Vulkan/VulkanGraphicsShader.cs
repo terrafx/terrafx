@@ -2,14 +2,14 @@
 
 using System;
 using TerraFX.Interop;
-using TerraFX.Utilities;
+using TerraFX.Threading;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
-using static TerraFX.Utilities.IntegerUtilities;
-using static TerraFX.Utilities.InteropUtilities;
+using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.MathUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
-using static TerraFX.Utilities.State;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
@@ -20,7 +20,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private ValueLazy<VkShaderModule> _vulkanShaderModule;
 
-        private State _state;
+        private VolatileState _state;
 
         internal VulkanGraphicsShader(VulkanGraphicsDevice device, GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
             : base(device, kind, entryPointName)

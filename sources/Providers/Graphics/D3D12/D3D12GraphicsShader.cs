@@ -2,9 +2,9 @@
 
 using System;
 using TerraFX.Interop;
-using TerraFX.Utilities;
+using TerraFX.Threading;
+using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.MemoryUtilities;
-using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
@@ -13,7 +13,7 @@ namespace TerraFX.Graphics.Providers.D3D12
     {
         private readonly D3D12_SHADER_BYTECODE _d3d12ShaderBytecode;
 
-        private State _state;
+        private VolatileState _state;
 
         internal D3D12GraphicsShader(D3D12GraphicsDevice device, GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
             : base(device, kind, entryPointName)

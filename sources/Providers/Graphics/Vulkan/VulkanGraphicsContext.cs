@@ -3,7 +3,7 @@
 using System;
 using TerraFX.Interop;
 using TerraFX.Numerics;
-using TerraFX.Utilities;
+using TerraFX.Threading;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
 using static TerraFX.Interop.VkAccessFlagBits;
 using static TerraFX.Interop.VkCommandPoolCreateFlagBits;
@@ -18,9 +18,10 @@ using static TerraFX.Interop.VkPipelineStageFlagBits;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.VkSubpassContents;
 using static TerraFX.Interop.Vulkan;
+using static TerraFX.Runtime.Configuration;
+using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
@@ -35,7 +36,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private ValueLazy<VkFramebuffer> _vulkanFramebuffer;
         private ValueLazy<VkImageView> _vulkanSwapChainImageView;
 
-        private State _state;
+        private VolatileState _state;
 
         internal VulkanGraphicsContext(VulkanGraphicsDevice device, int index)
             : base(device, index)
@@ -319,7 +320,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
                 if (indexBufferStride != 2)
                 {
-                    Assert(indexBufferStride == 4, "Index Buffer has an unsupported stride.");
+                    Assert(AssertionsEnabled && (indexBufferStride == 4));
                     indexType = VK_INDEX_TYPE_UINT32;
                 }
                 vkCmdBindIndexBuffer(vulkanCommandBuffer, indexBuffer.VulkanBuffer, indexBufferRegion.Offset, indexType);
@@ -375,7 +376,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         internal void OnGraphicsSurfaceSizeChanged(object? sender, PropertyChangedEventArgs<Vector2> eventArgs)
         {
-            if (_vulkanFramebuffer.IsCreated)
+            if (_vulkanFramebuffer.IsValueCreated)
             {
                 var vulkanFramebuffer = _vulkanFramebuffer.Value;
 
@@ -387,7 +388,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 _vulkanFramebuffer.Reset(CreateVulkanFramebuffer);
             }
 
-            if (_vulkanSwapChainImageView.IsCreated)
+            if (_vulkanSwapChainImageView.IsValueCreated)
             {
                 var vulkanSwapChainImageView = _vulkanSwapChainImageView.Value;
 
@@ -480,7 +481,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private void DisposeVulkanCommandBuffer(VkCommandBuffer vulkanCommandBuffer)
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (vulkanCommandBuffer != null)
             {
@@ -490,7 +491,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private void DisposeVulkanCommandPool(VkCommandPool vulkanCommandPool)
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (vulkanCommandPool != VK_NULL_HANDLE)
             {
@@ -500,7 +501,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private void DisposeVulkanFramebuffer(VkFramebuffer vulkanFramebuffer)
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (vulkanFramebuffer != VK_NULL_HANDLE)
             {
@@ -510,7 +511,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private void DisposeVulkanSwapChainImageView(VkImageView vulkanSwapchainImageView)
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (vulkanSwapchainImageView != VK_NULL_HANDLE)
             {

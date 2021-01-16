@@ -27,9 +27,9 @@ namespace TerraFX.Graphics
         /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="pipeline" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="vertexBufferRegion" /> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="pipeline" /> was not created for <paramref name="device" />.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexBufferRegion" /> was not created for <paramref name="device" />.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexBufferRegion" /> was not created for <paramref name="device" />.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="pipeline" /> is incompatible as it belongs to a different device.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexBufferRegion" /> is incompatible as it belongs to a different device.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexBufferRegion" /> is incompatible as it belongs to a different device.</exception>
         protected GraphicsPrimitive(GraphicsDevice device, GraphicsPipeline pipeline, in GraphicsMemoryRegion<GraphicsResource> vertexBufferRegion, uint vertexBufferStride, in GraphicsMemoryRegion<GraphicsResource> indexBufferRegion, uint indexBufferStride, ReadOnlySpan<GraphicsMemoryRegion<GraphicsResource>> inputResourceRegions)
         {
             ThrowIfNull(pipeline, nameof(pipeline));
@@ -37,17 +37,17 @@ namespace TerraFX.Graphics
 
             if (pipeline.Device != device)
             {
-                ThrowArgumentOutOfRangeException(pipeline, nameof(pipeline));
+                ThrowForInvalidParent(pipeline.Device, nameof(pipeline));
             }
 
             if (vertexBufferRegion.Collection.Allocator.Device != device)
             {
-                ThrowArgumentOutOfRangeException(vertexBufferRegion, nameof(vertexBufferRegion));
+                ThrowForInvalidParent(vertexBufferRegion.Collection.Allocator.Device, nameof(vertexBufferRegion));
             }
 
             if ((indexBufferRegion.Collection is not null) && (indexBufferRegion.Collection.Allocator.Device != device))
             {
-                ThrowArgumentOutOfRangeException(indexBufferRegion, nameof(indexBufferRegion));
+                ThrowForInvalidParent(indexBufferRegion.Collection.Allocator.Device, nameof(indexBufferRegion));
             }
 
             _device = device;

@@ -2,11 +2,13 @@
 
 using System;
 using TerraFX.Interop;
+using TerraFX.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Interop.Vulkan;
+using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
-using static TerraFX.Utilities.InteropUtilities;
-using static TerraFX.Utilities.State;
+using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.MarshalUtilities;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
@@ -19,12 +21,12 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private ValueLazy<VkPhysicalDeviceMemoryProperties> _vulkanPhysicalDeviceMemoryProperties;
         private ValueLazy<string> _name;
 
-        private State _state;
+        private VolatileState _state;
 
         internal VulkanGraphicsAdapter(VulkanGraphicsProvider provider, VkPhysicalDevice vulkanPhysicalDevice)
             : base(provider)
         {
-            AssertNotNull(vulkanPhysicalDevice, nameof(vulkanPhysicalDevice));
+            AssertNotNull(vulkanPhysicalDevice);
 
             _vulkanPhysicalDevice = vulkanPhysicalDevice;
 
@@ -53,7 +55,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             get
             {
-                _state.ThrowIfDisposedOrDisposing();
+                ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsAdapter));
                 return _vulkanPhysicalDevice;
             }
         }
@@ -72,7 +74,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <inheritdoc cref="CreateDevice(IGraphicsSurface, int)" />
         public VulkanGraphicsDevice CreateVulkanGraphicsDevice(IGraphicsSurface surface, int contextCount)
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsAdapter));
             return new VulkanGraphicsDevice(this, surface, contextCount);
         }
 
@@ -86,13 +88,13 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private string GetName()
         {
-            _state.ThrowIfDisposedOrDisposing();
-            return MarshalUtf8ToReadOnlySpan(in VulkanPhysicalDeviceProperties.deviceName[0], 256).AsString() ?? string.Empty;
+            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsAdapter));
+            return GetUtf8Span(in VulkanPhysicalDeviceProperties.deviceName[0], 256).GetString() ?? string.Empty;
         }
 
         private VkPhysicalDeviceMemoryProperties GetVulkanPhysicalDeviceMemoryProperties()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsAdapter));
 
             VkPhysicalDeviceMemoryProperties physicalDeviceMemoryProperties;
             vkGetPhysicalDeviceMemoryProperties(VulkanPhysicalDevice, &physicalDeviceMemoryProperties);
@@ -101,7 +103,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private VkPhysicalDeviceProperties GetVulkanPhysicalDeviceProperties()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsAdapter));
 
             VkPhysicalDeviceProperties physicalDeviceProperties;
             vkGetPhysicalDeviceProperties(VulkanPhysicalDevice, &physicalDeviceProperties);

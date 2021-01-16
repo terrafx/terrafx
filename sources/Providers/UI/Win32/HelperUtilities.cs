@@ -13,7 +13,7 @@ namespace TerraFX.UI.Providers.Win32
         {
             if (value == FALSE)
             {
-                ThrowExternalExceptionForLastError(methodName);
+                ThrowForLastError(methodName);
             }
         }
     }

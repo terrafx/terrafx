@@ -1,8 +1,8 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using System.Diagnostics;
-using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Runtime.Configuration;
+using static TerraFX.Utilities.AssertionUtilities;
 
 namespace TerraFX.Collections
 {
@@ -17,7 +17,7 @@ namespace TerraFX.Collections
 
         private NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction action, T? value = default)
         {
-            Debug.Assert(Enum.IsDefined(typeof(NotifyCollectionChangedAction), action));
+            Assert(AssertionsEnabled && Enum.IsDefined(action));
 
             _action = action;
             _value = value;
@@ -27,16 +27,12 @@ namespace TerraFX.Collections
         public NotifyCollectionChangedAction Action => _action;
 
         /// <summary>Gets the value of the item that caused the event.</summary>
-        /// <exception cref="InvalidOperationException"><see cref="Action" /> is not <see cref="NotifyDictionaryChangedAction.Add" /> or <see cref="NotifyDictionaryChangedAction.Remove" />.</exception>
+        /// <remarks>The value may not be valid if <see cref="Action" /> is <see cref="NotifyCollectionChangedAction.Reset" />.</remarks>
         public T? Value
         {
             get
             {
-                if (_action == NotifyCollectionChangedAction.Reset)
-                {
-                    ThrowInvalidOperationException(Action, nameof(Action));
-                }
-
+                Assert(AssertionsEnabled && (_action != NotifyCollectionChangedAction.Reset));
                 return _value;
             }
         }

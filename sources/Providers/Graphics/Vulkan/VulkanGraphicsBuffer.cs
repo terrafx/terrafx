@@ -1,13 +1,14 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Interop;
-using TerraFX.Utilities;
-using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
-using static TerraFX.Interop.Vulkan;
-using static TerraFX.Interop.VkStructureType;
-using static TerraFX.Utilities.State;
 using System.Runtime.InteropServices;
+using TerraFX.Interop;
+using TerraFX.Threading;
+using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
+using static TerraFX.Interop.VkStructureType;
+using static TerraFX.Interop.Vulkan;
+using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
@@ -15,7 +16,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
     public abstract unsafe class VulkanGraphicsBuffer : GraphicsBuffer
     {
         private VkBuffer _vulkanBuffer;
-        private protected State _state;
+        private protected VolatileState _state;
 
         private protected VulkanGraphicsBuffer(GraphicsBufferKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess, VkBuffer vulkanBuffer)
             : base(kind, in blockRegion, cpuAccess)
@@ -39,7 +40,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             get
             {
-                _state.ThrowIfDisposedOrDisposing();
+                ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsBuffer));
                 return _vulkanBuffer;
             }
         }

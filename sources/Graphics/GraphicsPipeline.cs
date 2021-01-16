@@ -20,24 +20,39 @@ namespace TerraFX.Graphics
         /// <param name="pixelShader">The pixel shader for the pipeline or <c>null</c> if none exists.</param>
         /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="signature" /> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexShader" /> is not <see cref="GraphicsShaderKind.Vertex"/>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexShader" /> was not created for <paramref name="device" />.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="pixelShader" /> is not <see cref="GraphicsShaderKind.Pixel"/>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="pixelShader" />was not created for <paramref name="device" />.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">The kind of <paramref name="vertexShader" /> is not <see cref="GraphicsShaderKind.Vertex" />.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexShader" /> is incompatible as it belongs to a different device.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">The kind of <paramref name="pixelShader" /> is not <see cref="GraphicsShaderKind.Pixel" />.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="pixelShader" /> is incompatible as it belongs to a different device.</exception>
         protected GraphicsPipeline(GraphicsDevice device, GraphicsPipelineSignature signature, GraphicsShader? vertexShader, GraphicsShader? pixelShader)
         {
             ThrowIfNull(device, nameof(device));
             ThrowIfNull(signature, nameof(signature));
 
-            if ((vertexShader != null) && ((vertexShader.Kind != GraphicsShaderKind.Vertex) || (vertexShader.Device != device)))
+            if (vertexShader is not null)
             {
-                ThrowArgumentOutOfRangeException(vertexShader, nameof(vertexShader));
+                if (vertexShader.Kind == GraphicsShaderKind.Vertex)
+                {
+                    ThrowForInvalidKind(vertexShader.Kind, nameof(vertexShader), GraphicsShaderKind.Vertex);
+                }
+
+                if (vertexShader.Device != device)
+                {
+                    ThrowForInvalidParent(vertexShader.Device, nameof(vertexShader));
+                }
             }
 
-            if ((pixelShader != null) && ((pixelShader.Kind != GraphicsShaderKind.Pixel) || (pixelShader.Device != device)))
+            if (pixelShader is not null)
             {
-                ThrowArgumentOutOfRangeException(pixelShader, nameof(pixelShader));
-                ;
+                if (pixelShader.Kind == GraphicsShaderKind.Pixel)
+                {
+                    ThrowForInvalidKind(pixelShader.Kind, nameof(pixelShader), GraphicsShaderKind.Pixel);
+                }
+
+                if (pixelShader.Device != device)
+                {
+                    ThrowForInvalidParent(pixelShader.Device, nameof(pixelShader));
+                }
             }
 
             _device = device;

@@ -368,7 +368,7 @@ csharp_space_between_square_brackets = false
 #   require expression-bodied indexers when on a single line,
 #   require expression-bodied lambdas,
 #   error on expression-bodied local functions,
-#   require expression-bodied methods when on a single line,
+#   suggest expression-bodied methods when on a single line,
 #   require expression-bodied operators when on a single line,
 #   require expression-bodied properties when on a single line,
 #
@@ -402,7 +402,7 @@ csharp_style_expression_bodied_constructors = false:error
 csharp_style_expression_bodied_indexers = when_on_single_line:error
 csharp_style_expression_bodied_lambdas = true:error
 csharp_style_expression_bodied_local_functions = false:error
-csharp_style_expression_bodied_methods = when_on_single_line:error
+csharp_style_expression_bodied_methods = when_on_single_line:suggestion
 csharp_style_expression_bodied_operators = when_on_single_line:error
 csharp_style_expression_bodied_properties = when_on_single_line:error
 

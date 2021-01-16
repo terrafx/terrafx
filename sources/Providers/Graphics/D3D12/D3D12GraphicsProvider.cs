@@ -6,12 +6,12 @@ using System.Collections.Immutable;
 using System.Composition;
 using System.Runtime.InteropServices;
 using TerraFX.Interop;
-using TerraFX.Utilities;
+using TerraFX.Threading;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.DXGI_DEBUG_RLO_FLAGS;
 using static TerraFX.Interop.Windows;
+using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
@@ -23,7 +23,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         private ValueLazy<Pointer<IDXGIFactory2>> _dxgiFactory;
         private ValueLazy<ImmutableArray<D3D12GraphicsAdapter>> _adapters;
 
-        private State _state;
+        private VolatileState _state;
 
         /// <summary>Initializes a new instance of the <see cref="D3D12GraphicsProvider" /> class.</summary>
         [ImportingConstructor]
@@ -54,7 +54,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
             if (priorState < Disposing)
             {
-                if (_adapters.IsCreated)
+                if (_adapters.IsValueCreated)
                 {
                     foreach (var adapter in _adapters.Value)
                     {
@@ -95,7 +95,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<IDXGIFactory2> CreateDxgiFactory()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsProvider));
 
             IDXGIFactory2* dxgiFactory;
 
@@ -142,7 +142,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private ImmutableArray<D3D12GraphicsAdapter> GetAdapters()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsProvider));
 
             var adapters = ImmutableArray.CreateBuilder<D3D12GraphicsAdapter>();
 
@@ -161,7 +161,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                     {
                         if (result != DXGI_ERROR_NOT_FOUND)
                         {
-                            ThrowExternalException(result, nameof(IDXGIFactory1.EnumAdapters1));
+                            ThrowExternalException(nameof(IDXGIFactory1.EnumAdapters1), result);
                         }
                         index = 0;
                     }

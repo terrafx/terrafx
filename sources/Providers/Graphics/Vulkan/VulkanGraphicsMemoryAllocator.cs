@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using TerraFX.Interop;
-using TerraFX.Utilities;
+using TerraFX.Threading;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
 using static TerraFX.Interop.VkImageType;
 using static TerraFX.Interop.VkMemoryPropertyFlagBits;
@@ -15,7 +15,7 @@ using static TerraFX.Interop.VkPhysicalDeviceType;
 using static TerraFX.Interop.VkSampleCountFlagBits;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
-using static TerraFX.Utilities.State;
+using static TerraFX.Threading.VolatileState;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
@@ -23,7 +23,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
     public sealed unsafe class VulkanGraphicsMemoryAllocator : GraphicsMemoryAllocator
     {
         private readonly VulkanGraphicsMemoryBlockCollection[] _blockCollections;
-        private State _state;
+        private VolatileState _state;
 
         internal VulkanGraphicsMemoryAllocator(VulkanGraphicsDevice device, in GraphicsMemoryAllocatorSettings settings)
             : base(device, in settings)

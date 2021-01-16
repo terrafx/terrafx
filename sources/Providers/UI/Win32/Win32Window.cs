@@ -8,13 +8,14 @@ using TerraFX.Graphics;
 using TerraFX.Graphics.Geometry2D;
 using TerraFX.Interop;
 using TerraFX.Numerics;
-using TerraFX.Utilities;
+using TerraFX.Threading;
 using static TerraFX.Interop.Windows;
+using static TerraFX.Runtime.Configuration;
+using static TerraFX.Threading.VolatileState;
 using static TerraFX.UI.Providers.Win32.HelperUtilities;
 using static TerraFX.UI.Providers.Win32.Win32WindowProvider;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.State;
 
 namespace TerraFX.UI.Providers.Win32
 {
@@ -24,7 +25,7 @@ namespace TerraFX.UI.Providers.Win32
         private readonly FlowDirection _flowDirection;
         private readonly ReadingDirection _readingDirection;
 
-        private ValueLazy<HWND> _handle;
+        private ValueLazy<IntPtr> _handle;
         private ValueLazy<PropertySet> _properties;
 
         private string _title;
@@ -35,7 +36,7 @@ namespace TerraFX.UI.Providers.Win32
         private WindowState _windowState;
         private bool _isActive;
 
-        private State _state;
+        private VolatileState _state;
 
         internal Win32Window(Win32WindowProvider windowProvider)
             : base(windowProvider, Thread.CurrentThread)
@@ -43,7 +44,7 @@ namespace TerraFX.UI.Providers.Win32
             _flowDirection = FlowDirection.TopToBottom;
             _readingDirection = ReadingDirection.LeftToRight;
 
-            _handle = new ValueLazy<HWND>(CreateWindowHandle);
+            _handle = new ValueLazy<IntPtr>(CreateWindowHandle);
             _properties = new ValueLazy<PropertySet>(CreateProperties);
 
             _title = typeof(Win32Window).FullName!;
@@ -135,7 +136,12 @@ namespace TerraFX.UI.Providers.Win32
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException"><see cref="IsActive" /> was <c>false</c> but the instance has already been disposed.</exception>
         public override void Activate()
-            => ThrowExternalExceptionIf(TryActivate() == false, nameof(SetForegroundWindow));
+        {
+            if (!TryActivate())
+            {
+                ThrowExternalException(nameof(SetForegroundWindow), 0);
+            }
+        }
 
         /// <inheritdoc />
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
@@ -145,7 +151,7 @@ namespace TerraFX.UI.Providers.Win32
         /// </remarks>
         public override void Close()
         {
-            if (_handle.IsCreated)
+            if (_handle.IsValueCreated)
             {
                 _ = SendMessageW(Handle, WM_CLOSE, wParam: 0, lParam: 0);
             }
@@ -381,11 +387,11 @@ namespace TerraFX.UI.Providers.Win32
         private PropertySet CreateProperties()
             => new PropertySet();
 
-        private HWND CreateWindowHandle()
+        private IntPtr CreateWindowHandle()
         {
-            _state.AssertNotDisposedOrDisposing();
+            AssertNotDisposedOrDisposing(_state);
 
-            HWND hWnd;
+            IntPtr hWnd;
 
             fixed (char* lpWindowName = _title)
             {
@@ -404,7 +410,7 @@ namespace TerraFX.UI.Providers.Win32
                     lpParam: GCHandle.ToIntPtr(GCHandle.Alloc(this, GCHandleType.Normal)).ToPointer()
                 );
             }
-            ThrowExternalExceptionIf(hWnd == null, nameof(CreateWindowExW));
+            ThrowForLastErrorIfZero(hWnd, nameof(CreateWindowExW));
 
             // Set the initial bounds so that resizing and relocating before showing work as expected
             // For GetClientRect, it always returns the position as (0, 0) annd so we need to remap
@@ -462,10 +468,10 @@ namespace TerraFX.UI.Providers.Win32
 
         private void DisposeWindowHandle()
         {
-            Assert(Thread.CurrentThread == ParentThread, Resources.InvalidOperationExceptionMessage, nameof(Thread.CurrentThread), Thread.CurrentThread);
-            _state.AssertDisposing();
+            AssertThread(ParentThread);
+            AssertDisposing(_state);
 
-            if (_handle.IsCreated)
+            if (_handle.IsValueCreated)
             {
                 ThrowExternalExceptionIfFalse(DestroyWindow(_handle.Value), nameof(DestroyWindow));
             }
@@ -563,7 +569,7 @@ namespace TerraFX.UI.Providers.Win32
         private nint HandleWmSize(nuint wParam, nint lParam)
         {
             _windowState = (WindowState)(uint)wParam;
-            Assert(Enum.IsDefined(typeof(WindowState), _windowState), Resources.ArgumentOutOfRangeExceptionMessage, nameof(wParam), wParam);
+            Assert(AssertionsEnabled && Enum.IsDefined(_windowState));
 
             var previousClientSize = _clientBounds.Size;
             var currentClientSize = new Vector2(x: LOWORD((uint)lParam), y: HIWORD((uint)lParam));

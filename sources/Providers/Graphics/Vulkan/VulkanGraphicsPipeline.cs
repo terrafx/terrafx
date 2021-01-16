@@ -2,23 +2,23 @@
 
 using System;
 using TerraFX.Interop;
-using TerraFX.Utilities;
+using TerraFX.Numerics;
+using TerraFX.Threading;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
 using static TerraFX.Interop.VkCompareOp;
 using static TerraFX.Interop.VkCullModeFlagBits;
 using static TerraFX.Interop.VkDynamicState;
-using static TerraFX.Interop.VkFrontFace;
 using static TerraFX.Interop.VkFormat;
+using static TerraFX.Interop.VkFrontFace;
 using static TerraFX.Interop.VkPrimitiveTopology;
 using static TerraFX.Interop.VkSampleCountFlagBits;
 using static TerraFX.Interop.VkShaderStageFlagBits;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.VkVertexInputRate;
 using static TerraFX.Interop.Vulkan;
-using static TerraFX.Utilities.InteropUtilities;
+using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.MarshalUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
-using static TerraFX.Utilities.State;
-using TerraFX.Numerics;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
@@ -27,7 +27,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
     {
         private ValueLazy<VkPipeline> _vulkanPipeline;
 
-        private State _state;
+        private VolatileState _state;
 
         internal VulkanGraphicsPipeline(VulkanGraphicsDevice device, VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader, VulkanGraphicsShader? pixelShader)
             : base(device, signature, vertexShader, pixelShader)
@@ -169,7 +169,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 {
                     var shaderIndex = pipelineShaderStageCreateInfosCount++;
 
-                    var entryPointName = MarshalStringToUtf8(vertexShader.EntryPointName);
+                    var entryPointName = vertexShader.EntryPointName.GetUtf8Span();
                     var entryPointNameLength = (nuint)entryPointName.Length + 1;
 
                     pipelineShaderStageCreateInfos[shaderIndex] = new VkPipelineShaderStageCreateInfo {
@@ -231,7 +231,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 {
                     var shaderIndex = pipelineShaderStageCreateInfosCount++;
 
-                    var entryPointName = MarshalStringToUtf8(pixelShader.EntryPointName);
+                    var entryPointName = pixelShader.EntryPointName.GetUtf8Span();
                     var entryPointNameLength = (nuint)entryPointName.Length + 1;
 
                     pipelineShaderStageCreateInfos[shaderIndex] = new VkPipelineShaderStageCreateInfo {

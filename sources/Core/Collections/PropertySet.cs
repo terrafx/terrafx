@@ -9,10 +9,9 @@ using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Collections
 {
-    /// <summary>Represents a <see cref="string" />-<see cref="object" /> dictionary that provides notifications when its contents are changed.</summary>
+    /// <summary>Represents a string to object dictionary that provides notifications when its contents are changed.</summary>
     [DebuggerDisplay("Count = {Count}")]
-    [DebuggerTypeProxy(typeof(DebugView))]
-    [Serializable]
+    [DebuggerTypeProxy(typeof(DictionaryDebugView<string, object>))]
     public sealed partial class PropertySet : IPropertySet
     {
         private readonly IDictionary<string, object> _items;

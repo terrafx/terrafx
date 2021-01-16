@@ -6,15 +6,16 @@
 using System;
 using System.Collections.Generic;
 using TerraFX.Interop;
-using TerraFX.Utilities;
+using TerraFX.Threading;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.D3D12_HEAP_FLAGS;
 using static TerraFX.Interop.D3D12_HEAP_TYPE;
 using static TerraFX.Interop.D3D12_RESOURCE_FLAGS;
 using static TerraFX.Interop.D3D12_RESOURCE_HEAP_TIER;
 using static TerraFX.Interop.Windows;
-using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.State;
+using static TerraFX.Runtime.Configuration;
+using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.AssertionUtilities;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
@@ -24,7 +25,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         private readonly D3D12GraphicsMemoryBlockCollection[] _blockCollections;
         private readonly bool _supportsResourceHeapTier2;
 
-        private State _state;
+        private VolatileState _state;
 
         internal D3D12GraphicsMemoryAllocator(D3D12GraphicsDevice device, in GraphicsMemoryAllocatorSettings settings)
             : base(device, in settings)
@@ -144,11 +145,9 @@ namespace TerraFX.Graphics.Providers.D3D12
                 _ => -1,
             };
 
-            if (index < 0)
-            {
-                ThrowArgumentOutOfRangeException(cpuAccess, nameof(cpuAccess));
-            }
-            else if (!_supportsResourceHeapTier2)
+            Assert(AssertionsEnabled && (index >= 0));
+
+            if (!_supportsResourceHeapTier2)
             {
                 // Scale to account for resource kind
                 index *= 3;

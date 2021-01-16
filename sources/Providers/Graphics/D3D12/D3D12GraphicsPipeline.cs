@@ -3,12 +3,14 @@
 using System;
 using TerraFX.Interop;
 using TerraFX.Numerics;
+using TerraFX.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.D3D12_PRIMITIVE_TOPOLOGY_TYPE;
 using static TerraFX.Interop.DXGI_FORMAT;
 using static TerraFX.Interop.Windows;
-using static TerraFX.Utilities.State;
+using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
@@ -16,7 +18,7 @@ namespace TerraFX.Graphics.Providers.D3D12
     public sealed unsafe class D3D12GraphicsPipeline : GraphicsPipeline
     {
         private ValueLazy<Pointer<ID3D12PipelineState>> _d3d12PipelineState;
-        private State _state;
+        private VolatileState _state;
 
         internal D3D12GraphicsPipeline(D3D12GraphicsDevice device, D3D12GraphicsPipelineSignature signature, D3D12GraphicsShader? vertexShader, D3D12GraphicsShader? pixelShader)
             : base(device, signature, vertexShader, pixelShader)
@@ -74,7 +76,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12PipelineState> CreateD3D12GraphicsPipelineState()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsPipeline));
 
             ID3D12PipelineState* d3d12GraphicsPipelineState;
 
@@ -123,7 +125,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                             var inputElement = inputElements[inputElementIndex];
 
                             inputElementDescs[inputElementsIndex] = new D3D12_INPUT_ELEMENT_DESC {
-                                SemanticName = GetInputElementSemanticName(inputElement.Kind).AsPointer(),
+                                SemanticName = GetInputElementSemanticName(inputElement.Kind).GetPointer(),
                                 Format = GetInputElementFormat(inputElement.Type),
                                 InputSlot = unchecked((uint)inputSlotIndex),
                                 AlignedByteOffset = inputLayoutStride,

@@ -9,15 +9,18 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using TerraFX.Interop;
+using TerraFX.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
-using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.VkDebugReportFlagBitsEXT;
+using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
+using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.InteropUtilities;
+using static TerraFX.Utilities.MarshalUtilities;
 using static TerraFX.Utilities.MemoryUtilities;
-using static TerraFX.Utilities.State;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
@@ -80,7 +83,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private VkDebugReportCallbackEXT _vulkanDebugReportCallbackExt;
 
-        private State _state;
+        private VolatileState _state;
 
         /// <summary>Initializes a new instance of the <see cref="VulkanGraphicsProvider" /> class.</summary>
         [ImportingConstructor]
@@ -152,7 +155,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         [UnmanagedCallersOnly]
         private static uint VulkanDebugReportCallback(uint flags, VkDebugReportObjectTypeEXT objectType, ulong @object, nuint location, int messageCode, sbyte* pLayerPrefix, sbyte* pMessage, void* pUserData)
         {
-            var message = MarshalUtf8ToReadOnlySpan(pMessage).AsString();
+            var message = GetUtf8Span(pMessage).GetString();
             Debug.WriteLine(message);
             return VK_FALSE;
         }
@@ -172,7 +175,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private VkInstance CreateVulkanInstance()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsProvider));
 
             sbyte* requiredExtensionNamesBuffer = null;
             sbyte* optionalExtensionNamesBuffer = null;
@@ -202,7 +205,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                     enabledLayerCount = EnableProperties((sbyte*)pLayerProperties, layerProperties.Length, sizeof(VkLayerProperties), _requiredLayerNames, _optionalLayerNames, out requiredLayerNamesBuffer, out optionalLayerNamesBuffer, out enabledLayerNames);
                 }
 
-                fixed (sbyte* engineName = MarshalStringToUtf8(_engineName))
+                fixed (sbyte* engineName = _engineName.GetUtf8Span())
                 {
                     var applicationInfo = new VkApplicationInfo {
                         sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
@@ -252,7 +255,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
                 if (enabledPropertyCount != requiredNamesCount)
                 {
-                    ThrowNotSupportedExceptionForMissingFeature(nameof(VkExtensionProperties));
+                    ThrowForMissingFeature();
                 }
                 enabledPropertyCount += EnablePropertiesByName(propertyNames, propertyNamesCount, propertySize, optionalNamesBuffer, optionalNamesCount, enabledNames + enabledPropertyCount);
 
@@ -353,7 +356,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
                 };
 
                 // We don't want to fail if creating the debug report callback failed
-                var vkCreateDebugReportCallbackEXT = (delegate* unmanaged<IntPtr, VkDebugReportCallbackCreateInfoEXT*, VkAllocationCallbacks*, ulong*, VkResult>)vkGetInstanceProcAddr(instance, VKCREATEDEBUGREPORTCALLBACKEXT_FUNCTION_NAME.AsPointer());
+                var vkCreateDebugReportCallbackEXT = (delegate* unmanaged<IntPtr, VkDebugReportCallbackCreateInfoEXT*, VkAllocationCallbacks*, ulong*, VkResult>)vkGetInstanceProcAddr(instance, VKCREATEDEBUGREPORTCALLBACKEXT_FUNCTION_NAME.GetPointer());
                 _ = vkCreateDebugReportCallbackEXT(instance, &debugReportCallbackCreateInfo, null, (ulong*)&vulkanDebugReportCallbackExt);
 
                 return vulkanDebugReportCallbackExt;
@@ -362,11 +365,11 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private void DisposeInstance(VkInstance vulkanInstance)
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (_vulkanDebugReportCallbackExt != VK_NULL_HANDLE)
             {
-                var vkDestroyDebugReportCallbackEXT = (delegate* unmanaged<IntPtr, VkDebugReportCallbackEXT, VkAllocationCallbacks*, void>)vkGetInstanceProcAddr(vulkanInstance, VKDESTROYDEBUGREPORTCALLBACKEXT_FUNCTION_NAME.AsPointer());
+                var vkDestroyDebugReportCallbackEXT = (delegate* unmanaged<IntPtr, VkDebugReportCallbackEXT, VkAllocationCallbacks*, void>)vkGetInstanceProcAddr(vulkanInstance, VKDESTROYDEBUGREPORTCALLBACKEXT_FUNCTION_NAME.GetPointer());
                 vkDestroyDebugReportCallbackEXT(vulkanInstance, _vulkanDebugReportCallbackExt, null);
             }
 
@@ -375,7 +378,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private ImmutableArray<VulkanGraphicsAdapter> GetGraphicsAdapters()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsProvider));
 
             var instance = VulkanInstance;
 

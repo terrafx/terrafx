@@ -3,7 +3,7 @@
 using System;
 using System.Runtime.InteropServices;
 using TerraFX.Interop;
-using TerraFX.Utilities;
+using TerraFX.Threading;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
 using static TerraFX.Interop.VkBorderColor;
 using static TerraFX.Interop.VkComponentSwizzle;
@@ -14,7 +14,8 @@ using static TerraFX.Interop.VkImageViewType;
 using static TerraFX.Interop.VkSamplerMipmapMode;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.Vulkan;
-using static TerraFX.Utilities.State;
+using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
@@ -27,7 +28,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private VkImage _vulkanImage;
         private ValueLazy<VkImageView> _vulkanImageView;
         private ValueLazy<VkSampler> _vulkanSampler;
-        private protected State _state;
+        private protected VolatileState _state;
 
         private protected VulkanGraphicsTexture(GraphicsTextureKind kind, in GraphicsMemoryRegion<GraphicsMemoryBlock> blockRegion, GraphicsResourceCpuAccess cpuAccess, uint width, uint height, ushort depth, VkImage vulkanImage)
             : base(kind, in blockRegion, cpuAccess, width, height, depth)
@@ -234,7 +235,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private VkImageView CreateVulkanImageView()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsTexture));
 
             VkImageView vulkanImageView;
 
@@ -275,7 +276,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private VkSampler CreateVulkanSampler()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsTexture));
 
             VkSampler vulkanSampler;
 

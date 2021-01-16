@@ -3,7 +3,7 @@
 using System;
 using TerraFX.Interop;
 using TerraFX.Numerics;
-using TerraFX.Utilities;
+using TerraFX.Threading;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.D3D_PRIMITIVE_TOPOLOGY;
 using static TerraFX.Interop.D3D12_COMMAND_LIST_TYPE;
@@ -12,9 +12,10 @@ using static TerraFX.Interop.D3D12_RESOURCE_STATES;
 using static TerraFX.Interop.D3D12_RTV_DIMENSION;
 using static TerraFX.Interop.DXGI_FORMAT;
 using static TerraFX.Interop.Windows;
+using static TerraFX.Runtime.Configuration;
+using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
@@ -29,7 +30,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         private ValueLazy<Pointer<ID3D12Resource>> _d3d12RenderTargetResource;
         private ValueLazy<D3D12_CPU_DESCRIPTOR_HANDLE> _d3d12RenderTargetView;
 
-        private State _state;
+        private VolatileState _state;
 
         internal D3D12GraphicsContext(D3D12GraphicsDevice device, int index)
             : base(device, index)
@@ -372,7 +373,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
                 if (indexBufferStride != 2)
                 {
-                    Assert(indexBufferStride == 4, "Index Buffer has an unsupported stride.");
+                    Assert(AssertionsEnabled && (indexBufferStride == 4));
                     indexFormat = DXGI_FORMAT_R32_UINT;
                 }
 
@@ -434,7 +435,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         internal void OnGraphicsSurfaceSizeChanged(object? sender, PropertyChangedEventArgs<Vector2> eventArgs)
         {
-            if (_d3d12RenderTargetView.IsCreated)
+            if (_d3d12RenderTargetView.IsValueCreated)
             {
                 _d3d12RenderTargetView.Reset(CreateD3D12RenderTargetDescriptor);
 
@@ -445,7 +446,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12CommandAllocator> CreateD3D12CommandAllocator()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsContext));
 
             ID3D12CommandAllocator* d3d12CommandAllocator;
 
@@ -457,7 +458,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12GraphicsCommandList> CreateD3D12GraphicsCommandList()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsContext));
 
             ID3D12GraphicsCommandList* d3d12GraphicsCommandList;
 
@@ -473,7 +474,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12Resource> CreateD3D12RenderTargetResource()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsContext));
 
             ID3D12Resource* renderTargetResource;
 
@@ -485,7 +486,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private D3D12_CPU_DESCRIPTOR_HANDLE CreateD3D12RenderTargetDescriptor()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsContext));
 
             D3D12_CPU_DESCRIPTOR_HANDLE renderTargetViewHandle;
 

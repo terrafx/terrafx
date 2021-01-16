@@ -10,9 +10,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
-using static TerraFX.Utilities.IntegerUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.MathUtilities;
 
 namespace TerraFX.Graphics
 {
@@ -61,7 +62,7 @@ namespace TerraFX.Graphics
 
                 if (!result)
                 {
-                    ThrowOutOfMemoryException();
+                    ThrowOutOfMemoryException(size);
                 }
                 return region;
             }
@@ -98,8 +99,9 @@ namespace TerraFX.Graphics
             public void Free(in GraphicsMemoryRegion<TSelf> region)
             {
                 var freedRegion = false;
+                var regions = _regions;
 
-                for (var regionNode = _regions.First; regionNode is not null; regionNode = regionNode.Next)
+                for (var regionNode = regions.First; regionNode is not null; regionNode = regionNode.Next)
                 {
                     if (regionNode.ValueRef != region)
                     {
@@ -112,7 +114,7 @@ namespace TerraFX.Graphics
 
                 if (!freedRegion)
                 {
-                    ThrowKeyNotFoundException(nameof(region));
+                    ThrowKeyNotFoundException(region, nameof(regions));
                 }
                 Validate();
             }
@@ -126,7 +128,7 @@ namespace TerraFX.Graphics
             public void Initialize(TSelf collection, ulong size, ulong minimumAllocatedRegionMarginSize, ulong minimumFreeRegionSizeToRegister)
             {
                 ThrowIfNull(collection, nameof(collection));
-                ThrowIf(size == 0, nameof(size));
+                ThrowIfZero(size, nameof(size));
 
                 _collection = collection;
 
@@ -144,8 +146,8 @@ namespace TerraFX.Graphics
             /// <inheritdoc />
             public bool TryAllocate(ulong size, [Optional, DefaultParameterValue(1UL)] ulong alignment, out GraphicsMemoryRegion<TSelf> region)
             {
-                ThrowIf(size == 0, nameof(size));
-                ThrowIf(!IsPow2(alignment), nameof(alignment));
+                ThrowIfZero(size, nameof(size));
+                ThrowIfNotPow2(alignment, nameof(alignment));
 
                 Unsafe.SkipInit(out region);
 
@@ -186,7 +188,7 @@ namespace TerraFX.Graphics
             [Conditional("DEBUG")]
             public void Validate()
             {
-                Assert(_regions.Count != 0);
+                Assert(AssertionsEnabled && (_regions.Count == 0));
 
                 var calculatedSize = 0UL;
                 var calculatedTotalFreeRegionSize = 0UL;
@@ -202,12 +204,12 @@ namespace TerraFX.Graphics
                     ref readonly var region = ref regionNode.ValueRef;
 
                     // The node should immediately procede the previous
-                    Assert(region.Offset == calculatedSize);
+                    Assert(AssertionsEnabled && (region.Offset == calculatedSize));
 
                     var isCurrentRegionFree = !region.IsAllocated;
 
                     // Two adjacent free regions are invalid, they should have been merged
-                    Assert(!isPreviousRegionFree || !isCurrentRegionFree);
+                    Assert(AssertionsEnabled && (!isPreviousRegionFree || !isCurrentRegionFree));
 
                     if (isCurrentRegionFree)
                     {
@@ -220,12 +222,12 @@ namespace TerraFX.Graphics
                         }
 
                         // When margins are required between allocations every free space must be at least that large
-                        Assert(region.Size >= MinimumAllocatedRegionMarginSize);
+                        Assert(AssertionsEnabled && (region.Size >= MinimumAllocatedRegionMarginSize));
                     }
                     else
                     {
                         // When margins are required between allocations, the previous allocation must be free
-                        Assert((MinimumAllocatedRegionMarginSize == 0) || isPreviousRegionFree);
+                        Assert(AssertionsEnabled && ((MinimumAllocatedRegionMarginSize == 0) || isPreviousRegionFree));
                     }
 
                     calculatedSize += region.Size;
@@ -235,10 +237,10 @@ namespace TerraFX.Graphics
                 ValidateFreeRegionsBySizeList();
 
                 // All totals should match the computed values
-                Assert(calculatedSize == Size);
-                Assert(calculatedTotalFreeRegionSize == _totalFreeRegionSize);
-                Assert(calculatedFreeRegionCount == _freeRegionCount);
-                Assert(calculatedFreeRegionsToRegisterCount == _freeRegionsBySize.Count);
+                Assert(AssertionsEnabled && (calculatedSize == Size));
+                Assert(AssertionsEnabled && (calculatedTotalFreeRegionSize == _totalFreeRegionSize));
+                Assert(AssertionsEnabled && (calculatedFreeRegionCount == _freeRegionCount));
+                Assert(AssertionsEnabled && (calculatedFreeRegionsToRegisterCount == _freeRegionsBySize.Count));
             }
 
             private int BinarySearchFirstRegionNodeWithSizeNotLessThan(ulong size)
@@ -306,14 +308,14 @@ namespace TerraFX.Graphics
 
                 if (mergeWithNext)
                 {
-                    AssertNotNull(nextRegionNode, nameof(nextRegionNode));
+                    AssertNotNull(nextRegionNode);
                     UnregisterFreeRegion(nextRegionNode);
                     MergeFreeRegionWithNext(regionNode);
                 }
 
                 if (mergeWithPrev)
                 {
-                    AssertNotNull(prevRegionNode, nameof(prevRegionNode));
+                    AssertNotNull(prevRegionNode);
                     UnregisterFreeRegion(prevRegionNode);
                     MergeFreeRegionWithNext(prevRegionNode);
                     RegisterFreeRegion(prevRegionNode);
@@ -328,13 +330,13 @@ namespace TerraFX.Graphics
 
             private void MergeFreeRegionWithNext(LinkedListNode<GraphicsMemoryRegion<TSelf>> regionNode)
             {
-                AssertNotNull(regionNode, nameof(regionNode));
-                Assert(!regionNode.ValueRef.IsAllocated);
+                AssertNotNull(regionNode);
+                Assert(AssertionsEnabled && !regionNode.ValueRef.IsAllocated);
 
                 var nextRegionNode = regionNode.Next;
 
-                AssertNotNull(nextRegionNode, nameof(nextRegionNode));
-                Assert(!nextRegionNode.ValueRef.IsAllocated);
+                AssertNotNull(nextRegionNode);
+                Assert(AssertionsEnabled && !nextRegionNode.ValueRef.IsAllocated);
 
                 ref var region = ref regionNode.ValueRef;
                 ref readonly var nextRegion = ref nextRegionNode.ValueRef;
@@ -354,8 +356,8 @@ namespace TerraFX.Graphics
 
             private void RegisterFreeRegion(LinkedListNode<GraphicsMemoryRegion<TSelf>> regionNode)
             {
-                Assert(!regionNode.ValueRef.IsAllocated);
-                Assert(regionNode.ValueRef.Size > 0);
+                Assert(AssertionsEnabled && !regionNode.ValueRef.IsAllocated);
+                Assert(AssertionsEnabled && (regionNode.ValueRef.Size > 0));
 
                 ValidateFreeRegionsBySizeList();
 
@@ -379,11 +381,11 @@ namespace TerraFX.Graphics
 
             private bool TryAllocate(ulong size, ulong alignment, LinkedListNode<GraphicsMemoryRegion<TSelf>> regionNode)
             {
-                Assert(size > 0);
-                AssertNotNull(regionNode, nameof(regionNode));
+                Assert(AssertionsEnabled && (size > 0));
+                AssertNotNull(regionNode);
 
                 ref var region = ref regionNode.ValueRef;
-                Assert(!region.IsAllocated);
+                Assert(AssertionsEnabled && !region.IsAllocated);
 
                 if (region.Size < size)
                 {
@@ -478,8 +480,8 @@ namespace TerraFX.Graphics
 
             private void UnregisterFreeRegion(LinkedListNode<GraphicsMemoryRegion<TSelf>> regionNode)
             {
-                Assert(!regionNode.ValueRef.IsAllocated);
-                Assert(regionNode.ValueRef.Size > 0);
+                Assert(AssertionsEnabled && !regionNode.ValueRef.IsAllocated);
+                Assert(AssertionsEnabled && (regionNode.ValueRef.Size > 0));
 
                 ValidateFreeRegionsBySizeList();
 
@@ -494,10 +496,10 @@ namespace TerraFX.Graphics
                             freeRegionsBySize.RemoveAt(index);
                             return;
                         }
-                        Assert(freeRegionsBySize[index].ValueRef.Size == regionNode.ValueRef.Size);
+                        Assert(AssertionsEnabled && (freeRegionsBySize[index].ValueRef.Size == regionNode.ValueRef.Size));
                     }
 
-                    ThrowKeyNotFoundException(nameof(regionNode));
+                    ThrowKeyNotFoundException(regionNode, nameof(freeRegionsBySize));
                 }
 
                 ValidateFreeRegionsBySizeList();
@@ -513,9 +515,9 @@ namespace TerraFX.Graphics
                 {
                     ref readonly var region = ref freeRegionsBySize[i].ValueRef;
 
-                    Assert(!region.IsAllocated);
-                    Assert(region.Size >= MinimumFreeRegionSizeToRegister);
-                    Assert(region.Size >= lastRegionSize);
+                    Assert(AssertionsEnabled && !region.IsAllocated);
+                    Assert(AssertionsEnabled && (region.Size >= MinimumFreeRegionSizeToRegister));
+                    Assert(AssertionsEnabled && (region.Size >= lastRegionSize));
 
                     lastRegionSize = region.Size;
                 }

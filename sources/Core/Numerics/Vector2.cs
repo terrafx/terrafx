@@ -1,5 +1,8 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+// This file includes code based on code from https://github.com/microsoft/DirectXMath
+// The original code is Copyright © Microsoft. All rights reserved. Licensed under the MIT License (MIT).
+
 using System;
 using System.Globalization;
 using System.Text;
@@ -49,84 +52,132 @@ namespace TerraFX.Numerics
         public float Y => _y;
 
 
-        /// <summary>Gets the square-rooted length of the vector.</summary>
-        public float Length => MathF.Sqrt(LengthSquared);
+        /// <summary>Gets the length of the vector.</summary>
+        public float Length => MathUtilities.Sqrt(LengthSquared);
 
         /// <summary>Gets the squared length of the vector.</summary>
         public float LengthSquared => Dot(this, this);
 
 
-        /// <summary>Compares two <see cref="Vector2" /> instances to determine equality.</summary>
-        /// <param name="left">The <see cref="Vector2" /> to compare with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="Vector2" /> to compare with <paramref name="left" />.</param>
+        /// <summary>Compares two vectors to determine equality.</summary>
+        /// <param name="left">The vector to compare with <paramref name="right" />.</param>
+        /// <param name="right">The vector to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
         public static bool operator ==(Vector2 left, Vector2 right)
-        {
-            return (left.X == right.X)
-                && (left.Y == right.Y);
-        }
+            => (left.X == right.X)
+            && (left.Y == right.Y);
 
-        /// <summary>Compares two <see cref="Vector2" /> instances to determine inequality.</summary>
-        /// <param name="left">The <see cref="Vector2" /> to compare with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="Vector2" /> to compare with <paramref name="left" />.</param>
+        /// <summary>Compares two vectors to determine inequality.</summary>
+        /// <param name="left">The vector to compare with <paramref name="right" />.</param>
+        /// <param name="right">The vector to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
         public static bool operator !=(Vector2 left, Vector2 right)
-        {
-            return (left.X != right.X)
-                || (left.Y != right.Y);
-        }
+            => (left.X != right.X)
+            || (left.Y != right.Y);
 
-        /// <summary>Returns the value of the <see cref="Vector2" /> operand (the sign of the operand is unchanged).</summary>
-        /// <param name="value">The operand to return</param>
-        /// <returns>The value of the operand, <paramref name="value" />.</returns>
+        /// <summary>Computes the value of a vector.</summary>
+        /// <param name="value">The vector.</param>
+        /// <returns><paramref name="value" /></returns>
         public static Vector2 operator +(Vector2 value) => value;
 
-        /// <summary>Negates the value of the specified <see cref="Vector2" /> operand.</summary>
-        /// <param name="value">The value to negate.</param>
-        /// <returns>The result of <paramref name="value" /> multiplied by negative one (-1).</returns>
+        /// <summary>Computes the negation of a vector.</summary>
+        /// <param name="value">The vector to negate.</param>
+        /// <returns>The negation of <paramref name="value" />.</returns>
         public static Vector2 operator -(Vector2 value) => value * -1;
 
-        /// <summary>Adds two specified <see cref="Vector2" /> values.</summary>
-        /// <param name="left">The first value to add.</param>
-        /// <param name="right">The second value to add.</param>
-        /// <returns>The result of adding <paramref name="left" /> and <paramref name="right" />.</returns>
-        public static Vector2 operator +(Vector2 left, Vector2 right) => new Vector2(left.X + right.X, left.Y + right.Y);
+        /// <summary>Computes the sum of two vectors.</summary>
+        /// <param name="left">The vector to which to add <paramref name="right" />.</param>
+        /// <param name="right">The vector which is added to <paramref name="left" />.</param>
+        /// <returns>The sum of <paramref name="right" /> added to <paramref name="left" />.</returns>
+        public static Vector2 operator +(Vector2 left, Vector2 right) => new Vector2(
+            left.X + right.X,
+            left.Y + right.Y
+        );
 
-        /// <summary>Subtracts two specified <see cref="Vector2" /> values.</summary>
-        /// <param name="left">The minuend.</param>
-        /// <param name="right">The subtrahend.</param>
-        /// <returns>The result of subtracting <paramref name="right" /> from <paramref name="left" />.</returns>
-        public static Vector2 operator -(Vector2 left, Vector2 right) => new Vector2(left.X - right.X, left.Y - right.Y);
+        /// <summary>Computes the difference of two vectors.</summary>
+        /// <param name="left">The vector from which to subtract <paramref name="right" />.</param>
+        /// <param name="right">The vector which is subtracted from <paramref name="left" />.</param>
+        /// <returns>The difference of <paramref name="right" /> subtracted from <paramref name="left" />.</returns>
+        public static Vector2 operator -(Vector2 left, Vector2 right) => new Vector2(
+            left.X - right.X,
+            left.Y - right.Y
+        );
 
-        /// <summary>Multiplies two specified <see cref="Vector2" /> values.</summary>
-        /// <param name="left">The first value to multiply.</param>
-        /// <param name="right">The second value to multiply.</param>
-        /// <returns>The result of multiplying <paramref name="left" /> by <paramref name="right" />.</returns>
-        public static Vector2 operator *(Vector2 left, Vector2 right) => new Vector2(left.X * right.X, left.Y * right.Y);
+        /// <summary>Computes the product of a vector and a float.</summary>
+        /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
+        /// <param name="right">The float which is used to multiply <paramref name="left" />.</param>
+        /// <returns>The product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+        public static Vector2 operator *(Vector2 left, float right) => new Vector2(
+            left.X * right,
+            left.Y * right
+        );
 
-        /// <summary>Divides two specified <see cref="Vector2" /> values.</summary>
-        /// <param name="left">The dividend.</param>
-        /// <param name="right">The divisor.</param>
-        /// <returns>The result of dividing <paramref name="left" /> by <paramref name="right" />.</returns>
-        public static Vector2 operator /(Vector2 left, Vector2 right) => new Vector2(left.X / right.X, left.Y / right.Y);
+        /// <summary>Computes the product of two vectors.</summary>
+        /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
+        /// <param name="right">The vector which is used to multiply <paramref name="left" />.</param>
+        /// <returns>The product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+        public static Vector2 operator *(Vector2 left, Vector2 right) => new Vector2(
+            left.X * right.X,
+            left.Y * right.Y
+        );
 
-        /// <summary>Multiplies each component of a <see cref="Vector2" /> value by a given <see cref="float" /> value.</summary>
-        /// <param name="left">The vector to multiply.</param>
-        /// <param name="right">The value to multiply each component by.</param>
-        /// <returns>The result of multiplying each component of <paramref name="left" /> by <paramref name="right" />.</returns>
-        public static Vector2 operator *(Vector2 left, float right) => new Vector2(left.X * right, left.Y * right);
+        /// <summary>Computes the quotient of a vector and a float.</summary>
+        /// <param name="left">The vector which is divied by <paramref name="right" />.</param>
+        /// <param name="right">The float which divides <paramref name="left" />.</param>
+        /// <returns>The quotient of <paramref name="left" /> divided by <paramref name="right" />.</returns>
+        public static Vector2 operator /(Vector2 left, float right) => new Vector2(
+            left.X / right,
+            left.Y / right
+        );
 
-        /// <summary>Divides each component of a <see cref="Vector2" /> value by a given <see cref="float" /> value.</summary>
-        /// <param name="left">The dividend.</param>
-        /// <param name="right">The divisor to divide each component by.</param>
-        /// <returns>The result of multiplying each component of <paramref name="left" /> by <paramref name="right" />.</returns>
-        public static Vector2 operator /(Vector2 left, float right) => new Vector2(left.X / right, left.Y / right);
+        /// <summary>Computes the quotient of two vectors.</summary>
+        /// <param name="left">The vector which is divied by <paramref name="right" />.</param>
+        /// <param name="right">The vector which divides <paramref name="left" />.</param>
+        /// <returns>The quotient of <paramref name="left" /> divided by <paramref name="right" />.</returns>
+        public static Vector2 operator /(Vector2 left, Vector2 right) => new Vector2(
+            left.X / right.X,
+            left.Y / right.Y
+        );
 
-        /// <summary>Calculates the dot product of two <see cref="Vector2" /> values.</summary>
-        /// <param name="left">The first value to dot.</param>
-        /// <param name="right">The second value to dot.</param>
-        /// <returns>The result of adding the multiplication of each component of <paramref name="left" /> by each component of <paramref name="right" />.</returns>
-        public static float Dot(Vector2 left, Vector2 right) => (left.X * right.X) + (left.Y * right.Y);
+        /// <summary>Computes the dot product of two vectors.</summary>
+        /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
+        /// <param name="right">The quatnerion which is used to multiply <paramref name="left" />.</param>
+        /// <returns>The dot product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+        public static float Dot(Vector2 left, Vector2 right)
+            => (left.X * right.X)
+             + (left.Y * right.Y);
+
+        /// <summary>Compares two vectors to determine approximate equality.</summary>
+        /// <param name="left">The vector to compare with <paramref name="right" />.</param>
+        /// <param name="right">The vector to compare with <paramref name="left" />.</param>
+        /// <param name="epsilon">The maximum (exclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
+        public static bool EqualsEstimate(Vector2 left, Vector2 right, Vector2 epsilon)
+            => MathUtilities.EqualsEstimate(left.X, right.X, epsilon.X)
+            && MathUtilities.EqualsEstimate(left.Y, right.Y, epsilon.Y);
+
+        /// <summary>Compares two vectors to determine the combined maximum.</summary>
+        /// <param name="left">The vector to compare with <paramref name="right" />.</param>
+        /// <param name="right">The vector to compare with <paramref name="left" />.</param>
+        /// <returns>The combined maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        public static Vector2 Max(Vector2 left, Vector2 right) => new Vector2(
+            MathUtilities.Max(left.X, right.X),
+            MathUtilities.Max(left.Y, right.Y)
+        );
+
+        /// <summary>Compares two vectors to determine the combined minimum.</summary>
+        /// <param name="left">The vector to compare with <paramref name="right" />.</param>
+        /// <param name="right">The vector to compare with <paramref name="left" />.</param>
+        /// <returns>The combined minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        public static Vector2 Min(Vector2 left, Vector2 right) => new Vector2(
+            MathUtilities.Min(left.X, right.X),
+            MathUtilities.Min(left.Y, right.Y)
+        );
+
+        /// <summary>Computes the normalized form of a vector.</summary>
+        /// <param name="value">The vector to normalized.</param>
+        /// <returns>The normalized form of <paramref name="value" />.</returns>
+        public static Vector2 Normalize(Vector2 value) => value / value.Length;
 
         /// <inheritdoc />
         public override bool Equals(object? obj) => (obj is Vector2 other) && Equals(other);
@@ -134,45 +185,8 @@ namespace TerraFX.Numerics
         /// <inheritdoc />
         public bool Equals(Vector2 other) => this == other;
 
-        /// <summary>Tests if two <see cref="Vector2" /> instances have sufficiently similar values to see them as equivalent.
-        /// Use this to compare values that might be affected by differences in rounding the least significant bits.</summary>
-        /// <param name="left">The left instance to compare.</param>
-        /// <param name="right">The right instance to compare.</param>
-        /// <param name="epsilon">The threshold below which they are sufficiently similar.</param>
-        /// <returns><c>True</c> if similar, <c>False</c> otherwise.</returns>
-        public static bool EqualEstimate(Vector2 left, Vector2 right, Vector2 epsilon)
-        {
-            return FloatUtilities.EqualEstimate(left.X, right.X, epsilon.X)
-                && FloatUtilities.EqualEstimate(left.Y, right.Y, epsilon.Y);
-        }
-
         /// <inheritdoc />
-        public override int GetHashCode()
-        {
-            var hashCode = new HashCode();
-            {
-                hashCode.Add(X);
-                hashCode.Add(Y);
-            }
-            return hashCode.ToHashCode();
-        }
-
-        /// <summary>Computes the normalized value of the given <see cref="Vector2" /> value.</summary>
-        /// <param name="value">The value to normalize.</param>
-        /// <returns>The unit vector of <paramref name="value" />.</returns>
-        public static Vector2 Normalize(Vector2 value) => value / value.Length;
-
-        /// <summary>Computes the <see cref="Vector2" /> that for each component has the maximum value out of this and v.</summary>
-        /// <param name="left">The <see cref="Vector2" /> for this operation.</param>
-        /// <param name="right">The other <see cref="Vector2" /> to compute the max with.</param>
-        /// <returns>The resulting new instance.</returns>
-        public static Vector2 Max(Vector2 left, Vector2 right) => new Vector2(MathF.Max(left.X, right.X), MathF.Max(left.Y, right.Y));
-
-        /// <summary>Computes the <see cref="Vector2" /> that for each component has the minimum value out of this and v.</summary>
-        /// <param name="left">The <see cref="Vector2" /> for this operation.</param>
-        /// <param name="right">The other <see cref="Vector2" /> to compute the min with.</param>
-        /// <returns>The resulting new instance.</returns>
-        public static Vector2 Min(Vector2 left, Vector2 right) => new Vector2(MathF.Min(left.X, right.X), MathF.Min(left.Y, right.Y));
+        public override int GetHashCode() => HashCode.Combine(X, Y);
 
         /// <inheritdoc />
         public override string ToString() => ToString(format: null, formatProvider: null);
@@ -193,13 +207,13 @@ namespace TerraFX.Numerics
         }
 
         /// <summary>Creates a new <see cref="Vector2" /> instance with <see cref="X" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the x-dimension.</param>
-        /// <returns>A new <see cref="Vector2" /> instance with <see cref="X" /> set to <paramref name="value" />.</returns>
-        public Vector2 WithX(float value) => new Vector2(value, Y);
+        /// <param name="x">The new value of the x-dimension.</param>
+        /// <returns>A new <see cref="Vector2" /> instance with <see cref="X" /> set to <paramref name="x" />.</returns>
+        public Vector2 WithX(float x) => new Vector2(x, Y);
 
         /// <summary>Creates a new <see cref="Vector2" /> instance with <see cref="Y" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the y-dimension.</param>
-        /// <returns>A new <see cref="Vector2" /> instance with <see cref="Y" /> set to <paramref name="value" />.</returns>
-        public Vector2 WithY(float value) => new Vector2(X, value);
+        /// <param name="y">The new value of the y-dimension.</param>
+        /// <returns>A new <see cref="Vector2" /> instance with <see cref="Y" /> set to <paramref name="y" />.</returns>
+        public Vector2 WithY(float y) => new Vector2(X, y);
     }
 }

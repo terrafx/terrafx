@@ -3,12 +3,14 @@
 using System;
 using System.Threading;
 using TerraFX.Interop;
-using TerraFX.Utilities;
+using TerraFX.Threading;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.D3D12_FENCE_FLAGS;
 using static TerraFX.Interop.Windows;
+using static TerraFX.Runtime.Configuration;
+using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
@@ -20,7 +22,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private ulong _d3d12FenceSignalValue;
 
-        private State _state;
+        private VolatileState _state;
 
         internal D3D12GraphicsFence(D3D12GraphicsDevice device)
             : base(device)
@@ -64,10 +66,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         /// <inheritdoc />
         public override bool TryWait(int millisecondsTimeout = -1)
         {
-            if (millisecondsTimeout < Timeout.Infinite)
-            {
-                ThrowArgumentOutOfRangeException(millisecondsTimeout, nameof(millisecondsTimeout));
-            }
+            Assert(AssertionsEnabled && (millisecondsTimeout >= Timeout.Infinite));
             return TryWait(unchecked((uint)millisecondsTimeout));
         }
 
@@ -75,11 +74,7 @@ namespace TerraFX.Graphics.Providers.D3D12
         public override bool TryWait(TimeSpan timeout)
         {
             var remainingMilliseconds = (long)timeout.TotalMilliseconds;
-
-            if (remainingMilliseconds < Timeout.Infinite)
-            {
-                ThrowArgumentOutOfRangeException(timeout, nameof(timeout));
-            }
+            Assert(AssertionsEnabled && (remainingMilliseconds >= Timeout.Infinite));
 
             var fenceSignalled = false;
 
@@ -115,7 +110,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12Fence> CreateD3D12Fence()
         {
-            _state.AssertNotDisposedOrDisposing();
+            AssertNotDisposedOrDisposing(_state);
 
             ID3D12Fence* d3d12Fence;
 
@@ -127,13 +122,13 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private HANDLE CreateEventHandle()
         {
-            _state.AssertNotDisposedOrDisposing();
+            AssertNotDisposedOrDisposing(_state);
 
             HANDLE eventHandle = CreateEventW(lpEventAttributes: null, bManualReset: FALSE, bInitialState: FALSE, lpName: null);
 
             if (eventHandle == null)
             {
-                ThrowExternalExceptionForLastHRESULT(nameof(CreateEventW));
+                ThrowForLastError(nameof(CreateEventW));
             }
 
             return eventHandle;
@@ -141,7 +136,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private void DisposeEventHandle(HANDLE eventHandle)
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (eventHandle != null)
             {
@@ -168,7 +163,7 @@ namespace TerraFX.Graphics.Providers.D3D12
                 }
                 else if (result != WAIT_TIMEOUT)
                 {
-                    ThrowExternalExceptionForLastError(nameof(WaitForSingleObject));
+                    ThrowForLastError(nameof(WaitForSingleObject));
                 }
             }
 

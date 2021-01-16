@@ -10,7 +10,7 @@ namespace TerraFX.Collections
     /// <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
     public interface INotifyDictionaryChanged<TKey, TValue>
     {
-        /// <summary>Occurs when the underlying <see cref="IDictionary{TKey, TValue}" /> changes.</summary>
+        /// <summary>Occurs when the underlying dictionary changes.</summary>
         event EventHandler<NotifyDictionaryChangedEventArgs<TKey, TValue>>? DictionaryChanged;
     }
 }

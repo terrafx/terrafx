@@ -11,10 +11,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
-using TerraFX.Utilities;
+using TerraFX.Threading;
+using static TerraFX.Runtime.Configuration;
+using static TerraFX.Threading.VolatileState;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics
 {
@@ -31,7 +32,7 @@ namespace TerraFX.Graphics
         private ulong _minimumSize;
         private ulong _size;
 
-        private State _state;
+        private VolatileState _state;
 
         /// <summary>Initializes a new instance of the <see cref="GraphicsMemoryBlockCollection" /> class.</summary>
         /// <param name="allocator">The allocator that manages the collection.</param>
@@ -70,7 +71,7 @@ namespace TerraFX.Graphics
         {
             get
             {
-                using var mutex = new ReaderLockSlim(_mutex, _allocator.IsExternallySynchronized);
+                using var mutex = new DisposableReaderLockSlim(_mutex, _allocator.IsExternallySynchronized);
                 return _blocks.Count == 0;
             }
         }
@@ -108,7 +109,7 @@ namespace TerraFX.Graphics
 
             if (!succeeded)
             {
-                ThrowOutOfMemoryException();
+                ThrowOutOfMemoryException(size);
             }
             return region;
         }
@@ -129,14 +130,14 @@ namespace TerraFX.Graphics
             var block = region.Collection;
             ThrowIfNull(block, nameof(region));
 
-            using var mutex = new WriterLockSlim(_mutex, _allocator.IsExternallySynchronized);
+            using var mutex = new DisposableWriterLockSlim(_mutex, _allocator.IsExternallySynchronized);
 
             var blocks = _blocks;
             var blockIndex = blocks.IndexOf(block);
 
             if (blockIndex == -1)
             {
-                ThrowKeyNotFoundException(nameof(region));
+                ThrowKeyNotFoundException(region, nameof(blocks));
             }
 
             block.Free(in region);
@@ -223,7 +224,7 @@ namespace TerraFX.Graphics
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="alignment" /> is not a <c>power of two</c>.</exception>
         public bool TryAllocate(ulong size, [Optional, DefaultParameterValue(1UL)] ulong alignment, [Optional, DefaultParameterValue(GraphicsMemoryRegionAllocationFlags.None)] GraphicsMemoryRegionAllocationFlags flags, out GraphicsMemoryRegion<GraphicsMemoryBlock> region)
         {
-            using var mutex = new WriterLockSlim(_mutex, _allocator.IsExternallySynchronized);
+            using var mutex = new DisposableWriterLockSlim(_mutex, _allocator.IsExternallySynchronized);
             return TryAllocateRegion(size, alignment, flags, out region);
         }
 
@@ -241,7 +242,7 @@ namespace TerraFX.Graphics
             var succeeded = true;
             nuint index;
 
-            using (var mutex = new WriterLockSlim(_mutex, _allocator.IsExternallySynchronized))
+            using (var mutex = new DisposableWriterLockSlim(_mutex, _allocator.IsExternallySynchronized))
             {
                 for (index = 0; index < (nuint)regions.Length; ++index)
                 {
@@ -273,7 +274,7 @@ namespace TerraFX.Graphics
         /// <returns><c>true</c> if the minimum size was succesfully set; otherwise, <c>false</c>.</returns>
         public bool TrySetMinimumSize(ulong minimumSize)
         {
-            using var mutex = new WriterLockSlim(_mutex, _allocator.IsExternallySynchronized);
+            using var mutex = new DisposableWriterLockSlim(_mutex, _allocator.IsExternallySynchronized);
 
             var currentMinimumSize = _minimumSize;
 
@@ -358,7 +359,7 @@ namespace TerraFX.Graphics
             }
 
             _minimumSize = minimumSize;
-            Assert(_size == size);
+            Assert(AssertionsEnabled && (_size == size));
 
             return true;
         }
@@ -509,7 +510,7 @@ namespace TerraFX.Graphics
 
             if (useDedicatedBlock && useExistingBlock)
             {
-                ThrowArgumentOutOfRangeException(flags, nameof(flags));
+                ThrowForInvalidFlagsCombination(flags, nameof(flags));
             }
 
             _allocator.GetBudget(this, out var budget);
@@ -530,7 +531,7 @@ namespace TerraFX.Graphics
                 for (var blockIndex = 0; blockIndex < blocksLength; ++blockIndex)
                 {
                     var currentBlock = blocks[blockIndex];
-                    AssertNotNull(currentBlock, nameof(currentBlock));
+                    AssertNotNull(currentBlock);
 
                     if (currentBlock.TryAllocate(size, alignment, out region))
                     {

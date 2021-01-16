@@ -1,5 +1,8 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
+// This file includes code based on code from https://github.com/microsoft/DirectXMath
+// The original code is Copyright © Microsoft. All rights reserved. Licensed under the MIT License (MIT).
+
 using System;
 using System.Globalization;
 using System.Text;
@@ -80,92 +83,171 @@ namespace TerraFX.Numerics
         public float W => _w;
 
         /// <summary>Gets the square-rooted length of the vector.</summary>
-        public float Length => MathF.Sqrt(LengthSquared);
+        public float Length => MathUtilities.Sqrt(LengthSquared);
 
         /// <summary>Gets the squared length of the vector.</summary>
         public float LengthSquared => Dot(this, this);
 
-        /// <summary>Compares two <see cref="Vector4" /> instances to determine equality.</summary>
-        /// <param name="left">The <see cref="Vector4" /> to compare with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="Vector4" /> to compare with <paramref name="left" />.</param>
+        /// <summary>Compares two vectors to determine equality.</summary>
+        /// <param name="left">The vector to compare with <paramref name="right" />.</param>
+        /// <param name="right">The vector to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
         public static bool operator ==(Vector4 left, Vector4 right)
-        {
-            return (left.X == right.X)
-                && (left.Y == right.Y)
-                && (left.Z == right.Z)
-                && (left.W == right.W);
-        }
+            => (left.X == right.X)
+            && (left.Y == right.Y)
+            && (left.Z == right.Z)
+            && (left.W == right.W);
 
-        /// <summary>Compares two <see cref="Vector4" /> instances to determine inequality.</summary>
-        /// <param name="left">The <see cref="Vector4" /> to compare with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="Vector4" /> to compare with <paramref name="left" />.</param>
+        /// <summary>Compares two vectors to determine inequality.</summary>
+        /// <param name="left">The vector to compare with <paramref name="right" />.</param>
+        /// <param name="right">The vector to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
         public static bool operator !=(Vector4 left, Vector4 right)
-        {
-            return (left.X != right.X)
-                || (left.Y != right.Y)
-                || (left.Z != right.Z)
-                || (left.W != right.W);
-        }
+            => (left.X != right.X)
+            || (left.Y != right.Y)
+            || (left.Z != right.Z)
+            || (left.W != right.W);
 
-        /// <summary>Returns the value of the <see cref="Vector4" /> operand (the sign of the operand is unchanged).</summary>
-        /// <param name="value">The operand to return</param>
-        /// <returns>The value of the operand, <paramref name="value" />.</returns>
+        /// <summary>Computes the value of a vector.</summary>
+        /// <param name="value">The vector.</param>
+        /// <returns><paramref name="value" /></returns>
         public static Vector4 operator +(Vector4 value) => value;
 
-        /// <summary>Negates the value of the specified <see cref="Vector4" /> operand.</summary>
-        /// <param name="value">The value to negate.</param>
-        /// <returns>The result of <paramref name="value" /> multiplied by negative one (-1).</returns>
+        /// <summary>Computes the negation of a vector.</summary>
+        /// <param name="value">The vector to negate.</param>
+        /// <returns>The negation of <paramref name="value" />.</returns>
         public static Vector4 operator -(Vector4 value) => value * -1;
 
-        /// <summary>Adds two specified <see cref="Vector4" /> values.</summary>
-        /// <param name="left">The first value to add.</param>
-        /// <param name="right">The second value to add.</param>
-        /// <returns>The result of adding <paramref name="left" /> and <paramref name="right" />.</returns>
-        public static Vector4 operator +(Vector4 left, Vector4 right) => new Vector4(left.X + right.X, left.Y + right.Y, left.Z + right.Z, left.W + right.W);
+        /// <summary>Computes the sum of two vectors.</summary>
+        /// <param name="left">The vector to which to add <paramref name="right" />.</param>
+        /// <param name="right">The vector which is added to <paramref name="left" />.</param>
+        /// <returns>The sum of <paramref name="right" /> added to <paramref name="left" />.</returns>
+        public static Vector4 operator +(Vector4 left, Vector4 right) => new Vector4(
+            left.X + right.X,
+            left.Y + right.Y,
+            left.Z + right.Z,
+            left.W + right.W
+        );
 
-        /// <summary>Subtracts two specified <see cref="Vector4" /> values.</summary>
-        /// <param name="left">The minuend.</param>
-        /// <param name="right">The subtrahend.</param>
-        /// <returns>The result of subtracting <paramref name="right" /> from <paramref name="left" />.</returns>
-        public static Vector4 operator -(Vector4 left, Vector4 right) => new Vector4(left.X - right.X, left.Y - right.Y, left.Z - right.Z, left.W - right.W);
+        /// <summary>Computes the difference of two vectors.</summary>
+        /// <param name="left">The vector from which to subtract <paramref name="right" />.</param>
+        /// <param name="right">The vector which is subtracted from <paramref name="left" />.</param>
+        /// <returns>The difference of <paramref name="right" /> subtracted from <paramref name="left" />.</returns>
+        public static Vector4 operator -(Vector4 left, Vector4 right) => new Vector4(
+            left.X - right.X,
+            left.Y - right.Y,
+            left.Z - right.Z,
+            left.W - right.W
+        );
 
-        /// <summary>Multiplies two specified <see cref="Vector4" /> values.</summary>
-        /// <param name="left">The first value to multiply.</param>
-        /// <param name="right">The second value to multiply.</param>
-        /// <returns>The result of multiplying <paramref name="left" /> by <paramref name="right" />.</returns>
-        public static Vector4 operator *(Vector4 left, Vector4 right) => new Vector4(left.X * right.X, left.Y * right.Y, left.Z * right.Z, left.W * right.W);
+        /// <summary>Computes the product of a vector and a float.</summary>
+        /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
+        /// <param name="right">The float which is used to multiply <paramref name="left" />.</param>
+        /// <returns>The product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+        public static Vector4 operator *(Vector4 left, float right) => new Vector4(
+            left.X * right,
+            left.Y * right,
+            left.Z * right,
+            left.W * right
+        );
 
-        /// <summary>Divides two specified <see cref="Vector4" /> values.</summary>
-        /// <param name="left">The dividend.</param>
-        /// <param name="right">The divisor.</param>
-        /// <returns>The result of dividing <paramref name="left" /> by <paramref name="right" />.</returns>
-        public static Vector4 operator /(Vector4 left, Vector4 right) => new Vector4(left.X / right.X, left.Y / right.Y, left.Z / right.Z, left.W / right.W);
+        /// <summary>Computes the product of two vectors.</summary>
+        /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
+        /// <param name="right">The vector which is used to multiply <paramref name="left" />.</param>
+        /// <returns>The product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+        public static Vector4 operator *(Vector4 left, Vector4 right) => new Vector4(
+            left.X * right.X,
+            left.Y * right.Y,
+            left.Z * right.Z,
+            left.W * right.W
+        );
 
-        /// <summary>Multiplies each component of a <see cref="Vector4" /> value by a given <see cref="float" /> value.</summary>
-        /// <param name="left">The vector to multiply.</param>
-        /// <param name="right">The value to multiply each component by.</param>
-        /// <returns>The result of multiplying each component of <paramref name="left" /> by <paramref name="right" />.</returns>
-        public static Vector4 operator *(Vector4 left, float right) => new Vector4(left.X * right, left.Y * right, left.Z * right, left.W * right);
+        /// <summary>Computes the product of a vector and matrix.</summary>
+        /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
+        /// <param name="right">The matrix which is used to multiply <paramref name="left" />.</param>
+        /// <returns>The product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+        public static Vector4 operator *(Vector4 left, Matrix4x4 right) => Transform(left, right);
 
-        /// <summary>Divides each component of a <see cref="Vector4" /> value by a given <see cref="float" /> value.</summary>
-        /// <param name="left">The dividend.</param>
-        /// <param name="right">The divisor to divide each component by.</param>
-        /// <returns>The result of multiplying each component of <paramref name="left" /> by <paramref name="right" />.</returns>
-        public static Vector4 operator /(Vector4 left, float right) => new Vector4(left.X / right, left.Y / right, left.Z / right, left.W / right);
+        /// <summary>Computes the quotient of a vector and a float.</summary>
+        /// <param name="left">The vector which is divied by <paramref name="right" />.</param>
+        /// <param name="right">The float which divides <paramref name="left" />.</param>
+        /// <returns>The quotient of <paramref name="left" /> divided by <paramref name="right" />.</returns>
+        public static Vector4 operator /(Vector4 left, float right) => new Vector4(
+            left.X / right,
+            left.Y / right,
+            left.Z / right,
+            left.W / right
+        );
 
-        /// <summary>Multiplies each component of a <see cref="Vector4" /> value by a given <see cref="float" /> value.</summary>
-        /// <param name="value">The vector to multiply.</param>
-        /// <param name="matrix">The value to multiply each component by.</param>
-        /// <returns>The result of multiplying each component of <paramref name="value" /> by <paramref name="matrix" />.</returns>
-        public static Vector4 operator *(Vector4 value, Matrix4x4 matrix) => Transform(value, matrix);
+        /// <summary>Computes the quotient of two vectors.</summary>
+        /// <param name="left">The vector which is divied by <paramref name="right" />.</param>
+        /// <param name="right">The vector which divides <paramref name="left" />.</param>
+        /// <returns>The quotient of <paramref name="left" /> divided by <paramref name="right" />.</returns>
+        public static Vector4 operator /(Vector4 left, Vector4 right) => new Vector4(
+            left.X / right.X,
+            left.Y / right.Y,
+            left.Z / right.Z,
+            left.W / right.W
+        );
 
-        /// <summary>Calculates the dot product of two <see cref="Vector4" /> values.</summary>
-        /// <param name="left">The first value to dot.</param>
-        /// <param name="right">The second value to dot.</param>
-        /// <returns>The result of adding the multiplication of each component of <paramref name="left" /> by each component of <paramref name="right" />.</returns>
-        public static float Dot(Vector4 left, Vector4 right) => (left.X * right.X) + (left.Y * right.Y) + (left.Z * right.Z) + (left.W * right.W);
+        /// <summary>Computes the dot product of two vectors.</summary>
+        /// <param name="left">The vector to multiply by <paramref name="right" />.</param>
+        /// <param name="right">The quatnerion which is used to multiply <paramref name="left" />.</param>
+        /// <returns>The dot product of <paramref name="left" /> multipled by <paramref name="right" />.</returns>
+        public static float Dot(Vector4 left, Vector4 right)
+            => (left.X * right.X)
+             + (left.Y * right.Y)
+             + (left.Z * right.Z)
+             + (left.W * right.W);
+
+        /// <summary>Compares two vectors to determine approximate equality.</summary>
+        /// <param name="left">The vector to compare with <paramref name="right" />.</param>
+        /// <param name="right">The vector to compare with <paramref name="left" />.</param>
+        /// <param name="epsilon">The maximum (exclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
+        public static bool EqualsEstimate(Vector4 left, Vector4 right, Vector4 epsilon)
+            => MathUtilities.EqualsEstimate(left.X, right.X, epsilon.X)
+            && MathUtilities.EqualsEstimate(left.Y, right.Y, epsilon.Y)
+            && MathUtilities.EqualsEstimate(left.Z, right.Z, epsilon.Z)
+            && MathUtilities.EqualsEstimate(left.W, right.W, epsilon.W);
+
+        /// <summary>Compares two vectors to determine the combined maximum.</summary>
+        /// <param name="left">The vector to compare with <paramref name="right" />.</param>
+        /// <param name="right">The vector to compare with <paramref name="left" />.</param>
+        /// <returns>The combined maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        public static Vector4 Max(Vector4 left, Vector4 right) => new Vector4(
+            MathUtilities.Max(left.X, right.X),
+            MathUtilities.Max(left.Y, right.Y),
+            MathUtilities.Max(left.Z, right.Z),
+            MathUtilities.Min(left.W, right.W)
+        );
+
+        /// <summary>Compares two vectors to determine the combined minimum.</summary>
+        /// <param name="left">The vector to compare with <paramref name="right" />.</param>
+        /// <param name="right">The vector to compare with <paramref name="left" />.</param>
+        /// <returns>The combined minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        public static Vector4 Min(Vector4 left, Vector4 right) => new Vector4(
+            MathUtilities.Min(left.X, right.X),
+            MathUtilities.Min(left.Y, right.Y),
+            MathUtilities.Min(left.Z, right.Z),
+            MathUtilities.Min(left.W, right.W)
+        );
+
+        /// <summary>Computes the normalized form of a vector.</summary>
+        /// <param name="value">The vector to normalized.</param>
+        /// <returns>The normalized form of <paramref name="value" />.</returns>
+        public static Vector4 Normalize(Vector4 value) => value / value.Length;
+
+        /// <summary>Transforms a vector using a matrix.</summary>
+        /// <param name="value">The vector to transform.</param>
+        /// <param name="matrix">The transformation matrix.</param>
+        /// <returns><paramref name="value" /> transformed by <paramref name="matrix" />.</returns>
+        public static Vector4 Transform(Vector4 value, Matrix4x4 matrix) => new Vector4(
+            (value.X * matrix.X.X) + (value.Y * matrix.Y.X) + (value.Z * matrix.Z.X) + (value.W * matrix.W.X),
+            (value.X * matrix.X.Y) + (value.Y * matrix.Y.Y) + (value.Z * matrix.Z.Y) + (value.W * matrix.W.Y),
+            (value.X * matrix.X.Z) + (value.Y * matrix.Y.Z) + (value.Z * matrix.Z.Z) + (value.W * matrix.W.Z),
+            (value.X * matrix.X.W) + (value.Y * matrix.Y.W) + (value.Z * matrix.Z.W) + (value.W * matrix.W.W)
+        );
 
         /// <inheritdoc />
         public override bool Equals(object? obj) => (obj is Vector4 other) && Equals(other);
@@ -173,53 +255,11 @@ namespace TerraFX.Numerics
         /// <inheritdoc />
         public bool Equals(Vector4 other) => this == other;
 
-        /// <summary>Tests if two <see cref="Vector4" /> instances have sufficiently similar values to see them as equivalent.
-        /// Use this to compare values that might be affected by differences in rounding the least significant bits.</summary>
-        /// <param name="left">The left instance to compare.</param>
-        /// <param name="right">The right instance to compare.</param>
-        /// <param name="epsilon">The threshold below which they are sufficiently similar.</param>
-        /// <returns><c>True</c> if similar, <c>False</c> otherwise.</returns>
-        public static bool EqualEstimate(Vector4 left, Vector4 right, Vector4 epsilon)
-        {
-            return FloatUtilities.EqualEstimate(left.X, right.X, epsilon.X)
-                && FloatUtilities.EqualEstimate(left.Y, right.Y, epsilon.Y)
-                && FloatUtilities.EqualEstimate(left.Z, right.Z, epsilon.Z)
-                && FloatUtilities.EqualEstimate(left.W, right.W, epsilon.W);
-        }
-
         /// <inheritdoc />
-        public override int GetHashCode()
-        {
-            var hashCode = new HashCode();
-            {
-                hashCode.Add(X);
-                hashCode.Add(Y);
-                hashCode.Add(Z);
-                hashCode.Add(W);
-            }
-            return hashCode.ToHashCode();
-        }
-
-        /// <summary>Computes the <see cref="Vector4" /> that for each component has the maximum value out of this and v.</summary>
-        /// <param name="left">The <see cref="Vector4" /> for this operation.</param>
-        /// <param name="right">The other <see cref="Vector4" /> to compute the max with.</param>
-        /// <returns>The resulting new instance.</returns>
-        public static Vector4 Max(Vector4 left, Vector4 right) => new Vector4(MathF.Max(left.X, right.X), MathF.Max(left.Y, right.Y), MathF.Max(left.Z, right.Z), MathF.Min(left.W, right.W));
-
-        /// <summary>Computes the <see cref="Vector4" /> that for each component has the minimum value out of this and v.</summary>
-        /// <param name="left">The <see cref="Vector4" /> for this operation.</param>
-        /// <param name="right">The other <see cref="Vector4" /> to compute the min with.</param>
-        /// <returns>The resulting new instance.</returns>
-        public static Vector4 Min(Vector4 left, Vector4 right) => new Vector4(MathF.Min(left.X, right.X), MathF.Min(left.Y, right.Y), MathF.Min(left.Z, right.Z), MathF.Min(left.W, right.W));
-
-        /// <summary>Computes the normalized value of the given <see cref="Vector4" /> value.</summary>
-        /// <param name="value">The value to normalize.</param>
-        /// <returns>The unit vector of <paramref name="value" />.</returns>
-        public static Vector4 Normalize(Vector4 value) => value / value.Length;
+        public override int GetHashCode() => HashCode.Combine(X, Y, Z, W);
 
         /// <inheritdoc />
         public override string ToString() => ToString(format: null, formatProvider: null);
-
 
         /// <inheritdoc />
         public string ToString(string? format, IFormatProvider? formatProvider)
@@ -242,35 +282,24 @@ namespace TerraFX.Numerics
                 .ToString();
         }
 
-        /// <summary>Matrix-Vector multiplication between the left <see cref="Matrix4x4" /> and right <see cref="Vector4" />.</summary>
-        /// <param name="value">The <see cref="Vector4" /> for this operation.</param>
-        /// <param name="matrix">The <see cref="Matrix4x4" /> to multiply.</param>
-        /// <returns>The resulting transformed <see cref="Vector4" />.</returns>
-        public static Vector4 Transform(Vector4 value, Matrix4x4 matrix) => new Vector4(
-            (value.X * matrix.X.X) + (value.Y * matrix.Y.X) + (value.Z * matrix.Z.X) + (value.W * matrix.W.X),
-            (value.X * matrix.X.Y) + (value.Y * matrix.Y.Y) + (value.Z * matrix.Z.Y) + (value.W * matrix.W.Y),
-            (value.X * matrix.X.Z) + (value.Y * matrix.Y.Z) + (value.Z * matrix.Z.Z) + (value.W * matrix.W.Z),
-            (value.X * matrix.X.W) + (value.Y * matrix.Y.W) + (value.Z * matrix.Z.W) + (value.W * matrix.W.W)
-        );
-
         /// <summary>Creates a new <see cref="Vector4" /> instance with <see cref="X" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the x-dimension.</param>
-        /// <returns>A new <see cref="Vector4" /> instance with <see cref="X" /> set to <paramref name="value" />.</returns>
-        public Vector4 WithX(float value) => new Vector4(value, Y, Z, W);
+        /// <param name="x">The new value of the x-dimension.</param>
+        /// <returns>A new <see cref="Vector4" /> instance with <see cref="X" /> set to <paramref name="x" />.</returns>
+        public Vector4 WithX(float x) => new Vector4(x, Y, Z, W);
 
         /// <summary>Creates a new <see cref="Vector4" /> instance with <see cref="Y" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the y-dimension.</param>
-        /// <returns>A new <see cref="Vector4" /> instance with <see cref="Y" /> set to <paramref name="value" />.</returns>
-        public Vector4 WithY(float value) => new Vector4(X, value, Z, W);
+        /// <param name="y">The new value of the y-dimension.</param>
+        /// <returns>A new <see cref="Vector4" /> instance with <see cref="Y" /> set to <paramref name="y" />.</returns>
+        public Vector4 WithY(float y) => new Vector4(X, y, Z, W);
 
         /// <summary>Creates a new <see cref="Vector4" /> instance with <see cref="Z" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the z-dimension.</param>
-        /// <returns>A new <see cref="Vector4" /> instance with <see cref="Z" /> set to <paramref name="value" />.</returns>
-        public Vector4 WithZ(float value) => new Vector4(X, Y, value, W);
+        /// <param name="z">The new value of the z-dimension.</param>
+        /// <returns>A new <see cref="Vector4" /> instance with <see cref="Z" /> set to <paramref name="z" />.</returns>
+        public Vector4 WithZ(float z) => new Vector4(X, Y, z, W);
 
         /// <summary>Creates a new <see cref="Vector4" /> instance with <see cref="W" /> set to the specified value.</summary>
-        /// <param name="value">The new value of the w-dimension.</param>
-        /// <returns>A new <see cref="Vector4" /> instance with <see cref="W" /> set to <paramref name="value" />.</returns>
-        public Vector4 WithW(float value) => new Vector4(X, Y, Z, value);
+        /// <param name="w">The new value of the w-dimension.</param>
+        /// <returns>A new <see cref="Vector4" /> instance with <see cref="W" /> set to <paramref name="w" />.</returns>
+        public Vector4 WithW(float w) => new Vector4(X, Y, Z, w);
     }
 }

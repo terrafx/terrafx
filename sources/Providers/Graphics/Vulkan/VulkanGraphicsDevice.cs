@@ -3,6 +3,7 @@
 using System;
 using TerraFX.Interop;
 using TerraFX.Numerics;
+using TerraFX.Threading;
 using TerraFX.Utilities;
 using static TerraFX.Graphics.Providers.Vulkan.HelperUtilities;
 using static TerraFX.Interop.VkAttachmentLoadOp;
@@ -14,13 +15,13 @@ using static TerraFX.Interop.VkImageUsageFlagBits;
 using static TerraFX.Interop.VkPipelineBindPoint;
 using static TerraFX.Interop.VkPresentModeKHR;
 using static TerraFX.Interop.VkQueueFlagBits;
-using static TerraFX.Interop.VkResult;
 using static TerraFX.Interop.VkSampleCountFlagBits;
 using static TerraFX.Interop.VkStructureType;
 using static TerraFX.Interop.VkSurfaceTransformFlagBitsKHR;
 using static TerraFX.Interop.Vulkan;
+using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.State;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
@@ -42,7 +43,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
         private int _contextIndex;
         private VkFormat _vulkanSwapchainFormat;
 
-        private State _state;
+        private VolatileState _state;
 
         internal VulkanGraphicsDevice(VulkanGraphicsAdapter adapter, IGraphicsSurface surface, int contextCount)
             : base(adapter, surface)
@@ -137,14 +138,14 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <inheritdoc cref="CreatePipeline(GraphicsPipelineSignature, GraphicsShader?, GraphicsShader?)" />
         public VulkanGraphicsPipeline CreatePipeline(VulkanGraphicsPipelineSignature signature, VulkanGraphicsShader? vertexShader = null, VulkanGraphicsShader? pixelShader = null)
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
             return new VulkanGraphicsPipeline(this, signature, vertexShader, pixelShader);
         }
 
         /// <inheritdoc />
         public override GraphicsPipelineSignature CreatePipelineSignature(ReadOnlySpan<GraphicsPipelineInput> inputs = default, ReadOnlySpan<GraphicsPipelineResource> resources = default)
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
             return new VulkanGraphicsPipelineSignature(this, inputs, resources);
         }
 
@@ -155,14 +156,14 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <inheritdoc cref="CreatePrimitive(GraphicsPipeline, in GraphicsMemoryRegion{GraphicsResource}, uint, in GraphicsMemoryRegion{GraphicsResource}, uint, ReadOnlySpan{GraphicsMemoryRegion{GraphicsResource}})" />
         public VulkanGraphicsPrimitive CreatePrimitive(VulkanGraphicsPipeline pipeline, in GraphicsMemoryRegion<GraphicsResource> vertexBufferView, uint vertexBufferStride, in GraphicsMemoryRegion<GraphicsResource> indexBufferView, uint indexBufferStride, ReadOnlySpan<GraphicsMemoryRegion<GraphicsResource>> inputResourceRegions)
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
             return new VulkanGraphicsPrimitive(this, pipeline, in vertexBufferView, vertexBufferStride, in indexBufferView, indexBufferStride, inputResourceRegions);
         }
 
         /// <inheritdoc />
         public override VulkanGraphicsShader CreateShader(GraphicsShaderKind kind, ReadOnlySpan<byte> bytecode, string entryPointName)
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state, nameof(VulkanGraphicsDevice));
             return new VulkanGraphicsShader(this, kind, bytecode, entryPointName);
         }
 
@@ -202,14 +203,9 @@ namespace TerraFX.Graphics.Providers.Vulkan
         /// <inheritdoc />
         public override void WaitForIdle()
         {
-            if (_vulkanDevice.IsCreated)
+            if (_vulkanDevice.IsValueCreated)
             {
-                var result = vkDeviceWaitIdle(_vulkanDevice.Value);
-
-                if (result != VK_SUCCESS)
-                {
-                    ThrowExternalException((int)result, nameof(vkDeviceWaitIdle));
-                }
+                ThrowExternalExceptionIfNotSuccess(vkDeviceWaitIdle(_vulkanDevice.Value), nameof(vkDeviceWaitIdle));
             }
         }
 
@@ -262,7 +258,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
             const int EnabledExtensionNamesCount = 1;
 
             var enabledExtensionNames = stackalloc sbyte*[EnabledExtensionNamesCount] {
-                (sbyte*)VK_KHR_SWAPCHAIN_EXTENSION_NAME.AsPointer(),
+                (sbyte*)VK_KHR_SWAPCHAIN_EXTENSION_NAME.GetPointer(),
             };
 
             var physicalDeviceFeatures = new VkPhysicalDeviceFeatures();
@@ -353,7 +349,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
                 default:
                 {
-                    ThrowArgumentOutOfRangeException(Surface, nameof(Surface));
+                    ThrowForUnsupportedSurfaceKind(Surface.Kind.ToString());
                     vulkanSurface = VK_NULL_HANDLE;
                     break;
                 }
@@ -364,7 +360,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             if (supported == VK_FALSE)
             {
-                ThrowArgumentOutOfRangeException(Surface, nameof(Surface));
+                ThrowForMissingFeature();
             }
             return vulkanSurface;
         }
@@ -390,7 +386,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             if ((contextsCount < surfaceCapabilities.minImageCount) || ((surfaceCapabilities.maxImageCount != 0) && (contextsCount > surfaceCapabilities.maxImageCount)))
             {
-                ThrowArgumentOutOfRangeException(contextsCount, nameof(contextsCount));
+                ThrowNotImplementedException();
             }
 
             var swapChainCreateInfo = new VkSwapchainCreateInfoKHR {
@@ -439,7 +435,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private void DisposeVulkanDevice(VkDevice vulkanDevice)
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (vulkanDevice != null)
             {
@@ -449,7 +445,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private void DisposeVulkanRenderPass(VkRenderPass vulkanRenderPass)
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (vulkanRenderPass != VK_NULL_HANDLE)
             {
@@ -459,7 +455,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private void DisposeVulkanSurface(VkSurfaceKHR vulkanSurface)
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (vulkanSurface != VK_NULL_HANDLE)
             {
@@ -469,7 +465,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
         private void DisposeVulkanSwapchain(VkSwapchainKHR vulkanSwapchain)
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (vulkanSwapchain != VK_NULL_HANDLE)
             {
@@ -507,7 +503,7 @@ namespace TerraFX.Graphics.Providers.Vulkan
 
             if (vulkanCommandQueueFamilyIndex == uint.MaxValue)
             {
-                ThrowInvalidOperationException(vulkanCommandQueueFamilyIndex, nameof(vulkanCommandQueueFamilyIndex));
+                ThrowForMissingFeature();
             }
             return vulkanCommandQueueFamilyIndex;
         }
@@ -543,12 +539,12 @@ namespace TerraFX.Graphics.Providers.Vulkan
         {
             WaitForIdle();
 
-            if (_vulkanSwapchainImages.IsCreated)
+            if (_vulkanSwapchainImages.IsValueCreated)
             {
                 _vulkanSwapchainImages.Reset(GetVulkanSwapchainImages);
             }
 
-            if (_vulkanSwapchain.IsCreated)
+            if (_vulkanSwapchain.IsValueCreated)
             {
                 vkDestroySwapchainKHR(_vulkanDevice.Value, _vulkanSwapchain.Value, pAllocator: null);
                 _vulkanSwapchain.Reset(CreateVulkanSwapchain);

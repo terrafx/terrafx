@@ -2,14 +2,15 @@
 
 using System;
 using TerraFX.Interop;
-using TerraFX.Utilities;
+using TerraFX.Threading;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.D3D_ROOT_SIGNATURE_VERSION;
 using static TerraFX.Interop.D3D12_DESCRIPTOR_RANGE_TYPE;
 using static TerraFX.Interop.D3D12_ROOT_SIGNATURE_FLAGS;
 using static TerraFX.Interop.D3D12_SHADER_VISIBILITY;
 using static TerraFX.Interop.Windows;
-using static TerraFX.Utilities.State;
+using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
@@ -18,7 +19,7 @@ namespace TerraFX.Graphics.Providers.D3D12
     {
         private ValueLazy<Pointer<ID3D12RootSignature>> _d3d12RootSignature;
 
-        private State _state;
+        private VolatileState _state;
 
         internal D3D12GraphicsPipelineSignature(D3D12GraphicsDevice device, ReadOnlySpan<GraphicsPipelineInput> inputs, ReadOnlySpan<GraphicsPipelineResource> resources)
             : base(device, inputs, resources)
@@ -52,7 +53,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12RootSignature> CreateD3D12RootSignature()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsPipelineSignature));
 
             ID3DBlob* rootSignatureBlob = null;
             ID3DBlob* rootSignatureErrorBlob = null;

@@ -4,11 +4,12 @@
 // The original code is Copyright © Advanced Micro Devices, Inc. All rights reserved. Licensed under the MIT License (MIT).
 
 using TerraFX.Interop;
-using TerraFX.Utilities;
+using TerraFX.Threading;
 using static TerraFX.Graphics.Providers.D3D12.HelperUtilities;
 using static TerraFX.Interop.D3D12_HEAP_FLAGS;
 using static TerraFX.Interop.Windows;
-using static TerraFX.Utilities.State;
+using static TerraFX.Threading.VolatileState;
+using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX.Graphics.Providers.D3D12
 {
@@ -16,7 +17,7 @@ namespace TerraFX.Graphics.Providers.D3D12
     public abstract unsafe class D3D12GraphicsMemoryBlock : GraphicsMemoryBlock
     {
         private ValueLazy<Pointer<ID3D12Heap>> _d3d12Heap;
-        private protected State _state;
+        private protected VolatileState _state;
 
         private protected D3D12GraphicsMemoryBlock(D3D12GraphicsMemoryBlockCollection collection)
             : base(collection)
@@ -57,7 +58,7 @@ namespace TerraFX.Graphics.Providers.D3D12
 
         private Pointer<ID3D12Heap> CreateD3D12Heap()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state, nameof(D3D12GraphicsMemoryBlock));
 
             ID3D12Heap* d3d12Heap;
 

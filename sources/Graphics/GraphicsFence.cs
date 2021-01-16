@@ -42,7 +42,7 @@ namespace TerraFX.Graphics
         {
             if (!TryWait(millisecondsTimeout))
             {
-                ThrowTimeoutException(TimeSpan.FromMilliseconds(millisecondsTimeout));
+                ThrowTimeoutException(nameof(Wait), TimeSpan.FromMilliseconds(millisecondsTimeout));
             }
         }
 
@@ -55,7 +55,7 @@ namespace TerraFX.Graphics
         {
             if (!TryWait(timeout))
             {
-                ThrowTimeoutException(timeout);
+                ThrowTimeoutException(nameof(Wait), timeout);
             }
         }
 

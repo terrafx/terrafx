@@ -1,14 +1,12 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Utilities;
-using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
 
 namespace TerraFX
 {
     /// <summary>Defines a timestamp.</summary>
-    public readonly struct Timestamp : IComparable, IComparable<Timestamp>, IEquatable<Timestamp>, IFormattable
+    public readonly struct Timestamp : IComparable<Timestamp>, IEquatable<Timestamp>, IComparable, IFormattable
     {
         /// <summary>The number of ticks that occur per day.</summary>
         public const long TicksPerDay = TimeSpan.TicksPerDay;
@@ -37,49 +35,68 @@ namespace TerraFX
         /// <summary>Gets the number of 100-nanosecond ticks represented by the current instance.</summary>
         public long Ticks => _ticks;
 
-        /// <summary>Compares two <see cref="Timestamp" /> values to determine equality.</summary>
-        /// <param name="left">The <see cref="Timestamp" /> to compare with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="Timestamp" /> to compare with <paramref name="left" />.</param>
+        /// <summary>Compares two timestamps to determine equality.</summary>
+        /// <param name="left">The timestamp to compare with <paramref name="right" />.</param>
+        /// <param name="right">The timestamp to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are equal; otherwise, <c>false</c>.</returns>
         public static bool operator ==(Timestamp left, Timestamp right) => left._ticks == right._ticks;
 
-        /// <summary>Compares two <see cref="Timestamp" /> values to determine inequality.</summary>
-        /// <param name="left">The <see cref="Timestamp" /> to compare with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="Timestamp" /> to compare with <paramref name="left" />.</param>
+        /// <summary>Compares two timestamps to determine inequality.</summary>
+        /// <param name="left">The timestamp to compare with <paramref name="right" />.</param>
+        /// <param name="right">The timestamp to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, <c>false</c>.</returns>
         public static bool operator !=(Timestamp left, Timestamp right) => left._ticks == right._ticks;
 
-        /// <summary>Compares two <see cref="Timestamp" /> values to determine relative sort-order.</summary>
-        /// <param name="left">The <see cref="Timestamp" /> to compare with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="Timestamp" /> to compare with <paramref name="left" />.</param>
+        /// <summary>Compares two timestamps to determine relative sort-order.</summary>
+        /// <param name="left">The timestamp to compare with <paramref name="right" />.</param>
+        /// <param name="right">The timestamp to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> is greater than <paramref name="right" />; otherwise, <c>false</c>.</returns>
         public static bool operator >(Timestamp left, Timestamp right) => left._ticks > right._ticks;
 
-        /// <summary>Compares two <see cref="Timestamp" /> values to determine relative sort-order.</summary>
-        /// <param name="left">The <see cref="Timestamp" /> to compare with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="Timestamp" /> to compare with <paramref name="left" />.</param>
+        /// <summary>Compares two timestamps to determine relative sort-order.</summary>
+        /// <param name="left">The timestamp to compare with <paramref name="right" />.</param>
+        /// <param name="right">The timestamp to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> is greater than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
         public static bool operator >=(Timestamp left, Timestamp right) => left._ticks >= right._ticks;
 
-        /// <summary>Compares two <see cref="Timestamp" /> values to determine relative sort-order.</summary>
-        /// <param name="left">The <see cref="Timestamp" /> to compare with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="Timestamp" /> to compare with <paramref name="left" />.</param>
+        /// <summary>Compares two timestamps to determine relative sort-order.</summary>
+        /// <param name="left">The timestamp to compare with <paramref name="right" />.</param>
+        /// <param name="right">The timestamp to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> is less than <paramref name="right" />; otherwise, <c>false</c>.</returns>
         public static bool operator <(Timestamp left, Timestamp right) => left._ticks < right._ticks;
 
-        /// <summary>Compares two <see cref="Timestamp" /> values to determine relative sort-order.</summary>
-        /// <param name="left">The <see cref="Timestamp" /> to compare with <paramref name="right" />.</param>
-        /// <param name="right">The <see cref="Timestamp" /> to compare with <paramref name="left" />.</param>
+        /// <summary>Compares two timestamps to determine relative sort-order.</summary>
+        /// <param name="left">The timestamp to compare with <paramref name="right" />.</param>
+        /// <param name="right">The timestamp to compare with <paramref name="left" />.</param>
         /// <returns><c>true</c> if <paramref name="left" /> is less than or equal to <paramref name="right" />; otherwise, <c>false</c>.</returns>
         public static bool operator <=(Timestamp left, Timestamp right) => left._ticks <= right._ticks;
 
-        /// <summary>Subtracts two <see cref="Timestamp" /> values to determine their delta.</summary>
-        /// <param name="left">The <see cref="Timestamp" /> from which <paramref name="right" /> will be subtracted.</param>
-        /// <param name="right">The <see cref="Timestamp" /> to subtract from <paramref name="left" />.</param>
-        /// <returns>The delta of <paramref name="right" /> subtracted from <paramref name="left" />.</returns>
+        /// <summary>Computes the value of a quaternion.</summary>
+        /// <param name="value">The quaternion.</param>
+        /// <returns><paramref name="value" /></returns>
+        public static Timestamp operator +(Timestamp value) => value;
+
+        /// <summary>Computes the negation of a timestamp.</summary>
+        /// <param name="value">The timestamp to negate.</param>
+        /// <returns>The negation of <paramref name="value" />.</returns>
+        public static Timestamp operator -(Timestamp value) => new Timestamp(-value._ticks);
+
+        /// <summary>Computes the sum of two timestamps.</summary>
+        /// <param name="left">The timestamp to which to add <paramref name="right" />.</param>
+        /// <param name="right">The timestamp which is added to <paramref name="left" />.</param>
+        /// <returns>The sum of <paramref name="right" /> added to <paramref name="left" />.</returns>
+        public static TimeSpan operator +(Timestamp left, Timestamp right)
+        {
+            var deltaTicks = unchecked(left._ticks + right._ticks);
+            return new TimeSpan(deltaTicks);
+        }
+
+        /// <summary>Computes the difference of two timestamps.</summary>
+        /// <param name="left">The timestamp from which to subtract <paramref name="right" />.</param>
+        /// <param name="right">The timestamp which is subtracted from <paramref name="left" />.</param>
+        /// <returns>The difference of <paramref name="right" /> subtracted from <paramref name="left" />.</returns>
         public static TimeSpan operator -(Timestamp left, Timestamp right)
         {
-            Assert(left > right, Resources.ArgumentOutOfRangeExceptionMessage, nameof(left), left);
             var deltaTicks = unchecked(left._ticks - right._ticks);
             return new TimeSpan(deltaTicks);
         }
@@ -87,18 +104,17 @@ namespace TerraFX
         /// <inheritdoc />
         public int CompareTo(object? obj)
         {
-            if (obj is null)
-            {
-                return 1;
-            }
-            else if (obj is Timestamp other)
+            if (obj is Timestamp other)
             {
                 return CompareTo(other);
             }
             else
             {
-                ThrowArgumentExceptionForInvalidType(obj.GetType(), nameof(obj));
-                return 0;
+                if (obj is not null)
+                {
+                    ThrowForInvalidType(obj.GetType(), nameof(obj), typeof(Timestamp));
+                }
+                return 1;
             }
         }
 

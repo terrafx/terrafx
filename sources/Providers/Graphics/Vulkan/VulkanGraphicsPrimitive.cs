@@ -1,15 +1,15 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
-using TerraFX.Utilities;
-using static TerraFX.Utilities.State;
+using TerraFX.Threading;
+using static TerraFX.Threading.VolatileState;
 
 namespace TerraFX.Graphics.Providers.Vulkan
 {
     /// <inheritdoc />
     public sealed unsafe class VulkanGraphicsPrimitive : GraphicsPrimitive
     {
-        private State _state;
+        private VolatileState _state;
 
         internal VulkanGraphicsPrimitive(VulkanGraphicsDevice device, VulkanGraphicsPipeline pipeline, in GraphicsMemoryRegion<GraphicsResource> vertexBufferView, uint vertexBufferStride, in GraphicsMemoryRegion<GraphicsResource> indexBufferView, uint indexBufferStride, ReadOnlySpan<GraphicsMemoryRegion<GraphicsResource>> inputResourceRegions = default)
             : base(device, pipeline, in vertexBufferView, vertexBufferStride, in indexBufferView, indexBufferStride, inputResourceRegions)

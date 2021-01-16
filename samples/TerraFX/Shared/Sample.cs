@@ -11,7 +11,8 @@ using TerraFX.Graphics;
 using TerraFX.Interop;
 using static TerraFX.Interop.Windows;
 using static TerraFX.Utilities.ExceptionUtilities;
-using static TerraFX.Utilities.InteropUtilities;
+using static TerraFX.Utilities.MarshalUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.Samples
 {
@@ -73,7 +74,7 @@ namespace TerraFX.Samples
                 var assetName = $"{shaderName}{kind}.hlsl";
 
                 fixed (char* assetPath = GetAssetFullPath("Shaders", shaderName, assetName))
-                fixed (sbyte* entryPoint = MarshalStringToUtf8(entryPointName))
+                fixed (sbyte* entryPoint = entryPointName.GetUtf8Span())
                 {
                     var compileFlags = 0u;
 
@@ -86,14 +87,14 @@ namespace TerraFX.Samples
 
                     try
                     {
-                        var result = D3DCompileFromFile((ushort*)assetPath, pDefines: null, (ID3DInclude*)D3D_COMPILE_STANDARD_FILE_INCLUDE, entryPoint, GetD3D12CompileTarget(kind).AsPointer(), compileFlags, Flags2: 0, &d3dShaderBlob, ppErrorMsgs: &pError);
+                        var result = D3DCompileFromFile((ushort*)assetPath, pDefines: null, (ID3DInclude*)D3D_COMPILE_STANDARD_FILE_INCLUDE, entryPoint, GetD3D12CompileTarget(kind).GetPointer(), compileFlags, Flags2: 0, &d3dShaderBlob, ppErrorMsgs: &pError);
 
                         if (FAILED(result))
                         {
                             // todo: var span = TerraFX.Utilities.InteropUtilities.MarshalUtf8ToReadOnlySpan((sbyte*)pError->GetBufferPointer(), (int)pError->GetBufferSize());
                             var errorMsg = System.Text.Encoding.UTF8.GetString((byte*)pError->GetBufferPointer(), (int)pError->GetBufferSize());
                             Console.WriteLine(errorMsg);
-                            ThrowExternalException(result, nameof(D3DCompileFromFile));
+                            ThrowExternalException(nameof(D3DCompileFromFile), result);
                         }
 
                         var shaderBytecode = new ReadOnlySpan<byte>(d3dShaderBlob->GetBufferPointer(), (int)d3dShaderBlob->GetBufferSize());
@@ -160,7 +161,7 @@ namespace TerraFX.Samples
 
                     default:
                     {
-                        ThrowArgumentOutOfRangeException(graphicsShaderKind, nameof(graphicsShaderKind));
+                        ThrowNotImplementedException();
                         d3d12CompileTarget = default;
                         break;
                     }
@@ -189,7 +190,7 @@ namespace TerraFX.Samples
 
                     default:
                     {
-                        ThrowArgumentOutOfRangeException(graphicsShaderKind, nameof(graphicsShaderKind));
+                        ThrowNotImplementedException();
                         vulkanShaderStage = string.Empty;
                         break;
                     }

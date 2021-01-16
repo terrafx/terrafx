@@ -7,12 +7,14 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using TerraFX.Interop;
-using TerraFX.Utilities;
-using static TerraFX.UI.Providers.Xlib.XlibAtomId;
+using TerraFX.Threading;
 using static TerraFX.Interop.Xlib;
+using static TerraFX.Runtime.Configuration;
+using static TerraFX.Threading.VolatileState;
+using static TerraFX.UI.Providers.Xlib.XlibAtomId;
 using static TerraFX.Utilities.AssertionUtilities;
-using static TerraFX.Utilities.InteropUtilities;
-using static TerraFX.Utilities.State;
+using static TerraFX.Utilities.ExceptionUtilities;
+using static TerraFX.Utilities.UnsafeUtilities;
 
 namespace TerraFX.UI.Providers.Xlib
 {
@@ -26,7 +28,7 @@ namespace TerraFX.UI.Providers.Xlib
         private readonly ThreadLocal<Dictionary<nuint, XlibWindow>> _windows;
 
         private ValueLazy<GCHandle> _nativeHandle;
-        private State _state;
+        private VolatileState _state;
 
         /// <summary>Initializes a new instance of the <see cref="XlibWindowProvider" /> class.</summary>
         [ImportingConstructor]
@@ -53,7 +55,7 @@ namespace TerraFX.UI.Providers.Xlib
         {
             get
             {
-                _state.AssertNotDisposedOrDisposing();
+                AssertNotDisposedOrDisposing(_state);
                 return _nativeHandle.Value;
             }
         }
@@ -64,7 +66,7 @@ namespace TerraFX.UI.Providers.Xlib
         {
             get
             {
-                _state.ThrowIfDisposedOrDisposing();
+                ThrowIfDisposedOrDisposing(_state, nameof(XlibWindowProvider));
                 return _windows.Value?.Values ?? Enumerable.Empty<XlibWindow>();
             }
         }
@@ -73,7 +75,7 @@ namespace TerraFX.UI.Providers.Xlib
         /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
         public override Window CreateWindow()
         {
-            _state.ThrowIfDisposedOrDisposing();
+            ThrowIfDisposedOrDisposing(_state, nameof(XlibWindowProvider));
             return new XlibWindow(this);
         }
 
@@ -136,7 +138,7 @@ namespace TerraFX.UI.Providers.Xlib
                 }
                 else
                 {
-                    Assert(xevent->xclient.message_type == dispatchProvider.GetAtom(_TERRAFX_DISPOSE_WINDOW));
+                    Assert(AssertionsEnabled && (xevent->xclient.message_type == dispatchProvider.GetAtom(_TERRAFX_DISPOSE_WINDOW)));
                     _ = RemoveWindow(windows, xevent->xany.display, xevent->xany.window, dispatchProvider);
                 }
 
@@ -188,8 +190,8 @@ namespace TerraFX.UI.Providers.Xlib
 
             if (forwardMessage)
             {
-                Assert(windows is not null, Resources.ArgumentNullExceptionMessage, nameof(windows));
-                Assert(window is not null, Resources.ArgumentNullExceptionMessage, nameof(window));
+                AssertNotNull(windows);
+                AssertNotNull(window);
 
                 window.ProcessWindowEvent(xevent);
 
@@ -203,7 +205,7 @@ namespace TerraFX.UI.Providers.Xlib
         private static XlibWindow RemoveWindow(Dictionary<nuint, XlibWindow> windows, IntPtr display, nuint windowHandle, XlibDispatchProvider dispatchProvider)
         {
             _ = windows.Remove(windowHandle, out var window);
-            Assert(window is not null, Resources.ArgumentNullExceptionMessage, nameof(window));
+            AssertNotNull(window);
 
             if (windows.Count == 0)
             {
@@ -228,7 +230,7 @@ namespace TerraFX.UI.Providers.Xlib
 
         private void DisposeWindows(bool isDisposing)
         {
-            _state.AssertDisposing();
+            AssertDisposing(_state);
 
             if (isDisposing)
             {
@@ -249,7 +251,7 @@ namespace TerraFX.UI.Providers.Xlib
                             window.Dispose();
                         }
 
-                        Assert(windows.Count == 0, Resources.ArgumentOutOfRangeExceptionMessage, nameof(windows.Count), windows.Count);
+                        Assert(AssertionsEnabled && (windows.Count == 0));
                     }
                 }
 
