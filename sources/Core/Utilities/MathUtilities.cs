@@ -86,7 +86,7 @@ namespace TerraFX.Utilities
         public static (nuint quotient, nuint remainder) DivRem(nuint dividend, nuint divisor)
         {
             var quotient = dividend / divisor;
-            var remainder = divisor - (quotient * divisor);
+            var remainder = dividend - (quotient * divisor);
             return (quotient, remainder);
         }
 
@@ -118,7 +118,7 @@ namespace TerraFX.Utilities
             }
             else
             {
-                return ((value & (value - 1)) == 0) && (value != 0);
+                return unchecked((value & (value - 1)) == 0) && (value != 0);
             }
         }
 
@@ -134,7 +134,7 @@ namespace TerraFX.Utilities
             }
             else
             {
-                return ((value & (value - 1)) == 0) && (value != 0);
+                return unchecked((value & (value - 1)) == 0) && (value != 0);
             }
         }
 
