@@ -20,12 +20,11 @@ namespace TerraFX.Utilities
 
         /// <summary>Asserts that a condition is <c>true</c>.</summary>
         /// <param name="condition">The condition to assert.</param>
+        /// <exception cref="InvalidOperationException">TerraFX based assertions are disabled.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Assert([DoesNotReturnIf(false)] bool condition)
         {
-            ThrowIfAssertionsDisabled();
-
-            if (!condition)
+            if (AssertionsEnabled && !condition)
             {
                 Fail();
             }

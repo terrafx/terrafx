@@ -510,7 +510,7 @@ namespace TerraFX.Graphics
 
             if (useDedicatedBlock && useExistingBlock)
             {
-                ThrowForInvalidFlagsCombination(nameof(flags));
+                ThrowForInvalidFlagsCombination(flags, nameof(flags));
             }
 
             _allocator.GetBudget(this, out var budget);

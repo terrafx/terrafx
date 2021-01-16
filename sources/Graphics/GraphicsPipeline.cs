@@ -20,10 +20,10 @@ namespace TerraFX.Graphics
         /// <param name="pixelShader">The pixel shader for the pipeline or <c>null</c> if none exists.</param>
         /// <exception cref="ArgumentNullException"><paramref name="device" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="signature" /> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException">The kind of <paramref name="vertexShader" /> is not <see cref="GraphicsShaderKind.Vertex" />.</exception>
-        /// <exception cref="ArgumentException"><paramref name="vertexShader" /> is incompatible as it belongs to a different device.</exception>
-        /// <exception cref="ArgumentException">The kind of <paramref name="pixelShader" /> is not <see cref="GraphicsShaderKind.Pixel" />.</exception>
-        /// <exception cref="ArgumentException"><paramref name="pixelShader" /> is incompatible as it belongs to a different device.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">The kind of <paramref name="vertexShader" /> is not <see cref="GraphicsShaderKind.Vertex" />.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="vertexShader" /> is incompatible as it belongs to a different device.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">The kind of <paramref name="pixelShader" /> is not <see cref="GraphicsShaderKind.Pixel" />.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="pixelShader" /> is incompatible as it belongs to a different device.</exception>
         protected GraphicsPipeline(GraphicsDevice device, GraphicsPipelineSignature signature, GraphicsShader? vertexShader, GraphicsShader? pixelShader)
         {
             ThrowIfNull(device, nameof(device));
@@ -33,12 +33,12 @@ namespace TerraFX.Graphics
             {
                 if (vertexShader.Kind == GraphicsShaderKind.Vertex)
                 {
-                    ThrowForInvalidKind(nameof(vertexShader), GraphicsShaderKind.Vertex);
+                    ThrowForInvalidKind(vertexShader.Kind, nameof(vertexShader), GraphicsShaderKind.Vertex);
                 }
 
                 if (vertexShader.Device != device)
                 {
-                    ThrowForInvalidParent(nameof(vertexShader));
+                    ThrowForInvalidParent(vertexShader.Device, nameof(vertexShader));
                 }
             }
 
@@ -46,12 +46,12 @@ namespace TerraFX.Graphics
             {
                 if (pixelShader.Kind == GraphicsShaderKind.Pixel)
                 {
-                    ThrowForInvalidKind(nameof(pixelShader), GraphicsShaderKind.Pixel);
+                    ThrowForInvalidKind(pixelShader.Kind, nameof(pixelShader), GraphicsShaderKind.Pixel);
                 }
 
                 if (pixelShader.Device != device)
                 {
-                    ThrowForInvalidParent(nameof(PixelShader));
+                    ThrowForInvalidParent(pixelShader.Device, nameof(pixelShader));
                 }
             }
 

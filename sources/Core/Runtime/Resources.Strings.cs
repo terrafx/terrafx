@@ -8,11 +8,8 @@ namespace TerraFX.Runtime
         /// <summary>Gets a localized string similar to <c>The allocation of '{0}' bytes failed</c>.</summary>
         public static string AllocationFailedMessage => GetString(nameof(AllocationFailedMessage));
 
-        /// <summary>Gets a localized string similar to <c>The allocation of '{0}'x'{1}' bytes failed</c>.</summary>
+        /// <summary>Gets a localized string similar to <c>The allocation of '{0}x{1}' bytes failed</c>.</summary>
         public static string ArrayAllocationFailedMessage => GetString(nameof(ArrayAllocationFailedMessage));
-
-        /// <summary>Gets a localized string similar to <c>TerraFX based assertions are disabled</c>.</summary>
-        public static string AssertionsDisabledMessage => GetString(nameof(AssertionsDisabledMessage));
 
         /// <summary>Gets a localized string similar to <c>'{0}' has an invalid flag combination</c>c>.</summary>
         public static string InvalidFlagCombinationMessage => GetString(nameof(InvalidFlagCombinationMessage));
@@ -20,8 +17,11 @@ namespace TerraFX.Runtime
         /// <summary>Gets a localized string similar to <c>'{0}' is not a valid key to '{1}'</c>.</summary>
         public static string InvalidKeyMessage => GetString(nameof(InvalidKeyMessage));
 
-        /// <summary>Gets a localized string similar to <c>The kind for '{0}' is not '{1}'</c>.</summary>
+        /// <summary>Gets a localized string similar to <c>The kind for '{0}' is unsupported</c>.</summary>
         public static string InvalidKindMessage => GetString(nameof(InvalidKindMessage));
+
+        /// <summary>Gets a localized string similar to <c>The kind for '{0}' is not '{1}'</c>.</summary>
+        public static string InvalidKindWithExpectedKindMessage => GetString(nameof(InvalidKindWithExpectedKindMessage));
 
         /// <summary>Gets a localized string similar to <c>'{0}' is incompatible as it belongs to a different parent</c>.</summary>
         public static string InvalidParentMessage => GetString(nameof(InvalidParentMessage));

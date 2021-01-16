@@ -92,7 +92,7 @@ namespace TerraFX.Audio.Providers.PulseAudio
                 case pa_sample_format.PA_SAMPLE_INVALID:
                 default:
                 {
-                    ThrowForInvalidKind(nameof(format), format);
+                    ThrowForInvalidKind(format, nameof(format));
                     break;
                 }
             }

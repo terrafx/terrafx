@@ -8,12 +8,13 @@ namespace TerraFX.Utilities
     public static unsafe class AppContextUtilities
     {
         /// <summary>Gets the value of the app context data associated with a given name or a default value if none exists.</summary>
-        /// <param name="dataName">The name of the app context data to get.</param>
-        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="dataName" />.</param>
-        /// <returns>The value of the app context data associated with <paramref name="dataName"/> or <paramref name="defaultValue" /> if none exists.</returns>
-        public static bool GetAppContextData(string dataName, bool defaultValue)
+        /// <param name="name">The name of the app context data to get.</param>
+        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="name" />.</param>
+        /// <returns>The value of the app context data associated with <paramref name="name"/> or <paramref name="defaultValue" /> if none exists.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="name" /> is <c>null</c>.</exception>
+        public static bool GetAppContextData(string name, bool defaultValue)
         {
-            var data = AppContext.GetData(dataName);
+            var data = AppContext.GetData(name);
 
             if (data is bool value)
             {
@@ -30,12 +31,13 @@ namespace TerraFX.Utilities
         }
 
         /// <summary>Gets the value of the app context data associated with a given name or a default value if none exists.</summary>
-        /// <param name="dataName">The name of the app context data to get.</param>
-        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="dataName" />.</param>
-        /// <returns>The value of the app context data associated with <paramref name="dataName"/> or <paramref name="defaultValue" /> if none exists.</returns>
-        public static byte GetAppContextData(string dataName, byte defaultValue)
+        /// <param name="name">The name of the app context data to get.</param>
+        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="name" />.</param>
+        /// <returns>The value of the app context data associated with <paramref name="name"/> or <paramref name="defaultValue" /> if none exists.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="name" /> is <c>null</c>.</exception>
+        public static byte GetAppContextData(string name, byte defaultValue)
         {
-            var data = AppContext.GetData(dataName);
+            var data = AppContext.GetData(name);
 
             if (data is byte value)
             {
@@ -52,12 +54,13 @@ namespace TerraFX.Utilities
         }
 
         /// <summary>Gets the value of the app context data associated with a given name or a default value if none exists.</summary>
-        /// <param name="dataName">The name of the app context data to get.</param>
-        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="dataName" />.</param>
-        /// <returns>The value of the app context data associated with <paramref name="dataName"/> or <paramref name="defaultValue" /> if none exists.</returns>
-        public static double GetAppContextData(string dataName, double defaultValue)
+        /// <param name="name">The name of the app context data to get.</param>
+        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="name" />.</param>
+        /// <returns>The value of the app context data associated with <paramref name="name"/> or <paramref name="defaultValue" /> if none exists.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="name" /> is <c>null</c>.</exception>
+        public static double GetAppContextData(string name, double defaultValue)
         {
-            var data = AppContext.GetData(dataName);
+            var data = AppContext.GetData(name);
 
             if (data is double value)
             {
@@ -74,12 +77,13 @@ namespace TerraFX.Utilities
         }
 
         /// <summary>Gets the value of the app context data associated with a given name or a default value if none exists.</summary>
-        /// <param name="dataName">The name of the app context data to get.</param>
-        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="dataName" />.</param>
-        /// <returns>The value of the app context data associated with <paramref name="dataName"/> or <paramref name="defaultValue" /> if none exists.</returns>
-        public static short GetAppContextData(string dataName, short defaultValue)
+        /// <param name="name">The name of the app context data to get.</param>
+        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="name" />.</param>
+        /// <returns>The value of the app context data associated with <paramref name="name"/> or <paramref name="defaultValue" /> if none exists.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="name" /> is <c>null</c>.</exception>
+        public static short GetAppContextData(string name, short defaultValue)
         {
-            var data = AppContext.GetData(dataName);
+            var data = AppContext.GetData(name);
 
             if (data is short value)
             {
@@ -96,12 +100,13 @@ namespace TerraFX.Utilities
         }
 
         /// <summary>Gets the value of the app context data associated with a given name or a default value if none exists.</summary>
-        /// <param name="dataName">The name of the app context data to get.</param>
-        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="dataName" />.</param>
-        /// <returns>The value of the app context data associated with <paramref name="dataName"/> or <paramref name="defaultValue" /> if none exists.</returns>
-        public static int GetAppContextData(string dataName, int defaultValue)
+        /// <param name="name">The name of the app context data to get.</param>
+        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="name" />.</param>
+        /// <returns>The value of the app context data associated with <paramref name="name"/> or <paramref name="defaultValue" /> if none exists.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="name" /> is <c>null</c>.</exception>
+        public static int GetAppContextData(string name, int defaultValue)
         {
-            var data = AppContext.GetData(dataName);
+            var data = AppContext.GetData(name);
 
             if (data is int value)
             {
@@ -118,12 +123,13 @@ namespace TerraFX.Utilities
         }
 
         /// <summary>Gets the value of the app context data associated with a given name or a default value if none exists.</summary>
-        /// <param name="dataName">The name of the app context data to get.</param>
-        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="dataName" />.</param>
-        /// <returns>The value of the app context data associated with <paramref name="dataName"/> or <paramref name="defaultValue" /> if none exists.</returns>
-        public static long GetAppContextData(string dataName, long defaultValue)
+        /// <param name="name">The name of the app context data to get.</param>
+        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="name" />.</param>
+        /// <returns>The value of the app context data associated with <paramref name="name"/> or <paramref name="defaultValue" /> if none exists.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="name" /> is <c>null</c>.</exception>
+        public static long GetAppContextData(string name, long defaultValue)
         {
-            var data = AppContext.GetData(dataName);
+            var data = AppContext.GetData(name);
 
             if (data is long value)
             {
@@ -140,12 +146,13 @@ namespace TerraFX.Utilities
         }
 
         /// <summary>Gets the value of the app context data associated with a given name or a default value if none exists.</summary>
-        /// <param name="dataName">The name of the app context data to get.</param>
-        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="dataName" />.</param>
-        /// <returns>The value of the app context data associated with <paramref name="dataName"/> or <paramref name="defaultValue" /> if none exists.</returns>
-        public static nint GetAppContextData(string dataName, nint defaultValue)
+        /// <param name="name">The name of the app context data to get.</param>
+        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="name" />.</param>
+        /// <returns>The value of the app context data associated with <paramref name="name"/> or <paramref name="defaultValue" /> if none exists.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="name" /> is <c>null</c>.</exception>
+        public static nint GetAppContextData(string name, nint defaultValue)
         {
-            var data = AppContext.GetData(dataName);
+            var data = AppContext.GetData(name);
 
             if (data is nint value)
             {
@@ -162,12 +169,13 @@ namespace TerraFX.Utilities
         }
 
         /// <summary>Gets the value of the app context data associated with a given name or a default value if none exists.</summary>
-        /// <param name="dataName">The name of the app context data to get.</param>
-        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="dataName" />.</param>
-        /// <returns>The value of the app context data associated with <paramref name="dataName"/> or <paramref name="defaultValue" /> if none exists.</returns>
-        public static sbyte GetAppContextData(string dataName, sbyte defaultValue)
+        /// <param name="name">The name of the app context data to get.</param>
+        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="name" />.</param>
+        /// <returns>The value of the app context data associated with <paramref name="name"/> or <paramref name="defaultValue" /> if none exists.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="name" /> is <c>null</c>.</exception>
+        public static sbyte GetAppContextData(string name, sbyte defaultValue)
         {
-            var data = AppContext.GetData(dataName);
+            var data = AppContext.GetData(name);
 
             if (data is sbyte value)
             {
@@ -184,12 +192,13 @@ namespace TerraFX.Utilities
         }
 
         /// <summary>Gets the value of the app context data associated with a given name or a default value if none exists.</summary>
-        /// <param name="dataName">The name of the app context data to get.</param>
-        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="dataName" />.</param>
-        /// <returns>The value of the app context data associated with <paramref name="dataName"/> or <paramref name="defaultValue" /> if none exists.</returns>
-        public static float GetAppContextData(string dataName, float defaultValue)
+        /// <param name="name">The name of the app context data to get.</param>
+        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="name" />.</param>
+        /// <returns>The value of the app context data associated with <paramref name="name"/> or <paramref name="defaultValue" /> if none exists.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="name" /> is <c>null</c>.</exception>
+        public static float GetAppContextData(string name, float defaultValue)
         {
-            var data = AppContext.GetData(dataName);
+            var data = AppContext.GetData(name);
 
             if (data is float value)
             {
@@ -206,12 +215,13 @@ namespace TerraFX.Utilities
         }
 
         /// <summary>Gets the value of the app context data associated with a given name or a default value if none exists.</summary>
-        /// <param name="dataName">The name of the app context data to get.</param>
-        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="dataName" />.</param>
-        /// <returns>The value of the app context data associated with <paramref name="dataName"/> or <paramref name="defaultValue" /> if none exists.</returns>
-        public static string GetAppContextData(string dataName, string defaultValue)
+        /// <param name="name">The name of the app context data to get.</param>
+        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="name" />.</param>
+        /// <returns>The value of the app context data associated with <paramref name="name"/> or <paramref name="defaultValue" /> if none exists.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="name" /> is <c>null</c>.</exception>
+        public static string GetAppContextData(string name, string defaultValue)
         {
-            var data = AppContext.GetData(dataName);
+            var data = AppContext.GetData(name);
 
             if (data is string value)
             {
@@ -224,12 +234,13 @@ namespace TerraFX.Utilities
         }
 
         /// <summary>Gets the value of the app context data associated with a given name or a default value if none exists.</summary>
-        /// <param name="dataName">The name of the app context data to get.</param>
-        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="dataName" />.</param>
-        /// <returns>The value of the app context data associated with <paramref name="dataName"/> or <paramref name="defaultValue" /> if none exists.</returns>
-        public static ushort GetAppContextData(string dataName, ushort defaultValue)
+        /// <param name="name">The name of the app context data to get.</param>
+        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="name" />.</param>
+        /// <returns>The value of the app context data associated with <paramref name="name"/> or <paramref name="defaultValue" /> if none exists.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="name" /> is <c>null</c>.</exception>
+        public static ushort GetAppContextData(string name, ushort defaultValue)
         {
-            var data = AppContext.GetData(dataName);
+            var data = AppContext.GetData(name);
 
             if (data is ushort value)
             {
@@ -246,12 +257,13 @@ namespace TerraFX.Utilities
         }
 
         /// <summary>Gets the value of the app context data associated with a given name or a default value if none exists.</summary>
-        /// <param name="dataName">The name of the app context data to get.</param>
-        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="dataName" />.</param>
-        /// <returns>The value of the app context data associated with <paramref name="dataName"/> or <paramref name="defaultValue" /> if none exists.</returns>
-        public static uint GetAppContextData(string dataName, uint defaultValue)
+        /// <param name="name">The name of the app context data to get.</param>
+        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="name" />.</param>
+        /// <returns>The value of the app context data associated with <paramref name="name"/> or <paramref name="defaultValue" /> if none exists.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="name" /> is <c>null</c>.</exception>
+        public static uint GetAppContextData(string name, uint defaultValue)
         {
-            var data = AppContext.GetData(dataName);
+            var data = AppContext.GetData(name);
 
             if (data is uint value)
             {
@@ -268,12 +280,13 @@ namespace TerraFX.Utilities
         }
 
         /// <summary>Gets the value of the app context data associated with a given name or a default value if none exists.</summary>
-        /// <param name="dataName">The name of the app context data to get.</param>
-        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="dataName" />.</param>
-        /// <returns>The value of the app context data associated with <paramref name="dataName"/> or <paramref name="defaultValue" /> if none exists.</returns>
-        public static ulong GetAppContextData(string dataName, ulong defaultValue)
+        /// <param name="name">The name of the app context data to get.</param>
+        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="name" />.</param>
+        /// <returns>The value of the app context data associated with <paramref name="name"/> or <paramref name="defaultValue" /> if none exists.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="name" /> is <c>null</c>.</exception>
+        public static ulong GetAppContextData(string name, ulong defaultValue)
         {
-            var data = AppContext.GetData(dataName);
+            var data = AppContext.GetData(name);
 
             if (data is ulong value)
             {
@@ -290,12 +303,13 @@ namespace TerraFX.Utilities
         }
 
         /// <summary>Gets the value of the app context data associated with a given name or a default value if none exists.</summary>
-        /// <param name="dataName">The name of the app context data to get.</param>
-        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="dataName" />.</param>
-        /// <returns>The value of the app context data associated with <paramref name="dataName"/> or <paramref name="defaultValue" /> if none exists.</returns>
-        public static nuint GetAppContextData(string dataName, nuint defaultValue)
+        /// <param name="name">The name of the app context data to get.</param>
+        /// <param name="defaultValue">The default value returned if no app context data is associated with <paramref name="name" />.</param>
+        /// <returns>The value of the app context data associated with <paramref name="name"/> or <paramref name="defaultValue" /> if none exists.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="name" /> is <c>null</c>.</exception>
+        public static nuint GetAppContextData(string name, nuint defaultValue)
         {
-            var data = AppContext.GetData(dataName);
+            var data = AppContext.GetData(name);
 
             if (data is nuint value)
             {
@@ -312,8 +326,9 @@ namespace TerraFX.Utilities
         }
 
         /// <summary>Sets the value of the app context data associated with a given name.</summary>
-        /// <param name="dataName">The name of the app context data to set.</param>
-        /// <param name="value">The new value to assign to the app context data associated with <paramref name="dataName" />.</param>
-        public static void SetAppContextData<T>(string dataName, T value) => AppDomain.CurrentDomain.SetData(dataName, value);
+        /// <param name="name">The name of the app context data to set.</param>
+        /// <param name="value">The new value to assign to the app context data associated with <paramref name="name" />.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="name" /> is <c>null</c>.</exception>
+        public static void SetAppContextData<T>(string name, T? value) => AppDomain.CurrentDomain.SetData(name, value);
     }
 }

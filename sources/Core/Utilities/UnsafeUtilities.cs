@@ -125,6 +125,10 @@ namespace TerraFX.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNullRef<T>(in T source) => Unsafe.IsNullRef(ref AsRef(in source));
 
+        /// <inheritdoc cref="Unsafe.NullRef{T}" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ref T NullRef<T>() => ref Unsafe.NullRef<T>();
+
         /// <inheritdoc cref="Unsafe.SizeOf{T}" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint SizeOf<T>() => unchecked((uint)Unsafe.SizeOf<T>());

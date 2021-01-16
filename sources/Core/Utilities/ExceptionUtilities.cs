@@ -34,12 +34,14 @@ namespace TerraFX.Utilities
         }
 
         /// <summary>Throws an <see cref="ArgumentOutOfRangeException" />.</summary>
+        /// <typeparam name="T">The type of <paramref name="value" />.</typeparam>
         /// <param name="message">The message detailing the cause of the exception.</param>
+        /// <param name="value">The value that caused the exception.</param>
         /// <param name="valueName">The name of the value that caused the exception.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="message" /></exception>
         [DoesNotReturn]
-        public static void ThrowArgumentOutOfRangeException(string message, string valueName)
-            => throw new ArgumentOutOfRangeException(valueName, message);
+        public static void ThrowArgumentOutOfRangeException<T>(string message, T value, string valueName)
+            => throw new ArgumentOutOfRangeException(valueName, value, message);
 
         /// <summary>Throws an <see cref="ExternalException" />.</summary>
         /// <param name="methodName">The name of the method that caused the exception.</param>
@@ -52,40 +54,57 @@ namespace TerraFX.Utilities
             throw new ExternalException(message, errorCode);
         }
 
-        /// <summary>Throws an <see cref="ArgumentException" />.</summary>
+        /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> for an invalid flags enum combination.</summary>
+        /// <param name="value">The value that caused the exception.va</param>
         /// <param name="valueName">The name of the value that caused the exception.</param>
-        /// <exception cref="ArgumentException"><paramref name="valueName" /> has an invalid flag combination.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="valueName" /> has an invalid flag combination.</exception>
         [DoesNotReturn]
-        public static void ThrowForInvalidFlagsCombination(string valueName)
-        {
-            var message = string.Format(Resources.InvalidFlagCombinationMessage, valueName);
-            ThrowArgumentException(message, valueName);
-        }
-
-        /// <summary>Throws an <see cref="ArgumentException" />.</summary>
-        /// <typeparam name="TEnum">The type of <paramref name="expectedKind" />.</typeparam>
-        /// <param name="valueName">The name of the value that caused the exception.</param>
-        /// <param name="expectedKind">The expected kind of <paramref name="valueName" />.</param>
-        /// <exception cref="ArgumentException">The kind for <paramref name="valueName" /> is not <paramref name="expectedKind" />.</exception>
-        [DoesNotReturn]
-        public static void ThrowForInvalidKind<TEnum>(string valueName, TEnum expectedKind)
+        public static void ThrowForInvalidFlagsCombination<TEnum>(TEnum value, string valueName)
             where TEnum : struct, Enum
         {
-            var message = string.Format(Resources.InvalidKindMessage, valueName, expectedKind.ToString());
-            ThrowArgumentException(message, valueName);
+            var message = string.Format(Resources.InvalidFlagCombinationMessage, valueName);
+            ThrowArgumentOutOfRangeException(message, value, valueName);
         }
 
-        /// <summary>Throws an <see cref="ArgumentException" />.</summary>
+        /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> for an invalid enum kind.</summary>
+        /// <typeparam name="TEnum">The type of <paramref name="value" />.</typeparam>
+        /// <param name="value">The value that caused the exception.</param>
         /// <param name="valueName">The name of the value that caused the exception.</param>
-        /// <exception cref="ArgumentException"><paramref name="valueName" /> is incompatible as it belongs to a different parent.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">The kind for <paramref name="valueName" /> is unsupported.</exception>
         [DoesNotReturn]
-        public static void ThrowForInvalidParent(string valueName)
+        public static void ThrowForInvalidKind<TEnum>(TEnum value, string valueName)
+            where TEnum : struct, Enum
+        {
+            var message = string.Format(Resources.InvalidKindMessage, valueName);
+            ThrowArgumentOutOfRangeException(message, value, valueName);
+        }
+
+        /// <summary>Throws an <see cref="ArgumentOutOfRangeException" />.</summary>
+        /// <typeparam name="TEnum">The type of <paramref name="value" /> and <paramref name="expectedKind" />.</typeparam>
+        /// <param name="value">The value that caused the exception.</param>
+        /// <param name="valueName">The name of the value that caused the exception.</param>
+        /// <param name="expectedKind">The expected kind of <paramref name="valueName" />.</param>
+        /// <exception cref="ArgumentOutOfRangeException">The kind for <paramref name="valueName" /> is not <paramref name="expectedKind" />.</exception>
+        [DoesNotReturn]
+        public static void ThrowForInvalidKind<TEnum>(TEnum value, string valueName, TEnum expectedKind)
+            where TEnum : struct, Enum
+        {
+            var message = string.Format(Resources.InvalidKindWithExpectedKindMessage, valueName, expectedKind.ToString());
+            ThrowArgumentOutOfRangeException(message, value, valueName);
+        }
+
+        /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> for an invalid parent.</summary>
+        /// <param name="value">The value that caused the exception.</param>
+        /// <param name="valueName">The name of the value that caused the exception.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="valueName" /> is incompatible as it belongs to a different parent.</exception>
+        [DoesNotReturn]
+        public static void ThrowForInvalidParent<T>(T value, string valueName)
         {
             var message = string.Format(Resources.InvalidParentMessage, valueName);
-            ThrowArgumentException(message, valueName);
+            ThrowArgumentOutOfRangeException(message, value, valueName);
         }
 
-        /// <summary>Throws an <see cref="InvalidOperationException" />.</summary>
+        /// <summary>Throws an <see cref="InvalidOperationException" /> for an invalid state.</summary>
         /// <param name="expectedStateName">The name expected state.</param>
         /// <exception cref="ArgumentException">The current state is not <paramref name="expectedStateName" />.</exception>
         [DoesNotReturn]
@@ -95,15 +114,16 @@ namespace TerraFX.Utilities
             ThrowInvalidOperationException(message);
         }
 
-        /// <summary>Throws an <see cref="ArgumentException" />.</summary>
+        /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> for an invalid type.</summary>
+        /// <param name="type">The type that caused the exception.</param>
         /// <param name="valueName">The name of the value that is not <paramref name="expectedType" />.</param>
         /// <param name="expectedType">The expected type of the value.</param>
         /// <exception cref="ArgumentException"><paramref name="valueName" /> is not an instance of <paramref name="expectedType" />.</exception>
         [DoesNotReturn]
-        public static void ThrowForInvalidType(string valueName, Type expectedType)
+        public static void ThrowForInvalidType(Type type, string valueName, Type expectedType)
         {
             var message = string.Format(Resources.InvalidTypeMessage, valueName, expectedType);
-            ThrowArgumentException(message, valueName);
+            ThrowArgumentOutOfRangeException(message, type, valueName);
         }
 
         /// <summary>Throws an <see cref="ExternalException" /> using the last available error code.</summary>
@@ -265,27 +285,12 @@ namespace TerraFX.Utilities
 
         /// <summary>Throws a <see cref="NotSupportedException" />.</summary>
         /// <param name="surfaceName">The name of the surface that is not available.</param>
-        /// <exception cref="NotSupportedException">One or more of the required features is not available</exception>
+        /// <exception cref="NotSupportedException"><paramref name="surfaceName" /> is not a supported GraphicsSurfaceKind.</exception>
         [DoesNotReturn]
         public static void ThrowForUnsupportedSurfaceKind(string surfaceName)
         {
             var message = string.Format(Resources.UnsupportedSurfaceKindMessage, surfaceName);
             throw new NotSupportedException(message);
-        }
-
-        /// <summary>Throws if <see cref="Configuration.AssertionsEnabled" /> is <c>false</c>.</summary>
-        /// <exception cref="InvalidOperationException">TerraFX based assertions are disabled.</exception>
-        /// <remarks>
-        ///     <para>This throw exists to help catch accidental side-effects.</para>
-        ///     <para>Users can avoid this exception by ensuring they do <c>Assert(!AssertionsEnabled &amp;&amp; condition)</c>.</para>
-        /// </remarks>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowIfAssertionsDisabled()
-        {
-            if (!Configuration.AssertionsEnabled)
-            {
-                ThrowInvalidOperationException(Resources.AssertionsDisabledMessage);
-            }
         }
 
         /// <summary>Throws an <see cref="ObjectDisposedException" /> if <paramref name="state" /> is <see cref="VolatileState.Disposed" /> or <see cref="VolatileState.Disposing" />.</summary>
@@ -311,7 +316,7 @@ namespace TerraFX.Utilities
             if (value < 0)
             {
                 var message = string.Format(Resources.ValueIsNegativeMessage, valueName);
-                ThrowArgumentOutOfRangeException(message, valueName);
+                ThrowArgumentOutOfRangeException(message, value, valueName);
             }
         }
 
@@ -325,7 +330,7 @@ namespace TerraFX.Utilities
             if (value < 0)
             {
                 var message = string.Format(Resources.ValueIsNegativeMessage, valueName);
-                ThrowArgumentOutOfRangeException(message, valueName);
+                ThrowArgumentOutOfRangeException(message, value, valueName);
             }
         }
 
@@ -339,7 +344,7 @@ namespace TerraFX.Utilities
             if (value < 0)
             {
                 var message = string.Format(Resources.ValueIsNegativeMessage, valueName);
-                ThrowArgumentOutOfRangeException(message, valueName);
+                ThrowArgumentOutOfRangeException(message, value, valueName);
             }
         }
 
@@ -353,7 +358,7 @@ namespace TerraFX.Utilities
             if (!MathUtilities.IsPow2(value))
             {
                 var message = string.Format(Resources.ValueIsNotPow2Message, value);
-                ThrowArgumentOutOfRangeException(message, valueName);
+                ThrowArgumentOutOfRangeException(message, value, valueName);
             }
         }
 
@@ -367,7 +372,7 @@ namespace TerraFX.Utilities
             if (!MathUtilities.IsPow2(value))
             {
                 var message = string.Format(Resources.ValueIsNotPow2Message, value);
-                ThrowArgumentOutOfRangeException(message, valueName);
+                ThrowArgumentOutOfRangeException(message, value, valueName);
             }
         }
 
@@ -381,7 +386,7 @@ namespace TerraFX.Utilities
             if (!MathUtilities.IsPow2(value))
             {
                 var message = string.Format(Resources.ValueIsNotPow2Message, value);
-                ThrowArgumentOutOfRangeException(message, valueName);
+                ThrowArgumentOutOfRangeException(message, value, valueName);
             }
         }
 
@@ -433,10 +438,10 @@ namespace TerraFX.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfZero(int value, string valueName)
         {
-            if (value < 0)
+            if (value == 0)
             {
                 var message = string.Format(Resources.ValueIsZeroMessage, valueName);
-                ThrowArgumentOutOfRangeException(message, valueName);
+                ThrowArgumentOutOfRangeException(message, value, valueName);
             }
         }
 
@@ -447,10 +452,10 @@ namespace TerraFX.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfZero(long value, string valueName)
         {
-            if (value < 0)
+            if (value == 0)
             {
                 var message = string.Format(Resources.ValueIsZeroMessage, valueName);
-                ThrowArgumentOutOfRangeException(message, valueName);
+                ThrowArgumentOutOfRangeException(message, value, valueName);
             }
         }
 
@@ -464,7 +469,7 @@ namespace TerraFX.Utilities
             if (value == 0)
             {
                 var message = string.Format(Resources.ValueIsZeroMessage, valueName);
-                ThrowArgumentOutOfRangeException(message, valueName);
+                ThrowArgumentOutOfRangeException(message, value, valueName);
             }
         }
 
@@ -475,10 +480,10 @@ namespace TerraFX.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfZero(uint value, string valueName)
         {
-            if (value < 0)
+            if (value == 0)
             {
                 var message = string.Format(Resources.ValueIsZeroMessage, valueName);
-                ThrowArgumentOutOfRangeException(message, valueName);
+                ThrowArgumentOutOfRangeException(message, value, valueName);
             }
         }
 
@@ -489,10 +494,10 @@ namespace TerraFX.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfZero(ulong value, string valueName)
         {
-            if (value < 0)
+            if (value == 0)
             {
                 var message = string.Format(Resources.ValueIsZeroMessage, valueName);
-                ThrowArgumentOutOfRangeException(message, valueName);
+                ThrowArgumentOutOfRangeException(message, value, valueName);
             }
         }
 
@@ -506,7 +511,7 @@ namespace TerraFX.Utilities
             if (value == 0)
             {
                 var message = string.Format(Resources.ValueIsZeroMessage, valueName);
-                ThrowArgumentOutOfRangeException(message, valueName);
+                ThrowArgumentOutOfRangeException(message, value, valueName);
             }
         }
 
@@ -522,7 +527,8 @@ namespace TerraFX.Utilities
         /// <param name="collectionName">The name of the collection which does not contain <paramref name="key" />.</param>
         /// <exception cref="KeyNotFoundException"><paramref name="key" /> is not a valid key to <paramref name="collectionName"/>.</exception>
         [DoesNotReturn]
-        public static void ThrowKeyNotFoundException(object key, string collectionName)
+        public static void ThrowKeyNotFoundException<TKey>(TKey key, string collectionName)
+            where TKey : notnull
         {
             var message = string.Format(Resources.InvalidKeyMessage, key, collectionName);
             throw new KeyNotFoundException(message);
@@ -551,7 +557,7 @@ namespace TerraFX.Utilities
         public static void ThrowOutOfMemoryException(ulong size)
         {
             var message = string.Format(Resources.AllocationFailedMessage, size);
-            throw new InvalidOperationException(message);
+            throw new OutOfMemoryException(message);
         }
 
         /// <summary>Throws an <see cref="OutOfMemoryException" />.</summary>
@@ -561,7 +567,7 @@ namespace TerraFX.Utilities
         public static void ThrowOutOfMemoryException(nuint size)
         {
             var message = string.Format(Resources.AllocationFailedMessage, size);
-            throw new InvalidOperationException(message);
+            throw new OutOfMemoryException(message);
         }
 
         /// <summary>Throws an <see cref="OutOfMemoryException" />.</summary>
@@ -572,7 +578,7 @@ namespace TerraFX.Utilities
         public static void ThrowOutOfMemoryException(ulong count, ulong size)
         {
             var message = string.Format(Resources.ArrayAllocationFailedMessage, count, size);
-            throw new InvalidOperationException(message);
+            throw new OutOfMemoryException(message);
         }
 
         /// <summary>Throws an <see cref="OutOfMemoryException" />.</summary>
@@ -583,7 +589,7 @@ namespace TerraFX.Utilities
         public static void ThrowOutOfMemoryException(nuint count, nuint size)
         {
             var message = string.Format(Resources.ArrayAllocationFailedMessage, count, size);
-            throw new InvalidOperationException(message);
+            throw new OutOfMemoryException(message);
         }
 
         /// <summary>Throws a <see cref="TimeoutException" />.</summary>

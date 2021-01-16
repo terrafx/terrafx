@@ -112,7 +112,7 @@ namespace TerraFX
             {
                 if (obj is not null)
                 {
-                    ThrowForInvalidType(nameof(obj), typeof(Timestamp));
+                    ThrowForInvalidType(obj.GetType(), nameof(obj), typeof(Timestamp));
                 }
                 return 1;
             }

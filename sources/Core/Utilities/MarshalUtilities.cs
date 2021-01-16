@@ -136,7 +136,7 @@ namespace TerraFX.Utilities
         {
             ReadOnlySpan<sbyte> result;
 
-            if (IsNullRef(in source))
+            if (!IsNullRef(in source))
             {
                 if (maxLength < 0)
                 {
@@ -146,7 +146,7 @@ namespace TerraFX.Utilities
                 result = CreateReadOnlySpan(in source, maxLength);
                 var length = result.IndexOf((sbyte)'\0');
 
-                if (length != 1)
+                if (length != -1)
                 {
                     result = result.Slice(0, length);
                 }
@@ -182,7 +182,7 @@ namespace TerraFX.Utilities
         {
             ReadOnlySpan<ushort> result;
 
-            if (IsNullRef(in source))
+            if (!IsNullRef(in source))
             {
                 if (maxLength < 0)
                 {
@@ -192,7 +192,7 @@ namespace TerraFX.Utilities
                 result = CreateReadOnlySpan(in source, maxLength);
                 var length = result.IndexOf('\0');
 
-                if (length != 1)
+                if (length != -1)
                 {
                     result = result.Slice(0, length);
                 }

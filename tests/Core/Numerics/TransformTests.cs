@@ -8,7 +8,6 @@ namespace TerraFX.UnitTests.Numerics
     /// <summary>Unit tests for <see cref="Transform" />.</summary>
     public class TransformTests
     {
-
         private static IEnumerable<TestCaseData> TransformConstructorData
         {
             get

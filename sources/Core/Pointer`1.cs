@@ -75,7 +75,7 @@ namespace TerraFX
             {
                 if (obj is not null)
                 {
-                    ThrowForInvalidType(nameof(obj), typeof(Pointer<T>));
+                    ThrowForInvalidType(obj.GetType(), nameof(obj), typeof(Pointer<T>));
                 }
                 return 1;
             }
