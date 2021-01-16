@@ -1,6 +1,5 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-using System;
 using System.Globalization;
 using NUnit.Framework;
 using TerraFX.Runtime;
@@ -227,6 +226,17 @@ namespace TerraFX.UnitTests.Runtime
             Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
             Assert.That(Resources.ValueIsNegativeMessage,
+                Is.EqualTo(expectedMessage)
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="Resources.ValueIsNotInSignedBoundsMessage" /> property.</summary>
+        [TestCase("en", "'{0}' is negative or greater than or equal to '{1}'")]
+        public static void ValueIsNotInBoundsSignedMessageTest(string cultureName, string expectedMessage)
+        {
+            Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
+
+            Assert.That(Resources.ValueIsNotInSignedBoundsMessage,
                 Is.EqualTo(expectedMessage)
             );
         }

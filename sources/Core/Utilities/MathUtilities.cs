@@ -98,9 +98,17 @@ namespace TerraFX.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool EqualsEstimate(this float left, float right, float epsilon) => Abs(right - left) < epsilon;
 
+        /// <inheritdoc cref="Math.Max(int, int)" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Max(int left, int right) => Math.Max(left, right);
+
         /// <inheritdoc cref="MathF.Max(float, float)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Max(float left, float right) => MathF.Max(left, right);
+
+        /// <inheritdoc cref="Math.Min(int, int)" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Min(int left, int right) => Math.Min(left, right);
 
         /// <inheritdoc cref="MathF.Max(float, float)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

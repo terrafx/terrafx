@@ -9,18 +9,18 @@ namespace TerraFX
     {
         internal sealed class DebugView
         {
-            private readonly ValueLazy<T> _value;
+            private readonly ValueLazy<T> _lazy;
 
-            public DebugView(ValueLazy<T> value)
+            public DebugView(ValueLazy<T> lazy)
             {
-                _value = value;
+                _lazy = lazy;
             }
 
-            public bool IsValueCreated => _value.IsValueCreated;
+            public bool IsValueCreated => _lazy.IsValueCreated;
 
-            public bool IsValueFaulted => _value.IsValueFaulted;
+            public bool IsValueFaulted => _lazy.IsValueFaulted;
 
-            public T? Value => _value.ValueOrDefault;
+            public T? Value => _lazy.ValueOrDefault;
         }
     }
 }

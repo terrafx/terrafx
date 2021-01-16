@@ -16,7 +16,7 @@ namespace TerraFX.UnitTests.Utilities
         {
             Assert.That(() => AppContextUtilities.GetAppContextData(null!, false),
                 Throws.ArgumentNullException
-                      .With.Property("ParamName").EqualTo("name")
+                      .And.Property("ParamName").EqualTo("name")
             );
 
             Assert.That(() => AppContextUtilities.GetAppContextData(string.Empty, false),
@@ -54,7 +54,7 @@ namespace TerraFX.UnitTests.Utilities
         {
             Assert.That(() => AppContextUtilities.GetAppContextData(null!, (byte)0),
                 Throws.ArgumentNullException
-                      .With.Property("ParamName").EqualTo("name")
+                      .And.Property("ParamName").EqualTo("name")
             );
 
             Assert.That(() => AppContextUtilities.GetAppContextData(string.Empty, (byte)0),
@@ -92,7 +92,7 @@ namespace TerraFX.UnitTests.Utilities
         {
             Assert.That(() => AppContextUtilities.GetAppContextData(null!, 0.0),
                 Throws.ArgumentNullException
-                      .With.Property("ParamName").EqualTo("name")
+                      .And.Property("ParamName").EqualTo("name")
             );
 
             Assert.That(() => AppContextUtilities.GetAppContextData(string.Empty, 0.0),
@@ -130,7 +130,7 @@ namespace TerraFX.UnitTests.Utilities
         {
             Assert.That(() => AppContextUtilities.GetAppContextData(null!, (short)0),
                 Throws.ArgumentNullException
-                      .With.Property("ParamName").EqualTo("name")
+                      .And.Property("ParamName").EqualTo("name")
             );
 
             Assert.That(() => AppContextUtilities.GetAppContextData(string.Empty, (short)0),
@@ -168,7 +168,7 @@ namespace TerraFX.UnitTests.Utilities
         {
             Assert.That(() => AppContextUtilities.GetAppContextData(null!, 0),
                 Throws.ArgumentNullException
-                      .With.Property("ParamName").EqualTo("name")
+                      .And.Property("ParamName").EqualTo("name")
             );
 
             Assert.That(() => AppContextUtilities.GetAppContextData(string.Empty, 0),
@@ -206,7 +206,7 @@ namespace TerraFX.UnitTests.Utilities
         {
             Assert.That(() => AppContextUtilities.GetAppContextData(null!, 0L),
                 Throws.ArgumentNullException
-                      .With.Property("ParamName").EqualTo("name")
+                      .And.Property("ParamName").EqualTo("name")
             );
 
             Assert.That(() => AppContextUtilities.GetAppContextData(string.Empty, 0L),
@@ -244,7 +244,7 @@ namespace TerraFX.UnitTests.Utilities
         {
             Assert.That(() => AppContextUtilities.GetAppContextData(null!, (nint)0),
                 Throws.ArgumentNullException
-                      .With.Property("ParamName").EqualTo("name")
+                      .And.Property("ParamName").EqualTo("name")
             );
 
             Assert.That(() => AppContextUtilities.GetAppContextData(string.Empty, (nint)0),
@@ -282,7 +282,7 @@ namespace TerraFX.UnitTests.Utilities
         {
             Assert.That(() => AppContextUtilities.GetAppContextData(null!, (sbyte)0),
                 Throws.ArgumentNullException
-                      .With.Property("ParamName").EqualTo("name")
+                      .And.Property("ParamName").EqualTo("name")
             );
 
             Assert.That(() => AppContextUtilities.GetAppContextData(string.Empty, (sbyte)0),
@@ -320,7 +320,7 @@ namespace TerraFX.UnitTests.Utilities
         {
             Assert.That(() => AppContextUtilities.GetAppContextData(null!, 0.0f),
                 Throws.ArgumentNullException
-                      .With.Property("ParamName").EqualTo("name")
+                      .And.Property("ParamName").EqualTo("name")
             );
 
             Assert.That(() => AppContextUtilities.GetAppContextData(string.Empty, 0.0f),
@@ -358,7 +358,7 @@ namespace TerraFX.UnitTests.Utilities
         {
             Assert.That(() => AppContextUtilities.GetAppContextData(null!, ""),
                 Throws.ArgumentNullException
-                      .With.Property("ParamName").EqualTo("name")
+                      .And.Property("ParamName").EqualTo("name")
             );
 
             AppContextUtilities.SetAppContextData(string.Empty, "a");
@@ -386,7 +386,7 @@ namespace TerraFX.UnitTests.Utilities
         {
             Assert.That(() => AppContextUtilities.GetAppContextData(null!, (ushort)0),
                 Throws.ArgumentNullException
-                      .With.Property("ParamName").EqualTo("name")
+                      .And.Property("ParamName").EqualTo("name")
             );
 
             Assert.That(() => AppContextUtilities.GetAppContextData(string.Empty, (ushort)0),
@@ -424,7 +424,7 @@ namespace TerraFX.UnitTests.Utilities
         {
             Assert.That(() => AppContextUtilities.GetAppContextData(null!, 0U),
                 Throws.ArgumentNullException
-                      .With.Property("ParamName").EqualTo("name")
+                      .And.Property("ParamName").EqualTo("name")
             );
 
             Assert.That(() => AppContextUtilities.GetAppContextData(string.Empty, 0U),
@@ -462,7 +462,7 @@ namespace TerraFX.UnitTests.Utilities
         {
             Assert.That(() => AppContextUtilities.GetAppContextData(null!, 0UL),
                 Throws.ArgumentNullException
-                      .With.Property("ParamName").EqualTo("name")
+                      .And.Property("ParamName").EqualTo("name")
             );
 
             Assert.That(() => AppContextUtilities.GetAppContextData(string.Empty, 0UL),
@@ -500,7 +500,7 @@ namespace TerraFX.UnitTests.Utilities
         {
             Assert.That(() => AppContextUtilities.GetAppContextData(null!, (nuint)0),
                 Throws.ArgumentNullException
-                      .With.Property("ParamName").EqualTo("name")
+                      .And.Property("ParamName").EqualTo("name")
             );
 
             Assert.That(() => AppContextUtilities.GetAppContextData(string.Empty, (nuint)0),
@@ -538,7 +538,7 @@ namespace TerraFX.UnitTests.Utilities
         {
             Assert.That(() => AppContextUtilities.SetAppContextData(null!, string.Empty),
                 Throws.ArgumentNullException
-                      .With.Property("ParamName").EqualTo("name")
+                      .And.Property("ParamName").EqualTo("name")
             );
         }
     }

@@ -348,6 +348,102 @@ namespace TerraFX.Utilities
             }
         }
 
+        /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="index" /> is <c>negative</c> or greater than or equal to <paramref name="length" />.</summary>
+        /// <param name="index">The index to check.</param>
+        /// <param name="length">The length of the collection being indexed.</param>
+        /// <param name="indexName">The name of the index being checked.</param>
+        /// <param name="lengthName">The name of the length being checked.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexName" /> is <c>negative</c> or greater than or equal to <paramref name="lengthName" />.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowIfNotInBounds(int index, int length, string indexName, string lengthName)
+        {
+            if ((uint)index >= (uint)length)
+            {
+                var message = string.Format(Resources.ValueIsNotInSignedBoundsMessage, indexName, lengthName);
+                ThrowArgumentOutOfRangeException(message, index, indexName);
+            }
+        }
+
+        /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="index" /> is <c>negative</c> or greater than or equal to <paramref name="length" />.</summary>
+        /// <param name="index">The index to check.</param>
+        /// <param name="length">The length of the collection being indexed.</param>
+        /// <param name="indexName">The name of the index being checked.</param>
+        /// <param name="lengthName">The name of the length being checked.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexName" /> is <c>negative</c> or greater than or equal to <paramref name="lengthName" />.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowIfNotInBounds(long index, long length, string indexName, string lengthName)
+        {
+            if ((ulong)index >= (ulong)length)
+            {
+                var message = string.Format(Resources.ValueIsNotInSignedBoundsMessage, indexName, lengthName);
+                ThrowArgumentOutOfRangeException(message, index, indexName);
+            }
+        }
+
+        /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="index" /> is <c>negative</c> or greater than or equal to <paramref name="length" />.</summary>
+        /// <param name="index">The index to check.</param>
+        /// <param name="length">The length of the collection being indexed.</param>
+        /// <param name="indexName">The name of the index being checked.</param>
+        /// <param name="lengthName">The name of the length being checked.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexName" /> is <c>negative</c> or greater than or equal to <paramref name="lengthName" />.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowIfNotInBounds(nint index, nint length, string indexName, string lengthName)
+        {
+            if ((nuint)index >= (nuint)length)
+            {
+                var message = string.Format(Resources.ValueIsNotInSignedBoundsMessage, indexName, lengthName);
+                ThrowArgumentOutOfRangeException(message, index, indexName);
+            }
+        }
+
+        /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="index" /> is <c>negative</c> or greater than <paramref name="length" />.</summary>
+        /// <param name="index">The index to check.</param>
+        /// <param name="length">The length of the collection being indexed.</param>
+        /// <param name="indexName">The name of the index being checked.</param>
+        /// <param name="lengthName">The name of the length being checked.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexName" /> is <c>negative</c> or greater than <paramref name="lengthName" />.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowIfNotInInsertBounds(int index, int length, string indexName, string lengthName)
+        {
+            if ((uint)index > (uint)length)
+            {
+                var message = string.Format(Resources.ValueIsNotInSignedBoundsMessage, indexName, lengthName);
+                ThrowArgumentOutOfRangeException(message, index, indexName);
+            }
+        }
+
+        /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="index" /> is <c>negative</c> or greater than <paramref name="length" />.</summary>
+        /// <param name="index">The index to check.</param>
+        /// <param name="length">The length of the collection being indexed.</param>
+        /// <param name="indexName">The name of the index being checked.</param>
+        /// <param name="lengthName">The name of the length being checked.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexName" /> is <c>negative</c> or greater than <paramref name="lengthName" />.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowIfNotInInsertBounds(long index, long length, string indexName, string lengthName)
+        {
+            if ((ulong)index > (ulong)length)
+            {
+                var message = string.Format(Resources.ValueIsNotInSignedBoundsMessage, indexName, lengthName);
+                ThrowArgumentOutOfRangeException(message, index, indexName);
+            }
+        }
+
+        /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="index" /> is <c>negative</c> or greater than <paramref name="length" />.</summary>
+        /// <param name="index">The index to check.</param>
+        /// <param name="length">The length of the collection being indexed.</param>
+        /// <param name="indexName">The name of the index being checked.</param>
+        /// <param name="lengthName">The name of the length being checked.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="indexName" /> is <c>negative</c> or greater than <paramref name="lengthName" />.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowIfNotInInsertBounds(nint index, nint length, string indexName, string lengthName)
+        {
+            if ((nuint)index > (nuint)length)
+            {
+                var message = string.Format(Resources.ValueIsNotInSignedBoundsMessage, indexName, lengthName);
+                ThrowArgumentOutOfRangeException(message, index, indexName);
+            }
+        }
+
         /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not a <c>power of two</c>.</summary>
         /// <param name="value">The value to check.</param>
         /// <param name="valueName">The name of <paramref name="value" />.</param>
