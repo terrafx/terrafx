@@ -595,6 +595,90 @@ namespace TerraFX.Utilities
             }
         }
 
+        /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not <c>zero</c>.</summary>
+        /// <param name="value">The value to be checked if it is not <c>zero</c>.</param>
+        /// <param name="valueName">The name of the value being checked.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not <c>zero</c>.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowIfNotZero(int value, string valueName)
+        {
+            if (value != 0)
+            {
+                var message = string.Format(Resources.ValueIsNotZeroMessage, valueName);
+                ThrowArgumentOutOfRangeException(message, value, valueName);
+            }
+        }
+
+        /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not <c>zero</c>.</summary>
+        /// <param name="value">The value to be checked if it is not <c>zero</c>.</param>
+        /// <param name="valueName">The name of the value being checked.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not <c>zero</c>.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowIfNotZero(long value, string valueName)
+        {
+            if (value != 0)
+            {
+                var message = string.Format(Resources.ValueIsNotZeroMessage, valueName);
+                ThrowArgumentOutOfRangeException(message, value, valueName);
+            }
+        }
+
+        /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not <c>zero</c>.</summary>
+        /// <param name="value">The value to be checked if it is not <c>zero</c>.</param>
+        /// <param name="valueName">The name of the value being checked.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not <c>zero</c>.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowIfNotZero(nint value, string valueName)
+        {
+            if (value != 0)
+            {
+                var message = string.Format(Resources.ValueIsNotZeroMessage, valueName);
+                ThrowArgumentOutOfRangeException(message, value, valueName);
+            }
+        }
+
+        /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not <c>zero</c>.</summary>
+        /// <param name="value">The value to be checked if it is not <c>zero</c>.</param>
+        /// <param name="valueName">The name of the value being checked.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not <c>zero</c>.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowIfNotZero(uint value, string valueName)
+        {
+            if (value != 0)
+            {
+                var message = string.Format(Resources.ValueIsNotZeroMessage, valueName);
+                ThrowArgumentOutOfRangeException(message, value, valueName);
+            }
+        }
+
+        /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not <c>zero</c>.</summary>
+        /// <param name="value">The value to be checked if it is not <c>zero</c>.</param>
+        /// <param name="valueName">The name of the value being checked.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not <c>zero</c>.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowIfNotZero(ulong value, string valueName)
+        {
+            if (value != 0)
+            {
+                var message = string.Format(Resources.ValueIsNotZeroMessage, valueName);
+                ThrowArgumentOutOfRangeException(message, value, valueName);
+            }
+        }
+
+        /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not <c>zero</c>.</summary>
+        /// <param name="value">The value to be checked if it is not <c>zero</c>.</param>
+        /// <param name="valueName">The name of the value being checked.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value" /> is not <c>zero</c>.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowIfNotZero(nuint value, string valueName)
+        {
+            if (value != 0)
+            {
+                var message = string.Format(Resources.ValueIsNotZeroMessage, valueName);
+                ThrowArgumentOutOfRangeException(message, value, valueName);
+            }
+        }
+
         /// <summary>Throws an <see cref="ArgumentNullException" /> if <paramref name="value" /> is <c>null</c>.</summary>
         /// <typeparam name="T">The type of <paramref name="value" />.</typeparam>
         /// <param name="value">The value to be checked for <c>null</c>.</param>

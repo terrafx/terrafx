@@ -192,6 +192,9 @@
   <data name="ValueIsNotPow2Message" xml:space="preserve">
     <value>'{0}' is not a power of two</value>
   </data>
+  <data name="ValueIsNotZeroMessage" xml:space="preserve">
+    <value>'{0}' is not zero</value>
+  </data>
   <data name="ValueIsNullMessage" xml:space="preserve">
     <value>'{0}' is null</value>
   </data>

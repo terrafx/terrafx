@@ -80,6 +80,9 @@ namespace TerraFX.Runtime
         /// <summary>Gets a localized string similar to <c>'{0}' is not a power of two</c>.</summary>
         public static string ValueIsNotPow2Message => GetString(nameof(ValueIsNotPow2Message));
 
+        /// <summary>Gets a localized string similar to <c>'{0}' is not zero</c>.</summary>
+        public static string ValueIsNotZeroMessage => GetString(nameof(ValueIsNotZeroMessage));
+
         /// <summary>Gets a localized string similar to <c>'{0}' is null</c>.</summary>
         public static string ValueIsNullMessage => GetString(nameof(ValueIsNullMessage));
 
