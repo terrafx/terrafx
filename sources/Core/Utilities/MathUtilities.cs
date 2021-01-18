@@ -11,7 +11,63 @@ namespace TerraFX.Utilities
     /// <summary>Provides a set of methods to supplement or replace <see cref="Math" /> and <see cref="MathF" />.</summary>
     public static class MathUtilities
     {
-        /// <inheritdoc cref="MathF.Abs(float)" />
+        /// <summary>Computes the absolute value of a given 16-bit signed integer.</summary>
+        /// <param name="value">The integer for which to compute its absolute.</param>
+        /// <returns>The absolute value of <paramref name="value" />.</returns>
+        /// <remarks>This method does not account for <see cref="short.MinValue" />.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static short Abs(short value)
+        {
+            Assert(AssertionsEnabled && (value != short.MinValue));
+            var mask = value >> ((sizeof(short) * 8) - 1);
+            return (short)((value + mask) ^ mask);
+        }
+
+        /// <summary>Computes the absolute value of a given 32-bit signed integer.</summary>
+        /// <param name="value">The integer for which to compute its absolute.</param>
+        /// <returns>The absolute value of <paramref name="value" />.</returns>
+        /// <remarks>This method does not account for <see cref="int.MinValue" />.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Abs(int value)
+        {
+            Assert(AssertionsEnabled && (value != int.MinValue));
+            var mask = value >> ((sizeof(int) * 8) - 1);
+            return (value + mask) ^ mask;
+        }
+
+        /// <summary>Computes the absolute value of a given signed native integer.</summary>
+        /// <param name="value">The integer for which to compute its absolute.</param>
+        /// <returns>The absolute value of <paramref name="value" />.</returns>
+        /// <remarks>This method does not account for <see cref="nint.MinValue" />.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe nint Abs(nint value)
+        {
+            Assert(AssertionsEnabled && (value != nint.MinValue));
+            var mask = value >> ((sizeof(nint) * 8) - 1);
+            return (value + mask) ^ mask;
+        }
+
+        /// <summary>Computes the absolute value of a given 64-bit float.</summary>
+        /// <param name="value">The float for which to compute its absolute.</param>
+        /// <returns>The absolute value of <paramref name="value" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Abs(double value) => Math.Abs(value);
+
+        /// <summary>Computes the absolute value of a given 8-bit signed integer.</summary>
+        /// <param name="value">The integer for which to compute its absolute.</param>
+        /// <returns>The absolute value of <paramref name="value" />.</returns>
+        /// <remarks>This method does not account for <see cref="sbyte.MinValue" />.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static sbyte Abs(sbyte value)
+        {
+            Assert(AssertionsEnabled && (value != sbyte.MinValue));
+            var mask = value >> ((sizeof(int) * 8) - 1);
+            return (sbyte)((value + mask) ^ mask);
+        }
+
+        /// <summary>Computes the absolute value of a given 32-bit float.</summary>
+        /// <param name="value">The float for which to compute its absolute.</param>
+        /// <returns>The absolute value of <paramref name="value" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Abs(float value) => MathF.Abs(value);
 
@@ -19,6 +75,7 @@ namespace TerraFX.Utilities
         /// <param name="address">The address to be aligned.</param>
         /// <param name="alignment">The target alignment, which should be a power of two.</param>
         /// <returns><paramref name="address" /> rounded up to the specified <paramref name="alignment" />.</returns>
+        /// <remarks>This method does not account for an <paramref name="alignment" /> which is not a <c>power of two</c>.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint AlignUp(uint address, uint alignment)
         {
@@ -30,6 +87,7 @@ namespace TerraFX.Utilities
         /// <param name="address">The address to be aligned.</param>
         /// <param name="alignment">The target alignment, which should be a power of two.</param>
         /// <returns><paramref name="address" /> rounded up to the specified <paramref name="alignment" />.</returns>
+        /// <remarks>This method does not account for an <paramref name="alignment" /> which is not a <c>power of two</c>.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong AlignUp(ulong address, ulong alignment)
         {
@@ -41,6 +99,7 @@ namespace TerraFX.Utilities
         /// <param name="address">The address to be aligned.</param>
         /// <param name="alignment">The target alignment, which should be a power of two.</param>
         /// <returns><paramref name="address" /> rounded up to the specified <paramref name="alignment" />.</returns>
+        /// <remarks>This method does not account for an <paramref name="alignment" /> which is not a <c>power of two</c>.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static nuint AlignUp(nuint address, nuint alignment)
         {
@@ -48,71 +107,624 @@ namespace TerraFX.Utilities
             return (address + (alignment - 1)) & ~(alignment - 1);
         }
 
-        /// <summary>Clamps a <see cref="float" /> value to be between a minimum and maximum value.</summary>
+        /// <summary>Clamps an 8-bit unsigned integer to be between a minimum and maximum value.</summary>
         /// <param name="value">The value to restrict.</param>
         /// <param name="min">The minimum value (inclusive).</param>
         /// <param name="max">The maximum value (inclusive).</param>
         /// <returns><paramref name="value" /> clamped to be between <paramref name="min" /> and <paramref name="max" />.</returns>
+        /// <remarks>This method does not account for <paramref name="min" /> being greater than <paramref name="max" />.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Clamp(float value, float min, float max)
+        public static byte Clamp(byte value, byte min, byte max)
         {
+            Assert(AssertionsEnabled && (min <= max));
+
             // The compare order here is important.
             // It ensures we match HLSL behavior for the scenario where min is larger than max.
 
             var result = value;
 
-            result = (result > max) ? max : result;
-            result = (result < min) ? min : result;
+            result = Max(result, min);
+            result = Min(result, max);
 
             return result;
         }
 
-        /// <inheritdoc cref="MathF.Cos(float)" />
+        /// <summary>Clamps a 64-bit float to be between a minimum and maximum value.</summary>
+        /// <param name="value">The value to restrict.</param>
+        /// <param name="min">The minimum value (inclusive).</param>
+        /// <param name="max">The maximum value (inclusive).</param>
+        /// <returns><paramref name="value" /> clamped to be between <paramref name="min" /> and <paramref name="max" />.</returns>
+        /// <remarks>This method does not account for <paramref name="min" /> being greater than <paramref name="max" />.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Clamp(double value, double min, double max)
+        {
+            Assert(AssertionsEnabled && (min <= max));
+
+            // The compare order here is important.
+            // It ensures we match HLSL behavior for the scenario where min is larger than max.
+
+            var result = value;
+
+            result = Max(result, min);
+            result = Min(result, max);
+
+            return result;
+        }
+
+        /// <summary>Clamps a 16-bit signed integer to be between a minimum and maximum value.</summary>
+        /// <param name="value">The value to restrict.</param>
+        /// <param name="min">The minimum value (inclusive).</param>
+        /// <param name="max">The maximum value (inclusive).</param>
+        /// <returns><paramref name="value" /> clamped to be between <paramref name="min" /> and <paramref name="max" />.</returns>
+        /// <remarks>This method does not account for <paramref name="min" /> being greater than <paramref name="max" />.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static short Clamp(short value, short min, short max)
+        {
+            Assert(AssertionsEnabled && (min <= max));
+
+            // The compare order here is important.
+            // It ensures we match HLSL behavior for the scenario where min is larger than max.
+
+            var result = value;
+
+            result = Max(result, min);
+            result = Min(result, max);
+
+            return result;
+        }
+
+        /// <summary>Clamps a 32-bit signed integer to be between a minimum and maximum value.</summary>
+        /// <param name="value">The value to restrict.</param>
+        /// <param name="min">The minimum value (inclusive).</param>
+        /// <param name="max">The maximum value (inclusive).</param>
+        /// <returns><paramref name="value" /> clamped to be between <paramref name="min" /> and <paramref name="max" />.</returns>
+        /// <remarks>This method does not account for <paramref name="min" /> being greater than <paramref name="max" />.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Clamp(int value, int min, int max)
+        {
+            Assert(AssertionsEnabled && (min <= max));
+
+            // The compare order here is important.
+            // It ensures we match HLSL behavior for the scenario where min is larger than max.
+
+            var result = value;
+
+            result = Max(result, min);
+            result = Min(result, max);
+
+            return result;
+        }
+
+        /// <summary>Clamps a 64-bit signed integer to be between a minimum and maximum value.</summary>
+        /// <param name="value">The value to restrict.</param>
+        /// <param name="min">The minimum value (inclusive).</param>
+        /// <param name="max">The maximum value (inclusive).</param>
+        /// <returns><paramref name="value" /> clamped to be between <paramref name="min" /> and <paramref name="max" />.</returns>
+        /// <remarks>This method does not account for <paramref name="min" /> being greater than <paramref name="max" />.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long Clamp(long value, long min, long max)
+        {
+            Assert(AssertionsEnabled && (min <= max));
+
+            // The compare order here is important.
+            // It ensures we match HLSL behavior for the scenario where min is larger than max.
+
+            var result = value;
+
+            result = Max(result, min);
+            result = Min(result, max);
+
+            return result;
+        }
+
+        /// <summary>Clamps a signed native integer to be between a minimum and maximum value.</summary>
+        /// <param name="value">The value to restrict.</param>
+        /// <param name="min">The minimum value (inclusive).</param>
+        /// <param name="max">The maximum value (inclusive).</param>
+        /// <returns><paramref name="value" /> clamped to be between <paramref name="min" /> and <paramref name="max" />.</returns>
+        /// <remarks>This method does not account for <paramref name="min" /> being greater than <paramref name="max" />.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static nint Clamp(nint value, nint min, nint max)
+        {
+            Assert(AssertionsEnabled && (min <= max));
+
+            // The compare order here is important.
+            // It ensures we match HLSL behavior for the scenario where min is larger than max.
+
+            var result = value;
+
+            result = Max(result, min);
+            result = Min(result, max);
+
+            return result;
+        }
+
+        /// <summary>Clamps an 8-bit signed integer to be between a minimum and maximum value.</summary>
+        /// <param name="value">The value to restrict.</param>
+        /// <param name="min">The minimum value (inclusive).</param>
+        /// <param name="max">The maximum value (inclusive).</param>
+        /// <returns><paramref name="value" /> clamped to be between <paramref name="min" /> and <paramref name="max" />.</returns>
+        /// <remarks>This method does not account for <paramref name="min" /> being greater than <paramref name="max" />.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static sbyte Clamp(sbyte value, sbyte min, sbyte max)
+        {
+            Assert(AssertionsEnabled && (min <= max));
+
+            // The compare order here is important.
+            // It ensures we match HLSL behavior for the scenario where min is larger than max.
+
+            var result = value;
+
+            result = Max(result, min);
+            result = Min(result, max);
+
+            return result;
+        }
+
+        /// <summary>Clamps a 32-bit float to be between a minimum and maximum value.</summary>
+        /// <param name="value">The value to restrict.</param>
+        /// <param name="min">The minimum value (inclusive).</param>
+        /// <param name="max">The maximum value (inclusive).</param>
+        /// <returns><paramref name="value" /> clamped to be between <paramref name="min" /> and <paramref name="max" />.</returns>
+        /// <remarks>This method does not account for <paramref name="min" /> being greater than <paramref name="max" />.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Clamp(float value, float min, float max)
+        {
+            Assert(AssertionsEnabled && (min <= max));
+
+            // The compare order here is important.
+            // It ensures we match HLSL behavior for the scenario where min is larger than max.
+
+            var result = value;
+
+            result = Max(result, min);
+            result = Min(result, max);
+
+            return result;
+        }
+
+        /// <summary>Clamps a 16-bit unsigned integer to be between a minimum and maximum value.</summary>
+        /// <param name="value">The value to restrict.</param>
+        /// <param name="min">The minimum value (inclusive).</param>
+        /// <param name="max">The maximum value (inclusive).</param>
+        /// <returns><paramref name="value" /> clamped to be between <paramref name="min" /> and <paramref name="max" />.</returns>
+        /// <remarks>This method does not account for <paramref name="min" /> being greater than <paramref name="max" />.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ushort Clamp(ushort value, ushort min, ushort max)
+        {
+            Assert(AssertionsEnabled && (min <= max));
+
+            // The compare order here is important.
+            // It ensures we match HLSL behavior for the scenario where min is larger than max.
+
+            var result = value;
+
+            result = Max(result, min);
+            result = Min(result, max);
+
+            return result;
+        }
+
+        /// <summary>Clamps a 32-bit unsigned integer to be between a minimum and maximum value.</summary>
+        /// <param name="value">The value to restrict.</param>
+        /// <param name="min">The minimum value (inclusive).</param>
+        /// <param name="max">The maximum value (inclusive).</param>
+        /// <returns><paramref name="value" /> clamped to be between <paramref name="min" /> and <paramref name="max" />.</returns>
+        /// <remarks>This method does not account for <paramref name="min" /> being greater than <paramref name="max" />.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint Clamp(uint value, uint min, uint max)
+        {
+            Assert(AssertionsEnabled && (min <= max));
+
+            // The compare order here is important.
+            // It ensures we match HLSL behavior for the scenario where min is larger than max.
+
+            var result = value;
+
+            result = Max(result, min);
+            result = Min(result, max);
+
+            return result;
+        }
+
+        /// <summary>Clamps a 64-bit unsigned integer to be between a minimum and maximum value.</summary>
+        /// <param name="value">The value to restrict.</param>
+        /// <param name="min">The minimum value (inclusive).</param>
+        /// <param name="max">The maximum value (inclusive).</param>
+        /// <returns><paramref name="value" /> clamped to be between <paramref name="min" /> and <paramref name="max" />.</returns>
+        /// <remarks>This method does not account for <paramref name="min" /> being greater than <paramref name="max" />.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong Clamp(ulong value, ulong min, ulong max)
+        {
+            Assert(AssertionsEnabled && (min <= max));
+
+            // The compare order here is important.
+            // It ensures we match HLSL behavior for the scenario where min is larger than max.
+
+            var result = value;
+
+            result = Max(result, min);
+            result = Min(result, max);
+
+            return result;
+        }
+
+        /// <summary>Clamps an unsigned native integer to be between a minimum and maximum value.</summary>
+        /// <param name="value">The value to restrict.</param>
+        /// <param name="min">The minimum value (inclusive).</param>
+        /// <param name="max">The maximum value (inclusive).</param>
+        /// <returns><paramref name="value" /> clamped to be between <paramref name="min" /> and <paramref name="max" />.</returns>
+        /// <remarks>This method does not throw if <paramref name="min" /> is greater than <paramref name="max" />.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static nuint Clamp(nuint value, nuint min, nuint max)
+        {
+            Assert(AssertionsEnabled && (min <= max));
+
+            // The compare order here is important.
+            // It ensures we match HLSL behavior for the scenario where min is larger than max.
+
+            var result = value;
+
+            result = Max(result, min);
+            result = Min(result, max);
+
+            return result;
+        }
+
+        /// <summary>Computes the cosine for a given 64-bit float.</summary>
+        /// <param name="value">The float, in radians, for which to compute the cosine.</param>
+        /// <returns>The cosine of <paramref name="value" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Cos(double value) => Math.Cos(value);
+
+        /// <summary>Computes the cosine for a given 32-bit float.</summary>
+        /// <param name="value">The float, in radians, for which to compute the cosine.</param>
+        /// <returns>The cosine of <paramref name="value" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Cos(float value) => MathF.Cos(value);
 
-        /// <summary>Computes <paramref name="dividend" /> / <paramref name="divisor" /> but rounds the result up, rather than down.</summary>
+        /// <summary>Computes the quotient of two 32-bit unsigned integers but rounds the result up, rather than down.</summary>
         /// <param name="dividend">The value being divided by <paramref name="divisor" />.</param>
         /// <param name="divisor">The value that is used to divide <paramref name="dividend" />.</param>
         /// <returns>The quotient of <paramref name="dividend" /> / <paramref name="divisor" />, rounded up.</returns>
+        /// <remarks>This method does not account for <paramref name="divisor" /> being <c>zero</c>.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint DivideRoundingUp(uint dividend, uint divisor) => (dividend + divisor - 1) / divisor;
+        public static uint DivideRoundingUp(uint dividend, uint divisor)
+        {
+            Assert(AssertionsEnabled && (divisor != 0));
+            return (dividend + divisor - 1) / divisor;
+        }
 
-        /// <summary>Computes the quotient and remainder of <paramref name="dividend" /> / <paramref name="divisor" />.</summary>
+        /// <summary>Computes the quotient of two 64-bit unsigned integers but rounds the result up, rather than down.</summary>
+        /// <param name="dividend">The value being divided by <paramref name="divisor" />.</param>
+        /// <param name="divisor">The value that is used to divide <paramref name="dividend" />.</param>
+        /// <returns>The quotient of <paramref name="dividend" /> / <paramref name="divisor" />, rounded up.</returns>
+        /// <remarks>This method does not account for <paramref name="divisor" /> being <c>zero</c>.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong DivideRoundingUp(ulong dividend, ulong divisor)
+        {
+            Assert(AssertionsEnabled && (divisor != 0));
+            return (dividend + divisor - 1) / divisor;
+        }
+
+        /// <summary>Computes the quotient of two unsigned native integers but rounds the result up, rather than down.</summary>
+        /// <param name="dividend">The value being divided by <paramref name="divisor" />.</param>
+        /// <param name="divisor">The value that is used to divide <paramref name="dividend" />.</param>
+        /// <returns>The quotient of <paramref name="dividend" /> / <paramref name="divisor" />, rounded up.</returns>
+        /// <remarks>This method does not account for <paramref name="divisor" /> being <c>zero</c>.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static nuint DivideRoundingUp(nuint dividend, nuint divisor)
+        {
+            Assert(AssertionsEnabled && (divisor != 0));
+            return (dividend + divisor - 1) / divisor;
+        }
+
+        /// <summary>Computes the quotient and remainder of two 32-bit signed integers.</summary>
         /// <param name="dividend">The value being divided by <paramref name="divisor" />.</param>
         /// <param name="divisor">The value that is used to divide <paramref name="dividend" />.</param>
         /// <returns>The quotient and remainder of <paramref name="dividend" /> / <paramref name="divisor" />.</returns>
+        /// <remarks>This method does not account for <paramref name="divisor" /> being <c>zero</c>.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static (nuint quotient, nuint remainder) DivRem(nuint dividend, nuint divisor)
+        public static (int quotient, int remainder) DivRem(int dividend, int divisor)
+
         {
+            Assert(AssertionsEnabled && (divisor != 0));
             var quotient = dividend / divisor;
+
             var remainder = dividend - (quotient * divisor);
             return (quotient, remainder);
         }
 
-        /// <summary>Compares two floats to determine if they are approximately equal.</summary>
+        /// <summary>Computes the quotient and remainder of two 64-bit signed  integers.</summary>
+        /// <param name="dividend">The value being divided by <paramref name="divisor" />.</param>
+        /// <param name="divisor">The value that is used to divide <paramref name="dividend" />.</param>
+        /// <returns>The quotient and remainder of <paramref name="dividend" /> / <paramref name="divisor" />.</returns>
+        /// <remarks>This method does not account for <paramref name="divisor" /> being <c>zero</c>.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static (long quotient, long remainder) DivRem(long dividend, long divisor)
+        {
+            Assert(AssertionsEnabled && (divisor != 0));
+            var quotient = dividend / divisor;
+
+            var remainder = dividend - (quotient * divisor);
+            return (quotient, remainder);
+        }
+
+        /// <summary>Computes the quotient and remainder of two signed native integers.</summary>
+        /// <param name="dividend">The value being divided by <paramref name="divisor" />.</param>
+        /// <param name="divisor">The value that is used to divide <paramref name="dividend" />.</param>
+        /// <returns>The quotient and remainder of <paramref name="dividend" /> / <paramref name="divisor" />.</returns>
+        /// <remarks>This method does not account for <paramref name="divisor" /> being <c>zero</c>.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static (nint quotient, nint remainder) DivRem(nint dividend, nint divisor)
+        {
+            Assert(AssertionsEnabled && (divisor != 0));
+            var quotient = dividend / divisor;
+
+            var remainder = dividend - (quotient * divisor);
+            return (quotient, remainder);
+        }
+
+        /// <summary>Computes the quotient and remainder of two 32-bit unsigned integers.</summary>
+        /// <param name="dividend">The value being divided by <paramref name="divisor" />.</param>
+        /// <param name="divisor">The value that is used to divide <paramref name="dividend" />.</param>
+        /// <returns>The quotient and remainder of <paramref name="dividend" /> / <paramref name="divisor" />.</returns>
+        /// <remarks>This method does not account for <paramref name="divisor" /> being <c>zero</c>.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static (uint quotient, uint remainder) DivRem(uint dividend, uint divisor)
+        {
+            Assert(AssertionsEnabled && (divisor != 0));
+            var quotient = dividend / divisor;
+
+            var remainder = dividend - (quotient * divisor);
+            return (quotient, remainder);
+        }
+
+        /// <summary>Computes the quotient and remainder of two 64-bit unsigned  integers.</summary>
+        /// <param name="dividend">The value being divided by <paramref name="divisor" />.</param>
+        /// <param name="divisor">The value that is used to divide <paramref name="dividend" />.</param>
+        /// <returns>The quotient and remainder of <paramref name="dividend" /> / <paramref name="divisor" />.</returns>
+        /// <remarks>This method does not account for <paramref name="divisor" /> being <c>zero</c>.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static (ulong quotient, ulong remainder) DivRem(ulong dividend, ulong divisor)
+        {
+            Assert(AssertionsEnabled && (divisor != 0));
+            var quotient = dividend / divisor;
+
+            var remainder = dividend - (quotient * divisor);
+            return (quotient, remainder);
+        }
+
+        /// <summary>Computes the quotient and remainder of two unsigned native integers.</summary>
+        /// <param name="dividend">The value being divided by <paramref name="divisor" />.</param>
+        /// <param name="divisor">The value that is used to divide <paramref name="dividend" />.</param>
+        /// <returns>The quotient and remainder of <paramref name="dividend" /> / <paramref name="divisor" />.</returns>
+        /// <remarks>This method does not account for <paramref name="divisor" /> being <c>zero</c>.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static (nuint quotient, nuint remainder) DivRem(nuint dividend, nuint divisor)
+        {
+            Assert(AssertionsEnabled && (divisor != 0));
+            var quotient = dividend / divisor;
+
+            var remainder = dividend - (quotient * divisor);
+            return (quotient, remainder);
+        }
+
+        /// <summary>Compares two 64-bit floats to determine approximate equality.</summary>
         /// <param name="left">The float to compare with <paramref name="right" />.</param>
         /// <param name="right">The float to compare with <paramref name="left" />.</param>
         /// <param name="epsilon">The maximum (exclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
         /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool EqualsEstimate(this float left, float right, float epsilon) => Abs(right - left) < epsilon;
+        public static bool EqualsEstimate(double left, double right, double epsilon) => Abs(right - left) < epsilon;
 
-        /// <inheritdoc cref="Math.Max(int, int)" />
+        /// <summary>Compares two 32-bit floats to determine approximate equality.</summary>
+        /// <param name="left">The float to compare with <paramref name="right" />.</param>
+        /// <param name="right">The float to compare with <paramref name="left" />.</param>
+        /// <param name="epsilon">The maximum (exclusive) difference between <paramref name="left" /> and <paramref name="right" /> for which they should be considered equivalent.</param>
+        /// <returns><c>true</c> if <paramref name="left" /> and <paramref name="right" /> differ by no more than <paramref name="epsilon" />; otherwise, <c>false</c>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int Max(int left, int right) => Math.Max(left, right);
+        public static bool EqualsEstimate(float left, float right, float epsilon) => Abs(right - left) < epsilon;
 
-        /// <inheritdoc cref="MathF.Max(float, float)" />
+        /// <summary>Computes the maximum of two 32-bit signed integers.</summary>
+        /// <param name="left">The integer to compare with <paramref name="right" />.</param>
+        /// <param name="right">The integer to compare with <paramref name="left" />.</param>
+        /// <returns>The maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Max(float left, float right) => MathF.Max(left, right);
+        public static byte Max(byte left, byte right) => (left > right) ? left : right;
 
-        /// <inheritdoc cref="Math.Min(int, int)" />
+        /// <summary>Computes the maximum of two 64-bit floats.</summary>
+        /// <param name="left">The float to compare with <paramref name="right" />.</param>
+        /// <param name="right">The float to compare with <paramref name="left" />.</param>
+        /// <returns>The maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        /// <remarks>This method does not account for <c>negative zero</c> and returns the other parameter if one is <see cref="double.NaN" />.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int Min(int left, int right) => Math.Min(left, right);
+        public static double Max(double left, double right)
+        {
+            if (double.IsNaN(right))
+            {
+                return left;
+            }
+            return (left >= right) ? left : right;
+        }
 
-        /// <inheritdoc cref="MathF.Max(float, float)" />
+        /// <summary>Computes the maximum of two 16-bit signed integers.</summary>
+        /// <param name="left">The integer to compare with <paramref name="right" />.</param>
+        /// <param name="right">The integer to compare with <paramref name="left" />.</param>
+        /// <returns>The maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Min(float left, float right) => MathF.Min(left, right);
+        public static short Max(short left, short right) => (left > right) ? left : right;
+
+        /// <summary>Computes the maximum of two 32-bit signed integers.</summary>
+        /// <param name="left">The integer to compare with <paramref name="right" />.</param>
+        /// <param name="right">The integer to compare with <paramref name="left" />.</param>
+        /// <returns>The maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Max(int left, int right) => (left > right) ? left : right;
+
+        /// <summary>Computes the maximum of two 64-bit signed integers.</summary>
+        /// <param name="left">The integer to compare with <paramref name="right" />.</param>
+        /// <param name="right">The integer to compare with <paramref name="left" />.</param>
+        /// <returns>The maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long Max(long left, long right) => (left > right) ? left : right;
+
+        /// <summary>Computes the maximum of two signed native integers.</summary>
+        /// <param name="left">The integer to compare with <paramref name="right" />.</param>
+        /// <param name="right">The integer to compare with <paramref name="left" />.</param>
+        /// <returns>The maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static nint Max(nint left, nint right) => (left > right) ? left : right;
+
+        /// <summary>Computes the maximum of two 8-bit signed integers.</summary>
+        /// <param name="left">The integer to compare with <paramref name="right" />.</param>
+        /// <param name="right">The integer to compare with <paramref name="left" />.</param>
+        /// <returns>The maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static sbyte Max(sbyte left, sbyte right) => (left > right) ? left : right;
+
+        /// <summary>Computes the maximum of two 32-bit floats.</summary>
+        /// <param name="left">The float to compare with <paramref name="right" />.</param>
+        /// <param name="right">The float to compare with <paramref name="left" />.</param>
+        /// <returns>The maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        /// <remarks>This method does not account for <c>negative zero</c> and returns the other parameter if one is <see cref="double.NaN" />.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Max(float left, float right)
+        {
+            if (float.IsNaN(right))
+            {
+                return left;
+            }
+            return (left >= right) ? left : right;
+        }
+
+        /// <summary>Computes the maximum of two 16-bit unsigned integers.</summary>
+        /// <param name="left">The integer to compare with <paramref name="right" />.</param>
+        /// <param name="right">The integer to compare with <paramref name="left" />.</param>
+        /// <returns>The maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ushort Max(ushort left, ushort right) => (left > right) ? left : right;
+
+        /// <summary>Computes the maximum of two 32-bit unsigned integers.</summary>
+        /// <param name="left">The integer to compare with <paramref name="right" />.</param>
+        /// <param name="right">The integer to compare with <paramref name="left" />.</param>
+        /// <returns>The maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint Max(uint left, uint right) => (left > right) ? left : right;
+
+        /// <summary>Computes the maximum of two 64-bit unsigned integers.</summary>
+        /// <param name="left">The integer to compare with <paramref name="right" />.</param>
+        /// <param name="right">The integer to compare with <paramref name="left" />.</param>
+        /// <returns>The maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong Max(ulong left, ulong right) => (left > right) ? left : right;
+
+        /// <summary>Computes the maximum of two unsigned native integers.</summary>
+        /// <param name="left">The integer to compare with <paramref name="right" />.</param>
+        /// <param name="right">The integer to compare with <paramref name="left" />.</param>
+        /// <returns>The maximum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static nuint Max(nuint left, nuint right) => (left > right) ? left : right;
+
+        /// <summary>Computes the minimum of two 8-bit unsigned integers.</summary>
+        /// <param name="left">The integer to compare with <paramref name="right" />.</param>
+        /// <param name="right">The integer to compare with <paramref name="left" />.</param>
+        /// <returns>The minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte Min(byte left, byte right) => (left < right) ? left : right;
+
+        /// <summary>Computes the minimum of two 64-bit floats.</summary>
+        /// <param name="left">The float to compare with <paramref name="right" />.</param>
+        /// <param name="right">The float to compare with <paramref name="left" />.</param>
+        /// <returns>The minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        /// <remarks>This method does not account for <c>negative zero</c> and returns the other parameter if one is <see cref="double.NaN" />.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Min(double left, double right)
+        {
+            if (double.IsNaN(right))
+            {
+                return left;
+            }
+            return (left < right) ? left : right;
+        }
+
+        /// <summary>Computes the minimum of two 16-bit signed integers.</summary>
+        /// <param name="left">The integer to compare with <paramref name="right" />.</param>
+        /// <param name="right">The integer to compare with <paramref name="left" />.</param>
+        /// <returns>The minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static short Min(short left, short right) => (left < right) ? left : right;
+
+        /// <summary>Computes the minimum of two 32-bit signed integers.</summary>
+        /// <param name="left">The integer to compare with <paramref name="right" />.</param>
+        /// <param name="right">The integer to compare with <paramref name="left" />.</param>
+        /// <returns>The minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Min(int left, int right) => (left < right) ? left : right;
+
+        /// <summary>Computes the minimum of two 64-bit signed integers.</summary>
+        /// <param name="left">The integer to compare with <paramref name="right" />.</param>
+        /// <param name="right">The integer to compare with <paramref name="left" />.</param>
+        /// <returns>The minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long Min(long left, long right) => (left < right) ? left : right;
+
+        /// <summary>Computes the minimum of two signed native integers.</summary>
+        /// <param name="left">The integer to compare with <paramref name="right" />.</param>
+        /// <param name="right">The integer to compare with <paramref name="left" />.</param>
+        /// <returns>The minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static nint Min(nint left, nint right) => (left < right) ? left : right;
+
+        /// <summary>Computes the minimum of two 8-bit signed integers.</summary>
+        /// <param name="left">The integer to compare with <paramref name="right" />.</param>
+        /// <param name="right">The integer to compare with <paramref name="left" />.</param>
+        /// <returns>The minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static sbyte Min(sbyte left, sbyte right) => (left < right) ? left : right;
+
+        /// <summary>Computes the minimum of two 32-bit floats.</summary>
+        /// <param name="left">The float to compare with <paramref name="right" />.</param>
+        /// <param name="right">The float to compare with <paramref name="left" />.</param>
+        /// <returns>The minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        /// <remarks>This method does not account for <c>negative zero</c> and returns the other parameter if one is <see cref="double.NaN" />.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Min(float left, float right)
+        {
+            if (float.IsNaN(right))
+            {
+                return left;
+            }
+            return (left < right) ? left : right;
+        }
+
+        /// <summary>Computes the minimum of two 16-bit unsigned integers.</summary>
+        /// <param name="left">The integer to compare with <paramref name="right" />.</param>
+        /// <param name="right">The integer to compare with <paramref name="left" />.</param>
+        /// <returns>The minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ushort Min(ushort left, ushort right) => (left < right) ? left : right;
+
+        /// <summary>Computes the minimum of two 32-bit unsigned integers.</summary>
+        /// <param name="left">The integer to compare with <paramref name="right" />.</param>
+        /// <param name="right">The integer to compare with <paramref name="left" />.</param>
+        /// <returns>The minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint Min(uint left, uint right) => (left < right) ? left : right;
+
+        /// <summary>Computes the minimum of two 64-bit unsigned integers.</summary>
+        /// <param name="left">The integer to compare with <paramref name="right" />.</param>
+        /// <param name="right">The integer to compare with <paramref name="left" />.</param>
+        /// <returns>The minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong Min(ulong left, ulong right) => (left < right) ? left : right;
+
+        /// <summary>Computes the minimum of two unsigned native integers.</summary>
+        /// <param name="left">The integer to compare with <paramref name="right" />.</param>
+        /// <param name="right">The integer to compare with <paramref name="left" />.</param>
+        /// <returns>The minimum of <paramref name="left" /> and <paramref name="right" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static nuint Min(nuint left, nuint right) => (left < right) ? left : right;
 
         /// <summary>Determines whether a given value is a power of two.</summary>
         /// <param name="value">The value to check.</param>
@@ -162,21 +774,51 @@ namespace TerraFX.Utilities
             }
         }
 
-        /// <inheritdoc cref="MathF.Sin(float)" />
+        /// <summary>Computes the sine for a given 64-bit float.</summary>
+        /// <param name="value">The float, in radians, for which to compute the sine.</param>
+        /// <returns>The sine of <paramref name="value" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Sin(double value) => Math.Sin(value);
+
+        /// <summary>Computes the sine for a given 32-bit float.</summary>
+        /// <param name="value">The float, in radians, for which to compute the sine.</param>
+        /// <returns>The sine of <paramref name="value" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Sin(float value) => MathF.Sin(value);
 
-        /// <summary>Returns the sine and cosine of the specified angle.</summary>
-        /// <param name="value">The angle for which to get the sine and cosine.</param>
+        /// <summary>Computes the sine and cosine for a given 64-bit float.</summary>
+        /// <param name="value">The float, in radians, for which to compute the sine and cosine.</param>
         /// <returns>The sine and cosine of <paramref name="value" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static (float Sin, float Cos) SinCos(float value) => (MathF.Sin(value), MathF.Cos(value));
+        public static (double Sin, double Cos) SinCos(double value) => (Sin(value), Cos(value));
 
-        /// <inheritdoc cref="MathF.Sqrt(float)" />
+        /// <summary>Computes the sine and cosine for a given 32-bit float.</summary>
+        /// <param name="value">The float, in radians, for which to compute the sine and cosine.</param>
+        /// <returns>The sine and cosine of <paramref name="value" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static (float Sin, float Cos) SinCos(float value) => (Sin(value), Cos(value));
+
+        /// <summary>Computes the square root of a given 64-bit float.</summary>
+        /// <param name="value">The float for which to compute the square root.</param>
+        /// <returns>The square root of <paramref name="value" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Sqrt(double value) => Math.Sqrt(value);
+
+        /// <summary>Computes the square root of a given 32-bit float.</summary>
+        /// <param name="value">The float for which to compute the square root.</param>
+        /// <returns>The square root of <paramref name="value" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Sqrt(float value) => MathF.Sqrt(value);
 
-        /// <inheritdoc cref="MathF.Tan(float)" />
+        /// <summary>Computes the tangent for a given 64-bit float.</summary>
+        /// <param name="value">The float, in radians, for which to compute the tangent.</param>
+        /// <returns>The tangent of <paramref name="value" />.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Tan(double value) => Math.Tan(value);
+
+        /// <summary>Computes the tangent for a given 32-bit float.</summary>
+        /// <param name="value">The float, in radians, for which to compute the tangent.</param>
+        /// <returns>The tangent of <paramref name="value" />.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Tan(float value) => MathF.Tan(value);
     }
