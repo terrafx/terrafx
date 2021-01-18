@@ -183,6 +183,12 @@
   <data name="ValueIsNotInSignedInsertBoundsMessage" xml:space="preserve">
     <value>'{0}' is negative or greater than '{1}'</value>
   </data>
+  <data name="ValueIsNotInUnsignedBoundsMessage" xml:space="preserve">
+    <value>'{0}' is greater than or equal to '{1}'</value>
+  </data>
+  <data name="ValueIsNotInUnsignedInsertBoundsMessage" xml:space="preserve">
+    <value>'{0}' is greater than '{1}'</value>
+  </data>
   <data name="ValueIsNotPow2Message" xml:space="preserve">
     <value>'{0}' is not a power of two</value>
   </data>

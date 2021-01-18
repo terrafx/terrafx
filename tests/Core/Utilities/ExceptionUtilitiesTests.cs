@@ -510,6 +510,81 @@ namespace TerraFX.UnitTests.Utilities
             );
         }
 
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNotInBounds(uint, uint, string, string)" /> method.</summary>
+        [Test]
+        public static void ThrowIfNotInBoundsUInt32Test()
+        {
+            Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds(0U, 1U, "index", "length"),
+                Throws.Nothing
+            );
+
+            Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds(1U, 1U, "index", "length"),
+                Throws.InstanceOf<ArgumentOutOfRangeException>()
+                      .And.Property("ActualValue").EqualTo(1U)
+                      .And.Message.Contains("'index'")
+                      .And.Message.Contains("'length'")
+                      .And.Property("ParamName").EqualTo("index")
+            );
+
+            Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds(2U, 1U, "index", "length"),
+                Throws.InstanceOf<ArgumentOutOfRangeException>()
+                      .And.Property("ActualValue").EqualTo(2U)
+                      .And.Message.Contains("'index'")
+                      .And.Message.Contains("'length'")
+                      .And.Property("ParamName").EqualTo("index")
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNotInBounds(ulong, ulong, string, string)" /> method.</summary>
+        [Test]
+        public static void ThrowIfNotInBoundsUInt64Test()
+        {
+            Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds(0UL, 1UL, "index", "length"),
+                Throws.Nothing
+            );
+
+            Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds(1UL, 1UL, "index", "length"),
+                Throws.InstanceOf<ArgumentOutOfRangeException>()
+                      .And.Property("ActualValue").EqualTo(1UL)
+                      .And.Message.Contains("'index'")
+                      .And.Message.Contains("'length'")
+                      .And.Property("ParamName").EqualTo("index")
+            );
+
+            Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds(2UL, 1UL, "index", "length"),
+                Throws.InstanceOf<ArgumentOutOfRangeException>()
+                      .And.Property("ActualValue").EqualTo(2UL)
+                      .And.Message.Contains("'index'")
+                      .And.Message.Contains("'length'")
+                      .And.Property("ParamName").EqualTo("index")
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNotInBounds(nuint, nuint, string, string)" /> method.</summary>
+        [Test]
+        public static void ThrowIfNotInBoundsNUIntTest()
+        {
+            Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds((nuint)0, (nuint)1, "index", "length"),
+                Throws.Nothing
+            );
+
+            Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds((nuint)1, (nuint)1, "index", "length"),
+                Throws.InstanceOf<ArgumentOutOfRangeException>()
+                      .And.Property("ActualValue").EqualTo((nuint)1)
+                      .And.Message.Contains("'index'")
+                      .And.Message.Contains("'length'")
+                      .And.Property("ParamName").EqualTo("index")
+            );
+
+            Assert.That(() => ExceptionUtilities.ThrowIfNotInBounds((nuint)2, (nuint)1, "index", "length"),
+                Throws.InstanceOf<ArgumentOutOfRangeException>()
+                      .And.Property("ActualValue").EqualTo((nuint)2)
+                      .And.Message.Contains("'index'")
+                      .And.Message.Contains("'length'")
+                      .And.Property("ParamName").EqualTo("index")
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNotInInsertBounds(int, int, string, string)" /> method.</summary>
         [Test]
         public static void ThrowIfNotInInsertBoundsInt32Test()
@@ -591,6 +666,69 @@ namespace TerraFX.UnitTests.Utilities
             Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds((nint)2, (nint)1, "index", "length"),
                 Throws.InstanceOf<ArgumentOutOfRangeException>()
                       .And.Property("ActualValue").EqualTo((nint)2)
+                      .And.Message.Contains("'index'")
+                      .And.Message.Contains("'length'")
+                      .And.Property("ParamName").EqualTo("index")
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNotInInsertBounds(uint, uint, string, string)" /> method.</summary>
+        [Test]
+        public static void ThrowIfNotInInsertBoundsUInt32Test()
+        {
+            Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds(0U, 1U, "index", "length"),
+                Throws.Nothing
+            );
+
+            Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds(1U, 1U, "index", "length"),
+                Throws.Nothing
+            );
+
+            Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds(2U, 1U, "index", "length"),
+                Throws.InstanceOf<ArgumentOutOfRangeException>()
+                      .And.Property("ActualValue").EqualTo(2U)
+                      .And.Message.Contains("'index'")
+                      .And.Message.Contains("'length'")
+                      .And.Property("ParamName").EqualTo("index")
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNotInInsertBounds(ulong, ulong, string, string)" /> method.</summary>
+        [Test]
+        public static void ThrowIfNotInInsertBoundsUInt64Test()
+        {
+            Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds(0UL, 1UL, "index", "length"),
+                Throws.Nothing
+            );
+
+            Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds(1UL, 1UL, "index", "length"),
+                Throws.Nothing
+            );
+
+            Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds(2UL, 1UL, "index", "length"),
+                Throws.InstanceOf<ArgumentOutOfRangeException>()
+                      .And.Property("ActualValue").EqualTo(2UL)
+                      .And.Message.Contains("'index'")
+                      .And.Message.Contains("'length'")
+                      .And.Property("ParamName").EqualTo("index")
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNotInInsertBounds(nuint, nuint, string, string)" /> method.</summary>
+        [Test]
+        public static void ThrowIfNotInInsertBoundsNUIntTest()
+        {
+            Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds((nuint)0, (nuint)1, "index", "length"),
+                Throws.Nothing
+            );
+
+            Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds((nuint)1, (nuint)1, "index", "length"),
+                Throws.Nothing
+            );
+
+            Assert.That(() => ExceptionUtilities.ThrowIfNotInInsertBounds((nuint)2, (nuint)1, "index", "length"),
+                Throws.InstanceOf<ArgumentOutOfRangeException>()
+                      .And.Property("ActualValue").EqualTo((nuint)2)
                       .And.Message.Contains("'index'")
                       .And.Message.Contains("'length'")
                       .And.Property("ParamName").EqualTo("index")

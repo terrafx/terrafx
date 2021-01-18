@@ -71,6 +71,12 @@ namespace TerraFX.Runtime
         /// <summary>Gets a localized string similar to <c>'{0}' is negative or greater than '{1}'</c>.</summary>
         public static string ValueIsNotInSignedInsertBoundsMessage => GetString(nameof(ValueIsNotInSignedInsertBoundsMessage));
 
+        /// <summary>Gets a localized string similar to <c>'{0}' is greater than or equal to '{1}'</c>.</summary>
+        public static string ValueIsNotInUnsignedBoundsMessage => GetString(nameof(ValueIsNotInUnsignedBoundsMessage));
+
+        /// <summary>Gets a localized string similar to <c>'{0}' is greater than '{1}'</c>.</summary>
+        public static string ValueIsNotInUnsignedInsertBoundsMessage => GetString(nameof(ValueIsNotInUnsignedInsertBoundsMessage));
+
         /// <summary>Gets a localized string similar to <c>'{0}' is not a power of two</c>.</summary>
         public static string ValueIsNotPow2Message => GetString(nameof(ValueIsNotPow2Message));
 

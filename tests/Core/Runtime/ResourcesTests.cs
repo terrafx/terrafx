@@ -232,11 +232,44 @@ namespace TerraFX.UnitTests.Runtime
 
         /// <summary>Provides validation of the <see cref="Resources.ValueIsNotInSignedBoundsMessage" /> property.</summary>
         [TestCase("en", "'{0}' is negative or greater than or equal to '{1}'")]
-        public static void ValueIsNotInBoundsSignedMessageTest(string cultureName, string expectedMessage)
+        public static void ValueIsNotInSignedBoundsMessageTest(string cultureName, string expectedMessage)
         {
             Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
 
             Assert.That(Resources.ValueIsNotInSignedBoundsMessage,
+                Is.EqualTo(expectedMessage)
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="Resources.ValueIsNotInSignedBoundsMessage" /> property.</summary>
+        [TestCase("en", "'{0}' is negative or greater than '{1}'")]
+        public static void ValueIsNotInSignedInsertBoundsMessage(string cultureName, string expectedMessage)
+        {
+            Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
+
+            Assert.That(Resources.ValueIsNotInSignedInsertBoundsMessage,
+                Is.EqualTo(expectedMessage)
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="Resources.ValueIsNotInUnsignedBoundsMessage" /> property.</summary>
+        [TestCase("en", "'{0}' is greater than or equal to '{1}'")]
+        public static void ValueIsNotInUnsignedBoundsMessageTest(string cultureName, string expectedMessage)
+        {
+            Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
+
+            Assert.That(Resources.ValueIsNotInUnsignedBoundsMessage,
+                Is.EqualTo(expectedMessage)
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="Resources.ValueIsNotInUnsignedBoundsMessage" /> property.</summary>
+        [TestCase("en", "'{0}' is greater than '{1}'")]
+        public static void ValueIsNotInUnsignedInsertBoundsMessage(string cultureName, string expectedMessage)
+        {
+            Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
+
+            Assert.That(Resources.ValueIsNotInUnsignedInsertBoundsMessage,
                 Is.EqualTo(expectedMessage)
             );
         }
