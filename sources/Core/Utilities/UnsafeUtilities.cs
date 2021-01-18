@@ -129,8 +129,28 @@ namespace TerraFX.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref T NullRef<T>() => ref Unsafe.NullRef<T>();
 
+        /// <inheritdoc cref="Unsafe.ReadUnaligned{T}(void*)" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T ReadUnaligned<T>(void* source)
+            where T : unmanaged => Unsafe.ReadUnaligned<T>(source);
+
+        /// <inheritdoc cref="Unsafe.ReadUnaligned{T}(void*)" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T ReadUnaligned<T>(void* source, nuint offset)
+            where T : unmanaged => Unsafe.ReadUnaligned<T>((void*)((nuint)source + offset));
+
         /// <inheritdoc cref="Unsafe.SizeOf{T}" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint SizeOf<T>() => unchecked((uint)Unsafe.SizeOf<T>());
+
+        /// <inheritdoc cref="Unsafe.WriteUnaligned{T}(void*, T)" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void WriteUnaligned<T>(void* source, T value)
+            where T : unmanaged => Unsafe.WriteUnaligned<T>(source, value);
+
+        /// <inheritdoc cref="Unsafe.WriteUnaligned{T}(void*, T)" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void WriteUnaligned<T>(void* source, nuint offset, T value)
+            where T : unmanaged => Unsafe.WriteUnaligned((void*)((nuint)source + offset), value);
     }
 }
