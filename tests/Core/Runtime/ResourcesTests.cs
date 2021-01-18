@@ -285,6 +285,17 @@ namespace TerraFX.UnitTests.Runtime
             );
         }
 
+        /// <summary>Provides validation of the <see cref="Resources.ValueIsNotZeroMessage" /> property.</summary>
+        [TestCase("en", "'{0}' is not zero")]
+        public static void ValueIsNotZeroMessageTest(string cultureName, string expectedMessage)
+        {
+            Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
+
+            Assert.That(Resources.ValueIsNotZeroMessage,
+                Is.EqualTo(expectedMessage)
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="Resources.ValueIsNullMessage" /> property.</summary>
         [TestCase("en", "'{0}' is null")]
         public static void ValueIsNullMessageTest(string cultureName, string expectedMessage)

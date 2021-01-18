@@ -97,6 +97,19 @@ namespace TerraFX.UnitTests.Utilities
             );
         }
 
+        /// <summary>Provides validation of the <see cref="AssertionUtilities.AssertNotNull{T}(UnmanagedArray{T})" /> method.</summary>
+        [Test]
+        public static unsafe void AssertNotNullUnmanagedArrayTest()
+        {
+            Assert.That(() => AssertionUtilities.AssertNotNull(UnmanagedArray<int>.Empty),
+                Throws.Nothing
+            );
+
+            Assert.That(() => AssertionUtilities.AssertNotNull(new UnmanagedArray<int>()),
+                Configuration.AssertionsEnabled ? Throws.Exception : Throws.Nothing
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="AssertionUtilities.AssertThread(Thread)" /> method.</summary>
         [Test]
         public static unsafe void AssertThreadTest()

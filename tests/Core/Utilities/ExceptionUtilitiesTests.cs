@@ -796,6 +796,102 @@ namespace TerraFX.UnitTests.Utilities
             );
         }
 
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNotZero(int, string)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowIfNotZeroInt32Test()
+        {
+            Assert.That(() => ExceptionUtilities.ThrowIfNotZero(0, "value"),
+                Throws.Nothing
+            );
+
+            Assert.That(() => ExceptionUtilities.ThrowIfNotZero(1, "value"),
+                Throws.InstanceOf<ArgumentOutOfRangeException>()
+                      .And.Property("ActualValue").EqualTo(1)
+                      .And.Message.Contains("'value'")
+                      .And.Property("ParamName").EqualTo("value")
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNotZero(long, string)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowIfNotZeroInt64Test()
+        {
+            Assert.That(() => ExceptionUtilities.ThrowIfNotZero(0L, "value"),
+                Throws.Nothing
+            );
+
+            Assert.That(() => ExceptionUtilities.ThrowIfNotZero(1L, "value"),
+                Throws.InstanceOf<ArgumentOutOfRangeException>()
+                      .And.Property("ActualValue").EqualTo(1L)
+                      .And.Message.Contains("'value'")
+                      .And.Property("ParamName").EqualTo("value")
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNotZero(nint, string)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowIfNotZeroNIntTest()
+        {
+            Assert.That(() => ExceptionUtilities.ThrowIfNotZero((nint)0, "value"),
+                Throws.Nothing
+            );
+
+            Assert.That(() => ExceptionUtilities.ThrowIfNotZero((nint)1, "value"),
+                Throws.InstanceOf<ArgumentOutOfRangeException>()
+                      .And.Property("ActualValue").EqualTo((nint)1)
+                      .And.Message.Contains("'value'")
+                      .And.Property("ParamName").EqualTo("value")
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNotZero(uint, string)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowIfNotZeroUInt32Test()
+        {
+            Assert.That(() => ExceptionUtilities.ThrowIfNotZero(0U, "value"),
+                Throws.Nothing
+            );
+
+            Assert.That(() => ExceptionUtilities.ThrowIfNotZero(1U, "value"),
+                Throws.InstanceOf<ArgumentOutOfRangeException>()
+                      .And.Property("ActualValue").EqualTo(1U)
+                      .And.Message.Contains("'value'")
+                      .And.Property("ParamName").EqualTo("value")
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNotZero(ulong, string)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowIfNotZeroUInt64Test()
+        {
+            Assert.That(() => ExceptionUtilities.ThrowIfNotZero(0UL, "value"),
+                Throws.Nothing
+            );
+
+            Assert.That(() => ExceptionUtilities.ThrowIfNotZero(1UL, "value"),
+                Throws.InstanceOf<ArgumentOutOfRangeException>()
+                      .And.Property("ActualValue").EqualTo(1UL)
+                      .And.Message.Contains("'value'")
+                      .And.Property("ParamName").EqualTo("value")
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNotZero(nuint, string)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowIfNotZeroNUIntTest()
+        {
+            Assert.That(() => ExceptionUtilities.ThrowIfNotZero((nuint)0, "value"),
+                Throws.Nothing
+            );
+
+            Assert.That(() => ExceptionUtilities.ThrowIfNotZero((nuint)1, "value"),
+                Throws.InstanceOf<ArgumentOutOfRangeException>()
+                      .And.Property("ActualValue").EqualTo((nuint)1)
+                      .And.Message.Contains("'value'")
+                      .And.Property("ParamName").EqualTo("value")
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNull{T}(T, string)" /> method.</summary>
         [Test]
         public static void ThrowIfNullObjectTest()
@@ -821,6 +917,22 @@ namespace TerraFX.UnitTests.Utilities
             );
 
             Assert.That(() => ExceptionUtilities.ThrowIfNull(null, "value"),
+                Throws.ArgumentNullException
+                      .And.Message.Contains("'value'")
+                      .And.Message.Contains("null")
+                      .And.Property("ParamName").EqualTo("value")
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowIfNull{T}(UnmanagedArray{T}, string)" /> method.</summary>
+        [Test]
+        public static unsafe void ThrowIfNullUnmanagedArrayTest()
+        {
+            Assert.That(() => ExceptionUtilities.ThrowIfNull(new UnmanagedArray<int>(), "value"),
+                Throws.Nothing
+            );
+
+            Assert.That(() => ExceptionUtilities.ThrowIfNull(UnmanagedArray<int>.Empty, "value"),
                 Throws.ArgumentNullException
                       .And.Message.Contains("'value'")
                       .And.Message.Contains("null")

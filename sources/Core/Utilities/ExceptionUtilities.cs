@@ -694,6 +694,21 @@ namespace TerraFX.Utilities
             }
         }
 
+        /// <summary>Throws an <see cref="ArgumentNullException" /> if <paramref name="array" /> is <c>null</c>.</summary>
+        /// <typeparam name="T">The type of items in <paramref name="array" />.</typeparam>
+        /// <param name="array">The array to be checked for <c>null</c>.</param>
+        /// <param name="arrayName">The name of the array being checked.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="array" /> is <c>null</c>.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowIfNull<T>(UnmanagedArray<T> array, string arrayName)
+            where T : unmanaged
+        {
+            if (array.IsNull)
+            {
+                ThrowArgumentNullException(arrayName);
+            }
+        }
+
         /// <summary>Throws a <see cref="ArgumentNullException" /> if <paramref name="value" /> is <c>null</c>.</summary>
         /// <param name="value">The value to be checked for <c>null</c>.</param>
         /// <param name="valueName">The name of the value being checked.</param>
