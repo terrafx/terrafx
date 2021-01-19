@@ -192,7 +192,7 @@ namespace TerraFX
         public T* GetPointerUnsafe(nuint index)
         {
             AssertNotNull(this);
-            Assert(AssertionsEnabled && (index < Length));
+            Assert(AssertionsEnabled && (index <= Length));
 
             var items = &_data->Item;
             return items + index;

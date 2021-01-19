@@ -928,11 +928,11 @@ namespace TerraFX.UnitTests.Utilities
         [Test]
         public static unsafe void ThrowIfNullUnmanagedArrayTest()
         {
-            Assert.That(() => ExceptionUtilities.ThrowIfNull(new UnmanagedArray<int>(), "value"),
+            Assert.That(() => ExceptionUtilities.ThrowIfNull(UnmanagedArray<int>.Empty, "value"),
                 Throws.Nothing
             );
 
-            Assert.That(() => ExceptionUtilities.ThrowIfNull(UnmanagedArray<int>.Empty, "value"),
+            Assert.That(() => ExceptionUtilities.ThrowIfNull(new UnmanagedArray<int>(), "value"),
                 Throws.ArgumentNullException
                       .And.Message.Contains("'value'")
                       .And.Message.Contains("null")

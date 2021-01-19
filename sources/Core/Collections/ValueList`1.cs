@@ -147,7 +147,7 @@ namespace TerraFX.Collections
             var count = Count;
             var newCount = count + 1;
 
-            if (newCount < Capacity)
+            if (newCount <= Capacity)
             {
                 _version++;
             }
@@ -193,14 +193,9 @@ namespace TerraFX.Collections
             if (capacity > currentCapacity)
             {
                 var newCapacity = Max(capacity, currentCapacity * 2);
-
                 var newItems = GC.AllocateUninitializedArray<T>(newCapacity);
-                var items = _items;
 
-                if (items is not null)
-                {
-                    Array.Copy(items, newItems, currentCapacity);
-                }
+                CopyTo(newItems);
 
                 _version++;
                 _items = newItems;

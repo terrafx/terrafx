@@ -11,7 +11,10 @@ namespace TerraFX.Runtime
         /// <summary>Gets a localized string similar to <c>The allocation of '{0}x{1}' bytes failed</c>.</summary>
         public static string ArrayAllocationFailedMessage => GetString(nameof(ArrayAllocationFailedMessage));
 
-        /// <summary>Gets a localized string similar to <c>'{0}' has an invalid flag combination</c>c>.</summary>
+        /// <summary>Gets a localized string similar to <c>The queue is empty</c>.</summary>
+        public static string EmptyQueueMessage => GetString(nameof(EmptyQueueMessage));
+
+        /// <summary>Gets a localized string similar to <c>'{0}' has an invalid flag combination</c>.</summary>
         public static string InvalidFlagCombinationMessage => GetString(nameof(InvalidFlagCombinationMessage));
 
         /// <summary>Gets a localized string similar to <c>'{0}' is not a valid key to '{1}'</c>.</summary>

@@ -144,7 +144,7 @@ namespace TerraFX.Collections
             var count = Count;
             var newCount = count + 1;
 
-            if (newCount < Capacity)
+            if (newCount <= Capacity)
             {
                 _version++;
             }
@@ -201,11 +201,8 @@ namespace TerraFX.Collections
 
                 var newItems = new UnmanagedArray<T>(newCapacity, alignment, zero: false);
 
-                if (!items.IsNull)
-                {
-                    CopyArrayUnsafe<T>(newItems.GetPointerUnsafe(0), items.GetPointer(0), Count);
-                    items.Dispose();
-                }
+                CopyTo(newItems);
+                items.Dispose();
 
                 _version++;
                 _items = newItems;

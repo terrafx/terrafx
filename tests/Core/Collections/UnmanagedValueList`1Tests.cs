@@ -542,7 +542,6 @@ namespace TerraFX.UnitTests.Collections
 
             using (var valueList = new UnmanagedValueList<int>(array, takeOwnership: true))
             {
-
                 Assert.That(() => valueList.Remove(1),
                     Is.True
                 );

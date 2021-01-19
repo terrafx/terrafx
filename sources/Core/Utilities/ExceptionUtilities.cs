@@ -54,6 +54,15 @@ namespace TerraFX.Utilities
             throw new ExternalException(message, errorCode);
         }
 
+        /// <summary>Throws an <see cref="InvalidOperationException" /> for an empty queue.</summary>
+        /// <exception cref="InvalidOperationException">The queue is empty.</exception>
+        [DoesNotReturn]
+        public static void ThrowForEmptyQueue()
+        {
+            var message = Resources.EmptyQueueMessage;
+            ThrowInvalidOperationException(message);
+        }
+
         /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> for an invalid flags enum combination.</summary>
         /// <param name="value">The value that caused the exception.va</param>
         /// <param name="valueName">The name of the value that caused the exception.</param>
@@ -357,7 +366,7 @@ namespace TerraFX.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfNotInBounds(int index, int length, string indexName, string lengthName)
         {
-            if ((uint)index >= (uint)length)
+            if (unchecked((uint)index >= (uint)length))
             {
                 var message = string.Format(Resources.ValueIsNotInSignedBoundsMessage, indexName, lengthName);
                 ThrowArgumentOutOfRangeException(message, index, indexName);
@@ -373,7 +382,7 @@ namespace TerraFX.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfNotInBounds(long index, long length, string indexName, string lengthName)
         {
-            if ((ulong)index >= (ulong)length)
+            if (unchecked((ulong)index >= (ulong)length))
             {
                 var message = string.Format(Resources.ValueIsNotInSignedBoundsMessage, indexName, lengthName);
                 ThrowArgumentOutOfRangeException(message, index, indexName);
@@ -389,7 +398,7 @@ namespace TerraFX.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfNotInBounds(nint index, nint length, string indexName, string lengthName)
         {
-            if ((nuint)index >= (nuint)length)
+            if (unchecked((nuint)index >= (nuint)length))
             {
                 var message = string.Format(Resources.ValueIsNotInSignedBoundsMessage, indexName, lengthName);
                 ThrowArgumentOutOfRangeException(message, index, indexName);
@@ -453,7 +462,7 @@ namespace TerraFX.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfNotInInsertBounds(int index, int length, string indexName, string lengthName)
         {
-            if ((uint)index > (uint)length)
+            if (unchecked((uint)index > (uint)length))
             {
                 var message = string.Format(Resources.ValueIsNotInSignedBoundsMessage, indexName, lengthName);
                 ThrowArgumentOutOfRangeException(message, index, indexName);
@@ -469,7 +478,7 @@ namespace TerraFX.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfNotInInsertBounds(long index, long length, string indexName, string lengthName)
         {
-            if ((ulong)index > (ulong)length)
+            if (unchecked((ulong)index > (ulong)length))
             {
                 var message = string.Format(Resources.ValueIsNotInSignedBoundsMessage, indexName, lengthName);
                 ThrowArgumentOutOfRangeException(message, index, indexName);
@@ -485,7 +494,7 @@ namespace TerraFX.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfNotInInsertBounds(nint index, nint length, string indexName, string lengthName)
         {
-            if ((nuint)index > (nuint)length)
+            if (unchecked((nuint)index > (nuint)length))
             {
                 var message = string.Format(Resources.ValueIsNotInSignedBoundsMessage, indexName, lengthName);
                 ThrowArgumentOutOfRangeException(message, index, indexName);

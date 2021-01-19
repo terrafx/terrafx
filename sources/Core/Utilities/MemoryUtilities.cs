@@ -548,7 +548,7 @@ namespace TerraFX.Utilities
         {
             Assert(AssertionsEnabled && ((destination != null) || (length == 0)));
             Assert(AssertionsEnabled && ((source != null) || (length == 0)));
-            Assert(AssertionsEnabled && (destination != source));
+            Assert(AssertionsEnabled && ((destination != source) || (length == 0)));
             
             if (length <= 32)
             {

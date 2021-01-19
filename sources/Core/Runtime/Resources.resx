@@ -123,6 +123,9 @@
   <data name="ArrayAllocationFailedMessage" xml:space="preserve">
     <value>The allocation of '{0}x{1}' bytes failed</value>
   </data>
+  <data name="EmptyQueueMessage" xml:space="preserve">
+    <value>The queue is empty</value>
+  </data>
   <data name="InvalidFlagCombinationMessage" xml:space="preserve">
     <value>'{0}' has an invalid flag combination</value>
   </data>
