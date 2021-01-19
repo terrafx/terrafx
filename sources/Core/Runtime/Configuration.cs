@@ -63,7 +63,7 @@ namespace TerraFX.Runtime
         /// </remarks>
         public static readonly nuint DefaultAlignment = GetAppContextData(
             $"{typeof(Configuration).FullName}.{nameof(DefaultAlignment)}",
-            defaultValue: 16
+            defaultValue: (nuint)16
         );
 
         /// <summary><c>true</c> if TerraFX should use <see cref="CultureInfo.InvariantCulture" /> when resolving resources; otherwise, <c>false</c>.</summary>

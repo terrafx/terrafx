@@ -1,9 +1,9 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
-using System.Runtime.Intrinsics.X86;
 using static TerraFX.Interop.Mimalloc;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
@@ -233,35 +233,61 @@ namespace TerraFX.Utilities
 
         /// <summary>Clears a destination buffer to zero.</summary>
         /// <param name="destination">The destination buffer to clear.</param>
-        /// <param name="length">The length, in bytes, of <paramref name="destination" />.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <c>null</c> and <paramref name="length" /> is not <c>zero</c>.</exception>
-        public static void Clear(void* destination, nuint length)
+        /// <param name="size">The size, in bytes, of <paramref name="destination" />.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <c>null</c> and <paramref name="size" /> is not <c>zero</c>.</exception>
+        public static void Clear(void* destination, nuint size)
         {
-            if (length == 0)
+            if (size == 0)
             {
                 return;
             }
             ThrowIfNull(destination, nameof(destination));
 
-            ClearUnsafe(destination, length);
+            ClearUnsafe(destination, size);
         }
 
         /// <summary>Clears a destination buffer to zero.</summary>
+        /// <typeparam name="T">The type used to compute the size, in bytes, of <paramref name="destination" />.</typeparam>
         /// <param name="destination">The destination buffer to clear.</param>
-        /// <param name="length">The length, in bytes, of <paramref name="destination" />.</param>
-        /// <remarks>This method is unsafe because it does not validate <paramref name="destination" /> is not <c>null</c> if <paramref name="length" /> is not <c>zero</c>.</remarks>
+        /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <c>null</c>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ClearUnsafe(void* destination, nuint length)
-        {
-            Assert(AssertionsEnabled && ((destination != null) || (length == 0)));
+        public static void Clear<T>(void* destination)
+            where T : unmanaged => Clear(destination, SizeOf<T>());
 
-            if (length <= 32)
+        /// <summary>Clears a destination buffer to zero.</summary>
+        /// <typeparam name="T">The type used to compute the size, in bytes, of the elements in <paramref name="destination" />.</typeparam>
+        /// <param name="destination">The destination buffer to clear.</param>
+        /// <param name="count">The count of elements in <paramref name="destination" />.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <c>null</c> and <paramref name="count" /> is not <c>zero</c>.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ClearArray<T>(void* destination, nuint count)
+            where T : unmanaged => Clear(destination, count * SizeOf<T>());
+
+        /// <summary>Clears a destination buffer to zero.</summary>
+        /// <typeparam name="T">The type used to compute the size, in bytes, of the elements in <paramref name="destination" />.</typeparam>
+        /// <param name="destination">The destination buffer to clear.</param>
+        /// <param name="count">The count of elements in <paramref name="destination" />.</param>
+        /// <remarks>This method is unsafe because it does not validate <paramref name="destination" /> is not <c>null</c>.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ClearArrayUnsafe<T>(void* destination, nuint count)
+            where T : unmanaged => ClearUnsafe(destination, count * SizeOf<T>());
+
+        /// <summary>Clears a destination buffer to zero.</summary>
+        /// <param name="destination">The destination buffer to clear.</param>
+        /// <param name="size">The size, in bytes, of <paramref name="destination" />.</param>
+        /// <remarks>This method is unsafe because it does not validate <paramref name="destination" /> is not <c>null</c> if <paramref name="size" /> is not <c>zero</c>.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ClearUnsafe(void* destination, nuint size)
+        {
+            Assert(AssertionsEnabled && ((destination != null) || (size == 0)));
+
+            if (size <= 32)
             {
-                SmallClear(destination, length);
+                SmallClear(destination, size);
             }
             else
             {
-                LargeClear(destination, length);
+                LargeClear(destination, size);
             }
 
             static void LargeClear(void* destination, nuint length)
@@ -427,15 +453,23 @@ namespace TerraFX.Utilities
             }
         }
 
+        /// <summary>Clears a destination buffer to zero.</summary>
+        /// <typeparam name="T">The type used to compute the size, in bytes, of the elements in <paramref name="destination" />.</typeparam>
+        /// <param name="destination">The destination buffer to clear.</param>
+        /// <remarks>This method is unsafe because it does not validate <paramref name="destination" /> is not <c>null</c>.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ClearUnsafe<T>(void* destination)
+            where T : unmanaged => ClearUnsafe(destination, SizeOf<T>());
+
         /// <summary>Copies memory from a source buffer to a destination buffer.</summary>
         /// <param name="destination">The destination buffer to which memory should be copied.</param>
         /// <param name="source">The source buffer from which memory is copied.</param>
-        /// <param name="length">The length, in bytes, to be copied.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="source" /> is <c>null</c> and <paramref name="length" /> is not <c>zero</c>.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <c>null</c> and <paramref name="length" /> is not <c>zero</c>.</exception>
-        public static void Copy(void* destination, void* source, nuint length)
+        /// <param name="size">The size, in bytes, to be copied.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="source" /> is <c>null</c> and <paramref name="size" /> is not <c>zero</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <c>null</c> and <paramref name="size" /> is not <c>zero</c>.</exception>
+        public static void Copy(void* destination, void* source, nuint size)
         {
-            if (length == 0)
+            if (size == 0)
             {
                 return;
             }
@@ -443,7 +477,7 @@ namespace TerraFX.Utilities
             ThrowIfNull(source, nameof(source));
             ThrowIfNull(destination, nameof(destination));
 
-            CopyUnsafe(destination, source, length);
+            CopyUnsafe(destination, source, size);
         }
 
         /// <summary>Copies memory from a source buffer to a destination buffer.</summary>
@@ -459,6 +493,50 @@ namespace TerraFX.Utilities
             ThrowIfNotInInsertBounds(sourceLength, destinationLength, nameof(sourceLength), nameof(destinationLength));
             Copy(destination, source, sourceLength);
         }
+
+        /// <summary>Copies memory from a source buffer to a destination buffer.</summary>
+        /// <typeparam name="T">The type used to compute the size, in bytes, of <paramref name="source" />.</typeparam>
+        /// <param name="destination">The destination buffer to which memory should be copied.</param>
+        /// <param name="source">The source buffer from which memory is copied.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="source" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <c>null</c>.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Copy<T>(void* destination, void* source)
+            where T : unmanaged => Copy(destination, source, SizeOf<T>());
+
+        /// <summary>Copies memory from a source buffer to a destination buffer.</summary>
+        /// <typeparam name="T">The type used to compute the size, in bytes, of the elements in <paramref name="source" />.</typeparam>
+        /// <param name="destination">The destination buffer to which memory should be copied.</param>
+        /// <param name="source">The source buffer from which memory is copied.</param>
+        /// <param name="count">The count of elements in <paramref name="source" />.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="source" /> is <c>null</c> and <paramref name="count" /> is not <c>zero</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <c>null</c> and <paramref name="count" /> is not <c>zero</c>.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void CopyArray<T>(void* destination, void* source, nuint count)
+            where T : unmanaged => Copy(destination, source, count * SizeOf<T>());
+
+        /// <summary>Copies memory from a source buffer to a destination buffer.</summary>
+        /// <typeparam name="T">The type used to compute the size, in bytes, of the elements in <paramref name="source" /> and <paramref name="destination" />.</typeparam>
+        /// <param name="destination">The destination buffer to which memory should be copied.</param>
+        /// <param name="destinationCount">The count of elements in <paramref name="destination" />.</param>
+        /// <param name="source">The source buffer from which memory is copied.</param>
+        /// <param name="sourceCount">The count of elements in <paramref name="source" />.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="sourceCount" /> is greater than <paramref name="destinationCount" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="source" /> is <c>null</c> and <paramref name="sourceCount" /> is not <c>zero</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="destination" /> is <c>null</c> and <paramref name="destinationCount" /> is not <c>zero</c>.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void CopyArray<T>(void* destination, nuint destinationCount, void* source, nuint sourceCount)
+            where T : unmanaged => Copy(destination, destinationCount * SizeOf<T>(), source, sourceCount * SizeOf<T>());
+
+        /// <summary>Copies memory from a source buffer to a destination buffer.</summary>
+        /// <typeparam name="T">The type used to compute the size, in bytes, of the elements in <paramref name="source" />.</typeparam>
+        /// <param name="destination">The destination buffer to which memory should be copied.</param>
+        /// <param name="source">The source buffer from which memory is copied.</param>
+        /// <param name="count">The count of elements in <paramref name="source" />.</param>
+        /// <remarks>This method is unsafe because it does not validate <paramref name="destination" /> and <paramref name="source" /> are not <c>null</c> if <paramref name="count" /> is not <c>zero</c>.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void CopyArrayUnsafe<T>(void* destination, void* source, nuint count)
+            where T : unmanaged => CopyUnsafe(destination, source, count * SizeOf<T>());
 
         /// <summary>Copies memory from a source buffer to a destination buffer.</summary>
         /// <param name="destination">The destination buffer to which memory should be copied.</param>
@@ -752,6 +830,15 @@ namespace TerraFX.Utilities
                 }
             }
         }
+
+        /// <summary>Copies memory from a source buffer to a destination buffer.</summary>
+        /// <typeparam name="T">The type used to compute the size, in bytes, of <paramref name="source" />.</typeparam>
+        /// <param name="destination">The destination buffer to which memory should be copied.</param>
+        /// <param name="source">The source buffer from which memory is copied.</param>
+        /// <remarks>This method is unsafe because it does not validate <paramref name="destination" /> and <paramref name="source" /> are not <c>null</c>.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void CopyUnsafe<T>(void* destination, void* source)
+            where T : unmanaged => CopyUnsafe(destination, source, SizeOf<T>());
 
         /// <summary>Frees an allocated chunk of unmanaged memory.</summary>
         /// <param name="address">The address to an allocated chunk of memory to free</param>
@@ -1098,6 +1185,59 @@ namespace TerraFX.Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T* TryAllocateArray<T>(nuint count, nuint alignment, nuint offset, bool zero = false)
             where T : unmanaged => zero ? mi_calloc_aligned_at_tp<T>(count, alignment, offset) : mi_mallocn_aligned_at_tp<T>(count, alignment, offset);
+
+        /// <summary>Tries to get the index of a given item in the specified buffer.</summary>
+        /// <typeparam name="T">The type of the item to try and get the index for.</typeparam>
+        /// <param name="items">The items to search for <paramref name="item" />.</param>
+        /// <param name="length">The length, in items, of <paramref name="items" />.</param>
+        /// <param name="item">The item to try and get the index for.</param>
+        /// <param name="index">When <c>true</c> is returned, this contains the index of <paramref name="item" />.</param>
+        /// <returns><c>true</c> if <paramref name="item" /> was found in <paramref name="items" />; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="items" /> is <c>null</c> and <paramref name="length" /> is not <c>zero</c>.</exception>
+        public static bool TryGetIndexOf<T>(T* items, nuint length, T item, out nuint index)
+            where T : unmanaged
+        {
+            if (length == 0)
+            {
+                index = 0;
+                return false;
+            }
+            ThrowIfNull(items, nameof(items));
+
+            return TryGetIndexOfUnsafe(items, length, item, out index);
+        }
+
+        /// <summary>Tries to get the index of a given item in the specified buffer.</summary>
+        /// <typeparam name="T">The type of the item to try and get the index for.</typeparam>
+        /// <param name="items">The items to search for <paramref name="item" />.</param>
+        /// <param name="length">The length, in items, of <paramref name="items" />.</param>
+        /// <param name="item">The item to try and get the index for.</param>
+        /// <param name="index">When <c>true</c> is returned, this contains the index of <paramref name="item" />.</param>
+        /// <returns><c>true</c> if <paramref name="item" /> was found in <paramref name="items" />; otherwise, <c>false</c>.</returns>
+        /// <remarks>This method is unsafe because it does not validate <paramref name="items" /> is not <c>null</c> if <paramref name="length" /> is not <c>zero</c>.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetIndexOfUnsafe<T>(T* items, nuint length, T item, out nuint index)
+            where T : unmanaged
+        {
+            return SoftwareFallback(items, length, item, out index);
+
+            static bool SoftwareFallback(T* items, nuint length, T item, out nuint index)
+            {
+                var equalityComparer = EqualityComparer<T>.Default;
+
+                for (nuint i = 0; i < length; i++)
+                {
+                    if (equalityComparer.Equals(items[i], item))
+                    {
+                        index = i;
+                        return true;
+                    }
+                }
+
+                index = 0;
+                return false;
+            }
+        }
 
         /// <summary>Tries to reallocate a chunk of unmanaged memory.</summary>
         /// <param name="address">The address of an allocated chunk of memory to reallocate</param>

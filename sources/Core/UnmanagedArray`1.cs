@@ -106,7 +106,13 @@ namespace TerraFX
             => new UnmanagedReadOnlySpan<T>(array);
 
         /// <inheritdoc />
-        public void Dispose() => Free(_data);
+        public void Dispose()
+        {
+            if (_data != Empty._data)
+            {
+                Free(_data);
+            }
+        }
 
         /// <summary>Converts the array to a span.</summary>
         /// <returns>A span that covers the array.</returns>
@@ -131,7 +137,7 @@ namespace TerraFX
             var items = &_data->Item;
             var length = _data->Length;
 
-            ClearUnsafe(items, length);
+            ClearArrayUnsafe<T>(items, length);
         }
 
         /// <summary>Copies the items in the array to a given destination.</summary>
@@ -148,7 +154,7 @@ namespace TerraFX
             ThrowIfNull(destination, nameof(destination));
             ThrowIfNotInInsertBounds(length, destination.Length, nameof(Length), nameof(destination));
 
-            CopyUnsafe(destination.GetPointerUnsafe(0), items, length);
+            CopyArrayUnsafe<T>(destination.GetPointerUnsafe(0), items, length);
         }
 
         /// <summary>Copies the items in the array to a given destination.</summary>
@@ -163,7 +169,7 @@ namespace TerraFX
 
             ThrowIfNotInInsertBounds(length, destination.Length, nameof(Length), nameof(destination));
 
-            CopyUnsafe(destination.GetPointerUnsafe(0), items, length);
+            CopyArrayUnsafe<T>(destination.GetPointerUnsafe(0), items, length);
         }
 
         /// <summary>Gets a pointer to the item at the specified index of the array.</summary>

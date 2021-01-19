@@ -117,7 +117,7 @@ namespace TerraFX
             => new UnmanagedReadOnlySpan<T>(span);
 
         /// <summary>Clears all items in the span to <c>zero</c>.</summary>
-        public void Clear() => ClearUnsafe(_items, _length);
+        public void Clear() => ClearArrayUnsafe<T>(_items, _length);
 
         /// <summary>Copies the items in the span to a given destination.</summary>
         /// <param name="destination">The destination array where the items should be copied.</param>
@@ -131,7 +131,7 @@ namespace TerraFX
             ThrowIfNull(destination, nameof(destination));
             ThrowIfNotInInsertBounds(length, destination.Length, nameof(Length), nameof(destination));
 
-            CopyUnsafe(destination.GetPointerUnsafe(0), items, length);
+            CopyArrayUnsafe<T>(destination.GetPointerUnsafe(0), items, length);
         }
 
         /// <summary>Copies the items in the array to a given destination.</summary>
@@ -144,7 +144,7 @@ namespace TerraFX
 
             ThrowIfNotInInsertBounds(length, destination.Length, nameof(Length), nameof(destination));
 
-            CopyUnsafe(destination.GetPointerUnsafe(0), items, length);
+            CopyArrayUnsafe<T>(destination.GetPointerUnsafe(0), items, length);
         }
 
         /// <summary>Gets a pointer to the item at the specified index of the span.</summary>
