@@ -36,6 +36,10 @@ namespace TerraFX.Runtime
         /// <remarks>This value is not configurable via an <see cref="AppContext" /> switch.</remarks>
         public static readonly bool IsWindows = OperatingSystem.IsWindows();
 
+        internal static readonly nuint s_maxArrayLength = 0X7FEFFFFF;
+
+        internal static readonly nuint s_maxByteArrayLength = 0x7FFFFFC7;
+
         /// <summary><c>true</c> if TerraFX based assertions are enabled; otherwise, <c>false</c>.</summary>
         /// <remarks>
         ///     <para>This defaults to <c>true</c> in debug builds of TerraFX; otherwise, it defaults to <c>false</c>.</para>

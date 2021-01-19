@@ -1,6 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Diagnostics;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
 using static TerraFX.Utilities.ExceptionUtilities;
@@ -11,6 +12,8 @@ namespace TerraFX
 {
     /// <summary>Represents a type and memory safe way to read and write a contiguous region of unmanaged memory.</summary>
     /// <typeparam name="T">The type of items contained in the span.</typeparam>
+    [DebuggerDisplay("IsEmpty = {IsEmpty}; Length = {Length}")]
+    [DebuggerTypeProxy(typeof(UnmanagedSpan<>.DebugView))]
     public readonly unsafe partial struct UnmanagedSpan<T>
         where T : unmanaged
     {

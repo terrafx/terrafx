@@ -15,8 +15,8 @@ namespace TerraFX.Collections
     /// <summary>Represents a list of unmanaged items that can be accessed by index.</summary>
     /// <typeparam name="T">The type of the unmanaged items contained in the list.</typeparam>
     /// <remarks>This type is meant to be used as an implementation detail of another type and should not be part of your public surface area.</remarks>
-    [DebuggerDisplay("Count = {Count}")]
-    // [DebuggerTypeProxy(typeof(UnmanagedValueList<>.DebugView))]
+    [DebuggerDisplay("Capacity = {Capacity}; Count = {Count}")]
+    [DebuggerTypeProxy(typeof(UnmanagedValueList<>.DebugView))]
     public partial struct UnmanagedValueList<T> : IDisposable
         where  T : unmanaged
     {

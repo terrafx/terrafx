@@ -1,6 +1,7 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
 using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using static TerraFX.Runtime.Configuration;
 using static TerraFX.Utilities.AssertionUtilities;
@@ -12,6 +13,8 @@ namespace TerraFX
 {
     /// <summary></summary>
     /// <typeparam name="T"></typeparam>
+    [DebuggerDisplay("Alignment = {Alignment}; IsNull = {IsNull}; Length = {Length}")]
+    [DebuggerTypeProxy(typeof(UnmanagedArray<>.DebugView))]
     public readonly unsafe partial struct UnmanagedArray<T> : IDisposable
         where T : unmanaged
     {
