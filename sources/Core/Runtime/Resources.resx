@@ -126,6 +126,9 @@
   <data name="EmptyQueueMessage" xml:space="preserve">
     <value>The queue is empty</value>
   </data>
+  <data name="EmptyStackMessage" xml:space="preserve">
+    <value>The stack is empty</value>
+  </data>
   <data name="InvalidFlagCombinationMessage" xml:space="preserve">
     <value>'{0}' has an invalid flag combination</value>
   </data>

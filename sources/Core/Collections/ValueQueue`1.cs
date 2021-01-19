@@ -270,7 +270,7 @@ namespace TerraFX.Collections
             }
         }
 
-        /// <summary>Peeks the item at the head of the queue.</summary>
+        /// <summary>Peeks at item at the head of the queue.</summary>
         /// <returns>The item at the head of the queue.</returns>
         /// <exception cref="InvalidOperationException">The queue is empty.</exception>
         public readonly T Peek()
@@ -320,7 +320,7 @@ namespace TerraFX.Collections
             return true;
         }
 
-        /// <summary>Tries to peek the item at the head of the queue.</summary>
+        /// <summary>Tries to peek at the item at the head of the queue.</summary>
         /// <param name="item">When <c>true</c> is returned, this contains the item at the head of the queue.</param>
         /// <returns><c>true</c> if the queue was not empty; otherwise, <c>false</c>.</returns>
         public readonly bool TryPeek([MaybeNullWhen(false)] out T item)

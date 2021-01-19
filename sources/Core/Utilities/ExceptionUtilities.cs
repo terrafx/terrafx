@@ -63,6 +63,15 @@ namespace TerraFX.Utilities
             ThrowInvalidOperationException(message);
         }
 
+        /// <summary>Throws an <see cref="InvalidOperationException" /> for an empty stack.</summary>
+        /// <exception cref="InvalidOperationException">The stack is empty.</exception>
+        [DoesNotReturn]
+        public static void ThrowForEmptyStack()
+        {
+            var message = Resources.EmptyStackMessage;
+            ThrowInvalidOperationException(message);
+        }
+
         /// <summary>Throws an <see cref="ArgumentOutOfRangeException" /> for an invalid flags enum combination.</summary>
         /// <param name="value">The value that caused the exception.va</param>
         /// <param name="valueName">The name of the value that caused the exception.</param>

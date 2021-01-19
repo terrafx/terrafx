@@ -63,6 +63,24 @@ namespace TerraFX.UnitTests.Utilities
             );
         }
 
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowForEmptyQueue" /> method.</summary>
+        [Test]
+        public static void ThrowForEmptyQueueTest()
+        {
+            Assert.That(() => ExceptionUtilities.ThrowForEmptyQueue(),
+                Throws.InstanceOf<InvalidOperationException>()
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowForEmptyStack" /> method.</summary>
+        [Test]
+        public static void ThrowForEmptyStackTest()
+        {
+            Assert.That(() => ExceptionUtilities.ThrowForEmptyStack(),
+                Throws.InstanceOf<InvalidOperationException>()
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="ExceptionUtilities.ThrowForInvalidFlagsCombination{TEnum}(TEnum, string)" /> method.</summary>
         [Test]
         public static void ThrowForInvalidFlagsCombinationTest()

@@ -11,27 +11,27 @@ namespace TerraFX.Collections
     {
         internal sealed class DebugView
         {
-            private readonly UnmanagedValueQueue<T> _list;
+            private readonly UnmanagedValueQueue<T> _queue;
 
-            public DebugView(UnmanagedValueQueue<T> list)
+            public DebugView(UnmanagedValueQueue<T> queue)
             {
-                _list = list;
+                _queue = queue;
             }
 
-            public nuint Count => _list.Count;
+            public nuint Count => _queue.Count;
 
             [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
             public unsafe T[] Items
             {
                 get
                 {
-                    var count = Max(_list.Count, s_maxArrayLength);
+                    var count = Min(_queue.Count, s_maxArrayLength);
                     var items = GC.AllocateUninitializedArray<T>((int)count);
 
                     fixed (T* pItems = items)
                     {
                         var span = new UnmanagedSpan<T>(pItems, count);
-                        _list.CopyTo(span);
+                        _queue.CopyTo(span);
                     }
                     return items;
                 }

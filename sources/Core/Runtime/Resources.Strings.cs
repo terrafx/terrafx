@@ -14,6 +14,9 @@ namespace TerraFX.Runtime
         /// <summary>Gets a localized string similar to <c>The queue is empty</c>.</summary>
         public static string EmptyQueueMessage => GetString(nameof(EmptyQueueMessage));
 
+        /// <summary>Gets a localized string similar to <c>The stack is empty</c>.</summary>
+        public static string EmptyStackMessage => GetString(nameof(EmptyStackMessage));
+
         /// <summary>Gets a localized string similar to <c>'{0}' has an invalid flag combination</c>.</summary>
         public static string InvalidFlagCombinationMessage => GetString(nameof(InvalidFlagCombinationMessage));
 

@@ -1239,6 +1239,47 @@ namespace TerraFX.Utilities
             }
         }
 
+        /// <summary>Tries to get the last index of a given item in the specified buffer.</summary>
+        /// <typeparam name="T">The type of the item to try and get the index for.</typeparam>
+        /// <param name="items">The items to search for <paramref name="item" />.</param>
+        /// <param name="length">The length, in items, of <paramref name="items" />.</param>
+        /// <param name="item">The item to try and get the last index for.</param>
+        /// <param name="index">When <c>true</c> is returned, this contains the last index of <paramref name="item" />.</param>
+        /// <returns><c>true</c> if <paramref name="item" /> was found in <paramref name="items" />; otherwise, <c>false</c>.</returns>
+        /// <remarks>This method is unsafe because it does not validate <paramref name="items" /> is not <c>null</c> if <paramref name="length" /> is not <c>zero</c>.</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetLastIndexOfUnsafe<T>(T* items, nuint length, T item, out nuint index)
+            where T : unmanaged
+        {
+            return SoftwareFallback(items, length, item, out index);
+
+            static bool SoftwareFallback(T* items, nuint length, T item, out nuint index)
+            {
+                var equalityComparer = EqualityComparer<T>.Default;
+
+                if (length != 0)
+                {
+                    for (var i = length - 1; i > 0; i--)
+                    {
+                        if (equalityComparer.Equals(items[i], item))
+                        {
+                            index = i;
+                            return true;
+                        }
+                    }
+
+                    if (equalityComparer.Equals(items[0], item))
+                    {
+                        index = 0;
+                        return true;
+                    }
+                }
+
+                index = 0;
+                return false;
+            }
+        }
+
         /// <summary>Tries to reallocate a chunk of unmanaged memory.</summary>
         /// <param name="address">The address of an allocated chunk of memory to reallocate</param>
         /// <param name="newSize">The new size, in bytes, of the allocation.</param>

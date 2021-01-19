@@ -32,6 +32,28 @@ namespace TerraFX.UnitTests.Runtime
             );
         }
 
+        /// <summary>Provides validation of the <see cref="Resources.EmptyQueueMessage" /> property.</summary>
+        [TestCase("en", "The queue is empty")]
+        public static void EmptyQueueMessageTest(string cultureName, string expectedMessage)
+        {
+            Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
+
+            Assert.That(Resources.EmptyQueueMessage,
+                Is.EqualTo(expectedMessage)
+            );
+        }
+
+        /// <summary>Provides validation of the <see cref="Resources.EmptyStackMessage" /> property.</summary>
+        [TestCase("en", "The stack is empty")]
+        public static void EmptyStackMessageTest(string cultureName, string expectedMessage)
+        {
+            Resources.Culture = CultureInfo.GetCultureInfo(cultureName);
+
+            Assert.That(Resources.EmptyStackMessage,
+                Is.EqualTo(expectedMessage)
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="Resources.InvalidFlagCombinationMessage" /> property.</summary>
         [TestCase("en", "'{0}' has an invalid flag combination")]
         public static void InvalidFlagCombinationMessageTest(string cultureName, string expectedMessage)

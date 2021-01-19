@@ -1,11 +1,10 @@
 // Copyright © Tanner Gooding and Contributors. Licensed under the MIT License (MIT). See License.md in the repository root for more information.
 
-// This file includes code based on the List<T> class from https://github.com/dotnet/runtime/
+// This file includes code based on the Queue<T> class from https://github.com/dotnet/runtime/
 // The original code is Copyright © .NET Foundation and Contributors. All rights reserved. Licensed under the MIT License (MIT).
 
 using System;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using static TerraFX.Utilities.ExceptionUtilities;
 using static TerraFX.Utilities.MathUtilities;
@@ -260,7 +259,7 @@ namespace TerraFX.Collections
             }
         }
 
-        /// <summary>Peeks the item at the head of the queue.</summary>
+        /// <summary>Peeks at item at the head of the queue.</summary>
         /// <returns>The item at the head of the queue.</returns>
         /// <exception cref="InvalidOperationException">The queue is empty.</exception>
         public readonly T Peek()
@@ -275,7 +274,7 @@ namespace TerraFX.Collections
         /// <summary>Tries to dequeue an item from the head of the queue.</summary>
         /// <param name="item">When <c>true</c> is returned, this contains the item from the head of the queue.</param>
         /// <returns><c>true</c> if the queue was not empty; otherwise, <c>false</c>.</returns>
-        public bool TryDequeue([MaybeNullWhen(false)] out T item)
+        public bool TryDequeue(out T item)
         {
             var count = Count;
             var newCount = unchecked(count - 1);
@@ -302,18 +301,13 @@ namespace TerraFX.Collections
             var items = _items;
             item = items[head];
 
-            if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
-            {
-                items[head] = default!;
-            }
-
             return true;
         }
 
-        /// <summary>Tries to peek the item at the head of the queue.</summary>
+        /// <summary>Tries to peek at the item at the head of the queue.</summary>
         /// <param name="item">When <c>true</c> is returned, this contains the item at the head of the queue.</param>
         /// <returns><c>true</c> if the queue was not empty; otherwise, <c>false</c>.</returns>
-        public readonly bool TryPeek([MaybeNullWhen(false)] out T item)
+        public readonly bool TryPeek(out T item)
         {
             if (Count != 0)
             {

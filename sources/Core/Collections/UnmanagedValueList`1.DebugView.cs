@@ -25,7 +25,7 @@ namespace TerraFX.Collections
             {
                 get
                 {
-                    var count = Max(_list.Count, s_maxArrayLength);
+                    var count = Min(_list.Count, s_maxArrayLength);
                     var items = GC.AllocateUninitializedArray<T>((int)count);
 
                     fixed (T* pItems = items)
