@@ -496,6 +496,61 @@ namespace TerraFX.UnitTests.Collections
             );
         }
 
+
+
+        /// <summary>Provides validation of the <see cref="ValueStack{T}.TrimExcess(float)" /> method.</summary>
+        [Test]
+        public static void TrimExcessTest()
+        {
+            var valueStack = new ValueStack<int>(new int[] { 1, 2, 3 });
+            valueStack.TrimExcess();
+
+            Assert.That(() => valueStack,
+                Has.Property("Capacity").EqualTo(3)
+                   .And.Count.EqualTo(3)
+            );
+
+            valueStack = new ValueStack<int>(new int[] { 1, 2, 3 });
+
+            _ = valueStack.Pop();
+
+            valueStack.Push(4);
+            valueStack.TrimExcess();
+
+            Assert.That(() => valueStack,
+                Has.Property("Capacity").EqualTo(3)
+                   .And.Count.EqualTo(3)
+            );
+
+            valueStack = new ValueStack<int>(new int[] { 1, 2, 3 });
+
+            valueStack.Push(4);
+            valueStack.Push(5);
+
+            valueStack.TrimExcess();
+
+            Assert.That(() => valueStack,
+                Has.Property("Capacity").EqualTo(5)
+                   .And.Count.EqualTo(5)
+            );
+
+            valueStack.EnsureCapacity(15);
+            valueStack.TrimExcess(0.3f);
+
+            Assert.That(() => valueStack,
+                Has.Property("Capacity").EqualTo(15)
+                   .And.Count.EqualTo(5)
+            );
+
+            valueStack = new ValueStack<int>();
+            valueStack.TrimExcess();
+
+            Assert.That(() => valueStack,
+                Has.Property("Capacity").EqualTo(0)
+                   .And.Count.EqualTo(0)
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="ValueStack{T}.TryPeek(out T)" /> method.</summary>
         [Test]
         public static void TryPeekTest()

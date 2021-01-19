@@ -457,5 +457,44 @@ namespace TerraFX.UnitTests.Collections
                       .And.Property("ParamName").EqualTo("index")
             );
         }
+
+        /// <summary>Provides validation of the <see cref="ValueList{T}.TrimExcess(float)" /> method.</summary>
+        [Test]
+        public static void TrimExcessTest()
+        {
+            var valueList = new ValueList<int>(new int[] { 1, 2, 3 });
+            valueList.TrimExcess();
+
+            Assert.That(() => valueList,
+                Has.Property("Capacity").EqualTo(3)
+                   .And.Count.EqualTo(3)
+            );
+
+            valueList.Add(4);
+            valueList.Add(5);
+
+            valueList.TrimExcess();
+
+            Assert.That(() => valueList,
+                Has.Property("Capacity").EqualTo(5)
+                   .And.Count.EqualTo(5)
+            );
+
+            valueList.EnsureCapacity(15);
+            valueList.TrimExcess(0.3f);
+
+            Assert.That(() => valueList,
+                Has.Property("Capacity").EqualTo(15)
+                   .And.Count.EqualTo(5)
+            );
+
+            valueList = new ValueList<int>();
+            valueList.TrimExcess();
+
+            Assert.That(() => valueList,
+                Has.Property("Capacity").EqualTo(0)
+                   .And.Count.EqualTo(0)
+            );
+        }
     }
 }

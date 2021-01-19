@@ -705,6 +705,71 @@ namespace TerraFX.UnitTests.Collections
             }
         }
 
+        /// <summary>Provides validation of the <see cref="UnmanagedValueQueue{T}.TrimExcess" /> method.</summary>
+        [Test]
+        public static void TrimExcessTest()
+        {
+            var array = new UnmanagedArray<int>(3);
+
+            array[0] = 1;
+            array[1] = 2;
+            array[2] = 3;
+
+            using (var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: false))
+            {
+                valueQueue.TrimExcess();
+
+                Assert.That(() => valueQueue,
+                    Has.Property("Capacity").EqualTo((nuint)3)
+                       .And.Count.EqualTo((nuint)3)
+                );
+            }
+
+            using (var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: false))
+            {
+                _ = valueQueue.Dequeue();
+
+                valueQueue.Enqueue(4);
+                valueQueue.TrimExcess();
+
+                Assert.That(() => valueQueue,
+                    Has.Property("Capacity").EqualTo((nuint)3)
+                       .And.Count.EqualTo((nuint)3)
+                );
+            }
+
+            using (var valueQueue = new UnmanagedValueQueue<int>(array, takeOwnership: true))
+            {
+                valueQueue.Enqueue(4);
+                valueQueue.Enqueue(5);
+
+                valueQueue.TrimExcess();
+
+                Assert.That(() => valueQueue,
+                    Has.Property("Capacity").EqualTo((nuint)5)
+                       .And.Count.EqualTo((nuint)5)
+                );
+
+                valueQueue.EnsureCapacity(15);
+                valueQueue.TrimExcess(0.3f);
+
+                Assert.That(() => valueQueue,
+                    Has.Property("Capacity").EqualTo((nuint)15)
+                       .And.Count.EqualTo((nuint)5)
+                );
+            }
+
+            using (var valueQueue = new UnmanagedValueQueue<int>())
+            {
+                valueQueue.TrimExcess();
+
+                Assert.That(() => valueQueue,
+                    Has.Property("Capacity").EqualTo((nuint)0)
+                       .And.Count.EqualTo((nuint)0)
+                );
+            }
+        }
+
         /// <summary>Provides validation of the <see cref="ValueQueue{T}.TryDequeue(out T)" /> method.</summary>
         [Test]
         public static void TryDequeueTest()

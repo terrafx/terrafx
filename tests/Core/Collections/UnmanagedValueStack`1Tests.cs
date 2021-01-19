@@ -705,6 +705,71 @@ namespace TerraFX.UnitTests.Collections
             }
         }
 
+        /// <summary>Provides validation of the <see cref="UnmanagedValueStack{T}.TrimExcess" /> method.</summary>
+        [Test]
+        public static void TrimExcessTest()
+        {
+            var array = new UnmanagedArray<int>(3);
+
+            array[0] = 1;
+            array[1] = 2;
+            array[2] = 3;
+
+            using (var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: false))
+            {
+                valueStack.TrimExcess();
+
+                Assert.That(() => valueStack,
+                    Has.Property("Capacity").EqualTo((nuint)3)
+                       .And.Count.EqualTo((nuint)3)
+                );
+            }
+
+            using (var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: false))
+            {
+                _ = valueStack.Pop();
+
+                valueStack.Push(4);
+                valueStack.TrimExcess();
+
+                Assert.That(() => valueStack,
+                    Has.Property("Capacity").EqualTo((nuint)3)
+                       .And.Count.EqualTo((nuint)3)
+                );
+            }
+
+            using (var valueStack = new UnmanagedValueStack<int>(array, takeOwnership: true))
+            {
+                valueStack.Push(4);
+                valueStack.Push(5);
+
+                valueStack.TrimExcess();
+
+                Assert.That(() => valueStack,
+                    Has.Property("Capacity").EqualTo((nuint)5)
+                       .And.Count.EqualTo((nuint)5)
+                );
+
+                valueStack.EnsureCapacity(15);
+                valueStack.TrimExcess(0.3f);
+
+                Assert.That(() => valueStack,
+                    Has.Property("Capacity").EqualTo((nuint)15)
+                       .And.Count.EqualTo((nuint)5)
+                );
+            }
+
+            using (var valueStack = new UnmanagedValueStack<int>())
+            {
+                valueStack.TrimExcess();
+
+                Assert.That(() => valueStack,
+                    Has.Property("Capacity").EqualTo((nuint)0)
+                       .And.Count.EqualTo((nuint)0)
+                );
+            }
+        }
+
         /// <summary>Provides validation of the <see cref="ValueStack{T}.TryPeek(out T)" /> method.</summary>
         [Test]
         public static void TryPeekTest()

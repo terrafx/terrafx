@@ -297,6 +297,27 @@ namespace TerraFX.Collections
             return item;
         }
 
+        /// <summary>Trims any excess capacity, up to a given threshold, from the queue.</summary>
+        /// <param name="threshold">A percentage, between <c>zero</c> and <c>one</c>, under which any exceess will not be trimmed.</param>
+        /// <remarks>This methods clamps <paramref name="threshold" /> to between <c>zero</c> and <c>one</c>, inclusive.</remarks>
+        public void TrimExcess(float threshold = 1.0f)
+        {
+            var count = Count;
+            var minCount = (int)(Capacity * Clamp(threshold, 0.0f, 1.0f));
+
+            if (count < minCount)
+            {
+                var newItems = GC.AllocateUninitializedArray<T>(count);
+                CopyTo(newItems);
+
+                _version++;
+                _items = newItems;
+
+                _head = 0;
+                _tail = count;
+            }
+        }
+
         /// <summary>Tries to dequeue an item from the head of the queue.</summary>
         /// <param name="item">When <c>true</c> is returned, this contains the item from the head of the queue.</param>
         /// <returns><c>true</c> if the queue was not empty; otherwise, <c>false</c>.</returns>

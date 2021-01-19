@@ -616,6 +616,55 @@ namespace TerraFX.UnitTests.Collections
             }
         }
 
+        /// <summary>Provides validation of the <see cref="UnmanagedValueList{T}.TrimExcess" /> method.</summary>
+        [Test]
+        public static void TrimExcessTest()
+        {
+            var array = new UnmanagedArray<int>(3);
+
+            array[0] = 1;
+            array[1] = 2;
+            array[2] = 3;
+
+            using (var valueList = new UnmanagedValueList<int>(array, takeOwnership: true))
+            {
+                valueList.TrimExcess();
+
+                Assert.That(() => valueList,
+                    Has.Property("Capacity").EqualTo((nuint)3)
+                       .And.Count.EqualTo((nuint)3)
+                );
+
+                valueList.Add(4);
+                valueList.Add(5);
+
+                valueList.TrimExcess();
+
+                Assert.That(() => valueList,
+                    Has.Property("Capacity").EqualTo((nuint)5)
+                       .And.Count.EqualTo((nuint)5)
+                );
+
+                valueList.EnsureCapacity(15);
+                valueList.TrimExcess(0.3f);
+
+                Assert.That(() => valueList,
+                    Has.Property("Capacity").EqualTo((nuint)15)
+                       .And.Count.EqualTo((nuint)5)
+                );
+            }
+
+            using (var valueList = new UnmanagedValueList<int>())
+            {
+                valueList.TrimExcess();
+
+                Assert.That(() => valueList,
+                    Has.Property("Capacity").EqualTo((nuint)0)
+                       .And.Count.EqualTo((nuint)0)
+                );
+            }
+        }
+
         /// <summary>Provides validation of the <see cref="UnmanagedValueList{T}.TryGetIndexOf(T, out nuint)" /> method.</summary>
         [Test]
         public static void TryGetIndexOfTest()

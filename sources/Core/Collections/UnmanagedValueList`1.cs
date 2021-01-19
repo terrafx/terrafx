@@ -274,6 +274,29 @@ namespace TerraFX.Collections
             _count = newCount;
         }
 
+        /// <summary>Trims any excess capacity, up to a given threshold, from the list.</summary>
+        /// <param name="threshold">A percentage, between <c>zero</c> and <c>one</c>, under which any exceess will not be trimmed.</param>
+        /// <remarks>This methods clamps <paramref name="threshold" /> to between <c>zero</c> and <c>one</c>, inclusive.</remarks>
+        public void TrimExcess(float threshold = 1.0f)
+        {
+            var count = Count;
+            var minCount = (nuint)(Capacity * Clamp(threshold, 0.0f, 1.0f));
+
+            if (count < minCount)
+            {
+                var items = _items;
+
+                var alignment = !items.IsNull ? items.Alignment : 0;
+                var newItems = new UnmanagedArray<T>(count, alignment, zero: false);
+
+                CopyTo(newItems);
+                items.Dispose();
+
+                _version++;
+                _items = newItems;
+            }
+        }
+
         /// <summary>Tries to get the index of a given item in the list.</summary>
         /// <param name="item">The item for which to get its index..</param>
         /// <param name="index">When <c>true</c> is returned, this contains the index of <paramref name="item" />.</param>

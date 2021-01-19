@@ -496,6 +496,59 @@ namespace TerraFX.UnitTests.Collections
             );
         }
 
+        /// <summary>Provides validation of the <see cref="ValueQueue{T}.TrimExcess(float)" /> method.</summary>
+        [Test]
+        public static void TrimExcessTest()
+        {
+            var valueQueue = new ValueQueue<int>(new int[] { 1, 2, 3 });
+            valueQueue.TrimExcess();
+
+            Assert.That(() => valueQueue,
+                Has.Property("Capacity").EqualTo(3)
+                   .And.Count.EqualTo(3)
+            );
+
+            valueQueue = new ValueQueue<int>(new int[] { 1, 2, 3 });
+
+            _ = valueQueue.Dequeue();
+
+            valueQueue.Enqueue(4);
+            valueQueue.TrimExcess();
+
+            Assert.That(() => valueQueue,
+                Has.Property("Capacity").EqualTo(3)
+                   .And.Count.EqualTo(3)
+            );
+
+            valueQueue = new ValueQueue<int>(new int[] { 1, 2, 3 });
+
+            valueQueue.Enqueue(4);
+            valueQueue.Enqueue(5);
+
+            valueQueue.TrimExcess();
+
+            Assert.That(() => valueQueue,
+                Has.Property("Capacity").EqualTo(5)
+                   .And.Count.EqualTo(5)
+            );
+
+            valueQueue.EnsureCapacity(15);
+            valueQueue.TrimExcess(0.3f);
+
+            Assert.That(() => valueQueue,
+                Has.Property("Capacity").EqualTo(15)
+                   .And.Count.EqualTo(5)
+            );
+
+            valueQueue = new ValueQueue<int>();
+            valueQueue.TrimExcess();
+
+            Assert.That(() => valueQueue,
+                Has.Property("Capacity").EqualTo(0)
+                   .And.Count.EqualTo(0)
+            );
+        }
+
         /// <summary>Provides validation of the <see cref="ValueQueue{T}.TryDequeue(out T)" /> method.</summary>
         [Test]
         public static void TryDequeueTest()
